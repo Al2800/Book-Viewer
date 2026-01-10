@@ -102,6 +102,7 @@ struct LibraryView: View {
                     Image(systemName: "list.bullet").tag(ViewMode.list)
                 }
                 .pickerStyle(.segmented)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.viewModeToggle)
 
                 // Add book button
                 Button {
@@ -109,6 +110,7 @@ struct LibraryView: View {
                 } label: {
                     Image(systemName: "plus")
                 }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.addBookButton)
             }
         }
         .onAppear {
@@ -223,6 +225,7 @@ struct EmptyLibraryView: View {
         } actions: {
             // Will be wired to capture tab later
         }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.emptyState)
     }
 }
 

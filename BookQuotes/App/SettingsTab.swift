@@ -237,6 +237,7 @@ struct AccountView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.black)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Settings.signInButton)
             }
             .padding(.vertical, Spacing.md)
         }
@@ -337,6 +338,7 @@ struct AccountView: View {
                 }
             }
             .disabled(isRestoring)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Settings.restorePurchasesButton)
 
             // Sign out (only if signed in)
             if authService.isAuthenticated {
@@ -345,6 +347,7 @@ struct AccountView: View {
                 } label: {
                     Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
                 }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Settings.signOutButton)
             }
         }
     }

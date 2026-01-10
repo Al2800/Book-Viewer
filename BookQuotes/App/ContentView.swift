@@ -18,6 +18,7 @@ struct ContentView: View {
                     Label(Tab.library.title, systemImage: Tab.library.systemImage)
                 }
                 .tag(Tab.library)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
 
             CaptureTab()
                 .tabItem {
@@ -25,12 +26,14 @@ struct ContentView: View {
                 }
                 .tag(Tab.capture)
                 .badge(queueBadgeCount)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.captureTab)
 
             SettingsTab()
                 .tabItem {
                     Label(Tab.settings.title, systemImage: Tab.settings.systemImage)
                 }
                 .tag(Tab.settings)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.settingsTab)
         }
         .onAppear {
             subscribeToQueueStats()

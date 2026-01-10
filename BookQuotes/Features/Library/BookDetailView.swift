@@ -111,12 +111,14 @@ struct BookDetailView: View {
                     } label: {
                         Label("Edit", systemImage: "pencil")
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.editButton)
 
                     Button {
                         // TODO: Navigate to capture with this book selected
                     } label: {
                         Label("Add Quotes", systemImage: "camera")
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.captureQuotesButton)
 
                     Divider()
 
@@ -125,6 +127,7 @@ struct BookDetailView: View {
                     } label: {
                         Label("Delete Book", systemImage: "trash")
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.deleteButton)
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
