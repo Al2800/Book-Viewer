@@ -21,6 +21,7 @@
 		A9B0C1D2E3F4A5B6C7D8E9F0 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C0D1E2F3A4B5C6D7E8F9A0 /* SearchResults.swift */; };
 		AAB1C2D3E4F5A6B7C8D9E0F1 /* SearchDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC1D2E3F4A5B6C7D8E9F0A1 /* SearchDatabase.swift */; };
 		ABB2C3D4E5F6A7B8C9D0E1F2 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC2D3E4F5A6B7C8D9E0F1A2 /* SearchService.swift */; };
+		ACB3C4D5E6F7A8B9C0D1E2F3 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC3D4E5F6A7B8C9D0E1F2A3 /* CameraService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		B9C0D1E2F3A4B5C6D7E8F9A0 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
 		BAC1D2E3F4A5B6C7D8E9F0A1 /* SearchDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDatabase.swift; sourceTree = "<group>"; };
 		BBC2D3E4F5A6B7C8D9E0F1A2 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
+		BCC3D4E5F6A7B8C9D0E1F2A3 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				B9C0D1E2F3A4B5C6D7E8F9A0 /* SearchResults.swift */,
 				BAC1D2E3F4A5B6C7D8E9F0A1 /* SearchDatabase.swift */,
 				BBC2D3E4F5A6B7C8D9E0F1A2 /* SearchService.swift */,
+				BCC3D4E5F6A7B8C9D0E1F2A3 /* CameraService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				A9B0C1D2E3F4A5B6C7D8E9F0 /* SearchResults.swift in Sources */,
 				AAB1C2D3E4F5A6B7C8D9E0F1 /* SearchDatabase.swift in Sources */,
 				ABB2C3D4E5F6A7B8C9D0E1F2 /* SearchService.swift in Sources */,
+				ACB3C4D5E6F7A8B9C0D1E2F3 /* CameraService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
