@@ -14,6 +14,8 @@ struct SettingsTab: View {
                         AccountView()
                     case .markings:
                         MarkingDefinitionsView()
+                    case .storage:
+                        StorageBackupView()
                     case .about:
                         AboutView()
                     }
@@ -27,6 +29,7 @@ struct SettingsTab: View {
 enum SettingsDestination: Hashable {
     case account
     case markings
+    case storage
     case about
 }
 
@@ -36,6 +39,12 @@ struct SettingsView: View {
     @Query private var quotes: [Quote]
     @State private var showExportSheet = false
 
+    // MARK: - App Storage
+
+    @AppStorage("libraryViewMode") private var libraryViewMode: String = "grid"
+    @AppStorage("autoProcessQueue") private var autoProcessQueue = true
+    @AppStorage("hapticFeedbackEnabled") private var hapticFeedbackEnabled = true
+
     var body: some View {
         List {
             Section("Account") {
@@ -44,9 +53,26 @@ struct SettingsView: View {
                 }
             }
 
-            Section("Customization") {
+            Section("Capture") {
                 NavigationLink(value: SettingsDestination.markings) {
                     Label("Marking Definitions", systemImage: "highlighter")
+                }
+
+                Toggle(isOn: $autoProcessQueue) {
+                    Label("Auto-process Queue", systemImage: "arrow.triangle.2.circlepath")
+                }
+            }
+
+            Section("Display") {
+                Picker(selection: $libraryViewMode) {
+                    Text("Grid").tag("grid")
+                    Text("List").tag("list")
+                } label: {
+                    Label("Library View", systemImage: "square.grid.2x2")
+                }
+
+                Toggle(isOn: $hapticFeedbackEnabled) {
+                    Label("Haptic Feedback", systemImage: "hand.tap")
                 }
             }
 
@@ -55,6 +81,10 @@ struct SettingsView: View {
                     showExportSheet = true
                 } label: {
                     Label("Export Quotes", systemImage: "square.and.arrow.up")
+                }
+
+                NavigationLink(value: SettingsDestination.storage) {
+                    Label("Storage & Backup", systemImage: "externaldrive")
                 }
             }
 
@@ -243,6 +273,83 @@ struct AboutView: View {
         }
         .navigationTitle("About")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// Storage and backup management
+struct StorageBackupView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var books: [Book]
+    @Query private var quotes: [Quote]
+
+    @State private var showExportOptions = false
+    @State private var isExporting = false
+
+    var body: some View {
+        List {
+            // Storage stats
+            Section("Storage Usage") {
+                LabeledContent("Books", value: "\(books.count)")
+                LabeledContent("Quotes", value: "\(quotes.count)")
+                LabeledContent("Images", value: estimatedImageStorage)
+            }
+
+            // Backup options
+            Section("Backup") {
+                Button {
+                    showExportOptions = true
+                } label: {
+                    Label("Export All Data", systemImage: "square.and.arrow.up")
+                }
+
+                Text("Export your entire library as a backup file that can be restored later.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Data management
+            Section("Data Management") {
+                Button(role: .destructive) {
+                    // Show clear cache confirmation
+                } label: {
+                    Label("Clear Image Cache", systemImage: "trash")
+                }
+
+                Text("Clear cached images to free up storage space. Original images in your library will not be affected.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .navigationTitle("Storage & Backup")
+        .navigationBarTitleDisplayMode(.inline)
+        .confirmationDialog("Export Options", isPresented: $showExportOptions) {
+            Button("Export as JSON") {
+                exportAsJSON()
+            }
+            Button("Export as Markdown") {
+                exportAsMarkdown()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+    }
+
+    private var estimatedImageStorage: String {
+        let imageCount = books.filter { $0.coverThumbnailData != nil }.count +
+                         quotes.filter { $0.sourceImageThumbnailData != nil }.count
+        // Rough estimate: ~50KB per thumbnail
+        let estimatedMB = Double(imageCount) * 0.05
+        if estimatedMB < 1 {
+            return "< 1 MB"
+        }
+        return String(format: "%.1f MB", estimatedMB)
+    }
+
+    private func exportAsJSON() {
+        // TODO: Implement JSON export
+    }
+
+    private func exportAsMarkdown() {
+        // TODO: Implement Markdown export
     }
 }
 
