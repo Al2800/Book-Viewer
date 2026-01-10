@@ -43,6 +43,14 @@
 		BFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift */; };
 		BGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift */; };
 		BHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift */; };
+		BIN5F6A7B8C9D0E1F2A3B4C5 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CIN5F6A7B8C9D0E1F2A3B4C5 /* ExportService.swift */; };
+		BJO6A7B8C9D0E1F2A3B4C5D6 /* ExportOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CJO6A7B8C9D0E1F2A3B4C5D6 /* ExportOptions.swift */; };
+		BKP7B8C9D0E1F2A3B4C5D6E7 /* QuoteFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CKP7B8C9D0E1F2A3B4C5D6E7 /* QuoteFormatter.swift */; };
+		BLQ8C9D0E1F2A3B4C5D6E7F8 /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLQ8C9D0E1F2A3B4C5D6E7F8 /* MarkdownFormatter.swift */; };
+		BMR9D0E1F2A3B4C5D6E7F8A9 /* PlainTextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CMR9D0E1F2A3B4C5D6E7F8A9 /* PlainTextFormatter.swift */; };
+		BNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift */; };
+		BOT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = COT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift */; };
+		BPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +92,14 @@
 		CFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCard.swift; sourceTree = "<group>"; };
 		CGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCardView.swift; sourceTree = "<group>"; };
 		CHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		CIN5F6A7B8C9D0E1F2A3B4C5 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		CJO6A7B8C9D0E1F2A3B4C5D6 /* ExportOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportOptions.swift; sourceTree = "<group>"; };
+		CKP7B8C9D0E1F2A3B4C5D6E7 /* QuoteFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteFormatter.swift; sourceTree = "<group>"; };
+		CLQ8C9D0E1F2A3B4C5D6E7F8 /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
+		CMR9D0E1F2A3B4C5D6E7F8A9 /* PlainTextFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextFormatter.swift; sourceTree = "<group>"; };
+		CNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFormatter.swift; sourceTree = "<group>"; };
+		COT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObsidianFormatter.swift; sourceTree = "<group>"; };
+		CPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionExporter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,8 +174,24 @@
 				C0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift */,
 				C1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift */,
 				CBG8A9B0C1D2E3F4A5B6C7D8 /* SearchSuggestionsService.swift */,
+				CIN5F6A7B8C9D0E1F2A3B4C5 /* ExportService.swift */,
+				CJO6A7B8C9D0E1F2A3B4C5D6 /* ExportOptions.swift */,
+				H4M5N6O7P8Q9R0S1T2U3V4W5 /* Exporters */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		H4M5N6O7P8Q9R0S1T2U3V4W5 /* Exporters */ = {
+			isa = PBXGroup;
+			children = (
+				CKP7B8C9D0E1F2A3B4C5D6E7 /* QuoteFormatter.swift */,
+				CLQ8C9D0E1F2A3B4C5D6E7F8 /* MarkdownFormatter.swift */,
+				CMR9D0E1F2A3B4C5D6E7F8A9 /* PlainTextFormatter.swift */,
+				CNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift */,
+				COT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift */,
+				CPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift */,
+			);
+			path = Exporters;
 			sourceTree = "<group>";
 		};
 		6A7B8C9D0E1F2A3B4C5D6E7F /* Features */ = {
@@ -342,6 +374,14 @@
 				BFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift in Sources */,
 				BGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift in Sources */,
 				BHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift in Sources */,
+				BIN5F6A7B8C9D0E1F2A3B4C5 /* ExportService.swift in Sources */,
+				BJO6A7B8C9D0E1F2A3B4C5D6 /* ExportOptions.swift in Sources */,
+				BKP7B8C9D0E1F2A3B4C5D6E7 /* QuoteFormatter.swift in Sources */,
+				BLQ8C9D0E1F2A3B4C5D6E7F8 /* MarkdownFormatter.swift in Sources */,
+				BMR9D0E1F2A3B4C5D6E7F8A9 /* PlainTextFormatter.swift in Sources */,
+				BNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift in Sources */,
+				BOT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift in Sources */,
+				BPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
