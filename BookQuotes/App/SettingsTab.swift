@@ -3,7 +3,16 @@ import SwiftData
 
 /// Settings tab - configuration, account, and marking definitions
 struct SettingsTab: View {
+    // MARK: - Properties
+
+    let authService: AuthService
+    let subscriptionService: SubscriptionService
+
+    // MARK: - State
+
     @State private var router = RouterPath()
+
+    // MARK: - Body
 
     var body: some View {
         NavigationStack(path: $router.path) {
@@ -11,7 +20,10 @@ struct SettingsTab: View {
                 .navigationDestination(for: SettingsDestination.self) { destination in
                     switch destination {
                     case .account:
-                        AccountView()
+                        AccountView(
+                            authService: authService,
+                            subscriptionService: subscriptionService
+                        )
                     case .markings:
                         MarkingDefinitionsView()
                     case .storage:
@@ -113,29 +125,259 @@ struct SettingsView: View {
 
 /// Account and subscription management
 struct AccountView: View {
+    // MARK: - Properties
+
+    let authService: AuthService
+    let subscriptionService: SubscriptionService
+
+    // MARK: - State
+
+    @State private var showSignIn = false
+    @State private var showPaywall = false
+    @State private var showSignOutConfirmation = false
+    @State private var isRestoring = false
+    @State private var showError = false
+    @State private var errorMessage: String?
+
+    // MARK: - Body
+
     var body: some View {
         List {
-            Section {
-                ContentUnavailableView {
-                    Label("Sign In Required", systemImage: "person.crop.circle.badge.questionmark")
-                } description: {
-                    Text("Sign in with Apple to sync your library across devices.")
-                } actions: {
-                    Button("Sign in with Apple") {
-                        // Apple Sign-In will be implemented
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
+            // Account section
+            if authService.isAuthenticated {
+                accountSection
+            } else {
+                signInPromptSection
             }
 
-            Section("Subscription") {
-                Text("Subscribe to unlock unlimited quote captures and cloud sync.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+            // Subscription section
+            subscriptionSection
+
+            // Actions section
+            actionsSection
         }
         .navigationTitle("Account")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showSignIn) {
+            SignInView(authService: authService)
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(subscriptionService: subscriptionService)
+        }
+        .confirmationDialog("Sign Out", isPresented: $showSignOutConfirmation) {
+            Button("Sign Out", role: .destructive) {
+                signOut()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to sign out? Your data will remain on this device.")
+        }
+        .alert("Error", isPresented: $showError) {
+            Button("OK") {}
+        } message: {
+            Text(errorMessage ?? "An error occurred")
+        }
+        .task {
+            await subscriptionService.loadProducts()
+        }
+    }
+
+    // MARK: - Account Section
+
+    private var accountSection: some View {
+        Section {
+            HStack(spacing: Spacing.md) {
+                // Avatar
+                Image(systemName: "person.crop.circle.fill")
+                    .font(.system(size: 50))
+                    .foregroundStyle(.brand)
+
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    if let user = authService.currentUser {
+                        Text(user.displayNameOrEmail)
+                            .font(.headline)
+
+                        if let email = user.email {
+                            Text(email)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Spacer()
+
+                // Subscription badge
+                SubscriptionBadge(subscriptionService: subscriptionService)
+            }
+            .padding(.vertical, Spacing.xs)
+        }
+    }
+
+    private var signInPromptSection: some View {
+        Section {
+            VStack(spacing: Spacing.md) {
+                Image(systemName: "person.crop.circle.badge.questionmark")
+                    .font(.system(size: 50))
+                    .foregroundStyle(.secondary)
+
+                Text("Sign In Required")
+                    .font(.headline)
+
+                Text("Sign in with Apple to sync your library across devices and access your subscription.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Button {
+                    showSignIn = true
+                } label: {
+                    Label("Sign in with Apple", systemImage: "apple.logo")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.black)
+            }
+            .padding(.vertical, Spacing.md)
+        }
+    }
+
+    // MARK: - Subscription Section
+
+    private var subscriptionSection: some View {
+        Section("Subscription") {
+            if subscriptionService.hasActiveSubscription {
+                // Active subscription info
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    HStack {
+                        Text(subscriptionTitle)
+                            .font(.headline)
+
+                        Spacer()
+
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    }
+
+                    if subscriptionService.isInTrial {
+                        Label("Free Trial Active", systemImage: "gift.fill")
+                            .font(.subheadline)
+                            .foregroundStyle(.brand)
+                    }
+
+                    if let status = subscriptionService.subscriptionStatus,
+                       let renewalDate = status.renewalInfo?.currentPeriodEndDate {
+                        Text("Renews \(renewalDate.formatted(date: .abbreviated, time: .omitted))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, Spacing.xs)
+
+                // Manage subscription
+                Button {
+                    Task {
+                        await subscriptionService.manageSubscription()
+                    }
+                } label: {
+                    Label("Manage Subscription", systemImage: "creditcard")
+                }
+            } else {
+                // No subscription - show upgrade prompt
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Text("Unlock Premium")
+                        .font(.headline)
+
+                    Text("Get unlimited quote captures, cloud sync, and more.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    Button {
+                        showPaywall = true
+                    } label: {
+                        Text("View Plans")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding(.vertical, Spacing.xs)
+            }
+        }
+    }
+
+    private var subscriptionTitle: String {
+        if let product = subscriptionService.purchasedSubscription {
+            if product.id.contains("yearly") {
+                return "BookQuotes Yearly"
+            } else if product.id.contains("monthly") {
+                return "BookQuotes Monthly"
+            }
+            return product.displayName
+        }
+        return "BookQuotes Premium"
+    }
+
+    // MARK: - Actions Section
+
+    private var actionsSection: some View {
+        Section {
+            // Restore purchases
+            Button {
+                Task {
+                    await restorePurchases()
+                }
+            } label: {
+                HStack {
+                    Label("Restore Purchases", systemImage: "arrow.clockwise")
+
+                    if isRestoring {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .disabled(isRestoring)
+
+            // Sign out (only if signed in)
+            if authService.isAuthenticated {
+                Button(role: .destructive) {
+                    showSignOutConfirmation = true
+                } label: {
+                    Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                }
+            }
+        }
+    }
+
+    // MARK: - Actions
+
+    private func restorePurchases() async {
+        isRestoring = true
+        defer { isRestoring = false }
+
+        do {
+            try await subscriptionService.restorePurchases()
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+    }
+
+    private func signOut() {
+        Task {
+            await authService.signOut()
+        }
+    }
+}
+
+// MARK: - AccountView Preview
+
+#Preview("Account - Signed Out") {
+    NavigationStack {
+        AccountView(
+            authService: AuthService(),
+            subscriptionService: SubscriptionService(authService: AuthService())
+        )
     }
 }
 
@@ -354,6 +596,10 @@ struct StorageBackupView: View {
 }
 
 #Preview {
-    SettingsTab()
-        .modelContainer(.preview)
+    let authService = AuthService()
+    return SettingsTab(
+        authService: authService,
+        subscriptionService: SubscriptionService(authService: authService)
+    )
+    .modelContainer(.preview)
 }
