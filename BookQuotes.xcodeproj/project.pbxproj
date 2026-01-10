@@ -31,6 +31,10 @@
 		B3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift */; };
 		B4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift */; };
 		B5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift */; };
+		B6B3C4D5E6F7A8B9C0D1E2F3 /* SearchFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B3C4D5E6F7A8B9C0D1E2F3 /* SearchFilters.swift */; };
+		B7C4D5E6F7A8B9C0D1E2F3A4 /* SearchFiltersSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C4D5E6F7A8B9C0D1E2F3A4 /* SearchFiltersSheet.swift */; };
+		B8D5E6F7A8B9C0D1E2F3A4B5 /* ActiveFiltersBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D5E6F7A8B9C0D1E2F3A4B5 /* ActiveFiltersBar.swift */; };
+		B9E6F7A8B9C0D1E2F3A4B5C6 /* FilterPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E6F7A8B9C0D1E2F3A4B5C6 /* FilterPill.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +64,10 @@
 		C3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionsView.swift; sourceTree = "<group>"; };
 		C4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionRow.swift; sourceTree = "<group>"; };
 		C5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionEditor.swift; sourceTree = "<group>"; };
+		C6B3C4D5E6F7A8B9C0D1E2F3 /* SearchFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFilters.swift; sourceTree = "<group>"; };
+		C7C4D5E6F7A8B9C0D1E2F3A4 /* SearchFiltersSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFiltersSheet.swift; sourceTree = "<group>"; };
+		C8D5E6F7A8B9C0D1E2F3A4B5 /* ActiveFiltersBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveFiltersBar.swift; sourceTree = "<group>"; };
+		C9E6F7A8B9C0D1E2F3A4B5C6 /* FilterPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPill.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +123,7 @@
 				B4C5D6E7F8A9B0C1D2E3F4A5 /* Tag.swift */,
 				B5C6D7E8F9A0B1C2D3E4F5A6 /* ValidationError.swift */,
 				B6C7D8E9F0A1B2C3D4E5F6A7 /* MarkingDefinition.swift */,
+				C6B3C4D5E6F7A8B9C0D1E2F3 /* SearchFilters.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -139,9 +148,19 @@
 			isa = PBXGroup;
 			children = (
 				D2F9A0B1C2D3E4F5A6B7C8D9 /* BookRegistration */,
+				F3A0B1C2D3E4F5A6B7C8D9E0 /* Library */,
 				E3A0B1C2D3E4F5A6B7C8D9E0 /* Settings */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		F3A0B1C2D3E4F5A6B7C8D9E0 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				C7C4D5E6F7A8B9C0D1E2F3A4 /* SearchFiltersSheet.swift */,
+				C8D5E6F7A8B9C0D1E2F3A4B5 /* ActiveFiltersBar.swift */,
+			);
+			path = Library;
 			sourceTree = "<group>";
 		};
 		D2F9A0B1C2D3E4F5A6B7C8D9 /* BookRegistration */ = {
@@ -166,6 +185,7 @@
 			children = (
 				B7C8D9E0F1A2B3C4D5E6F7A8 /* DesignSystem.swift */,
 				C4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift */,
+				C9E6F7A8B9C0D1E2F3A4B5C6 /* FilterPill.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -278,6 +298,10 @@
 				B3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift in Sources */,
 				B4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift in Sources */,
 				B5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift in Sources */,
+				B6B3C4D5E6F7A8B9C0D1E2F3 /* SearchFilters.swift in Sources */,
+				B7C4D5E6F7A8B9C0D1E2F3A4 /* SearchFiltersSheet.swift in Sources */,
+				B8D5E6F7A8B9C0D1E2F3A4B5 /* ActiveFiltersBar.swift in Sources */,
+				B9E6F7A8B9C0D1E2F3A4B5C6 /* FilterPill.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
