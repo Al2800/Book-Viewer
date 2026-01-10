@@ -66,7 +66,15 @@ final class Quote {
     @Relationship(inverse: \Collection.quotes)
     var collections: [Collection]
 
+    /// Custom marking definition (user-defined vocabulary)
+    var customMarkingDefinition: MarkingDefinition?
+
     // MARK: - Computed Properties
+
+    /// Display name for the marking (prefers custom definition over legacy enum)
+    var markingDisplayName: String {
+        customMarkingDefinition?.name ?? markingType.displayName
+    }
 
     /// Full attribution string
     var attribution: String {

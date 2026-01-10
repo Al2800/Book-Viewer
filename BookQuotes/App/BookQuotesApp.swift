@@ -10,7 +10,8 @@ struct BookQuotesApp: App {
             Book.self,
             Quote.self,
             Collection.self,
-            Tag.self
+            Tag.self,
+            MarkingDefinition.self
         ])
 
         let config = ModelConfiguration(
@@ -44,7 +45,8 @@ extension ModelContainer {
             Book.self,
             Quote.self,
             Collection.self,
-            Tag.self
+            Tag.self,
+            MarkingDefinition.self
         ])
 
         let config = ModelConfiguration(
