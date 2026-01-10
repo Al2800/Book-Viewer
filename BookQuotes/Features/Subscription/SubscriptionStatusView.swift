@@ -1,0 +1,217 @@
+import SwiftUI
+import StoreKit
+
+// MARK: - SubscriptionStatusView
+
+/// View showing current subscription status and management options.
+struct SubscriptionStatusView: View {
+
+    // MARK: - Properties
+
+    let subscriptionService: SubscriptionService
+
+    // MARK: - State
+
+    @State private var showManageSheet = false
+
+    // MARK: - Body
+
+    var body: some View {
+        List {
+            // Current subscription section
+            Section {
+                currentSubscriptionRow
+            } header: {
+                Text("Current Plan")
+            }
+
+            // Subscription details
+            if let product = subscriptionService.purchasedSubscription {
+                Section {
+                    detailRow(title: "Price", value: product.priceWithPeriod)
+
+                    if let status = subscriptionService.subscriptionStatus {
+                        if let renewalDate = status.renewalInfo?.currentPeriodEndDate {
+                            detailRow(
+                                title: "Renews",
+                                value: renewalDate.formatted(date: .abbreviated, time: .omitted)
+                            )
+                        }
+
+                        if status.renewalInfo?.willAutoRenew == false {
+                            detailRow(title: "Auto-Renew", value: "Off")
+                                .foregroundStyle(.orange)
+                        }
+                    }
+
+                    if subscriptionService.isInTrial {
+                        detailRow(title: "Status", value: "Free Trial")
+                            .foregroundStyle(.brand)
+                    }
+                } header: {
+                    Text("Details")
+                }
+            }
+
+            // Management section
+            Section {
+                Button {
+                    Task {
+                        await subscriptionService.manageSubscription()
+                    }
+                } label: {
+                    Label("Manage Subscription", systemImage: "creditcard")
+                }
+
+                Button {
+                    Task {
+                        try? await subscriptionService.restorePurchases()
+                    }
+                } label: {
+                    Label("Restore Purchases", systemImage: "arrow.clockwise")
+                }
+            } header: {
+                Text("Manage")
+            } footer: {
+                Text("Manage your subscription, update payment method, or cancel in your Apple ID settings.")
+            }
+        }
+        .navigationTitle("Subscription")
+        .navigationBarTitleDisplayMode(.inline)
+        .task {
+            await subscriptionService.updateSubscriptionStatus()
+        }
+    }
+
+    // MARK: - Current Subscription Row
+
+    private var currentSubscriptionRow: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                if subscriptionService.hasActiveSubscription {
+                    Text(subscriptionTitle)
+                        .font(.headline)
+
+                    Text("Active")
+                        .font(.caption)
+                        .foregroundStyle(.green)
+                } else {
+                    Text("No Active Subscription")
+                        .font(.headline)
+
+                    Text("Subscribe to unlock all features")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+
+            if subscriptionService.hasActiveSubscription {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                    .font(.title2)
+            }
+        }
+    }
+
+    private var subscriptionTitle: String {
+        if let product = subscriptionService.purchasedSubscription {
+            if product.id.contains("yearly") {
+                return "BookQuotes Yearly"
+            } else if product.id.contains("monthly") {
+                return "BookQuotes Monthly"
+            }
+            return product.displayName
+        }
+        return "BookQuotes Premium"
+    }
+
+    // MARK: - Helper Views
+
+    private func detailRow(title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+        }
+    }
+}
+
+// MARK: - SubscriptionBadge
+
+/// Compact badge showing subscription status.
+struct SubscriptionBadge: View {
+
+    let subscriptionService: SubscriptionService
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            if subscriptionService.hasActiveSubscription {
+                Image(systemName: "crown.fill")
+                    .foregroundStyle(.yellow)
+                Text(subscriptionService.isInTrial ? "Trial" : "Premium")
+            } else {
+                Image(systemName: "sparkles")
+                Text("Free")
+            }
+        }
+        .font(.caption)
+        .fontWeight(.medium)
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xxs)
+        .background(
+            Capsule()
+                .fill(subscriptionService.hasActiveSubscription ? Color.yellow.opacity(0.2) : Color.secondary.opacity(0.1))
+        )
+    }
+}
+
+// MARK: - UpgradePrompt
+
+/// Inline prompt to upgrade to premium.
+struct UpgradePrompt: View {
+
+    let onUpgrade: () -> Void
+
+    var body: some View {
+        VStack(spacing: Spacing.md) {
+            HStack {
+                Image(systemName: "sparkles")
+                    .font(.title2)
+                    .foregroundStyle(.brand)
+
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text("Unlock Premium")
+                        .font(.headline)
+
+                    Text("Get unlimited captures and more")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Button("Upgrade", action: onUpgrade)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+            }
+        }
+        .padding(Spacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .fill(Color(.secondarySystemBackground))
+        )
+    }
+}
+
+// MARK: - Preview
+
+#Preview {
+    NavigationStack {
+        SubscriptionStatusView(
+            subscriptionService: SubscriptionService(authService: AuthService())
+        )
+    }
+}
