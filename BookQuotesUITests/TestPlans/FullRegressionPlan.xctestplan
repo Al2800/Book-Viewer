@@ -1,0 +1,158 @@
+{
+  "configurations" : [
+    {
+      "id" : "10A5E7D0-1234-4567-8901-ABCDEF012345",
+      "name" : "Full Regression",
+      "options" : {
+        "commandLineArgumentEntries" : [
+          {
+            "argument" : "--uitesting",
+            "enabled" : true
+          },
+          {
+            "argument" : "--preload-library-test-data",
+            "enabled" : true
+          },
+          {
+            "argument" : "--preload-search-test-data",
+            "enabled" : true
+          },
+          {
+            "argument" : "--mock-camera",
+            "enabled" : true
+          },
+          {
+            "argument" : "--disable-animations",
+            "enabled" : true
+          }
+        ],
+        "environmentVariableEntries" : [
+          {
+            "key" : "WRITE_UI_TEST_LOGS",
+            "value" : "1",
+            "enabled" : true
+          },
+          {
+            "key" : "VERBOSE_UI_TESTS",
+            "value" : "0",
+            "enabled" : false
+          }
+        ],
+        "language" : "en",
+        "region" : "US",
+        "targetForVariableExpansion" : {
+          "containerPath" : "container:BookQuotes.xcodeproj",
+          "identifier" : "BookQuotesUITests",
+          "name" : "BookQuotesUITests"
+        },
+        "testTimeoutsEnabled" : true,
+        "defaultTestExecutionTimeAllowance" : 60,
+        "maximumTestExecutionTimeAllowance" : 180,
+        "testRepetitionMode" : "none"
+      }
+    },
+    {
+      "id" : "20B6F8E1-2345-5678-9012-BCDEF0123456",
+      "name" : "Quick Smoke Test",
+      "options" : {
+        "commandLineArgumentEntries" : [
+          {
+            "argument" : "--uitesting",
+            "enabled" : true
+          },
+          {
+            "argument" : "--preload-test-book",
+            "enabled" : true
+          },
+          {
+            "argument" : "--mock-camera",
+            "enabled" : true
+          },
+          {
+            "argument" : "--disable-animations",
+            "enabled" : true
+          }
+        ],
+        "environmentVariableEntries" : [
+          {
+            "key" : "WRITE_UI_TEST_LOGS",
+            "value" : "0",
+            "enabled" : true
+          }
+        ],
+        "language" : "en",
+        "region" : "US",
+        "targetForVariableExpansion" : {
+          "containerPath" : "container:BookQuotes.xcodeproj",
+          "identifier" : "BookQuotesUITests",
+          "name" : "BookQuotesUITests"
+        },
+        "testTimeoutsEnabled" : true,
+        "defaultTestExecutionTimeAllowance" : 30,
+        "maximumTestExecutionTimeAllowance" : 60,
+        "testRepetitionMode" : "none"
+      }
+    },
+    {
+      "id" : "30C7G9F2-3456-6789-0123-CDEF01234567",
+      "name" : "Empty Library Tests",
+      "options" : {
+        "commandLineArgumentEntries" : [
+          {
+            "argument" : "--uitesting",
+            "enabled" : true
+          },
+          {
+            "argument" : "--empty-library",
+            "enabled" : true
+          },
+          {
+            "argument" : "--mock-camera",
+            "enabled" : true
+          },
+          {
+            "argument" : "--disable-animations",
+            "enabled" : true
+          }
+        ],
+        "environmentVariableEntries" : [
+          {
+            "key" : "WRITE_UI_TEST_LOGS",
+            "value" : "1",
+            "enabled" : true
+          }
+        ],
+        "language" : "en",
+        "region" : "US",
+        "targetForVariableExpansion" : {
+          "containerPath" : "container:BookQuotes.xcodeproj",
+          "identifier" : "BookQuotesUITests",
+          "name" : "BookQuotesUITests"
+        },
+        "testTimeoutsEnabled" : true,
+        "defaultTestExecutionTimeAllowance" : 60,
+        "maximumTestExecutionTimeAllowance" : 120,
+        "testRepetitionMode" : "none"
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:BookQuotes.xcodeproj",
+      "identifier" : "BookQuotesUITests",
+      "name" : "BookQuotesUITests"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:BookQuotes.xcodeproj",
+        "identifier" : "BookQuotesUITests",
+        "name" : "BookQuotesUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
