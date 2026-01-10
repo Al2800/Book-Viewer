@@ -38,6 +38,11 @@
 		BAF7A8B9C0D1E2F3A4B5C6D7 /* QuoteCorrection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7A8B9C0D1E2F3A4B5C6D7 /* QuoteCorrection.swift */; };
 		BBG8A9B0C1D2E3F4A5B6C7D8 /* SearchSuggestionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBG8A9B0C1D2E3F4A5B6C7D8 /* SearchSuggestionsService.swift */; };
 		BCH9B0C1D2E3F4A5B6C7D8E9 /* SearchSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCH9B0C1D2E3F4A5B6C7D8E9 /* SearchSuggestionsView.swift */; };
+		BDI0A1B2C3D4E5F6A7B8C9D0 /* CollectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDI0A1B2C3D4E5F6A7B8C9D0 /* CollectionsView.swift */; };
+		BEJ1B2C3D4E5F6A7B8C9D0E1 /* CollectionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEJ1B2C3D4E5F6A7B8C9D0E1 /* CollectionDetailView.swift */; };
+		BFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift */; };
+		BGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift */; };
+		BHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +79,11 @@
 		CAF7A8B9C0D1E2F3A4B5C6D7 /* QuoteCorrection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCorrection.swift; sourceTree = "<group>"; };
 		CBG8A9B0C1D2E3F4A5B6C7D8 /* SearchSuggestionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSuggestionsService.swift; sourceTree = "<group>"; };
 		CCH9B0C1D2E3F4A5B6C7D8E9 /* SearchSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSuggestionsView.swift; sourceTree = "<group>"; };
+		CDI0A1B2C3D4E5F6A7B8C9D0 /* CollectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsView.swift; sourceTree = "<group>"; };
+		CEJ1B2C3D4E5F6A7B8C9D0E1 /* CollectionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionDetailView.swift; sourceTree = "<group>"; };
+		CFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCard.swift; sourceTree = "<group>"; };
+		CGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCardView.swift; sourceTree = "<group>"; };
+		CHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,10 +166,20 @@
 			isa = PBXGroup;
 			children = (
 				D2F9A0B1C2D3E4F5A6B7C8D9 /* BookRegistration */,
+				G3L3D4E5F6A7B8C9D0E1F2A3 /* Collections */,
 				F3A0B1C2D3E4F5A6B7C8D9E0 /* Library */,
 				E3A0B1C2D3E4F5A6B7C8D9E0 /* Settings */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		G3L3D4E5F6A7B8C9D0E1F2A3 /* Collections */ = {
+			isa = PBXGroup;
+			children = (
+				CDI0A1B2C3D4E5F6A7B8C9D0 /* CollectionsView.swift */,
+				CEJ1B2C3D4E5F6A7B8C9D0E1 /* CollectionDetailView.swift */,
+			);
+			path = Collections;
 			sourceTree = "<group>";
 		};
 		F3A0B1C2D3E4F5A6B7C8D9E0 /* Library */ = {
@@ -195,6 +215,9 @@
 				C4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift */,
 				C9E6F7A8B9C0D1E2F3A4B5C6 /* FilterPill.swift */,
 				CCH9B0C1D2E3F4A5B6C7D8E9 /* SearchSuggestionsView.swift */,
+				CFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift */,
+				CGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift */,
+				CHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -314,6 +337,11 @@
 				BAF7A8B9C0D1E2F3A4B5C6D7 /* QuoteCorrection.swift in Sources */,
 				BBG8A9B0C1D2E3F4A5B6C7D8 /* SearchSuggestionsService.swift in Sources */,
 				BCH9B0C1D2E3F4A5B6C7D8E9 /* SearchSuggestionsView.swift in Sources */,
+				BDI0A1B2C3D4E5F6A7B8C9D0 /* CollectionsView.swift in Sources */,
+				BEJ1B2C3D4E5F6A7B8C9D0E1 /* CollectionDetailView.swift in Sources */,
+				BFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift in Sources */,
+				BGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift in Sources */,
+				BHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
