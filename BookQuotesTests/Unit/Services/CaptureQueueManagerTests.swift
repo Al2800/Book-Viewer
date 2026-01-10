@@ -153,8 +153,8 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         XCTAssertEqual(item.status, .pending)
         XCTAssertEqual(item.retryCount, 0)
         XCTAssertNil(item.lastError)
-        XCTAssertNil(item.processedDate)
-        XCTAssertNotNil(item.captureDate)
+        XCTAssertNil(item.dateCompleted)
+        XCTAssertNotNil(item.dateQueued)
 
         logger.success("Queue item has correct initial state")
     }
@@ -255,10 +255,11 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
 
         logger.step(3, "Verifying reset state")
         XCTAssertEqual(item.status, .pending)
-        XCTAssertEqual(item.retryCount, 0)
+        // retryCount is preserved to track total attempts
+        XCTAssertEqual(item.retryCount, 2)
         XCTAssertNil(item.lastError)
 
-        logger.success("resetForRetry clears error state")
+        logger.success("resetForRetry clears error state but preserves retry count")
     }
 
     func testCaptureQueueItem_Cancel() async throws {

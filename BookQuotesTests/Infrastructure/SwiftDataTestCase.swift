@@ -51,7 +51,10 @@ class SwiftDataTestCase: XCTestCase {
             Quote.self,
             MarkingDefinition.self,
             Collection.self,
-            Tag.self
+            Tag.self,
+            CaptureSession.self,
+            PageCapture.self,
+            CaptureQueueItem.self
         ])
 
         let config = ModelConfiguration(
@@ -83,6 +86,9 @@ class SwiftDataTestCase: XCTestCase {
         try? modelContext.delete(model: MarkingDefinition.self)
         try? modelContext.delete(model: Collection.self)
         try? modelContext.delete(model: Tag.self)
+        try? modelContext.delete(model: CaptureSession.self)
+        try? modelContext.delete(model: PageCapture.self)
+        try? modelContext.delete(model: CaptureQueueItem.self)
 
         modelContext = nil
         modelContainer = nil

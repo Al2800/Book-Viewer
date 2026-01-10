@@ -365,4 +365,14 @@ extension CaptureQueueItem {
             }
         )
     }
+
+    /// Fetch all permanently failed items
+    static var failedDescriptor: FetchDescriptor<CaptureQueueItem> {
+        FetchDescriptor<CaptureQueueItem>(
+            predicate: #Predicate<CaptureQueueItem> { item in
+                item.status == .failed
+            },
+            sortBy: [SortDescriptor(\.dateQueued, order: .reverse)]
+        )
+    }
 }
