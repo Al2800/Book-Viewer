@@ -30,6 +30,7 @@
 		B2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift */; };
 		B3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift */; };
 		B4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift */; };
+		B5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		C2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookISBNConfirmationSheet.swift; sourceTree = "<group>"; };
 		C3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionsView.swift; sourceTree = "<group>"; };
 		C4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionRow.swift; sourceTree = "<group>"; };
+		C5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				C3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift */,
+				C5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -274,6 +277,7 @@
 				B2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift in Sources */,
 				B3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift in Sources */,
 				B4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift in Sources */,
+				B5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -37,14 +37,12 @@ struct MarkingDefinitionsView: View {
             }
         }
         .sheet(isPresented: $showAddSheet) {
-            MarkingDefinitionEditorSheet(marking: nil) { newMarking in
+            MarkingDefinitionEditor(marking: nil) { newMarking in
                 addMarking(newMarking)
             }
         }
         .sheet(item: $editingMarking) { marking in
-            MarkingDefinitionEditorSheet(marking: marking) { _ in
-                // Changes are saved automatically via @Bindable
-            }
+            MarkingDefinitionEditor(marking: marking)
         }
         .confirmationDialog(
             "Delete Marking",
@@ -174,163 +172,6 @@ struct MarkingDefinitionsView: View {
 
     private func deleteMarking(_ marking: MarkingDefinition) {
         modelContext.delete(marking)
-    }
-}
-
-// MARK: - Simple Editor Sheet (placeholder for full MarkingDefinitionEditor)
-
-/// Temporary editor sheet until full MarkingDefinitionEditor is implemented.
-/// Provides basic editing of marking properties.
-private struct MarkingDefinitionEditorSheet: View {
-    let marking: MarkingDefinition?
-    let onSave: (MarkingDefinition) -> Void
-
-    @Environment(\.dismiss) private var dismiss
-
-    @State private var name: String = ""
-    @State private var visualDescription: String = ""
-    @State private var meaning: String = ""
-    @State private var icon: String = "pencil.line"
-    @State private var colorName: String = "blue"
-
-    private let availableIcons = [
-        "underline", "highlighter", "pencil.line", "note.text",
-        "sidebar.leading", "circle", "asterisk", "questionmark",
-        "exclamationmark", "star.fill", "heart.fill", "bookmark.fill",
-        "chevron.left.forwardslash.chevron.right", "arrow.right"
-    ]
-
-    private let availableColors = [
-        "red", "orange", "yellow", "green", "mint", "teal",
-        "cyan", "blue", "indigo", "purple", "pink", "brown", "gray"
-    ]
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Name") {
-                    TextField("Marking name", text: $name)
-                }
-
-                Section("Meaning") {
-                    TextField("What this marking means to you", text: $meaning)
-                }
-
-                Section("Visual Description") {
-                    TextField("How the marking looks on the page", text: $visualDescription, axis: .vertical)
-                        .lineLimit(2...4)
-                }
-
-                Section("Icon") {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: 8) {
-                        ForEach(availableIcons, id: \.self) { iconName in
-                            Button {
-                                icon = iconName
-                            } label: {
-                                Image(systemName: iconName)
-                                    .font(.system(size: 20))
-                                    .frame(width: 44, height: 44)
-                                    .background(icon == iconName ? selectedColor.opacity(0.2) : Color.clear)
-                                    .foregroundStyle(icon == iconName ? selectedColor : .secondary)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-
-                Section("Color") {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: 8) {
-                        ForEach(availableColors, id: \.self) { color in
-                            Button {
-                                colorName = color
-                            } label: {
-                                Circle()
-                                    .fill(colorFor(color))
-                                    .frame(width: 32, height: 32)
-                                    .overlay {
-                                        if colorName == color {
-                                            Image(systemName: "checkmark")
-                                                .font(.caption.bold())
-                                                .foregroundStyle(.white)
-                                        }
-                                    }
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-            }
-            .navigationTitle(marking == nil ? "New Marking" : "Edit Marking")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveMarking()
-                    }
-                    .fontWeight(.semibold)
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-            }
-            .onAppear {
-                if let marking = marking {
-                    name = marking.name
-                    visualDescription = marking.visualDescription
-                    meaning = marking.meaning
-                    icon = marking.icon
-                    colorName = marking.colorName
-                }
-            }
-        }
-    }
-
-    private var selectedColor: Color {
-        colorFor(colorName)
-    }
-
-    private func colorFor(_ name: String) -> Color {
-        switch name {
-        case "red": return .red
-        case "orange": return .orange
-        case "yellow": return .yellow
-        case "green": return .green
-        case "mint": return .mint
-        case "teal": return .teal
-        case "cyan": return .cyan
-        case "blue": return .blue
-        case "indigo": return .indigo
-        case "purple": return .purple
-        case "pink": return .pink
-        case "brown": return .brown
-        case "gray": return .gray
-        default: return .blue
-        }
-    }
-
-    private func saveMarking() {
-        if let existing = marking {
-            existing.name = name.trimmingCharacters(in: .whitespaces)
-            existing.visualDescription = visualDescription.trimmingCharacters(in: .whitespaces)
-            existing.meaning = meaning.trimmingCharacters(in: .whitespaces)
-            existing.icon = icon
-            existing.colorName = colorName
-            onSave(existing)
-        } else {
-            let newMarking = MarkingDefinition(
-                name: name.trimmingCharacters(in: .whitespaces),
-                visualDescription: visualDescription.trimmingCharacters(in: .whitespaces),
-                meaning: meaning.trimmingCharacters(in: .whitespaces),
-                icon: icon,
-                colorName: colorName
-            )
-            onSave(newMarking)
-        }
-        dismiss()
     }
 }
 
