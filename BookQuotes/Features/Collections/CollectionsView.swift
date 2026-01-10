@@ -87,17 +87,7 @@ struct CollectionsView: View {
     }
 }
 
-// MARK: - CollectionDetailView Placeholder
-
-/// Placeholder for CollectionDetailView (implemented in separate file).
-struct CollectionDetailView: View {
-    let collection: Collection
-
-    var body: some View {
-        Text("Collection: \(collection.name)")
-            .navigationTitle(collection.name)
-    }
-}
+// Note: CollectionDetailView is implemented in CollectionDetailView.swift
 
 // MARK: - CollectionEditorSheet Placeholder
 
