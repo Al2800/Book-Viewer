@@ -5,9 +5,11 @@ import SwiftData
 
 /// Multi-page batch capture interface with thumbnail strip and session controls.
 /// Supports capturing 20+ pages efficiently with real-time quality feedback.
+/// Integrates with CaptureQueueManager for offline processing.
 struct BatchCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(NetworkMonitor.self) private var networkMonitor
 
     let book: Book
     let onComplete: (CaptureSession) -> Void
@@ -20,6 +22,8 @@ struct BatchCaptureView: View {
     @State private var showFinishConfirmation = false
     @State private var selectedCapture: PageCapture?
     @State private var showCaptureDetail = false
+    @State private var showQueuedToast = false
+    @State private var queuedCount = 0
 
     // MARK: - Initialization
 
@@ -82,6 +86,14 @@ struct BatchCaptureView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("You captured \(session.totalPages) pages. Would you like to process them now or save as draft?")
+        }
+        .overlay(alignment: .top) {
+            // Offline queue toast
+            if showQueuedToast {
+                OfflineQueueToast(count: queuedCount)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .animation(.spring(response: 0.3), value: showQueuedToast)
+            }
         }
     }
 
@@ -308,7 +320,54 @@ struct BatchCaptureView: View {
         session.finishCapturing()
         modelContext.insert(session)
         try? modelContext.save()
-        onComplete(session)
+
+        // Check network - if offline, queue for later processing
+        if !networkMonitor.isConnected {
+            Task {
+                await queueCapturesForLaterProcessing()
+            }
+        } else {
+            // Online - proceed with immediate processing
+            onComplete(session)
+        }
+    }
+
+    /// Queue all captures for offline processing
+    private func queueCapturesForLaterProcessing() async {
+        guard let queueManager = CaptureQueueManager.shared else {
+            // No queue manager - fall back to normal flow
+            await MainActor.run {
+                onComplete(session)
+            }
+            return
+        }
+
+        var queued = 0
+        for capture in session.captures {
+            guard let image = capture.loadFullImage() else { continue }
+
+            do {
+                try await queueManager.addToQueue(image: image, book: book)
+                queued += 1
+            } catch {
+                // Log error but continue with other captures
+                print("Failed to queue capture: \(error)")
+            }
+        }
+
+        await MainActor.run {
+            if queued > 0 {
+                queuedCount = queued
+                showQueuedToast = true
+
+                // Still call onComplete to dismiss the capture flow
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    onComplete(session)
+                }
+            } else {
+                onComplete(session)
+            }
+        }
     }
 
     private func saveDraft() {
@@ -492,6 +551,37 @@ struct CaptureDetailSheet: View {
     }
 }
 
+// MARK: - Offline Queue Toast
+
+/// Toast notification shown when captures are queued for offline processing
+struct OfflineQueueToast: View {
+    let count: Int
+
+    var body: some View {
+        HStack(spacing: Spacing.sm) {
+            Image(systemName: "clock.arrow.circlepath")
+                .font(.title3)
+                .foregroundStyle(Color.brand)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Saved Offline")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.textPrimary)
+
+                Text("\(count) page\(count == 1 ? "" : "s") will process when connected")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+            }
+        }
+        .padding(Spacing.md)
+        .background(Color.backgroundSecondary)
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .shadow(color: .black.opacity(0.2), radius: 10, y: 4)
+        .padding(.top, Spacing.xl)
+    }
+}
+
 // MARK: - Preview
 
 #Preview("Batch Capture") {
@@ -501,4 +591,10 @@ struct CaptureDetailSheet: View {
         onCancel: {}
     )
     .modelContainer(.preview)
+    .environment(NetworkMonitor())
+}
+
+#Preview("Offline Toast") {
+    OfflineQueueToast(count: 5)
+        .padding()
 }

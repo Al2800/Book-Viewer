@@ -5,6 +5,11 @@ import SwiftData
 struct BookQuotesApp: App {
     let container: ModelContainer
 
+    /// Shared services initialized at app launch
+    @State private var authService: AuthService
+    @State private var geminiService: GeminiService
+    @State private var networkMonitor = NetworkMonitor.shared
+
     init() {
         let schema = Schema([
             Book.self,
@@ -13,7 +18,8 @@ struct BookQuotesApp: App {
             Tag.self,
             MarkingDefinition.self,
             CaptureSession.self,
-            PageCapture.self
+            PageCapture.self,
+            CaptureQueueItem.self
         ])
 
         let config = ModelConfiguration(
@@ -27,11 +33,36 @@ struct BookQuotesApp: App {
         } catch {
             fatalError("Failed to create ModelContainer: \(error)")
         }
+
+        // Initialize services
+        let auth = AuthService()
+        let gemini = GeminiService(authService: auth)
+
+        _authService = State(initialValue: auth)
+        _geminiService = State(initialValue: gemini)
+
+        // Initialize the shared queue manager
+        CaptureQueueManager.initialize(
+            modelContainer: container,
+            geminiService: gemini
+        )
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(authService)
+                .environment(geminiService)
+                .environment(networkMonitor)
+                .task {
+                    // Start network monitoring
+                    networkMonitor.startMonitoring()
+
+                    // Start queue processing
+                    if let queueManager = CaptureQueueManager.shared {
+                        await queueManager.start()
+                    }
+                }
         }
         .modelContainer(container)
     }
@@ -50,7 +81,8 @@ extension ModelContainer {
             Tag.self,
             MarkingDefinition.self,
             CaptureSession.self,
-            PageCapture.self
+            PageCapture.self,
+            CaptureQueueItem.self
         ])
 
         let config = ModelConfiguration(
