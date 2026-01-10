@@ -27,6 +27,7 @@
 		AFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift */; };
 		B0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift */; };
 		B1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift */; };
+		B2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		BFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISBNLookupService.swift; sourceTree = "<group>"; };
 		C0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksTypes.swift; sourceTree = "<group>"; };
 		C1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenLibraryTypes.swift; sourceTree = "<group>"; };
+		C2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookISBNConfirmationSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,8 +132,17 @@
 		6A7B8C9D0E1F2A3B4C5D6E7F /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				D2F9A0B1C2D3E4F5A6B7C8D9 /* BookRegistration */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		D2F9A0B1C2D3E4F5A6B7C8D9 /* BookRegistration */ = {
+			isa = PBXGroup;
+			children = (
+				C2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift */,
+			);
+			path = BookRegistration;
 			sourceTree = "<group>";
 		};
 		7A8B9C0D1E2F3A4B5C6D7E8F /* Components */ = {
@@ -246,6 +257,7 @@
 				AFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift in Sources */,
 				B0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift in Sources */,
 				B1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift in Sources */,
+				B2F9A0B1C2D3E4F5A6B7C8D9 /* BookISBNConfirmationSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
