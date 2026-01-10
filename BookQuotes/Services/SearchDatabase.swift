@@ -11,9 +11,18 @@ actor SearchDatabase {
 
     // MARK: - Initialization
 
+    /// Initialize with default path in documents directory
     init() throws {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         dbPath = docs.appendingPathComponent("search_index.sqlite")
+
+        try openDatabase()
+        try createFTSTables()
+    }
+
+    /// Initialize with a custom path (for testing)
+    init(path: URL) throws {
+        dbPath = path
 
         try openDatabase()
         try createFTSTables()
