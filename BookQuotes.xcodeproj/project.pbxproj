@@ -100,6 +100,7 @@
 		EXTRV1EW2A3B4C5D6E7F8A9B /* ExtractionReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EXTRV1EWF1L3R3F4A5B6C7D8 /* ExtractionReviewView.swift */; };
 		PAGQT2ED3B4C5D6E7F8A9B0C /* PageQuoteEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */; };
 		QOTED1TR4C5D6E7F8A9B0C1D /* QuoteEditRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */; };
+		ONBRDV2EW2A3B4C5D6E7F8A9C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ONBRDV1EWF1L3R3F4A5B6C7DB /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -198,6 +199,7 @@
 		EXTRV1EWF1L3R3F4A5B6C7D8 /* ExtractionReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewView.swift; sourceTree = "<group>"; };
 		PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageQuoteEditor.swift; sourceTree = "<group>"; };
 		QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteEditRow.swift; sourceTree = "<group>"; };
+		ONBRDV1EWF1L3R3F4A5B6C7DB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -315,11 +317,20 @@
 				G3L3D4E5F6A7B8C9D0E1F2A3 /* Collections */,
 				I5N6O7P8Q9R0S1T2U3V4W5X6 /* Export */,
 				F3A0B1C2D3E4F5A6B7C8D9E0 /* Library */,
+				M9N0O1P2Q3R4S5T6U7V8W9X0 /* Onboarding */,
 				K7L8M9N0O1P2Q3R4S5T6U7V8 /* QuoteCapture */,
 				E3A0B1C2D3E4F5A6B7C8D9E0 /* Settings */,
 				L8M9N0O1P2Q3R4S5T6U7V8W9 /* Tags */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		M9N0O1P2Q3R4S5T6U7V8W9X0 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				ONBRDV1EWF1L3R3F4A5B6C7DB /* OnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		I5N6O7P8Q9R0S1T2U3V4W5X6 /* Export */ = {
@@ -610,6 +621,7 @@
 				EXTRV1EW2A3B4C5D6E7F8A9B /* ExtractionReviewView.swift in Sources */,
 				PAGQT2ED3B4C5D6E7F8A9B0C /* PageQuoteEditor.swift in Sources */,
 				QOTED1TR4C5D6E7F8A9B0C1D /* QuoteEditRow.swift in Sources */,
+				ONBRDV2EW2A3B4C5D6E7F8A9C /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
