@@ -184,68 +184,6 @@ struct EmptyLibraryView: View {
 }
 
 
-/// Book detail view placeholder
-struct BookDetailView: View {
-    let book: Book
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.lg) {
-                Text(book.title)
-                    .font(.bookTitle)
-                Text("by \(book.author)")
-                    .font(.authorName)
-                    .foregroundStyle(.secondary)
-
-                if book.quotes.isEmpty {
-                    ContentUnavailableView {
-                        Label("No Quotes Yet", systemImage: "quote.opening")
-                    } description: {
-                        Text("Capture some pages to extract quotes from this book.")
-                    }
-                } else {
-                    Text("Quotes")
-                        .font(.sectionHeader)
-                        .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
-
-                    ForEach(book.quotes) { quote in
-                        NavigationLink(value: quote) {
-                            QuoteListItem(quote: quote)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
-            .padding()
-        }
-        .navigationTitle(book.title)
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-/// Quote list item
-struct QuoteListItem: View {
-    let quote: Quote
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text(quote.text)
-                .font(.quoteBody)
-                .lineLimit(3)
-
-            if let page = quote.pageNumber {
-                Text("p. \(page)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.quoteBackground)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-    }
-}
 
 /// Quote detail view placeholder
 struct QuoteDetailView: View {
