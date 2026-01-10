@@ -21,30 +21,152 @@ struct LibraryTab: View {
 
 // MARK: - Placeholder Views
 
-/// Main library view showing books grid
+/// Main library view showing books with grid/list toggle and FTS5 search
 struct LibraryView: View {
+
+    // MARK: - Environment
+
     @Environment(\.modelContext) private var modelContext
+    @Environment(RouterPath.self) private var router
+
+    // MARK: - Query
+
     @Query(sort: \Book.dateAdded, order: .reverse) private var books: [Book]
+
+    // MARK: - State
+
+    @AppStorage("libraryViewMode") private var viewMode: ViewMode = .grid
     @State private var searchText = ""
+    @State private var searchScope: SearchScope = .all
+    @State private var isSearchActive = false
+    @State private var searchService: SearchService?
+
+    // MARK: - View Mode
+
+    enum ViewMode: String {
+        case grid, list
+    }
+
+    // MARK: - Body
 
     var body: some View {
         Group {
-            if books.isEmpty {
+            if isSearchActive && !searchText.isEmpty, let service = searchService {
+                // FTS5-powered search results
+                SearchResultsView(
+                    searchService: service,
+                    searchText: searchText,
+                    scope: searchScope,
+                    onQuoteTap: { quoteId in
+                        if let quote = fetchQuote(id: quoteId) {
+                            router.navigate(to: quote)
+                        }
+                    },
+                    onBookTap: { bookId in
+                        if let book = fetchBook(id: bookId) {
+                            router.navigate(to: book)
+                        }
+                    }
+                )
+            } else if books.isEmpty {
                 EmptyLibraryView()
             } else {
-                BookGridView(books: filteredBooks)
+                // Normal library view
+                switch viewMode {
+                case .grid:
+                    bookGrid
+                case .list:
+                    bookList
+                }
             }
         }
         .navigationTitle("Library")
-        .searchable(text: $searchText, prompt: "Search books...")
+        .searchable(
+            text: $searchText,
+            isPresented: $isSearchActive,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: "Search books and quotes"
+        )
+        .searchScopes($searchScope, activation: .onSearchPresentation) {
+            Text("All").tag(SearchScope.all)
+            Text("Books").tag(SearchScope.books)
+            Text("Quotes").tag(SearchScope.quotes)
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .primaryAction) {
+                // View mode picker
+                Picker("View", selection: $viewMode) {
+                    Image(systemName: "square.grid.2x2").tag(ViewMode.grid)
+                    Image(systemName: "list.bullet").tag(ViewMode.list)
+                }
+                .pickerStyle(.segmented)
+
+                // Add book button
+                Button {
+                    // TODO: Navigate to add book flow
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .onAppear {
+            initializeSearchService()
+        }
     }
 
-    private var filteredBooks: [Book] {
-        guard !searchText.isEmpty else { return books }
-        return books.filter { book in
-            book.title.localizedCaseInsensitiveContains(searchText) ||
-            book.author.localizedCaseInsensitiveContains(searchText)
+    // MARK: - Grid View
+
+    private var bookGrid: some View {
+        ScrollView {
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 100, maximum: 140), spacing: Spacing.md)],
+                spacing: Spacing.lg
+            ) {
+                ForEach(books) { book in
+                    NavigationLink(value: book) {
+                        BookCoverCard(book: book)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding()
         }
+    }
+
+    // MARK: - List View
+
+    private var bookList: some View {
+        List(books) { book in
+            NavigationLink(value: book) {
+                BookListRow(book: book)
+            }
+        }
+        .listStyle(.plain)
+    }
+
+    // MARK: - Private Methods
+
+    private func initializeSearchService() {
+        guard searchService == nil else { return }
+        do {
+            searchService = try SearchService()
+        } catch {
+            print("Failed to initialize SearchService: \(error)")
+        }
+    }
+
+    private func fetchBook(id: UUID) -> Book? {
+        let descriptor = FetchDescriptor<Book>(
+            predicate: #Predicate { $0.id == id }
+        )
+        return try? modelContext.fetch(descriptor).first
+    }
+
+    private func fetchQuote(id: UUID) -> Quote? {
+        let descriptor = FetchDescriptor<Quote>(
+            predicate: #Predicate { $0.id == id }
+        )
+        return try? modelContext.fetch(descriptor).first
     }
 }
 
@@ -61,68 +183,6 @@ struct EmptyLibraryView: View {
     }
 }
 
-/// Grid display of books
-struct BookGridView: View {
-    let books: [Book]
-
-    private let columns = [
-        GridItem(.adaptive(minimum: 100, maximum: 140), spacing: Spacing.md)
-    ]
-
-    var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: Spacing.lg) {
-                ForEach(books) { book in
-                    NavigationLink(value: book) {
-                        BookGridItem(book: book)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding()
-        }
-    }
-}
-
-/// Individual book item in grid
-struct BookGridItem: View {
-    let book: Book
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            // Cover image or placeholder
-            Group {
-                if let imageData = book.coverThumbnailData,
-                   let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(2/3, contentMode: .fill)
-                } else {
-                    Rectangle()
-                        .fill(Color.backgroundSecondary)
-                        .aspectRatio(2/3, contentMode: .fit)
-                        .overlay {
-                            Image(systemName: "book.closed")
-                                .font(.largeTitle)
-                                .foregroundStyle(.secondary)
-                        }
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-
-            // Title and author
-            Text(book.title)
-                .font(.caption)
-                .fontWeight(.medium)
-                .lineLimit(2)
-
-            Text(book.author)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-        }
-    }
-}
 
 /// Book detail view placeholder
 struct BookDetailView: View {
