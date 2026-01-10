@@ -3,23 +3,8 @@ import SwiftData
 
 /// Capture tab - camera interface for book covers and pages
 struct CaptureTab: View {
-    @State private var router = RouterPath()
-
     var body: some View {
-        NavigationStack(path: $router.path) {
-            CaptureMenuView()
-                .navigationDestination(for: CaptureDestination.self) { destination in
-                    switch destination {
-                    case .cover:
-                        CoverCaptureView()
-                    case .quotes:
-                        QuoteCaptureView()
-                    case .batch:
-                        BatchCaptureView()
-                    }
-                }
-        }
-        .environment(router)
+        CaptureTabRootView()
     }
 }
 

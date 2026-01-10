@@ -11,7 +11,9 @@ struct BookQuotesApp: App {
             Quote.self,
             Collection.self,
             Tag.self,
-            MarkingDefinition.self
+            MarkingDefinition.self,
+            CaptureSession.self,
+            PageCapture.self
         ])
 
         let config = ModelConfiguration(
@@ -46,7 +48,9 @@ extension ModelContainer {
             Quote.self,
             Collection.self,
             Tag.self,
-            MarkingDefinition.self
+            MarkingDefinition.self,
+            CaptureSession.self,
+            PageCapture.self
         ])
 
         let config = ModelConfiguration(
