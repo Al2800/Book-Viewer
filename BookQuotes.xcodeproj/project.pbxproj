@@ -101,6 +101,8 @@
 		PAGQT2ED3B4C5D6E7F8A9B0C /* PageQuoteEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */; };
 		QOTED1TR4C5D6E7F8A9B0C1D /* QuoteEditRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */; };
 		ONBRDV2EW2A3B4C5D6E7F8A9C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ONBRDV1EWF1L3R3F4A5B6C7DB /* OnboardingView.swift */; };
+		UITST1SRCH1A2B3C4D5E6F7A8 /* SearchFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITST1SRCHF1A2B3C4D5E6F7A /* SearchFlowTests.swift */; };
+		UITST2LIBR1B2C3D4E5F6A7B9 /* LibraryManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITST2LIBRF1B2C3D4E5F6A7B /* LibraryManagementTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -200,6 +202,9 @@
 		PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageQuoteEditor.swift; sourceTree = "<group>"; };
 		QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteEditRow.swift; sourceTree = "<group>"; };
 		ONBRDV1EWF1L3R3F4A5B6C7DB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		UITSTPROD1A2B3C4D5E6F7A8B /* BookQuotesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookQuotesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		UITST1SRCHF1A2B3C4D5E6F7A /* SearchFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFlowTests.swift; sourceTree = "<group>"; };
+		UITST2LIBRF1B2C3D4E5F6A7B /* LibraryManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryManagementTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,7 +215,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		UITSTFRMW1A2B3C4D5E6F7A8B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		UITSTPRXY1A2B3C4D5E6F7A8B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A1B2C3D4E5F6A7B8C9D0E1F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4B4C4D4E4F50515253545556;
+			remoteInfo = BookQuotes;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		UITSTDEP1A2B3C4D5E6F7A8BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4B4C4D4E4F50515253545556 /* BookQuotes */;
+			targetProxy = UITSTPRXY1A2B3C4D5E6F7A8B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXGroup section */
 		1A2B3C4D5E6F7A8B9C0D1E2F /* BookQuotes */ = {
@@ -223,6 +253,7 @@
 				7A8B9C0D1E2F3A4B5C6D7E8F /* Components */,
 				8A9B0C1D2E3F4A5B6C7D8E9F /* Utilities */,
 				9A0B1C2D3E4F5A6B7C8D9E0F /* Resources */,
+				UITSTGRP1A2B3C4D5E6F7A8BC /* BookQuotesUITests */,
 				2A3B4C5D6E7F8A9B0C1D2E3F /* Products */,
 			);
 			path = BookQuotes;
@@ -232,8 +263,26 @@
 			isa = PBXGroup;
 			children = (
 				DD4EE5FF6AA7BB8CC9DD0EE1 /* BookQuotes.app */,
+				UITSTPROD1A2B3C4D5E6F7A8B /* BookQuotesUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		UITSTGRP1A2B3C4D5E6F7A8BC /* BookQuotesUITests */ = {
+			isa = PBXGroup;
+			children = (
+				UITSTFLW1A2B3C4D5E6F7A8BC /* Flows */,
+			);
+			path = BookQuotesUITests;
+			sourceTree = "<group>";
+		};
+		UITSTFLW1A2B3C4D5E6F7A8BC /* Flows */ = {
+			isa = PBXGroup;
+			children = (
+				UITST1SRCHF1A2B3C4D5E6F7A /* SearchFlowTests.swift */,
+				UITST2LIBRF1B2C3D4E5F6A7B /* LibraryManagementTests.swift */,
+			);
+			path = Flows;
 			sourceTree = "<group>";
 		};
 		3A4B5C6D7E8F9A0B1C2D3E4F /* App */ = {
@@ -480,6 +529,24 @@
 			productReference = DD4EE5FF6AA7BB8CC9DD0EE1 /* BookQuotes.app */;
 			productType = "com.apple.product-type.application";
 		};
+		UITSTTGT1A2B3C4D5E6F7A8BC /* BookQuotesUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = UITSTCFL1A2B3C4D5E6F7A8BC /* Build configuration list for PBXNativeTarget "BookQuotesUITests" */;
+			buildPhases = (
+				UITSTSRC1A2B3C4D5E6F7A8BC /* Sources */,
+				UITSTRSRC1A2B3C4D5E6F7A8B /* Resources */,
+				UITSTFRMW1A2B3C4D5E6F7A8B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				UITSTDEP1A2B3C4D5E6F7A8BC /* PBXTargetDependency */,
+			);
+			name = BookQuotesUITests;
+			productName = BookQuotesUITests;
+			productReference = UITSTPROD1A2B3C4D5E6F7A8B /* BookQuotesUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -509,6 +576,7 @@
 			projectRoot = "";
 			targets = (
 				4B4C4D4E4F50515253545556 /* BookQuotes */,
+				UITSTTGT1A2B3C4D5E6F7A8BC /* BookQuotesUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -521,9 +589,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		UITSTRSRC1A2B3C4D5E6F7A8B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		UITSTSRC1A2B3C4D5E6F7A8BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				UITST1SRCH1A2B3C4D5E6F7A8 /* SearchFlowTests.swift in Sources */,
+				UITST2LIBR1B2C3D4E5F6A7B9 /* LibraryManagementTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1B1C1D1E1F20212223242526 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -703,6 +787,50 @@
 			};
 			name = Release;
 		};
+		UITSTCFG1A2B3C4D5E6F7A8BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bookquotes.app.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BookQuotes;
+			};
+			name = Debug;
+		};
+		UITSTCFG2A2B3C4D5E6F7A8BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bookquotes.app.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BookQuotes;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -720,6 +848,15 @@
 			buildConfigurations = (
 				9B9C9D9E9FA0A1A2A3A4A5A6 /* Debug */,
 				ABACADAEAFB0B1B2B3B4B5B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		UITSTCFL1A2B3C4D5E6F7A8BC /* Build configuration list for PBXNativeTarget "BookQuotesUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				UITSTCFG1A2B3C4D5E6F7A8BC /* Debug */,
+				UITSTCFG2A2B3C4D5E6F7A8BC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
