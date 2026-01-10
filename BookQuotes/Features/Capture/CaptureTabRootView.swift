@@ -350,53 +350,44 @@ struct AddBookGridItem: View {
     }
 }
 
-// MARK: - Capture Flow Views (Placeholders)
+// MARK: - Capture Flow Views
 
-/// Cover capture flow wrapper
+/// Cover capture flow wrapper - delegates to CoverCaptureView
 struct CoverCaptureFlowView: View {
     let onComplete: (Book) -> Void
     let onCancel: () -> Void
 
     var body: some View {
-        NavigationStack {
-            ContentUnavailableView {
-                Label("Cover Capture", systemImage: "camera")
-            } description: {
-                Text("Cover capture flow will be implemented next")
-            }
-            .navigationTitle("Add Book")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: onCancel)
-                }
-            }
-        }
+        CoverCaptureView(
+            onComplete: onComplete,
+            onCancel: onCancel
+        )
     }
 }
 
-/// Quote capture flow wrapper
+/// Quote capture flow wrapper - delegates to actual QuoteCaptureView
 struct QuoteCaptureFlowView: View {
     let book: Book?
     let onComplete: () -> Void
     let onCancel: () -> Void
 
     var body: some View {
-        NavigationStack {
-            ContentUnavailableView {
-                Label("Quote Capture", systemImage: "text.quote")
-            } description: {
-                if let book = book {
-                    Text("Ready to capture quotes from \"\(book.title)\"")
-                } else {
-                    Text("Quote capture flow will be implemented next")
+        if let book = book {
+            QuoteCaptureView(book: book, onComplete: onComplete)
+        } else {
+            // Fallback for missing book (shouldn't happen in normal flow)
+            NavigationStack {
+                ContentUnavailableView {
+                    Label("No Book Selected", systemImage: "book.closed")
+                } description: {
+                    Text("Please select a book first")
                 }
-            }
-            .navigationTitle("Capture Quotes")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: onCancel)
+                .navigationTitle("Capture Quotes")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel", action: onCancel)
+                    }
                 }
             }
         }
