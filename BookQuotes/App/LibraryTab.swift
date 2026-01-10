@@ -40,6 +40,8 @@ struct LibraryView: View {
     @State private var searchScope: SearchScope = .all
     @State private var isSearchActive = false
     @State private var searchService: SearchService?
+    @State private var bookToDelete: Book?
+    @State private var showDeleteConfirmation = false
 
     // MARK: - View Mode
 
@@ -112,6 +114,24 @@ struct LibraryView: View {
         .onAppear {
             initializeSearchService()
         }
+        .confirmationDialog(
+            "Delete \"\(bookToDelete?.title ?? "")\"?",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete Book and All Quotes", role: .destructive) {
+                if let book = bookToDelete {
+                    deleteBook(book)
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                bookToDelete = nil
+            }
+        } message: {
+            if let book = bookToDelete {
+                Text("This will permanently delete the book and all \(book.quoteCount) quote\(book.quoteCount == 1 ? "" : "s"). This cannot be undone.")
+            }
+        }
     }
 
     // MARK: - Grid View
@@ -136,9 +156,19 @@ struct LibraryView: View {
     // MARK: - List View
 
     private var bookList: some View {
-        List(books) { book in
-            NavigationLink(value: book) {
-                BookListRow(book: book)
+        List {
+            ForEach(books) { book in
+                NavigationLink(value: book) {
+                    BookListRow(book: book)
+                }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        bookToDelete = book
+                        showDeleteConfirmation = true
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
         }
         .listStyle(.plain)
@@ -167,6 +197,19 @@ struct LibraryView: View {
             predicate: #Predicate { $0.id == id }
         )
         return try? modelContext.fetch(descriptor).first
+    }
+
+    private func deleteBook(_ book: Book) {
+        withAnimation {
+            modelContext.delete(book)
+            do {
+                try modelContext.save()
+                HapticManager.notification(.success)
+            } catch {
+                HapticManager.error()
+            }
+        }
+        bookToDelete = nil
     }
 }
 

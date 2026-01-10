@@ -9,6 +9,7 @@ struct BookDetailView: View {
     // MARK: - Environment
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Environment(RouterPath.self) private var router
 
     // MARK: - Properties
@@ -22,6 +23,8 @@ struct BookDetailView: View {
     @State private var showSortMenu = false
     @State private var showFilterMenu = false
     @State private var showExportSheet = false
+    @State private var showEditSheet = false
+    @State private var showDeleteConfirmation = false
 
     // MARK: - Sort Order
 
@@ -104,13 +107,13 @@ struct BookDetailView: View {
                     }
 
                     Button {
-                        // TODO: Edit book
+                        showEditSheet = true
                     } label: {
                         Label("Edit", systemImage: "pencil")
                     }
 
                     Button {
-                        // TODO: Capture more quotes
+                        // TODO: Navigate to capture with this book selected
                     } label: {
                         Label("Add Quotes", systemImage: "camera")
                     }
@@ -118,7 +121,7 @@ struct BookDetailView: View {
                     Divider()
 
                     Button(role: .destructive) {
-                        // TODO: Delete book
+                        showDeleteConfirmation = true
                     } label: {
                         Label("Delete Book", systemImage: "trash")
                     }
@@ -129,6 +132,21 @@ struct BookDetailView: View {
         }
         .sheet(isPresented: $showExportSheet) {
             ExportView(quotes: book.quotes)
+        }
+        .sheet(isPresented: $showEditSheet) {
+            BookEditView(mode: .edit(book))
+        }
+        .confirmationDialog(
+            "Delete \"\(book.title)\"?",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete Book and All Quotes", role: .destructive) {
+                deleteBook()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently delete the book and all \(book.quoteCount) quote\(book.quoteCount == 1 ? "" : "s"). This cannot be undone.")
         }
     }
 
@@ -266,6 +284,20 @@ struct BookDetailView: View {
             }
             .buttonStyle(.bordered)
         }
+    }
+
+    // MARK: - Actions
+
+    private func deleteBook() {
+        // SwiftData cascade delete handles quotes automatically
+        modelContext.delete(book)
+        do {
+            try modelContext.save()
+            HapticManager.notification(.success)
+        } catch {
+            HapticManager.error()
+        }
+        dismiss()
     }
 }
 
