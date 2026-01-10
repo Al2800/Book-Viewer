@@ -33,6 +33,8 @@ enum SettingsDestination: Hashable {
 /// Main settings view
 struct SettingsView: View {
     @Environment(RouterPath.self) private var router
+    @Query private var quotes: [Quote]
+    @State private var showExportSheet = false
 
     var body: some View {
         List {
@@ -45,6 +47,14 @@ struct SettingsView: View {
             Section("Customization") {
                 NavigationLink(value: SettingsDestination.markings) {
                     Label("Marking Definitions", systemImage: "highlighter")
+                }
+            }
+
+            Section("Data") {
+                Button {
+                    showExportSheet = true
+                } label: {
+                    Label("Export Quotes", systemImage: "square.and.arrow.up")
                 }
             }
 
@@ -63,6 +73,9 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
+        .sheet(isPresented: $showExportSheet) {
+            ExportView(quotes: quotes)
+        }
     }
 }
 

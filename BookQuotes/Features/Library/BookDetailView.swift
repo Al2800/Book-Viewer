@@ -21,6 +21,7 @@ struct BookDetailView: View {
     @State private var filterMarking: MarkingType?
     @State private var showSortMenu = false
     @State private var showFilterMenu = false
+    @State private var showExportSheet = false
 
     // MARK: - Sort Order
 
@@ -97,6 +98,12 @@ struct BookDetailView: View {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     Button {
+                        showExportSheet = true
+                    } label: {
+                        Label("Export Quotes", systemImage: "square.and.arrow.up")
+                    }
+
+                    Button {
                         // TODO: Edit book
                     } label: {
                         Label("Edit", systemImage: "pencil")
@@ -119,6 +126,9 @@ struct BookDetailView: View {
                     Image(systemName: "ellipsis.circle")
                 }
             }
+        }
+        .sheet(isPresented: $showExportSheet) {
+            ExportView(quotes: book.quotes)
         }
     }
 
