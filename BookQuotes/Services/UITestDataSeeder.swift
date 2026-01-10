@@ -80,6 +80,28 @@ final class UITestDataSeeder {
         try modelContext.save()
     }
 
+    /// Rebuild the search index after seeding test data.
+    /// Should be called after `seedTestDataIfNeeded()` when search tests are needed.
+    func rebuildSearchIndexIfNeeded(searchService: SearchService) async {
+        // Only rebuild if we seeded data
+        guard UITestConfiguration.isUITesting,
+              !UITestConfiguration.shouldStartWithEmptyLibrary,
+              (UITestConfiguration.shouldPreloadLibraryTestData ||
+               UITestConfiguration.shouldPreloadSearchTestData ||
+               UITestConfiguration.shouldPreloadTestBook) else {
+            return
+        }
+
+        // Fetch all seeded books
+        let descriptor = FetchDescriptor<Book>()
+        guard let books = try? modelContext.fetch(descriptor), !books.isEmpty else {
+            return
+        }
+
+        // Rebuild the search index
+        await searchService.rebuildIndex(books: books)
+    }
+
     // MARK: - Library Test Data
 
     /// Seeds 3 books with 6+ quotes for general library testing.

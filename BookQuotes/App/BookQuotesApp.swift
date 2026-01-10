@@ -61,6 +61,11 @@ struct BookQuotesApp: App {
                     if UITestConfiguration.isUITesting {
                         let seeder = UITestDataSeeder(modelContext: container.mainContext)
                         try? await seeder.seedTestDataIfNeeded()
+
+                        // Rebuild search index for seeded data
+                        if let searchService = try? SearchService() {
+                            await seeder.rebuildSearchIndexIfNeeded(searchService: searchService)
+                        }
                     }
 
                     // Start network monitoring
