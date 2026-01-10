@@ -1,0 +1,132 @@
+import * as jose from 'jose';
+import type { Env, AppleJWTPayload } from './types';
+
+// Apple's public key endpoint
+const APPLE_KEYS_URL = 'https://appleid.apple.com/auth/keys';
+
+// Cache for Apple's public keys
+let cachedKeys: jose.JSONWebKeySet | null = null;
+let keysCachedAt = 0;
+const KEYS_CACHE_TTL = 3600000; // 1 hour
+
+/**
+ * Fetch Apple's public keys for JWT verification
+ */
+async function getApplePublicKeys(): Promise<jose.JSONWebKeySet> {
+  const now = Date.now();
+
+  if (cachedKeys && now - keysCachedAt < KEYS_CACHE_TTL) {
+    return cachedKeys;
+  }
+
+  const response = await fetch(APPLE_KEYS_URL);
+  if (!response.ok) {
+    throw new Error('Failed to fetch Apple public keys');
+  }
+
+  cachedKeys = (await response.json()) as jose.JSONWebKeySet;
+  keysCachedAt = now;
+  return cachedKeys;
+}
+
+/**
+ * Validate an Apple Sign-In identity token
+ * Returns the user ID if valid, null otherwise
+ */
+export async function validateAppleToken(
+  authHeader: string | null,
+  env: Env
+): Promise<string | null> {
+  if (!authHeader) {
+    return null;
+  }
+
+  // Extract token from "Bearer <token>" format
+  const token = authHeader.startsWith('Bearer ')
+    ? authHeader.slice(7)
+    : authHeader;
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    // Get Apple's public keys
+    const keys = await getApplePublicKeys();
+    const JWKS = jose.createLocalJWKSet(keys);
+
+    // Verify the token
+    const { payload } = await jose.jwtVerify(token, JWKS, {
+      issuer: 'https://appleid.apple.com',
+      audience: env.APPLE_TEAM_ID, // Your app's bundle ID or team ID
+    });
+
+    const applePayload = payload as unknown as AppleJWTPayload;
+
+    // Ensure token hasn't expired
+    if (applePayload.exp * 1000 < Date.now()) {
+      console.error('Token expired');
+      return null;
+    }
+
+    // Return the user's unique identifier
+    return applePayload.sub;
+  } catch (error) {
+    console.error('Token validation failed:', error);
+    return null;
+  }
+}
+
+/**
+ * Create a session token for the user
+ * This is a simpler JWT we issue after Apple Sign-In verification
+ */
+export async function createSessionToken(
+  userId: string,
+  env: Env
+): Promise<string> {
+  const secret = new TextEncoder().encode(env.JWT_SECRET);
+
+  const token = await new jose.SignJWT({ sub: userId })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .setIssuer('bookquotes-proxy')
+    .sign(secret);
+
+  return token;
+}
+
+/**
+ * Validate a session token
+ * Returns user ID if valid, null otherwise
+ */
+export async function validateSessionToken(
+  authHeader: string | null,
+  env: Env
+): Promise<string | null> {
+  if (!authHeader) {
+    return null;
+  }
+
+  const token = authHeader.startsWith('Bearer ')
+    ? authHeader.slice(7)
+    : authHeader;
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const secret = new TextEncoder().encode(env.JWT_SECRET);
+
+    const { payload } = await jose.jwtVerify(token, secret, {
+      issuer: 'bookquotes-proxy',
+    });
+
+    return payload.sub as string;
+  } catch (error) {
+    console.error('Session token validation failed:', error);
+    return null;
+  }
+}
