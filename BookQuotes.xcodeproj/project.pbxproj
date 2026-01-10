@@ -103,6 +103,9 @@
 		ONBRDV2EW2A3B4C5D6E7F8A9C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ONBRDV1EWF1L3R3F4A5B6C7DB /* OnboardingView.swift */; };
 		UITST1SRCH1A2B3C4D5E6F7A8 /* SearchFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITST1SRCHF1A2B3C4D5E6F7A /* SearchFlowTests.swift */; };
 		UITST2LIBR1B2C3D4E5F6A7B9 /* LibraryManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITST2LIBRF1B2C3D4E5F6A7B /* LibraryManagementTests.swift */; };
+		UITSTLOG1A2B3C4D5E6F7A8B9 /* UITestLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITSTLOGF1A2B3C4D5E6F7A8 /* UITestLogger.swift */; };
+		UITSTBAS1A2B3C4D5E6F7A8B9 /* BaseUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITSTBASF1A2B3C4D5E6F7A8 /* BaseUITestCase.swift */; };
+		UITSTSCS1A2B3C4D5E6F7A8B9 /* ScreenshotCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITSTSCRF1A2B3C4D5E6F7A8 /* ScreenshotCapture.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -205,6 +208,9 @@
 		UITSTPROD1A2B3C4D5E6F7A8B /* BookQuotesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookQuotesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UITST1SRCHF1A2B3C4D5E6F7A /* SearchFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFlowTests.swift; sourceTree = "<group>"; };
 		UITST2LIBRF1B2C3D4E5F6A7B /* LibraryManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryManagementTests.swift; sourceTree = "<group>"; };
+		UITSTLOGF1A2B3C4D5E6F7A8 /* UITestLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestLogger.swift; sourceTree = "<group>"; };
+		UITSTBASF1A2B3C4D5E6F7A8 /* BaseUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUITestCase.swift; sourceTree = "<group>"; };
+		UITSTSCRF1A2B3C4D5E6F7A8 /* ScreenshotCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCapture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -271,9 +277,20 @@
 		UITSTGRP1A2B3C4D5E6F7A8BC /* BookQuotesUITests */ = {
 			isa = PBXGroup;
 			children = (
+				UITSTINF1A2B3C4D5E6F7A8BC /* Infrastructure */,
 				UITSTFLW1A2B3C4D5E6F7A8BC /* Flows */,
 			);
 			path = BookQuotesUITests;
+			sourceTree = "<group>";
+		};
+		UITSTINF1A2B3C4D5E6F7A8BC /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				UITSTLOGF1A2B3C4D5E6F7A8 /* UITestLogger.swift */,
+				UITSTBASF1A2B3C4D5E6F7A8 /* BaseUITestCase.swift */,
+				UITSTSCRF1A2B3C4D5E6F7A8 /* ScreenshotCapture.swift */,
+			);
+			path = Infrastructure;
 			sourceTree = "<group>";
 		};
 		UITSTFLW1A2B3C4D5E6F7A8BC /* Flows */ = {
@@ -603,6 +620,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				UITSTLOG1A2B3C4D5E6F7A8B9 /* UITestLogger.swift in Sources */,
+				UITSTBAS1A2B3C4D5E6F7A8B9 /* BaseUITestCase.swift in Sources */,
+				UITSTSCS1A2B3C4D5E6F7A8B9 /* ScreenshotCapture.swift in Sources */,
 				UITST1SRCH1A2B3C4D5E6F7A8 /* SearchFlowTests.swift in Sources */,
 				UITST2LIBR1B2C3D4E5F6A7B9 /* LibraryManagementTests.swift in Sources */,
 			);

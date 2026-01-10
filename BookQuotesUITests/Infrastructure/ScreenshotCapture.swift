@@ -1,0 +1,129 @@
+import XCTest
+
+// MARK: - Screenshot Capture
+
+/// Helper for capturing and managing UI test screenshots.
+final class ScreenshotCapture {
+
+    // MARK: - Properties
+
+    private let app: XCUIApplication
+    private let testName: String
+    private var captureCount = 0
+
+    // MARK: - Initialization
+
+    init(app: XCUIApplication, testName: String) {
+        self.app = app
+        self.testName = testName
+    }
+
+    // MARK: - Capture Methods
+
+    /// Capture a screenshot with an optional description.
+    /// - Parameters:
+    ///   - name: Optional name for the screenshot.
+    ///   - description: Description of what's being captured.
+    /// - Returns: The captured screenshot attachment, or nil if capture failed.
+    @discardableResult
+    func capture(name: String? = nil, description: String? = nil) -> XCTAttachment? {
+        captureCount += 1
+
+        let screenshot = app.screenshot()
+        let attachment = XCTAttachment(screenshot: screenshot)
+
+        let screenshotName = name ?? "screenshot_\(captureCount)"
+        attachment.name = "\(sanitizedTestName)_\(screenshotName)"
+        attachment.lifetime = .keepAlways
+
+        if let description = description {
+            print("📸 Screenshot [\(screenshotName)]: \(description)")
+        } else {
+            print("📸 Screenshot [\(screenshotName)]")
+        }
+
+        return attachment
+    }
+
+    /// Capture a screenshot on test failure.
+    /// - Parameter failureMessage: The failure message to include in the screenshot name.
+    /// - Returns: The captured screenshot attachment.
+    @discardableResult
+    func captureFailure(failureMessage: String? = nil) -> XCTAttachment {
+        let screenshot = app.screenshot()
+        let attachment = XCTAttachment(screenshot: screenshot)
+
+        attachment.name = "\(sanitizedTestName)_FAILURE"
+        attachment.lifetime = .keepAlways
+
+        if let message = failureMessage {
+            print("📸 Failure screenshot: \(message)")
+        } else {
+            print("📸 Failure screenshot captured")
+        }
+
+        return attachment
+    }
+
+    /// Capture a screenshot of a specific element.
+    /// - Parameters:
+    ///   - element: The element to screenshot.
+    ///   - name: Name for the screenshot.
+    /// - Returns: The captured screenshot attachment, or nil if the element isn't available.
+    @discardableResult
+    func captureElement(_ element: XCUIElement, name: String) -> XCTAttachment? {
+        guard element.exists else {
+            print("⚠️ Cannot capture element '\(name)' - element doesn't exist")
+            return nil
+        }
+
+        let screenshot = element.screenshot()
+        let attachment = XCTAttachment(screenshot: screenshot)
+
+        attachment.name = "\(sanitizedTestName)_\(name)"
+        attachment.lifetime = .keepAlways
+
+        print("📸 Element screenshot [\(name)]")
+
+        return attachment
+    }
+
+    // MARK: - Helpers
+
+    /// Safe screenshot that won't throw even if UI isn't fully loaded.
+    /// - Returns: Screenshot attachment if successful, nil otherwise.
+    func safeCaptureScreen() -> XCTAttachment? {
+        do {
+            let screenshot = try app.screenshot()
+            let attachment = XCTAttachment(screenshot: screenshot)
+            attachment.name = "\(sanitizedTestName)_safe_capture_\(captureCount)"
+            attachment.lifetime = .keepAlways
+            captureCount += 1
+            return attachment
+        } catch {
+            print("⚠️ Safe screenshot capture failed: \(error)")
+            return nil
+        }
+    }
+
+    private var sanitizedTestName: String {
+        testName
+            .replacingOccurrences(of: "[", with: "")
+            .replacingOccurrences(of: "]", with: "")
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+    }
+}
+
+// MARK: - XCUIApplication Extension
+
+extension XCUIApplication {
+    /// Take a screenshot and create an attachment.
+    func screenshotAttachment(named name: String) -> XCTAttachment {
+        let screenshot = self.screenshot()
+        let attachment = XCTAttachment(screenshot: screenshot)
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        return attachment
+    }
+}
