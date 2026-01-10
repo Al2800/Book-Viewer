@@ -51,6 +51,9 @@
 		BNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift */; };
 		BOT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = COT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift */; };
 		BPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift */; };
+		BQV3B4C5D6E7F8A9B0C1D2E3 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CQV3B4C5D6E7F8A9B0C1D2E3 /* ExportView.swift */; };
+		BRW4C5D6E7F8A9B0C1D2E3F4 /* ExportOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRW4C5D6E7F8A9B0C1D2E3F4 /* ExportOptionsView.swift */; };
+		BSX5D6E7F8A9B0C1D2E3F4A5 /* ExportPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSX5D6E7F8A9B0C1D2E3F4A5 /* ExportPreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +103,9 @@
 		CNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFormatter.swift; sourceTree = "<group>"; };
 		COT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObsidianFormatter.swift; sourceTree = "<group>"; };
 		CPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionExporter.swift; sourceTree = "<group>"; };
+		CQV3B4C5D6E7F8A9B0C1D2E3 /* ExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportView.swift; sourceTree = "<group>"; };
+		CRW4C5D6E7F8A9B0C1D2E3F4 /* ExportOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportOptionsView.swift; sourceTree = "<group>"; };
+		CSX5D6E7F8A9B0C1D2E3F4A5 /* ExportPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportPreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,10 +205,21 @@
 			children = (
 				D2F9A0B1C2D3E4F5A6B7C8D9 /* BookRegistration */,
 				G3L3D4E5F6A7B8C9D0E1F2A3 /* Collections */,
+				I5N6O7P8Q9R0S1T2U3V4W5X6 /* Export */,
 				F3A0B1C2D3E4F5A6B7C8D9E0 /* Library */,
 				E3A0B1C2D3E4F5A6B7C8D9E0 /* Settings */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		I5N6O7P8Q9R0S1T2U3V4W5X6 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				CQV3B4C5D6E7F8A9B0C1D2E3 /* ExportView.swift */,
+				CRW4C5D6E7F8A9B0C1D2E3F4 /* ExportOptionsView.swift */,
+				CSX5D6E7F8A9B0C1D2E3F4A5 /* ExportPreviewView.swift */,
+			);
+			path = Export;
 			sourceTree = "<group>";
 		};
 		G3L3D4E5F6A7B8C9D0E1F2A3 /* Collections */ = {
@@ -382,6 +399,9 @@
 				BNS0E1F2A3B4C5D6E7F8A9B0 /* JSONFormatter.swift in Sources */,
 				BOT1F2A3B4C5D6E7F8A9B0C1 /* ObsidianFormatter.swift in Sources */,
 				BPU2A3B4C5D6E7F8A9B0C1D2 /* NotionExporter.swift in Sources */,
+				BQV3B4C5D6E7F8A9B0C1D2E3 /* ExportView.swift in Sources */,
+				BRW4C5D6E7F8A9B0C1D2E3F4 /* ExportOptionsView.swift in Sources */,
+				BSX5D6E7F8A9B0C1D2E3F4A5 /* ExportPreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
