@@ -12,12 +12,19 @@ final class Tag {
     /// Tag name (unique, case-insensitive)
     @Attribute(.unique) var name: String
 
+    /// Color identifier (from predefined palette)
+    var colorName: String
+
     // MARK: - Timestamps
 
     var dateCreated: Date
 
     // MARK: - Relationships
 
+    @Relationship(inverse: \Book.tags)
+    var books: [Book]
+
+    @Relationship(inverse: \Quote.tags)
     var quotes: [Quote]
 
     // MARK: - Computed
@@ -26,10 +33,12 @@ final class Tag {
 
     // MARK: - Initialization
 
-    init(name: String) {
+    init(name: String, colorName: String = "blue") {
         self.id = UUID()
         self.name = name.lowercased().trimmingCharacters(in: .whitespaces)
+        self.colorName = colorName
         self.dateCreated = Date()
+        self.books = []
         self.quotes = []
     }
 }

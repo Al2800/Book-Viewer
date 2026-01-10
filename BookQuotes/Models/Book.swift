@@ -11,6 +11,8 @@ final class Book {
     var publisher: String?
     var isbn: String?
     var pageCount: Int?
+    var publishYear: Int?
+    var genre: String?
 
     var coverThumbnailData: Data?
     var coverFullData: Data?
@@ -21,12 +23,19 @@ final class Book {
     var dateStarted: Date?
     var dateFinished: Date?
     var dateModified: Date
+    var dateLastQuoteAdded: Date?
 
     var notes: String?
     var rating: Int?
 
     @Relationship(deleteRule: .cascade, inverse: \Quote.book)
     var quotes: [Quote]
+
+    @Relationship(inverse: \Collection.books)
+    var collections: [Collection]
+
+    @Relationship(inverse: \Tag.books)
+    var tags: [Tag]
 
     var quoteCount: Int { quotes.count }
     var hasQuotes: Bool { !quotes.isEmpty }
@@ -48,6 +57,8 @@ final class Book {
         self.dateAdded = Date()
         self.dateModified = Date()
         self.quotes = []
+        self.collections = []
+        self.tags = []
     }
 }
 

@@ -36,6 +36,10 @@ final class Collection {
 
     // MARK: - Relationships
 
+    @Relationship(inverse: \Book.collections)
+    var books: [Book]
+
+    @Relationship(inverse: \Quote.collections)
     var quotes: [Quote]
 
     // MARK: - Computed
@@ -52,6 +56,7 @@ final class Collection {
         self.dateCreated = Date()
         self.dateModified = Date()
         self.sortOrder = 0
+        self.books = []
         self.quotes = []
     }
 }
