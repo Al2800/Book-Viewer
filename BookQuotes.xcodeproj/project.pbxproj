@@ -97,6 +97,9 @@
 		O7NR81Z9I0A8MJ86OXDGRMPY /* CaptureQueueItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = QF0VUBZ3O26NSBBERMZW3JNN /* CaptureQueueItem.swift */; };
 		FCLRVKKRZZ1QD2ALR82K7X2B /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0XO0VX3HGK013FDA3SRWH5OU /* CaptureSession.swift */; };
 		4GZQM4SZHP8AQGN9JGZZ226J /* PageCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = P5V1FRJ44Q4MPHF7I80NNRCQ /* PageCapture.swift */; };
+		EXTRV1EW2A3B4C5D6E7F8A9B /* ExtractionReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EXTRV1EWF1L3R3F4A5B6C7D8 /* ExtractionReviewView.swift */; };
+		PAGQT2ED3B4C5D6E7F8A9B0C /* PageQuoteEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */; };
+		QOTED1TR4C5D6E7F8A9B0C1D /* QuoteEditRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -192,6 +195,9 @@
 		QF0VUBZ3O26NSBBERMZW3JNN /* CaptureQueueItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureQueueItem.swift; sourceTree = "<group>"; };
 		0XO0VX3HGK013FDA3SRWH5OU /* CaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
 		P5V1FRJ44Q4MPHF7I80NNRCQ /* PageCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageCapture.swift; sourceTree = "<group>"; };
+		EXTRV1EWF1L3R3F4A5B6C7D8 /* ExtractionReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewView.swift; sourceTree = "<group>"; };
+		PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageQuoteEditor.swift; sourceTree = "<group>"; };
+		QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteEditRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -385,6 +391,8 @@
 				P80W3IYXGZBPGSFP7QEKRR42 /* QualityOverlayView.swift */,
 				TJE86PZM025ZK9V5AQYGJXPV /* BatchCaptureView.swift */,
 				5FMTTWBRFN37I92V2TRD6UL9 /* DuplicateWarningSheet.swift */,
+				EXTRV1EWF1L3R3F4A5B6C7D8 /* ExtractionReviewView.swift */,
+				PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */,
 			);
 			path = QuoteCapture;
 			sourceTree = "<group>";
@@ -418,6 +426,7 @@
 				CFK2C3D4E5F6A7B8C9D0E1F2 /* CollectionCard.swift */,
 				CGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift */,
 				CHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift */,
+				QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -598,6 +607,9 @@
 				O7NR81Z9I0A8MJ86OXDGRMPY /* CaptureQueueItem.swift in Sources */,
 				FCLRVKKRZZ1QD2ALR82K7X2B /* CaptureSession.swift in Sources */,
 				4GZQM4SZHP8AQGN9JGZZ226J /* PageCapture.swift in Sources */,
+				EXTRV1EW2A3B4C5D6E7F8A9B /* ExtractionReviewView.swift in Sources */,
+				PAGQT2ED3B4C5D6E7F8A9B0C /* PageQuoteEditor.swift in Sources */,
+				QOTED1TR4C5D6E7F8A9B0C1D /* QuoteEditRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

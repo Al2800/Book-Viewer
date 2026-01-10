@@ -1,0 +1,144 @@
+import Foundation
+
+// MARK: - Quote Extraction Prompt Builder
+
+/// Builds dynamic prompts for Gemini API quote extraction.
+/// Incorporates user's custom marking vocabulary for personalized extraction.
+enum QuoteExtractionPromptBuilder {
+
+    // MARK: - Prompt Generation
+
+    /// Build a quote extraction prompt with user's marking definitions
+    /// - Parameter markings: User's enabled marking definitions
+    /// - Returns: Complete prompt string for Gemini API
+    static func buildPrompt(markings: [MarkingDefinition]) -> String {
+        let enabledMarkings = markings.filter { $0.isEnabled }
+
+        // Build marking descriptions
+        let markingDescriptions = enabledMarkings.map { marking in
+            """
+            - **\(marking.name)**: \(marking.visualDescription)
+              Meaning: \(marking.meaning)
+            """
+        }.joined(separator: "\n")
+
+        // Build marking type enum for JSON schema
+        let markingTypes = enabledMarkings.map {
+            "\"\(normalizeMarkingType($0.name))\""
+        }.joined(separator: " | ")
+
+        // Default marking types if user has none enabled
+        let effectiveMarkingTypes = markingTypes.isEmpty
+            ? "\"underline\" | \"highlight\" | \"margin_note\" | \"bracket\" | \"circle\""
+            : markingTypes
+
+        return """
+        Analyze this book page image to extract marked/highlighted passages.
+
+        The reader uses the following marking system:
+
+        \(markingDescriptions.isEmpty ? defaultMarkingDescriptions : markingDescriptions)
+
+        Return a JSON object with this exact structure:
+        {
+          "quotes": [
+            {
+              "text": "The exact text that was marked",
+              "pageNumber": 42,
+              "marginNote": "Any handwritten note near this passage, or null",
+              "markingType": \(effectiveMarkingTypes),
+              "confidence": 0.92
+            }
+          ],
+          "pageNumber": 42,
+          "processingNotes": "Optional notes about extraction quality"
+        }
+
+        Rules:
+        1. Extract COMPLETE marked passages - include full sentences when the marking extends across partial text
+        2. Match marking type to the user's vocabulary above
+        3. If multiple marking types are present on the same passage, use the primary/most prominent one
+        4. Preserve original punctuation and formatting where meaningful
+        5. Transcribe handwritten margin notes accurately - include spelling as written
+        6. Include page number if visible anywhere on the page
+        7. Each separate marked passage should be its own quote object
+        8. Set confidence (0.0-1.0) based on extraction accuracy:
+           - 0.9+ : Clear text, unambiguous marking
+           - 0.7-0.9 : Minor uncertainty about boundaries or exact text
+           - 0.5-0.7 : Significant uncertainty, text may be partially obscured
+           - <0.5 : Low confidence, marking unclear or text hard to read
+
+        Respond with ONLY valid JSON. No markdown formatting, no code blocks, no explanatory text.
+        """
+    }
+
+    /// Build a simplified prompt for quick extraction (fewer instructions)
+    static func buildQuickPrompt(markings: [MarkingDefinition]) -> String {
+        let enabledMarkings = markings.filter { $0.isEnabled }
+        let markingNames = enabledMarkings.map { $0.name }.joined(separator: ", ")
+
+        return """
+        Extract marked text from this book page.
+
+        Look for: \(markingNames.isEmpty ? "underlines, highlights, margin notes" : markingNames)
+
+        Return JSON:
+        {"quotes":[{"text":"marked text","markingType":"type","confidence":0.9}],"pageNumber":null}
+
+        JSON only, no markdown.
+        """
+    }
+
+    // MARK: - Helpers
+
+    /// Normalize marking name to snake_case for JSON
+    private static func normalizeMarkingType(_ name: String) -> String {
+        name.lowercased()
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+    }
+
+    /// Default marking descriptions when user has none
+    private static var defaultMarkingDescriptions: String {
+        """
+        - **Underline**: Single line drawn under text - Important passage
+        - **Highlight**: Text colored with highlighter - Key passage to remember
+        - **Margin Line**: Vertical line in margin - Noteworthy paragraph
+        - **Bracket**: Brackets around text - Discrete section of interest
+        - **Circle**: Circle around word/phrase - Key term or concept
+        - **Margin Note**: Handwritten text in margin - Personal thought
+        """
+    }
+}
+
+// MARK: - Cover Metadata Extraction Prompt
+
+extension QuoteExtractionPromptBuilder {
+    /// Build prompt for book cover metadata extraction
+    static func buildCoverExtractionPrompt() -> String {
+        """
+        Analyze this book cover image and extract metadata.
+
+        Return a JSON object with these fields:
+        {
+          "title": "The exact book title as printed",
+          "author": "Author name(s), comma-separated if multiple",
+          "subtitle": "Subtitle if present, or null",
+          "publisher": "Publisher name if visible, or null",
+          "publishYear": 2023 or null,
+          "genre": "Best guess at genre category",
+          "isbn": "ISBN if visible on cover, or null",
+          "confidence": 0.95
+        }
+
+        Rules:
+        1. Extract the EXACT title as printed on the cover
+        2. For multiple authors, use comma separation: "Author One, Author Two"
+        3. Genre should be a single category: Fiction, Non-Fiction, Biography, Science, History, Self-Help, Business, Philosophy, etc.
+        4. confidence is 0.0-1.0 for overall extraction accuracy
+        5. Only include ISBN if clearly visible (usually on back cover)
+
+        Respond with ONLY valid JSON. No markdown, no code blocks.
+        """
+    }
+}
