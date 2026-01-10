@@ -24,6 +24,9 @@
 		ACB3C4D5E6F7A8B9C0D1E2F3 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC3D4E5F6A7B8C9D0E1F2A3 /* CameraService.swift */; };
 		ADB4C5D6E7F8A9B0C1D2E3F4 /* ISBNScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC4D5E6F7A8B9C0D1E2F3A4 /* ISBNScanner.swift */; };
 		AEB5C6D7E8F9A0B1C2D3E4F5 /* ISBNValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC5D6E7F8A9B0C1D2E3F4A5 /* ISBNValidator.swift */; };
+		AFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift */; };
+		B0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift */; };
+		B1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +49,9 @@
 		BCC3D4E5F6A7B8C9D0E1F2A3 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 		BDC4D5E6F7A8B9C0D1E2F3A4 /* ISBNScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISBNScanner.swift; sourceTree = "<group>"; };
 		BEC5D6E7F8A9B0C1D2E3F4A5 /* ISBNValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISBNValidator.swift; sourceTree = "<group>"; };
+		BFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISBNLookupService.swift; sourceTree = "<group>"; };
+		C0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksTypes.swift; sourceTree = "<group>"; };
+		C1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenLibraryTypes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +120,9 @@
 				BBC2D3E4F5A6B7C8D9E0F1A2 /* SearchService.swift */,
 				BCC3D4E5F6A7B8C9D0E1F2A3 /* CameraService.swift */,
 				BDC4D5E6F7A8B9C0D1E2F3A4 /* ISBNScanner.swift */,
+				BFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift */,
+				C0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift */,
+				C1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -234,6 +243,9 @@
 				ACB3C4D5E6F7A8B9C0D1E2F3 /* CameraService.swift in Sources */,
 				ADB4C5D6E7F8A9B0C1D2E3F4 /* ISBNScanner.swift in Sources */,
 				AEB5C6D7E8F9A0B1C2D3E4F5 /* ISBNValidator.swift in Sources */,
+				AFC6D7E8F9A0B1C2D3E4F5A6 /* ISBNLookupService.swift in Sources */,
+				B0D7E8F9A0B1C2D3E4F5A6B7 /* GoogleBooksTypes.swift in Sources */,
+				B1E8F9A0B1C2D3E4F5A6B7C8 /* OpenLibraryTypes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
