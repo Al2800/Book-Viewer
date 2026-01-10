@@ -1,15 +1,14 @@
 {
   "configurations" : [
     {
-      "id" : "B1234567-1234-1234-1234-123456789ABC",
+      "id" : "FED19B3C-5A3D-4E2F-8A4C-9B1E2D3A4F5C",
       "name" : "Full Regression",
       "options" : {
         "targetForVariableExpansion" : {
           "containerPath" : "container:BookQuotes.xcodeproj",
-          "identifier" : "BookQuotesUITests",
-          "name" : "BookQuotesUITests"
-        },
-        "testRepetitionMode" : "none"
+          "identifier" : "BQAPP1234567890ABCDEF",
+          "name" : "BookQuotes"
+        }
       }
     }
   ],
@@ -24,33 +23,32 @@
         "enabled" : true
       },
       {
-        "argument" : "--disable-animations",
+        "argument" : "--mock-camera",
         "enabled" : true
       }
     ],
     "environmentVariableEntries" : [
       {
-        "key" : "UITEST_MODE",
-        "value" : "regression"
+        "key" : "WRITE_UI_TEST_LOGS",
+        "value" : "1"
       }
     ],
     "language" : "en",
-    "maximumTestRepetitions" : 3,
     "region" : "US",
     "targetForVariableExpansion" : {
       "containerPath" : "container:BookQuotes.xcodeproj",
-      "identifier" : "BookQuotesUITests",
-      "name" : "BookQuotesUITests"
+      "identifier" : "BQAPP1234567890ABCDEF",
+      "name" : "BookQuotes"
     },
-    "testRepetitionMode" : "retryOnFailure",
-    "testTimeoutsEnabled" : true
+    "testRepetitionMode" : "none",
+    "testTimeoutsEnabled" : true,
+    "defaultTestExecutionTimeAllowance" : 60
   },
   "testTargets" : [
     {
-      "parallelizable" : false,
       "target" : {
         "containerPath" : "container:BookQuotes.xcodeproj",
-        "identifier" : "BookQuotesUITests",
+        "identifier" : "UITSTTGT1A2B3C4D5E6F7A8BC",
         "name" : "BookQuotesUITests"
       }
     }

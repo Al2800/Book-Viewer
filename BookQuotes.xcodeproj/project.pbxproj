@@ -211,6 +211,7 @@
 		UITSTLOGF1A2B3C4D5E6F7A8 /* UITestLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestLogger.swift; sourceTree = "<group>"; };
 		UITSTBASF1A2B3C4D5E6F7A8 /* BaseUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUITestCase.swift; sourceTree = "<group>"; };
 		UITSTSCRF1A2B3C4D5E6F7A8 /* ScreenshotCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCapture.swift; sourceTree = "<group>"; };
+		UITSTPLAN1A2B3C4D5E6F7A8 /* FullRegressionPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FullRegressionPlan.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,8 +280,17 @@
 			children = (
 				UITSTINF1A2B3C4D5E6F7A8BC /* Infrastructure */,
 				UITSTFLW1A2B3C4D5E6F7A8BC /* Flows */,
+				UITSTPLNGRP1A2B3C4D5E6F7A /* TestPlans */,
 			);
 			path = BookQuotesUITests;
+			sourceTree = "<group>";
+		};
+		UITSTPLNGRP1A2B3C4D5E6F7A /* TestPlans */ = {
+			isa = PBXGroup;
+			children = (
+				UITSTPLAN1A2B3C4D5E6F7A8 /* FullRegressionPlan.xctestplan */,
+			);
+			path = TestPlans;
 			sourceTree = "<group>";
 		};
 		UITSTINF1A2B3C4D5E6F7A8BC /* Infrastructure */ = {
