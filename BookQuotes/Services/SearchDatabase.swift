@@ -369,4 +369,252 @@ actor SearchDatabase {
 
         return Int(sqlite3_column_int(stmt, 0))
     }
+
+    // MARK: - Search Suggestions
+
+    /// Find book titles matching a prefix
+    func bookTitlesMatching(prefix: String, limit: Int) throws -> [SearchSuggestion] {
+        let sql = """
+            SELECT DISTINCT book_id, title
+            FROM books_fts
+            WHERE title MATCH ?
+            ORDER BY rank
+            LIMIT ?
+        """
+
+        let ftsPrefix = "\(prefix)*"
+        var results: [SearchSuggestion] = []
+        var stmt: OpaquePointer?
+
+        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+            throw SearchError.queryFailed(lastErrorMessage)
+        }
+        defer { sqlite3_finalize(stmt) }
+
+        sqlite3_bind_text(stmt, 1, ftsPrefix, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+        sqlite3_bind_int(stmt, 2, Int32(limit))
+
+        while sqlite3_step(stmt) == SQLITE_ROW {
+            guard let bookIdCStr = sqlite3_column_text(stmt, 0),
+                  let titleCStr = sqlite3_column_text(stmt, 1),
+                  let bookId = UUID(uuidString: String(cString: bookIdCStr)) else {
+                continue
+            }
+
+            let title = String(cString: titleCStr)
+            results.append(.bookTitle(title, bookId))
+        }
+
+        return results
+    }
+
+    /// Find authors matching a prefix
+    func authorsMatching(prefix: String, limit: Int) throws -> [SearchSuggestion] {
+        let sql = """
+            SELECT DISTINCT author
+            FROM books_fts
+            WHERE author MATCH ?
+            ORDER BY rank
+            LIMIT ?
+        """
+
+        let ftsPrefix = "\(prefix)*"
+        var results: [SearchSuggestion] = []
+        var stmt: OpaquePointer?
+
+        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+            throw SearchError.queryFailed(lastErrorMessage)
+        }
+        defer { sqlite3_finalize(stmt) }
+
+        sqlite3_bind_text(stmt, 1, ftsPrefix, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+        sqlite3_bind_int(stmt, 2, Int32(limit))
+
+        while sqlite3_step(stmt) == SQLITE_ROW {
+            guard let authorCStr = sqlite3_column_text(stmt, 0) else {
+                continue
+            }
+
+            let author = String(cString: authorCStr)
+            if !author.isEmpty {
+                results.append(.author(author))
+            }
+        }
+
+        return results
+    }
+
+    /// Find popular terms matching a prefix from quote vocabulary
+    func popularTermsMatching(prefix: String, limit: Int) throws -> [SearchSuggestion] {
+        // FTS5 vocabulary table provides term frequencies
+        try createVocabTableIfNeeded()
+
+        let sql = """
+            SELECT term, cnt
+            FROM quotes_fts_vocab
+            WHERE term LIKE ?
+            AND length(term) >= 3
+            ORDER BY cnt DESC
+            LIMIT ?
+        """
+
+        let likePattern = "\(prefix.lowercased())%"
+        var results: [SearchSuggestion] = []
+        var stmt: OpaquePointer?
+
+        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+            throw SearchError.queryFailed(lastErrorMessage)
+        }
+        defer { sqlite3_finalize(stmt) }
+
+        sqlite3_bind_text(stmt, 1, likePattern, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+        sqlite3_bind_int(stmt, 2, Int32(limit))
+
+        while sqlite3_step(stmt) == SQLITE_ROW {
+            guard let termCStr = sqlite3_column_text(stmt, 0) else {
+                continue
+            }
+
+            let term = String(cString: termCStr)
+            let count = Int(sqlite3_column_int(stmt, 1))
+            results.append(.popularTerm(term, count))
+        }
+
+        return results
+    }
+
+    /// Create vocabulary table for term statistics
+    private func createVocabTableIfNeeded() throws {
+        let sql = """
+            CREATE VIRTUAL TABLE IF NOT EXISTS quotes_fts_vocab USING fts5vocab(quotes_fts, row)
+        """
+        try execute(sql)
+    }
+
+    /// Check if a term exists in vocabulary
+    func termExists(_ term: String) throws -> Bool {
+        try createVocabTableIfNeeded()
+
+        let sql = "SELECT 1 FROM quotes_fts_vocab WHERE term = ? LIMIT 1"
+        var stmt: OpaquePointer?
+
+        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+            throw SearchError.queryFailed(lastErrorMessage)
+        }
+        defer { sqlite3_finalize(stmt) }
+
+        sqlite3_bind_text(stmt, 1, term.lowercased(), -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+
+        return sqlite3_step(stmt) == SQLITE_ROW
+    }
+
+    /// Find closest matching term using edit distance approximation
+    func closestTerm(to term: String) throws -> String? {
+        try createVocabTableIfNeeded()
+
+        let lowercasedTerm = term.lowercased()
+        guard let firstChar = lowercasedTerm.first else { return nil }
+
+        // Find terms starting with same letter and similar length
+        let sql = """
+            SELECT term
+            FROM quotes_fts_vocab
+            WHERE term LIKE ?
+            AND length(term) BETWEEN ? AND ?
+            ORDER BY cnt DESC
+            LIMIT 10
+        """
+
+        var candidates: [(String, Int)] = []
+        var stmt: OpaquePointer?
+
+        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+            throw SearchError.queryFailed(lastErrorMessage)
+        }
+        defer { sqlite3_finalize(stmt) }
+
+        let likePattern = "\(firstChar)%"
+        let minLength = max(1, lowercasedTerm.count - 2)
+        let maxLength = lowercasedTerm.count + 2
+
+        sqlite3_bind_text(stmt, 1, likePattern, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
+        sqlite3_bind_int(stmt, 2, Int32(minLength))
+        sqlite3_bind_int(stmt, 3, Int32(maxLength))
+
+        while sqlite3_step(stmt) == SQLITE_ROW {
+            guard let termCStr = sqlite3_column_text(stmt, 0) else {
+                continue
+            }
+
+            let candidate = String(cString: termCStr)
+            let distance = levenshteinDistance(lowercasedTerm, candidate)
+            candidates.append((candidate, distance))
+        }
+
+        // Return closest match if distance is reasonable
+        if let best = candidates.min(by: { $0.1 < $1.1 }),
+           best.1 <= 2 {
+            return best.0
+        }
+
+        return nil
+    }
+
+    /// Simple Levenshtein distance implementation
+    private func levenshteinDistance(_ s1: String, _ s2: String) -> Int {
+        let s1Array = Array(s1)
+        let s2Array = Array(s2)
+        let m = s1Array.count
+        let n = s2Array.count
+
+        if m == 0 { return n }
+        if n == 0 { return m }
+
+        var matrix = [[Int]](repeating: [Int](repeating: 0, count: n + 1), count: m + 1)
+
+        for i in 0...m {
+            matrix[i][0] = i
+        }
+        for j in 0...n {
+            matrix[0][j] = j
+        }
+
+        for i in 1...m {
+            for j in 1...n {
+                let cost = s1Array[i - 1] == s2Array[j - 1] ? 0 : 1
+                matrix[i][j] = min(
+                    matrix[i - 1][j] + 1,      // deletion
+                    matrix[i][j - 1] + 1,      // insertion
+                    matrix[i - 1][j - 1] + cost // substitution
+                )
+            }
+        }
+
+        return matrix[m][n]
+    }
+
+    /// Suggest correction for likely typos
+    func didYouMean(_ query: String) throws -> String? {
+        let terms = query.lowercased().components(separatedBy: .whitespaces).filter { !$0.isEmpty }
+        var corrections: [String] = []
+        var hasCorrection = false
+
+        for term in terms {
+            let exists = try termExists(term)
+
+            if !exists && term.count >= 4 {
+                if let suggestion = try closestTerm(to: term) {
+                    corrections.append(suggestion)
+                    hasCorrection = true
+                } else {
+                    corrections.append(term)
+                }
+            } else {
+                corrections.append(term)
+            }
+        }
+
+        let corrected = corrections.joined(separator: " ")
+        return hasCorrection ? corrected : nil
+    }
 }
