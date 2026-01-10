@@ -185,41 +185,6 @@ struct EmptyLibraryView: View {
 
 
 
-/// Quote detail view placeholder
-struct QuoteDetailView: View {
-    let quote: Quote
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.lg) {
-                Text(quote.text)
-                    .quoteTextStyle()
-
-                if let marginNote = quote.marginNote {
-                    HStack {
-                        Image(systemName: "note.text")
-                        Text(marginNote)
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                }
-
-                Divider()
-
-                // Metadata
-                LabeledContent("Page", value: quote.pageNumber.map { "\($0)" } ?? "—")
-                LabeledContent("Marking", value: quote.markingDisplayName)
-
-                if let confidence = quote.confidence {
-                    LabeledContent("Confidence", value: "\(Int(confidence * 100))%")
-                }
-            }
-            .padding()
-        }
-        .navigationTitle("Quote")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
 
 #Preview {
     LibraryTab()
