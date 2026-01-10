@@ -3,6 +3,9 @@ import SwiftUI
 
 /// Camera service for capturing book cover and page photos.
 /// Handles AVFoundation session management, permissions, and photo capture.
+///
+/// When running under UI tests with `--mock-camera`, this service returns
+/// sample images from the bundle instead of using the real camera.
 @MainActor
 @Observable
 final class CameraService: NSObject {
@@ -23,6 +26,14 @@ final class CameraService: NSObject {
     /// Any error that occurred
     private(set) var error: CameraError?
 
+    // MARK: - Mock Camera State (UI Tests Only)
+
+    /// Whether mock camera mode is active
+    private let isMockCameraMode: Bool
+
+    /// Mock image index for cycling through test images
+    private var mockImageIndex = 0
+
     // MARK: - AVFoundation Properties
 
     private var captureSession: AVCaptureSession?
@@ -37,13 +48,25 @@ final class CameraService: NSObject {
     // MARK: - Initialization
 
     override init() {
+        self.isMockCameraMode = UITestConfiguration.shouldMockCamera
         super.init()
+
+        if isMockCameraMode {
+            // In mock mode, camera is always "authorized" and "running"
+            isAuthorized = true
+            isSessionRunning = true
+        }
     }
 
     // MARK: - Authorization
 
     /// Check current authorization status
     func checkAuthorization() {
+        if isMockCameraMode {
+            isAuthorized = true
+            return
+        }
+
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             isAuthorized = true
@@ -57,6 +80,11 @@ final class CameraService: NSObject {
     /// Request camera permission
     @discardableResult
     func requestAuthorization() async -> Bool {
+        if isMockCameraMode {
+            isAuthorized = true
+            return true
+        }
+
         let status = AVCaptureDevice.authorizationStatus(for: .video)
 
         switch status {
@@ -83,6 +111,11 @@ final class CameraService: NSObject {
 
     /// Set up the capture session with back camera
     func setupSession() throws {
+        // In mock mode, no actual session setup needed
+        if isMockCameraMode {
+            return
+        }
+
         guard isAuthorized else {
             throw CameraError.notAuthorized
         }
@@ -137,6 +170,12 @@ final class CameraService: NSObject {
 
     /// Start the capture session
     func startSession() {
+        // In mock mode, session is always "running"
+        if isMockCameraMode {
+            isSessionRunning = true
+            return
+        }
+
         guard let session = captureSession, !session.isRunning else { return }
 
         Task.detached(priority: .userInitiated) { [weak self] in
@@ -149,6 +188,12 @@ final class CameraService: NSObject {
 
     /// Stop the capture session
     func stopSession() {
+        // In mock mode, just update state
+        if isMockCameraMode {
+            isSessionRunning = false
+            return
+        }
+
         guard let session = captureSession, session.isRunning else { return }
 
         Task.detached(priority: .userInitiated) { [weak self] in
@@ -163,6 +208,11 @@ final class CameraService: NSObject {
 
     /// Capture a photo and return it as UIImage
     func capturePhoto() async throws -> UIImage {
+        // In mock mode, return a test image from the bundle
+        if isMockCameraMode {
+            return try captureMockPhoto()
+        }
+
         guard let photoOutput = photoOutput else {
             throw CameraError.sessionNotConfigured
         }
@@ -175,6 +225,22 @@ final class CameraService: NSObject {
 
             photoOutput.capturePhoto(with: settings, delegate: self)
         }
+    }
+
+    /// Capture a mock photo for UI testing
+    private func captureMockPhoto() throws -> UIImage {
+        // Get the appropriate mock image based on test configuration
+        let image = MockCameraImages.getTestImage(
+            multipleQuotes: UITestConfiguration.shouldMockMultipleQuotes,
+            lowConfidence: UITestConfiguration.shouldMockLowConfidence,
+            index: mockImageIndex
+        )
+
+        // Cycle through available images for multiple captures
+        mockImageIndex += 1
+
+        capturedImage = image
+        return image
     }
 
     /// Clear the last captured image
