@@ -22,10 +22,12 @@ struct BookQuotesApp: App {
             CaptureQueueItem.self
         ])
 
+        // Use in-memory storage for UI tests to avoid mutating real user data
+        let isUITesting = UITestConfiguration.isUITesting
         let config = ModelConfiguration(
             schema: schema,
-            isStoredInMemoryOnly: false,
-            cloudKitDatabase: .automatic
+            isStoredInMemoryOnly: isUITesting,
+            cloudKitDatabase: isUITesting ? .none : .automatic
         )
 
         do {
@@ -55,6 +57,12 @@ struct BookQuotesApp: App {
                 .environment(geminiService)
                 .environment(networkMonitor)
                 .task {
+                    // Seed test data for UI tests (if applicable)
+                    if UITestConfiguration.isUITesting {
+                        let seeder = UITestDataSeeder(modelContext: container.mainContext)
+                        try? await seeder.seedTestDataIfNeeded()
+                    }
+
                     // Start network monitoring
                     networkMonitor.startMonitoring()
 
