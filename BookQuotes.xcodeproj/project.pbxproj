@@ -1,0 +1,282 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EE5FF6AA7BB8CC9DD0EE1FF2 /* BookQuotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1BB2CC3DD4EE5FF6AA7BB8 /* BookQuotesApp.swift */; };
+		FF6AA7BB8CC9DD0EE1FF2AA3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2CC3DD4EE5FF6AA7BB8CC9 /* ContentView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AA1BB2CC3DD4EE5FF6AA7BB8 /* BookQuotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesApp.swift; sourceTree = "<group>"; };
+		BB2CC3DD4EE5FF6AA7BB8CC9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CC3DD4EE5FF6AA7BB8CC9DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD4EE5FF6AA7BB8CC9DD0EE1 /* BookQuotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = BookQuotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3B3C3D3E3F40414243444546 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1A2B3C4D5E6F7A8B9C0D1E2F /* BookQuotes */ = {
+			isa = PBXGroup;
+			children = (
+				3A4B5C6D7E8F9A0B1C2D3E4F /* App */,
+				4A5B6C7D8E9F0A1B2C3D4E5F /* Models */,
+				5A6B7C8D9E0F1A2B3C4D5E6F /* Services */,
+				6A7B8C9D0E1F2A3B4C5D6E7F /* Features */,
+				7A8B9C0D1E2F3A4B5C6D7E8F /* Components */,
+				8A9B0C1D2E3F4A5B6C7D8E9F /* Utilities */,
+				9A0B1C2D3E4F5A6B7C8D9E0F /* Resources */,
+				2A3B4C5D6E7F8A9B0C1D2E3F /* Products */,
+			);
+			path = BookQuotes;
+			sourceTree = "<group>";
+		};
+		2A3B4C5D6E7F8A9B0C1D2E3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DD4EE5FF6AA7BB8CC9DD0EE1 /* BookQuotes.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3A4B5C6D7E8F9A0B1C2D3E4F /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AA1BB2CC3DD4EE5FF6AA7BB8 /* BookQuotesApp.swift */,
+				BB2CC3DD4EE5FF6AA7BB8CC9 /* ContentView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		4A5B6C7D8E9F0A1B2C3D4E5F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5A6B7C8D9E0F1A2B3C4D5E6F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		6A7B8C9D0E1F2A3B4C5D6E7F /* Features */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		7A8B9C0D1E2F3A4B5C6D7E8F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		8A9B0C1D2E3F4A5B6C7D8E9F /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		9A0B1C2D3E4F5A6B7C8D9E0F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CC3DD4EE5FF6AA7BB8CC9DD0 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4B4C4D4E4F50515253545556 /* BookQuotes */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B6C6D6E6F70717273747576 /* Build configuration list for PBXNativeTarget "BookQuotes" */;
+			buildPhases = (
+				1B1C1D1E1F20212223242526 /* Sources */,
+				2B2C2D2E2F30313233343536 /* Resources */,
+				3B3C3D3E3F40414243444546 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BookQuotes;
+			productName = BookQuotes;
+			productReference = DD4EE5FF6AA7BB8CC9DD0EE1 /* BookQuotes.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0A1B2C3D4E5F6A7B8C9D0E1F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					4B4C4D4E4F50515253545556 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 5B5C5D5E5F60616263646566 /* Build configuration list for PBXProject "BookQuotes" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1A2B3C4D5E6F7A8B9C0D1E2F /* BookQuotes */;
+			productRefGroup = 2A3B4C5D6E7F8A9B0C1D2E3F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4B4C4D4E4F50515253545556 /* BookQuotes */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B2C2D2E2F30313233343536 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1B1C1D1E1F20212223242526 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE5FF6AA7BB8CC9DD0EE1FF2 /* BookQuotesApp.swift in Sources */,
+				FF6AA7BB8CC9DD0EE1FF2AA3 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		7B7C7D7E7F80818283848586 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEVELOPMENT_TEAM = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		8B8C8D8E8F90919293949596 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEVELOPMENT_TEAM = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		9B9C9D9E9FA0A1A2A3A4A5A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BookQuotes/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bookquotes.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ABACADAEAFB0B1B2B3B4B5B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BookQuotes/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bookquotes.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5B5C5D5E5F60616263646566 /* Build configuration list for PBXProject "BookQuotes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7B7C7D7E7F80818283848586 /* Debug */,
+				8B8C8D8E8F90919293949596 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6B6C6D6E6F70717273747576 /* Build configuration list for PBXNativeTarget "BookQuotes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B9C9D9E9FA0A1A2A3A4A5A6 /* Debug */,
+				ABACADAEAFB0B1B2B3B4B5B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0A1B2C3D4E5F6A7B8C9D0E1F /* Project object */;
+}
