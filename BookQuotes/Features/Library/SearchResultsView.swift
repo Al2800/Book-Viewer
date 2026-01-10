@@ -63,6 +63,7 @@ struct SearchResultsView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Search.searchingIndicator)
     }
 
     // MARK: - Results List
@@ -170,6 +171,7 @@ struct SearchResultsView: View {
         }
         .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Search.noResultsView)
     }
 
     private var suggestionButtons: some View {

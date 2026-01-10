@@ -49,6 +49,7 @@ struct BookSearchResultRow: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(.vertical, Spacing.xs)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Search.bookResultRow)
     }
 
     // MARK: - Private Views

@@ -1,0 +1,288 @@
+import Foundation
+
+// MARK: - Accessibility Identifiers
+
+/// Centralized accessibility identifiers for UI automation testing.
+///
+/// Usage in views:
+/// ```swift
+/// someView
+///     .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCell)
+/// ```
+///
+/// Usage in UI tests:
+/// ```swift
+/// app.buttons[AccessibilityIdentifiers.Capture.captureButton].tap()
+/// ```
+enum AccessibilityIdentifiers {
+
+    // MARK: - Library
+
+    enum Library {
+        /// Grid cell displaying a book cover
+        static let bookCoverCard = "library_book_cover_card"
+
+        /// List row displaying a book
+        static let bookListRow = "library_book_list_row"
+
+        /// Empty state view when library has no books
+        static let emptyState = "library_empty_state"
+
+        /// Add book button in library
+        static let addBookButton = "library_add_book_button"
+
+        /// Filter toggle for library view
+        static let filterButton = "library_filter_button"
+
+        /// Sort menu for library view
+        static let sortMenu = "library_sort_menu"
+
+        /// View mode toggle (grid/list)
+        static let viewModeToggle = "library_view_mode_toggle"
+    }
+
+    // MARK: - Search
+
+    enum Search {
+        /// Main search text field
+        static let searchField = "search_field"
+
+        /// Search scope picker (all/books/quotes)
+        static let scopePicker = "search_scope_picker"
+
+        /// Book search result row
+        static let bookResultRow = "search_book_result_row"
+
+        /// Quote search result row
+        static let quoteResultRow = "search_quote_result_row"
+
+        /// No results empty state
+        static let noResultsView = "search_no_results"
+
+        /// Searching progress indicator
+        static let searchingIndicator = "search_searching"
+    }
+
+    // MARK: - Quote Card
+
+    enum QuoteCard {
+        /// Quote card container
+        static let container = "quote_card_container"
+
+        /// Quote text display
+        static let quoteText = "quote_card_text"
+
+        /// Margin note display
+        static let marginNote = "quote_card_margin_note"
+
+        /// Favorite indicator heart
+        static let favoriteIndicator = "quote_card_favorite"
+
+        /// Marking type badge
+        static let markingBadge = "quote_card_marking_badge"
+
+        /// Page number label
+        static let pageNumber = "quote_card_page_number"
+
+        /// Confidence indicator
+        static let confidenceIndicator = "quote_card_confidence"
+    }
+
+    // MARK: - Quote Detail
+
+    enum QuoteDetail {
+        /// Text editor for editing quote
+        static let textEditor = "quote_detail_text_editor"
+
+        /// Page number text field
+        static let pageField = "quote_detail_page_field"
+
+        /// Margin note text field
+        static let marginNoteField = "quote_detail_margin_note_field"
+
+        /// Edit button / menu
+        static let editButton = "quote_detail_edit_button"
+
+        /// Done button (save edits)
+        static let doneButton = "quote_detail_done_button"
+
+        /// Cancel button (discard edits)
+        static let cancelButton = "quote_detail_cancel_button"
+
+        /// Delete button
+        static let deleteButton = "quote_detail_delete_button"
+
+        /// Favorite toggle button
+        static let favoriteButton = "quote_detail_favorite_button"
+
+        /// Copy to clipboard button
+        static let copyButton = "quote_detail_copy_button"
+
+        /// Share button
+        static let shareButton = "quote_detail_share_button"
+
+        /// View source image button
+        static let sourceImageButton = "quote_detail_source_image_button"
+
+        /// Marking type picker button
+        static let markingPickerButton = "quote_detail_marking_picker"
+    }
+
+    // MARK: - Capture
+
+    enum Capture {
+        /// Main capture/shutter button
+        static let captureButton = "capture_button"
+
+        /// Camera preview view
+        static let cameraPreview = "capture_camera_preview"
+
+        /// Quality overlay toggle
+        static let qualityToggle = "capture_quality_toggle"
+
+        /// Cancel capture button
+        static let cancelButton = "capture_cancel_button"
+
+        /// Camera permission prompt
+        static let permissionPrompt = "capture_permission_prompt"
+
+        /// Open settings button (for camera permission)
+        static let openSettingsButton = "capture_open_settings_button"
+    }
+
+    // MARK: - Image Review
+
+    enum ImageReview {
+        /// Captured image preview
+        static let imagePreview = "image_review_preview"
+
+        /// Retake photo button
+        static let retakeButton = "image_review_retake_button"
+
+        /// Use/confirm photo button
+        static let usePhotoButton = "image_review_use_photo_button"
+
+        /// Quality indicator bar
+        static let qualityBar = "image_review_quality_bar"
+
+        /// Cancel/dismiss button
+        static let cancelButton = "image_review_cancel_button"
+    }
+
+    // MARK: - Export
+
+    enum Export {
+        /// Export button in toolbar
+        static let exportButton = "export_button"
+
+        /// Format picker
+        static let formatPicker = "export_format_picker"
+
+        /// Preview section
+        static let previewSection = "export_preview"
+
+        /// Share link button
+        static let shareButton = "export_share_button"
+
+        /// Include book info toggle
+        static let includeBookInfoToggle = "export_include_book_info"
+
+        /// Include page numbers toggle
+        static let includePageNumbersToggle = "export_include_page_numbers"
+    }
+
+    // MARK: - Book Detail
+
+    enum BookDetail {
+        /// Book title text
+        static let bookTitle = "book_detail_title"
+
+        /// Author text
+        static let bookAuthor = "book_detail_author"
+
+        /// Cover image
+        static let coverImage = "book_detail_cover_image"
+
+        /// Quote count label
+        static let quoteCount = "book_detail_quote_count"
+
+        /// Capture quotes button
+        static let captureQuotesButton = "book_detail_capture_button"
+
+        /// Edit book button
+        static let editButton = "book_detail_edit_button"
+
+        /// Delete book button
+        static let deleteButton = "book_detail_delete_button"
+
+        /// Status picker
+        static let statusPicker = "book_detail_status_picker"
+    }
+
+    // MARK: - Onboarding
+
+    enum Onboarding {
+        /// Continue/next button
+        static let continueButton = "onboarding_continue_button"
+
+        /// Skip button
+        static let skipButton = "onboarding_skip_button"
+
+        /// Sign in button
+        static let signInButton = "onboarding_sign_in_button"
+
+        /// Page indicator dots
+        static let pageIndicator = "onboarding_page_indicator"
+    }
+
+    // MARK: - Settings
+
+    enum Settings {
+        /// Account section
+        static let accountSection = "settings_account_section"
+
+        /// Sign out button
+        static let signOutButton = "settings_sign_out_button"
+
+        /// Sign in button
+        static let signInButton = "settings_sign_in_button"
+
+        /// Subscription status view
+        static let subscriptionStatus = "settings_subscription_status"
+
+        /// Restore purchases button
+        static let restorePurchasesButton = "settings_restore_purchases"
+
+        /// Manage subscription button
+        static let manageSubscriptionButton = "settings_manage_subscription"
+    }
+
+    // MARK: - Tabs
+
+    enum Tabs {
+        /// Library tab bar item
+        static let libraryTab = "tab_library"
+
+        /// Capture tab bar item
+        static let captureTab = "tab_capture"
+
+        /// Settings tab bar item
+        static let settingsTab = "tab_settings"
+    }
+
+    // MARK: - Common
+
+    enum Common {
+        /// Loading/progress indicator
+        static let loadingIndicator = "loading_indicator"
+
+        /// Error view
+        static let errorView = "error_view"
+
+        /// Retry button
+        static let retryButton = "retry_button"
+
+        /// Dismiss button
+        static let dismissButton = "dismiss_button"
+    }
+}

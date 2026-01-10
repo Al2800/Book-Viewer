@@ -67,6 +67,7 @@ struct QuoteDetailView: View {
                         saveEdits()
                     }
                     .fontWeight(.semibold)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.doneButton)
                 } else {
                     Menu {
                         Button {
@@ -105,6 +106,7 @@ struct QuoteDetailView: View {
                         } label: {
                             Label("Delete Quote", systemImage: "trash")
                         }
+                        .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.deleteButton)
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
@@ -116,6 +118,7 @@ struct QuoteDetailView: View {
                     Button("Cancel") {
                         cancelEditing()
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.cancelButton)
                 }
             }
         }
@@ -150,6 +153,7 @@ struct QuoteDetailView: View {
                     .padding(Spacing.sm)
                     .background(Color.backgroundSecondary)
                     .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.textEditor)
             } else {
                 Text(quote.text)
                     .quoteTextStyle()
@@ -268,6 +272,7 @@ struct QuoteDetailView: View {
             .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.sourceImageButton)
     }
 
     // MARK: - Book Section

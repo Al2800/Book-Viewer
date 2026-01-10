@@ -23,6 +23,7 @@ struct ExportView: View {
                         }
                     }
                     .pickerStyle(.inline)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Export.formatPicker)
                 }
 
                 ExportOptionsView(options: $options)
@@ -52,6 +53,7 @@ struct ExportView: View {
                         Task { await performExport() }
                     }
                     .disabled(isExporting || quotes.isEmpty)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Export.exportButton)
                 }
             }
             .overlay {

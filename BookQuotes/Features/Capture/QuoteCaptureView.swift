@@ -96,8 +96,10 @@ struct QuoteCaptureView: View {
         if cameraService.isAuthorized {
             CameraPreviewView(cameraService: cameraService)
                 .ignoresSafeArea()
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
         } else {
             CameraPermissionView()
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.permissionPrompt)
         }
     }
 
@@ -162,6 +164,7 @@ struct QuoteCaptureView: View {
                     }
                 }
                 .disabled(!cameraService.isSessionRunning)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
 
                 // Focus indicator placeholder
                 Color.clear
@@ -199,6 +202,7 @@ struct QuoteCaptureView: View {
             Button("Cancel") {
                 dismiss()
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
         }
 
         ToolbarItem(placement: .principal) {

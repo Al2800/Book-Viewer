@@ -29,10 +29,12 @@ struct QuoteCardView: View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             // Quote text
             quoteText
+                .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.quoteText)
 
             // Margin note if present
             if let marginNote = quote.marginNote, !marginNote.isEmpty {
                 marginNoteView(marginNote)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.marginNote)
             }
 
             // Metadata row
@@ -51,6 +53,7 @@ struct QuoteCardView: View {
             RoundedRectangle(cornerRadius: CornerRadius.md)
                 .stroke(Color.quoteBorder, lineWidth: 1)
         }
+        .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.container)
     }
 
     // MARK: - Quote Text
@@ -115,6 +118,7 @@ struct QuoteCardView: View {
                 Image(systemName: "heart.fill")
                     .font(.caption)
                     .foregroundStyle(.red)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.favoriteIndicator)
             }
 
             // Confidence indicator (only show if low)

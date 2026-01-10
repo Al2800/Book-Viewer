@@ -23,6 +23,7 @@ struct BookCoverCard: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)
     }
 
     // MARK: - Private Views
@@ -101,6 +102,7 @@ struct BookListRow: View {
             Spacer()
         }
         .padding(.vertical, Spacing.xs)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookListRow)
     }
 
     // MARK: - Private Views

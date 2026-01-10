@@ -76,6 +76,7 @@ struct QuoteSearchResultRow: View {
             }
         }
         .padding(.vertical, Spacing.xs)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Search.quoteResultRow)
     }
 
     // MARK: - Private Views

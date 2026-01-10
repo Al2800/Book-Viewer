@@ -43,6 +43,7 @@ struct ImageReviewView: View {
                         dismiss()
                     }
                     .foregroundStyle(.white)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.cancelButton)
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -184,6 +185,7 @@ struct ImageReviewView: View {
                 .background(Color.white.opacity(0.2))
                 .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.retakeButton)
 
             // Use photo button
             Button {
@@ -201,6 +203,7 @@ struct ImageReviewView: View {
                 .background(shouldShowWarning ? Color.warning : Color.brand)
                 .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.usePhotoButton)
         }
         .padding(Spacing.lg)
         .background(Color.black)
