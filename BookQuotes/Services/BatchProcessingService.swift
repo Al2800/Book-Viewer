@@ -290,6 +290,9 @@ actor BatchProcessingService {
 
             // Update capture with results
             await MainActor.run {
+                // Store the extracted quotes for later retrieval
+                capture.storeExtractedQuotes(extractionResult.quotes)
+
                 capture.completeProcessing(
                     quoteCount: extractionResult.quoteCount,
                     avgConfidence: extractionResult.averageConfidence,

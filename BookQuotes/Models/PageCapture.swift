@@ -55,6 +55,11 @@ final class PageCapture {
     /// Detected page number (if any)
     var detectedPageNumber: Int?
 
+    /// JSON-encoded extracted quote data from processing
+    /// Stored as Data for SwiftData compatibility
+    @Attribute(.externalStorage)
+    var extractedQuotesData: Data?
+
     // MARK: - Quality Metrics (cached from analysis)
 
     /// Image quality score at capture time
@@ -149,6 +154,25 @@ final class PageCapture {
         errorMessage = nil
         extractedQuoteCount = 0
         averageConfidence = nil
+        extractedQuotesData = nil
+    }
+
+    // MARK: - Extraction Results Management
+
+    /// Store extracted quote data from processing
+    func storeExtractedQuotes(_ quotes: [ExtractedQuoteData]) {
+        let encoder = JSONEncoder()
+        extractedQuotesData = try? encoder.encode(quotes)
+        extractedQuoteCount = quotes.count
+        averageConfidence = quotes.isEmpty ? nil :
+            quotes.compactMap { $0.confidence }.reduce(0, +) / Double(quotes.count)
+    }
+
+    /// Retrieve stored extracted quotes
+    func loadExtractedQuotes() -> [ExtractedQuoteData] {
+        guard let data = extractedQuotesData else { return [] }
+        let decoder = JSONDecoder()
+        return (try? decoder.decode([ExtractedQuoteData].self, from: data)) ?? []
     }
 
     // MARK: - Image Management

@@ -22,7 +22,7 @@ struct BatchCaptureView: View {
     @State private var showFinishConfirmation = false
     @State private var selectedCapture: PageCapture?
     @State private var showCaptureDetail = false
-    @State private var showQueuedToast = false
+    @State private var showOfflineConfirmation = false
     @State private var queuedCount = 0
     @StateObject private var milestoneManager = MilestoneManager()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -89,13 +89,16 @@ struct BatchCaptureView: View {
         } message: {
             Text("You captured \(session.totalPages) pages. Would you like to process them now or save as draft?")
         }
-        .overlay(alignment: .top) {
-            // Offline queue toast
-            if showQueuedToast {
-                OfflineQueueToast(count: queuedCount)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .animation(.spring(response: 0.3), value: showQueuedToast)
+        .sheet(isPresented: $showOfflineConfirmation) {
+            OfflineQueueConfirmationSheet(
+                queuedCount: queuedCount,
+                bookTitle: book.title
+            ) {
+                showOfflineConfirmation = false
+                onComplete(session)
             }
+            .presentationDetents([.medium])
+            .interactiveDismissDisabled()
         }
         .milestoneCelebration(manager: milestoneManager)
     }
@@ -371,13 +374,11 @@ struct BatchCaptureView: View {
         await MainActor.run {
             if queued > 0 {
                 queuedCount = queued
-                showQueuedToast = true
-
-                // Still call onComplete to dismiss the capture flow
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    onComplete(session)
-                }
+                // Show confirmation sheet - user must dismiss explicitly
+                showOfflineConfirmation = true
+                HapticManager.success()
             } else {
+                // No captures queued - proceed normally
                 onComplete(session)
             }
         }
@@ -538,9 +539,130 @@ struct CaptureDetailSheet: View {
     }
 }
 
-// MARK: - Offline Queue Toast
+// MARK: - Offline Queue Confirmation Sheet
+
+/// Full confirmation sheet shown when captures are queued for offline processing.
+/// Provides clear messaging and explicit dismiss action instead of auto-dismissing toast.
+struct OfflineQueueConfirmationSheet: View {
+    let queuedCount: Int
+    let bookTitle: String
+    let onDismiss: () -> Void
+
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        VStack(spacing: Spacing.xl) {
+            Spacer()
+
+            // Success icon with animation
+            ZStack {
+                Circle()
+                    .fill(Color.brand.opacity(0.15))
+                    .frame(width: 100, height: 100)
+
+                Image(systemName: "arrow.down.circle.fill")
+                    .font(.system(size: 50))
+                    .foregroundStyle(Color.brand)
+                    .symbolEffect(.bounce, options: .nonRepeating, isActive: hasAppeared && !reduceMotion)
+            }
+            .scaleEffect(hasAppeared ? 1 : 0.5)
+            .opacity(hasAppeared ? 1 : 0)
+
+            // Main message
+            VStack(spacing: Spacing.sm) {
+                Text("Saved for Later")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color.textPrimary)
+
+                Text("\(queuedCount) page\(queuedCount == 1 ? "" : "s") from "\(bookTitle)"")
+                    .font(.headline)
+                    .foregroundStyle(Color.textSecondary)
+                    .multilineTextAlignment(.center)
+            }
+            .opacity(hasAppeared ? 1 : 0)
+            .offset(y: hasAppeared ? 0 : 20)
+
+            // Explanation
+            VStack(spacing: Spacing.md) {
+                InfoRow(
+                    icon: "wifi.slash",
+                    text: "You're currently offline"
+                )
+
+                InfoRow(
+                    icon: "arrow.triangle.2.circlepath",
+                    text: "Pages will process automatically when connected"
+                )
+
+                InfoRow(
+                    icon: "bell.badge",
+                    text: "You'll be notified when quotes are ready"
+                )
+            }
+            .padding(Spacing.lg)
+            .background(Color.backgroundSecondary)
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
+            .opacity(hasAppeared ? 1 : 0)
+            .offset(y: hasAppeared ? 0 : 20)
+
+            Spacer()
+
+            // Dismiss button
+            Button {
+                HapticManager.light()
+                onDismiss()
+            } label: {
+                Text("Got it")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, Spacing.md)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(Color.brand)
+            .opacity(hasAppeared ? 1 : 0)
+        }
+        .padding(Spacing.xl)
+        .background(Color.backgroundPrimary)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.1)) {
+                hasAppeared = true
+            }
+        }
+    }
+}
+
+/// Helper row for info items
+private struct InfoRow: View {
+    let icon: String
+    let text: String
+
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(Color.brand)
+                .frame(width: 28)
+
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(Color.textPrimary)
+
+            Spacer()
+        }
+    }
+}
+
+// MARK: - Offline Queue Toast (Deprecated - kept for backwards compatibility)
 
 /// Toast notification shown when captures are queued for offline processing
+/// @available(*, deprecated, message: "Use OfflineQueueConfirmationSheet instead")
 struct OfflineQueueToast: View {
     let count: Int
 
@@ -605,7 +727,16 @@ struct OfflineQueueToast: View {
     }
 }
 
-#Preview("Offline Toast") {
+#Preview("Offline Confirmation") {
+    OfflineQueueConfirmationSheet(
+        queuedCount: 5,
+        bookTitle: "Thinking, Fast and Slow"
+    ) {
+        print("Dismissed")
+    }
+}
+
+#Preview("Offline Toast (Deprecated)") {
     OfflineQueueToast(count: 5)
         .padding()
 }

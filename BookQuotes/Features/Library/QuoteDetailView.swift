@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 // MARK: - QuoteDetailView
 
@@ -21,6 +22,7 @@ struct QuoteDetailView: View {
     @State private var showDeleteConfirmation = false
     @State private var showSourceImage = false
     @State private var showMarkingPicker = false
+    @State private var showShareSheet = false
 
     // MARK: - Editing State
 
@@ -32,6 +34,10 @@ struct QuoteDetailView: View {
 
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    // MARK: - Focus State
+
+    @FocusState private var isPageNumberFocused: Bool
 
     // MARK: - Body
 
@@ -149,6 +155,15 @@ struct QuoteDetailView: View {
                     }
                     .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.cancelButton)
                 }
+
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        HapticManager.light()
+                        isPageNumberFocused = false
+                    }
+                    .fontWeight(.semibold)
+                }
             }
         }
         .confirmationDialog(
@@ -168,6 +183,9 @@ struct QuoteDetailView: View {
         }
         .sheet(isPresented: $showMarkingPicker) {
             markingPickerSheet
+        }
+        .sheet(isPresented: $showShareSheet) {
+            QuoteShareSheet(text: shareableQuoteText)
         }
     }
 
@@ -242,6 +260,7 @@ struct QuoteDetailView: View {
                         .keyboardType(.numberPad)
                         .multilineTextAlignment(.trailing)
                         .frame(width: 80)
+                        .focused($isPageNumberFocused)
                 } else {
                     Text(quote.pageNumber.map { "\($0)" } ?? "Unknown")
                         .foregroundStyle(.secondary)
@@ -423,7 +442,19 @@ struct QuoteDetailView: View {
 
     private func shareQuote() {
         HapticManager.light()
-        // TODO: Implement share sheet
+        showShareSheet = true
+    }
+
+    /// Formatted quote text for sharing
+    private var shareableQuoteText: String {
+        var text = "\"\(quote.text)\""
+        if let book = quote.book {
+            text += "\n\n— \(book.title) by \(book.author)"
+            if let page = quote.pageNumber {
+                text += ", p. \(page)"
+            }
+        }
+        return text
     }
 
     private func deleteQuote() {
@@ -432,6 +463,23 @@ struct QuoteDetailView: View {
         try? modelContext.save()
         dismiss()
     }
+}
+
+// MARK: - QuoteShareSheet
+
+/// Simple share sheet for quotes using UIActivityViewController.
+struct QuoteShareSheet: UIViewControllerRepresentable {
+    let text: String
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let activityVC = UIActivityViewController(
+            activityItems: [text],
+            applicationActivities: nil
+        )
+        return activityVC
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 // MARK: - Preview

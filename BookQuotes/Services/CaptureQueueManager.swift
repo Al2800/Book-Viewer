@@ -18,6 +18,18 @@ actor CaptureQueueManager {
 
     // MARK: - Configuration
 
+    /// Key for the auto-process queue preference
+    private static let autoProcessQueueKey = "autoProcessQueue"
+
+    /// Whether automatic queue processing is enabled (defaults to true)
+    private var isAutoProcessEnabled: Bool {
+        // Default to true if not set (maintains existing behavior)
+        if UserDefaults.standard.object(forKey: Self.autoProcessQueueKey) == nil {
+            return true
+        }
+        return UserDefaults.standard.bool(forKey: Self.autoProcessQueueKey)
+    }
+
     /// Exponential backoff delays in seconds for retries
     private let retryDelays: [TimeInterval] = [5, 30, 120]
 
@@ -57,7 +69,18 @@ actor CaptureQueueManager {
         // Initial stats update
         await updateStats()
 
+        // Auto-process only if enabled in Settings
+        guard isAutoProcessEnabled else { return }
+
         // Process if already online
+        if await networkMonitor.isConnected {
+            await startProcessing()
+        }
+    }
+
+    /// Manually trigger queue processing.
+    /// Use this when auto-process is disabled but user wants to process now.
+    func processNow() async {
         if await networkMonitor.isConnected {
             await startProcessing()
         }
@@ -125,8 +148,8 @@ actor CaptureQueueManager {
         // Update stats
         await updateStats()
 
-        // Trigger processing if online
-        if await networkMonitor.isConnected {
+        // Trigger processing if online and auto-process is enabled
+        if await networkMonitor.isConnected && isAutoProcessEnabled {
             await startProcessing()
         }
 
@@ -439,8 +462,8 @@ actor CaptureQueueManager {
 
                 let isNowConnected = networkMonitor.isConnected
 
-                // Connection restored
-                if !wasConnected && isNowConnected {
+                // Connection restored - only auto-process if enabled
+                if !wasConnected && isNowConnected && self.isAutoProcessEnabled {
                     await self.startProcessing()
                 }
 

@@ -31,46 +31,44 @@ struct CoverCaptureView: View {
     // MARK: - Body
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                // Camera preview
-                cameraContent
+        ZStack {
+            // Camera preview
+            cameraContent
 
-                // Mode-specific overlay
-                captureOverlay
+            // Mode-specific overlay
+            captureOverlay
 
-                // Processing indicator
-                if isProcessing {
-                    processingOverlay
-                }
+            // Processing indicator
+            if isProcessing {
+                processingOverlay
+            }
 
-                // Capture controls
-                controlsOverlay
+            // Capture controls
+            controlsOverlay
+        }
+        .navigationTitle("Add Book")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            toolbarContent
+        }
+        .sheet(item: $extractedMetadata) { metadata in
+            BookEditView(mode: .createFromMetadata(metadata)) { book in
+                onComplete?(book)
             }
-            .navigationTitle("Add Book")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                toolbarContent
-            }
-            .sheet(item: $extractedMetadata) { metadata in
-                BookEditView(mode: .createFromMetadata(metadata)) { book in
-                    onComplete?(book)
-                }
-            }
-            .alert("Error", isPresented: $showError) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(errorMessage)
-            }
-            .onAppear {
-                setupCamera()
-            }
-            .onDisappear {
-                cleanup()
-            }
-            .onChange(of: captureMode) { _, newMode in
-                handleModeChange(newMode)
-            }
+        }
+        .alert("Error", isPresented: $showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+        .onAppear {
+            setupCamera()
+        }
+        .onDisappear {
+            cleanup()
+        }
+        .onChange(of: captureMode) { _, newMode in
+            handleModeChange(newMode)
         }
     }
 

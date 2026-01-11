@@ -51,25 +51,51 @@ struct CaptureTabRootView: View {
 
     @ViewBuilder
     private var authorizedContent: some View {
+        NavigationStack {
+            captureContent
+        }
+    }
+
+    @ViewBuilder
+    private var captureContent: some View {
         switch captureMode {
         case .selection:
             CaptureModeSelectionView(
                 onSelectCoverCapture: {
+                    HapticManager.light()
                     captureMode = .coverCapture
                 },
                 onSelectQuoteCapture: {
+                    HapticManager.light()
                     captureMode = .bookSelection
                 },
                 onSelectBatchCapture: {
-                    captureMode = .bookSelection
+                    HapticManager.light()
+                    captureMode = .bookSelectionForBatch
                 }
             )
 
         case .bookSelection:
             BookSelectionForCaptureView(
                 onSelectBook: { book in
+                    HapticManager.medium()
                     selectedBook = book
                     captureMode = .quoteCapture
+                },
+                onAddNewBook: {
+                    captureMode = .coverCapture
+                },
+                onCancel: {
+                    captureMode = .selection
+                }
+            )
+
+        case .bookSelectionForBatch:
+            BookSelectionForCaptureView(
+                onSelectBook: { book in
+                    HapticManager.medium()
+                    selectedBook = book
+                    captureMode = .batchCapture
                 },
                 onAddNewBook: {
                     captureMode = .coverCapture
@@ -101,6 +127,19 @@ struct CaptureTabRootView: View {
                     captureMode = .selection
                 }
             )
+
+        case .batchCapture:
+            BatchCaptureFlowView(
+                book: selectedBook,
+                onComplete: { _ in
+                    selectedBook = nil
+                    captureMode = .selection
+                },
+                onCancel: {
+                    selectedBook = nil
+                    captureMode = .selection
+                }
+            )
         }
     }
 }
@@ -113,14 +152,20 @@ extension CaptureTabRootView {
         /// Initial mode selection screen
         case selection
 
-        /// Selecting a book for quote capture
+        /// Selecting a book for single quote capture
         case bookSelection
+
+        /// Selecting a book for batch capture
+        case bookSelectionForBatch
 
         /// Capturing a book cover
         case coverCapture
 
-        /// Capturing quotes for a selected book
+        /// Capturing quotes for a selected book (single mode)
         case quoteCapture
+
+        /// Batch capturing multiple pages for a selected book
+        case batchCapture
     }
 }
 
@@ -133,55 +178,53 @@ struct CaptureModeSelectionView: View {
     let onSelectBatchCapture: () -> Void
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: Spacing.lg) {
-                    // Hero section
-                    VStack(spacing: Spacing.md) {
-                        Image(systemName: "camera.viewfinder")
-                            .font(.system(size: 50))
-                            .foregroundStyle(Color.brand)
+        ScrollView {
+            VStack(spacing: Spacing.lg) {
+                // Hero section
+                VStack(spacing: Spacing.md) {
+                    Image(systemName: "camera.viewfinder")
+                        .font(.system(size: 50))
+                        .foregroundStyle(Color.brand)
 
-                        Text("What would you like to capture?")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(Color.textPrimary)
-                    }
-                    .padding(.vertical, Spacing.xl)
-
-                    // Capture options
-                    VStack(spacing: Spacing.md) {
-                        CaptureOptionCard(
-                            title: "Add New Book",
-                            description: "Photograph a book cover to add it to your library",
-                            systemImage: "book.closed.fill",
-                            color: .brand,
-                            action: onSelectCoverCapture
-                        )
-
-                        CaptureOptionCard(
-                            title: "Capture Quotes",
-                            description: "Photograph pages with underlined or highlighted passages",
-                            systemImage: "text.quote",
-                            color: .accent,
-                            action: onSelectQuoteCapture
-                        )
-
-                        CaptureOptionCard(
-                            title: "Batch Mode",
-                            description: "Capture multiple pages quickly, process all at once",
-                            systemImage: "square.stack.3d.up.fill",
-                            color: .success,
-                            action: onSelectBatchCapture
-                        )
-                    }
+                    Text("What would you like to capture?")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.textPrimary)
                 }
-                .padding(Spacing.lg)
+                .padding(.vertical, Spacing.xl)
+
+                // Capture options
+                VStack(spacing: Spacing.md) {
+                    CaptureOptionCard(
+                        title: "Add New Book",
+                        description: "Photograph a book cover to add it to your library",
+                        systemImage: "book.closed.fill",
+                        color: .brand,
+                        action: onSelectCoverCapture
+                    )
+
+                    CaptureOptionCard(
+                        title: "Capture Quotes",
+                        description: "Photograph pages with underlined or highlighted passages",
+                        systemImage: "text.quote",
+                        color: .accent,
+                        action: onSelectQuoteCapture
+                    )
+
+                    CaptureOptionCard(
+                        title: "Batch Mode",
+                        description: "Capture multiple pages quickly, process all at once",
+                        systemImage: "square.stack.3d.up.fill",
+                        color: .success,
+                        action: onSelectBatchCapture
+                    )
+                }
             }
-            .background(Color.backgroundPrimary)
-            .navigationTitle("Capture")
-            .navigationBarTitleDisplayMode(.large)
+            .padding(Spacing.lg)
         }
+        .background(Color.backgroundPrimary)
+        .navigationTitle("Capture")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
@@ -201,22 +244,20 @@ struct BookSelectionForCaptureView: View {
     ]
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                if books.isEmpty {
-                    emptyState
-                } else {
-                    bookGrid
-                }
+        ScrollView {
+            if books.isEmpty {
+                emptyState
+            } else {
+                bookGrid
             }
-            .background(Color.backgroundPrimary)
-            .navigationTitle("Select Book")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        onCancel()
-                    }
+        }
+        .background(Color.backgroundPrimary)
+        .navigationTitle("Select Book")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    onCancel()
                 }
             }
         }
@@ -376,18 +417,66 @@ struct QuoteCaptureFlowView: View {
             QuoteCaptureView(book: book, onComplete: onComplete)
         } else {
             // Fallback for missing book (shouldn't happen in normal flow)
-            NavigationStack {
-                ContentUnavailableView {
-                    Label("No Book Selected", systemImage: "book.closed")
-                } description: {
-                    Text("Please select a book first")
+            ContentUnavailableView {
+                Label("No Book Selected", systemImage: "book.closed")
+            } description: {
+                Text("Please select a book first")
+            }
+            .navigationTitle("Capture Quotes")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: onCancel)
                 }
-                .navigationTitle("Capture Quotes")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel", action: onCancel)
-                    }
+            }
+        }
+    }
+}
+
+/// Batch capture flow wrapper - delegates to BatchCaptureView then ExtractionReviewView
+struct BatchCaptureFlowView: View {
+    let book: Book?
+    let onComplete: (CaptureSession) -> Void
+    let onCancel: () -> Void
+
+    @State private var capturedSession: CaptureSession?
+    @State private var showExtractionReview = false
+
+    var body: some View {
+        if let book = book {
+            BatchCaptureView(
+                book: book,
+                onComplete: { session in
+                    // Show extraction review instead of completing immediately
+                    capturedSession = session
+                    showExtractionReview = true
+                },
+                onCancel: onCancel
+            )
+            .fullScreenCover(isPresented: $showExtractionReview) {
+                if let session = capturedSession {
+                    ExtractionReviewView(
+                        session: session,
+                        book: book,
+                        onComplete: {
+                            showExtractionReview = false
+                            onComplete(session)
+                        }
+                    )
+                }
+            }
+        } else {
+            // Fallback for missing book (shouldn't happen in normal flow)
+            ContentUnavailableView {
+                Label("No Book Selected", systemImage: "book.closed")
+            } description: {
+                Text("Please select a book first")
+            }
+            .navigationTitle("Batch Capture")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: onCancel)
                 }
             }
         }

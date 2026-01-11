@@ -765,14 +765,28 @@ private struct ShakeEffect: GeometryEffect {
 // MARK: - Haptic Feedback
 
 enum HapticManager {
+    /// Key for the haptic feedback enabled preference
+    private static let hapticFeedbackEnabledKey = "hapticFeedbackEnabled"
+
+    /// Whether haptic feedback is enabled (defaults to true)
+    static var isEnabled: Bool {
+        // Default to true if not set (maintains existing behavior for current users)
+        if UserDefaults.standard.object(forKey: hapticFeedbackEnabledKey) == nil {
+            return true
+        }
+        return UserDefaults.standard.bool(forKey: hapticFeedbackEnabledKey)
+    }
+
     /// Trigger impact feedback with specified style
     static func impact(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        guard isEnabled else { return }
         let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()
     }
 
     /// Trigger notification feedback with specified type
     static func notification(_ type: UINotificationFeedbackGenerator.FeedbackType) {
+        guard isEnabled else { return }
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(type)
     }
@@ -1392,5 +1406,42 @@ enum SwipeActionStyle {
             )
         }
         .tint(isFlagged ? .secondary : .orange)
+    }
+}
+
+// MARK: - Keyboard Toolbar
+
+extension View {
+    /// Adds a "Done" button toolbar for numeric keyboards to dismiss the keyboard.
+    /// Use this on TextFields with `.numberPad` or `.decimalPad` keyboard types.
+    ///
+    /// Example:
+    /// ```swift
+    /// TextField("Page", text: $pageNumber)
+    ///     .keyboardType(.numberPad)
+    ///     .numericKeyboardDoneButton()
+    /// ```
+    func numericKeyboardDoneButton() -> some View {
+        modifier(NumericKeyboardToolbarModifier())
+    }
+}
+
+/// View modifier that adds a Done button toolbar for numeric keyboards.
+private struct NumericKeyboardToolbarModifier: ViewModifier {
+    @FocusState private var isFocused: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .focused($isFocused)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        HapticManager.light()
+                        isFocused = false
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
     }
 }

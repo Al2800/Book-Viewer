@@ -24,6 +24,7 @@ struct BookDetailView: View {
     @State private var showFilterMenu = false
     @State private var showExportSheet = false
     @State private var showEditSheet = false
+    @State private var showQuoteCaptureSheet = false
     @State private var showDeleteConfirmation = false
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -146,7 +147,7 @@ struct BookDetailView: View {
 
                     Button {
                         HapticManager.light()
-                        // TODO: Navigate to capture with this book selected
+                        showQuoteCaptureSheet = true
                     } label: {
                         Label("Add Quotes", systemImage: "camera")
                     }
@@ -171,6 +172,13 @@ struct BookDetailView: View {
         }
         .sheet(isPresented: $showEditSheet) {
             BookEditView(mode: .edit(book))
+        }
+        .sheet(isPresented: $showQuoteCaptureSheet) {
+            NavigationStack {
+                QuoteCaptureView(book: book, onComplete: {
+                    showQuoteCaptureSheet = false
+                })
+            }
         }
         .confirmationDialog(
             "Delete \"\(book.title)\"?",
@@ -301,7 +309,8 @@ struct BookDetailView: View {
             Text("Capture pages from this book to start extracting quotes.")
         } actions: {
             Button {
-                // TODO: Navigate to capture
+                HapticManager.light()
+                showQuoteCaptureSheet = true
             } label: {
                 Label("Capture Quotes", systemImage: "camera")
             }

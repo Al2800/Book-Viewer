@@ -496,6 +496,16 @@ struct MarkingDefinitionRow: View {
 
 /// About screen
 struct AboutView: View {
+    /// App version from CFBundleShortVersionString
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
+    }
+
+    /// Build number from CFBundleVersion
+    private var buildNumber: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
+    }
+
     var body: some View {
         List {
             Section {
@@ -517,8 +527,8 @@ struct AboutView: View {
             }
 
             Section("Version") {
-                LabeledContent("App Version", value: "1.0.0")
-                LabeledContent("Build", value: "1")
+                LabeledContent("App Version", value: appVersion)
+                LabeledContent("Build", value: buildNumber)
             }
 
             Section("Credits") {
@@ -540,6 +550,18 @@ struct StorageBackupView: View {
 
     @State private var showExportOptions = false
     @State private var isExporting = false
+    @State private var exportURL: URL?
+    @State private var exportFilename: String?
+    @State private var showExportResult = false
+    @State private var exportError: String?
+
+    // Cache clearing state
+    @State private var showClearCacheConfirmation = false
+    @State private var isClearingCache = false
+    @State private var cacheCleared = false
+    @State private var bytesCleared: Int64 = 0
+
+    private let exportService = ExportService()
 
     var body: some View {
         List {
@@ -566,26 +588,80 @@ struct StorageBackupView: View {
             // Data management
             Section("Data Management") {
                 Button(role: .destructive) {
-                    // Show clear cache confirmation
+                    showClearCacheConfirmation = true
                 } label: {
-                    Label("Clear Image Cache", systemImage: "trash")
+                    HStack {
+                        Label("Clear Image Cache", systemImage: "trash")
+                        if isClearingCache {
+                            Spacer()
+                            ProgressView()
+                        }
+                    }
                 }
+                .disabled(isClearingCache)
 
-                Text("Clear cached images to free up storage space. Original images in your library will not be affected.")
+                if cacheCleared {
+                    Label(
+                        "Cleared \(ByteCountFormatter.string(fromByteCount: bytesCleared, countStyle: .file))",
+                        systemImage: "checkmark.circle.fill"
+                    )
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.green)
+                } else {
+                    Text("Clear cached images to free up storage space. Original images in your library will not be affected.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .navigationTitle("Storage & Backup")
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("Export Options", isPresented: $showExportOptions) {
             Button("Export as JSON") {
-                exportAsJSON()
+                Task { await exportAsJSON() }
             }
             Button("Export as Markdown") {
-                exportAsMarkdown()
+                Task { await exportAsMarkdown() }
             }
             Button("Cancel", role: .cancel) {}
+        }
+        .confirmationDialog(
+            "Clear Image Cache?",
+            isPresented: $showClearCacheConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Clear Cache", role: .destructive) {
+                Task { await clearImageCache() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will remove cached images from completed captures and exports. Your quotes and book covers will not be affected.")
+        }
+        .alert("Export", isPresented: $showExportResult) {
+            if let url = exportURL {
+                ShareLink(item: url) {
+                    Text("Share")
+                }
+            }
+            Button("OK", role: .cancel) {}
+        } message: {
+            if let error = exportError {
+                Text(error)
+            } else if let filename = exportFilename {
+                Text("Successfully exported \(filename)")
+            }
+        }
+        .overlay {
+            if isExporting {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                    .overlay {
+                        ProgressView("Exporting...")
+                            .padding()
+                            .background(.regularMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+                    }
+            }
         }
     }
 
@@ -600,12 +676,181 @@ struct StorageBackupView: View {
         return String(format: "%.1f MB", estimatedMB)
     }
 
-    private func exportAsJSON() {
-        // TODO: Implement JSON export
+    private func exportAsJSON() async {
+        await performExport(format: .json)
     }
 
-    private func exportAsMarkdown() {
-        // TODO: Implement Markdown export
+    private func exportAsMarkdown() async {
+        await performExport(format: .markdown)
+    }
+
+    private func performExport(format: ExportFormat) async {
+        guard !quotes.isEmpty else {
+            exportError = "No quotes to export."
+            showExportResult = true
+            return
+        }
+
+        isExporting = true
+        defer { isExporting = false }
+
+        // Reset previous state
+        exportURL = nil
+        exportFilename = nil
+        exportError = nil
+
+        do {
+            let options = ExportOptions(
+                includeMetadata: true,
+                groupByBook: true,
+                includePageNumbers: true,
+                includeMarginNotes: true
+            )
+
+            let result = try await exportService.export(
+                quotes: quotes,
+                format: format,
+                options: options
+            )
+
+            switch result {
+            case let .file(url, filename):
+                exportURL = url
+                exportFilename = filename
+                HapticManager.success()
+            case let .apiSuccess(message):
+                exportFilename = message
+                HapticManager.success()
+            case let .apiError(message):
+                exportError = message
+                HapticManager.error()
+            }
+        } catch {
+            exportError = error.localizedDescription
+            HapticManager.error()
+        }
+
+        showExportResult = true
+    }
+
+    // MARK: - Cache Clearing
+
+    private func clearImageCache() async {
+        isClearingCache = true
+        cacheCleared = false
+        bytesCleared = 0
+
+        defer { isClearingCache = false }
+
+        var totalBytesCleared: Int64 = 0
+        let fileManager = FileManager.default
+
+        // 1. Clear completed/cancelled queue items' images
+        totalBytesCleared += clearQueueCache(fileManager: fileManager)
+
+        // 2. Clear export temp directory
+        totalBytesCleared += clearExportCache(fileManager: fileManager)
+
+        // 3. Clear captures directory (completed sessions)
+        totalBytesCleared += clearCapturesDirectory(fileManager: fileManager)
+
+        bytesCleared = totalBytesCleared
+        cacheCleared = true
+        HapticManager.success()
+    }
+
+    private func clearQueueCache(fileManager: FileManager) -> Int64 {
+        var bytesCleared: Int64 = 0
+        let queueDirectory = CaptureQueueItem.queueDirectory
+
+        guard let enumerator = fileManager.enumerator(
+            at: queueDirectory,
+            includingPropertiesForKeys: [.fileSizeKey, .isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        ) else { return 0 }
+
+        // Get IDs of pending/processing items (don't delete their images)
+        let activeImagePaths = Set(
+            (try? modelContext.fetch(FetchDescriptor<CaptureQueueItem>()))?
+                .filter { $0.status == .pending || $0.status == .processing }
+                .map { $0.imagePath } ?? []
+        )
+
+        for case let fileURL as URL in enumerator {
+            // Skip if this image belongs to an active queue item
+            if activeImagePaths.contains(fileURL.lastPathComponent) {
+                continue
+            }
+
+            if let resourceValues = try? fileURL.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]),
+               resourceValues.isRegularFile == true,
+               let size = resourceValues.fileSize {
+                do {
+                    try fileManager.removeItem(at: fileURL)
+                    bytesCleared += Int64(size)
+                } catch {
+                    // Continue with other files
+                }
+            }
+        }
+
+        return bytesCleared
+    }
+
+    private func clearExportCache(fileManager: FileManager) -> Int64 {
+        var bytesCleared: Int64 = 0
+
+        guard let exportDir = try? ExportFileWriter.exportDirectory() else { return 0 }
+
+        guard let enumerator = fileManager.enumerator(
+            at: exportDir,
+            includingPropertiesForKeys: [.fileSizeKey, .isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        ) else { return 0 }
+
+        for case let fileURL as URL in enumerator {
+            if let resourceValues = try? fileURL.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]),
+               resourceValues.isRegularFile == true,
+               let size = resourceValues.fileSize {
+                bytesCleared += Int64(size)
+            }
+        }
+
+        // Remove the entire export directory
+        try? fileManager.removeItem(at: exportDir)
+
+        return bytesCleared
+    }
+
+    private func clearCapturesDirectory(fileManager: FileManager) -> Int64 {
+        var bytesCleared: Int64 = 0
+
+        guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return 0
+        }
+
+        let capturesDir = documentsURL.appendingPathComponent("captures", isDirectory: true)
+
+        guard fileManager.fileExists(atPath: capturesDir.path) else { return 0 }
+
+        guard let enumerator = fileManager.enumerator(
+            at: capturesDir,
+            includingPropertiesForKeys: [.fileSizeKey, .isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        ) else { return 0 }
+
+        for case let fileURL as URL in enumerator {
+            if let resourceValues = try? fileURL.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]),
+               resourceValues.isRegularFile == true,
+               let size = resourceValues.fileSize {
+                bytesCleared += Int64(size)
+            }
+        }
+
+        // Remove the entire captures directory
+        try? fileManager.removeItem(at: capturesDir)
+
+        return bytesCleared
     }
 }
 

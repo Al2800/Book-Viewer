@@ -27,65 +27,77 @@ struct QuoteCaptureView: View {
     @State private var showQualityOverlay = true
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var showExtractionReview = false
+    @State private var capturedSession: CaptureSession?
 
     // MARK: - Body
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                // Camera preview / captured image
-                cameraContent
+        ZStack {
+            // Camera preview / captured image
+            cameraContent
 
-                // Quality overlay
-                if showQualityOverlay && captureState == .previewing {
-                    qualityOverlayContent
-                }
+            // Quality overlay
+            if showQualityOverlay && captureState == .previewing {
+                qualityOverlayContent
+            }
 
-                // Capture controls
-                if captureState == .previewing {
-                    captureControls
-                }
+            // Capture controls
+            if captureState == .previewing {
+                captureControls
             }
-            .navigationTitle("Capture Quote")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                toolbarContent
+        }
+        .navigationTitle("Capture Quote")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            toolbarContent
+        }
+        .sheet(isPresented: .init(
+            get: { captureState == .reviewing },
+            set: { if !$0 { captureState = .previewing } }
+        )) {
+            if let image = capturedImage {
+                ImageReviewView(
+                    image: image,
+                    qualityResult: qualityResult,
+                    book: book,
+                    onRetake: {
+                        retakePhoto()
+                    },
+                    onConfirm: {
+                        confirmPhoto(image)
+                    }
+                )
             }
-            .sheet(isPresented: .init(
-                get: { captureState == .reviewing },
-                set: { if !$0 { captureState = .previewing } }
-            )) {
-                if let image = capturedImage {
-                    ImageReviewView(
-                        image: image,
-                        qualityResult: qualityResult,
-                        book: book,
-                        onRetake: {
-                            retakePhoto()
-                        },
-                        onConfirm: {
-                            confirmPhoto(image)
-                        }
-                    )
-                }
+        }
+        .fullScreenCover(isPresented: .init(
+            get: { captureState == .processing },
+            set: { _ in }
+        )) {
+            processingView
+        }
+        .alert("Error", isPresented: $showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+        .fullScreenCover(isPresented: $showExtractionReview) {
+            if let session = capturedSession {
+                ExtractionReviewView(
+                    session: session,
+                    book: book,
+                    onComplete: {
+                        showExtractionReview = false
+                        finalizeCaptureFlow()
+                    }
+                )
             }
-            .fullScreenCover(isPresented: .init(
-                get: { captureState == .processing },
-                set: { _ in }
-            )) {
-                processingView
-            }
-            .alert("Error", isPresented: $showError) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(errorMessage)
-            }
-            .onAppear {
-                setupCamera()
-            }
-            .onDisappear {
-                cameraService.cleanup()
-            }
+        }
+        .onAppear {
+            setupCamera()
+        }
+        .onDisappear {
+            cameraService.cleanup()
         }
     }
 
@@ -296,9 +308,13 @@ struct QuoteCaptureView: View {
 
                 try modelContext.save()
 
+                // Mark session as ready for processing
+                session.finishCapturing()
+
                 await MainActor.run {
                     captureState = .completed(session: session)
-                    finalizeCaptureFlow()
+                    capturedSession = session
+                    showExtractionReview = true
                 }
 
             } catch {

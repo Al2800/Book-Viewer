@@ -54,6 +54,14 @@ struct BookEditView: View {
     @State private var titleShakeTrigger = 0
     @State private var authorShakeTrigger = 0
 
+    // MARK: - Focus State
+
+    @FocusState private var focusedField: Field?
+
+    enum Field: Hashable {
+        case isbn, publishYear, pageCount
+    }
+
     // MARK: - Query for book count
 
     @Query private var existingBooks: [Book]
@@ -80,6 +88,16 @@ struct BookEditView: View {
                 coverOptionsDialog
             }
             .milestoneCelebration(manager: milestoneManager)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        HapticManager.light()
+                        focusedField = nil
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
         }
     }
 
@@ -195,14 +213,17 @@ struct BookEditView: View {
         Section("Additional Info") {
             TextField("ISBN", text: $isbn)
                 .keyboardType(.numberPad)
+                .focused($focusedField, equals: .isbn)
 
             TextField("Publisher", text: $publisher)
 
             TextField("Year Published", text: $publishYear)
                 .keyboardType(.numberPad)
+                .focused($focusedField, equals: .publishYear)
 
             TextField("Page Count", text: $pageCount)
                 .keyboardType(.numberPad)
+                .focused($focusedField, equals: .pageCount)
 
             Picker("Genre", selection: $genre) {
                 Text("None").tag("")

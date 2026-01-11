@@ -18,9 +18,27 @@ struct ExtractionReviewView: View {
     @State private var showingAddQuoteSheet = false
     @State private var showingDiscardAlert = false
     @State private var isSaving = false
+    @State private var isLoading = true
     @State private var saveError: Error?
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    // MARK: - Processing State
+
+    private var isProcessing: Bool {
+        session.captures.contains { $0.status == .processing || $0.status == .pending }
+    }
+
+    private var processingProgress: Double {
+        let total = session.captures.count
+        guard total > 0 else { return 0 }
+        let completed = session.captures.filter { $0.status == .completed || $0.status == .failed }.count
+        return Double(completed) / Double(total)
+    }
+
+    private var hasNoQuotes: Bool {
+        !isLoading && !isProcessing && editingQuotes.isEmpty
+    }
 
     // MARK: - Milestone State
 
@@ -54,27 +72,13 @@ struct ExtractionReviewView: View {
 
     var body: some View {
         NavigationStack {
-            HStack(spacing: 0) {
-                // Left: Page thumbnails
-                PageListView(
-                    session: session,
-                    selection: $selectedPage,
-                    quoteCounts: quoteCounts
-                )
-
-                Divider()
-
-                // Right: Quote editor for selected page
-                if let page = selectedPage {
-                    PageQuoteEditor(
-                        page: page,
-                        quotes: bindingForPage(page),
-                        onAddManualQuote: {
-                            showingAddQuoteSheet = true
-                        }
-                    )
+            Group {
+                if isLoading || isProcessing {
+                    processingView
+                } else if hasNoQuotes {
+                    noQuotesView
                 } else {
-                    noSelectionView
+                    mainContentView
                 }
             }
             .navigationTitle("Review Extractions")
@@ -141,6 +145,98 @@ struct ExtractionReviewView: View {
     }
 
     // MARK: - Subviews
+
+    /// Main content view with page list and quote editor
+    private var mainContentView: some View {
+        HStack(spacing: 0) {
+            // Left: Page thumbnails
+            PageListView(
+                session: session,
+                selection: $selectedPage,
+                quoteCounts: quoteCounts
+            )
+
+            Divider()
+
+            // Right: Quote editor for selected page
+            if let page = selectedPage {
+                PageQuoteEditor(
+                    page: page,
+                    quotes: bindingForPage(page),
+                    onAddManualQuote: {
+                        showingAddQuoteSheet = true
+                    }
+                )
+            } else {
+                noSelectionView
+            }
+        }
+    }
+
+    /// Processing state view with progress
+    private var processingView: some View {
+        VStack(spacing: Spacing.lg) {
+            ProgressView()
+                .scaleEffect(1.5)
+
+            VStack(spacing: Spacing.sm) {
+                Text("Processing Pages")
+                    .font(.headline)
+
+                Text("Extracting quotes from your captured pages...")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                // Progress bar
+                ProgressView(value: processingProgress)
+                    .progressViewStyle(.linear)
+                    .frame(width: 200)
+                    .padding(.top, Spacing.md)
+
+                let completedCount = session.captures.filter { $0.status == .completed }.count
+                let totalCount = session.captures.count
+                Text("\(completedCount) of \(totalCount) pages complete")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .task {
+            // Poll for updates while processing
+            while isProcessing {
+                try? await Task.sleep(for: .milliseconds(500))
+                loadExtractedQuotes()
+            }
+        }
+    }
+
+    /// Empty state when no quotes found
+    private var noQuotesView: some View {
+        ContentUnavailableView {
+            Label("No Quotes Found", systemImage: "text.quote")
+        } description: {
+            Text("No marked passages were detected in the captured pages. You can add quotes manually or try recapturing with clearer markings.")
+        } actions: {
+            HStack(spacing: Spacing.md) {
+                Button {
+                    HapticManager.light()
+                    showingAddQuoteSheet = true
+                } label: {
+                    Label("Add Quote Manually", systemImage: "plus")
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button {
+                    dismiss()
+                } label: {
+                    Text("Close")
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
 
     private var noSelectionView: some View {
         ContentUnavailableView {
@@ -211,12 +307,32 @@ struct ExtractionReviewView: View {
     // MARK: - Actions
 
     private func loadExtractedQuotes() {
-        // In a real implementation, this would load quotes from the session's processing results
-        // For now, we create placeholder quotes based on the session's captures
-        // The actual quotes would come from BatchProcessingService results
+        // Load extracted quotes from each completed page capture
+        var loadedQuotes: [EditableQuote] = []
 
-        // This is where you'd integrate with the actual extraction results
-        // For each capture that has been processed, load its extracted quotes
+        for capture in session.captures where capture.status == .completed {
+            let extractedData = capture.loadExtractedQuotes()
+
+            for data in extractedData {
+                let editableQuote = EditableQuote(
+                    pageId: capture.id,
+                    text: data.text,
+                    markingType: data.markingType,
+                    confidence: data.confidence,
+                    pageNumber: data.pageNumber ?? capture.detectedPageNumber,
+                    marginNote: data.marginNote,
+                    isManual: false
+                )
+                loadedQuotes.append(editableQuote)
+            }
+        }
+
+        // Only update if different to avoid unnecessary redraws
+        if loadedQuotes.count != editingQuotes.count {
+            editingQuotes = loadedQuotes
+        }
+
+        isLoading = false
     }
 
     private func selectFirstPage() {

@@ -61,6 +61,9 @@ enum AccessibilityIdentifiers {
 
         /// Searching progress indicator
         static let searchingIndicator = "search_searching"
+
+        /// Did-you-mean suggestion banner
+        static let didYouMeanBanner = "search_did_you_mean_banner"
     }
 
     // MARK: - Quote Card

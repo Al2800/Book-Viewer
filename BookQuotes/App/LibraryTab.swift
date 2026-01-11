@@ -64,6 +64,7 @@ struct LibraryView: View {
                     searchService: service,
                     searchText: searchText,
                     scope: searchScope,
+                    suggestionsService: suggestionsService,
                     onQuoteTap: { quoteId in
                         if let quote = fetchQuote(id: quoteId) {
                             router.navigate(to: quote)
@@ -73,6 +74,12 @@ struct LibraryView: View {
                         if let book = fetchBook(id: bookId) {
                             router.navigate(to: book)
                         }
+                    },
+                    onAcceptSuggestion: { suggestion in
+                        searchText = suggestion
+                    },
+                    onScopeChange: { newScope in
+                        searchScope = newScope
                     }
                 )
             } else if books.isEmpty {
