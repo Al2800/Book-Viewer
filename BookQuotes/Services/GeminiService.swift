@@ -155,7 +155,8 @@ final class GeminiService {
         )
 
         // Create URL request
-        let url = baseURL.appendingPathComponent(endpoint)
+        let sanitizedEndpoint = endpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let url = baseURL.appendingPathComponent(sanitizedEndpoint)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

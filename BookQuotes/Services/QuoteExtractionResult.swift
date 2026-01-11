@@ -41,7 +41,7 @@ struct QuoteExtractionResult: Codable, Sendable {
 
 /// Individual quote data from extraction response
 struct ExtractedQuoteData: Codable, Sendable, Identifiable {
-    var id: UUID { UUID() }
+    let id: UUID = UUID()
 
     /// The extracted text content
     let text: String
@@ -104,6 +104,14 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
             }
             return .mixed  // Default to mixed for unrecognized types
         }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case text
+        case pageNumber
+        case marginNote
+        case markingType
+        case confidence
     }
 }
 

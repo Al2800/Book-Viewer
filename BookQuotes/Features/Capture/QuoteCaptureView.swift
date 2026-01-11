@@ -109,7 +109,7 @@ struct QuoteCaptureView: View {
     private var qualityOverlayContent: some View {
         VStack {
             if let result = qualityResult {
-                MinimalQualityOverlay(result: result)
+                MinimalQualityOverlay(qualityResult: result)
                     .padding(.top, Spacing.lg)
             } else if isAnalyzingQuality {
                 HStack {
@@ -286,8 +286,8 @@ struct QuoteCaptureView: View {
                 pageCapture.orderIndex = 0
 
                 // Generate and save thumbnail
-                if let thumbnail = processed.thumbnail {
-                    pageCapture.thumbnailData = thumbnail.jpegData(compressionQuality: 0.6)
+                if let thumbnailData = try? ImagePreprocessor.createThumbnail(image) {
+                    pageCapture.thumbnailData = thumbnailData
                 }
 
                 modelContext.insert(pageCapture)

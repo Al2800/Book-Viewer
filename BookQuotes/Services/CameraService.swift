@@ -36,7 +36,7 @@ final class CameraService: NSObject {
 
     // MARK: - AVFoundation Properties
 
-    private var captureSession: AVCaptureSession?
+    private(set) var captureSession: AVCaptureSession?
     private var photoOutput: AVCapturePhotoOutput?
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var previewLayer: AVCaptureVideoPreviewLayer?

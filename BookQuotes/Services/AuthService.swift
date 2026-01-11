@@ -111,7 +111,7 @@ final class AuthService: NSObject {
         }
 
         // Send to our server for validation
-        let url = serverBaseURL.appendingPathComponent("/api/auth/apple")
+        let url = serverBaseURL.appendingPathComponent("api/auth/apple")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(identityToken)", forHTTPHeaderField: "Authorization")
@@ -172,7 +172,7 @@ final class AuthService: NSObject {
 
     /// Refresh session with server to get updated subscription status
     private func refreshSession(userId: String, sessionToken: String) async throws -> User {
-        let url = serverBaseURL.appendingPathComponent("/api/usage")
+        let url = serverBaseURL.appendingPathComponent("api/usage")
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")

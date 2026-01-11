@@ -62,6 +62,7 @@ final class SearchService {
 
             self.isSearching = true
             self.lastError = nil
+            defer { self.isSearching = false }
 
             do {
                 let searchResults = try await searchDB.search(query: query, scope: scope)
@@ -78,8 +79,6 @@ final class SearchService {
                 self.lastError = .queryFailed(error.localizedDescription)
                 self.results = .empty
             }
-
-            self.isSearching = false
         }
     }
 

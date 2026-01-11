@@ -232,6 +232,7 @@ extension CaptureQueueItem {
     /// Cancel this queue item
     func cancel() {
         status = .cancelled
+        dateCompleted = Date()
     }
 
     /// Reset item to pending for manual retry

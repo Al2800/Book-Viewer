@@ -219,6 +219,26 @@ enum HapticManager {
         notification(.success)
     }
 
+    /// Light impact for subtle interactions
+    static func light() {
+        impact(.light)
+    }
+
+    /// Medium impact for emphasis
+    static func medium() {
+        impact(.medium)
+    }
+
+    /// Success notification feedback
+    static func success() {
+        notification(.success)
+    }
+
+    /// Warning notification feedback
+    static func warning() {
+        notification(.warning)
+    }
+
     /// Light impact for quote added
     static func quoteAdded() {
         impact(.light)

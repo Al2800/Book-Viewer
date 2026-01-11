@@ -375,7 +375,7 @@ actor SearchDatabase {
     /// Find book titles matching a prefix
     func bookTitlesMatching(prefix: String, limit: Int) throws -> [SearchSuggestion] {
         let sql = """
-            SELECT DISTINCT book_id, title
+            SELECT book_id, title, bm25(books_fts) as rank
             FROM books_fts
             WHERE title MATCH ?
             ORDER BY rank
@@ -411,9 +411,10 @@ actor SearchDatabase {
     /// Find authors matching a prefix
     func authorsMatching(prefix: String, limit: Int) throws -> [SearchSuggestion] {
         let sql = """
-            SELECT DISTINCT author
+            SELECT author, MIN(bm25(books_fts)) as rank
             FROM books_fts
             WHERE author MATCH ?
+            GROUP BY author
             ORDER BY rank
             LIMIT ?
         """

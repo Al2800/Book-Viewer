@@ -1,7 +1,8 @@
-import Foundation
-import Vision
-import UIKit
+import AVFoundation
 import CoreImage
+import Foundation
+import UIKit
+import Vision
 
 // MARK: - ISBNScanner
 
@@ -24,10 +25,19 @@ final class ISBNScanner {
     /// Last error that occurred
     private(set) var error: ISBNScannerError?
 
+    /// Callback for real-time detections
+    var onBarcodeDetected: ((String) -> Void)?
+
     // MARK: - Configuration
 
     /// Minimum confidence required for detection
     var minimumConfidence: Float = 0.8
+
+    // MARK: - Real-time Scanning State
+
+    private var videoOutput: AVCaptureVideoDataOutput?
+    private weak var activeSession: AVCaptureSession?
+    private let videoQueue = DispatchQueue(label: "com.bookquotes.ISBNScanner", qos: .userInitiated)
 
     // MARK: - Initialization
 
@@ -49,12 +59,13 @@ final class ISBNScanner {
     /// - Parameter image: The image to scan
     /// - Returns: The detected ISBN, or nil if none found
     func scanCIImage(_ image: CIImage) async throws -> String? {
+        let wasScanning = isScanning
         isScanning = true
         error = nil
         detectedISBN = nil
         confidence = 0
 
-        defer { isScanning = false }
+        defer { isScanning = wasScanning }
 
         do {
             let result = try await performBarcodeDetection(on: image)
@@ -92,6 +103,54 @@ final class ISBNScanner {
 
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         return try await scanCIImage(ciImage)
+    }
+
+    // MARK: - Real-time Session Scanning
+
+    /// Start scanning barcodes from a live AVCaptureSession.
+    func startScanning(on session: AVCaptureSession) {
+        guard !isScanning else { return }
+
+        error = nil
+        detectedISBN = nil
+        confidence = 0
+
+        let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        output.videoSettings = [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+        ]
+        output.setSampleBufferDelegate(self, queue: videoQueue)
+
+        session.beginConfiguration()
+        guard session.canAddOutput(output) else {
+            session.commitConfiguration()
+            error = .detectionFailed("Unable to attach video output for scanning.")
+            return
+        }
+
+        session.addOutput(output)
+        session.commitConfiguration()
+
+        activeSession = session
+        videoOutput = output
+        isScanning = true
+    }
+
+    /// Stop scanning and remove barcode output from the session.
+    func stopScanning() {
+        guard let session = activeSession, let output = videoOutput else {
+            isScanning = false
+            return
+        }
+
+        session.beginConfiguration()
+        session.removeOutput(output)
+        session.commitConfiguration()
+
+        videoOutput = nil
+        activeSession = nil
+        isScanning = false
     }
 
     /// Process a camera frame for barcode detection.
@@ -178,6 +237,28 @@ final class ISBNScanner {
         detectedISBN = nil
         confidence = 0
         error = nil
+    }
+}
+
+// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+
+extension ISBNScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
+    nonisolated func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+    ) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        Task {
+            if let result = await detectBarcode(in: pixelBuffer) {
+                await MainActor.run {
+                    detectedISBN = result.isbn
+                    confidence = result.confidence
+                    onBarcodeDetected?(result.isbn)
+                }
+            }
+        }
     }
 }
 
