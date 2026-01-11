@@ -87,11 +87,14 @@ struct CollectionDetailView: View {
                 NavigationLink(value: quote) {
                     QuoteCardView(quote: quote, showBookInfo: true, style: .compact)
                 }
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    SwipeActionStyle.removeButton {
                         removeFromCollection(quote)
-                    } label: {
-                        Label("Remove", systemImage: "minus.circle")
+                    }
+                }
+                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                    SwipeActionStyle.favoriteButton(isFavorite: quote.isFavorite) {
+                        toggleFavorite(quote)
                     }
                 }
             }
@@ -243,6 +246,12 @@ struct CollectionDetailView: View {
             collection.dateModified = Date()
             try? modelContext.save()
         }
+    }
+
+    private func toggleFavorite(_ quote: Quote) {
+        quote.isFavorite.toggle()
+        quote.dateModified = Date()
+        try? modelContext.save()
     }
 
     private func deleteCollection() {

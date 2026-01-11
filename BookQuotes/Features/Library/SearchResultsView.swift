@@ -9,6 +9,7 @@ struct SearchResultsView: View {
     // MARK: - Environment
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Properties
 
@@ -22,31 +23,79 @@ struct SearchResultsView: View {
     /// Action when a book result is tapped
     var onBookTap: ((UUID) -> Void)?
 
+    // MARK: - Animation State
+
+    @State private var hasAppeared = false
+    @State private var resultsKey = UUID()
+
     // MARK: - Body
 
     var body: some View {
         Group {
             if searchService.isSearching {
                 searchingView
+                    .transition(.opacity)
             } else if let error = searchService.lastError {
                 errorView(error)
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
             } else if searchText.isEmpty {
                 emptySearchView
+                    .transition(.opacity)
             } else if searchService.results.isEmpty {
                 noResultsView
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
             } else {
                 resultsList
+                    .id(resultsKey)
+                    .transition(.opacity)
             }
         }
+        .animation(reduceMotion ? .none : .smoothSpring, value: searchService.isSearching)
+        .animation(reduceMotion ? .none : .smoothSpring, value: searchService.results.isEmpty)
         .onChange(of: searchText) { _, newValue in
             searchService.search(newValue, scope: scope)
         }
         .onChange(of: scope) { _, newScope in
+            // Reset animation state for new results
+            hasAppeared = false
             searchService.search(searchText, scope: newScope)
+            // Trigger staggered entrance for new scope
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                guard !reduceMotion else {
+                    hasAppeared = true
+                    return
+                }
+                withAnimation(.smoothSpring) {
+                    hasAppeared = true
+                }
+            }
+        }
+        .onChange(of: searchService.results.books.count + searchService.results.quotes.count) { oldCount, newCount in
+            // Trigger re-animation when results change significantly
+            if oldCount == 0 && newCount > 0 {
+                resultsKey = UUID()
+                hasAppeared = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    guard !reduceMotion else {
+                        hasAppeared = true
+                        return
+                    }
+                    withAnimation(.smoothSpring) {
+                        hasAppeared = true
+                    }
+                }
+            }
         }
         .onAppear {
             if !searchText.isEmpty {
                 searchService.search(searchText, scope: scope)
+            }
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.1)) {
+                hasAppeared = true
             }
         }
     }
@@ -63,6 +112,7 @@ struct SearchResultsView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .opacity(hasAppeared ? 1 : 0)
         .accessibilityIdentifier(AccessibilityIdentifiers.Search.searchingIndicator)
     }
 
@@ -87,8 +137,9 @@ struct SearchResultsView: View {
 
     private var booksSection: some View {
         Section {
-            ForEach(searchService.results.books) { result in
+            ForEach(Array(searchService.results.books.enumerated()), id: \.element.id) { index, result in
                 Button {
+                    HapticManager.light()
                     onBookTap?(result.bookId)
                 } label: {
                     BookSearchResultRow(
@@ -98,6 +149,13 @@ struct SearchResultsView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                // Staggered entrance animation
+                .opacity(hasAppeared ? 1 : 0)
+                .offset(x: hasAppeared ? 0 : -15)
+                .animation(
+                    reduceMotion ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.04),
+                    value: hasAppeared
+                )
             }
         } header: {
             sectionHeader("Books", count: searchService.results.books.count)
@@ -106,8 +164,9 @@ struct SearchResultsView: View {
 
     private var quotesSection: some View {
         Section {
-            ForEach(searchService.results.quotes) { result in
+            ForEach(Array(searchService.results.quotes.enumerated()), id: \.element.id) { index, result in
                 Button {
+                    HapticManager.light()
                     onQuoteTap?(result.quoteId)
                 } label: {
                     QuoteSearchResultRow(
@@ -117,6 +176,15 @@ struct SearchResultsView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                // Staggered entrance animation (offset by book count)
+                .opacity(hasAppeared ? 1 : 0)
+                .offset(x: hasAppeared ? 0 : -15)
+                .animation(
+                    reduceMotion ? .none : .smoothSpring.delay(
+                        Double(min(searchService.results.books.count + index, 12)) * 0.04
+                    ),
+                    value: hasAppeared
+                )
             }
         } header: {
             sectionHeader("Quotes", count: searchService.results.quotes.count)
@@ -129,7 +197,9 @@ struct SearchResultsView: View {
             Spacer()
             Text("\(count)")
                 .foregroundStyle(.secondary)
+                .contentTransition(.numericText())
         }
+        .animation(reduceMotion ? .none : .snappy, value: count)
     }
 
     // MARK: - Empty States
@@ -139,6 +209,7 @@ struct SearchResultsView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 50))
                 .foregroundStyle(.tertiary)
+                .symbolEffect(.pulse, options: .repeating)
 
             Text("Search your library")
                 .font(.headline)
@@ -150,6 +221,8 @@ struct SearchResultsView: View {
         }
         .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.9)
     }
 
     private var noResultsView: some View {
@@ -171,6 +244,8 @@ struct SearchResultsView: View {
         }
         .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.95)
         .accessibilityIdentifier(AccessibilityIdentifiers.Search.noResultsView)
     }
 

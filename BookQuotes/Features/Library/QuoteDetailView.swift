@@ -28,6 +28,11 @@ struct QuoteDetailView: View {
     @State private var editedMarginNote: String = ""
     @State private var editedPageNumber: String = ""
 
+    // MARK: - Animation State
+
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     // MARK: - Body
 
     var body: some View {
@@ -35,32 +40,65 @@ struct QuoteDetailView: View {
             VStack(alignment: .leading, spacing: Spacing.xl) {
                 // Quote text
                 quoteSection
+                    .opacity(hasAppeared ? 1 : 0)
+                    .offset(y: hasAppeared ? 0 : 15)
 
                 // Margin note if present
                 if quote.marginNote != nil || isEditing {
                     marginNoteSection
+                        .opacity(hasAppeared ? 1 : 0)
+                        .offset(y: hasAppeared ? 0 : 15)
                 }
 
                 Divider()
+                    .opacity(hasAppeared ? 1 : 0)
 
                 // Metadata section
                 metadataSection
+                    .opacity(hasAppeared ? 1 : 0)
+                    .offset(y: hasAppeared ? 0 : 15)
 
                 // Source image button
                 if quote.sourceImageData != nil {
                     sourceImageButton
+                        .opacity(hasAppeared ? 1 : 0)
+                        .offset(y: hasAppeared ? 0 : 15)
                 }
 
                 // Book info
                 if let book = quote.book {
                     bookSection(book)
+                        .opacity(hasAppeared ? 1 : 0)
+                        .offset(y: hasAppeared ? 0 : 15)
                 }
             }
             .padding()
+            .animation(reduceMotion ? .none : .smoothSpring.delay(0.1), value: hasAppeared)
+        }
+        // Edit mode transition animation
+        .animation(reduceMotion ? .none : .smoothSpring, value: isEditing)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.15)) {
+                hasAppeared = true
+            }
         }
         .navigationTitle("Quote")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            // Favorite button (only when not editing)
+            if !isEditing {
+                ToolbarItem(placement: .primaryAction) {
+                    HeartBurstButton(isFavorite: $quote.isFavorite) {
+                        try? modelContext.save()
+                    }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.favoriteButton)
+                }
+            }
+
             ToolbarItem(placement: .primaryAction) {
                 if isEditing {
                     Button("Done") {
@@ -74,15 +112,6 @@ struct QuoteDetailView: View {
                             startEditing()
                         } label: {
                             Label("Edit", systemImage: "pencil")
-                        }
-
-                        Button {
-                            toggleFavorite()
-                        } label: {
-                            Label(
-                                quote.isFavorite ? "Remove from Favorites" : "Add to Favorites",
-                                systemImage: quote.isFavorite ? "heart.slash" : "heart"
-                            )
                         }
 
                         Divider()
@@ -351,14 +380,20 @@ struct QuoteDetailView: View {
     // MARK: - Actions
 
     private func startEditing() {
+        HapticManager.light()
         editedText = quote.text
         editedMarginNote = quote.marginNote ?? ""
         editedPageNumber = quote.pageNumber.map { "\($0)" } ?? ""
-        isEditing = true
+        withAnimation(reduceMotion ? .none : .smoothSpring) {
+            isEditing = true
+        }
     }
 
     private func cancelEditing() {
-        isEditing = false
+        HapticManager.light()
+        withAnimation(reduceMotion ? .none : .smoothSpring) {
+            isEditing = false
+        }
     }
 
     private func saveEdits() {
@@ -368,12 +403,10 @@ struct QuoteDetailView: View {
         quote.dateModified = Date()
 
         try? modelContext.save()
-        isEditing = false
-    }
-
-    private func toggleFavorite() {
-        quote.isFavorite.toggle()
-        try? modelContext.save()
+        HapticManager.success()
+        withAnimation(reduceMotion ? .none : .smoothSpring) {
+            isEditing = false
+        }
     }
 
     private func copyToClipboard() {
@@ -385,13 +418,16 @@ struct QuoteDetailView: View {
             }
         }
         UIPasteboard.general.string = text
+        HapticManager.success()
     }
 
     private func shareQuote() {
+        HapticManager.light()
         // TODO: Implement share sheet
     }
 
     private func deleteQuote() {
+        HapticManager.warning()
         modelContext.delete(quote)
         try? modelContext.save()
         dismiss()

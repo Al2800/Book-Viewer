@@ -25,6 +25,8 @@ struct BookDetailView: View {
     @State private var showExportSheet = false
     @State private var showEditSheet = false
     @State private var showDeleteConfirmation = false
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Sort Order
 
@@ -75,25 +77,52 @@ struct BookDetailView: View {
             VStack(alignment: .leading, spacing: Spacing.lg) {
                 // Header with cover and metadata
                 BookHeaderView(book: book)
+                    .opacity(hasAppeared ? 1 : 0)
+                    .offset(y: hasAppeared ? 0 : 20)
 
                 // Stats bar
                 statsBar
+                    .opacity(hasAppeared ? 1 : 0)
+                    .offset(y: hasAppeared ? 0 : 15)
 
                 // Filter/sort controls
                 if book.hasQuotes {
                     controlsBar
+                        .opacity(hasAppeared ? 1 : 0)
                 }
 
                 // Quotes list or empty state
                 if book.quotes.isEmpty {
                     emptyQuotesView
+                        .opacity(hasAppeared ? 1 : 0)
                 } else if sortedQuotes.isEmpty {
                     noFilterResultsView
+                        .opacity(hasAppeared ? 1 : 0)
                 } else {
                     quotesGrid
+                        .opacity(hasAppeared ? 1 : 0)
                 }
             }
             .padding()
+            .animation(reduceMotion ? .none : .smoothSpring.delay(0.1), value: hasAppeared)
+        }
+        // Sort/filter change animations
+        .animation(reduceMotion ? .none : .smoothSpring, value: sortOrder)
+        .animation(reduceMotion ? .none : .smoothSpring, value: filterMarking)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.15)) {
+                hasAppeared = true
+            }
+        }
+        .onChange(of: sortOrder) { _, _ in
+            HapticManager.selection()
+        }
+        .onChange(of: filterMarking) { _, _ in
+            HapticManager.selection()
         }
         .navigationTitle(book.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -101,12 +130,14 @@ struct BookDetailView: View {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     Button {
+                        HapticManager.light()
                         showExportSheet = true
                     } label: {
                         Label("Export Quotes", systemImage: "square.and.arrow.up")
                     }
 
                     Button {
+                        HapticManager.light()
                         showEditSheet = true
                     } label: {
                         Label("Edit", systemImage: "pencil")
@@ -114,6 +145,7 @@ struct BookDetailView: View {
                     .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.editButton)
 
                     Button {
+                        HapticManager.light()
                         // TODO: Navigate to capture with this book selected
                     } label: {
                         Label("Add Quotes", systemImage: "camera")
@@ -123,6 +155,7 @@ struct BookDetailView: View {
                     Divider()
 
                     Button(role: .destructive) {
+                        HapticManager.warning()
                         showDeleteConfirmation = true
                     } label: {
                         Label("Delete Book", systemImage: "trash")

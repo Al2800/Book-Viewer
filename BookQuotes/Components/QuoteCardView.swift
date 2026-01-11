@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - QuoteCardView
 
 /// Beautiful, styled quote card for display throughout the app.
+/// Features Stripe-level polish: elevation shadows, press states, haptic feedback, and animations.
 struct QuoteCardView: View {
 
     // MARK: - Properties
@@ -14,6 +15,22 @@ struct QuoteCardView: View {
 
     /// Card display style
     var style: CardStyle = .default
+
+    /// Optional tap action for interactive cards
+    var onTap: (() -> Void)?
+
+    /// Context menu actions
+    var onCopy: (() -> Void)?
+    var onFavorite: (() -> Void)?
+    var onShare: (() -> Void)?
+    var onDelete: (() -> Void)?
+
+    // MARK: - State
+
+    @State private var isPressed = false
+    @State private var hasAppeared = false
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Card Styles
 
@@ -53,7 +70,112 @@ struct QuoteCardView: View {
             RoundedRectangle(cornerRadius: CornerRadius.md)
                 .stroke(Color.quoteBorder, lineWidth: 1)
         }
+        // MARK: - Elevation & Depth
+        .elevation(isPressed ? .xs : cardElevation, colorScheme: colorScheme)
+        // MARK: - Press State Animation
+        .scaleEffect(isPressed ? 0.97 : 1.0)
+        .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
+        // MARK: - Entrance Animation
+        .opacity(hasAppeared ? 1.0 : 0.0)
+        .scaleEffect(hasAppeared ? 1.0 : 0.95)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(entranceDelay)) {
+                hasAppeared = true
+            }
+        }
+        // MARK: - Tap Gesture with Haptics
+        .onTapGesture {
+            guard let onTap = onTap else { return }
+            HapticManager.light()
+            onTap()
+        }
+        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+            guard onTap != nil && !hasContextMenu else { return }
+            withAnimation(.quickSpring) {
+                isPressed = pressing
+            }
+        }, perform: {})
+        // MARK: - Context Menu
+        .if(hasContextMenu) { view in
+            view.polishedContextMenu(
+                menuItems: { contextMenuItems },
+                preview: { QuoteContextMenuPreview(quote: quote, showBookInfo: showBookInfo) }
+            )
+        }
         .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.container)
+    }
+
+    // MARK: - Elevation Per Style
+
+    private var cardElevation: Shadow {
+        switch style {
+        case .default: return .sm
+        case .compact: return .xs
+        case .expanded: return .md
+        }
+    }
+
+    // MARK: - Staggered Entrance Delay
+
+    /// Random small delay for staggered list animations
+    private var entranceDelay: Double {
+        Double.random(in: 0.0...0.1)
+    }
+
+    // MARK: - Context Menu
+
+    /// Whether any context menu action is provided
+    private var hasContextMenu: Bool {
+        onCopy != nil || onFavorite != nil || onShare != nil || onDelete != nil
+    }
+
+    /// Context menu items with animations
+    @ViewBuilder
+    private var contextMenuItems: some View {
+        if let onCopy = onCopy {
+            Button {
+                HapticManager.light()
+                onCopy()
+            } label: {
+                Label("Copy Quote", systemImage: "doc.on.doc")
+            }
+        }
+
+        if let onFavorite = onFavorite {
+            Button {
+                HapticManager.favoriteToggled()
+                onFavorite()
+            } label: {
+                Label(
+                    quote.isFavorite ? "Remove from Favorites" : "Add to Favorites",
+                    systemImage: quote.isFavorite ? "heart.slash" : "heart"
+                )
+            }
+        }
+
+        if let onShare = onShare {
+            Button {
+                HapticManager.light()
+                onShare()
+            } label: {
+                Label("Share", systemImage: "square.and.arrow.up")
+            }
+        }
+
+        if onDelete != nil {
+            Divider()
+
+            Button(role: .destructive) {
+                HapticManager.warning()
+                onDelete?()
+            } label: {
+                Label("Delete Quote", systemImage: "trash")
+            }
+        }
     }
 
     // MARK: - Quote Text
@@ -113,11 +235,13 @@ struct QuoteCardView: View {
 
             Spacer()
 
-            // Favorite indicator
+            // Favorite indicator with subtle pulse animation
             if quote.isFavorite {
                 Image(systemName: "heart.fill")
                     .font(.caption)
                     .foregroundStyle(.red)
+                    .symbolEffect(.pulse, options: .repeating.speed(0.5), isActive: !reduceMotion)
+                    .transition(.scale.combined(with: .opacity))
                     .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.favoriteIndicator)
             }
 
@@ -227,28 +351,47 @@ struct ConfidenceIndicator: View {
 
 // MARK: - Preview
 
-#Preview {
+#Preview("Quote Card Styles") {
     ScrollView {
         VStack(spacing: 20) {
-            Text("Default Style").font(.headline)
+            Text("Default Style (Tappable)")
+                .font(.headline)
             QuoteCardView(
-                quote: previewQuote()
+                quote: previewQuote(),
+                onTap: { print("Tapped!") }
             )
 
-            Text("Compact Style").font(.headline)
+            Text("Compact Style")
+                .font(.headline)
             QuoteCardView(
                 quote: previewQuote(),
                 style: .compact
             )
 
-            Text("With Book Info").font(.headline)
+            Text("Expanded Style")
+                .font(.headline)
             QuoteCardView(
                 quote: previewQuote(),
-                showBookInfo: true
+                style: .expanded
+            )
+
+            Text("With Book Info")
+                .font(.headline)
+            QuoteCardView(
+                quote: previewQuote(),
+                showBookInfo: true,
+                onTap: { print("Book info card tapped!") }
+            )
+
+            Text("Favorite Quote")
+                .font(.headline)
+            QuoteCardView(
+                quote: previewFavoriteQuote()
             )
         }
         .padding()
     }
+    .background(Color.backgroundSecondary)
 }
 
 private func previewQuote() -> Quote {
@@ -260,5 +403,17 @@ private func previewQuote() -> Quote {
     quote.pageNumber = 38
     quote.marginNote = "This is key!"
     quote.confidence = 0.65
+    return quote
+}
+
+private func previewFavoriteQuote() -> Quote {
+    let book = Book(title: "The Psychology of Money", author: "Morgan Housel")
+    let quote = Quote(
+        text: "The highest form of wealth is the ability to wake up every morning and say, 'I can do whatever I want today.'",
+        book: book
+    )
+    quote.pageNumber = 112
+    quote.isFavorite = true
+    quote.confidence = 0.95
     return quote
 }

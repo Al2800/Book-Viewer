@@ -45,6 +45,19 @@ struct BookEditView: View {
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var showCoverOptions = false
 
+    // MARK: - Milestone State
+
+    @StateObject private var milestoneManager = MilestoneManager()
+
+    // MARK: - Validation State
+
+    @State private var titleShakeTrigger = 0
+    @State private var authorShakeTrigger = 0
+
+    // MARK: - Query for book count
+
+    @Query private var existingBooks: [Book]
+
     // MARK: - Body
 
     var body: some View {
@@ -66,6 +79,7 @@ struct BookEditView: View {
             .confirmationDialog("Cover Image", isPresented: $showCoverOptions) {
                 coverOptionsDialog
             }
+            .milestoneCelebration(manager: milestoneManager)
         }
     }
 
@@ -129,7 +143,7 @@ struct BookEditView: View {
         }
         .frame(width: 120, height: 180)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-        .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+        .elevation(.sm)
     }
 
     @ViewBuilder
@@ -156,13 +170,23 @@ struct BookEditView: View {
         Section("Book Details") {
             TextField("Title", text: $title)
                 .textContentType(.none)
+                .shake(trigger: titleShakeTrigger)
 
             TextField("Author", text: $author)
                 .textContentType(.name)
+                .shake(trigger: authorShakeTrigger)
 
             TextField("Subtitle", text: $subtitle)
                 .textContentType(.none)
         }
+    }
+
+    private var isTitleValid: Bool {
+        !title.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    private var isAuthorValid: Bool {
+        !author.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     // MARK: - Metadata Section
@@ -223,10 +247,9 @@ struct BookEditView: View {
 
         ToolbarItem(placement: .confirmationAction) {
             Button(saveButtonTitle) {
-                save()
+                validateAndSave()
             }
             .fontWeight(.semibold)
-            .disabled(!isValidForSave)
         }
     }
 
@@ -242,8 +265,29 @@ struct BookEditView: View {
     // MARK: - Validation
 
     private var isValidForSave: Bool {
-        !title.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !author.trimmingCharacters(in: .whitespaces).isEmpty
+        isTitleValid && isAuthorValid
+    }
+
+    /// Validate fields and either save or shake invalid fields
+    private func validateAndSave() {
+        var hasError = false
+
+        if !isTitleValid {
+            titleShakeTrigger += 1
+            hasError = true
+        }
+
+        if !isAuthorValid {
+            authorShakeTrigger += 1
+            hasError = true
+        }
+
+        if hasError {
+            HapticManager.error()
+            return
+        }
+
+        save()
     }
 
     // MARK: - Initial Values
@@ -313,6 +357,9 @@ struct BookEditView: View {
     }
 
     private func createBook() {
+        // Check if this is the first book before adding
+        let isFirstBook = existingBooks.isEmpty
+
         let book = Book(
             title: title.trimmingCharacters(in: .whitespaces),
             author: author.trimmingCharacters(in: .whitespaces),
@@ -336,9 +383,23 @@ struct BookEditView: View {
 
         do {
             try modelContext.save()
-            HapticManager.notification(.success)
-            onSave?(book)
-            dismiss()
+
+            // Show first book milestone celebration
+            if isFirstBook {
+                milestoneManager.triggerFirstBook()
+                // Delay dismiss to show celebration
+                Task {
+                    try? await Task.sleep(for: .seconds(2.2))
+                    await MainActor.run {
+                        onSave?(book)
+                        dismiss()
+                    }
+                }
+            } else {
+                HapticManager.notification(.success)
+                onSave?(book)
+                dismiss()
+            }
         } catch {
             HapticManager.error()
         }

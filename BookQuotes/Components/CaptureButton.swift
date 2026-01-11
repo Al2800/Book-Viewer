@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Capture Button
 
 /// Large capture button for camera interfaces.
-/// Shows processing state and animates on press.
+/// Features Stripe-level polish: ripple effect, haptics, smooth animations.
 struct CaptureButton: View {
     /// Whether capture is in progress
     let isProcessing: Bool
@@ -17,31 +17,54 @@ struct CaptureButton: View {
     /// Ring width
     var ringWidth: CGFloat = 4
 
+    // MARK: - State
+
     @State private var isPressed = false
+    @State private var rippleScale: CGFloat = 1.0
+    @State private var rippleOpacity: CGFloat = 0.0
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Button {
-            Task {
-                await action()
-            }
+            triggerCapture()
         } label: {
             ZStack {
-                // Outer ring
+                // Ripple effect layer (behind everything)
+                Circle()
+                    .stroke(Color.white.opacity(0.4), lineWidth: 2)
+                    .frame(width: size * 1.5, height: size * 1.5)
+                    .scaleEffect(rippleScale)
+                    .opacity(rippleOpacity)
+
+                // Outer ring with subtle glow
                 Circle()
                     .stroke(Color.white, lineWidth: ringWidth)
                     .frame(width: size, height: size)
+                    .shadow(color: .white.opacity(0.3), radius: isPressed ? 8 : 4)
 
-                // Inner circle
+                // Inner circle with gradient
                 Circle()
-                    .fill(isProcessing ? Color.white.opacity(0.3) : Color.white)
+                    .fill(
+                        RadialGradient(
+                            colors: [
+                                Color.white,
+                                Color.white.opacity(isProcessing ? 0.3 : 0.9)
+                            ],
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: size / 2
+                        )
+                    )
                     .frame(width: size - ringWidth * 3, height: size - ringWidth * 3)
                     .scaleEffect(isPressed ? 0.85 : 1.0)
 
-                // Processing indicator
+                // Processing indicator with rotation
                 if isProcessing {
                     ProgressView()
                         .progressViewStyle(.circular)
                         .tint(.brand)
+                        .scaleEffect(1.2)
                 }
             }
         }
@@ -51,19 +74,59 @@ struct CaptureButton: View {
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in
                     if !isProcessing {
-                        withAnimation(.easeInOut(duration: 0.1)) {
+                        withAnimation(.quickSpring) {
                             isPressed = true
                         }
                     }
                 }
                 .onEnded { _ in
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                    withAnimation(.smoothSpring) {
                         isPressed = false
                     }
                 }
         )
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.8)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.2)) {
+                hasAppeared = true
+            }
+        }
         .accessibilityLabel("Capture")
         .accessibilityHint(isProcessing ? "Processing photo" : "Take photo")
+    }
+
+    // MARK: - Capture Action
+
+    private func triggerCapture() {
+        // Haptic feedback
+        HapticManager.captureSuccess()
+
+        // Ripple animation
+        if !reduceMotion {
+            withAnimation(.easeOut(duration: 0.4)) {
+                rippleScale = 1.8
+                rippleOpacity = 0.6
+            }
+            withAnimation(.easeOut(duration: 0.6).delay(0.1)) {
+                rippleOpacity = 0
+            }
+
+            // Reset ripple
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                rippleScale = 1.0
+            }
+        }
+
+        // Execute action
+        Task {
+            await action()
+        }
     }
 }
 
@@ -138,19 +201,26 @@ struct CaptureControlsBar: View {
         }
     }
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         HStack {
-            // Flash toggle
+            // Flash toggle with animation
             if let onFlash = onFlash {
                 Button {
-                    flashMode = flashMode.next
+                    HapticManager.light()
+                    withAnimation(.snappy) {
+                        flashMode = flashMode.next
+                    }
                     onFlash()
                 } label: {
                     Image(systemName: flashMode.icon)
                         .font(.title2)
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 44)
+                        .contentTransition(.symbolEffect(.replace))
                 }
+                .buttonStyle(CameraControlButtonStyle())
             } else {
                 Spacer()
                     .frame(width: 44)
@@ -166,9 +236,10 @@ struct CaptureControlsBar: View {
 
             Spacer()
 
-            // Camera flip
+            // Camera flip with rotation animation
             if let onFlip = onFlip {
                 Button {
+                    HapticManager.light()
                     onFlip()
                 } label: {
                     Image(systemName: "arrow.triangle.2.circlepath.camera")
@@ -176,6 +247,7 @@ struct CaptureControlsBar: View {
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 44)
                 }
+                .buttonStyle(CameraControlButtonStyle())
             } else {
                 Spacer()
                     .frame(width: 44)
@@ -184,6 +256,26 @@ struct CaptureControlsBar: View {
         .padding(.horizontal, Spacing.xl)
         .padding(.vertical, Spacing.lg)
         .background(.ultraThinMaterial.opacity(0.5))
+    }
+}
+
+// MARK: - Camera Control Button Style
+
+/// Specialized button style for camera controls (flash, flip).
+/// Provides subtle feedback suitable for dark camera UI.
+private struct CameraControlButtonStyle: ButtonStyle {
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(
+                Circle()
+                    .fill(configuration.isPressed ? Color.white.opacity(0.2) : Color.clear)
+                    .frame(width: 44, height: 44)
+            )
+            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
+            .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
     }
 }
 

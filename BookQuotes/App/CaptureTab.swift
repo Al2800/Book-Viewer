@@ -90,7 +90,7 @@ struct CaptureOptionCard: View {
             .padding()
             .background(Color.backgroundCard)
             .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
-            .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
+            .elevation(.sm)
         }
         .buttonStyle(.plain)
     }

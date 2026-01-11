@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - LoadingOverlay
 
 /// Full-screen loading overlay with message.
+/// Features Stripe-level polish: branded spinner, entrance animation, progress states.
 struct LoadingOverlay: View {
 
     // MARK: - Properties
@@ -14,6 +15,13 @@ struct LoadingOverlay: View {
 
     /// Style variant
     var style: Style = .default
+
+    // MARK: - State
+
+    @State private var hasAppeared = false
+    @State private var rotation: Double = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
 
     // MARK: - Styles
 
@@ -47,16 +55,30 @@ struct LoadingOverlay: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .contentTransition(.numericText())
         }
         .padding(Spacing.xl)
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.9)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
     }
 
     // MARK: - Full Screen Style
 
     private var fullScreenStyle: some View {
         ZStack {
-            Color.black.opacity(0.3)
+            // Scrim with semantic overlay opacity
+            Color.scrim(.light)
                 .ignoresSafeArea()
+                .opacity(hasAppeared ? 1 : 0)
 
             VStack(spacing: Spacing.md) {
                 progressIndicator
@@ -64,11 +86,25 @@ struct LoadingOverlay: View {
 
                 Text(message)
                     .font(.subheadline)
+                    .fontWeight(.medium)
                     .foregroundStyle(.secondary)
+                    .contentTransition(.numericText())
             }
             .padding(Spacing.xl)
             .background(.regularMaterial)
             .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
+            .elevation(.lg, colorScheme: colorScheme)
+            .opacity(hasAppeared ? 1 : 0)
+            .scaleEffect(hasAppeared ? 1 : 0.85)
+        }
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
         }
     }
 
@@ -81,12 +117,25 @@ struct LoadingOverlay: View {
             Text(message)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .contentTransition(.numericText())
 
             Spacer()
         }
         .padding(Spacing.md)
         .background(Color.backgroundCard)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .elevation(.sm, colorScheme: colorScheme)
+        .opacity(hasAppeared ? 1 : 0)
+        .offset(y: hasAppeared ? 0 : 10)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
     }
 
     // MARK: - Progress Indicator
@@ -94,10 +143,22 @@ struct LoadingOverlay: View {
     @ViewBuilder
     private var progressIndicator: some View {
         if let progress = progress {
-            ProgressView(value: progress)
-                .progressViewStyle(CircularProgressViewStyle())
+            // Determinate progress with branded colors
+            ZStack {
+                Circle()
+                    .stroke(Color.brand.opacity(0.2), lineWidth: 4)
+
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(Color.brand, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .animation(reduceMotion ? .none : .smoothSpring, value: progress)
+            }
+            .frame(width: 32, height: 32)
         } else {
+            // Indeterminate spinner with brand color
             ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: .brand))
         }
     }
 }
@@ -124,6 +185,7 @@ extension View {
 // MARK: - LoadingButton
 
 /// Button that shows loading state when action is in progress.
+/// Features smooth transition between loading and ready states.
 struct LoadingButton<Label: View>: View {
 
     // MARK: - Properties
@@ -131,26 +193,41 @@ struct LoadingButton<Label: View>: View {
     let action: () async -> Void
     @ViewBuilder let label: () -> Label
 
+    /// Use primary button style
+    var isPrimary: Bool = true
+
     @State private var isLoading = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Body
 
     var body: some View {
         Button {
             guard !isLoading else { return }
+            HapticManager.light()
             isLoading = true
             Task {
                 await action()
-                isLoading = false
+                withAnimation(reduceMotion ? .none : .smoothSpring) {
+                    isLoading = false
+                }
             }
         } label: {
-            if isLoading {
+            ZStack {
+                // Loading indicator
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-            } else {
+                    .progressViewStyle(CircularProgressViewStyle(tint: isPrimary ? .white : .brand))
+                    .opacity(isLoading ? 1 : 0)
+                    .scaleEffect(isLoading ? 1 : 0.5)
+
+                // Label
                 label()
+                    .opacity(isLoading ? 0 : 1)
+                    .scaleEffect(isLoading ? 0.8 : 1)
             }
+            .animation(reduceMotion ? .none : .smoothSpring, value: isLoading)
         }
+        .buttonStyle(.pressable)
         .disabled(isLoading)
     }
 }

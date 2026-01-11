@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - FilterPill
 
 /// A dismissable pill-shaped tag showing an active filter.
-/// Used in ActiveFiltersBar to display and remove individual filters.
+/// Features Stripe-level polish: remove animation, press feedback, and haptics.
 struct FilterPill: View {
     // MARK: - Properties
 
@@ -11,6 +11,12 @@ struct FilterPill: View {
     let icon: String
     let color: Color
     let onRemove: () -> Void
+
+    // MARK: - State
+
+    @State private var isPressed = false
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Initialization
 
@@ -29,7 +35,7 @@ struct FilterPill: View {
     // MARK: - Body
 
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Spacing.xs) {
             Image(systemName: icon)
                 .font(.caption2)
 
@@ -38,19 +44,59 @@ struct FilterPill: View {
                 .lineLimit(1)
 
             Button {
-                onRemove()
+                HapticManager.light()
+                withAnimation(.quickSpring) {
+                    onRemove()
+                }
             } label: {
                 Image(systemName: "xmark")
                     .font(.caption2.weight(.semibold))
+                    .foregroundStyle(color.opacity(0.7))
             }
-            .buttonStyle(.plain)
+            .buttonStyle(FilterRemoveButtonStyle())
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xs)
         .background(color.opacity(0.15))
         .foregroundStyle(color)
         .clipShape(Capsule())
         .contentShape(Capsule())
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.8)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
+        // Removal transition
+        .transition(.asymmetric(
+            insertion: .scale(scale: 0.8).combined(with: .opacity),
+            removal: .scale(scale: 0.5).combined(with: .opacity)
+        ))
+    }
+}
+
+// MARK: - Filter Remove Button Style
+
+/// Subtle button style for the X remove button in filter pills.
+private struct FilterRemoveButtonStyle: ButtonStyle {
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(2)
+            .background(
+                Circle()
+                    .fill(configuration.isPressed ? Color.primary.opacity(0.1) : Color.clear)
+            )
+            .scaleEffect(configuration.isPressed ? 0.85 : 1.0)
+            .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
     }
 }
 

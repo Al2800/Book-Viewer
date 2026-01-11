@@ -24,6 +24,8 @@ struct BatchCaptureView: View {
     @State private var showCaptureDetail = false
     @State private var showQueuedToast = false
     @State private var queuedCount = 0
+    @StateObject private var milestoneManager = MilestoneManager()
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Initialization
 
@@ -95,6 +97,7 @@ struct BatchCaptureView: View {
                     .animation(.spring(response: 0.3), value: showQueuedToast)
             }
         }
+        .milestoneCelebration(manager: milestoneManager)
     }
 
     // MARK: - Camera Preview
@@ -137,11 +140,12 @@ struct BatchCaptureView: View {
 
             Spacer()
 
-            // Page counter
+            // Page counter with animated count
             HStack(spacing: Spacing.xs) {
                 Image(systemName: "doc.on.doc")
                 Text("\(session.totalPages)")
                     .fontWeight(.semibold)
+                    .contentTransition(.numericText())
                 Text("pages")
             }
             .font(.subheadline)
@@ -150,6 +154,7 @@ struct BatchCaptureView: View {
             .padding(.vertical, Spacing.sm)
             .background(.ultraThinMaterial)
             .clipShape(Capsule())
+            .animation(.snappy, value: session.totalPages)
 
             Spacer()
 
@@ -242,9 +247,9 @@ struct BatchCaptureView: View {
             }
             .frame(height: 70)
             .onChange(of: session.captures.count) { _, _ in
-                // Scroll to newest capture
+                // Scroll to newest capture with smooth animation
                 if let lastCapture = session.captures.last {
-                    withAnimation {
+                    withAnimation(.smoothSpring) {
                         proxy.scrollTo(lastCapture.id, anchor: .trailing)
                     }
                 }
@@ -295,6 +300,9 @@ struct BatchCaptureView: View {
 
             HapticManager.captureSuccess()
 
+            // Check for milestone celebrations
+            checkMilestone(count: session.totalPages)
+
         } catch {
             HapticManager.error()
         }
@@ -314,6 +322,10 @@ struct BatchCaptureView: View {
         modelContext.delete(capture)
 
         HapticManager.impact(.light)
+    }
+
+    private func checkMilestone(count: Int) {
+        milestoneManager.checkPageMilestone(pageCount: count)
     }
 
     private func finishAndProcess() {
@@ -433,8 +445,13 @@ struct CaptureButton: View {
 // MARK: - Thumbnail View
 
 /// Small thumbnail showing a captured page
+/// Features entrance animation and tap feedback
 struct ThumbnailView: View {
     let capture: PageCapture
+
+    @State private var hasAppeared = false
+    @State private var isPressed = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ZStack {
@@ -460,8 +477,29 @@ struct ThumbnailView: View {
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
         .overlay {
             RoundedRectangle(cornerRadius: CornerRadius.sm)
-                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                .stroke(Color.white.opacity(isPressed ? 0.6 : 0.3), lineWidth: isPressed ? 2 : 1)
         }
+        // Press feedback
+        .scaleEffect(isPressed ? 0.92 : 1.0)
+        .brightness(isPressed ? 0.1 : 0)
+        .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.7)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
+                hasAppeared = true
+            }
+        }
+        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+            withAnimation(.quickSpring) {
+                isPressed = pressing
+            }
+        }, perform: {})
     }
 
     @ViewBuilder
@@ -557,11 +595,16 @@ struct CaptureDetailSheet: View {
 struct OfflineQueueToast: View {
     let count: Int
 
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         HStack(spacing: Spacing.sm) {
             Image(systemName: "clock.arrow.circlepath")
                 .font(.title3)
                 .foregroundStyle(Color.brand)
+                .symbolEffect(.pulse, options: .repeating.speed(0.5), isActive: !reduceMotion)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Saved Offline")
@@ -577,8 +620,20 @@ struct OfflineQueueToast: View {
         .padding(Spacing.md)
         .background(Color.backgroundSecondary)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-        .shadow(color: .black.opacity(0.2), radius: 10, y: 4)
+        .elevation(.lg, colorScheme: colorScheme)
         .padding(.top, Spacing.xl)
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .offset(y: hasAppeared ? 0 : -20)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
     }
 }
 

@@ -30,6 +30,11 @@ struct BookISBNConfirmationSheet: View {
     @State private var isLoadingCover = false
     @State private var coverLoadError: String?
 
+    // MARK: - Validation State
+
+    @State private var titleShakeTrigger = 0
+    @State private var authorShakeTrigger = 0
+
     // MARK: - Initialization
 
     init(
@@ -70,11 +75,9 @@ struct BookISBNConfirmationSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add Book") {
-                        confirmAndSave()
+                        validateAndSave()
                     }
                     .fontWeight(.semibold)
-                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty ||
-                              author.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
             .task {
@@ -138,12 +141,43 @@ struct BookISBNConfirmationSheet: View {
         Section("Book Details") {
             TextField("Title", text: $title)
                 .textContentType(.name)
+                .shake(trigger: titleShakeTrigger)
 
             TextField("Author", text: $author)
                 .textContentType(.name)
+                .shake(trigger: authorShakeTrigger)
 
             TextField("Subtitle (optional)", text: $subtitle)
         }
+    }
+
+    private var isTitleValid: Bool {
+        !title.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    private var isAuthorValid: Bool {
+        !author.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    private func validateAndSave() {
+        var hasError = false
+
+        if !isTitleValid {
+            titleShakeTrigger += 1
+            hasError = true
+        }
+
+        if !isAuthorValid {
+            authorShakeTrigger += 1
+            hasError = true
+        }
+
+        if hasError {
+            HapticManager.error()
+            return
+        }
+
+        confirmAndSave()
     }
 
     @ViewBuilder

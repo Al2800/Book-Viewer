@@ -133,7 +133,7 @@ struct BookHeaderView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 100, height: 150)
                 .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-                .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
+                .elevation(.md)
         } else {
             placeholderCover(width: 100, height: 150)
         }

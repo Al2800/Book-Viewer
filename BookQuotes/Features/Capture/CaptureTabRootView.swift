@@ -301,7 +301,7 @@ struct BookGridItem: View {
                 }
                 .frame(height: 140)
                 .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-                .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                .elevation(.sm)
 
                 // Title
                 Text(book.title)

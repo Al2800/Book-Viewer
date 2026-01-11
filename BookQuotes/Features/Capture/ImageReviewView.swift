@@ -253,7 +253,7 @@ struct CompactImageReview: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: 200)
                 .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-                .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                .elevation(.lg)
 
             // Actions
             HStack(spacing: Spacing.md) {

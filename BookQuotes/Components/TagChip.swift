@@ -4,6 +4,7 @@ import SwiftData
 // MARK: - TagChip
 
 /// Small chip component for displaying a tag with optional selection and remove button.
+/// Features Stripe-level polish: selection animations, press states, and haptic feedback.
 struct TagChip: View {
 
     // MARK: - Properties
@@ -19,19 +20,30 @@ struct TagChip: View {
     /// Action when remove button is tapped
     var onRemove: (() -> Void)?
 
+    // MARK: - State
+
+    @State private var isPressed = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     // MARK: - Body
 
     var body: some View {
         HStack(spacing: Spacing.xs) {
             Text(tag.name)
                 .font(.caption)
+                .fontWeight(isSelected ? .medium : .regular)
                 .lineLimit(1)
 
             if let onRemove = onRemove {
-                Button(action: onRemove) {
+                Button {
+                    HapticManager.light()
+                    withAnimation(.quickSpring) {
+                        onRemove()
+                    }
+                } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(isSelected ? .white.opacity(0.7) : .secondary)
                 }
                 .buttonStyle(.plain)
             }
@@ -42,9 +54,23 @@ struct TagChip: View {
         .foregroundStyle(foregroundColor)
         .clipShape(Capsule())
         .contentShape(Capsule())
+        // Selection animation
+        .animation(reduceMotion ? .none : .snappy, value: isSelected)
+        // Press state
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+        .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
         .onTapGesture {
+            if onTap != nil {
+                HapticManager.light()
+            }
             onTap?()
         }
+        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+            guard onTap != nil else { return }
+            withAnimation(.quickSpring) {
+                isPressed = pressing
+            }
+        }, perform: {})
     }
 
     // MARK: - Styling
@@ -73,6 +99,7 @@ struct TagChip: View {
 // MARK: - TagChipText
 
 /// Simple text-based tag chip (for use when Tag model isn't needed).
+/// Features selection animation and press feedback.
 struct TagChipText: View {
 
     // MARK: - Properties
@@ -82,11 +109,17 @@ struct TagChipText: View {
     var isSelected: Bool = false
     var onTap: (() -> Void)?
 
+    // MARK: - State
+
+    @State private var isPressed = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     // MARK: - Body
 
     var body: some View {
         Text(text)
             .font(.caption)
+            .fontWeight(isSelected ? .medium : .regular)
             .lineLimit(1)
             .padding(.horizontal, Spacing.sm)
             .padding(.vertical, Spacing.xs)
@@ -94,9 +127,23 @@ struct TagChipText: View {
             .foregroundStyle(isSelected ? .white : color)
             .clipShape(Capsule())
             .contentShape(Capsule())
+            // Selection animation
+            .animation(reduceMotion ? .none : .snappy, value: isSelected)
+            // Press state
+            .scaleEffect(isPressed ? 0.95 : 1.0)
+            .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
             .onTapGesture {
+                if onTap != nil {
+                    HapticManager.light()
+                }
                 onTap?()
             }
+            .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                guard onTap != nil else { return }
+                withAnimation(.quickSpring) {
+                    isPressed = pressing
+                }
+            }, perform: {})
     }
 }
 

@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - MarkingTypeBadge
 
 /// Badge displaying a marking type with icon and color.
+/// Features subtle entrance animation and optional tap interaction.
 struct MarkingTypeBadge: View {
 
     // MARK: - Properties
@@ -15,6 +16,15 @@ struct MarkingTypeBadge: View {
 
     /// Badge style
     var style: Style = .default
+
+    /// Optional tap action
+    var onTap: (() -> Void)?
+
+    // MARK: - State
+
+    @State private var hasAppeared = false
+    @State private var isPressed = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Styles
 
@@ -44,41 +54,72 @@ struct MarkingTypeBadge: View {
     // MARK: - Body
 
     var body: some View {
-        switch style {
-        case .default:
-            defaultBadge
-        case .outline:
-            outlineBadge
-        case .compact:
-            compactBadge
+        Group {
+            switch style {
+            case .default:
+                defaultBadge
+            case .outline:
+                outlineBadge
+            case .compact:
+                compactBadge
+            }
         }
+        // Interactive state
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.8)
+        .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
+        // Tap handling
+        .onTapGesture {
+            guard let onTap = onTap else { return }
+            HapticManager.light()
+            onTap()
+        }
+        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+            guard onTap != nil else { return }
+            withAnimation(.quickSpring) {
+                isPressed = pressing
+            }
+        }, perform: {})
     }
 
     // MARK: - Badge Styles
 
     private var defaultBadge: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Spacing.xs) {
             Image(systemName: iconName)
                 .font(.caption2)
             Text(displayName)
                 .font(.caption2)
+                .fontWeight(.medium)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xs)
         .background(badgeColor.opacity(0.15))
         .foregroundStyle(badgeColor)
         .clipShape(Capsule())
     }
 
     private var outlineBadge: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Spacing.xs) {
             Image(systemName: iconName)
                 .font(.caption2)
             Text(displayName)
                 .font(.caption2)
+                .fontWeight(.medium)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xs)
         .overlay {
             Capsule()
                 .stroke(badgeColor.opacity(0.5), lineWidth: 1)
@@ -87,7 +128,7 @@ struct MarkingTypeBadge: View {
     }
 
     private var compactBadge: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Spacing.xs) {
             Image(systemName: iconName)
                 .font(.caption)
             Text(displayName)

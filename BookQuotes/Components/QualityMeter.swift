@@ -2,12 +2,15 @@ import SwiftUI
 
 // MARK: - Quality Meter
 
-/// Circular or linear meter showing quality score with color gradient
+/// Circular meter showing quality score with color gradient.
+/// Features Stripe-level polish: animated fill, gradient ring, entrance animation.
 struct QualityMeter: View {
     let score: Double
     let label: String
 
     @State private var animatedScore: Double = 0
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: Spacing.sm) {
@@ -16,11 +19,16 @@ struct QualityMeter: View {
                 Circle()
                     .stroke(Color.backgroundSecondary, lineWidth: 8)
 
-                // Progress ring
+                // Progress ring with gradient
                 Circle()
                     .trim(from: 0, to: animatedScore)
                     .stroke(
-                        scoreColor,
+                        AngularGradient(
+                            colors: [scoreColor.opacity(0.6), scoreColor],
+                            center: .center,
+                            startAngle: .degrees(-90),
+                            endAngle: .degrees(270)
+                        ),
                         style: StrokeStyle(lineWidth: 8, lineCap: .round)
                     )
                     .rotationEffect(.degrees(-90))
@@ -31,6 +39,7 @@ struct QualityMeter: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundStyle(scoreColor)
+                        .contentTransition(.numericText())
 
                     Text(label)
                         .font(.caption2)
@@ -39,13 +48,24 @@ struct QualityMeter: View {
             }
             .frame(width: 80, height: 80)
         }
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.8)
         .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                animatedScore = score
+                return
+            }
             withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+            withAnimation(.smoothSpring.delay(0.1)) {
                 animatedScore = score
             }
         }
         .onChange(of: score) { _, newValue in
-            withAnimation(.smoothSpring) {
+            withAnimation(reduceMotion ? .none : .smoothSpring) {
                 animatedScore = newValue
             }
         }
@@ -72,6 +92,8 @@ struct LinearQualityMeter: View {
     var showPercentage: Bool = true
 
     @State private var animatedScore: Double = 0
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
@@ -87,6 +109,7 @@ struct LinearQualityMeter: View {
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(scoreColor)
+                        .contentTransition(.numericText())
                 }
             }
 
@@ -96,21 +119,38 @@ struct LinearQualityMeter: View {
                     Capsule()
                         .fill(Color.backgroundSecondary)
 
-                    // Progress
+                    // Progress with gradient
                     Capsule()
-                        .fill(scoreColor)
+                        .fill(
+                            LinearGradient(
+                                colors: [scoreColor.opacity(0.8), scoreColor],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                         .frame(width: geometry.size.width * animatedScore)
                 }
             }
             .frame(height: 6)
         }
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .offset(x: hasAppeared ? 0 : -10)
         .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                animatedScore = score
+                return
+            }
             withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+            withAnimation(.smoothSpring.delay(0.1)) {
                 animatedScore = score
             }
         }
         .onChange(of: score) { _, newValue in
-            withAnimation(.smoothSpring) {
+            withAnimation(reduceMotion ? .none : .smoothSpring) {
                 animatedScore = newValue
             }
         }
@@ -134,6 +174,9 @@ struct LinearQualityMeter: View {
 struct QualityIndicatorDot: View {
     let score: Double
 
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         Circle()
             .fill(indicatorColor)
@@ -141,6 +184,18 @@ struct QualityIndicatorDot: View {
             .overlay {
                 Circle()
                     .stroke(Color.white.opacity(0.3), lineWidth: 1)
+            }
+            // Subtle entrance animation
+            .opacity(hasAppeared ? 1 : 0)
+            .scaleEffect(hasAppeared ? 1 : 0.5)
+            .onAppear {
+                guard !reduceMotion else {
+                    hasAppeared = true
+                    return
+                }
+                withAnimation(.smoothSpring) {
+                    hasAppeared = true
+                }
             }
     }
 

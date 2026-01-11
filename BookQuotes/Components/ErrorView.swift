@@ -3,6 +3,7 @@ import SwiftUI
 // MARK: - ErrorView
 
 /// Full-screen error view with retry option.
+/// Features Stripe-level polish: staggered entrance, icon animation, clear recovery actions.
 struct ErrorView: View {
 
     // MARK: - Properties
@@ -14,6 +15,13 @@ struct ErrorView: View {
 
     /// Style variant
     var style: Style = .default
+
+    // MARK: - State
+
+    @State private var iconAppeared = false
+    @State private var textAppeared = false
+    @State private var buttonAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Styles
 
@@ -27,34 +35,76 @@ struct ErrorView: View {
 
     var body: some View {
         VStack(spacing: Spacing.lg) {
-            // Icon
+            // Icon with shake animation for errors
             Image(systemName: iconName)
                 .font(.system(size: 50))
                 .foregroundStyle(iconColor)
+                .symbolEffect(.bounce, options: .speed(0.5), isActive: iconAppeared && style == .critical && !reduceMotion)
+                .opacity(iconAppeared ? 1 : 0)
+                .scaleEffect(iconAppeared ? 1 : 0.5)
 
             // Title
             Text(title)
                 .font(.title3)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
+                .opacity(textAppeared ? 1 : 0)
+                .offset(y: textAppeared ? 0 : 10)
 
             // Error description
             Text(error.localizedDescription)
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .opacity(textAppeared ? 1 : 0)
+                .offset(y: textAppeared ? 0 : 8)
 
-            // Retry button
+            // Retry button with primary style
             if let retry = retryAction {
                 Button("Try Again") {
+                    HapticManager.medium()
                     retry()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.primary)
+                .padding(.horizontal, Spacing.xxl)
                 .padding(.top, Spacing.sm)
+                .opacity(buttonAppeared ? 1 : 0)
+                .scaleEffect(buttonAppeared ? 1 : 0.9)
             }
         }
         .padding(Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            triggerEntranceAnimation()
+        }
+    }
+
+    // MARK: - Entrance Animation
+
+    private func triggerEntranceAnimation() {
+        // Haptic for error notification
+        if style == .critical {
+            HapticManager.error()
+        } else if style == .default {
+            HapticManager.warning()
+        }
+
+        guard !reduceMotion else {
+            iconAppeared = true
+            textAppeared = true
+            buttonAppeared = true
+            return
+        }
+
+        withAnimation(.smoothSpring) {
+            iconAppeared = true
+        }
+        withAnimation(.smoothSpring.delay(0.15)) {
+            textAppeared = true
+        }
+        withAnimation(.smoothSpring.delay(0.3)) {
+            buttonAppeared = true
+        }
     }
 
     // MARK: - Computed
@@ -87,6 +137,7 @@ struct ErrorView: View {
 // MARK: - ErrorBanner
 
 /// Dismissable inline error banner with optional action.
+/// Features slide-in animation and haptic feedback.
 struct ErrorBanner: View {
 
     // MARK: - Properties
@@ -101,6 +152,12 @@ struct ErrorBanner: View {
     /// Style variant
     var style: Style = .error
 
+    // MARK: - State
+
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
+
     // MARK: - Styles
 
     enum Style {
@@ -113,9 +170,10 @@ struct ErrorBanner: View {
 
     var body: some View {
         HStack(spacing: Spacing.sm) {
-            // Icon
+            // Icon with pulse for errors
             Image(systemName: iconName)
                 .foregroundStyle(.white)
+                .symbolEffect(.pulse, options: .repeating.speed(0.5), isActive: style == .error && !reduceMotion)
 
             // Message
             Text(message)
@@ -128,25 +186,61 @@ struct ErrorBanner: View {
             // Action button
             if let action = onAction {
                 Button(actionLabel) {
+                    HapticManager.light()
                     action()
                 }
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
+                .padding(.horizontal, Spacing.sm)
+                .padding(.vertical, Spacing.xs)
+                .background(Color.white.opacity(0.2))
+                .clipShape(Capsule())
             }
 
             // Dismiss button
             Button {
-                onDismiss()
+                HapticManager.light()
+                withAnimation(.quickSpring) {
+                    onDismiss()
+                }
             } label: {
                 Image(systemName: "xmark")
                     .font(.caption.weight(.bold))
                     .foregroundStyle(.white.opacity(0.7))
+                    .padding(Spacing.xs)
+                    .background(Circle().fill(Color.white.opacity(0.15)))
             }
+            .buttonStyle(.plain)
         }
         .padding(Spacing.md)
         .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .elevation(.md, colorScheme: colorScheme)
         .padding(.horizontal)
+        // Slide-in animation
+        .opacity(hasAppeared ? 1 : 0)
+        .offset(y: hasAppeared ? 0 : -20)
+        .onAppear {
+            // Haptic based on style
+            switch style {
+            case .error: HapticManager.error()
+            case .warning: HapticManager.warning()
+            case .info: HapticManager.light()
+            }
+
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
+        // Exit transition
+        .transition(.asymmetric(
+            insertion: .move(edge: .top).combined(with: .opacity),
+            removal: .scale(scale: 0.9).combined(with: .opacity)
+        ))
     }
 
     // MARK: - Computed

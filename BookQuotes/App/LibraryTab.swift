@@ -42,6 +42,9 @@ struct LibraryView: View {
     @State private var searchService: SearchService?
     @State private var bookToDelete: Book?
     @State private var showDeleteConfirmation = false
+    @State private var hasAppeared = false
+    @State private var isRefreshing = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - View Mode
 
@@ -73,13 +76,24 @@ struct LibraryView: View {
             } else if books.isEmpty {
                 EmptyLibraryView()
             } else {
-                // Normal library view
-                switch viewMode {
-                case .grid:
-                    bookGrid
-                case .list:
-                    bookList
+                // Normal library view with animated transitions
+                Group {
+                    switch viewMode {
+                    case .grid:
+                        bookGrid
+                            .transition(.asymmetric(
+                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                removal: .opacity
+                            ))
+                    case .list:
+                        bookList
+                            .transition(.asymmetric(
+                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                removal: .opacity
+                            ))
+                    }
                 }
+                .animation(reduceMotion ? .none : .smoothSpring, value: viewMode)
             }
         }
         .navigationTitle("Library")
@@ -115,6 +129,17 @@ struct LibraryView: View {
         }
         .onAppear {
             initializeSearchService()
+            // Trigger entrance animation
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.1)) {
+                hasAppeared = true
+            }
+        }
+        .onChange(of: viewMode) { _, _ in
+            HapticManager.selection()
         }
         .confirmationDialog(
             "Delete \"\(bookToDelete?.title ?? "")\"?",
@@ -144,14 +169,24 @@ struct LibraryView: View {
                 columns: [GridItem(.adaptive(minimum: 100, maximum: 140), spacing: Spacing.md)],
                 spacing: Spacing.lg
             ) {
-                ForEach(books) { book in
+                ForEach(Array(books.enumerated()), id: \.element.id) { index, book in
                     NavigationLink(value: book) {
                         BookCoverCard(book: book)
                     }
                     .buttonStyle(.plain)
+                    // Staggered entrance animation
+                    .opacity(hasAppeared ? 1 : 0)
+                    .offset(y: hasAppeared ? 0 : 20)
+                    .animation(
+                        reduceMotion ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.05),
+                        value: hasAppeared
+                    )
                 }
             }
             .padding()
+        }
+        .refreshable {
+            await refreshLibrary()
         }
     }
 
@@ -159,21 +194,35 @@ struct LibraryView: View {
 
     private var bookList: some View {
         List {
-            ForEach(books) { book in
+            ForEach(Array(books.enumerated()), id: \.element.id) { index, book in
                 NavigationLink(value: book) {
                     BookListRow(book: book)
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button(role: .destructive) {
+                    SwipeActionStyle.deleteButton {
                         bookToDelete = book
                         showDeleteConfirmation = true
-                    } label: {
-                        Label("Delete", systemImage: "trash")
                     }
                 }
+                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                    SwipeActionStyle.editButton {
+                        // Navigate to edit book (will be handled via navigation)
+                        router.navigate(to: book)
+                    }
+                }
+                // Staggered entrance animation
+                .opacity(hasAppeared ? 1 : 0)
+                .offset(x: hasAppeared ? 0 : -20)
+                .animation(
+                    reduceMotion ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.05),
+                    value: hasAppeared
+                )
             }
         }
         .listStyle(.plain)
+        .refreshable {
+            await refreshLibrary()
+        }
     }
 
     // MARK: - Private Methods
@@ -201,6 +250,44 @@ struct LibraryView: View {
         return try? modelContext.fetch(descriptor).first
     }
 
+    /// Refresh library data with pull-to-refresh
+    private func refreshLibrary() async {
+        isRefreshing = true
+        HapticManager.light()
+
+        // Small delay for visual feedback
+        try? await Task.sleep(for: .milliseconds(300))
+
+        // Rebuild search index if needed
+        if let service = searchService {
+            await MainActor.run {
+                // Trigger re-indexing (SearchService handles this internally)
+                service.search("", scope: .all)
+            }
+        }
+
+        // Reset entrance animation for refreshed content
+        await MainActor.run {
+            hasAppeared = false
+        }
+
+        // Brief delay then re-trigger entrance animation
+        try? await Task.sleep(for: .milliseconds(100))
+
+        await MainActor.run {
+            guard !reduceMotion else {
+                hasAppeared = true
+                isRefreshing = false
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+            isRefreshing = false
+            HapticManager.success()
+        }
+    }
+
     private func deleteBook(_ book: Book) {
         withAnimation {
             modelContext.delete(book)
@@ -215,8 +302,11 @@ struct LibraryView: View {
     }
 }
 
-/// Empty state for library
+/// Empty state for library with entrance animation
 struct EmptyLibraryView: View {
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         ContentUnavailableView {
             Label("No Books Yet", systemImage: "books.vertical")
@@ -226,6 +316,18 @@ struct EmptyLibraryView: View {
             // Will be wired to capture tab later
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.emptyState)
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.9)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.2)) {
+                hasAppeared = true
+            }
+        }
     }
 }
 

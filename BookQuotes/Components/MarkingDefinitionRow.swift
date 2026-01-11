@@ -5,6 +5,7 @@ import SwiftData
 
 /// A row displaying a marking definition with toggle and visual indicators.
 /// Used in MarkingDefinitionsView for managing the marking vocabulary.
+/// Features entrance animation and smooth toggle interactions.
 struct MarkingDefinitionRow: View {
     // MARK: - Properties
 
@@ -13,10 +14,16 @@ struct MarkingDefinitionRow: View {
     /// Whether editing is in progress (disables toggle)
     var isEditing: Bool = false
 
+    // MARK: - State
+
+    @State private var hasAppeared = false
+    @State private var iconScale: CGFloat = 1.0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     // MARK: - Body
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Spacing.md) {
             // Icon with color
             iconView
 
@@ -31,6 +38,18 @@ struct MarkingDefinitionRow: View {
             }
         }
         .contentShape(Rectangle())
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .offset(x: hasAppeared ? 0 : -10)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
     }
 
     // MARK: - Components
@@ -39,13 +58,15 @@ struct MarkingDefinitionRow: View {
     private var iconView: some View {
         ZStack {
             Circle()
-                .fill(markingColor.opacity(0.15))
+                .fill(markingColor.opacity(marking.isEnabled ? 0.15 : 0.08))
                 .frame(width: 40, height: 40)
 
             Image(systemName: marking.icon)
                 .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(markingColor)
+                .foregroundStyle(marking.isEnabled ? markingColor : markingColor.opacity(0.5))
+                .scaleEffect(iconScale)
         }
+        .animation(reduceMotion ? .none : .snappy, value: marking.isEnabled)
     }
 
     @ViewBuilder
@@ -81,6 +102,17 @@ struct MarkingDefinitionRow: View {
         Toggle("Enabled", isOn: $marking.isEnabled)
             .labelsHidden()
             .tint(markingColor)
+            .onChange(of: marking.isEnabled) { _, newValue in
+                HapticManager.light()
+                // Icon bounce feedback
+                guard !reduceMotion else { return }
+                withAnimation(.quickSpring) {
+                    iconScale = 1.15
+                }
+                withAnimation(.quickSpring.delay(0.1)) {
+                    iconScale = 1.0
+                }
+            }
     }
 
     // MARK: - Helpers

@@ -19,6 +19,13 @@ struct ExtractionReviewView: View {
     @State private var showingDiscardAlert = false
     @State private var isSaving = false
     @State private var saveError: Error?
+    @State private var hasAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    // MARK: - Milestone State
+
+    @StateObject private var milestoneManager = MilestoneManager()
+    @Query private var existingQuotes: [Quote]
 
     /// Completion handler called after successful save
     var onComplete: (() -> Void)?
@@ -119,7 +126,18 @@ struct ExtractionReviewView: View {
         .onAppear {
             loadExtractedQuotes()
             selectFirstPage()
+            // Trigger entrance animation
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring.delay(0.2)) {
+                hasAppeared = true
+            }
         }
+        // Animate quote count changes
+        .animation(reduceMotion ? .none : .snappy, value: totalQuoteCount)
+        .milestoneCelebration(manager: milestoneManager)
     }
 
     // MARK: - Subviews
@@ -137,6 +155,7 @@ struct ExtractionReviewView: View {
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
             Button("Cancel") {
+                HapticManager.light()
                 if hasChanges {
                     showingDiscardAlert = true
                 } else {
@@ -149,20 +168,24 @@ struct ExtractionReviewView: View {
             VStack(spacing: 2) {
                 Text("\(totalQuoteCount) Quotes")
                     .font(.headline)
+                    .contentTransition(.numericText())
                 Text(book.title)
                     .font(.caption)
                     .foregroundStyle(Color.textSecondary)
             }
+            .opacity(hasAppeared ? 1 : 0)
         }
 
         ToolbarItem(placement: .confirmationAction) {
             Button {
+                HapticManager.medium()
                 showingSaveConfirmation = true
             } label: {
                 if isSaving {
                     ProgressView()
                 } else {
                     Text("Save All")
+                        .fontWeight(.semibold)
                 }
             }
             .disabled(editingQuotes.isEmpty || isSaving)
@@ -207,6 +230,10 @@ struct ExtractionReviewView: View {
     private func saveAllQuotes() {
         guard !editingQuotes.isEmpty else { return }
 
+        // Capture quote count before saving for milestone check
+        let previousCount = existingQuotes.count
+        let savedCount = editingQuotes.count
+
         isSaving = true
 
         Task {
@@ -220,9 +247,27 @@ struct ExtractionReviewView: View {
                     isSaving = false
 
                     if result.isFullSuccess {
-                        HapticManager.success()
-                        onComplete?()
-                        dismiss()
+                        // Check if we crossed any milestone
+                        let newTotal = previousCount + savedCount
+                        let crossedMilestone = MilestoneManager.quoteMilestones.first { milestone in
+                            previousCount < milestone && newTotal >= milestone
+                        }
+
+                        if let milestone = crossedMilestone {
+                            milestoneManager.checkQuoteMilestone(totalQuotes: milestone)
+                            // Delay dismiss to show celebration
+                            Task {
+                                try? await Task.sleep(for: .seconds(2.2))
+                                await MainActor.run {
+                                    onComplete?()
+                                    dismiss()
+                                }
+                            }
+                        } else {
+                            HapticManager.success()
+                            onComplete?()
+                            dismiss()
+                        }
                     } else if result.isPartialSuccess {
                         // Show partial success - some quotes saved
                         editingQuotes = editingQuotes.filter { quote in
@@ -264,6 +309,9 @@ struct AddManualQuoteSheet: View {
     @State private var quoteText = ""
     @State private var selectedMarkingType = "underline"
     @State private var marginNote = ""
+    @State private var hasAppeared = false
+    @State private var quoteTextShakeTrigger = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let markingTypes = [
         "underline",
@@ -283,6 +331,7 @@ struct AddManualQuoteSheet: View {
                 Section("Quote Text") {
                     TextEditor(text: $quoteText)
                         .frame(minHeight: 100)
+                        .shake(trigger: quoteTextShakeTrigger)
                 }
 
                 Section("Marking Type") {
@@ -315,19 +364,45 @@ struct AddManualQuoteSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
+                        HapticManager.light()
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        addQuote()
+                        validateAndAddQuote()
                     }
-                    .disabled(quoteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .fontWeight(.semibold)
                 }
             }
         }
         .presentationDetents([.medium, .large])
+        // Entrance animation
+        .opacity(hasAppeared ? 1 : 0)
+        .offset(y: hasAppeared ? 0 : 10)
+        .onAppear {
+            guard !reduceMotion else {
+                hasAppeared = true
+                return
+            }
+            withAnimation(.smoothSpring) {
+                hasAppeared = true
+            }
+        }
+    }
+
+    private var isQuoteTextValid: Bool {
+        !quoteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private func validateAndAddQuote() {
+        guard isQuoteTextValid else {
+            quoteTextShakeTrigger += 1
+            HapticManager.error()
+            return
+        }
+        addQuote()
     }
 
     private func addQuote() {
