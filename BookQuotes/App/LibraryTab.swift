@@ -116,6 +116,7 @@ struct LibraryView: View {
                     appeared: true,
                     onSelect: { text in
                         searchText = text
+                        suggestionsService.addToHistory(text)
                     },
                     onClearHistory: {
                         suggestionsService.clearHistory()
@@ -173,6 +174,9 @@ struct LibraryView: View {
             } else {
                 suggestionsService.clearSuggestions()
             }
+        }
+        .onSubmit(of: .search) {
+            suggestionsService?.addToHistory(searchText)
         }
         .confirmationDialog(
             "Delete \"\(bookToDelete?.title ?? "")\"?",
