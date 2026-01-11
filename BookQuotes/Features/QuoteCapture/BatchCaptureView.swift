@@ -104,13 +104,14 @@ struct BatchCaptureView: View {
 
     @ViewBuilder
     private var cameraPreviewLayer: some View {
-        // Placeholder for camera preview
-        // In production, this would be CameraPreviewView(cameraService: cameraService)
         ZStack {
-            Color.black
+            CameraPreviewView(cameraService: cameraService)
                 .ignoresSafeArea()
 
             if !cameraService.isSessionRunning {
+                Color.black.opacity(0.6)
+                    .ignoresSafeArea()
+
                 ProgressView()
                     .tint(.white)
             }
@@ -200,7 +201,7 @@ struct BatchCaptureView: View {
                 }
 
                 // Main capture button
-                CaptureButton(isCapturing: isCapturing) {
+                CaptureButton(isProcessing: isCapturing) {
                     await captureCurrentFrame()
                 }
 
@@ -387,58 +388,6 @@ struct BatchCaptureView: View {
         modelContext.insert(session)
         try? modelContext.save()
         dismiss()
-    }
-}
-
-// MARK: - Capture Button
-
-/// Large capture button with press animation
-struct CaptureButton: View {
-    let isCapturing: Bool
-    let action: () async -> Void
-
-    @State private var isPressed = false
-
-    var body: some View {
-        Button {
-            Task {
-                await action()
-            }
-        } label: {
-            ZStack {
-                // Outer ring
-                Circle()
-                    .stroke(Color.white, lineWidth: 4)
-                    .frame(width: 72, height: 72)
-
-                // Inner circle
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 60, height: 60)
-                    .scaleEffect(isPressed ? 0.9 : 1.0)
-
-                // Processing indicator
-                if isCapturing {
-                    ProgressView()
-                        .tint(.black)
-                }
-            }
-        }
-        .disabled(isCapturing)
-        .buttonStyle(.plain)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in
-                    withAnimation(.quickSpring) {
-                        isPressed = true
-                    }
-                }
-                .onEnded { _ in
-                    withAnimation(.quickSpring) {
-                        isPressed = false
-                    }
-                }
-        )
     }
 }
 
