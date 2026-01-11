@@ -24,23 +24,31 @@ final class UITestDataSeeder {
 
     /// Known UUIDs for idempotent seeding
     private enum TestIDs {
+        private static func repeatingUUID(_ byte: UInt8) -> UUID {
+            UUID(uuid: (byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte))
+        }
+
+        private static func zeroUUID(lastByte: UInt8) -> UUID {
+            UUID(uuid: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, lastByte))
+        }
+
         // Books
-        static let atomicHabits = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
-        static let deepWork = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
-        static let thinkingFastSlow = UUID(uuidString: "33333333-3333-3333-3333-333333333333")!
-        static let testBook = UUID(uuidString: "44444444-4444-4444-4444-444444444444")!
+        static let atomicHabits = repeatingUUID(0x11)
+        static let deepWork = repeatingUUID(0x22)
+        static let thinkingFastSlow = repeatingUUID(0x33)
+        static let testBook = repeatingUUID(0x44)
 
         // Quotes
-        static let quote1 = UUID(uuidString: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")!
-        static let quote2 = UUID(uuidString: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")!
-        static let quote3 = UUID(uuidString: "cccccccc-cccc-cccc-cccc-cccccccccccc")!
-        static let quote4 = UUID(uuidString: "dddddddd-dddd-dddd-dddd-dddddddddddd")!
-        static let quote5 = UUID(uuidString: "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee")!
-        static let quote6 = UUID(uuidString: "ffffffff-ffff-ffff-ffff-ffffffffffff")!
-        static let quote7 = UUID(uuidString: "77777777-7777-7777-7777-777777777777")!
-        static let quote8 = UUID(uuidString: "88888888-8888-8888-8888-888888888888")!
-        static let quote9 = UUID(uuidString: "99999999-9999-9999-9999-999999999999")!
-        static let quote10 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        static let quote1 = repeatingUUID(0xaa)
+        static let quote2 = repeatingUUID(0xbb)
+        static let quote3 = repeatingUUID(0xcc)
+        static let quote4 = repeatingUUID(0xdd)
+        static let quote5 = repeatingUUID(0xee)
+        static let quote6 = repeatingUUID(0xff)
+        static let quote7 = repeatingUUID(0x77)
+        static let quote8 = repeatingUUID(0x88)
+        static let quote9 = repeatingUUID(0x99)
+        static let quote10 = zeroUUID(lastByte: 0x01)
     }
 
     // MARK: - Initialization
@@ -205,7 +213,7 @@ final class UITestDataSeeder {
 
         // Add quotes with specific search tokens
 
-        // Token: "improvement" (for exact match testing)
+        // Search term "improvement" (for exact match testing)
         createQuote(
             id: TestIDs.quote7,
             text: "The process of improvement is not about adding something. It's about becoming less.",
@@ -214,7 +222,7 @@ final class UITestDataSeeder {
             markingType: .bracket
         )
 
-        // Token: "focus" (appears in multiple quotes)
+        // Search term "focus" (appears in multiple quotes)
         createQuote(
             id: TestIDs.quote8,
             text: "Focus is the ability to say no to every other option.",
@@ -223,7 +231,7 @@ final class UITestDataSeeder {
             markingType: .underline
         )
 
-        // Token: "mindfulness" (unique token for testing)
+        // Search term "mindfulness" (unique token for testing)
         createQuote(
             id: TestIDs.quote9,
             text: "Mindfulness is the practice of being present in each moment.",

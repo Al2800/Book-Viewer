@@ -177,10 +177,18 @@ struct PaywallView: View {
             }
 
             HStack(spacing: Spacing.md) {
-                Link("Terms", destination: URL(string: "https://bookquotes.app/terms")!)
+                if let termsURL = URL(string: "https://bookquotes.app/terms") {
+                    Link("Terms", destination: termsURL)
+                } else {
+                    Text("Terms")
+                }
                 Text("•")
                     .foregroundStyle(.secondary)
-                Link("Privacy", destination: URL(string: "https://bookquotes.app/privacy")!)
+                if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
+                    Link("Privacy", destination: privacyURL)
+                } else {
+                    Text("Privacy")
+                }
             }
             .font(.caption2)
         }

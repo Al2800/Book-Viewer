@@ -445,16 +445,29 @@ struct ReviewSummaryView: View {
 
 #Preview("Extraction Review") {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Book.self, Quote.self, CaptureSession.self, PageCapture.self, configurations: config)
+    let container = try? ModelContainer(
+        for: Book.self,
+        Quote.self,
+        CaptureSession.self,
+        PageCapture.self,
+        configurations: config
+    )
 
-    let book = Book(title: "Atomic Habits", author: "James Clear")
-    container.mainContext.insert(book)
+    return Group {
+        if let container {
+            let book = Book(title: "Atomic Habits", author: "James Clear")
+            container.mainContext.insert(book)
 
-    let session = CaptureSession(book: book)
-    container.mainContext.insert(session)
+            let session = CaptureSession(book: book)
+            container.mainContext.insert(session)
 
-    return ExtractionReviewView(session: session, book: book)
-        .modelContainer(container)
+            ExtractionReviewView(session: session, book: book)
+                .modelContainer(container)
+        } else {
+            Text("Preview unavailable")
+                .foregroundStyle(.secondary)
+        }
+    }
 }
 
 #Preview("Add Manual Quote") {

@@ -132,31 +132,38 @@ struct SubscriptionOptionCard: View {
 // MARK: - Preview
 
 #Preview {
-    VStack(spacing: Spacing.md) {
-        SubscriptionOptionCard(
-            product: Product.mockYearly,
-            isSelected: true,
-            monthlyProduct: Product.mockMonthly
-        ) {}
+    Group {
+        if let yearly = Product.mockYearly, let monthly = Product.mockMonthly {
+            VStack(spacing: Spacing.md) {
+                SubscriptionOptionCard(
+                    product: yearly,
+                    isSelected: true,
+                    monthlyProduct: monthly
+                ) {}
 
-        SubscriptionOptionCard(
-            product: Product.mockMonthly,
-            isSelected: false,
-            monthlyProduct: nil
-        ) {}
+                SubscriptionOptionCard(
+                    product: monthly,
+                    isSelected: false,
+                    monthlyProduct: nil
+                ) {}
+            }
+            .padding()
+        } else {
+            Text("StoreKit preview requires StoreKit Testing configuration.")
+                .foregroundStyle(.secondary)
+                .padding()
+        }
     }
-    .padding()
 }
 
 // MARK: - Mock Products for Preview
 
 private extension Product {
-    static var mockMonthly: Product {
-        // StoreKit products can't be mocked directly - use placeholder
-        fatalError("Use StoreKit Testing configuration for previews")
+    static var mockMonthly: Product? {
+        nil
     }
 
-    static var mockYearly: Product {
-        fatalError("Use StoreKit Testing configuration for previews")
+    static var mockYearly: Product? {
+        nil
     }
 }

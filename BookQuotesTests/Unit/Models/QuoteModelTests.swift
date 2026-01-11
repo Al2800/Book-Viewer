@@ -48,7 +48,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.text, "Full quote text")
         XCTAssertEqual(fetched.pageNumber, 42)
         XCTAssertEqual(fetched.marginNote, "Great insight")
@@ -151,7 +151,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.text, longText)
         XCTAssertEqual(fetched.text.count, longText.count)
 
@@ -165,7 +165,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.text, unicodeText)
 
         logger.success("Unicode text persists correctly")
@@ -177,7 +177,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.text, "")
 
         logger.success("Empty text persists (though not recommended)")
@@ -189,7 +189,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.text, whitespaceText)
 
         logger.success("Whitespace-only text persists")
@@ -202,7 +202,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.text, specialText)
 
         logger.success("Special characters persist correctly")
@@ -222,7 +222,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         quote.isFavorite = true
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertTrue(fetched.isFavorite)
 
         logger.step(3, "Toggle back to not favorite")
@@ -279,7 +279,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.marginNote, note)
 
         logger.success("Margin note persists correctly")
@@ -292,7 +292,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.marginNote, longNote)
 
         logger.success("Long margin note persists correctly")
@@ -308,7 +308,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertNotNil(fetched.sourceImageData)
         XCTAssertEqual(fetched.sourceImageData?.count, imageData.count)
 
@@ -360,7 +360,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         modelContext.insert(quote)
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertNil(fetched.book)
 
         logger.success("Quote without book persists")
@@ -390,7 +390,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         try modelContext.save()
 
         logger.step(2, "Verifying update persisted")
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.text, "Updated text")
 
         logger.success("Text update persists correctly")
@@ -404,7 +404,7 @@ final class QuoteModelTests: SwiftDataTestCase {
         quote.markingType = .highlight
         try modelContext.save()
 
-        let fetched = try fetchAllQuotes().first!
+        let fetched = try XCTUnwrap(fetchAllQuotes().first)
         XCTAssertEqual(fetched.markingType, .highlight)
 
         logger.success("Marking type update persists correctly")

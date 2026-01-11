@@ -585,13 +585,20 @@ struct OfflineQueueToast: View {
 // MARK: - Preview
 
 #Preview("Batch Capture") {
-    BatchCaptureView(
-        book: Book(title: "Test Book", author: "Author"),
-        onComplete: { _ in },
-        onCancel: {}
-    )
-    .modelContainer(.preview)
-    .environment(NetworkMonitor())
+    Group {
+        if let container = ModelContainer.preview {
+            BatchCaptureView(
+                book: Book(title: "Test Book", author: "Author"),
+                onComplete: { _ in },
+                onCancel: {}
+            )
+            .modelContainer(container)
+            .environment(NetworkMonitor())
+        } else {
+            Text("Preview unavailable")
+                .foregroundStyle(.secondary)
+        }
+    }
 }
 
 #Preview("Offline Toast") {

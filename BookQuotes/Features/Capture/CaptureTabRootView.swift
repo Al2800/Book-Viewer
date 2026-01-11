@@ -397,8 +397,15 @@ struct QuoteCaptureFlowView: View {
 // MARK: - Preview
 
 #Preview("Capture Tab Root") {
-    CaptureTabRootView()
-        .modelContainer(.preview)
+    Group {
+        if let container = ModelContainer.preview {
+            CaptureTabRootView()
+                .modelContainer(container)
+        } else {
+            Text("Preview unavailable")
+                .foregroundStyle(.secondary)
+        }
+    }
 }
 
 #Preview("Mode Selection") {
@@ -410,10 +417,17 @@ struct QuoteCaptureFlowView: View {
 }
 
 #Preview("Book Selection") {
-    BookSelectionForCaptureView(
-        onSelectBook: { _ in },
-        onAddNewBook: {},
-        onCancel: {}
-    )
-    .modelContainer(.preview)
+    Group {
+        if let container = ModelContainer.preview {
+            BookSelectionForCaptureView(
+                onSelectBook: { _ in },
+                onAddNewBook: {},
+                onCancel: {}
+            )
+            .modelContainer(container)
+        } else {
+            Text("Preview unavailable")
+                .foregroundStyle(.secondary)
+        }
+    }
 }

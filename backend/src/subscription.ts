@@ -127,28 +127,21 @@ export async function handleAppStoreNotification(
       return { success: false, message: 'Missing user ID in transaction' };
     }
 
-    // Map notification type to subscription status
+    // Map notification type to subscription status.
     let status: SubscriptionRecord['status'] = 'active';
-    switch (notificationType) {
-      case 'SUBSCRIBED':
-      case 'DID_RENEW':
-        status = 'active';
-        break;
-      case 'EXPIRED':
-      case 'GRACE_PERIOD_EXPIRED':
-        status = 'expired';
-        break;
-      case 'DID_CHANGE_RENEWAL_STATUS':
-        // User turned off auto-renew but subscription still active
-        status = 'active';
-        break;
-      case 'REFUND':
-      case 'REVOKE':
-        status = 'canceled';
-        break;
-      default:
-        // Unknown notification type, don't change status
-        return { success: true, message: `Ignored notification: ${notificationType}` };
+    const activeTypes = new Set(['SUBSCRIBED', 'DID_RENEW', 'DID_CHANGE_RENEWAL_STATUS']);
+    const expiredTypes = new Set(['EXPIRED', 'GRACE_PERIOD_EXPIRED']);
+    const canceledTypes = new Set(['REFUND', 'REVOKE']);
+
+    if (activeTypes.has(notificationType)) {
+      status = 'active';
+    } else if (expiredTypes.has(notificationType)) {
+      status = 'expired';
+    } else if (canceledTypes.has(notificationType)) {
+      status = 'canceled';
+    } else {
+      // Unknown notification type, don't change status
+      return { success: true, message: `Ignored notification: ${notificationType}` };
     }
 
     const subscription: SubscriptionRecord = {

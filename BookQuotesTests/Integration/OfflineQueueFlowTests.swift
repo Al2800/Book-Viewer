@@ -26,7 +26,8 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
 
         queueManager = CaptureQueueManager(
             modelContainer: modelContainer,
-            geminiService: geminiService
+            geminiService: geminiService,
+            networkMonitor: NetworkMonitor()
         )
 
         logger.info("OfflineQueueFlowTests setup complete")

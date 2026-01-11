@@ -325,7 +325,7 @@ final class GeminiServiceTests: SwiftDataTestCase {
         {"quotes": [{"text": "Test", "markingType": "underline", "confidence": 0.9}]}
         """
         let result = try QuoteExtractionResult.parse(from: json)
-        let quote = result.quotes.first!.toExtractedQuote()
+        let quote = try XCTUnwrap(result.quotes.first).toExtractedQuote()
 
         XCTAssertEqual(quote.markingType, .underline)
         logger.success("Underline marking type parsed correctly")
@@ -336,7 +336,7 @@ final class GeminiServiceTests: SwiftDataTestCase {
         {"quotes": [{"text": "Test", "markingType": "highlight", "confidence": 0.9}]}
         """
         let result = try QuoteExtractionResult.parse(from: json)
-        let quote = result.quotes.first!.toExtractedQuote()
+        let quote = try XCTUnwrap(result.quotes.first).toExtractedQuote()
 
         XCTAssertEqual(quote.markingType, .highlight)
         logger.success("Highlight marking type parsed correctly")
@@ -347,7 +347,7 @@ final class GeminiServiceTests: SwiftDataTestCase {
         {"quotes": [{"text": "Test", "markingType": "margin_note", "confidence": 0.9}]}
         """
         let result = try QuoteExtractionResult.parse(from: json)
-        let quote = result.quotes.first!.toExtractedQuote()
+        let quote = try XCTUnwrap(result.quotes.first).toExtractedQuote()
 
         XCTAssertEqual(quote.markingType, .marginNote)
         logger.success("Margin note marking type parsed correctly")
@@ -358,7 +358,7 @@ final class GeminiServiceTests: SwiftDataTestCase {
         {"quotes": [{"text": "Test", "markingType": "unknown_type", "confidence": 0.9}]}
         """
         let result = try QuoteExtractionResult.parse(from: json)
-        let quote = result.quotes.first!.toExtractedQuote()
+        let quote = try XCTUnwrap(result.quotes.first).toExtractedQuote()
 
         XCTAssertEqual(quote.markingType, .mixed)
         logger.success("Unknown marking type defaults to mixed")

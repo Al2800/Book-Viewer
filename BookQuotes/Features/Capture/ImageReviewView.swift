@@ -283,7 +283,7 @@ struct CompactImageReview: View {
 
 #Preview("Image Review") {
     ImageReviewView(
-        image: UIImage(systemName: "doc.text")!,
+        image: UIImage(systemName: "doc.text") ?? UIImage(),
         qualityResult: ImageQualityAnalyzer.QualityResult(
             blurScore: 0.85,
             brightnessScore: 0.72,
@@ -299,7 +299,7 @@ struct CompactImageReview: View {
 
 #Preview("Compact Review") {
     CompactImageReview(
-        image: UIImage(systemName: "doc.text.fill")!,
+        image: UIImage(systemName: "doc.text.fill") ?? UIImage(),
         onRetake: {},
         onUse: {}
     )

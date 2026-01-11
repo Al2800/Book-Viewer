@@ -42,11 +42,34 @@ final class KeychainServiceTests: XCTestCase {
         logger.info("Cleaned up test keychain items")
     }
 
+    private func makeToken() -> String {
+        UUID().uuidString
+    }
+
+    private func makeSpecialToken() -> String {
+        [
+            "value",
+            "!@#",
+            "$%^",
+            "&*()",
+            "_+-",
+            "[]{}",
+            "|;'",
+            ":,.",
+            "/<>?",
+            "\"`~"
+        ].joined(separator: "-")
+    }
+
+    private func makeUnicodeToken() -> String {
+        ["value", "日本語", "émojis", "🔐🔑", "ñoño"].joined(separator: "-")
+    }
+
     // MARK: - Token Save Tests
 
     func testSaveToken_ValidToken_Succeeds() throws {
         logger.step(1, "Saving a valid session token")
-        let testToken = "test-api-key-12345"
+        let testToken = makeToken()
 
         try keychainService.saveToken(testToken, type: .session)
 
@@ -60,40 +83,47 @@ final class KeychainServiceTests: XCTestCase {
     func testSaveToken_AllTypes_Succeeds() throws {
         logger.step(1, "Saving all token types")
 
-        try keychainService.saveToken("session-token", type: .session)
-        try keychainService.saveToken("refresh-token", type: .refresh)
-        try keychainService.saveToken("apple-identity-token", type: .appleIdentity)
+        let sessionToken = makeToken()
+        let refreshToken = makeToken()
+        let appleToken = makeToken()
+
+        try keychainService.saveToken(sessionToken, type: .session)
+        try keychainService.saveToken(refreshToken, type: .refresh)
+        try keychainService.saveToken(appleToken, type: .appleIdentity)
 
         logger.step(2, "Verifying each type retrieved correctly")
-        XCTAssertEqual(try keychainService.getToken(type: .session), "session-token")
-        XCTAssertEqual(try keychainService.getToken(type: .refresh), "refresh-token")
-        XCTAssertEqual(try keychainService.getToken(type: .appleIdentity), "apple-identity-token")
+        XCTAssertEqual(try keychainService.getToken(type: .session), sessionToken)
+        XCTAssertEqual(try keychainService.getToken(type: .refresh), refreshToken)
+        XCTAssertEqual(try keychainService.getToken(type: .appleIdentity), appleToken)
 
         logger.success("All token types work correctly")
     }
 
     func testSaveToken_OverwritesExisting() throws {
         logger.step(1, "Saving initial token")
-        try keychainService.saveToken("first-token", type: .session)
+        let firstToken = makeToken()
+        let secondToken = makeToken()
+        try keychainService.saveToken(firstToken, type: .session)
 
         logger.step(2, "Saving new token (should overwrite)")
-        try keychainService.saveToken("second-token", type: .session)
+        try keychainService.saveToken(secondToken, type: .session)
 
         logger.step(3, "Verifying new token retrieved")
         let retrieved = try keychainService.getToken(type: .session)
 
-        XCTAssertEqual(retrieved, "second-token")
+        XCTAssertEqual(retrieved, secondToken)
         logger.success("Token overwrite works correctly")
     }
 
     func testSaveToken_DefaultsToSession() throws {
         logger.step(1, "Saving token with default type")
-        try keychainService.saveToken("default-type-token")
+        let defaultToken = makeToken()
+        try keychainService.saveToken(defaultToken)
 
         logger.step(2, "Retrieving with explicit session type")
         let retrieved = try keychainService.getToken(type: .session)
 
-        XCTAssertEqual(retrieved, "default-type-token")
+        XCTAssertEqual(retrieved, defaultToken)
         logger.success("Default token type is session")
     }
 
@@ -114,7 +144,7 @@ final class KeychainServiceTests: XCTestCase {
     }
 
     func testGetToken_AfterSave_ReturnsToken() throws {
-        let testToken = "retrieve-test-token"
+        let testToken = makeToken()
         try keychainService.saveToken(testToken, type: .refresh)
 
         let retrieved = try keychainService.getToken(type: .refresh)
@@ -125,7 +155,7 @@ final class KeychainServiceTests: XCTestCase {
 
     func testGetToken_WrongType_ThrowsItemNotFound() throws {
         logger.step(1, "Saving session token")
-        try keychainService.saveToken("session-only", type: .session)
+        try keychainService.saveToken(makeToken(), type: .session)
 
         logger.step(2, "Trying to retrieve as refresh token")
         XCTAssertThrowsError(try keychainService.getToken(type: .refresh)) { error in
@@ -143,7 +173,7 @@ final class KeychainServiceTests: XCTestCase {
 
     func testDeleteToken_ExistingToken_Removes() throws {
         logger.step(1, "Saving a token")
-        try keychainService.saveToken("to-be-deleted", type: .session)
+        try keychainService.saveToken(makeToken(), type: .session)
 
         logger.step(2, "Deleting the token")
         try keychainService.deleteToken(type: .session)
@@ -163,8 +193,10 @@ final class KeychainServiceTests: XCTestCase {
 
     func testDeleteToken_OnlyDeletesSpecifiedType() throws {
         logger.step(1, "Saving multiple token types")
-        try keychainService.saveToken("session-token", type: .session)
-        try keychainService.saveToken("refresh-token", type: .refresh)
+        let sessionToken = makeToken()
+        let refreshToken = makeToken()
+        try keychainService.saveToken(sessionToken, type: .session)
+        try keychainService.saveToken(refreshToken, type: .refresh)
 
         logger.step(2, "Deleting only session token")
         try keychainService.deleteToken(type: .session)
@@ -179,7 +211,7 @@ final class KeychainServiceTests: XCTestCase {
     // MARK: - Convenience Method Tests
 
     func testHasToken_WithToken_ReturnsTrue() throws {
-        try keychainService.saveToken("valid-token", type: .session)
+        try keychainService.saveToken(makeToken(), type: .session)
 
         let hasToken = keychainService.hasToken(type: .session)
 
@@ -195,7 +227,7 @@ final class KeychainServiceTests: XCTestCase {
     }
 
     func testHasToken_DefaultsToSession() throws {
-        try keychainService.saveToken("session-token", type: .session)
+        try keychainService.saveToken(makeToken(), type: .session)
 
         let hasToken = keychainService.hasToken()
 
@@ -204,11 +236,12 @@ final class KeychainServiceTests: XCTestCase {
     }
 
     func testTokenOrNil_WithToken_ReturnsToken() throws {
-        try keychainService.saveToken("my-token", type: .session)
+        let tokenValue = makeToken()
+        try keychainService.saveToken(tokenValue, type: .session)
 
         let token = keychainService.tokenOrNil(type: .session)
 
-        XCTAssertEqual(token, "my-token")
+        XCTAssertEqual(token, tokenValue)
         logger.success("tokenOrNil returns token when exists")
     }
 
@@ -221,9 +254,9 @@ final class KeychainServiceTests: XCTestCase {
 
     func testDeleteAllTokens_RemovesAll() throws {
         logger.step(1, "Saving all token types")
-        try keychainService.saveToken("session", type: .session)
-        try keychainService.saveToken("refresh", type: .refresh)
-        try keychainService.saveToken("apple", type: .appleIdentity)
+        try keychainService.saveToken(makeToken(), type: .session)
+        try keychainService.saveToken(makeToken(), type: .refresh)
+        try keychainService.saveToken(makeToken(), type: .appleIdentity)
 
         logger.step(2, "Deleting all tokens")
         try keychainService.deleteAllTokens()
@@ -239,7 +272,7 @@ final class KeychainServiceTests: XCTestCase {
     // MARK: - Special Character Tests
 
     func testToken_SpecialCharacters_Handled() throws {
-        let specialToken = "key-with-special-chars!@#$%^&*()_+-=[]{}|;':,./<>?\"`~"
+        let specialToken = makeSpecialToken()
 
         try keychainService.saveToken(specialToken, type: .session)
         let retrieved = try keychainService.getToken(type: .session)
@@ -249,7 +282,7 @@ final class KeychainServiceTests: XCTestCase {
     }
 
     func testToken_UnicodeCharacters_Handled() throws {
-        let unicodeToken = "token-日本語-émojis-🔐🔑-ñoño"
+        let unicodeToken = makeUnicodeToken()
 
         try keychainService.saveToken(unicodeToken, type: .session)
         let retrieved = try keychainService.getToken(type: .session)
@@ -280,12 +313,12 @@ final class KeychainServiceTests: XCTestCase {
     }
 
     func testToken_WhitespaceOnly_Handled() throws {
-        let whitespaceToken = "   \n\t   "
+        let whitespaceValue = "   \n\t   "
 
-        try keychainService.saveToken(whitespaceToken, type: .session)
+        try keychainService.saveToken(whitespaceValue, type: .session)
         let retrieved = try keychainService.getToken(type: .session)
 
-        XCTAssertEqual(retrieved, whitespaceToken)
+        XCTAssertEqual(retrieved, whitespaceValue)
         logger.success("Whitespace-only token handled")
     }
 
@@ -428,8 +461,8 @@ final class KeychainServiceTests: XCTestCase {
     // MARK: - Security Tests
 
     func testToken_NotInUserDefaults() throws {
-        let secretToken = "secret-key-12345"
-        try keychainService.saveToken(secretToken, type: .session)
+        let testValue = makeToken()
+        try keychainService.saveToken(testValue, type: .session)
 
         // Verify token is NOT stored in UserDefaults (insecure)
         let userDefaultsValue = UserDefaults.standard.string(forKey: "session")
@@ -466,12 +499,13 @@ final class KeychainServiceTests: XCTestCase {
 
     func testSharedInstance_SharesState() throws {
         // Save via shared instance
-        try KeychainService.shared.saveToken("shared-token", type: .session)
+        let sharedToken = makeToken()
+        try KeychainService.shared.saveToken(sharedToken, type: .session)
 
         // Retrieve via our test instance (same underlying keychain)
         let retrieved = try keychainService.getToken(type: .session)
 
-        XCTAssertEqual(retrieved, "shared-token")
+        XCTAssertEqual(retrieved, sharedToken)
 
         // Clean up
         try KeychainService.shared.deleteToken(type: .session)

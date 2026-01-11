@@ -20,6 +20,37 @@ struct SearchResults: Sendable {
     static let empty = SearchResults(quotes: [], books: [], query: "")
 }
 
+// MARK: - FTS5 Highlight Parsing
+
+/// Converts FTS5 `<mark>` tags to AttributedString with yellow highlighting
+private func parseFTS5Highlight(_ text: String) -> AttributedString {
+    var remaining = text
+    var result = AttributedString()
+
+    while let startRange = remaining.range(of: "<mark>") {
+        // Add text before the mark
+        let beforeMark = String(remaining[..<startRange.lowerBound])
+        result.append(AttributedString(beforeMark))
+
+        // Remove the opening tag
+        remaining = String(remaining[startRange.upperBound...])
+
+        // Find closing tag
+        if let endRange = remaining.range(of: "</mark>") {
+            let markedText = String(remaining[..<endRange.lowerBound])
+            var highlighted = AttributedString(markedText)
+            highlighted.backgroundColor = .yellow.opacity(0.4)
+            highlighted.font = .body.bold()
+            result.append(highlighted)
+            remaining = String(remaining[endRange.upperBound...])
+        }
+    }
+
+    // Add remaining text
+    result.append(AttributedString(remaining))
+    return result
+}
+
 // MARK: - Quote Search Result
 
 /// A quote match from FTS5 search with highlighting support
@@ -40,31 +71,7 @@ struct SearchQuoteResult: Identifiable, Sendable {
 
     /// Convert FTS5 <mark> tags to AttributedString with highlighting
     var highlightedSnippet: AttributedString {
-        var text = snippet
-        var result = AttributedString()
-
-        while let startRange = text.range(of: "<mark>") {
-            // Add text before the mark
-            let beforeMark = String(text[..<startRange.lowerBound])
-            result.append(AttributedString(beforeMark))
-
-            // Remove the opening tag
-            text = String(text[startRange.upperBound...])
-
-            // Find closing tag
-            if let endRange = text.range(of: "</mark>") {
-                let markedText = String(text[..<endRange.lowerBound])
-                var highlighted = AttributedString(markedText)
-                highlighted.backgroundColor = .yellow.opacity(0.4)
-                highlighted.font = .body.bold()
-                result.append(highlighted)
-                text = String(text[endRange.upperBound...])
-            }
-        }
-
-        // Add remaining text
-        result.append(AttributedString(text))
-        return result
+        parseFTS5Highlight(snippet)
     }
 
     /// Plain text without HTML tags
@@ -95,35 +102,12 @@ struct SearchBookResult: Identifiable, Sendable {
 
     /// Highlighted title
     var highlightedTitle: AttributedString {
-        convertToHighlighted(titleSnippet)
+        parseFTS5Highlight(titleSnippet)
     }
 
     /// Highlighted author
     var highlightedAuthor: AttributedString {
-        convertToHighlighted(authorSnippet)
-    }
-
-    private func convertToHighlighted(_ text: String) -> AttributedString {
-        var remaining = text
-        var result = AttributedString()
-
-        while let startRange = remaining.range(of: "<mark>") {
-            let beforeMark = String(remaining[..<startRange.lowerBound])
-            result.append(AttributedString(beforeMark))
-            remaining = String(remaining[startRange.upperBound...])
-
-            if let endRange = remaining.range(of: "</mark>") {
-                let markedText = String(remaining[..<endRange.lowerBound])
-                var highlighted = AttributedString(markedText)
-                highlighted.backgroundColor = .yellow.opacity(0.4)
-                highlighted.font = .body.bold()
-                result.append(highlighted)
-                remaining = String(remaining[endRange.upperBound...])
-            }
-        }
-
-        result.append(AttributedString(remaining))
-        return result
+        parseFTS5Highlight(authorSnippet)
     }
 }
 

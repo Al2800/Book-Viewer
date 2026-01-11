@@ -102,7 +102,14 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(.preview)
-        .environment(NetworkMonitor())
+    Group {
+        if let container = ModelContainer.preview {
+            ContentView()
+                .modelContainer(container)
+                .environment(NetworkMonitor())
+        } else {
+            Text("Preview unavailable")
+                .foregroundStyle(.secondary)
+        }
+    }
 }

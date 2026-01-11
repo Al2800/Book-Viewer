@@ -301,7 +301,8 @@ enum MockCameraImages {
                 colorsSpace: CGColorSpaceCreateDeviceRGB(),
                 colors: colors as CFArray,
                 locations: [0, 1]
-            )!
+            )
+            guard let gradient else { return }
             ctx.drawLinearGradient(
                 gradient,
                 start: .zero,

@@ -39,7 +39,7 @@ actor CaptureQueueManager {
     init(
         modelContainer: ModelContainer,
         geminiService: GeminiService,
-        networkMonitor: NetworkMonitor = .shared
+        networkMonitor: NetworkMonitor
     ) {
         self.modelContainer = modelContainer
         self.geminiService = geminiService
@@ -531,11 +531,13 @@ extension CaptureQueueManager {
     @MainActor
     static func initialize(
         modelContainer: ModelContainer,
-        geminiService: GeminiService
+        geminiService: GeminiService,
+        networkMonitor: NetworkMonitor
     ) {
         shared = CaptureQueueManager(
             modelContainer: modelContainer,
-            geminiService: geminiService
+            geminiService: geminiService,
+            networkMonitor: networkMonitor
         )
     }
 }

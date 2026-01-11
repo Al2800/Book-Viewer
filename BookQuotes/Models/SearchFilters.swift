@@ -80,7 +80,7 @@ struct SearchFilters: Equatable, Sendable {
         !markingDefinitionIds.isEmpty ||
         dateRange != .allTime ||
         favoritesOnly ||
-        minConfidence != nil
+        hasMinConfidence
     }
 
     /// Count of active filter categories
@@ -90,7 +90,7 @@ struct SearchFilters: Equatable, Sendable {
         if !markingTypes.isEmpty || !markingDefinitionIds.isEmpty { count += 1 }
         if dateRange != .allTime { count += 1 }
         if favoritesOnly { count += 1 }
-        if minConfidence != nil { count += 1 }
+        if hasMinConfidence { count += 1 }
         return count
     }
 
@@ -101,7 +101,11 @@ struct SearchFilters: Equatable, Sendable {
         markingDefinitionIds.count +
         (dateRange != .allTime ? 1 : 0) +
         (favoritesOnly ? 1 : 0) +
-        (minConfidence != nil ? 1 : 0)
+        (hasMinConfidence ? 1 : 0)
+    }
+
+    private var hasMinConfidence: Bool {
+        minConfidence.map { _ in true } ?? false
     }
 
     /// The effective date interval for filtering

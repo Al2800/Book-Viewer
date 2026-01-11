@@ -233,6 +233,13 @@ struct EmptyLibraryView: View {
 
 
 #Preview {
-    LibraryTab()
-        .modelContainer(.preview)
+    Group {
+        if let container = ModelContainer.preview {
+            LibraryTab()
+                .modelContainer(container)
+        } else {
+            Text("Preview unavailable")
+                .foregroundStyle(.secondary)
+        }
+    }
 }

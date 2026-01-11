@@ -110,13 +110,13 @@ actor SearchDatabase {
 
         // Add prefix operator to last term for instant-as-you-type search
         // "swift program" → "swift program*"
+        guard let last = terms.last else { return "" }
         if terms.count == 1 {
-            return "\(terms[0])*"
-        } else {
-            let allButLast = terms.dropLast().joined(separator: " ")
-            let last = terms.last!
-            return "\(allButLast) \(last)*"
+            return "\(last)*"
         }
+
+        let allButLast = terms.dropLast().joined(separator: " ")
+        return "\(allButLast) \(last)*"
     }
 
     private func searchQuotes(_ ftsQuery: String) throws -> [SearchQuoteResult] {
@@ -548,7 +548,8 @@ actor SearchDatabase {
             }
 
             let candidate = String(cString: termCStr)
-            let distance = levenshteinDistance(lowercasedTerm, candidate)
+            // Use global levenshteinDistance function from LevenshteinDistance.swift
+            let distance = BookQuotes.levenshteinDistance(lowercasedTerm, candidate)
             candidates.append((candidate, distance))
         }
 
@@ -559,39 +560,6 @@ actor SearchDatabase {
         }
 
         return nil
-    }
-
-    /// Simple Levenshtein distance implementation
-    private func levenshteinDistance(_ s1: String, _ s2: String) -> Int {
-        let s1Array = Array(s1)
-        let s2Array = Array(s2)
-        let m = s1Array.count
-        let n = s2Array.count
-
-        if m == 0 { return n }
-        if n == 0 { return m }
-
-        var matrix = [[Int]](repeating: [Int](repeating: 0, count: n + 1), count: m + 1)
-
-        for i in 0...m {
-            matrix[i][0] = i
-        }
-        for j in 0...n {
-            matrix[0][j] = j
-        }
-
-        for i in 1...m {
-            for j in 1...n {
-                let cost = s1Array[i - 1] == s2Array[j - 1] ? 0 : 1
-                matrix[i][j] = min(
-                    matrix[i - 1][j] + 1,      // deletion
-                    matrix[i][j - 1] + 1,      // insertion
-                    matrix[i - 1][j - 1] + cost // substitution
-                )
-            }
-        }
-
-        return matrix[m][n]
     }
 
     /// Suggest correction for likely typos

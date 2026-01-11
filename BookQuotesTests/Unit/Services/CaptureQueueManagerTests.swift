@@ -27,7 +27,8 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
 
         queueManager = CaptureQueueManager(
             modelContainer: modelContainer,
-            geminiService: geminiService
+            geminiService: geminiService,
+            networkMonitor: NetworkMonitor()
         )
 
         logger.info("CaptureQueueManagerTests setup complete")

@@ -129,10 +129,18 @@ struct SignInView: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: Spacing.xs) {
-                Link("Terms of Service", destination: URL(string: "https://bookquotes.app/terms")!)
+                if let termsURL = URL(string: "https://bookquotes.app/terms") {
+                    Link("Terms of Service", destination: termsURL)
+                } else {
+                    Text("Terms of Service")
+                }
                 Text("and")
                     .foregroundStyle(.secondary)
-                Link("Privacy Policy", destination: URL(string: "https://bookquotes.app/privacy")!)
+                if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
+                    Link("Privacy Policy", destination: privacyURL)
+                } else {
+                    Text("Privacy Policy")
+                }
             }
             .font(.caption)
         }

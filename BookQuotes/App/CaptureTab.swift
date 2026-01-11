@@ -96,46 +96,8 @@ struct CaptureOptionCard: View {
     }
 }
 
-// MARK: - Placeholder Capture Views
-
-/// Cover capture placeholder
-struct CoverCaptureView: View {
-    var body: some View {
-        ContentUnavailableView {
-            Label("Camera Not Available", systemImage: "camera")
-        } description: {
-            Text("Camera capture will be implemented in the next phase.")
-        }
-        .navigationTitle("Capture Cover")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-/// Quote page capture placeholder
-struct QuoteCaptureView: View {
-    var body: some View {
-        ContentUnavailableView {
-            Label("Camera Not Available", systemImage: "camera")
-        } description: {
-            Text("Quote capture will be implemented in the next phase.")
-        }
-        .navigationTitle("Capture Quotes")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-/// Batch capture placeholder
-struct BatchCaptureView: View {
-    var body: some View {
-        ContentUnavailableView {
-            Label("Camera Not Available", systemImage: "camera")
-        } description: {
-            Text("Batch capture will be implemented in the next phase.")
-        }
-        .navigationTitle("Batch Mode")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
+// Note: CoverCaptureView and QuoteCaptureView are defined in their respective
+// feature modules (BookRegistration and Capture folders)
 
 #Preview {
     CaptureTab()

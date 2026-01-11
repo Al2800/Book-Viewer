@@ -75,8 +75,9 @@ final class ISBNScanner {
             }
             return result?.isbn
         } catch {
-            self.error = error as? ISBNScannerError ?? .detectionFailed(error.localizedDescription)
-            throw self.error!
+            let scanError = error as? ISBNScannerError ?? .detectionFailed(error.localizedDescription)
+            self.error = scanError
+            throw scanError
         }
     }
 

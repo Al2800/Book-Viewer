@@ -358,8 +358,7 @@ extension CaptureQueueItem {
         return FetchDescriptor<CaptureQueueItem>(
             predicate: #Predicate<CaptureQueueItem> { item in
                 (item.status == .completed || item.status == .cancelled) &&
-                item.dateCompleted != nil &&
-                item.dateCompleted! < cutoffDate
+                (item.dateCompleted ?? cutoffDate) < cutoffDate
             }
         )
     }

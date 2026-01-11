@@ -183,5 +183,6 @@ extension NetworkMonitor {
 extension NetworkMonitor {
     /// Shared instance for app-wide network monitoring.
     /// Start monitoring in your App's init or scene phase handler.
-    nonisolated(unsafe) static let shared = NetworkMonitor()
+    @MainActor
+    static let shared = NetworkMonitor()
 }

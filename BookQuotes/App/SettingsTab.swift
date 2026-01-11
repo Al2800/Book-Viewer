@@ -3,14 +3,14 @@ import SwiftData
 
 /// Settings tab - configuration, account, and marking definitions
 struct SettingsTab: View {
-    // MARK: - Properties
+    // MARK: - Environment
 
-    let authService: AuthService
-    let subscriptionService: SubscriptionService
+    @Environment(AuthService.self) private var authService
 
     // MARK: - State
 
     @State private var router = RouterPath()
+    @State private var subscriptionService: SubscriptionService?
 
     // MARK: - Body
 
@@ -20,10 +20,12 @@ struct SettingsTab: View {
                 .navigationDestination(for: SettingsDestination.self) { destination in
                     switch destination {
                     case .account:
-                        AccountView(
-                            authService: authService,
-                            subscriptionService: subscriptionService
-                        )
+                        if let subscriptionService {
+                            AccountView(
+                                authService: authService,
+                                subscriptionService: subscriptionService
+                            )
+                        }
                     case .markings:
                         MarkingDefinitionsView()
                     case .storage:
@@ -34,6 +36,11 @@ struct SettingsTab: View {
                 }
         }
         .environment(router)
+        .onAppear {
+            if subscriptionService == nil {
+                subscriptionService = SubscriptionService(authService: authService)
+            }
+        }
     }
 }
 
@@ -105,12 +112,16 @@ struct SettingsView: View {
                     Label("About BookQuotes", systemImage: "info.circle")
                 }
 
-                Link(destination: URL(string: "https://bookquotes.app/privacy")!) {
-                    Label("Privacy Policy", systemImage: "hand.raised")
+                if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
+                    Link(destination: privacyURL) {
+                        Label("Privacy Policy", systemImage: "hand.raised")
+                    }
                 }
 
-                Link(destination: URL(string: "https://bookquotes.app/terms")!) {
-                    Label("Terms of Service", systemImage: "doc.text")
+                if let termsURL = URL(string: "https://bookquotes.app/terms") {
+                    Link(destination: termsURL) {
+                        Label("Terms of Service", systemImage: "doc.text")
+                    }
                 }
             }
         }
@@ -599,10 +610,14 @@ struct StorageBackupView: View {
 }
 
 #Preview {
-    let authService = AuthService()
-    return SettingsTab(
-        authService: authService,
-        subscriptionService: SubscriptionService(authService: authService)
-    )
-    .modelContainer(.preview)
+    Group {
+        if let container = ModelContainer.preview {
+            SettingsTab()
+                .environment(AuthService())
+                .modelContainer(container)
+        } else {
+            Text("Preview unavailable")
+                .foregroundStyle(.secondary)
+        }
+    }
 }

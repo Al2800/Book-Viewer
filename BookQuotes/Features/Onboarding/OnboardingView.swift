@@ -163,10 +163,18 @@ struct OnboardingView: View {
                     .foregroundStyle(.secondary)
 
                 HStack(spacing: Spacing.xs) {
-                    Link("Terms", destination: URL(string: "https://bookquotes.app/terms")!)
+                    if let termsURL = URL(string: "https://bookquotes.app/terms") {
+                        Link("Terms", destination: termsURL)
+                    } else {
+                        Text("Terms")
+                    }
                     Text("and")
                         .foregroundStyle(.secondary)
-                    Link("Privacy Policy", destination: URL(string: "https://bookquotes.app/privacy")!)
+                    if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
+                        Link("Privacy Policy", destination: privacyURL)
+                    } else {
+                        Text("Privacy Policy")
+                    }
                 }
                 .font(.caption)
             }

@@ -164,32 +164,47 @@ struct DidYouMeanBanner: View {
 
 #Preview("Search Suggestions") {
     struct PreviewWrapper: View {
-        @State private var suggestions = SearchSuggestionsService(searchDB: try! SearchDatabase())
+        private let suggestionsService: SearchSuggestionsService?
+
+        init() {
+            if let searchDB = try? SearchDatabase() {
+                suggestionsService = SearchSuggestionsService(searchDB: searchDB)
+            } else {
+                suggestionsService = nil
+            }
+        }
 
         var body: some View {
-            VStack(spacing: 0) {
-                // Simulated search bar
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                    Text("swift")
-                        .foregroundStyle(.primary)
-                    Spacer()
-                }
-                .padding()
-                .background(Color.backgroundSecondary)
+            Group {
+                if let suggestionsService {
+                    VStack(spacing: 0) {
+                        // Simulated search bar
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                            Text("swift")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                        }
+                        .padding()
+                        .background(Color.backgroundSecondary)
 
-                SearchSuggestionsView(
-                    onSelect: { text in
-                        print("Selected: \(text)")
-                    },
-                    onClearHistory: {
-                        print("Clear history")
+                        SearchSuggestionsView(
+                            onSelect: { text in
+                                print("Selected: \(text)")
+                            },
+                            onClearHistory: {
+                                print("Clear history")
+                            }
+                        )
+                        .environment(suggestionsService)
                     }
-                )
-                .environment(suggestions)
-            }
-            .task {
-                await suggestions.getSuggestions(for: "swift")
+                    .task {
+                        await suggestionsService.getSuggestions(for: "swift")
+                    }
+                } else {
+                    Text("Search suggestions unavailable")
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }

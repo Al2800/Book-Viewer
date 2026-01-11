@@ -118,17 +118,33 @@ actor ISBNLookupService {
     // MARK: - Configuration
 
     private let session: URLSession
-    private let googleBooksBaseURL = "https://www.googleapis.com/books/v1/volumes"
-    private let openLibraryBaseURL = "https://openlibrary.org/api/books"
+    private let googleBooksBaseURL: URL
+    private let openLibraryBaseURL: URL
 
     /// Cache for recent lookups to avoid repeated API calls
     private var cache: [String: CachedMetadata] = [:]
     private let cacheExpiration: TimeInterval = 3600 // 1 hour
 
+    private static func makeBaseURL(host: String, path: String) -> URL {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+        components.path = path
+        return components.url ?? URL(fileURLWithPath: "/")
+    }
+
     // MARK: - Initialization
 
     init(session: URLSession = .shared) {
         self.session = session
+        self.googleBooksBaseURL = ISBNLookupService.makeBaseURL(
+            host: "www.googleapis.com",
+            path: "/books/v1/volumes"
+        )
+        self.openLibraryBaseURL = ISBNLookupService.makeBaseURL(
+            host: "openlibrary.org",
+            path: "/api/books"
+        )
     }
 
     // MARK: - Public API
@@ -164,9 +180,14 @@ actor ISBNLookupService {
     /// Look up using Google Books only
     func lookupGoogleBooks(isbn: String) async throws -> BookMetadata {
         let normalizedISBN = normalizeISBN(isbn)
-        let urlString = "\(googleBooksBaseURL)?q=isbn:\(normalizedISBN)"
 
-        guard let url = URL(string: urlString) else {
+        guard var components = URLComponents(url: googleBooksBaseURL, resolvingAgainstBaseURL: false) else {
+            throw LookupError.invalidURL
+        }
+        components.queryItems = [
+            URLQueryItem(name: "q", value: "isbn:\(normalizedISBN)")
+        ]
+        guard let url = components.url else {
             throw LookupError.invalidURL
         }
 
@@ -202,9 +223,16 @@ actor ISBNLookupService {
     /// Look up using OpenLibrary only
     func lookupOpenLibrary(isbn: String) async throws -> BookMetadata {
         let normalizedISBN = normalizeISBN(isbn)
-        let urlString = "\(openLibraryBaseURL)?bibkeys=ISBN:\(normalizedISBN)&format=json&jscmd=data"
 
-        guard let url = URL(string: urlString) else {
+        guard var components = URLComponents(url: openLibraryBaseURL, resolvingAgainstBaseURL: false) else {
+            throw LookupError.invalidURL
+        }
+        components.queryItems = [
+            URLQueryItem(name: "bibkeys", value: "ISBN:\(normalizedISBN)"),
+            URLQueryItem(name: "format", value: "json"),
+            URLQueryItem(name: "jscmd", value: "data")
+        ]
+        guard let url = components.url else {
             throw LookupError.invalidURL
         }
 

@@ -26,6 +26,14 @@ final class AuthService: NSObject {
     /// Base URL for the authentication server
     private let serverBaseURL: URL
 
+    /// Default server base URL
+    private static let defaultServerBaseURL: URL = {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "bookquotes-proxy.your-worker.workers.dev"
+        return components.url ?? URL(fileURLWithPath: "/")
+    }()
+
     // MARK: - Computed Properties
 
     /// Whether a user is currently authenticated
@@ -42,7 +50,7 @@ final class AuthService: NSObject {
 
     init(
         keychainService: KeychainService = KeychainService(),
-        serverBaseURL: URL = URL(string: "https://bookquotes-proxy.your-worker.workers.dev")!
+        serverBaseURL: URL = AuthService.defaultServerBaseURL
     ) {
         self.keychainService = keychainService
         self.serverBaseURL = serverBaseURL

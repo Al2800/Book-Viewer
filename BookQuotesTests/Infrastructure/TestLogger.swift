@@ -4,8 +4,7 @@ import os.log
 // MARK: - TestLogger
 
 /// Thread-safe test logger with structured output.
-/// Conforms to Sendable for safe use across actor boundaries.
-final class TestLogger: Sendable {
+final class TestLogger {
 
     // MARK: - Log Levels
 
@@ -267,9 +266,9 @@ final class TestLogger: Sendable {
 
 // MARK: - LockedState
 
-/// Sendable wrapper for mutable state with lock-based synchronization.
-/// Use this when you need shared mutable state that's safe across actor boundaries.
-final class LockedState<T>: @unchecked Sendable {
+/// Wrapper for mutable state with lock-based synchronization.
+/// Use this when you need shared mutable state in tests.
+final class LockedState<T> {
     private var value: T
     private let lock = NSLock()
 

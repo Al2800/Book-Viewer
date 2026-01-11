@@ -110,7 +110,10 @@ enum ISBNValidator {
             if char == "X" {
                 value = 10
             } else {
-                value = Int(String(char))!
+                guard let digit = Int(String(char)) else {
+                    return .invalid(reason: "ISBN-10 contains invalid digit")
+                }
+                value = digit
             }
             sum += (10 - index) * value
         }

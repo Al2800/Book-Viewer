@@ -161,11 +161,8 @@ final class PageCapture {
 
     /// Load the full image from disk
     func loadFullImage() -> UIImage? {
-        guard let url = imageURL,
-              let data = try? Data(contentsOf: url) else {
-            return nil
-        }
-        return UIImage(data: data)
+        guard let url = imageURL else { return nil }
+        return UIImage(contentsOfFile: url.path)
     }
 
     /// Delete the image file from disk
@@ -215,6 +212,16 @@ extension PageCapture {
 // MARK: - Image Storage Utilities
 
 extension PageCapture {
+    private static func documentsDirectory() throws -> URL {
+        guard let documentsURL = FileManager.default
+            .urls(for: .documentDirectory, in: .userDomainMask)
+            .first else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        return documentsURL
+    }
+
     /// Generate a unique file path for a new capture
     /// - Parameter sessionId: The session this capture belongs to
     /// - Returns: Relative path from Documents directory
@@ -225,9 +232,7 @@ extension PageCapture {
 
     /// Ensure the directory exists for a given session
     static func ensureDirectory(for sessionId: UUID) throws {
-        let documentsURL = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)
-            .first!
+        let documentsURL = try documentsDirectory()
 
         let directoryURL = documentsURL
             .appendingPathComponent("captures")
@@ -244,9 +249,7 @@ extension PageCapture {
     ///   - data: JPEG image data
     ///   - path: Relative path from Documents
     static func saveImage(_ data: Data, to path: String) throws {
-        let documentsURL = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)
-            .first!
+        let documentsURL = try documentsDirectory()
 
         let fileURL = documentsURL.appendingPathComponent(path)
         try data.write(to: fileURL)

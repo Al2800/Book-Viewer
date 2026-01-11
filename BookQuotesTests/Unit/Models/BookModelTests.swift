@@ -41,7 +41,7 @@ final class BookModelTests: SwiftDataTestCase {
 
         logger.step(2, "Inserting and fetching")
         try insertBook(book)
-        let fetched = try fetchAllBooks().first!
+        let fetched = try XCTUnwrap(fetchAllBooks().first)
 
         logger.step(3, "Verifying all fields persisted")
         XCTAssertEqual(fetched.title, "Complete Book")
@@ -59,7 +59,7 @@ final class BookModelTests: SwiftDataTestCase {
         try insertBook(book)
 
         logger.step(2, "Fetching and verifying nil optionals")
-        let fetched = try fetchAllBooks().first!
+        let fetched = try XCTUnwrap(fetchAllBooks().first)
 
         XCTAssertNil(fetched.subtitle)
         XCTAssertNil(fetched.publisher)
@@ -154,7 +154,7 @@ final class BookModelTests: SwiftDataTestCase {
             let book = TestFixtures.book { b in b.status = status }
             try insertBook(book)
 
-            let fetched = try fetchAllBooks().last!
+            let fetched = try XCTUnwrap(fetchAllBooks().last)
             XCTAssertEqual(fetched.status, status)
 
             modelContext.delete(fetched)
@@ -178,7 +178,7 @@ final class BookModelTests: SwiftDataTestCase {
 
         logger.step(2, "Inserting and fetching")
         try insertBook(book)
-        let fetched = try fetchAllBooks().first!
+        let fetched = try XCTUnwrap(fetchAllBooks().first)
 
         logger.step(3, "Verifying image data matches")
         XCTAssertNotNil(fetched.coverThumbnailData)
@@ -191,7 +191,7 @@ final class BookModelTests: SwiftDataTestCase {
         let book = Book(title: "No Cover", author: "Author")
         try insertBook(book)
 
-        let fetched = try fetchAllBooks().first!
+        let fetched = try XCTUnwrap(fetchAllBooks().first)
         // Note: TestFixtures adds default cover, but raw Book init doesn't
         // This test verifies raw init behavior
         let rawBook = Book(title: "Raw", author: "Author")

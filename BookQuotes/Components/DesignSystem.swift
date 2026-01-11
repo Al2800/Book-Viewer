@@ -16,6 +16,8 @@ extension Color {
     static let backgroundPrimary = Color("BackgroundPrimary")
     /// Subtle cream #F5F5F0
     static let backgroundSecondary = Color("BackgroundSecondary")
+    /// Light gray for tertiary backgrounds #EAEAE5
+    static let backgroundTertiary = Color("BackgroundTertiary")
     /// Paper white #FFFFFF
     static let backgroundCard = Color("BackgroundCard")
 
