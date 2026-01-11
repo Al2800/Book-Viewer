@@ -40,8 +40,10 @@ struct LibraryView: View {
     @State private var searchScope: SearchScope = .all
     @State private var isSearchActive = false
     @State private var searchService: SearchService?
+    @State private var suggestionsService: SearchSuggestionsService?
     @State private var bookToDelete: Book?
     @State private var showDeleteConfirmation = false
+    @State private var showAddBookSheet = false
     @State private var hasAppeared = false
     @State private var isRefreshing = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -74,7 +76,7 @@ struct LibraryView: View {
                     }
                 )
             } else if books.isEmpty {
-                EmptyLibraryView()
+                EmptyLibraryView(onAddBook: { showAddBookSheet = true })
             } else {
                 // Normal library view with animated transitions
                 Group {
@@ -108,6 +110,20 @@ struct LibraryView: View {
             Text("Books").tag(SearchScope.books)
             Text("Quotes").tag(SearchScope.quotes)
         }
+        .searchSuggestions {
+            if let suggestionsService {
+                SearchSuggestionsContent(
+                    appeared: true,
+                    onSelect: { text in
+                        searchText = text
+                    },
+                    onClearHistory: {
+                        suggestionsService.clearHistory()
+                    }
+                )
+                .environment(suggestionsService)
+            }
+        }
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 // View mode picker
@@ -120,7 +136,8 @@ struct LibraryView: View {
 
                 // Add book button
                 Button {
-                    // TODO: Navigate to add book flow
+                    HapticManager.light()
+                    showAddBookSheet = true
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -128,7 +145,7 @@ struct LibraryView: View {
             }
         }
         .onAppear {
-            initializeSearchService()
+            initializeSearchServices()
             // Trigger entrance animation
             guard !reduceMotion else {
                 hasAppeared = true
@@ -140,6 +157,22 @@ struct LibraryView: View {
         }
         .onChange(of: viewMode) { _, _ in
             HapticManager.selection()
+        }
+        .onChange(of: searchText) { _, newValue in
+            guard let suggestionsService else { return }
+            Task {
+                await suggestionsService.getSuggestions(for: newValue)
+            }
+        }
+        .onChange(of: isSearchActive) { _, isActive in
+            guard let suggestionsService else { return }
+            if isActive {
+                Task {
+                    await suggestionsService.getSuggestions(for: searchText)
+                }
+            } else {
+                suggestionsService.clearSuggestions()
+            }
         }
         .confirmationDialog(
             "Delete \"\(bookToDelete?.title ?? "")\"?",
@@ -157,6 +190,12 @@ struct LibraryView: View {
         } message: {
             if let book = bookToDelete {
                 Text("This will permanently delete the book and all \(book.quoteCount) quote\(book.quoteCount == 1 ? "" : "s"). This cannot be undone.")
+            }
+        }
+        .sheet(isPresented: $showAddBookSheet) {
+            BookEditView(mode: .create) { newBook in
+                // Navigate to the newly created book
+                router.navigate(to: newBook)
             }
         }
     }
@@ -227,10 +266,12 @@ struct LibraryView: View {
 
     // MARK: - Private Methods
 
-    private func initializeSearchService() {
-        guard searchService == nil else { return }
+    private func initializeSearchServices() {
+        guard searchService == nil || suggestionsService == nil else { return }
         do {
-            searchService = try SearchService()
+            let searchDB = try SearchDatabase()
+            searchService = SearchService(database: searchDB)
+            suggestionsService = SearchSuggestionsService(searchDB: searchDB)
         } catch {
             print("Failed to initialize SearchService: \(error)")
         }
@@ -304,6 +345,9 @@ struct LibraryView: View {
 
 /// Empty state for library with entrance animation
 struct EmptyLibraryView: View {
+    /// Callback when user taps "Add Your First Book"
+    var onAddBook: (() -> Void)?
+
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -313,7 +357,13 @@ struct EmptyLibraryView: View {
         } description: {
             Text("Capture your first book cover to start building your library.")
         } actions: {
-            // Will be wired to capture tab later
+            Button {
+                HapticManager.light()
+                onAddBook?()
+            } label: {
+                Label("Add Your First Book", systemImage: "plus.circle.fill")
+            }
+            .buttonStyle(.borderedProminent)
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.emptyState)
         // Entrance animation

@@ -20,27 +20,11 @@ struct SearchSuggestionsView: View {
     var body: some View {
         if shouldShowSuggestions {
             List {
-                if suggestionsService.isLoading {
-                    loadingRow
-                }
-
-                ForEach(Array(suggestionsService.suggestions.enumerated()), id: \.element.id) { index, suggestion in
-                    SuggestionRow(suggestion: suggestion) {
-                        onSelect(suggestion.text)
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: Spacing.xs, leading: Spacing.md, bottom: Spacing.xs, trailing: Spacing.md))
-                    .listRowBackground(Color.clear)
-                    .accessibleStaggeredEntrance(appeared: appeared, index: index)
-                }
-
-                // Clear history button if showing recent searches
-                if hasRecentSuggestions {
-                    clearHistoryButton
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: Spacing.xs, leading: Spacing.md, bottom: Spacing.xs, trailing: Spacing.md))
-                        .listRowBackground(Color.clear)
-                }
+                SearchSuggestionsContent(
+                    appeared: appeared,
+                    onSelect: onSelect,
+                    onClearHistory: onClearHistory
+                )
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
@@ -60,12 +44,43 @@ struct SearchSuggestionsView: View {
     private var shouldShowSuggestions: Bool {
         !suggestionsService.suggestions.isEmpty || suggestionsService.isLoading
     }
+}
+
+// MARK: - SearchSuggestionsContent
+
+struct SearchSuggestionsContent: View {
+    @Environment(SearchSuggestionsService.self) private var suggestionsService
+
+    let appeared: Bool
+    let onSelect: (String) -> Void
+    let onClearHistory: () -> Void
+
+    var body: some View {
+        if suggestionsService.isLoading {
+            loadingRow
+        }
+
+        ForEach(Array(suggestionsService.suggestions.enumerated()), id: \.element.id) { index, suggestion in
+            SuggestionRow(suggestion: suggestion) {
+                onSelect(suggestion.text)
+            }
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: Spacing.xs, leading: Spacing.md, bottom: Spacing.xs, trailing: Spacing.md))
+            .listRowBackground(Color.clear)
+            .accessibleStaggeredEntrance(appeared: appeared, index: index)
+        }
+
+        if hasRecentSuggestions {
+            clearHistoryButton
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: Spacing.xs, leading: Spacing.md, bottom: Spacing.xs, trailing: Spacing.md))
+                .listRowBackground(Color.clear)
+        }
+    }
 
     private var hasRecentSuggestions: Bool {
         suggestionsService.suggestions.contains { $0.isRecent }
     }
-
-    // MARK: - Subviews
 
     private var clearHistoryButton: some View {
         Button(role: .destructive) {
