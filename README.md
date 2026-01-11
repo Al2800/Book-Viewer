@@ -67,15 +67,38 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 
 ## Documentation
 
+### Getting Started
+
 | Document | Description |
 |----------|-------------|
-| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Full project plan, phases, architecture |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | **Start here** — Core patterns, state management, navigation |
+| [docs/SERVICES.md](docs/SERVICES.md) | All services explained with usage examples |
+| [docs/TESTING.md](docs/TESTING.md) | Testing strategy, patterns, and how to run tests |
+
+### Feature Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/CAPTURE_FLOW.md](docs/CAPTURE_FLOW.md) | End-to-end capture system (single, batch, offline queue) |
+| [docs/SEARCH_SYSTEM.md](docs/SEARCH_SYSTEM.md) | SQLite FTS5 search architecture and query processing |
+| [docs/CUSTOM_MARKINGS.md](docs/CUSTOM_MARKINGS.md) | User-defined annotation vocabulary system |
+| [docs/OFFLINE_AND_EXPORTS.md](docs/OFFLINE_AND_EXPORTS.md) | Offline queue and export formats (Markdown, Obsidian, Notion) |
+
+### Technical Specifications
+
+| Document | Description |
+|----------|-------------|
 | [docs/DATA_MODELS.md](docs/DATA_MODELS.md) | SwiftData models, relationships, queries |
 | [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md) | Gemini API service, prompts, error handling |
 | [docs/UI_COMPONENTS.md](docs/UI_COMPONENTS.md) | Design system, components, screens |
-| [docs/CUSTOM_MARKINGS.md](docs/CUSTOM_MARKINGS.md) | User-defined annotation vocabulary system |
-| [docs/OFFLINE_AND_EXPORTS.md](docs/OFFLINE_AND_EXPORTS.md) | Offline queue, Notion/Obsidian export |
-| [docs/PRIORITY_FEATURES.md](docs/PRIORITY_FEATURES.md) | **5 priority features with full technical specs** |
+| [docs/PRIORITY_FEATURES.md](docs/PRIORITY_FEATURES.md) | 5 priority features with full technical specs |
+
+### Project Planning
+
+| Document | Description |
+|----------|-------------|
+| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Full project plan, phases, architecture |
+| [AGENTS.md](AGENTS.md) | AI agent instructions and workflow guidelines |
 
 ## Project Structure
 
