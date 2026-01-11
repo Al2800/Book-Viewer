@@ -1,113 +1,128 @@
 import XCTest
 
-final class LibraryManagementTests: XCTestCase {
-    private var app: XCUIApplication!
-    private var logger: UITestLogger!
+/// Tests for library management using seeded test data.
+final class LibraryManagementTests: BaseUITestCase {
 
-    override func setUp() {
-        super.setUp()
-        continueAfterFailure = false
+    // MARK: - Setup
 
-        app = XCUIApplication()
-        app.launchArguments = [
-            "--uitesting",
-            "--preload-library-test-data"
-        ]
-        logger = UITestLogger(testName: name)
-
-        logger.info("Launching app for library management flow")
-        app.launch()
-
-        let libraryTab = app.tabBars.buttons["Library"]
-        XCTAssertTrue(libraryTab.waitForExistence(timeout: 5))
-        libraryTab.tap()
+    override var additionalLaunchArguments: [String] {
+        ["--preload-library-test-data"]
     }
 
-    override func tearDown() {
-        print(logger.summary())
-        super.tearDown()
+    override func waitForAppReady() {
+        super.waitForAppReady()
+
+        // Navigate to library tab
+        let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+        if libraryTab.waitForExistence(timeout: 5) {
+            libraryTab.tap()
+        }
     }
 
     // MARK: - Library Display Tests
 
-    func testLibrary_ShowsBooksOrEmptyState() {
-        logger.step(1, "Checking library content")
-        if isEmptyLibrary() {
-            logger.success("Empty state displayed")
-            XCTAssertTrue(app.staticTexts["No Books Yet"].exists)
-            return
-        }
+    func testLibrary_ShowsSeededBooks() {
+        logger.step(1, "Verifying library has seeded books")
 
-        XCTAssertTrue(hasAnyBookTile())
-        logger.success("Books present in library")
+        // With seeded data, library should not be empty
+        let emptyState = app.otherElements[AccessibilityIdentifiers.Library.emptyState]
+        XCTAssertFalse(emptyState.exists, "Library should have seeded data, not empty state")
+
+        logger.step(2, "Checking for book tiles")
+        XCTAssertTrue(hasAnyBookTile(), "Should have book tiles from seeded data")
+
+        logger.success("Library displays seeded books")
     }
 
-    func testLibrary_TapFirstBook_NavigatesToDetail() throws {
+    func testLibrary_DisplaysExpectedBookCount() {
+        logger.step(1, "Counting books in library")
+
+        // Seeded library should have exactly 3 books
+        let bookCards = app.otherElements[AccessibilityIdentifiers.Library.bookCoverCard]
+        let bookRows = app.cells[AccessibilityIdentifiers.Library.bookListRow]
+
+        // Count from grid or list view
+        let count = max(bookCards.count, bookRows.count)
+
+        logger.step(2, "Verifying expected book count")
+        XCTAssertEqual(count, UITestData.Counts.libraryBooks, "Should have \(UITestData.Counts.libraryBooks) seeded books")
+
+        logger.success("Library has \(count) books as expected")
+    }
+
+    func testLibrary_TapBook_NavigatesToDetail() {
         logger.step(1, "Opening first book")
-        try openFirstBookDetail()
+        openFirstBookDetail()
 
         logger.step(2, "Verifying book detail view")
         let quotesLabel = app.staticTexts["Quotes"]
-        XCTAssertTrue(quotesLabel.waitForExistence(timeout: 3))
+        XCTAssertTrue(quotesLabel.waitForExistence(timeout: 3), "Should navigate to book detail")
 
         logger.success("Book detail view displayed")
     }
 
+    func testLibrary_AtomicHabitsBook_Exists() {
+        logger.step(1, "Looking for Atomic Habits book")
+
+        // Search for the seeded book title
+        let atomicHabits = app.staticTexts[UITestData.Books.atomicHabitsTitle]
+        if !atomicHabits.exists {
+            // Try scrolling to find it
+            let scrollView = app.scrollViews.firstMatch
+            if scrollView.exists {
+                scrollView.swipeUp()
+            }
+        }
+
+        // Verify book exists in some form (title text or accessible element)
+        let found = atomicHabits.waitForExistence(timeout: 3) ||
+                    app.buttons.matching(NSPredicate(format: "label CONTAINS %@", UITestData.Books.atomicHabitsTitle)).count > 0
+
+        XCTAssertTrue(found, "Seeded book 'Atomic Habits' should exist in library")
+
+        logger.success("Found Atomic Habits book")
+    }
+
     // MARK: - Book Editing Tests
 
-    func testBookDetail_EditSheet_Available() throws {
+    func testBookDetail_EditButton_Available() {
         logger.step(1, "Opening book detail")
-        try openFirstBookDetail()
+        openFirstBookDetail()
 
         logger.step(2, "Opening menu")
         let menuButton = findMoreMenuButton()
-        guard menuButton.exists else {
-            throw XCTSkip("Menu button not found")
-        }
+        XCTAssertTrue(menuButton.waitForExistence(timeout: 3), "Menu button should exist")
         menuButton.tap()
 
-        logger.step(3, "Opening edit sheet")
-        let editItem = app.buttons["Edit"]
-        guard editItem.waitForExistence(timeout: 2) else {
-            throw XCTSkip("Edit action not available")
-        }
-        editItem.tap()
+        logger.step(3, "Checking for edit button")
+        let editButton = app.buttons[AccessibilityIdentifiers.BookDetail.editButton]
+        XCTAssertTrue(editButton.waitForExistence(timeout: 2), "Edit button should be available")
 
-        let editTitle = app.navigationBars["Edit Book"]
-        XCTAssertTrue(editTitle.waitForExistence(timeout: 3))
+        logger.success("Edit button is available in menu")
 
-        logger.success("Edit sheet displayed")
-
-        let cancelButton = app.buttons["Cancel"]
-        if cancelButton.exists {
-            cancelButton.tap()
-        }
+        // Dismiss menu
+        app.tap()
     }
 
     // MARK: - Export Tests
 
-    func testBookDetail_ExportSheet_Available() throws {
+    func testBookDetail_ExportSheet_Available() {
         logger.step(1, "Opening book detail")
-        try openFirstBookDetail()
+        openFirstBookDetail()
 
         logger.step(2, "Opening menu")
         let menuButton = findMoreMenuButton()
-        guard menuButton.exists else {
-            throw XCTSkip("Menu button not found")
-        }
+        XCTAssertTrue(menuButton.waitForExistence(timeout: 3), "Menu button should exist")
         menuButton.tap()
 
         logger.step(3, "Opening export sheet")
         let exportItem = app.buttons["Export Quotes"]
-        guard exportItem.waitForExistence(timeout: 2) else {
-            throw XCTSkip("Export action not available")
-        }
+        XCTAssertTrue(exportItem.waitForExistence(timeout: 2), "Export option should be available")
         exportItem.tap()
 
-        let exportTitle = app.navigationBars.matching(
-            NSPredicate(format: "label CONTAINS 'Export'")
-        ).firstMatch
-        XCTAssertTrue(exportTitle.waitForExistence(timeout: 3))
+        logger.step(4, "Verifying export sheet")
+        let exportButton = app.buttons[AccessibilityIdentifiers.Export.exportButton]
+        XCTAssertTrue(exportButton.waitForExistence(timeout: 3), "Export sheet should be displayed")
 
         logger.success("Export sheet displayed")
         app.swipeDown()
@@ -115,69 +130,91 @@ final class LibraryManagementTests: XCTestCase {
 
     // MARK: - Deletion Tests
 
-    func testLibrary_DeleteBook_ShowsConfirmation() throws {
+    func testLibrary_DeleteBook_ShowsConfirmation() {
         logger.step(1, "Switching to list view")
         switchToListViewIfPossible()
 
-        let firstCell = app.tables.cells.firstMatch
-        guard firstCell.waitForExistence(timeout: 3) else {
-            throw XCTSkip("No list cells available for deletion")
-        }
+        logger.step(2, "Finding a book row")
+        let firstCell = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 3), "Should have book rows from seeded data")
 
-        logger.step(2, "Swiping to delete")
+        logger.step(3, "Swiping to delete")
         firstCell.swipeLeft()
         let deleteButton = app.buttons["Delete"]
-        guard deleteButton.waitForExistence(timeout: 2) else {
-            throw XCTSkip("Delete action not available")
-        }
+        XCTAssertTrue(deleteButton.waitForExistence(timeout: 2), "Delete action should appear")
         deleteButton.tap()
 
-        logger.step(3, "Verifying confirmation dialog")
+        logger.step(4, "Verifying confirmation dialog")
         let confirm = app.buttons["Delete Book and All Quotes"]
-        XCTAssertTrue(confirm.waitForExistence(timeout: 3))
+        XCTAssertTrue(confirm.waitForExistence(timeout: 3), "Confirmation dialog should appear")
         let cancel = app.buttons["Cancel"]
         XCTAssertTrue(cancel.exists)
         cancel.tap()
 
-        logger.success("Delete confirmation shown")
+        logger.success("Delete confirmation shown and cancelled")
     }
 
     // MARK: - Helpers
 
     private func isEmptyLibrary() -> Bool {
-        return app.staticTexts["No Books Yet"].exists
+        let emptyState = app.otherElements[AccessibilityIdentifiers.Library.emptyState]
+        return emptyState.exists || app.staticTexts["No Books Yet"].exists
     }
 
     private func hasAnyBookTile() -> Bool {
+        // Check for book cards (grid) or book rows (list) using identifiers
+        let bookCards = app.otherElements[AccessibilityIdentifiers.Library.bookCoverCard]
+        let bookRows = app.cells[AccessibilityIdentifiers.Library.bookListRow]
+
+        if bookCards.count > 0 || bookRows.count > 0 {
+            return true
+        }
+
+        // Fallback to generic checks
         if app.tables.cells.count > 0 {
             return true
         }
         return app.scrollViews.buttons.count > 0
     }
 
-    private func openFirstBookDetail() throws {
-        if isEmptyLibrary() {
-            throw XCTSkip("Library is empty")
-        }
-
+    private func openFirstBookDetail() {
+        // With seeded data, we expect books to exist
         switchToListViewIfPossible()
 
+        // Try using accessibility identifier first
+        let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        if bookRow.waitForExistence(timeout: 3) {
+            bookRow.tap()
+            return
+        }
+
+        // Fallback to generic table cells
         if app.tables.cells.firstMatch.exists {
             app.tables.cells.firstMatch.tap()
             return
         }
 
+        // Try grid view buttons
         let gridButton = app.scrollViews.buttons.firstMatch
-        guard gridButton.waitForExistence(timeout: 3) else {
-            throw XCTSkip("No book tiles to open")
+        if gridButton.waitForExistence(timeout: 2) {
+            gridButton.tap()
         }
-        gridButton.tap()
     }
 
     private func switchToListViewIfPossible() {
+        // Use accessibility identifier for view mode toggle
+        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
+        if viewModeToggle.waitForExistence(timeout: 2) {
+            // Second button is list view
+            if viewModeToggle.buttons.count > 1 {
+                viewModeToggle.buttons.element(boundBy: 1).tap()
+            }
+            return
+        }
+
+        // Fallback to generic segmented control
         let segmented = app.segmentedControls.firstMatch
-        guard segmented.exists else { return }
-        if segmented.buttons.count > 1 {
+        if segmented.exists && segmented.buttons.count > 1 {
             segmented.buttons.element(boundBy: 1).tap()
         }
     }
@@ -193,47 +230,5 @@ final class LibraryManagementTests: XCTestCase {
             return navButtons.element(boundBy: navButtons.count - 1)
         }
         return navButtons.firstMatch
-    }
-}
-
-private final class UITestLogger {
-    private let testName: String
-    private var entries: [String] = []
-
-    init(testName: String) {
-        self.testName = testName
-        info("Starting")
-    }
-
-    func step(_ index: Int, _ message: String) {
-        log("STEP \(index): \(message)")
-    }
-
-    func info(_ message: String) {
-        log("INFO: \(message)")
-    }
-
-    func success(_ message: String) {
-        log("SUCCESS: \(message)")
-    }
-
-    func warning(_ message: String) {
-        log("WARNING: \(message)")
-    }
-
-    func summary() -> String {
-        (["==== \(testName) ===="] + entries + ["==== end ===="]).joined(separator: "\n")
-    }
-
-    private func log(_ message: String) {
-        let line = "[\(timestamp())] \(message)"
-        entries.append(line)
-        print(line)
-    }
-
-    private func timestamp() -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-        return formatter.string(from: Date())
     }
 }

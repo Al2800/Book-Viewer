@@ -1,31 +1,22 @@
 import XCTest
 
-final class SearchFlowTests: XCTestCase {
-    private var app: XCUIApplication!
-    private var logger: UITestLogger!
+/// Tests for the search functionality using seeded test data.
+final class SearchFlowTests: BaseUITestCase {
 
-    override func setUp() {
-        super.setUp()
-        continueAfterFailure = false
+    // MARK: - Setup
 
-        app = XCUIApplication()
-        app.launchArguments = [
-            "--uitesting",
-            "--preload-search-test-data"
-        ]
-        logger = UITestLogger(testName: name)
-
-        logger.info("Launching app for search flow")
-        app.launch()
-
-        let libraryTab = app.tabBars.buttons["Library"]
-        XCTAssertTrue(libraryTab.waitForExistence(timeout: 5))
-        libraryTab.tap()
+    override var additionalLaunchArguments: [String] {
+        ["--preload-search-test-data"]
     }
 
-    override func tearDown() {
-        print(logger.summary())
-        super.tearDown()
+    override func waitForAppReady() {
+        super.waitForAppReady()
+
+        // Navigate to library tab
+        let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+        if libraryTab.waitForExistence(timeout: 5) {
+            libraryTab.tap()
+        }
     }
 
     // MARK: - Search UI Tests
@@ -81,43 +72,56 @@ final class SearchFlowTests: XCTestCase {
         logger.success("Search scopes visible")
     }
 
-    func testSearch_Query_ShowsResultsOrEmptyState() {
-        logger.step(1, "Searching for a common term")
-        searchFor("atomic")
+    func testSearch_Query_ShowsResults() {
+        logger.step(1, "Searching for seeded book title")
+        searchFor(UITestData.SearchTokens.habits)
 
-        logger.step(2, "Waiting for results or empty state")
-        XCTAssertTrue(waitForResultsOrEmpty(timeout: 4))
+        logger.step(2, "Waiting for search results")
+        XCTAssertTrue(waitForResultsOrEmpty(timeout: 5))
 
-        if hasResults() {
-            logger.success("Search results displayed")
-        } else {
-            logger.warning("No results available (test data not loaded)")
-        }
+        logger.step(3, "Verifying results contain expected data")
+        // Seeded data should always produce results
+        XCTAssertTrue(hasResults(), "Search should return results for seeded data")
+
+        logger.success("Search results displayed for '\(UITestData.SearchTokens.habits)'")
     }
 
-    func testSearchResult_TapFirstCell_NavigatesIfAvailable() {
-        logger.step(1, "Searching for results")
-        searchFor("atomic")
-        XCTAssertTrue(waitForResultsOrEmpty(timeout: 4))
+    func testSearch_SeededQuote_ReturnsMatch() {
+        logger.step(1, "Searching for known quote text")
+        searchFor(UITestData.SearchTokens.improvement)
 
-        guard hasResults() else {
-            throw XCTSkip("No search results to navigate (test data not loaded)")
-        }
+        logger.step(2, "Waiting for results")
+        XCTAssertTrue(waitForResultsOrEmpty(timeout: 5))
+        XCTAssertTrue(hasResults(), "Search should find seeded quote with 'improvement'")
+
+        logger.success("Found seeded quote matching 'improvement'")
+    }
+
+    func testSearchResult_TapFirstCell_NavigatesToDetail() {
+        logger.step(1, "Searching for seeded content")
+        searchFor(UITestData.Books.atomicHabitsTitle)
+        XCTAssertTrue(waitForResultsOrEmpty(timeout: 5))
+        XCTAssertTrue(hasResults(), "Seeded search should return results")
 
         logger.step(2, "Tapping first result")
-        let firstCell = app.cells.firstMatch
-        XCTAssertTrue(firstCell.exists)
-        firstCell.tap()
-
-        logger.step(3, "Verifying navigation")
-        if app.navigationBars["Quote"].waitForExistence(timeout: 2) {
-            logger.success("Navigated to quote detail")
-            return
+        let firstResult = app.cells[AccessibilityIdentifiers.Search.bookResultRow].firstMatch
+        if !firstResult.exists {
+            // Try quote result row if book row not found
+            let quoteResult = app.cells[AccessibilityIdentifiers.Search.quoteResultRow].firstMatch
+            XCTAssertTrue(quoteResult.waitForExistence(timeout: 2))
+            quoteResult.tap()
+        } else {
+            firstResult.tap()
         }
 
+        logger.step(3, "Verifying navigation to detail")
+        // Should navigate to either book detail or quote detail
         let quotesLabel = app.staticTexts["Quotes"]
-        XCTAssertTrue(quotesLabel.waitForExistence(timeout: 3))
-        logger.success("Navigated to book detail")
+        let quoteNav = app.navigationBars["Quote"]
+        let navigated = quotesLabel.waitForExistence(timeout: 3) || quoteNav.exists
+        XCTAssertTrue(navigated, "Should navigate to detail view")
+
+        logger.success("Navigated to detail view")
     }
 
     // MARK: - Helpers
@@ -149,56 +153,20 @@ final class SearchFlowTests: XCTestCase {
             if hasResults() {
                 return true
             }
-            let noResults = app.staticTexts.matching(
+            // Check for no results state using accessibility identifier
+            let noResults = app.otherElements[AccessibilityIdentifiers.Search.noResultsView]
+            if noResults.exists {
+                return true
+            }
+            // Also check for text-based no results
+            let noResultsText = app.staticTexts.matching(
                 NSPredicate(format: "label CONTAINS 'No results'")
             ).firstMatch
-            if noResults.exists {
+            if noResultsText.exists {
                 return true
             }
             RunLoop.current.run(until: Date().addingTimeInterval(0.1))
         }
         return false
-    }
-}
-
-private final class UITestLogger {
-    private let testName: String
-    private var entries: [String] = []
-
-    init(testName: String) {
-        self.testName = testName
-        info("Starting")
-    }
-
-    func step(_ index: Int, _ message: String) {
-        log("STEP \(index): \(message)")
-    }
-
-    func info(_ message: String) {
-        log("INFO: \(message)")
-    }
-
-    func success(_ message: String) {
-        log("SUCCESS: \(message)")
-    }
-
-    func warning(_ message: String) {
-        log("WARNING: \(message)")
-    }
-
-    func summary() -> String {
-        (["==== \(testName) ===="] + entries + ["==== end ===="]).joined(separator: "\n")
-    }
-
-    private func log(_ message: String) {
-        let line = "[\(timestamp())] \(message)"
-        entries.append(line)
-        print(line)
-    }
-
-    private func timestamp() -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-        return formatter.string(from: Date())
     }
 }
