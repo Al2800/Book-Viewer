@@ -1,5 +1,6 @@
-import Foundation
 import AuthenticationServices
+import Foundation
+import UIKit
 
 // MARK: - AuthService
 
@@ -281,11 +282,14 @@ private class SignInDelegate: NSObject, ASAuthorizationControllerDelegate, ASAut
 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         // Return the key window for presenting the sign-in sheet
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = scene.windows.first else {
-            fatalError("No window available for Sign in with Apple")
+        if let scene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first,
+           let window = scene.windows.first(where: { $0.isKeyWindow }) ?? scene.windows.first {
+            return window
         }
-        return window
+
+        return UIWindow(frame: UIScreen.main.bounds)
     }
 }
 

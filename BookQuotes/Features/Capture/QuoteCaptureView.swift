@@ -370,7 +370,7 @@ class CameraPreviewUIView: UIView {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Book.self, configurations: config)
+    let container = (try? ModelContainer(for: Book.self, configurations: config)) ?? .preview
 
     let book = Book(title: "Test Book", author: "Test Author")
     container.mainContext.insert(book)

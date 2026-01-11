@@ -249,10 +249,7 @@ extension CaptureQueueItem {
     /// Load the full image from disk
     /// - Returns: The image or nil if loading fails
     func loadFullImage() -> UIImage? {
-        guard let data = try? Data(contentsOf: fullImagePath) else {
-            return nil
-        }
-        return UIImage(data: data)
+        UIImage(contentsOfFile: fullImagePath.path)
     }
 
     /// Load the thumbnail, falling back to full image if needed
