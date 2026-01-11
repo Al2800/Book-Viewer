@@ -298,6 +298,7 @@ struct QuoteCaptureView: View {
 
                 await MainActor.run {
                     captureState = .completed(session: session)
+                    finalizeCaptureFlow()
                 }
 
             } catch {
@@ -307,6 +308,14 @@ struct QuoteCaptureView: View {
                     showError = true
                 }
             }
+        }
+    }
+
+    private func finalizeCaptureFlow() {
+        if let onComplete {
+            onComplete()
+        } else {
+            retakePhoto()
         }
     }
 }

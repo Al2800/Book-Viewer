@@ -385,7 +385,7 @@ actor CaptureQueueManager {
             await updateStats()
 
             // Schedule retry if applicable
-            if contextItem.status == .pending && contextItem.retryCount < CaptureQueueItem.maxRetries {
+            if contextItem.canRetry {
                 await scheduleRetry(for: contextItem.id, retryCount: contextItem.retryCount)
             }
         }
@@ -396,7 +396,8 @@ actor CaptureQueueManager {
         // Cancel any existing retry for this item
         pendingRetries[itemId]?.cancel()
 
-        let delay = retryDelays[min(retryCount, retryDelays.count - 1)]
+        let delayIndex = max(0, min(retryCount - 1, retryDelays.count - 1))
+        let delay = retryDelays[delayIndex]
 
         let task = Task {
             try? await Task.sleep(for: .seconds(delay))
@@ -414,7 +415,7 @@ actor CaptureQueueManager {
             )
 
             if let item = try? context.fetch(descriptor).first,
-               item.status == .pending {
+               item.canRetry {
                 await processItem(item)
             }
         }

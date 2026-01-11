@@ -213,13 +213,7 @@ extension CaptureQueueItem {
     func markFailed(error: Error) {
         retryCount += 1
         lastError = error.localizedDescription
-
-        if retryCount >= CaptureQueueItem.maxRetries {
-            status = .failed
-        } else {
-            // Return to pending for retry
-            status = .pending
-        }
+        status = .failed
     }
 
     /// Mark item as permanently failed (no more retries)
