@@ -8,6 +8,7 @@ struct SearchSuggestionsView: View {
     // MARK: - Environment
 
     @Environment(SearchSuggestionsService.self) private var suggestionsService
+    @State private var appeared = false
 
     // MARK: - Callbacks
 
@@ -17,25 +18,48 @@ struct SearchSuggestionsView: View {
     // MARK: - Body
 
     var body: some View {
-        if !suggestionsService.suggestions.isEmpty {
+        if shouldShowSuggestions {
             List {
-                ForEach(suggestionsService.suggestions) { suggestion in
+                if suggestionsService.isLoading {
+                    loadingRow
+                }
+
+                ForEach(Array(suggestionsService.suggestions.enumerated()), id: \.element.id) { index, suggestion in
                     SuggestionRow(suggestion: suggestion) {
                         onSelect(suggestion.text)
                     }
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: Spacing.xs, leading: Spacing.md, bottom: Spacing.xs, trailing: Spacing.md))
+                    .listRowBackground(Color.clear)
+                    .accessibleStaggeredEntrance(appeared: appeared, index: index)
                 }
 
                 // Clear history button if showing recent searches
                 if hasRecentSuggestions {
                     clearHistoryButton
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: Spacing.xs, leading: Spacing.md, bottom: Spacing.xs, trailing: Spacing.md))
+                        .listRowBackground(Color.clear)
                 }
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
+            .onAppear {
+                appeared = true
+            }
+            .onDisappear {
+                appeared = false
+            }
+            .accessibleAnimation(.accessibleSmoothSpring, value: suggestionsService.suggestions)
         }
     }
 
     // MARK: - Computed Properties
+
+    private var shouldShowSuggestions: Bool {
+        !suggestionsService.suggestions.isEmpty || suggestionsService.isLoading
+    }
 
     private var hasRecentSuggestions: Bool {
         suggestionsService.suggestions.contains { $0.isRecent }
@@ -45,14 +69,47 @@ struct SearchSuggestionsView: View {
 
     private var clearHistoryButton: some View {
         Button(role: .destructive) {
+            HapticManager.warning()
             onClearHistory()
         } label: {
             HStack {
                 Image(systemName: "trash")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.error)
+
                 Text("Clear Recent Searches")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.error)
+
+                Spacer()
             }
-            .font(.subheadline)
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .fill(Color.error.opacity(0.08))
+            )
+            .strokeBorder(.hairline, color: Color.error.opacity(0.3), cornerRadius: CornerRadius.md)
         }
+        .buttonStyle(PressableButtonStyle(enableHaptic: false))
+        .accessibilityLabel("Clear recent searches")
+    }
+
+    private var loadingRow: some View {
+        HStack(spacing: Spacing.sm) {
+            ProgressView()
+                .tint(Color.accent)
+
+            Text("Loading suggestions")
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
+        }
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, Spacing.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
 }
 
@@ -62,37 +119,71 @@ private struct SuggestionRow: View {
     let suggestion: SearchSuggestion
     let onTap: () -> Void
 
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
-        Button(action: onTap) {
+        Button {
+            onTap()
+        } label: {
             HStack(spacing: Spacing.sm) {
-                Image(systemName: suggestion.icon)
-                    .foregroundStyle(iconColor)
-                    .frame(width: 20)
+                iconBadge
 
                 Text(suggestion.text)
-                    .foregroundStyle(.primary)
+                    .font(.bodyText)
+                    .foregroundStyle(Color.textPrimary)
                     .lineLimit(1)
 
                 Spacer()
 
                 trailingContent
             }
-            .contentShape(Rectangle())
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .fill(LinearGradient.surfaceGradient)
+            )
+            .strokeBorder(.hairline, color: Color.quoteBorder, cornerRadius: CornerRadius.md)
+            .elevation(.xs, colorScheme: colorScheme)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
+        .accessibilityLabel("\(suggestion.text), \(suggestion.typeLabel)")
     }
 
-    private var iconColor: Color {
+    private var iconForeground: Color {
         switch suggestion {
         case .recent:
-            return .secondary
+            return .textSecondary
         case .bookTitle:
-            return .accent
+            return .brand
         case .author:
-            return .blue
+            return .accent
         case .popularTerm:
-            return .secondary
+            return .textSecondary
         }
+    }
+
+    private var iconBackground: Color {
+        switch suggestion {
+        case .recent, .popularTerm:
+            return Color.backgroundTertiary
+        case .bookTitle:
+            return Color.brand.opacity(0.12)
+        case .author:
+            return Color.accent.opacity(0.12)
+        }
+    }
+
+    private var iconBadge: some View {
+        ZStack {
+            Circle()
+                .fill(iconBackground)
+            Image(systemName: suggestion.icon)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(iconForeground)
+        }
+        .frame(width: 28, height: 28)
     }
 
     @ViewBuilder
@@ -100,26 +191,30 @@ private struct SuggestionRow: View {
         switch suggestion {
         case .recent:
             Image(systemName: "arrow.up.left")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.textTertiary)
 
         case .bookTitle:
-            Text("Book")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            suggestionTag(text: "Book", color: .brand)
 
         case .author:
-            Text("Author")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            suggestionTag(text: "Author", color: .accent)
 
         case .popularTerm(_, let count):
             if count > 1 {
-                Text("\(count)")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                suggestionTag(text: "\(count)", color: .textSecondary)
             }
         }
+    }
+
+    private func suggestionTag(text: String, color: Color) -> some View {
+        Text(text)
+            .font(.caption2.weight(.semibold))
+            .foregroundStyle(color)
+            .padding(.horizontal, Spacing.xs)
+            .padding(.vertical, 2)
+            .background(color.opacity(0.12))
+            .clipShape(Capsule())
     }
 }
 
@@ -133,30 +228,52 @@ struct DidYouMeanBanner: View {
     let suggestion: String
     let onAccept: () -> Void
 
+    // MARK: - State
+
+    @State private var appeared = false
+    @Environment(\.colorScheme) private var colorScheme
+
     // MARK: - Body
 
     var body: some View {
-        HStack {
-            Text("Did you mean:")
-                .foregroundStyle(.secondary)
+        HStack(spacing: Spacing.sm) {
+            Image(systemName: "sparkles")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.accent)
 
-            Button(action: onAccept) {
+            Text("Did you mean")
+                .font(.subheadline)
+                .foregroundStyle(Color.textSecondary)
+
+            Button {
+                onAccept()
+            } label: {
                 Text(suggestion)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.accent)
+                    .font(.subheadline.weight(.semibold))
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.ghost)
 
             Spacer()
 
             Image(systemName: "arrow.right.circle")
-                .foregroundStyle(.accent)
-                .font(.callout)
+                .font(.subheadline)
+                .foregroundStyle(Color.textTertiary)
         }
-        .font(.subheadline)
         .padding(.horizontal, Spacing.md)
         .padding(.vertical, Spacing.sm)
-        .background(.secondary.opacity(0.1))
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .fill(LinearGradient.surfaceGradient)
+        )
+        .strokeBorder(.hairline, color: Color.quoteBorder, cornerRadius: CornerRadius.md)
+        .elevation(.xs, colorScheme: colorScheme)
+        .accessibleEntrance(appeared: appeared)
+        .onAppear {
+            appeared = true
+        }
+        .onDisappear {
+            appeared = false
+        }
     }
 }
 

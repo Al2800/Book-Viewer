@@ -11,7 +11,9 @@ struct HighlightedText: View {
     let text: String
     let query: String
     var maxLength: Int = 200
-    var highlightColor: Color = .yellow.opacity(0.4)
+    var highlightColor: Color? = nil
+    var textColor: Color = .textPrimary
+    var font: Font = .body
 
     // MARK: - Body
 
@@ -21,9 +23,16 @@ struct HighlightedText: View {
 
     // MARK: - Private Methods
 
+    private var resolvedHighlightColor: Color {
+        highlightColor ?? Color.accent.opacity(0.2)
+    }
+
     private func buildAttributedString() -> AttributedString {
         guard !text.isEmpty, !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-            return AttributedString(truncatedText(text, maxLength: maxLength))
+            var attributed = AttributedString(truncatedText(text, maxLength: maxLength))
+            attributed.foregroundColor = textColor
+            attributed.font = font
+            return attributed
         }
 
         let lowerText = text.lowercased()
@@ -34,7 +43,10 @@ struct HighlightedText: View {
             .filter { $0.count >= 2 }
 
         guard !queryTerms.isEmpty else {
-            return AttributedString(truncatedText(text, maxLength: maxLength))
+            var attributed = AttributedString(truncatedText(text, maxLength: maxLength))
+            attributed.foregroundColor = textColor
+            attributed.font = font
+            return attributed
         }
 
         // Find best match position
@@ -84,13 +96,16 @@ struct HighlightedText: View {
 
     private func highlightTerms(in snippet: String, terms: [String]) -> AttributedString {
         var attributed = AttributedString(snippet)
+        attributed.foregroundColor = textColor
+        attributed.font = font
 
         for term in terms {
             var searchStart = attributed.startIndex
             while searchStart < attributed.endIndex,
                   let range = attributed[searchStart...].range(of: term, options: .caseInsensitive) {
-                attributed[range].backgroundColor = highlightColor
-                attributed[range].font = .body.bold()
+                attributed[range].backgroundColor = resolvedHighlightColor
+                attributed[range].foregroundColor = textColor
+                attributed[range].font = font.weight(.semibold)
                 searchStart = range.upperBound
             }
         }

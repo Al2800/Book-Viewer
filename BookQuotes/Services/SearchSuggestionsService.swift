@@ -35,6 +35,19 @@ enum SearchSuggestion: Identifiable, Hashable {
         }
     }
 
+    var typeLabel: String {
+        switch self {
+        case .recent:
+            return "Recent search"
+        case .bookTitle:
+            return "Book title"
+        case .author:
+            return "Author"
+        case .popularTerm:
+            return "Popular term"
+        }
+    }
+
     var isRecent: Bool {
         if case .recent = self { return true }
         return false
