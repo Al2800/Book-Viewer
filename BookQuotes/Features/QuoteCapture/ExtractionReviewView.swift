@@ -327,8 +327,11 @@ struct ExtractionReviewView: View {
             }
         }
 
-        // Only update if different to avoid unnecessary redraws
-        if loadedQuotes.count != editingQuotes.count {
+        // Only update if quotes have changed to avoid unnecessary redraws
+        // Compare by IDs since EditableQuote generates new UUIDs on each load
+        let loadedIds = Set(loadedQuotes.map { "\($0.pageId)-\($0.text.prefix(50))" })
+        let existingIds = Set(editingQuotes.map { "\($0.pageId)-\($0.text.prefix(50))" })
+        if loadedIds != existingIds {
             editingQuotes = loadedQuotes
         }
 

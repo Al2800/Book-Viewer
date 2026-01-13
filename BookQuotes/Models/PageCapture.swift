@@ -164,8 +164,11 @@ final class PageCapture {
         let encoder = JSONEncoder()
         extractedQuotesData = try? encoder.encode(quotes)
         extractedQuoteCount = quotes.count
-        averageConfidence = quotes.isEmpty ? nil :
-            quotes.compactMap { $0.confidence }.reduce(0, +) / Double(quotes.count)
+
+        // Calculate average confidence from quotes that have confidence values
+        let confidenceValues = quotes.compactMap { $0.confidence }
+        averageConfidence = confidenceValues.isEmpty ? nil :
+            confidenceValues.reduce(0, +) / Double(confidenceValues.count)
     }
 
     /// Retrieve stored extracted quotes
