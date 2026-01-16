@@ -20,6 +20,7 @@ struct CoverCaptureView: View {
 
     @State private var cameraService = CameraService()
     @State private var isbnScanner = ISBNScanner()
+    @State private var cameraPermission = CameraPermissionService()
     @State private var captureMode: CaptureMode = .photo
     @State private var captureState: CaptureState = .previewing
     @State private var capturedImage: UIImage?
@@ -81,6 +82,7 @@ struct CoverCaptureView: View {
                 .ignoresSafeArea()
         } else {
             CameraPermissionView()
+                .environment(cameraPermission)
         }
     }
 
@@ -213,6 +215,15 @@ struct CoverCaptureView: View {
                     Spacer()
                 }
                 .padding(.bottom, Spacing.xl)
+
+                if UITestConfiguration.isUITesting {
+                    Button("Use Test Cover") {
+                        captureTestCover()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
+                    .padding(.bottom, Spacing.lg)
+                }
             }
 
             // Manual entry link
@@ -297,13 +308,7 @@ struct CoverCaptureView: View {
 
             do {
                 let image = try await cameraService.capturePhoto()
-                capturedImage = image
-
-                // Process cover (placeholder - would call GeminiService)
-                let metadata = await extractCoverMetadata(from: image)
-                extractedMetadata = metadata
-
-                isProcessing = false
+                await handleCapturedCover(image)
 
             } catch {
                 isProcessing = false
@@ -312,6 +317,27 @@ struct CoverCaptureView: View {
                 HapticManager.error()
             }
         }
+    }
+
+    private func captureTestCover() {
+        Task {
+            isProcessing = true
+            let image = MockCameraImages.getTestImage(
+                multipleQuotes: false,
+                lowConfidence: false,
+                index: 0
+            )
+            await handleCapturedCover(image)
+        }
+    }
+
+    @MainActor
+    private func handleCapturedCover(_ image: UIImage) async {
+        capturedImage = image
+
+        let metadata = await extractCoverMetadata(from: image)
+        extractedMetadata = metadata
+        isProcessing = false
     }
 
     private func handleBarcodeDetected(_ isbn: String) {
@@ -389,50 +415,6 @@ struct ScanLineView: View {
                     offset = 30
                 }
             }
-    }
-}
-
-// MARK: - ISBNLookupService Extension
-
-extension ISBNLookupService {
-    /// Look up book metadata by ISBN
-    func lookup(isbn: String) async throws -> BookMetadata {
-        let result = try await lookupBook(isbn: isbn)
-
-        switch result {
-        case .googleBooks(let item):
-            return BookMetadata(
-                title: item.volumeInfo.title,
-                authors: item.volumeInfo.authors ?? [],
-                subtitle: item.volumeInfo.subtitle,
-                isbn: isbn,
-                publisher: item.volumeInfo.publisher,
-                publishYear: extractYear(from: item.volumeInfo.publishedDate),
-                genre: item.volumeInfo.categories?.first,
-                pageCount: item.volumeInfo.pageCount,
-                coverImageURL: URL(string: item.volumeInfo.imageLinks?.thumbnail ?? "")
-            )
-
-        case .openLibrary(let work, let edition):
-            return BookMetadata(
-                title: edition.title ?? work.title,
-                authors: work.authorNames ?? [],
-                isbn: isbn,
-                publisher: edition.publishers?.first,
-                publishYear: extractYear(from: edition.publishDate),
-                pageCount: edition.numberOfPages
-            )
-        }
-    }
-
-    private func extractYear(from dateString: String?) -> Int? {
-        guard let dateString = dateString else { return nil }
-        // Try to extract 4-digit year
-        let yearPattern = /\d{4}/
-        if let match = dateString.firstMatch(of: yearPattern) {
-            return Int(match.output)
-        }
-        return nil
     }
 }
 

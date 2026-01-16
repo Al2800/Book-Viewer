@@ -7,7 +7,7 @@ final class BookRegistrationFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        ["--preload-library-test-data", "--mock-camera"]
+        ["--preload-library-test-data"]
     }
 
     override func waitForAppReady() {

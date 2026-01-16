@@ -21,10 +21,6 @@
       {
         "argument" : "--preload-library-test-data",
         "enabled" : true
-      },
-      {
-        "argument" : "--mock-camera",
-        "enabled" : true
       }
     ],
     "environmentVariableEntries" : [

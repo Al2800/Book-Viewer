@@ -16,7 +16,8 @@ This document covers the testing strategy, patterns, and practices used in BookQ
 8. [Test Infrastructure](#test-infrastructure)
 9. [Writing New Tests](#writing-new-tests)
 10. [Test Data](#test-data)
-11. [Continuous Integration](#continuous-integration)
+11. [Coverage Reporting](#coverage-reporting)
+12. [Continuous Integration](#continuous-integration)
 
 ---
 
@@ -124,6 +125,60 @@ xcodebuild test \
 xcodebuild test ... | xcpretty
 ```
 
+### E2E Scripts
+
+```bash
+# Run integration + unit tests with artifacts
+./scripts/e2e_integration.sh
+
+# Run UI test plan with artifacts and screenshots
+./scripts/e2e_ui.sh
+
+# Run both suites in order
+./scripts/e2e_full.sh
+
+# Run only integration tests
+./scripts/e2e_full.sh --integration
+
+# Run only UI tests
+./scripts/e2e_full.sh --ui
+```
+
+#### Environment Variables
+
+All scripts accept environment variables for customization:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SCHEME` | `BookQuotes` | Xcode scheme to test |
+| `DESTINATION` | `platform=iOS Simulator,name=iPhone 15` | Simulator destination |
+| `ARTIFACTS_DIR` | `artifacts/` | Output directory for artifacts |
+| `ONLY_TESTING` | (empty) | Specific test target (e.g., `BookQuotesTests/SearchDatabaseTests`) |
+| `RETRY_COUNT` | `0` (integration), `1` (UI) | Number of retry attempts for flaky tests |
+| `TIMEOUT` | `600` | Test timeout in seconds (UI only) |
+| `TEST_PLAN` | `FullRegressionPlan` | Test plan name (UI only) |
+| `SIMULATOR_NAME` | `iPhone 15` | Simulator name for setup |
+
+Example with custom settings:
+
+```bash
+DESTINATION="platform=iOS Simulator,name=iPhone 15 Pro" RETRY_COUNT=2 ARTIFACTS_DIR=./ci-artifacts ./scripts/e2e_full.sh
+```
+
+#### Artifacts Produced
+
+Integration tests (`artifacts/integration-tests/`):
+- `integration-tests-{timestamp}.xcresult` — Xcode result bundle
+- `integration-tests-{timestamp}.log` — Console output log
+- `coverage-{timestamp}.txt` — Human-readable coverage summary
+- `coverage-{timestamp}.json` — Machine-readable coverage data
+
+UI tests (`artifacts/ui-tests/`):
+- `ui-tests-{timestamp}.xcresult` — Xcode result bundle
+- `ui-tests-{timestamp}.log` — Console output log
+- `screenshots/` — Test screenshots directory
+- `results-{timestamp}.json` — Extracted test results
+
 ### UI Tests with Logging
 
 ```bash
@@ -134,7 +189,59 @@ WRITE_UI_TEST_LOGS=1 xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 15'
 ```
 
----
+To capture checkpoint screenshots and write artifacts to a deterministic directory:
+
+```bash
+UI_TEST_ARTIFACTS_DIR=artifacts/ui-tests \
+CAPTURE_UI_TEST_CHECKPOINTS=1 \
+WRITE_UI_TEST_LOGS=1 \
+xcodebuild test \
+  -project BookQuotes.xcodeproj \
+  -scheme BookQuotesUITests \
+  -destination 'platform=iOS Simulator,name=iPhone 15'
+```
+
+Artifacts produced:
+- `artifacts/ui-tests/logs/<TestName>.log` (human-readable summary)
+- `artifacts/ui-tests/logs/<TestName>.json` (machine-readable entries)
+- `artifacts/ui-tests/screenshots/<TestName>_step_N.png` (checkpoint screenshots)
+- `artifacts/ui-tests/screenshots/<TestName>_FAILURE.png` (failure screenshot)
+
+### CI Notes
+
+- Fail the build on any non-zero exit from `scripts/e2e_integration.sh` or `scripts/e2e_ui.sh`.
+- Publish `artifacts/**` as CI artifacts for coverage, logs, screenshots, and xcresult bundles.
+- If running UI tests in CI, set `UI_TEST_ARTIFACTS_DIR` to a writable workspace path.
+
+### Troubleshooting
+
+- UI tests fail to launch simulator: verify `DESTINATION` matches an installed device.
+- Coverage report missing: ensure tests were run with `-enableCodeCoverage YES` or via `scripts/coverage.sh`.
+- Missing screenshots/logs: confirm `WRITE_UI_TEST_LOGS=1` and `CAPTURE_UI_TEST_CHECKPOINTS=1` are set.
+
+## Coverage Reporting
+
+Code coverage should be generated from Xcode test runs with coverage enabled.
+
+```bash
+# Generate coverage artifacts (summary + JSON + LCOV + HTML)
+./scripts/coverage.sh BookQuotes
+
+# Override destination or output folder as needed
+DESTINATION='platform=iOS Simulator,name=iPhone 15 Pro' RESULT_DIR='artifacts/coverage' ./scripts/coverage.sh
+```
+
+Artifacts produced by the script:
+- `artifacts/coverage/summary.txt` (human-readable summary)
+- `artifacts/coverage/coverage.json` (machine-readable detail)
+- `artifacts/coverage/coverage.lcov` (LCOV)
+- `artifacts/coverage/coverage.html` (HTML summary)
+
+Thresholds are configured in `scripts/coverage_thresholds.json`. Override with:
+
+```bash
+THRESHOLDS=path/to/thresholds.json ./scripts/coverage.sh
+```
 
 ## Unit Tests
 
@@ -195,7 +302,7 @@ final class BookModelTests: SwiftDataTestCase {
 
 ### Service Tests
 
-Test services with mocked dependencies:
+Test services with real implementations and deterministic fixtures:
 
 ```swift
 final class SearchServiceTests: XCTestCase {
@@ -352,27 +459,25 @@ final class CaptureToSearchFlowTests: SwiftDataTestCase {
 final class OfflineQueueFlowTests: SwiftDataTestCase {
 
     func testQueueProcessingWhenOnline() async throws {
-        // Create mock services
-        let mockNetwork = MockNetworkMonitor(isConnected: false)
-        let mockGemini = MockGeminiService()
-
+        let authService = AuthService()
+        let geminiService = GeminiService(authService: authService)
         let queueManager = CaptureQueueManager(
             modelContainer: modelContainer,
-            geminiService: mockGemini,
-            networkMonitor: mockNetwork
+            geminiService: geminiService,
+            networkMonitor: NetworkMonitor()
         )
 
         logger.step(1, "Adding item while offline")
         let book = TestFixtures.atomicHabits
         try insertBook(book)
 
-        let testImage = TestFixtures.testPageImage
+        let testImage = TestFixtures.TestImages.bookPage
         let item = try await queueManager.addToQueue(image: testImage, book: book)
 
         XCTAssertEqual(item.status, .pending)
 
         logger.step(2, "Simulating network connection")
-        mockNetwork.simulateConnection()
+        // Use network state changes via NetworkMonitor in integration tests
 
         logger.step(3, "Starting queue processing")
         await queueManager.start()
@@ -796,7 +901,106 @@ xcodebuild test \
 
 ---
 
+## Troubleshooting
+
+### Common Failures
+
+#### "Simulator not found"
+```bash
+# List available simulators
+xcrun simctl list devices available
+
+# Use a different destination
+DESTINATION="platform=iOS Simulator,name=iPhone 16" ./scripts/e2e_full.sh
+```
+
+#### "Tests timed out"
+```bash
+# Increase timeout (in seconds)
+TIMEOUT=900 ./scripts/e2e_ui.sh
+
+# Run with retries
+RETRY_COUNT=2 ./scripts/e2e_integration.sh
+```
+
+#### "Camera permission denied" (UI tests)
+UI tests run with the `--uitesting` launch argument which enables test image injection buttons. If camera-related tests fail:
+1. Check that `AccessibilityIdentifiers.Capture.testImageButton` is visible
+2. Verify the test uses the test image button, not the actual camera
+3. Reset simulator state: `xcrun simctl erase <UDID>`
+
+#### "SwiftData migration failed"
+Clear the simulator data:
+```bash
+xcrun simctl shutdown all
+xcrun simctl erase all
+```
+
+#### "FTS5 database locked"
+Multiple processes may be accessing the search database:
+```bash
+# Kill Xcode and simulators
+pkill -9 Simulator
+pkill -9 Xcode
+
+# Clean test databases
+rm -rf /tmp/BookQuotesTests*
+```
+
+#### Flaky UI tests
+UI tests can be flaky due to timing issues. Solutions:
+1. Use `RETRY_COUNT=1` or higher
+2. Add explicit waits in tests using `waitForExistence(timeout:)`
+3. Check for race conditions in test setup
+
+### Debugging Test Failures
+
+#### View xcresult bundle
+```bash
+# Open in Xcode
+open artifacts/ui-tests/ui-tests-*.xcresult
+
+# Extract test summary as JSON
+xcrun xcresulttool get --path <result-bundle> --format json
+```
+
+#### Enable verbose logging
+```bash
+# Integration tests
+xcodebuild test ... 2>&1 | tee verbose.log
+
+# UI tests with checkpoint screenshots
+CAPTURE_UI_TEST_CHECKPOINTS=1 WRITE_UI_TEST_LOGS=1 ./scripts/e2e_ui.sh
+```
+
+#### Check simulator logs
+```bash
+# Stream logs from booted simulator
+xcrun simctl spawn booted log stream --predicate 'subsystem == "com.yourapp.BookQuotes"'
+```
+
+### CI-Specific Notes
+
+#### GitHub Actions
+- Use `macos-14` or later runners
+- Set Xcode version explicitly: `sudo xcode-select -s /Applications/Xcode_16.0.app`
+- Artifacts should be uploaded using `actions/upload-artifact@v4`
+
+#### Xcode Cloud
+- Use test plans for organized test execution
+- Enable "Collect code coverage" in the test plan
+- Screenshots are automatically collected on failure
+
+#### Local CI Simulation
+```bash
+# Simulate CI environment
+env -i HOME="$HOME" PATH="$PATH" ./scripts/e2e_full.sh
+```
+
+---
+
 ## Related Documentation
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — Code organization
 - [SERVICES.md](SERVICES.md) — Services being tested
+- [TEST_COVERAGE_MATRIX.md](TEST_COVERAGE_MATRIX.md) — Coverage requirements and current status

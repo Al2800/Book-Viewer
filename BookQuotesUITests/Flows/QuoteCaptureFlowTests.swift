@@ -7,11 +7,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        [
-            "--preload-library-test-data",
-            "--mock-camera",
-            "--mock-multiple-quotes"
-        ]
+        ["--preload-library-test-data"]
     }
 
     override func waitForAppReady() {
@@ -48,10 +44,13 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         captureTab.tap()
 
         logger.step(2, "Finding capture button")
+        let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
         let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
 
-        // With mock camera, capture button should be visible
-        if captureButton.waitForExistence(timeout: 5) {
+        if testButton.waitForExistence(timeout: 3) {
+            XCTAssertTrue(testButton.isEnabled, "Test image button should be enabled")
+            logger.success("Test image button found and enabled")
+        } else if captureButton.waitForExistence(timeout: 5) {
             XCTAssertTrue(captureButton.isEnabled, "Capture button should be enabled")
             logger.success("Capture button found and enabled")
         } else {
@@ -114,14 +113,10 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToCaptureWithBook()
 
         logger.step(2, "Triggering capture")
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        guard captureButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Capture button not available (needs camera permissions)")
-        }
-        captureButton.tap()
+        try triggerCapture()
 
         logger.step(3, "Checking for image review")
-        // With mock camera, should transition to image review
+        // With test image capture, should transition to image review
         let retakeButton = app.buttons[AccessibilityIdentifiers.ImageReview.retakeButton]
         let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
         let qualityBar = app.otherElements[AccessibilityIdentifiers.ImageReview.qualityBar]
@@ -133,7 +128,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         if hasReviewUI {
             logger.success("Image review displayed with quality indicator")
         } else {
-            logger.info("Image review may be skipped in mock mode")
+            logger.info("Image review may be skipped depending on capture flow")
         }
     }
 
@@ -142,23 +137,22 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToCaptureWithBook()
 
         logger.step(2, "Taking photo")
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        guard captureButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Capture button not available")
-        }
-        captureButton.tap()
+        try triggerCapture()
 
         logger.step(3, "Finding retake button")
         let retakeButton = app.buttons[AccessibilityIdentifiers.ImageReview.retakeButton]
         guard retakeButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Retake button not found (mock may skip review)")
+            throw XCTSkip("Retake button not found (review may have been skipped)")
         }
 
         logger.step(4, "Tapping retake")
         retakeButton.tap()
 
         logger.step(5, "Verifying return to camera")
-        XCTAssertTrue(captureButton.waitForExistence(timeout: 3), "Should return to camera view")
+        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        let returned = captureButton.waitForExistence(timeout: 3) || testButton.exists
+        XCTAssertTrue(returned, "Should return to camera view")
 
         logger.success("Retake returns to camera")
     }
@@ -170,11 +164,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToCaptureWithBook()
 
         logger.step(2, "Capturing and processing")
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        guard captureButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Capture button not available")
-        }
-        captureButton.tap()
+        try triggerCapture()
 
         // Use photo if review appears
         let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
@@ -196,7 +186,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         if hasReviewUI {
             logger.success("Extraction review displayed")
         } else {
-            logger.info("Extraction may need more time or network (mock should be instant)")
+            logger.info("Extraction may need more time or network")
         }
     }
 
@@ -313,7 +303,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Quality Warning Tests
 
     func testLowQualityCapture_ShowsWarning() throws {
-        // This test would need a specific mock for low quality
+        // This test would need a specific low-quality test image
         // For now, test that the quality UI elements exist
         logger.step(1, "Navigating to capture")
         navigateToCaptureWithBook()
@@ -376,11 +366,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     private func navigateToExtractionReview() throws {
         navigateToCaptureWithBook()
 
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        guard captureButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Capture button not available")
-        }
-        captureButton.tap()
+        try triggerCapture()
 
         // Use photo if review appears
         let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
@@ -403,5 +389,19 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             return match
         }
         return navButtons.element(boundBy: navButtons.count > 0 ? navButtons.count - 1 : 0)
+    }
+
+    private func triggerCapture() throws {
+        let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        if testButton.waitForExistence(timeout: 3) {
+            testButton.tap()
+            return
+        }
+
+        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        guard captureButton.waitForExistence(timeout: 5) else {
+            throw XCTSkip("Capture button not available")
+        }
+        captureButton.tap()
     }
 }

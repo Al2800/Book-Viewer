@@ -49,6 +49,7 @@ class SwiftDataTestCase: XCTestCase {
         let schema = Schema([
             Book.self,
             Quote.self,
+            QuoteCorrection.self,
             MarkingDefinition.self,
             Collection.self,
             Tag.self,
@@ -242,6 +243,81 @@ class SwiftDataTestCase: XCTestCase {
         XCTAssertEqual(actual, expected, "MarkingDefinition count mismatch", file: file, line: line)
     }
 
+    // MARK: - Capture Session Helpers
+
+    func insertCaptureSession(_ session: CaptureSession) throws {
+        modelContext.insert(session)
+        try modelContext.save()
+        logger.debug("Inserted capture session", context: [
+            "id": session.id.uuidString,
+            "status": session.status.rawValue
+        ])
+    }
+
+    func fetchAllCaptureSessions() throws -> [CaptureSession] {
+        let descriptor = FetchDescriptor<CaptureSession>(sortBy: [SortDescriptor(\.dateStarted)])
+        return try modelContext.fetch(descriptor)
+    }
+
+    func assertCaptureSessionCount(
+        _ expected: Int,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
+        let actual = try modelContext.fetchCount(FetchDescriptor<CaptureSession>())
+        XCTAssertEqual(actual, expected, "CaptureSession count mismatch", file: file, line: line)
+    }
+
+    // MARK: - Page Capture Helpers
+
+    func insertPageCapture(_ capture: PageCapture) throws {
+        modelContext.insert(capture)
+        try modelContext.save()
+        logger.debug("Inserted page capture", context: [
+            "id": capture.id.uuidString,
+            "status": capture.status.rawValue
+        ])
+    }
+
+    func fetchAllPageCaptures() throws -> [PageCapture] {
+        let descriptor = FetchDescriptor<PageCapture>(sortBy: [SortDescriptor(\.dateCreated)])
+        return try modelContext.fetch(descriptor)
+    }
+
+    func assertPageCaptureCount(
+        _ expected: Int,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
+        let actual = try modelContext.fetchCount(FetchDescriptor<PageCapture>())
+        XCTAssertEqual(actual, expected, "PageCapture count mismatch", file: file, line: line)
+    }
+
+    // MARK: - Capture Queue Helpers
+
+    func insertCaptureQueueItem(_ item: CaptureQueueItem) throws {
+        modelContext.insert(item)
+        try modelContext.save()
+        logger.debug("Inserted capture queue item", context: [
+            "id": item.id.uuidString,
+            "status": item.status.rawValue
+        ])
+    }
+
+    func fetchAllCaptureQueueItems() throws -> [CaptureQueueItem] {
+        let descriptor = FetchDescriptor<CaptureQueueItem>(sortBy: [SortDescriptor(\.dateQueued)])
+        return try modelContext.fetch(descriptor)
+    }
+
+    func assertCaptureQueueItemCount(
+        _ expected: Int,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
+        let actual = try modelContext.fetchCount(FetchDescriptor<CaptureQueueItem>())
+        XCTAssertEqual(actual, expected, "CaptureQueueItem count mismatch", file: file, line: line)
+    }
+
     // MARK: - Performance Helpers
 
     /// Measure async operation with logging
@@ -280,10 +356,14 @@ class SwiftDataTestCase: XCTestCase {
 
     /// Clear all data from context
     func clearAllData() throws {
+        try modelContext.delete(model: QuoteCorrection.self)
         try modelContext.delete(model: Quote.self)
         try modelContext.delete(model: Book.self)
         try modelContext.delete(model: Collection.self)
         try modelContext.delete(model: Tag.self)
+        try modelContext.delete(model: CaptureSession.self)
+        try modelContext.delete(model: PageCapture.self)
+        try modelContext.delete(model: CaptureQueueItem.self)
         // Don't delete marking definitions - they should persist
         try modelContext.save()
         logger.debug("All data cleared")
@@ -300,5 +380,8 @@ class SwiftDataTestCase: XCTestCase {
         try assertQuoteCount(0, file: file, line: line)
         try assertCollectionCount(0, file: file, line: line)
         try assertTagCount(0, file: file, line: line)
+        try assertCaptureSessionCount(0, file: file, line: line)
+        try assertPageCaptureCount(0, file: file, line: line)
+        try assertCaptureQueueItemCount(0, file: file, line: line)
     }
 }

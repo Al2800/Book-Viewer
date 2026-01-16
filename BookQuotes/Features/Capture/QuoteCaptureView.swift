@@ -20,6 +20,7 @@ struct QuoteCaptureView: View {
 
     @State private var cameraService = CameraService()
     @State private var qualityAnalyzer = ImageQualityAnalyzer()
+    @State private var cameraPermission = CameraPermissionService()
     @State private var captureState: CaptureState = .previewing
     @State private var capturedImage: UIImage?
     @State private var qualityResult: ImageQualityAnalyzer.QualityResult?
@@ -111,6 +112,7 @@ struct QuoteCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
         } else {
             CameraPermissionView()
+                .environment(cameraPermission)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.permissionPrompt)
         }
     }
@@ -183,6 +185,15 @@ struct QuoteCaptureView: View {
                     .frame(width: 44, height: 44)
             }
             .padding(.bottom, Spacing.xl)
+
+            if UITestConfiguration.isUITesting {
+                Button("Use Test Image") {
+                    captureTestImage()
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
+                .padding(.bottom, Spacing.lg)
+            }
         }
     }
 
@@ -251,16 +262,7 @@ struct QuoteCaptureView: View {
                 HapticManager.medium()
 
                 let image = try await cameraService.capturePhoto()
-                capturedImage = image
-
-                // Analyze quality
-                isAnalyzingQuality = true
-                let result = try await qualityAnalyzer.analyze(image: image)
-                qualityResult = result
-                isAnalyzingQuality = false
-
-                // Show review sheet
-                captureState = .reviewing
+                await handleCapturedImage(image)
 
             } catch {
                 errorMessage = error.localizedDescription
@@ -268,6 +270,36 @@ struct QuoteCaptureView: View {
                 HapticManager.error()
             }
         }
+    }
+
+    private func captureTestImage() {
+        let image = MockCameraImages.getTestImage(
+            multipleQuotes: false,
+            lowConfidence: false,
+            index: 0
+        )
+        Task {
+            await handleCapturedImage(image)
+        }
+    }
+
+    @MainActor
+    private func handleCapturedImage(_ image: UIImage) async {
+        capturedImage = image
+
+        // Analyze quality
+        isAnalyzingQuality = true
+        do {
+            let result = try await qualityAnalyzer.analyze(image: image)
+            qualityResult = result
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+        isAnalyzingQuality = false
+
+        // Show review sheet
+        captureState = .reviewing
     }
 
     private func retakePhoto() {
@@ -306,10 +338,14 @@ struct QuoteCaptureView: View {
                 session.captures.append(pageCapture)
                 session.totalPages = 1
 
-                try modelContext.save()
+                if UITestConfiguration.isUITesting {
+                    seedExtractionForUITest(pageCapture: pageCapture, session: session)
+                } else {
+                    // Mark session as ready for processing
+                    session.finishCapturing()
+                }
 
-                // Mark session as ready for processing
-                session.finishCapturing()
+                try modelContext.save()
 
                 await MainActor.run {
                     captureState = .completed(session: session)
@@ -333,6 +369,28 @@ struct QuoteCaptureView: View {
         } else {
             retakePhoto()
         }
+    }
+
+    private func seedExtractionForUITest(pageCapture: PageCapture, session: CaptureSession) {
+        let quotes = [
+            ExtractedQuoteData(
+                text: "Test quote extracted for UI testing.",
+                pageNumber: 12,
+                marginNote: nil,
+                markingType: "underline",
+                confidence: 0.92
+            )
+        ]
+
+        pageCapture.storeExtractedQuotes(quotes)
+        pageCapture.completeProcessing(
+            quoteCount: quotes.count,
+            avgConfidence: quotes.compactMap { $0.confidence }.first,
+            pageNumber: quotes.first?.pageNumber
+        )
+
+        session.status = .processing
+        session.recordSuccess()
     }
 }
 
@@ -360,46 +418,25 @@ extension QuoteCaptureView {
     }
 }
 
-// MARK: - Camera Preview View
-
-/// UIViewRepresentable for AVCaptureVideoPreviewLayer
-struct CameraPreviewView: UIViewRepresentable {
-    let cameraService: CameraService
-
-    func makeUIView(context: Context) -> CameraPreviewUIView {
-        let view = CameraPreviewUIView()
-        if let layer = cameraService.createPreviewLayer() {
-            view.previewLayer = layer
-            layer.frame = view.bounds
-            view.layer.addSublayer(layer)
-        }
-        return view
-    }
-
-    func updateUIView(_ uiView: CameraPreviewUIView, context: Context) {
-        uiView.previewLayer?.frame = uiView.bounds
-    }
-}
-
-/// UIView subclass for camera preview with proper layer sizing
-class CameraPreviewUIView: UIView {
-    var previewLayer: AVCaptureVideoPreviewLayer?
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        previewLayer?.frame = bounds
-    }
-}
-
 // MARK: - Preview
 
 #Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = (try? ModelContainer(for: Book.self, configurations: config)) ?? .preview
+    let container: ModelContainer? = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try? ModelContainer(for: Book.self, configurations: config)
+    }()
 
-    let book = Book(title: "Test Book", author: "Test Author")
-    container.mainContext.insert(book)
+    if let container {
+        let book: Book = {
+            let book = Book(title: "Test Book", author: "Test Author")
+            container.mainContext.insert(book)
+            return book
+        }()
 
-    return QuoteCaptureView(book: book)
-        .modelContainer(container)
+        QuoteCaptureView(book: book)
+            .modelContainer(container)
+    } else {
+        Text("Preview unavailable")
+            .foregroundStyle(.secondary)
+    }
 }

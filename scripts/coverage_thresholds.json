@@ -1,0 +1,8 @@
+{
+  "overall": 0.80,
+  "targets": {
+    "BookQuotes": 0.80,
+    "BookQuotesTests": 0.70,
+    "BookQuotesUITests": 0.60
+  }
+}

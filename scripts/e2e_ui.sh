@@ -1,0 +1,187 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# BookQuotes UI Test Runner
+# Runs UI tests with screenshot capture and detailed logging
+#
+# Environment variables:
+#   SCHEME          - Xcode scheme (default: BookQuotesUITests)
+#   TEST_PLAN       - Test plan name (default: FullRegressionPlan)
+#   DESTINATION     - Simulator destination (default: iPhone 15)
+#   ARTIFACTS_DIR   - Output directory (default: artifacts/ui-tests)
+#   RETRY_COUNT     - Number of retries for flaky tests (default: 1)
+#   TIMEOUT         - Test timeout in seconds (default: 600)
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+PROJECT="$PROJECT_DIR/BookQuotes.xcodeproj"
+SCHEME="${SCHEME:-BookQuotesUITests}"
+TEST_PLAN="${TEST_PLAN:-FullRegressionPlan}"
+DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 15}"
+ARTIFACTS_DIR="${ARTIFACTS_DIR:-$PROJECT_DIR/artifacts/ui-tests}"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+RESULT_BUNDLE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}.xcresult"
+LOG_FILE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}.log"
+SCREENSHOTS_DIR="${ARTIFACTS_DIR}/screenshots"
+RETRY_COUNT="${RETRY_COUNT:-1}"
+TIMEOUT="${TIMEOUT:-600}"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+log_info() {
+  echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+log_warn() {
+  echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+log_error() {
+  echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Setup
+setup() {
+  log_info "Setting up UI test run..."
+  mkdir -p "$ARTIFACTS_DIR"
+  mkdir -p "$SCREENSHOTS_DIR"
+
+  # Intentionally avoid destructive cleanup steps here.
+}
+
+# Run tests with retry logic
+run_tests() {
+  local attempt=1
+  local max_attempts=$((RETRY_COUNT + 1))
+
+  while [[ $attempt -le $max_attempts ]]; do
+    if [[ $attempt -gt 1 ]]; then
+      log_warn "Retry attempt $attempt of $max_attempts..."
+      # On retry, don't erase simulator - may have useful state
+      sleep 5
+    fi
+
+    log_info "Running UI tests (attempt $attempt)..."
+
+    # Set environment for test artifacts
+    export UI_TEST_ARTIFACTS_DIR="$ARTIFACTS_DIR"
+    export CAPTURE_UI_TEST_CHECKPOINTS=1
+    export WRITE_UI_TEST_LOGS=1
+
+    local CMD=(
+      xcodebuild test
+      -project "$PROJECT"
+      -scheme "$SCHEME"
+      -testPlan "$TEST_PLAN"
+      -destination "$DESTINATION"
+      -resultBundlePath "$RESULT_BUNDLE"
+    )
+
+    # Run with timeout
+    if timeout "$TIMEOUT" bash -c '"${@}"' _ "${CMD[@]}" 2>&1 | tee "$LOG_FILE"; then
+      return 0
+    fi
+
+    local EXIT_CODE=$?
+    if [[ $EXIT_CODE -eq 124 ]]; then
+      log_error "Test run timed out after ${TIMEOUT}s"
+    fi
+
+    attempt=$((attempt + 1))
+  done
+
+  return 1
+}
+
+# Extract screenshots from xcresult
+extract_screenshots() {
+  if [[ -d "$RESULT_BUNDLE" ]]; then
+    log_info "Extracting screenshots from test results..."
+
+    # Use xcresulttool to extract attachments
+    xcrun xcresulttool get --path "$RESULT_BUNDLE" --format json > "${ARTIFACTS_DIR}/results-${TIMESTAMP}.json" 2>/dev/null || true
+
+    # Copy any screenshots captured during test
+    if [[ -d "$SCREENSHOTS_DIR" ]] && [[ "$(ls -A "$SCREENSHOTS_DIR" 2>/dev/null)" ]]; then
+      log_info "Screenshots saved to: $SCREENSHOTS_DIR"
+    fi
+  fi
+}
+
+# Extract test summary
+extract_summary() {
+  if [[ -f "$LOG_FILE" ]]; then
+    log_info "Test summary:"
+    grep -E "(Test Suite|Executed|passed|failed|Failing tests)" "$LOG_FILE" | tail -20 || true
+  fi
+}
+
+# Generate failure report
+generate_failure_report() {
+  if [[ -f "$LOG_FILE" ]]; then
+    local FAILURE_REPORT="${ARTIFACTS_DIR}/failures-${TIMESTAMP}.txt"
+
+    log_info "Generating failure report..."
+
+    {
+      echo "UI Test Failure Report"
+      echo "======================"
+      echo "Timestamp: $(date)"
+      echo ""
+      echo "Failed Tests:"
+      grep -A 5 "failed" "$LOG_FILE" || echo "No failures found in log"
+      echo ""
+      echo "Errors:"
+      grep -i "error:" "$LOG_FILE" | head -20 || echo "No errors found in log"
+    } > "$FAILURE_REPORT"
+
+    log_info "Failure report: $FAILURE_REPORT"
+  fi
+}
+
+# Cleanup old artifacts
+cleanup_old_artifacts() {
+  # Keep only the last 5 test runs (UI tests generate more data)
+  cd "$ARTIFACTS_DIR"
+  ls -td */ 2>/dev/null | tail -n +6 | xargs rm -rf 2>/dev/null || true
+  ls -t *.xcresult 2>/dev/null | tail -n +6 | xargs rm -rf 2>/dev/null || true
+  ls -t *.log 2>/dev/null | tail -n +6 | xargs rm -rf 2>/dev/null || true
+  cd "$PROJECT_DIR"
+}
+
+# Main
+main() {
+  local START_TIME=$(date +%s)
+
+  setup
+
+  if run_tests; then
+    log_info "UI tests passed!"
+    extract_screenshots
+    extract_summary
+    cleanup_old_artifacts
+
+    local END_TIME=$(date +%s)
+    log_info "Duration: $((END_TIME - START_TIME))s"
+    log_info "Artifacts: $ARTIFACTS_DIR"
+    exit 0
+  else
+    log_error "UI tests failed!"
+    extract_screenshots
+    extract_summary
+    generate_failure_report
+
+    local END_TIME=$(date +%s)
+    log_info "Duration: $((END_TIME - START_TIME))s"
+    log_info "Logs: $LOG_FILE"
+    log_info "Screenshots: $SCREENSHOTS_DIR"
+    log_info "Results: $RESULT_BUNDLE"
+    exit 1
+  fi
+}
+
+main

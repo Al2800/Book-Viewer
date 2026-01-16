@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 // MARK: - UI Test Logger
 
@@ -11,13 +12,18 @@ final class UITestLogger {
     private let startTime: Date
     private var entries: [LogEntry] = []
     private var currentStepNumber = 0
+    private var lastStepTime: Date?
+    private let onCheckpoint: ((Int, String) -> Void)?
 
     // MARK: - Initialization
 
-    init(testName: String) {
+    init(testName: String, onCheckpoint: ((Int, String) -> Void)? = nil) {
         self.testName = testName
         self.startTime = Date()
+        self.onCheckpoint = onCheckpoint
         info("Test started")
+        info("Device: \(deviceSummary)")
+        info("Locale: \(localeSummary)")
     }
 
     // MARK: - Logging Methods
@@ -25,7 +31,11 @@ final class UITestLogger {
     /// Log a numbered step in the test flow.
     func step(_ number: Int, _ message: String) {
         currentStepNumber = number
-        log(.step, "STEP \(number): \(message)")
+        let now = Date()
+        let delta = now.timeIntervalSince(lastStepTime ?? startTime)
+        lastStepTime = now
+        log(.step, "STEP \(number): \(message) (+\(String(format: "%.2fs", delta)))")
+        onCheckpoint?(number, message)
     }
 
     /// Log an informational message.
@@ -65,6 +75,8 @@ final class UITestLogger {
         lines.append("Test: \(testName)")
         lines.append("Duration: \(formattedDuration)")
         lines.append("Steps completed: \(currentStepNumber)")
+        lines.append("Device: \(deviceSummary)")
+        lines.append("Locale: \(localeSummary)")
         lines.append("───────────────────────────────────────")
 
         for entry in entries {
@@ -79,19 +91,23 @@ final class UITestLogger {
     /// Write summary to a file in the temp directory.
     func writeSummaryToFile() {
         let fileManager = FileManager.default
-        let tempDir = fileManager.temporaryDirectory
-        let logDir = tempDir.appendingPathComponent("BookQuotesUITests", isDirectory: true)
+        let logDir = artifactsDirectory.appendingPathComponent("logs", isDirectory: true)
 
         do {
             try fileManager.createDirectory(at: logDir, withIntermediateDirectories: true)
 
-            let fileName = "\(sanitizedTestName)_\(timestamp()).log"
+            let fileName = "\(sanitizedTestName).log"
             let fileURL = logDir.appendingPathComponent(fileName)
 
             let summaryText = summary()
             try summaryText.write(to: fileURL, atomically: true, encoding: .utf8)
 
             print("📁 Log written to: \(fileURL.path)")
+
+            let jsonURL = logDir.appendingPathComponent("\(sanitizedTestName).json")
+            let jsonData = try JSONEncoder().encode(entries.map { $0.serialized })
+            try jsonData.write(to: jsonURL, options: .atomic)
+            print("📁 JSON log written to: \(jsonURL.path)")
         } catch {
             print("⚠️ Failed to write log file: \(error)")
         }
@@ -125,6 +141,24 @@ final class UITestLogger {
             .replacingOccurrences(of: " ", with: "_")
             .replacingOccurrences(of: "-", with: "_")
     }
+
+    private var deviceSummary: String {
+        let device = UIDevice.current
+        return "\(device.model) \(device.systemName) \(device.systemVersion)"
+    }
+
+    private var localeSummary: String {
+        let locale = Locale.current.identifier
+        let timeZone = TimeZone.current.identifier
+        return "\(locale) (\(timeZone))"
+    }
+
+    private var artifactsDirectory: URL {
+        if let customPath = ProcessInfo.processInfo.environment["UI_TEST_ARTIFACTS_DIR"] {
+            return URL(fileURLWithPath: customPath, isDirectory: true)
+        }
+        return FileManager.default.temporaryDirectory.appendingPathComponent("BookQuotesUITests", isDirectory: true)
+    }
 }
 
 // MARK: - Log Entry
@@ -138,6 +172,20 @@ private struct LogEntry {
         let timeString = ISO8601DateFormatter().string(from: timestamp)
         return "[\(timeString)] [\(level.rawValue)] \(message)"
     }
+
+    var serialized: SerializedLogEntry {
+        SerializedLogEntry(
+            timestamp: ISO8601DateFormatter().string(from: timestamp),
+            level: level.rawValue,
+            message: message
+        )
+    }
+}
+
+private struct SerializedLogEntry: Codable {
+    let timestamp: String
+    let level: String
+    let message: String
 }
 
 // MARK: - Log Level

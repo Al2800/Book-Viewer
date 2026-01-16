@@ -49,8 +49,15 @@ class BaseUITestCase: XCTestCase {
         app.launchEnvironment = launchEnvironment
 
         // Initialize helpers
-        logger = UITestLogger(testName: name)
         screenshots = ScreenshotCapture(app: app, testName: name)
+        let captureCheckpoints = ProcessInfo.processInfo.environment["CAPTURE_UI_TEST_CHECKPOINTS"] != nil
+        logger = UITestLogger(testName: name) { [weak self] step, message in
+            guard captureCheckpoints else { return }
+            _ = self?.screenshots.capture(
+                name: "step_\(step)",
+                description: message
+            )
+        }
 
         // Launch app
         logger.info("Launching app with arguments: \(app.launchArguments)")
@@ -63,6 +70,7 @@ class BaseUITestCase: XCTestCase {
     override func tearDown() {
         // Capture failure screenshot if test failed
         if let failureCount = testRun?.failureCount, failureCount > 0 {
+            logger.error("Test failed with \(failureCount) failure(s)")
             captureFailureScreenshot()
         }
 

@@ -151,6 +151,65 @@ enum AccessibilityIdentifiers {
 
         /// Open settings button (for camera permission)
         static let openSettingsButton = "capture_open_settings_button"
+
+        /// UI test-only button for injecting a test capture image
+        static let testImageButton = "capture_test_image_button"
+
+        /// UI test-only button for injecting a test cover image
+        static let testCoverButton = "capture_test_cover_button"
+
+        /// Mode picker (photo/barcode)
+        static let modePicker = "capture_mode_picker"
+
+        /// Page counter in batch capture
+        static let pageCounter = "capture_page_counter"
+
+        /// Done button in batch capture
+        static let doneButton = "capture_done_button"
+
+        /// Thumbnail strip in batch capture
+        static let thumbnailStrip = "capture_thumbnail_strip"
+    }
+
+    // MARK: - Collections
+
+    enum Collections {
+        /// Add to collection button
+        static let addButton = "collections_add_button"
+
+        /// Collection list row
+        static let collectionRow = "collections_row"
+
+        /// Create collection button
+        static let createButton = "collections_create_button"
+
+        /// Collection name field
+        static let nameField = "collections_name_field"
+
+        /// Collection detail view
+        static let detailView = "collections_detail_view"
+
+        /// Empty state view
+        static let emptyState = "collections_empty_state"
+    }
+
+    // MARK: - Tags
+
+    enum Tags {
+        /// Add tag button
+        static let addButton = "tags_add_button"
+
+        /// Tag chip/pill view
+        static let tagChip = "tags_chip"
+
+        /// Tag name field
+        static let nameField = "tags_name_field"
+
+        /// Tags list view
+        static let listView = "tags_list_view"
+
+        /// Empty state view
+        static let emptyState = "tags_empty_state"
     }
 
     // MARK: - Image Review

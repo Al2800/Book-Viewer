@@ -10,6 +10,7 @@ final class ScreenshotCapture {
     private let app: XCUIApplication
     private let testName: String
     private var captureCount = 0
+    private let fileManager = FileManager.default
 
     // MARK: - Initialization
 
@@ -42,6 +43,8 @@ final class ScreenshotCapture {
             print("📸 Screenshot [\(screenshotName)]")
         }
 
+        saveScreenshot(screenshot, name: screenshotName)
+
         return attachment
     }
 
@@ -61,6 +64,8 @@ final class ScreenshotCapture {
         } else {
             print("📸 Failure screenshot captured")
         }
+
+        saveScreenshot(screenshot, name: "FAILURE")
 
         return attachment
     }
@@ -85,6 +90,8 @@ final class ScreenshotCapture {
 
         print("📸 Element screenshot [\(name)]")
 
+        saveScreenshot(screenshot, name: name)
+
         return attachment
     }
 
@@ -99,6 +106,7 @@ final class ScreenshotCapture {
             attachment.name = "\(sanitizedTestName)_safe_capture_\(captureCount)"
             attachment.lifetime = .keepAlways
             captureCount += 1
+            saveScreenshot(screenshot, name: "safe_capture_\(captureCount)")
             return attachment
         } catch {
             print("⚠️ Safe screenshot capture failed: \(error)")
@@ -112,6 +120,25 @@ final class ScreenshotCapture {
             .replacingOccurrences(of: "]", with: "")
             .replacingOccurrences(of: " ", with: "_")
             .replacingOccurrences(of: "-", with: "_")
+    }
+
+    private var artifactsDirectory: URL {
+        if let customPath = ProcessInfo.processInfo.environment["UI_TEST_ARTIFACTS_DIR"] {
+            return URL(fileURLWithPath: customPath, isDirectory: true)
+        }
+        return fileManager.temporaryDirectory.appendingPathComponent("BookQuotesUITests", isDirectory: true)
+    }
+
+    private func saveScreenshot(_ screenshot: XCUIScreenshot, name: String) {
+        let screenshotsDir = artifactsDirectory.appendingPathComponent("screenshots", isDirectory: true)
+        do {
+            try fileManager.createDirectory(at: screenshotsDir, withIntermediateDirectories: true)
+            let fileName = "\(sanitizedTestName)_\(name).png"
+            let fileURL = screenshotsDir.appendingPathComponent(fileName)
+            try screenshot.pngRepresentation.write(to: fileURL, options: .atomic)
+        } catch {
+            print("⚠️ Failed to save screenshot: \(error)")
+        }
     }
 }
 
