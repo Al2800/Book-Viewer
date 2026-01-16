@@ -4,7 +4,8 @@ import Foundation
 
 /// Unified book metadata from various lookup sources.
 /// Used to populate Book model after successful ISBN lookup.
-struct BookMetadata: Sendable {
+struct BookMetadata: Sendable, Identifiable {
+    let id: UUID
     // MARK: - Core Information
 
     let title: String
@@ -30,6 +31,7 @@ struct BookMetadata: Sendable {
 
     let thumbnailURL: String?
     let coverURL: String?
+    var coverImageData: Data?
 
     // MARK: - Ratings
 
@@ -55,11 +57,38 @@ struct BookMetadata: Sendable {
     }
 
     /// Best available ISBN (prefer ISBN-13)
+    var isbn: String? {
+        bestISBN
+    }
+
+    /// Best available ISBN (prefer ISBN-13)
     var bestISBN: String? {
         isbn13 ?? isbn10
     }
 
+    /// Year published (matches app metadata naming)
+    var publishYear: Int? {
+        publishedYear
+    }
+
+    /// Primary genre (first category if available)
+    var genre: String? {
+        categories.first
+    }
+
+    /// URL to the cover image if available
+    var coverImageURL: URL? {
+        if let coverURL {
+            return URL(string: coverURL)
+        }
+        if let thumbnailURL {
+            return URL(string: thumbnailURL)
+        }
+        return nil
+    }
+
     init(
+        id: UUID = UUID(),
         title: String,
         subtitle: String? = nil,
         authors: [String] = [],
@@ -74,12 +103,14 @@ struct BookMetadata: Sendable {
         language: String? = nil,
         thumbnailURL: String? = nil,
         coverURL: String? = nil,
+        coverImageData: Data? = nil,
         averageRating: Double? = nil,
         ratingsCount: Int? = nil,
         source: MetadataSource = .unknown,
         googleBooksId: String? = nil,
         openLibraryKey: String? = nil
     ) {
+        self.id = id
         self.title = title
         self.subtitle = subtitle
         self.authors = authors
@@ -94,6 +125,7 @@ struct BookMetadata: Sendable {
         self.language = language
         self.thumbnailURL = thumbnailURL
         self.coverURL = coverURL
+        self.coverImageData = coverImageData
         self.averageRating = averageRating
         self.ratingsCount = ratingsCount
         self.source = source

@@ -22,7 +22,7 @@ actor CaptureQueueManager {
     private static let autoProcessQueueKey = "autoProcessQueue"
 
     /// Whether automatic queue processing is enabled (defaults to true)
-    private var isAutoProcessEnabled: Bool {
+    nonisolated private var isAutoProcessEnabled: Bool {
         // Default to true if not set (maintains existing behavior)
         if UserDefaults.standard.object(forKey: Self.autoProcessQueueKey) == nil {
             return true
@@ -44,7 +44,7 @@ actor CaptureQueueManager {
     private var pendingRetries: [UUID: Task<Void, Never>] = [:]
 
     /// Published queue statistics for UI binding
-    private let statsSubject = CurrentValueSubject<QueueStats, Never>(QueueStats())
+    nonisolated(unsafe) private let statsSubject = CurrentValueSubject<QueueStats, Never>(QueueStats())
 
     // MARK: - Initialization
 
@@ -250,7 +250,7 @@ actor CaptureQueueManager {
     }
 
     /// Publisher for queue statistics updates.
-    nonisolated var statsPublisher: AnyPublisher<QueueStats, Never> {
+    nonisolated(unsafe) var statsPublisher: AnyPublisher<QueueStats, Never> {
         statsSubject.eraseToAnyPublisher()
     }
 

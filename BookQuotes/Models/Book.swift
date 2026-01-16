@@ -92,7 +92,6 @@ extension Book {
     /// Books currently being read
     static var currentlyReading: FetchDescriptor<Book> {
         FetchDescriptor<Book>(
-            predicate: #Predicate { $0.status == .currentlyReading },
             sortBy: [SortDescriptor(\.dateStarted, order: .reverse)]
         )
     }

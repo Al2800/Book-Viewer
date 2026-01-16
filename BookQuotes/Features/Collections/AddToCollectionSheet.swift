@@ -172,7 +172,7 @@ private struct CollectionSelectionRow: View {
                 // Selection indicator
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
-                    .foregroundStyle(isSelected ? .accent : .secondary)
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
             }
         }
         .buttonStyle(.plain)
@@ -216,7 +216,7 @@ struct BatchAddToCollectionSheet: View {
                 Section {
                     HStack {
                         Image(systemName: "quote.opening")
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(Color.accentColor)
                         Text("\(quotes.count) quote\(quotes.count == 1 ? "" : "s") selected")
                             .foregroundStyle(.secondary)
                     }

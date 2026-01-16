@@ -116,7 +116,7 @@ struct OnboardingView: View {
                     .padding(.vertical, Spacing.md)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.brand)
+            .tint(Color.brand)
             .padding(.horizontal, Spacing.lg)
             .padding(.bottom, Spacing.xl)
         }
@@ -132,7 +132,7 @@ struct OnboardingView: View {
             VStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.fill.badge.checkmark")
                     .font(.system(size: 60))
-                    .foregroundStyle(.brand)
+                    .foregroundStyle(Color.brand)
 
                 Text("Create Your Account")
                     .font(.title)
@@ -215,7 +215,7 @@ struct OnboardingView: View {
             VStack(spacing: Spacing.md) {
                 Image(systemName: "highlighter")
                     .font(.system(size: 60))
-                    .foregroundStyle(.brand)
+                    .foregroundStyle(Color.brand)
 
                 Text("How Do You Mark Books?")
                     .font(.title)
@@ -245,7 +245,7 @@ struct OnboardingView: View {
                     .padding(.vertical, Spacing.md)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.brand)
+            .tint(Color.brand)
             .padding(.horizontal, Spacing.lg)
 
             // Skip option
@@ -297,7 +297,7 @@ struct OnboardingView: View {
                 .padding(.vertical, Spacing.md)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.brand)
+            .tint(Color.brand)
             .padding(.horizontal, Spacing.lg)
             .padding(.bottom, Spacing.xl)
             .disabled(isCompleting)
@@ -382,7 +382,7 @@ private struct WelcomePageView: View {
 
             Image(systemName: page.icon)
                 .font(.system(size: 100))
-                .foregroundStyle(.brand)
+                .foregroundStyle(Color.brand)
 
             VStack(spacing: Spacing.md) {
                 Text(page.title)
@@ -411,7 +411,7 @@ private struct MarkingTemplateSelector: View {
 
     var body: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Spacing.md) {
-            ForEach(MarkingType.allCases.filter { !$0.isCustom }, id: \.self) { type in
+            ForEach(MarkingType.allCases, id: \.self) { type in
                 MarkingStyleOption(
                     type: type,
                     isSelected: selectedStyles.contains(type)
@@ -438,7 +438,7 @@ private struct MarkingStyleOption: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: Spacing.sm) {
-                Image(systemName: type.icon)
+                Image(systemName: type.systemImage)
                     .font(.title2)
 
                 Text(type.displayName)
@@ -473,7 +473,7 @@ private struct PaywallEmbeddedView: View {
             // Trial banner
             HStack {
                 Image(systemName: "gift.fill")
-                    .foregroundStyle(.brand)
+                    .foregroundStyle(Color.brand)
                 Text("Start with a 7-day free trial")
                     .font(.subheadline)
                     .fontWeight(.medium)

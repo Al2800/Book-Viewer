@@ -289,7 +289,6 @@ extension PageCapture {
     /// Captures pending processing
     static var pending: FetchDescriptor<PageCapture> {
         FetchDescriptor<PageCapture>(
-            predicate: #Predicate { $0.status == .pending },
             sortBy: [SortDescriptor(\.orderIndex)]
         )
     }
@@ -297,7 +296,6 @@ extension PageCapture {
     /// Failed captures that can be retried
     static var failed: FetchDescriptor<PageCapture> {
         FetchDescriptor<PageCapture>(
-            predicate: #Predicate { $0.status == .failed },
             sortBy: [SortDescriptor(\.dateCreated, order: .reverse)]
         )
     }

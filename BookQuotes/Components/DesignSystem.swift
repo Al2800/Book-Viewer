@@ -461,23 +461,13 @@ extension View {
     /// Falls back to ultraThinMaterial on earlier iOS versions.
     @ViewBuilder
     func glassToolbar() -> some View {
-        if #available(iOS 26, *) {
-            // iOS 26: Use native glass toolbar background
-            self.toolbarBackground(.glass, for: .navigationBar)
-        } else {
-            // Pre-iOS 26: Material-based fallback
-            self.toolbarBackground(.ultraThinMaterial, for: .navigationBar)
-        }
+        self.toolbarBackground(.ultraThinMaterial, for: .navigationBar)
     }
 
     /// Apply glass tab bar background with iOS 26 Liquid Glass.
     @ViewBuilder
     func glassTabBar() -> some View {
-        if #available(iOS 26, *) {
-            self.toolbarBackground(.glass, for: .tabBar)
-        } else {
-            self.toolbarBackground(.ultraThinMaterial, for: .tabBar)
-        }
+        self.toolbarBackground(.ultraThinMaterial, for: .tabBar)
     }
 
     /// Apply glass effect to floating elements (FABs, toasts).

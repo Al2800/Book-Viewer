@@ -58,7 +58,7 @@ struct SignInView: View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "books.vertical.circle.fill")
                 .font(.system(size: 80))
-                .foregroundStyle(.brand)
+                .foregroundStyle(Color.brand)
 
             Text("BookQuotes")
                 .font(.largeTitle)
@@ -179,7 +179,7 @@ private struct FeatureRow: View {
         HStack(spacing: Spacing.md) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundStyle(.brand)
+                .foregroundStyle(Color.brand)
                 .frame(width: 40)
 
             VStack(alignment: .leading, spacing: Spacing.xxs) {

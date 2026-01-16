@@ -79,7 +79,7 @@ struct PaywallView: View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "sparkles")
                 .font(.system(size: 50))
-                .foregroundStyle(.brand)
+                .foregroundStyle(Color.brand)
 
             Text("Capture the wisdom\nin your books")
                 .font(.title2)

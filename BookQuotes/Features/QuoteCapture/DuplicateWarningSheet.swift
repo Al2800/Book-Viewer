@@ -84,7 +84,7 @@ struct DuplicateWarningSheet: View {
         VStack(spacing: Spacing.md) {
             Image(systemName: isExactDuplicate ? "exclamationmark.triangle.fill" : "doc.on.doc.fill")
                 .font(.system(size: 48))
-                .foregroundStyle(isExactDuplicate ? .warning : .accent)
+                .foregroundStyle(isExactDuplicate ? Color.warning : Color.accentColor)
 
             Text(isExactDuplicate ? "Exact Duplicate Found" : "Similar Quote Found")
                 .font(.title2)
@@ -151,20 +151,32 @@ struct DuplicateWarningSheet: View {
                     Label("Don't Save", systemImage: "xmark")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.accent)
+                .buttonStyle(BorderedProminentButtonStyle())
+                .tint(Color.accentColor)
             }
 
             // Save anyway button
-            Button {
-                onSaveAnyway()
-                dismiss()
-            } label: {
-                Label(isExactDuplicate ? "Save Duplicate Anyway" : "Save Anyway", systemImage: "square.and.arrow.down")
-                    .frame(maxWidth: .infinity)
+            if isExactDuplicate {
+                Button {
+                    onSaveAnyway()
+                    dismiss()
+                } label: {
+                    Label("Save Duplicate Anyway", systemImage: "square.and.arrow.down")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(BorderedButtonStyle())
+                .tint(.secondary)
+            } else {
+                Button {
+                    onSaveAnyway()
+                    dismiss()
+                } label: {
+                    Label("Save Anyway", systemImage: "square.and.arrow.down")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(BorderedProminentButtonStyle())
+                .tint(Color.accentColor)
             }
-            .buttonStyle(isExactDuplicate ? .bordered : .borderedProminent)
-            .tint(isExactDuplicate ? .secondary : .accent)
 
             // Cancel button (less prominent for similar quotes)
             if !isExactDuplicate {
@@ -175,7 +187,7 @@ struct DuplicateWarningSheet: View {
                     Text("Cancel")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(BorderedButtonStyle())
             }
         }
         .padding(.top, Spacing.md)
@@ -240,8 +252,8 @@ private struct SimilarityBadge: View {
         }
         .padding(.horizontal, Spacing.sm)
         .padding(.vertical, Spacing.xs)
-        .background(isExact ? Color.warning.opacity(0.2) : Color.accent.opacity(0.2))
-        .foregroundStyle(isExact ? .warning : .accent)
+        .background(isExact ? Color.warning.opacity(0.2) : Color.accentColor.opacity(0.2))
+        .foregroundStyle(isExact ? Color.warning : Color.accentColor)
         .clipShape(Capsule())
     }
 }

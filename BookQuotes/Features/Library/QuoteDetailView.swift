@@ -369,17 +369,19 @@ struct QuoteDetailView: View {
 
     private var markingPickerSheet: some View {
         NavigationStack {
-            List(MarkingType.allCases, id: \.self) { type in
-                Button {
-                    quote.markingType = type
-                    showMarkingPicker = false
-                } label: {
-                    HStack {
-                        MarkingTypeBadge(markingType: type)
-                        Spacer()
-                        if quote.markingType == type {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.accent)
+            List {
+                ForEach(MarkingType.allCases, id: \.self) { type in
+                    Button {
+                        quote.markingType = type
+                        showMarkingPicker = false
+                    } label: {
+                        HStack {
+                            MarkingTypeBadge(markingType: type)
+                            Spacer()
+                            if quote.markingType == type {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(Color.accentColor)
+                            }
                         }
                     }
                 }

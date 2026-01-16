@@ -86,7 +86,7 @@ struct OrganizationFilterBar: View {
     private var clearAllButton: some View {
         if !selectedCollectionIds.isEmpty || !selectedTagIds.isEmpty {
             Button {
-                withAnimation(.smoothSpring) {
+                withAnimation {
                     selectedCollectionIds.removeAll()
                     selectedTagIds.removeAll()
                 }
@@ -103,9 +103,9 @@ struct OrganizationFilterBar: View {
     // MARK: - Actions
 
     private func toggleCollection(_ id: UUID) {
-        withAnimation(.smoothSpring) {
+        withAnimation {
             if selectedCollectionIds.contains(id) {
-                selectedCollectionIds.remove(id)
+                _ = selectedCollectionIds.remove(id)
             } else {
                 selectedCollectionIds.insert(id)
             }
@@ -113,9 +113,9 @@ struct OrganizationFilterBar: View {
     }
 
     private func toggleTag(_ id: UUID) {
-        withAnimation(.smoothSpring) {
+        withAnimation {
             if selectedTagIds.contains(id) {
-                selectedTagIds.remove(id)
+                _ = selectedTagIds.remove(id)
             } else {
                 selectedTagIds.insert(id)
             }
@@ -218,8 +218,8 @@ struct ActiveOrganizationFiltersBar: View {
                                 icon: collection.icon,
                                 color: CollectionColor(rawValue: collection.colorName)?.color ?? .blue
                             ) {
-                                withAnimation(.smoothSpring) {
-                                    selectedCollectionIds.remove(id)
+                                withAnimation {
+                                    _ = selectedCollectionIds.remove(id)
                                 }
                             }
                         }
@@ -233,8 +233,8 @@ struct ActiveOrganizationFiltersBar: View {
                                 icon: "tag",
                                 color: CollectionColor(rawValue: tag.colorName)?.color ?? .blue
                             ) {
-                                withAnimation(.smoothSpring) {
-                                    selectedTagIds.remove(id)
+                                withAnimation {
+                                    _ = selectedTagIds.remove(id)
                                 }
                             }
                         }
@@ -242,7 +242,7 @@ struct ActiveOrganizationFiltersBar: View {
 
                     // Clear all
                     Button {
-                        withAnimation(.smoothSpring) {
+                        withAnimation {
                             selectedCollectionIds.removeAll()
                             selectedTagIds.removeAll()
                         }
@@ -256,9 +256,13 @@ struct ActiveOrganizationFiltersBar: View {
                 .padding(.horizontal, Spacing.md)
             }
             .padding(.vertical, Spacing.xs)
-            .background(Color.backgroundSecondary.opacity(0.5))
+            .background(barBackground)
             .transition(.move(edge: .top).combined(with: .opacity))
         }
+    }
+
+    private var barBackground: Color {
+        Color.backgroundSecondary.opacity(0.5)
     }
 }
 

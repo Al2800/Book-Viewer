@@ -131,17 +131,6 @@ enum ExportFileWriter {
             try data.write(to: url, options: [.atomic])
         }
 
-        let zipURL = directory.appendingPathComponent("\(sanitizeFilename(bundleName)).zip")
-
-        if #available(iOS 16.0, *) {
-            do {
-                try FileManager.default.zipItem(at: bundleDirectory, to: zipURL)
-            } catch {
-                throw ExportError.zipFailed
-            }
-            return .file(zipURL, filename: zipURL.lastPathComponent)
-        }
-
         return .file(bundleDirectory, filename: bundleDirectory.lastPathComponent)
     }
 

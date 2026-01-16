@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import SwiftData
 
 /// Main app view with tab-based navigation
 struct ContentView: View {
@@ -35,6 +36,8 @@ struct ContentView: View {
                 .tag(Tab.settings)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.settingsTab)
         }
+        .tint(Color.brand)
+        .background(Color.backgroundPrimary.ignoresSafeArea())
         .onAppear {
             subscribeToQueueStats()
         }

@@ -64,6 +64,8 @@ struct MarkingDefinitionEditor: View {
                 iconSection
                 colorSection
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle(marking == nil ? "New Marking" : "Edit Marking")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

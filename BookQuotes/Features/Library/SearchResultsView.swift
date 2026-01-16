@@ -154,6 +154,8 @@ struct SearchResultsView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
     }
 
     private var booksSection: some View {
@@ -393,7 +395,7 @@ struct SearchResultsView: View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 50))
-                .foregroundStyle(.error)
+                .foregroundStyle(Color.error)
 
             Text("Search error")
                 .font(.headline)
@@ -454,47 +456,6 @@ struct SearchResultsView: View {
 
         // Notify parent to update search text
         onAcceptSuggestion?(suggestion)
-    }
-}
-
-// MARK: - Did-You-Mean Banner
-
-/// Banner suggesting a spelling correction for the search query.
-struct DidYouMeanBanner: View {
-    let suggestion: String
-    let onAccept: () -> Void
-
-    var body: some View {
-        Button(action: onAccept) {
-            HStack(spacing: Spacing.sm) {
-                Image(systemName: "lightbulb.fill")
-                    .foregroundStyle(.accent)
-
-                Text("Did you mean ")
-                    .foregroundStyle(.secondary)
-                +
-                Text("**\(suggestion)**")
-                    .foregroundStyle(.primary)
-                +
-                Text("?")
-                    .foregroundStyle(.secondary)
-            }
-            .font(.subheadline)
-            .padding(.horizontal, Spacing.md)
-            .padding(.vertical, Spacing.sm)
-            .background(
-                RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .fill(Color.backgroundSecondary)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .strokeBorder(Color.accent.opacity(0.3), lineWidth: 1)
-            )
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(AccessibilityIdentifiers.Search.didYouMeanBanner)
-        .accessibilityLabel("Did you mean \(suggestion)?")
-        .accessibilityHint("Double tap to search for \(suggestion)")
     }
 }
 

@@ -282,7 +282,7 @@ struct BookDetailView: View {
                     systemImage: filterMarking != nil ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle"
                 )
                 .font(.caption)
-                .foregroundStyle(filterMarking != nil ? .accent : .secondary)
+                .foregroundStyle(filterMarking != nil ? Color.accentColor : .secondary)
             }
         }
     }

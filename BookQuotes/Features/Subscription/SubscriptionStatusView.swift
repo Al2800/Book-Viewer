@@ -30,23 +30,13 @@ struct SubscriptionStatusView: View {
                 Section {
                     detailRow(title: "Price", value: product.priceWithPeriod)
 
-                    if let status = subscriptionService.subscriptionStatus {
-                        if let renewalDate = status.renewalInfo?.currentPeriodEndDate {
-                            detailRow(
-                                title: "Renews",
-                                value: renewalDate.formatted(date: .abbreviated, time: .omitted)
-                            )
-                        }
-
-                        if status.renewalInfo?.willAutoRenew == false {
-                            detailRow(title: "Auto-Renew", value: "Off")
-                                .foregroundStyle(.orange)
-                        }
+                    if subscriptionService.subscriptionStatus != nil {
+                        detailRow(title: "Renewal", value: "Renews automatically")
                     }
 
                     if subscriptionService.isInTrial {
                         detailRow(title: "Status", value: "Free Trial")
-                            .foregroundStyle(.brand)
+                            .foregroundStyle(Color.brand)
                     }
                 } header: {
                     Text("Details")
@@ -180,7 +170,7 @@ struct UpgradePrompt: View {
             HStack {
                 Image(systemName: "sparkles")
                     .font(.title2)
-                    .foregroundStyle(.brand)
+                    .foregroundStyle(Color.brand)
 
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
                     Text("Unlock Premium")

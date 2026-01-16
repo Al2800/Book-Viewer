@@ -135,13 +135,13 @@ struct ImageReviewView: View {
             // Warnings if any
             if !result.issues.isEmpty {
                 VStack(alignment: .leading, spacing: Spacing.xs) {
-                    ForEach(result.issues.prefix(2), id: \.rawValue) { issue in
+                    ForEach(Array(result.issues.prefix(2)), id: \.description) { issue in
                         HStack(spacing: Spacing.xs) {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .font(.caption2)
-                                .foregroundStyle(.warning)
+                                .foregroundStyle(Color.warning)
 
-                            Text(issue.advice)
+                            Text(issue.description)
                                 .font(.caption)
                                 .foregroundStyle(.white.opacity(0.8))
                         }
@@ -285,11 +285,13 @@ struct CompactImageReview: View {
     ImageReviewView(
         image: UIImage(systemName: "doc.text") ?? UIImage(),
         qualityResult: ImageQualityAnalyzer.QualityResult(
+            overallScore: 0.85,
             blurScore: 0.85,
             brightnessScore: 0.72,
             textConfidence: 0.90,
-            textBlockCount: 12,
-            issues: [.slightlyBlurry]
+            textRegionCount: 12,
+            issues: [.tooBlurry(advice: "Hold steady")],
+            isAcceptable: true
         ),
         book: Book(title: "Test Book", author: "Test Author"),
         onRetake: {},

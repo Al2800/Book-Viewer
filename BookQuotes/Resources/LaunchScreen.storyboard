@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="LaunchViewController">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <scenes>
+        <scene sceneID="LaunchScene">
+            <objects>
+                <viewController id="LaunchViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="LaunchView">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <subviews>
+                            <imageView contentMode="scaleAspectFit" image="LaunchLogoStatic" translatesAutoresizingMaskIntoConstraints="NO" id="LaunchLogoView">
+                                <constraints>
+                                    <constraint firstAttribute="height" multiplier="0.8" secondItem="LaunchView" secondAttribute="height" id="LaunchLogoHeight"/>
+                                    <constraint firstAttribute="width" multiplier="0.9" secondItem="LaunchView" secondAttribute="width" id="LaunchLogoWidth"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="LaunchLogoView" firstAttribute="centerX" secondItem="LaunchView" secondAttribute="centerX" id="LaunchLogoCenterX"/>
+                            <constraint firstItem="LaunchLogoView" firstAttribute="centerY" secondItem="LaunchView" secondAttribute="centerY" id="LaunchLogoCenterY"/>
+                        </constraints>
+                        <color key="backgroundColor" name="BackgroundPrimary"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FirstResponder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="LaunchLogoStatic" width="704" height="1520"/>
+        <namedColor name="BackgroundPrimary">
+            <color red="0.969" green="0.953" blue="0.910" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

@@ -21,10 +21,8 @@ final class Tag {
 
     // MARK: - Relationships
 
-    @Relationship(inverse: \Book.tags)
     var books: [Book]
 
-    @Relationship(inverse: \Quote.tags)
     var quotes: [Quote]
 
     // MARK: - Computed

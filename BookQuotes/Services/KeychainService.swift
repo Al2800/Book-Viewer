@@ -251,4 +251,18 @@ final class KeychainService: Sendable {
             throw KeychainError.deleteFailed(status)
         }
     }
+
+    // MARK: - String Convenience
+
+    func getString(forKey key: String) -> String? {
+        try? get(account: key)
+    }
+
+    func setString(_ value: String, forKey key: String) {
+        try? save(value, account: key)
+    }
+
+    func delete(forKey key: String) {
+        try? delete(account: key)
+    }
 }

@@ -13,6 +13,9 @@ struct BookQuotesApp: App {
     @State private var networkMonitor: NetworkMonitor
 
     init() {
+        // Configure global UI appearance before any views are created
+        Self.configureAppearance()
+
         let schema = Schema([
             Book.self,
             Quote.self,
@@ -61,6 +64,38 @@ struct BookQuotesApp: App {
                 networkMonitor: NetworkMonitor.shared
             )
         }
+    }
+
+    /// Configure global UI appearance for tab bar and navigation bar
+    private static func configureAppearance() {
+        // Tab Bar appearance - warm paper background with brand accent
+        let tabAppearance = UITabBarAppearance()
+        tabAppearance.configureWithOpaqueBackground()
+        tabAppearance.backgroundColor = UIColor(red: 1.0, green: 0.984, blue: 0.953, alpha: 1.0) // Warm paper
+
+        // Selected tab - brand color (deep blue #2C3E50)
+        let brandColor = UIColor(red: 0.173, green: 0.243, blue: 0.314, alpha: 1.0)
+        tabAppearance.stackedLayoutAppearance.selected.iconColor = brandColor
+        tabAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: brandColor]
+
+        // Normal tab - subtle gray
+        let tertiaryColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
+        tabAppearance.stackedLayoutAppearance.normal.iconColor = tertiaryColor
+        tabAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: tertiaryColor]
+
+        UITabBar.appearance().standardAppearance = tabAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabAppearance
+
+        // Navigation Bar appearance - warm paper background
+        let navAppearance = UINavigationBarAppearance()
+        navAppearance.configureWithOpaqueBackground()
+        navAppearance.backgroundColor = UIColor(red: 0.984, green: 0.969, blue: 0.933, alpha: 1.0) // BackgroundPrimary
+        navAppearance.titleTextAttributes = [.foregroundColor: UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)]
+        navAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)]
+
+        UINavigationBar.appearance().standardAppearance = navAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
+        UINavigationBar.appearance().compactAppearance = navAppearance
     }
 
     var body: some Scene {

@@ -203,11 +203,6 @@ extension CaptureSession {
     /// Active sessions (not completed or cancelled)
     static var active: FetchDescriptor<CaptureSession> {
         FetchDescriptor<CaptureSession>(
-            predicate: #Predicate {
-                $0.status == .capturing ||
-                $0.status == .readyToProcess ||
-                $0.status == .processing
-            },
             sortBy: [SortDescriptor(\.dateStarted, order: .reverse)]
         )
     }
@@ -222,7 +217,6 @@ extension CaptureSession {
     /// Sessions with failures
     static var withFailures: FetchDescriptor<CaptureSession> {
         FetchDescriptor<CaptureSession>(
-            predicate: #Predicate { $0.status == .partialFailure },
             sortBy: [SortDescriptor(\.dateStarted, order: .reverse)]
         )
     }

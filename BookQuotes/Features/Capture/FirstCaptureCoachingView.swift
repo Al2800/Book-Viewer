@@ -244,6 +244,7 @@ struct CoachingStep: Identifiable {
 /// Manages coaching state and re-triggering
 @Observable
 final class CaptureCoachingManager {
+    @ObservationIgnored
     @AppStorage("hasCompletedCaptureCoaching") var hasCompleted = false
 
     /// Reset coaching to show tutorial again

@@ -577,7 +577,7 @@ struct OfflineQueueConfirmationSheet: View {
                     .fontWeight(.bold)
                     .foregroundStyle(Color.textPrimary)
 
-                Text("\(queuedCount) page\(queuedCount == 1 ? "" : "s") from "\(bookTitle)"")
+                Text("\(queuedCount) page\(queuedCount == 1 ? "" : "s") from \"\(bookTitle)\"")
                     .font(.headline)
                     .foregroundStyle(Color.textSecondary)
                     .multilineTextAlignment(.center)

@@ -64,8 +64,10 @@ final class SubscriptionService {
     /// Whether user is in free trial
     var isInTrial: Bool {
         guard let status = subscriptionStatus else { return false }
-        return status.state == .subscribed &&
-               status.renewalInfo?.offerType == .introductory
+        guard case .verified(let renewalInfo) = status.renewalInfo else {
+            return false
+        }
+        return status.state == .subscribed && renewalInfo.offerType == .introductory
     }
 
     /// Monthly product if available
@@ -82,10 +84,6 @@ final class SubscriptionService {
 
     init(authService: AuthService) {
         self.authService = authService
-    }
-
-    deinit {
-        updateListenerTask?.cancel()
     }
 
     // MARK: - Setup
@@ -389,6 +387,7 @@ extension Product {
         let monthlyPrice = monthly.price
         let savings = (1 - (yearlyMonthlyPrice / monthlyPrice)) * 100
 
-        return Int(savings.rounded())
+        let savingsValue = NSDecimalNumber(decimal: savings).doubleValue
+        return Int(savingsValue.rounded())
     }
 }

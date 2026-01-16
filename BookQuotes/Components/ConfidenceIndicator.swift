@@ -12,11 +12,11 @@ struct ConfidenceIndicator: View {
     let confidence: Double
 
     /// Display style
-    var style: Style = .dot
+    var style: IndicatorStyle = .dot
 
     // MARK: - Style
 
-    enum Style {
+    enum IndicatorStyle {
         case dot       // Small colored dot
         case bar       // Horizontal progress bar
         case badge     // Text label badge
@@ -160,7 +160,7 @@ struct ConfidenceIndicator: View {
 
 extension ConfidenceIndicator {
     /// Initialize with an optional confidence value, defaulting to 1.0 if nil
-    init(confidence: Double?, style: Style = .dot) {
+    init(confidence: Double?, style: IndicatorStyle = .dot) {
         self.confidence = confidence ?? 1.0
         self.style = style
     }
@@ -172,7 +172,7 @@ extension View {
     /// Add a confidence indicator overlay
     func confidenceOverlay(
         _ confidence: Double?,
-        style: ConfidenceIndicator.Style = .dot,
+        style: ConfidenceIndicator.IndicatorStyle = .dot,
         alignment: Alignment = .topTrailing
     ) -> some View {
         overlay(alignment: alignment) {
@@ -194,7 +194,7 @@ extension View {
             HStack(spacing: Spacing.lg) {
                 ForEach([0.95, 0.80, 0.60, 0.30], id: \.self) { conf in
                     VStack {
-                        ConfidenceIndicator(confidence: conf, style: .dot)
+                        ConfidenceIndicator(confidence: conf, style: ConfidenceIndicator.IndicatorStyle.dot)
                         Text("\(Int(conf * 100))%")
                             .font(.caption2)
                     }
@@ -265,7 +265,7 @@ extension View {
                 Text("Every action you take is a vote...")
                     .font(.quoteBody)
                 Spacer()
-                ConfidenceIndicator(confidence: 0.92, style: .dot)
+                ConfidenceIndicator(confidence: 0.92, style: ConfidenceIndicator.IndicatorStyle.dot)
             }
             Text("Atomic Habits - James Clear")
                 .font(.caption)
@@ -293,7 +293,7 @@ extension View {
         // Low confidence warning
         HStack {
             Image(systemName: "exclamationmark.triangle")
-                .foregroundStyle(.warning)
+                .foregroundStyle(Color.warning)
             Text("This quote may need review")
                 .font(.caption)
             Spacer()

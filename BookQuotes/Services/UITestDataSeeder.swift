@@ -364,16 +364,6 @@ final class UITestDataSeeder {
     }
 }
 
-// MARK: - UITestDataSeeding Conformance
-
-extension UITestDataSeeder: UITestDataSeeding {
-    nonisolated func seedTestDataIfNeeded() async throws {
-        try await MainActor.run {
-            try self.seedTestDataIfNeeded()
-        }
-    }
-}
-
 // MARK: - Test Data Constants
 
 /// Constants for UI test assertions.

@@ -458,53 +458,6 @@ struct BookEditView: View {
     }
 }
 
-// MARK: - BookMetadata
-
-/// Extracted or looked-up book metadata before creating a Book model.
-struct BookMetadata: Identifiable, Sendable {
-    let id = UUID()
-
-    var title: String
-    var authors: [String]
-    var subtitle: String?
-    var isbn: String?
-    var publisher: String?
-    var publishYear: Int?
-    var genre: String?
-    var pageCount: Int?
-    var coverImageURL: URL?
-    var coverImageData: Data?
-
-    /// Authors formatted as a single string.
-    var authorsFormatted: String {
-        authors.joined(separator: ", ")
-    }
-
-    init(
-        title: String,
-        authors: [String] = [],
-        subtitle: String? = nil,
-        isbn: String? = nil,
-        publisher: String? = nil,
-        publishYear: Int? = nil,
-        genre: String? = nil,
-        pageCount: Int? = nil,
-        coverImageURL: URL? = nil,
-        coverImageData: Data? = nil
-    ) {
-        self.title = title
-        self.authors = authors
-        self.subtitle = subtitle
-        self.isbn = isbn
-        self.publisher = publisher
-        self.publishYear = publishYear
-        self.genre = genre
-        self.pageCount = pageCount
-        self.coverImageURL = coverImageURL
-        self.coverImageData = coverImageData
-    }
-}
-
 // MARK: - BookGenre
 
 /// Common book genres for categorization.
@@ -556,12 +509,15 @@ enum BookGenre: String, CaseIterable {
 }
 
 #Preview("Edit Book") {
-    let book = Book(title: "Atomic Habits", author: "James Clear")
-    book.publisher = "Avery"
-    book.publishYear = 2018
-    book.genre = "self-help"
+    let book: Book = {
+        let book = Book(title: "Atomic Habits", author: "James Clear")
+        book.publisher = "Avery"
+        book.publishYear = 2018
+        book.genre = "self-help"
+        return book
+    }()
 
-    return BookEditView(mode: .edit(book))
+    BookEditView(mode: .edit(book))
         .modelContainer(for: Book.self, inMemory: true)
 }
 
@@ -570,10 +526,10 @@ enum BookGenre: String, CaseIterable {
         title: "The Psychology of Money",
         authors: ["Morgan Housel"],
         publisher: "Harriman House",
-        publishYear: 2020,
-        genre: "business"
+        publishedYear: 2020,
+        categories: ["business"]
     )
 
-    return BookEditView(mode: .createFromMetadata(metadata))
+    BookEditView(mode: .createFromMetadata(metadata))
         .modelContainer(for: Book.self, inMemory: true)
 }

@@ -36,10 +36,8 @@ final class Collection {
 
     // MARK: - Relationships
 
-    @Relationship(inverse: \Book.collections)
     var books: [Book]
 
-    @Relationship(inverse: \Quote.collections)
     var quotes: [Quote]
 
     // MARK: - Computed

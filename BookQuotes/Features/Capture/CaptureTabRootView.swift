@@ -14,7 +14,9 @@ struct CaptureTabRootView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        Group {
+        ZStack {
+            Color.backgroundPrimary.ignoresSafeArea()
+
             if cameraPermission.isAuthorized {
                 authorizedContent
             } else {
@@ -329,7 +331,7 @@ struct BookGridItem: View {
                     RoundedRectangle(cornerRadius: CornerRadius.sm)
                         .fill(Color.backgroundSecondary)
 
-                    if let coverData = book.coverImageData,
+                    if let coverData = book.coverThumbnailData ?? book.coverFullData,
                        let uiImage = UIImage(data: coverData) {
                         Image(uiImage: uiImage)
                             .resizable()

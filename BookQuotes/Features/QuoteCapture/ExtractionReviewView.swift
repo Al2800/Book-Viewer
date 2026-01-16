@@ -647,13 +647,16 @@ struct ReviewSummaryView: View {
         configurations: config
     )
 
-    return Group {
+    Group {
         if let container {
-            let book = Book(title: "Atomic Habits", author: "James Clear")
-            container.mainContext.insert(book)
+            let (book, session): (Book, CaptureSession) = {
+                let book = Book(title: "Atomic Habits", author: "James Clear")
+                container.mainContext.insert(book)
 
-            let session = CaptureSession(book: book)
-            container.mainContext.insert(session)
+                let session = CaptureSession(book: book)
+                container.mainContext.insert(session)
+                return (book, session)
+            }()
 
             ExtractionReviewView(session: session, book: book)
                 .modelContainer(container)

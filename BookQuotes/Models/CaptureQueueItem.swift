@@ -324,9 +324,6 @@ extension CaptureQueueItem {
     /// Fetch all pending items sorted by priority then date
     static var pendingDescriptor: FetchDescriptor<CaptureQueueItem> {
         var descriptor = FetchDescriptor<CaptureQueueItem>(
-            predicate: #Predicate<CaptureQueueItem> { item in
-                item.status == .pending
-            },
             sortBy: [
                 SortDescriptor(\.priority, order: .reverse),
                 SortDescriptor(\.dateQueued, order: .forward)
@@ -348,21 +345,14 @@ extension CaptureQueueItem {
 
     /// Fetch items eligible for cleanup
     static var cleanupDescriptor: FetchDescriptor<CaptureQueueItem> {
-        let cutoffDate = Date().addingTimeInterval(-completedRetentionHours * 3600)
         return FetchDescriptor<CaptureQueueItem>(
-            predicate: #Predicate<CaptureQueueItem> { item in
-                (item.status == .completed || item.status == .cancelled) &&
-                (item.dateCompleted ?? cutoffDate) < cutoffDate
-            }
+            sortBy: [SortDescriptor(\.dateQueued, order: .reverse)]
         )
     }
 
     /// Fetch all permanently failed items
     static var failedDescriptor: FetchDescriptor<CaptureQueueItem> {
         FetchDescriptor<CaptureQueueItem>(
-            predicate: #Predicate<CaptureQueueItem> { item in
-                item.status == .failed
-            },
             sortBy: [SortDescriptor(\.dateQueued, order: .reverse)]
         )
     }

@@ -6,14 +6,18 @@ struct LibraryTab: View {
     @State private var router = RouterPath()
 
     var body: some View {
-        NavigationStack(path: $router.path) {
-            LibraryView()
-                .navigationDestination(for: Book.self) { book in
-                    BookDetailView(book: book)
-                }
-                .navigationDestination(for: Quote.self) { quote in
-                    QuoteDetailView(quote: quote)
-                }
+        ZStack {
+            Color.backgroundPrimary.ignoresSafeArea()
+
+            NavigationStack(path: $router.path) {
+                LibraryView()
+                    .navigationDestination(for: Book.self) { book in
+                        BookDetailView(book: book)
+                    }
+                    .navigationDestination(for: Quote.self) { quote in
+                        QuoteDetailView(quote: quote)
+                    }
+            }
         }
         .environment(router)
     }
@@ -105,6 +109,7 @@ struct LibraryView: View {
                 .animation(reduceMotion ? .none : .smoothSpring, value: viewMode)
             }
         }
+        .background(Color.backgroundPrimary)
         .navigationTitle("Library")
         .searchable(
             text: $searchText,
@@ -235,6 +240,7 @@ struct LibraryView: View {
             }
             .padding()
         }
+        .background(Color.backgroundPrimary)
         .refreshable {
             await refreshLibrary()
         }
@@ -270,6 +276,8 @@ struct LibraryView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
         .refreshable {
             await refreshLibrary()
         }

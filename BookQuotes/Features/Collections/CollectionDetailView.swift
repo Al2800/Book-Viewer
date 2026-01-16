@@ -410,7 +410,7 @@ private struct QuoteSelectionRow: View {
         HStack(spacing: Spacing.md) {
             // Selection indicator
             Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(isSelected ? .accent : .secondary)
+                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
                 .font(.title3)
 
             // Quote preview
@@ -447,7 +447,7 @@ private struct FilterChip: View {
                 .padding(.horizontal, Spacing.sm)
                 .padding(.vertical, Spacing.xs)
                 .background(isSelected ? Color.accent.opacity(0.2) : Color.backgroundSecondary)
-                .foregroundStyle(isSelected ? .accent : .secondary)
+                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)

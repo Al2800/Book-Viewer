@@ -210,34 +210,6 @@ private struct TagRow: View {
     }
 }
 
-// MARK: - StatBadge
-
-/// Small stat display badge.
-private struct StatBadge: View {
-    let label: String
-    let value: String
-    let icon: String
-
-    var body: some View {
-        HStack(spacing: Spacing.sm) {
-            Image(systemName: icon)
-                .foregroundStyle(.secondary)
-
-            VStack(alignment: .leading, spacing: 0) {
-                Text(value)
-                    .font(.headline)
-
-                Text(label)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(Spacing.md)
-        .background(Color.backgroundSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-    }
-}
-
 // MARK: - TagEditorSheet
 
 /// Sheet for creating or editing a tag.

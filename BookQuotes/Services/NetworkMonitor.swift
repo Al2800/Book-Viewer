@@ -76,7 +76,7 @@ final class NetworkMonitor {
     }
 
     deinit {
-        stopMonitoring()
+        monitor.cancel()
     }
 
     // MARK: - Public Methods

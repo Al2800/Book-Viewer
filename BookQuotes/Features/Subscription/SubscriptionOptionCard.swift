@@ -34,7 +34,7 @@ struct SubscriptionOptionCard: View {
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, Spacing.sm)
                                 .padding(.vertical, Spacing.xxs)
-                                .background(.brand, in: Capsule())
+                                .background(Color.brand, in: Capsule())
                         }
                     }
 

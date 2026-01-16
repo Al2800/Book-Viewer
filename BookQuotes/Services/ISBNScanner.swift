@@ -10,7 +10,7 @@ import Vision
 /// Uses Vision framework for near-100% accuracy barcode detection.
 @MainActor
 @Observable
-final class ISBNScanner {
+final class ISBNScanner: NSObject {
     // MARK: - Published State
 
     /// Last detected ISBN (validated)
@@ -41,7 +41,9 @@ final class ISBNScanner {
 
     // MARK: - Initialization
 
-    init() {}
+    override init() {
+        super.init()
+    }
 
     // MARK: - Single Image Scanning
 
@@ -222,7 +224,7 @@ final class ISBNScanner {
         }
     }
 
-    private static func isISBNSymbology(_ symbology: VNBarcodeSymbology) -> Bool {
+    private nonisolated static func isISBNSymbology(_ symbology: VNBarcodeSymbology) -> Bool {
         switch symbology {
         case .ean13, .ean8, .upce:
             return true

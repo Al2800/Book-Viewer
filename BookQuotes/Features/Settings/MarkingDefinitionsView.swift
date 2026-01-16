@@ -31,6 +31,8 @@ struct MarkingDefinitionsView: View {
             infoSection
         }
         .navigationTitle("Marking Styles")
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()

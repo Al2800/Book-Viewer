@@ -70,7 +70,7 @@ struct PremiumFeatureRow: View {
         HStack(alignment: .top, spacing: Spacing.md) {
             Image(systemName: icon)
                 .font(.title3)
-                .foregroundStyle(.brand)
+                .foregroundStyle(Color.brand)
                 .frame(width: 28)
 
             VStack(alignment: .leading, spacing: Spacing.xxs) {

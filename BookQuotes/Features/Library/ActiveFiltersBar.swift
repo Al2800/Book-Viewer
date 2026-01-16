@@ -106,14 +106,14 @@ struct ActiveFiltersBar: View {
     @ViewBuilder
     private var dateRangePill: some View {
         if filters.dateRange != .allTime {
-            let label: String
-            if filters.dateRange == .custom,
-               let start = filters.customStartDate,
-               let end = filters.customEndDate {
-                label = formatDateRange(start: start, end: end)
-            } else {
-                label = filters.dateRange.rawValue
-            }
+            let label = {
+                if filters.dateRange == .custom,
+                   let start = filters.customStartDate,
+                   let end = filters.customEndDate {
+                    return formatDateRange(start: start, end: end)
+                }
+                return filters.dateRange.rawValue
+            }()
 
             FilterPill(
                 label: label,
@@ -203,7 +203,7 @@ struct FilterButton: View {
                             .fontWeight(.bold)
                             .foregroundStyle(.white)
                             .frame(minWidth: 16, minHeight: 16)
-                            .background(.accent, in: Circle())
+                            .background(Color.accentColor, in: Circle())
                             .offset(x: 6, y: -6)
                     }
                 }
