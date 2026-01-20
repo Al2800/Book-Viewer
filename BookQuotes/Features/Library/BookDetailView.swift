@@ -316,6 +316,7 @@ struct BookDetailView: View {
                 Label("Capture Quotes", systemImage: "camera")
             }
             .buttonStyle(.bordered)
+            .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.captureQuotesButton)
         }
     }
 

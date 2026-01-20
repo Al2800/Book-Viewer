@@ -76,27 +76,8 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToLibrary()
         openFirstBook()
 
-        logger.step(2, "Finding capture quotes button")
-        let captureQuotesButton = app.buttons[AccessibilityIdentifiers.BookDetail.captureQuotesButton]
-        let addQuoteButton = app.buttons["Add Quote"]
-
-        if captureQuotesButton.waitForExistence(timeout: 3) {
-            captureQuotesButton.tap()
-        } else if addQuoteButton.exists {
-            addQuoteButton.tap()
-        } else {
-            // Try finding in menu
-            let menuButton = findMoreMenuButton()
-            if menuButton.exists {
-                menuButton.tap()
-                let captureOption = app.buttons.matching(
-                    NSPredicate(format: "label CONTAINS 'Capture'")
-                ).firstMatch
-                if captureOption.waitForExistence(timeout: 2) {
-                    captureOption.tap()
-                }
-            }
-        }
+        logger.step(2, "Opening capture from book detail")
+        openCaptureFromBookDetail()
 
         logger.step(3, "Verifying capture view opened")
         // Should see camera or capture UI
@@ -364,15 +345,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToLibrary()
         openFirstBook()
 
-        // Find and tap capture button from book detail
-        let captureQuotesButton = app.buttons[AccessibilityIdentifiers.BookDetail.captureQuotesButton]
-        if captureQuotesButton.waitForExistence(timeout: 3) {
-            captureQuotesButton.tap()
-        } else {
-            // Try Capture tab as fallback
-            let captureTab = tabButton(.capture)
-            captureTab.tap()
-        }
+        openCaptureFromBookDetail()
     }
 
     private func navigateToExtractionReview() throws {
@@ -415,7 +388,19 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         }
 
         let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        guard captureButton.waitForExistence(timeout: 5) else {
+        if captureButton.waitForExistence(timeout: 5) {
+            captureButton.tap()
+            return
+        }
+
+        openQuoteCaptureFromTab()
+
+        if testButton.waitForExistence(timeout: 3) {
+            testButton.tap()
+            return
+        }
+
+        guard captureButton.waitForExistence(timeout: 3) else {
             throw XCTSkip("Capture button not available")
         }
         captureButton.tap()
@@ -446,5 +431,44 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         if bookCard.waitForExistence(timeout: 5) {
             bookCard.tap()
         }
+    }
+
+    private func openCaptureFromBookDetail() {
+        let captureQuotesButton = app.buttons[AccessibilityIdentifiers.BookDetail.captureQuotesButton]
+        let addQuoteButton = app.buttons["Add Quote"]
+        let captureLabelButton = app.buttons["Capture Quotes"]
+
+        if captureQuotesButton.waitForExistence(timeout: 3) {
+            captureQuotesButton.tap()
+            return
+        }
+
+        if captureLabelButton.waitForExistence(timeout: 2) {
+            captureLabelButton.tap()
+            return
+        }
+
+        if addQuoteButton.waitForExistence(timeout: 2) {
+            addQuoteButton.tap()
+            return
+        }
+
+        let menuButton = findMoreMenuButton()
+        if menuButton.exists {
+            menuButton.tap()
+            if captureQuotesButton.waitForExistence(timeout: 2) {
+                captureQuotesButton.tap()
+                return
+            }
+            let captureOption = app.buttons.matching(
+                NSPredicate(format: "label CONTAINS 'Capture'")
+            ).firstMatch
+            if captureOption.waitForExistence(timeout: 2) {
+                captureOption.tap()
+                return
+            }
+        }
+
+        openQuoteCaptureFromTab()
     }
 }
