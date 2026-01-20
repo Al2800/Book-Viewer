@@ -1,4 +1,5 @@
 import XCTest
+import SwiftData
 
 @testable import BookQuotes
 
@@ -69,7 +70,7 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
 
         logger.step(1, "Loading 1000 quotes")
         let books = TestFixtures.largeBookCollection(bookCount: 10, quotesPerBook: 100)
-        insertBooks(books)
+        try insertBooks(books)
 
         await forceGC()
         let afterLoad = memoryMB()
@@ -92,7 +93,7 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
 
         logger.step(1, "Loading 5000 quotes")
         let books = TestFixtures.largeBookCollection(bookCount: 50, quotesPerBook: 100)
-        insertBooks(books)
+        try insertBooks(books)
 
         await forceGC()
         let afterLoad = memoryMB()
@@ -116,7 +117,7 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
 
         logger.step(1, "Loading 10000 quotes")
         let books = TestFixtures.largeBookCollection(bookCount: 100, quotesPerBook: 100)
-        insertBooks(books)
+        try insertBooks(books)
 
         await forceGC()
         let afterLoad = memoryMB()
@@ -139,7 +140,7 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
 
         logger.step(1, "Loading 1000 quotes")
         let books = TestFixtures.largeBookCollection(bookCount: 10, quotesPerBook: 100)
-        insertBooks(books)
+        try insertBooks(books)
 
         await forceGC()
         let afterLoad = memoryMB()
@@ -185,7 +186,7 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
 
         for batch in 0..<totalBatches {
             let books = TestFixtures.largeBookCollection(bookCount: batchSize, quotesPerBook: 50)
-            insertBooks(books)
+            try insertBooks(books)
 
             await forceGC()
             let current = memoryMB()
@@ -215,7 +216,7 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
     func testMemory_RepeatedQueries_NoLeak() async throws {
         logger.step(1, "Setting up test data")
         let books = TestFixtures.largeBookCollection(bookCount: 10, quotesPerBook: 100)
-        insertBooks(books)
+        try insertBooks(books)
 
         await forceGC()
         let baseline = memoryMB()
@@ -258,7 +259,7 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
             }
             books.append(book)
         }
-        insertBooks(books)
+        try insertBooks(books)
 
         await forceGC()
         let afterLoad = memoryMB()
@@ -278,10 +279,10 @@ final class MemoryPerformanceTests: SwiftDataTestCase {
 
     // MARK: - Helper Methods
 
-    private func insertBooks(_ books: [Book]) {
+    override func insertBooks(_ books: [Book]) throws {
         for book in books {
             modelContext.insert(book)
         }
-        try? modelContext.save()
+        try modelContext.save()
     }
 }

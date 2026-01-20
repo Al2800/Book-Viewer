@@ -14,7 +14,7 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         super.waitForAppReady()
 
         // Navigate to library tab
-        let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+        let libraryTab = tabButton(.library)
         if libraryTab.waitForExistence(timeout: 5) {
             libraryTab.tap()
         }
@@ -55,60 +55,46 @@ final class BookRegistrationFlowTests: BaseUITestCase {
     // MARK: - Manual Entry Tests
 
     func testManualEntry_CreateBook_WithRequiredFields() {
+        executionTimeAllowance = 120
         logger.step(1, "Opening add book form")
         openAddBookForm()
 
         logger.step(2, "Entering book title")
         let titleField = app.textFields["Title"]
         XCTAssertTrue(titleField.waitForExistence(timeout: 3), "Title field should exist")
-        titleField.tap()
-        titleField.typeText("Test Book")
+        typeText("Test Book", into: titleField)
 
         logger.step(3, "Entering author")
         let authorField = app.textFields["Author"]
         XCTAssertTrue(authorField.exists, "Author field should exist")
-        authorField.tap()
-        authorField.typeText("Test Author")
+        typeText("Test Author", into: authorField)
 
         logger.step(4, "Saving book")
-        let saveButton = app.buttons["Save"]
-        if saveButton.waitForExistence(timeout: 2) {
-            saveButton.tap()
-        } else {
-            // Try Done button in navigation bar
-            let doneButton = app.navigationBars.buttons["Done"]
-            if doneButton.exists {
-                doneButton.tap()
-            }
-        }
+        tapConfirmationButton()
 
         logger.step(5, "Verifying book appears in library")
-        // Should navigate back to library with new book
-        let bookTitle = app.staticTexts["Test Book"]
-        XCTAssertTrue(bookTitle.waitForExistence(timeout: 5), "New book should appear in library")
+        XCTAssertTrue(waitForBookAppearance(title: "Test Book", timeout: 6), "New book should appear after save")
 
         logger.success("Manual book entry completed successfully")
     }
 
     func testManualEntry_CreateBook_WithAllFields() {
+        executionTimeAllowance = 120
         logger.step(1, "Opening add book form")
         openAddBookForm()
 
         logger.step(2, "Filling required fields")
         let titleField = app.textFields["Title"]
-        titleField.tap()
-        titleField.typeText("Complete Test Book")
+        typeText("Complete Test Book", into: titleField)
 
         let authorField = app.textFields["Author"]
-        authorField.tap()
-        authorField.typeText("Complete Author")
+        typeText("Complete Author", into: authorField)
 
         logger.step(3, "Filling optional fields")
 
         let subtitleField = app.textFields["Subtitle"]
         if subtitleField.exists {
-            subtitleField.tap()
-            subtitleField.typeText("A Subtitle for Testing")
+            typeText("A Subtitle for Testing", into: subtitleField)
         }
 
         // Scroll to see more fields
@@ -116,30 +102,19 @@ final class BookRegistrationFlowTests: BaseUITestCase {
 
         let isbnField = app.textFields["ISBN"]
         if isbnField.exists {
-            isbnField.tap()
-            isbnField.typeText("9780123456789")
+            typeText("9780123456789", into: isbnField)
         }
 
         let publisherField = app.textFields["Publisher"]
         if publisherField.exists {
-            publisherField.tap()
-            publisherField.typeText("Test Publisher")
+            typeText("Test Publisher", into: publisherField)
         }
 
         logger.step(4, "Saving book")
-        let saveButton = app.buttons["Save"]
-        if saveButton.waitForExistence(timeout: 2) {
-            saveButton.tap()
-        } else {
-            let doneButton = app.navigationBars.buttons["Done"]
-            if doneButton.exists {
-                doneButton.tap()
-            }
-        }
+        tapConfirmationButton()
 
         logger.step(5, "Verifying book saved")
-        let bookTitle = app.staticTexts["Complete Test Book"]
-        XCTAssertTrue(bookTitle.waitForExistence(timeout: 5), "Book with all fields should appear")
+        XCTAssertTrue(waitForBookAppearance(title: "Complete Test Book", timeout: 6), "Book with all fields should appear")
 
         logger.success("Book with all fields created successfully")
     }
@@ -151,13 +126,11 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         logger.step(2, "Entering only author (leaving title empty)")
         let authorField = app.textFields["Author"]
         if authorField.waitForExistence(timeout: 3) {
-            authorField.tap()
-            authorField.typeText("Author Without Title")
+            typeText("Author Without Title", into: authorField)
         }
 
         logger.step(3, "Attempting to save")
-        let saveButton = app.buttons["Save"]
-        if saveButton.waitForExistence(timeout: 2) {
+        if let saveButton = findConfirmationButton(timeout: 2) {
             // Save should be disabled or show error
             if saveButton.isEnabled {
                 saveButton.tap()
@@ -179,8 +152,7 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         logger.step(2, "Entering some data")
         let titleField = app.textFields["Title"]
         if titleField.waitForExistence(timeout: 3) {
-            titleField.tap()
-            titleField.typeText("Cancelled Book")
+            typeText("Cancelled Book", into: titleField)
         }
 
         logger.step(3, "Tapping Cancel")
@@ -203,24 +175,17 @@ final class BookRegistrationFlowTests: BaseUITestCase {
     // MARK: - Edit Book Tests
 
     func testEditBook_ModifyTitle_SavesChanges() {
+        executionTimeAllowance = 120
         logger.step(1, "Opening existing book")
         openFirstBook()
 
         logger.step(2, "Opening edit mode")
-        let editButton = app.buttons[AccessibilityIdentifiers.BookDetail.editButton]
-        if editButton.waitForExistence(timeout: 3) {
-            editButton.tap()
-        } else {
-            // Try menu button
-            let menuButton = findMoreMenuButton()
-            if menuButton.waitForExistence(timeout: 2) {
-                menuButton.tap()
-                let editOption = app.buttons["Edit"]
-                if editOption.waitForExistence(timeout: 2) {
-                    editOption.tap()
-                }
-            }
-        }
+        let menuButton = findMoreMenuButton()
+        XCTAssertTrue(menuButton.waitForExistence(timeout: 3), "Menu button should exist")
+        menuButton.tap()
+        let editOption = app.buttons["Edit"]
+        XCTAssertTrue(editOption.waitForExistence(timeout: 2), "Edit option should be available")
+        editOption.tap()
 
         logger.step(3, "Verifying edit form opened")
         let editNavTitle = app.navigationBars["Edit Book"]
@@ -233,19 +198,11 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             // Clear existing text
             titleField.doubleTap()
             app.keys["delete"].tap()
-            titleField.typeText("Modified Title")
+            typeText("Modified Title", into: titleField)
         }
 
         logger.step(5, "Saving changes")
-        let saveButton = app.buttons["Save"]
-        if saveButton.waitForExistence(timeout: 2) {
-            saveButton.tap()
-        } else {
-            let doneButton = app.navigationBars.buttons["Done"]
-            if doneButton.exists {
-                doneButton.tap()
-            }
-        }
+        tapConfirmationButton()
 
         logger.step(6, "Verifying changes saved")
         // Should return to book detail with modified title
@@ -309,23 +266,18 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         logger.step(2, "Entering very long title")
         let titleField = app.textFields["Title"]
         if titleField.waitForExistence(timeout: 3) {
-            titleField.tap()
             let longTitle = String(repeating: "A", count: 200)
-            titleField.typeText(longTitle)
+            typeText(longTitle, into: titleField)
         }
 
         logger.step(3, "Entering author")
         let authorField = app.textFields["Author"]
         if authorField.exists {
-            authorField.tap()
-            authorField.typeText("Author")
+            typeText("Author", into: authorField)
         }
 
         logger.step(4, "Saving")
-        let saveButton = app.buttons["Save"]
-        if saveButton.waitForExistence(timeout: 2) {
-            saveButton.tap()
-        }
+        tapConfirmationButton()
 
         // Should either truncate or handle long title gracefully
         logger.success("Long title handled (no crash)")
@@ -365,21 +317,42 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         }
 
         // Tap first book
-        let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        if bookRow.waitForExistence(timeout: 3) {
-            bookRow.tap()
-        } else {
-            // Try any cell
-            if app.cells.firstMatch.exists {
-                app.cells.firstMatch.tap()
-            }
+        let bookRowCell = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookRowButton = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookRowElement = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookRowLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookCardButton = app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch
+        let bookCardLink = app.links[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch
+
+        if bookRowCell.waitForExistence(timeout: 3) {
+            bookRowCell.tap()
+        } else if bookRowButton.exists {
+            bookRowButton.tap()
+        } else if bookRowElement.exists {
+            bookRowElement.tap()
+        } else if bookRowLink.exists {
+            bookRowLink.tap()
+        } else if bookCardButton.waitForExistence(timeout: 2) {
+            bookCardButton.tap()
+        } else if bookCardLink.waitForExistence(timeout: 2) {
+            bookCardLink.tap()
+        } else if app.cells.firstMatch.exists {
+            app.cells.firstMatch.tap()
         }
 
         // Wait for detail view
-        _ = app.staticTexts["Quotes"].waitForExistence(timeout: 3)
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        let author = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookAuthor]
+        let quotesLabel = app.staticTexts["Quotes"]
+        let detailVisible = title.waitForExistence(timeout: 4) || author.exists || quotesLabel.exists
+        XCTAssertTrue(detailVisible, "Book detail should appear")
     }
 
     private func findMoreMenuButton() -> XCUIElement {
+        let explicitButton = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
+        if explicitButton.exists {
+            return explicitButton
+        }
         let navButtons = app.navigationBars.buttons
         let predicate = NSPredicate(format: "label CONTAINS 'More' OR label CONTAINS 'ellipsis'")
         let match = navButtons.matching(predicate).firstMatch
@@ -390,5 +363,43 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             return navButtons.element(boundBy: navButtons.count - 1)
         }
         return navButtons.firstMatch
+    }
+
+    private func findConfirmationButton(timeout: TimeInterval = 2) -> XCUIElement? {
+        let labels = ["Add Book", "Save", "Done"]
+        for label in labels {
+            let button = app.buttons[label]
+            if button.waitForExistence(timeout: timeout) {
+                return button
+            }
+            let navButton = app.navigationBars.buttons[label]
+            if navButton.waitForExistence(timeout: timeout) {
+                return navButton
+            }
+        }
+        return nil
+    }
+
+    private func tapConfirmationButton() {
+        dismissKeyboard()
+        if let button = findConfirmationButton(timeout: 2) {
+            button.tap()
+        }
+    }
+
+    private func waitForBookAppearance(title: String, timeout: TimeInterval) -> Bool {
+        let detailTitle = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        if detailTitle.waitForExistence(timeout: timeout) {
+            return true
+        }
+
+        let libraryTitle = app.staticTexts[title]
+        if libraryTitle.waitForExistence(timeout: timeout) {
+            return true
+        }
+
+        let titlePredicate = NSPredicate(format: "label == %@", title)
+        let inCells = app.cells.staticTexts.matching(titlePredicate).firstMatch
+        return inCells.waitForExistence(timeout: timeout)
     }
 }

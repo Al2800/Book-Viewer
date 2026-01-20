@@ -219,6 +219,17 @@ struct BatchCaptureView: View {
                 }
             }
             .padding(.bottom, Spacing.xl)
+
+            if UITestConfiguration.isUITesting {
+                Button("Use Test Image") {
+                    Task {
+                        await captureCurrentFrame()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
+                .disabled(isCapturing)
+            }
         }
         .padding(.horizontal, Spacing.lg)
         .background(

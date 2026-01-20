@@ -5,47 +5,92 @@ import SwiftData
 /// Main app view with tab-based navigation
 struct ContentView: View {
     @State private var selectedTab: Tab = .library
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("uiTestSeeded") private var uiTestSeeded = false
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(NetworkMonitor.self) private var networkMonitor
+    @Environment(AuthService.self) private var authService
+
+    @State private var subscriptionService: SubscriptionService?
+    @State private var showOnboarding = false
+    @State private var isSeedingTestData = false
 
     /// Queue stats for badge display
     @State private var queueStats = QueueStats()
     @State private var statsCancellable: AnyCancellable?
+    private var shouldAutoCompleteOnboarding: Bool {
+        #if targetEnvironment(simulator)
+        return !UITestConfiguration.isUITesting
+        #else
+        return false
+        #endif
+    }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            LibraryTab()
-                .tabItem {
-                    Label(Tab.library.title, systemImage: Tab.library.systemImage)
-                }
-                .tag(Tab.library)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
+        ZStack {
+            TabView(selection: $selectedTab) {
+                LibraryTab()
+                    .tabItem {
+                        Label(Tab.library.title, systemImage: Tab.library.systemImage)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
+                    }
+                    .tag(Tab.library)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
 
-            CaptureTab()
-                .tabItem {
-                    Label(Tab.capture.title, systemImage: Tab.capture.systemImage)
-                }
-                .tag(Tab.capture)
-                .badge(queueBadgeCount)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.captureTab)
+                CaptureTab()
+                    .tabItem {
+                        Label(Tab.capture.title, systemImage: Tab.capture.systemImage)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.captureTab)
+                    }
+                    .tag(Tab.capture)
+                    .badge(queueBadgeCount)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.captureTab)
 
-            SettingsTab()
-                .tabItem {
-                    Label(Tab.settings.title, systemImage: Tab.settings.systemImage)
-                }
-                .tag(Tab.settings)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.settingsTab)
+                SettingsTab()
+                    .tabItem {
+                        Label(Tab.settings.title, systemImage: Tab.settings.systemImage)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.settingsTab)
+                    }
+                    .tag(Tab.settings)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.settingsTab)
+            }
+            .tint(Color.brand)
+            .background(Color.backgroundPrimary.ignoresSafeArea())
+
+            if UITestConfiguration.isUITesting && uiTestSeeded {
+                Text("UI Test Seeded")
+                    .font(.caption2)
+                    .opacity(0.01)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestSeeded)
+            }
         }
-        .tint(Color.brand)
-        .background(Color.backgroundPrimary.ignoresSafeArea())
         .onAppear {
             subscribeToQueueStats()
+            ensureSubscriptionService()
+            updateOnboardingVisibility()
+        }
+        .onChange(of: hasCompletedOnboarding) { _, _ in
+            updateOnboardingVisibility()
         }
         .onChange(of: scenePhase) { _, newPhase in
             handleScenePhaseChange(newPhase)
         }
         .onChange(of: networkMonitor.isConnected) { wasConnected, isConnected in
             handleConnectivityChange(wasConnected: wasConnected, isConnected: isConnected)
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            if let subscriptionService {
+                OnboardingView(
+                    authService: authService,
+                    subscriptionService: subscriptionService
+                )
+            } else {
+                ProgressView()
+            }
+        }
+        .task {
+            await seedTestDataIfNeeded()
         }
     }
 
@@ -64,6 +109,46 @@ struct ContentView: View {
             .sink { [self] stats in
                 self.queueStats = stats
             }
+    }
+
+    /// Ensure subscription service is initialized once.
+    private func ensureSubscriptionService() {
+        guard subscriptionService == nil else { return }
+        subscriptionService = SubscriptionService(authService: authService)
+    }
+
+    private func seedTestDataIfNeeded() async {
+        guard UITestConfiguration.isUITesting, !uiTestSeeded, !isSeedingTestData else { return }
+        isSeedingTestData = true
+
+        defer { isSeedingTestData = false }
+
+        let seeder = UITestDataSeeder(modelContext: modelContext)
+        do {
+            try await seeder.seedTestDataIfNeeded()
+
+            if UITestConfiguration.shouldPreloadSearchTestData,
+               let searchService = try? SearchService() {
+                await seeder.rebuildSearchIndexIfNeeded(searchService: searchService)
+            }
+
+            uiTestSeeded = true
+        } catch {
+            print("UI test seeding failed: \(error)")
+        }
+    }
+
+    /// Determine whether onboarding should be presented.
+    private func updateOnboardingVisibility() {
+        if shouldAutoCompleteOnboarding {
+            if !hasCompletedOnboarding {
+                hasCompletedOnboarding = true
+            }
+            showOnboarding = false
+            return
+        }
+
+        showOnboarding = !hasCompletedOnboarding
     }
 
     /// Handle app lifecycle changes

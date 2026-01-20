@@ -7,14 +7,14 @@ final class BatchCaptureFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        ["--preload-library-test-data"]
+        ["--preload-library-test-data", "--mock-camera"]
     }
 
     override func waitForAppReady() {
         super.waitForAppReady()
 
         // Navigate to library and open a book
-        let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+        let libraryTab = tabButton(.library)
         if libraryTab.waitForExistence(timeout: 5) {
             libraryTab.tap()
         }
@@ -22,33 +22,11 @@ final class BatchCaptureFlowTests: BaseUITestCase {
 
     // MARK: - Batch Capture Entry Tests
 
-    func testBookDetail_CaptureButton_OpensBatchCapture() {
-        logger.step(1, "Opening a book detail")
-        openFirstBook()
+    func testBatchCapture_OpensFromCaptureTab() throws {
+        logger.step(1, "Opening batch capture from Capture tab")
+        try openBatchCapture()
 
-        logger.step(2, "Finding capture quotes button")
-        let captureButton = app.buttons[AccessibilityIdentifiers.BookDetail.captureQuotesButton]
-        let addQuoteButton = app.buttons["Add Quote"]
-
-        if captureButton.waitForExistence(timeout: 3) {
-            captureButton.tap()
-        } else if addQuoteButton.exists {
-            addQuoteButton.tap()
-        } else {
-            // Try menu option
-            let menuButton = findMoreMenuButton()
-            if menuButton.waitForExistence(timeout: 2) {
-                menuButton.tap()
-                let captureOption = app.buttons.matching(
-                    NSPredicate(format: "label CONTAINS 'Capture'")
-                ).firstMatch
-                if captureOption.waitForExistence(timeout: 2) {
-                    captureOption.tap()
-                }
-            }
-        }
-
-        logger.step(3, "Verifying batch capture view")
+        logger.step(2, "Verifying batch capture view")
         // Should see page counter and capture controls
         let pageCounter = app.staticTexts.matching(
             NSPredicate(format: "label CONTAINS 'pages'")
@@ -251,7 +229,7 @@ final class BatchCaptureFlowTests: BaseUITestCase {
             // Should either show processing UI or navigate to extraction review
             let processingIndicator = app.progressIndicators.firstMatch
             let extractionReview = app.navigationBars["Review Extractions"]
-            let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+            let libraryTab = tabButton(.library)
 
             let movedForward = processingIndicator.waitForExistence(timeout: 3) ||
                               extractionReview.waitForExistence(timeout: 10) ||
@@ -286,7 +264,7 @@ final class BatchCaptureFlowTests: BaseUITestCase {
 
             logger.step(3, "Verifying return to book detail or library")
             let bookDetail = app.staticTexts["Quotes"]
-            let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+            let libraryTab = tabButton(.library)
 
             let returnedToApp = bookDetail.waitForExistence(timeout: 5) || libraryTab.exists
 
@@ -369,42 +347,37 @@ final class BatchCaptureFlowTests: BaseUITestCase {
 
     // MARK: - Helpers
 
-    private func openFirstBook() {
-        // Switch to list view for easier selection
-        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
-        if viewModeToggle.waitForExistence(timeout: 2) {
-            if viewModeToggle.buttons.count > 1 {
-                viewModeToggle.buttons.element(boundBy: 1).tap()
-            }
-        }
-
-        // Tap first book
-        let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        if bookRow.waitForExistence(timeout: 3) {
-            bookRow.tap()
-        } else if app.cells.firstMatch.exists {
-            app.cells.firstMatch.tap()
-        }
-
-        // Wait for detail view
-        _ = app.staticTexts["Quotes"].waitForExistence(timeout: 3)
-    }
-
     private func openBatchCapture() throws {
-        openFirstBook()
+        let captureTab = tabButton(.capture)
+        guard captureTab.waitForExistence(timeout: 3) else {
+            throw XCTSkip("Capture tab not available")
+        }
+        captureTab.tap()
 
-        // Find and tap capture button from book detail
-        let captureQuotesButton = app.buttons[AccessibilityIdentifiers.BookDetail.captureQuotesButton]
-        if captureQuotesButton.waitForExistence(timeout: 3) {
-            captureQuotesButton.tap()
-        } else {
-            // Try Capture tab as fallback
-            let captureTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.captureTab]
-            captureTab.tap()
+        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
+        if permissionPrompt.waitForExistence(timeout: 2) {
+            throw XCTSkip("Camera permission required")
         }
 
-        // Wait for batch capture UI
         let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        let existingPageCounter = app.staticTexts.matching(
+            NSPredicate(format: "label CONTAINS 'page'")
+        ).firstMatch
+        if existingPageCounter.exists && app.buttons["Done"].exists {
+            return
+        }
+
+        let batchModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectBatch]
+        if batchModeCard.waitForExistence(timeout: 5) {
+            batchModeCard.tap()
+        }
+
+        let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
+        guard bookCard.waitForExistence(timeout: 5) else {
+            throw XCTSkip("No book available for batch capture")
+        }
+        bookCard.tap()
+
         let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
         let pageCounter = app.staticTexts.matching(
             NSPredicate(format: "label CONTAINS 'page'")
@@ -420,6 +393,10 @@ final class BatchCaptureFlowTests: BaseUITestCase {
     }
 
     private func findMoreMenuButton() -> XCUIElement {
+        let explicitButton = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
+        if explicitButton.exists {
+            return explicitButton
+        }
         let navButtons = app.navigationBars.buttons
         let predicate = NSPredicate(format: "label CONTAINS 'More' OR label CONTAINS 'ellipsis'")
         let match = navButtons.matching(predicate).firstMatch

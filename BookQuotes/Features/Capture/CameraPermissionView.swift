@@ -25,6 +25,7 @@ struct CameraPermissionView: View {
             // Privacy assurance footer
             privacyFooter
         }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.permissionPrompt)
         .padding(Spacing.xl)
         .background(Color.backgroundPrimary)
     }
@@ -126,6 +127,7 @@ struct CameraPermissionView: View {
                     Label("Open Settings", systemImage: "gear")
                         .frame(maxWidth: .infinity)
                 }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.openSettingsButton)
                 .buttonStyle(.borderedProminent)
                 .tint(.brand)
                 .controlSize(.large)

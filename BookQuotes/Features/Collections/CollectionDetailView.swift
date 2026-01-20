@@ -193,6 +193,7 @@ struct CollectionDetailView: View {
             } label: {
                 Image(systemName: "ellipsis.circle")
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Common.moreMenuButton)
         }
     }
 

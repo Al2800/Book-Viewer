@@ -17,6 +17,10 @@ final class CameraPermissionService {
 
     /// Check current authorization status without prompting
     func checkStatus() {
+        if UITestConfiguration.shouldMockCamera {
+            status = .authorized
+            return
+        }
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .notDetermined:
             status = .notDetermined
@@ -37,6 +41,10 @@ final class CameraPermissionService {
     /// - Returns: Whether permission was granted
     @discardableResult
     func requestPermission() async -> Bool {
+        if UITestConfiguration.shouldMockCamera {
+            status = .authorized
+            return true
+        }
         // Check if already determined
         checkStatus()
         guard status == .notDetermined else {

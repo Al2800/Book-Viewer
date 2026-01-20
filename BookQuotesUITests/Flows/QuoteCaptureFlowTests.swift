@@ -7,7 +7,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        ["--preload-library-test-data"]
+        ["--preload-library-test-data", "--mock-camera"]
     }
 
     override func waitForAppReady() {
@@ -19,17 +19,24 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     func testCaptureTab_DisplaysCameraOrPermission() {
         logger.step(1, "Navigating to Capture tab")
-        let captureTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.captureTab]
+        let captureTab = tabButton(.capture)
         XCTAssertTrue(captureTab.waitForExistence(timeout: 5), "Capture tab should exist")
         captureTab.tap()
 
         logger.step(2, "Verifying capture view content")
-        // Should see either camera preview or permission request
+        // Should see mode selection, camera preview, or permission request
+        let modeSelectCover = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
+        let modeSelectQuote = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
+        let modeSelectBatch = app.buttons[AccessibilityIdentifiers.Capture.modeSelectBatch]
         let cameraPreview = app.otherElements[AccessibilityIdentifiers.Capture.cameraPreview]
         let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
         let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
 
-        let hasCaptureUI = cameraPreview.waitForExistence(timeout: 5) ||
+        let hasModeSelection = modeSelectCover.waitForExistence(timeout: 5) ||
+                              modeSelectQuote.exists ||
+                              modeSelectBatch.exists
+        let hasCaptureUI = hasModeSelection ||
+                          cameraPreview.exists ||
                           permissionPrompt.exists ||
                           captureButton.exists
 
@@ -40,8 +47,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     func testCaptureTab_CaptureButton_Exists() {
         logger.step(1, "Navigating to Capture tab")
-        let captureTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.captureTab]
-        captureTab.tap()
+        openQuoteCaptureFromTab()
 
         logger.step(2, "Finding capture button")
         let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
@@ -321,7 +327,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Helpers
 
     private func navigateToLibrary() {
-        let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+        let libraryTab = tabButton(.library)
         if libraryTab.waitForExistence(timeout: 3) {
             libraryTab.tap()
         }
@@ -338,8 +344,14 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
         // Tap first book
         let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookOther = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         if bookRow.waitForExistence(timeout: 3) {
             bookRow.tap()
+        } else if bookLink.waitForExistence(timeout: 3) {
+            bookLink.tap()
+        } else if bookOther.waitForExistence(timeout: 3) {
+            bookOther.tap()
         } else if app.cells.firstMatch.exists {
             app.cells.firstMatch.tap()
         }
@@ -358,7 +370,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             captureQuotesButton.tap()
         } else {
             // Try Capture tab as fallback
-            let captureTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.captureTab]
+            let captureTab = tabButton(.capture)
             captureTab.tap()
         }
     }
@@ -382,6 +394,10 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     }
 
     private func findMoreMenuButton() -> XCUIElement {
+        let explicitButton = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
+        if explicitButton.exists {
+            return explicitButton
+        }
         let navButtons = app.navigationBars.buttons
         let predicate = NSPredicate(format: "label CONTAINS 'More' OR label CONTAINS 'ellipsis'")
         let match = navButtons.matching(predicate).firstMatch
@@ -403,5 +419,32 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             throw XCTSkip("Capture button not available")
         }
         captureButton.tap()
+    }
+
+    private func openQuoteCaptureFromTab() {
+        let captureTab = tabButton(.capture)
+        if captureTab.waitForExistence(timeout: 3) {
+            captureTab.tap()
+        }
+
+        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
+        if permissionPrompt.waitForExistence(timeout: 2) {
+            return
+        }
+
+        let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        if testButton.exists {
+            return
+        }
+
+        let quoteModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
+        if quoteModeCard.waitForExistence(timeout: 3) {
+            quoteModeCard.tap()
+        }
+
+        let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
+        if bookCard.waitForExistence(timeout: 5) {
+            bookCard.tap()
+        }
     }
 }

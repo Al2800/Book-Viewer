@@ -29,6 +29,14 @@ struct BookQuotesApp: App {
 
         // Use in-memory storage for UI tests to avoid mutating real user data
         let isUITesting = UITestConfiguration.isUITesting
+        if isUITesting {
+            if UITestConfiguration.shouldResetOnboarding {
+                UserDefaults.standard.set(false, forKey: "hasCompletedOnboarding")
+            } else {
+                UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+            }
+            UserDefaults.standard.set(false, forKey: "uiTestSeeded")
+        }
         let config = ModelConfiguration(
             schema: schema,
             isStoredInMemoryOnly: isUITesting,
@@ -106,17 +114,6 @@ struct BookQuotesApp: App {
                     .environment(geminiService)
                     .environment(networkMonitor)
                     .task {
-                        // Seed test data for UI tests (if applicable)
-                        if UITestConfiguration.isUITesting {
-                            let seeder = UITestDataSeeder(modelContext: container.mainContext)
-                            try? await seeder.seedTestDataIfNeeded()
-
-                            // Rebuild search index for seeded data
-                            if let searchService = try? SearchService() {
-                                await seeder.rebuildSearchIndexIfNeeded(searchService: searchService)
-                            }
-                        }
-
                         // Start network monitoring
                         networkMonitor.startMonitoring()
 

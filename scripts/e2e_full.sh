@@ -58,7 +58,7 @@ setup() {
   mkdir -p "$ARTIFACTS_DIR"
 
   # Boot simulator if needed
-  SIMULATOR_NAME="${SIMULATOR_NAME:-iPhone 15}"
+  SIMULATOR_NAME="${SIMULATOR_NAME:-iPhone 17}"
   SIMULATOR_UDID=$(xcrun simctl list devices available | grep "$SIMULATOR_NAME" | head -1 | grep -oE '[0-9A-F-]{36}' || true)
 
   if [[ -n "$SIMULATOR_UDID" ]]; then

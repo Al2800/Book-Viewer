@@ -15,6 +15,7 @@ final class CameraServiceTests: XCTestCase {
         XCTAssertEqual(CameraError.imageProcessingFailed.errorDescription, "Failed to process captured image")
     }
 
+    @MainActor
     func testCompressForUploadReturnsData() {
         let imageData = TestFixtures.TestImages.bookCover
         let image = UIImage(data: imageData) ?? UIImage()

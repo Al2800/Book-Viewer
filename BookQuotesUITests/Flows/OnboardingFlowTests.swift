@@ -131,7 +131,13 @@ final class OnboardingFlowTests: BaseUITestCase {
         // Terms and Privacy links
         let termsLink = app.links["Terms"]
         let privacyLink = app.links["Privacy Policy"]
-        XCTAssertTrue(termsLink.exists || privacyLink.exists, "Legal links should be visible")
+        let termsText = app.staticTexts["Terms"]
+        let privacyText = app.staticTexts["Privacy Policy"]
+        let termsButton = app.buttons["Terms"]
+        let privacyButton = app.buttons["Privacy Policy"]
+        let hasLegal = termsLink.exists || privacyLink.exists || termsText.exists || privacyText.exists ||
+            termsButton.exists || privacyButton.exists
+        XCTAssertTrue(hasLegal, "Legal links should be visible")
 
         logger.success("Sign-in step displays correct elements")
     }

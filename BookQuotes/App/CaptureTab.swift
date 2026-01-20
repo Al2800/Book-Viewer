@@ -61,9 +61,35 @@ struct CaptureOptionCard: View {
     let description: String
     let systemImage: String
     let color: Color
+    let accessibilityId: String?
     let action: () -> Void
 
+    init(
+        title: String,
+        description: String,
+        systemImage: String,
+        color: Color,
+        accessibilityId: String? = nil,
+        action: @escaping () -> Void
+    ) {
+        self.title = title
+        self.description = description
+        self.systemImage = systemImage
+        self.color = color
+        self.accessibilityId = accessibilityId
+        self.action = action
+    }
+
     var body: some View {
+        if let accessibilityId {
+            cardButton
+                .accessibilityIdentifier(accessibilityId)
+        } else {
+            cardButton
+        }
+    }
+
+    private var cardButton: some View {
         Button(action: action) {
             HStack(spacing: Spacing.lg) {
                 Image(systemName: systemImage)

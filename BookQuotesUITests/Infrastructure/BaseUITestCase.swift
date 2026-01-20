@@ -32,10 +32,32 @@ class BaseUITestCase: XCTestCase {
     var screenshots: ScreenshotCapture!
 
     /// Additional launch arguments beyond the defaults.
-    var additionalLaunchArguments: [String] = []
+    var additionalLaunchArguments: [String] { [] }
 
     /// Additional environment variables for the app.
-    var launchEnvironment: [String: String] = [:]
+    var launchEnvironment: [String: String] { [:] }
+
+    enum UITestTab {
+        case library
+        case capture
+        case settings
+
+        var identifier: String {
+            switch self {
+            case .library: return AccessibilityIdentifiers.Tabs.libraryTab
+            case .capture: return AccessibilityIdentifiers.Tabs.captureTab
+            case .settings: return AccessibilityIdentifiers.Tabs.settingsTab
+            }
+        }
+
+        var label: String {
+            switch self {
+            case .library: return "Library"
+            case .capture: return "Capture"
+            case .settings: return "Settings"
+            }
+        }
+    }
 
     // MARK: - Setup & Teardown
 
@@ -115,6 +137,45 @@ class BaseUITestCase: XCTestCase {
             logger.info("App ready")
         } else {
             logger.warning("App may not be fully ready (no tab/nav bar found)")
+        }
+
+        waitForSeedDataIfNeeded()
+    }
+
+    private var shouldWaitForSeedData: Bool {
+        app.launchArguments.contains("--preload-library-test-data") ||
+        app.launchArguments.contains("--preload-search-test-data") ||
+        app.launchArguments.contains("--preload-test-book")
+    }
+
+    private func waitForSeedDataIfNeeded() {
+        guard shouldWaitForSeedData else { return }
+
+        let seedMarker = app.staticTexts[AccessibilityIdentifiers.Common.uiTestSeeded]
+        if seedMarker.waitForExistence(timeout: 15) {
+            logger.info("Seeded data ready")
+            logSeededBookCountIfAvailable()
+        } else {
+            let fallbackMarker = app.otherElements[AccessibilityIdentifiers.Common.uiTestSeeded]
+            if fallbackMarker.waitForExistence(timeout: 2) {
+                logger.info("Seeded data ready")
+                logSeededBookCountIfAvailable()
+                return
+            }
+            let seededBook = app.staticTexts[UITestData.Books.atomicHabitsTitle]
+            if seededBook.waitForExistence(timeout: 5) {
+                logger.info("Seeded data visible without marker")
+                logSeededBookCountIfAvailable()
+            } else {
+                logger.warning("Seed marker not found after timeout")
+            }
+        }
+    }
+
+    private func logSeededBookCountIfAvailable() {
+        let bookCountLabel = app.staticTexts[AccessibilityIdentifiers.Common.uiTestBookCount]
+        if bookCountLabel.waitForExistence(timeout: 2) {
+            logger.info("Seeded book count: \(bookCountLabel.label)")
         }
     }
 
@@ -202,6 +263,14 @@ class BaseUITestCase: XCTestCase {
         logger.info("Navigated to tab: \(tabName)")
     }
 
+    func tabButton(_ tab: UITestTab) -> XCUIElement {
+        let byIdentifier = app.tabBars.buttons[tab.identifier]
+        if byIdentifier.exists {
+            return byIdentifier
+        }
+        return app.tabBars.buttons[tab.label]
+    }
+
     /// Tap the back button in navigation.
     func tapBackButton() {
         let backButton = app.navigationBars.buttons.element(boundBy: 0)
@@ -230,6 +299,47 @@ class BaseUITestCase: XCTestCase {
                 }
             }
         }
+    }
+
+    /// Focus a text field and type text, retrying focus if needed.
+    func typeText(_ text: String, into element: XCUIElement, timeout: TimeInterval = 3) {
+        XCTAssertTrue(element.waitForExistence(timeout: timeout), "Expected element to exist before typing")
+        for _ in 0..<2 where !element.isHittable {
+            app.swipeUp()
+        }
+
+        func textValue(_ element: XCUIElement) -> String {
+            if let value = element.value as? String {
+                return value
+            }
+            return String(describing: element.value ?? "")
+        }
+
+        let attempts = 4
+        for _ in 0..<attempts {
+            if element.isHittable {
+                element.tap()
+            } else {
+                element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            }
+
+            if !app.keyboards.firstMatch.waitForExistence(timeout: 1) {
+                element.doubleTap()
+                _ = app.keyboards.firstMatch.waitForExistence(timeout: 1)
+            }
+
+            app.typeText(text)
+            dismissKeyboard()
+
+            let newValue = textValue(element)
+            if newValue.contains(text) || newValue == text {
+                return
+            }
+            app.tap()
+        }
+
+        logger.warning("Typing failed. element=\(element.label) value=\(textValue(element))")
+        XCTFail("Failed to type text into element after \(attempts) attempts")
     }
 }
 
@@ -270,5 +380,189 @@ extension BaseUITestCase {
         let navBar = app.navigationBars[title]
         let exists = navBar.waitForExistence(timeout: timeout)
         XCTAssertTrue(exists, "Expected navigation title '\(title)'", file: file, line: line)
+    }
+}
+
+// MARK: - UI Test Constants
+
+/// Accessibility identifiers mirrored for UI tests to avoid linking app code.
+enum AccessibilityIdentifiers {
+
+    enum Library {
+        static let bookCoverCard = "library_book_cover_card"
+        static let bookListRow = "library_book_list_row"
+        static let emptyState = "library_empty_state"
+        static let addBookButton = "library_add_book_button"
+        static let filterButton = "library_filter_button"
+        static let sortMenu = "library_sort_menu"
+        static let viewModeToggle = "library_view_mode_toggle"
+    }
+
+    enum Search {
+        static let searchField = "search_field"
+        static let scopePicker = "search_scope_picker"
+        static let bookResultRow = "search_book_result_row"
+        static let quoteResultRow = "search_quote_result_row"
+        static let noResultsView = "search_no_results"
+        static let searchingIndicator = "search_searching"
+        static let didYouMeanBanner = "search_did_you_mean_banner"
+    }
+
+    enum QuoteCard {
+        static let container = "quote_card_container"
+        static let quoteText = "quote_card_text"
+        static let marginNote = "quote_card_margin_note"
+        static let favoriteIndicator = "quote_card_favorite"
+        static let markingBadge = "quote_card_marking_badge"
+        static let pageNumber = "quote_card_page_number"
+        static let confidenceIndicator = "quote_card_confidence"
+    }
+
+    enum QuoteDetail {
+        static let textEditor = "quote_detail_text_editor"
+        static let pageField = "quote_detail_page_field"
+        static let marginNoteField = "quote_detail_margin_note_field"
+        static let editButton = "quote_detail_edit_button"
+        static let doneButton = "quote_detail_done_button"
+        static let cancelButton = "quote_detail_cancel_button"
+        static let deleteButton = "quote_detail_delete_button"
+        static let favoriteButton = "quote_detail_favorite_button"
+        static let copyButton = "quote_detail_copy_button"
+        static let shareButton = "quote_detail_share_button"
+        static let sourceImageButton = "quote_detail_source_image_button"
+        static let markingPickerButton = "quote_detail_marking_picker"
+    }
+
+    enum Capture {
+        static let captureButton = "capture_button"
+        static let cameraPreview = "capture_camera_preview"
+        static let qualityToggle = "capture_quality_toggle"
+        static let cancelButton = "capture_cancel_button"
+        static let permissionPrompt = "capture_permission_prompt"
+        static let openSettingsButton = "capture_open_settings_button"
+        static let testImageButton = "capture_test_image_button"
+        static let testCoverButton = "capture_test_cover_button"
+        static let modeSelectCover = "capture_mode_select_cover"
+        static let modeSelectQuote = "capture_mode_select_quote"
+        static let modeSelectBatch = "capture_mode_select_batch"
+        static let bookSelectionCard = "capture_book_selection_card"
+        static let modePicker = "capture_mode_picker"
+        static let pageCounter = "capture_page_counter"
+        static let doneButton = "capture_done_button"
+        static let thumbnailStrip = "capture_thumbnail_strip"
+    }
+
+    enum Collections {
+        static let addButton = "collections_add_button"
+        static let collectionRow = "collections_row"
+        static let createButton = "collections_create_button"
+        static let nameField = "collections_name_field"
+        static let detailView = "collections_detail_view"
+        static let emptyState = "collections_empty_state"
+    }
+
+    enum Tags {
+        static let addButton = "tags_add_button"
+        static let tagChip = "tags_chip"
+        static let nameField = "tags_name_field"
+        static let listView = "tags_list_view"
+        static let emptyState = "tags_empty_state"
+    }
+
+    enum ImageReview {
+        static let imagePreview = "image_review_preview"
+        static let retakeButton = "image_review_retake_button"
+        static let usePhotoButton = "image_review_use_photo_button"
+        static let qualityBar = "image_review_quality_bar"
+        static let cancelButton = "image_review_cancel_button"
+    }
+
+    enum Export {
+        static let exportButton = "export_button"
+        static let formatPicker = "export_format_picker"
+        static let previewSection = "export_preview"
+        static let shareButton = "export_share_button"
+        static let includeBookInfoToggle = "export_include_book_info"
+        static let includePageNumbersToggle = "export_include_page_numbers"
+    }
+
+    enum BookDetail {
+        static let bookTitle = "book_detail_title"
+        static let bookAuthor = "book_detail_author"
+        static let coverImage = "book_detail_cover_image"
+        static let quoteCount = "book_detail_quote_count"
+        static let captureQuotesButton = "book_detail_capture_button"
+        static let editButton = "book_detail_edit_button"
+        static let deleteButton = "book_detail_delete_button"
+        static let statusPicker = "book_detail_status_picker"
+    }
+
+    enum Onboarding {
+        static let continueButton = "onboarding_continue_button"
+        static let skipButton = "onboarding_skip_button"
+        static let signInButton = "onboarding_sign_in_button"
+        static let pageIndicator = "onboarding_page_indicator"
+    }
+
+    enum Settings {
+        static let accountSection = "settings_account_section"
+        static let signOutButton = "settings_sign_out_button"
+        static let signInButton = "settings_sign_in_button"
+        static let subscriptionStatus = "settings_subscription_status"
+        static let restorePurchasesButton = "settings_restore_purchases"
+        static let manageSubscriptionButton = "settings_manage_subscription"
+    }
+
+    enum Tabs {
+        static let libraryTab = "tab_library"
+        static let captureTab = "tab_capture"
+        static let settingsTab = "tab_settings"
+    }
+
+    enum Common {
+        static let loadingIndicator = "loading_indicator"
+        static let errorView = "error_view"
+        static let retryButton = "retry_button"
+        static let dismissButton = "dismiss_button"
+        static let moreMenuButton = "more_menu_button"
+        static let uiTestSeeded = "ui_test_seeded"
+        static let uiTestBookCount = "ui_test_book_count"
+    }
+}
+
+/// Constants for UI test assertions matching UITestDataSeeder.
+enum UITestData {
+    enum Books {
+        static let atomicHabitsTitle = "Atomic Habits"
+        static let atomicHabitsAuthor = "James Clear"
+        static let deepWorkTitle = "Deep Work"
+        static let deepWorkAuthor = "Cal Newport"
+        static let thinkingTitle = "Thinking, Fast and Slow"
+        static let thinkingAuthor = "Daniel Kahneman"
+        static let testBookTitle = "Test Book"
+        static let testBookAuthor = "Test Author"
+    }
+
+    enum Quotes {
+        static let voteQuote = "Every action you take is a vote for the type of person you wish to become."
+        static let systemsQuote = "You do not rise to the level of your goals. You fall to the level of your systems."
+        static let compoundQuote = "Habits are the compound interest of self-improvement."
+        static let deepWorkQuote = "Deep work is the ability to focus without distraction"
+        static let clarityQuote = "Clarity about what matters provides clarity about what does not."
+    }
+
+    enum SearchTokens {
+        static let improvement = "improvement"
+        static let focus = "focus"
+        static let mindfulness = "mindfulness"
+        static let habits = "habits"
+        static let automation = "automation"
+    }
+
+    enum Counts {
+        static let libraryBooks = 3
+        static let libraryQuotes = 6
+        static let searchQuotes = 10
+        static let testBookQuotes = 3
     }
 }

@@ -35,7 +35,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
     }
 
     override func tearDown() async throws {
-        queueManager.stop()
+        await queueManager.stop()
         queueManager = nil
         geminiService = nil
         authService = nil
@@ -425,7 +425,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         let expectation = XCTestExpectation(description: "Receive stats updates")
         expectation.expectedFulfillmentCount = 1
 
-        await queueManager.statsPublisher
+        queueManager.statsPublisher
             .dropFirst()  // Skip initial value
             .sink { stats in
                 receivedStats.append(stats)
@@ -464,7 +464,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         logger.step(1, "Starting then stopping queue manager")
 
         await queueManager.start()
-        queueManager.stop()
+        await queueManager.stop()
 
         logger.step(2, "Verifying cleanup")
         // Should not crash and resources should be cleaned up
@@ -478,7 +478,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         for i in 1...3 {
             await queueManager.start()
             try await Task.sleep(for: .milliseconds(50))
-            queueManager.stop()
+            await queueManager.stop()
             logger.debug("Cycle \(i) complete")
         }
 

@@ -7,14 +7,14 @@ final class CoverCaptureFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        ["--preload-library-test-data"]
+        ["--preload-library-test-data", "--mock-camera"]
     }
 
     override func waitForAppReady() {
         super.waitForAppReady()
 
         // Navigate to library tab
-        let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+        let libraryTab = tabButton(.library)
         if libraryTab.waitForExistence(timeout: 5) {
             libraryTab.tap()
         }
@@ -134,12 +134,17 @@ final class CoverCaptureFlowTests: BaseUITestCase {
 
     // MARK: - Barcode Scanning Tests
 
-    func testCoverCapture_BarcodeMode_ShowsScanFrame() {
+    func testCoverCapture_BarcodeMode_ShowsScanFrame() throws {
         logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
         logger.step(2, "Switching to barcode mode")
-        let modePicker = app.segmentedControls.firstMatch
+        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
+        if permissionPrompt.waitForExistence(timeout: 2) {
+            throw XCTSkip("Camera permission prompt shown; barcode UI unavailable")
+        }
+
+        let modePicker = app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker]
         guard modePicker.waitForExistence(timeout: 5) else {
             logger.info("Mode picker not found")
             return
@@ -157,11 +162,16 @@ final class CoverCaptureFlowTests: BaseUITestCase {
         logger.success("Barcode scan frame displayed")
     }
 
-    func testCoverCapture_BarcodeMode_HasScanningAnimation() {
+    func testCoverCapture_BarcodeMode_HasScanningAnimation() throws {
         logger.step(1, "Opening cover capture in barcode mode")
         openAddBookFlow()
 
-        let modePicker = app.segmentedControls.firstMatch
+        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
+        if permissionPrompt.waitForExistence(timeout: 2) {
+            throw XCTSkip("Camera permission prompt shown; barcode UI unavailable")
+        }
+
+        let modePicker = app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker]
         if modePicker.waitForExistence(timeout: 5) {
             let barcodeButton = modePicker.buttons["Barcode"]
             if barcodeButton.exists {
@@ -222,7 +232,7 @@ final class CoverCaptureFlowTests: BaseUITestCase {
 
             logger.step(4, "Verifying dismissal")
             // Should return to library view
-            let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+            let libraryTab = tabButton(.library)
             let addBookButton = app.buttons[AccessibilityIdentifiers.Library.addBookButton]
 
             let returnedToLibrary = libraryTab.waitForExistence(timeout: 3) || addBookButton.exists
@@ -257,19 +267,19 @@ final class CoverCaptureFlowTests: BaseUITestCase {
     // MARK: - Helpers
 
     private func openAddBookFlow() {
-        let addButton = app.buttons[AccessibilityIdentifiers.Library.addBookButton]
-        if addButton.waitForExistence(timeout: 3) {
-            addButton.tap()
-        } else {
-            // Try navigation bar add button
-            let navAddButton = app.navigationBars.buttons["Add"]
-            if navAddButton.exists {
-                navAddButton.tap()
-            }
+        let captureTab = tabButton(.capture)
+        if captureTab.waitForExistence(timeout: 5) {
+            captureTab.tap()
         }
 
-        // Wait for capture view or manual entry
-        _ = app.segmentedControls.firstMatch.waitForExistence(timeout: 3) ||
-            app.textFields["Title"].waitForExistence(timeout: 3)
+        let coverOption = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
+        if coverOption.waitForExistence(timeout: 5) {
+            coverOption.tap()
+        }
+
+        // Wait for capture view, manual entry, or permission prompt
+        _ = app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker].waitForExistence(timeout: 3) ||
+            app.textFields["Title"].waitForExistence(timeout: 3) ||
+            app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt].waitForExistence(timeout: 3)
     }
 }

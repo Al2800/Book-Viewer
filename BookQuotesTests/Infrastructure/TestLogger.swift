@@ -118,6 +118,23 @@ final class TestLogger {
         log(.info, message, context: context, file: file, line: line)
     }
 
+    func metric(
+        _ name: String,
+        value: Double,
+        unit: String? = nil,
+        file: String = #file,
+        line: Int = #line
+    ) {
+        var context: [String: String] = [
+            "metric": name,
+            "value": String(format: "%.3f", value)
+        ]
+        if let unit {
+            context["unit"] = unit
+        }
+        log(.info, "Metric \(name)", context: context, file: file, line: line)
+    }
+
     func step(
         _ stepNumber: Int,
         _ message: String,

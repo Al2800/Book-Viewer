@@ -14,7 +14,7 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
         super.waitForAppReady()
 
         // Navigate to library tab
-        let libraryTab = app.tabBars.buttons[AccessibilityIdentifiers.Tabs.libraryTab]
+        let libraryTab = tabButton(.library)
         if libraryTab.waitForExistence(timeout: 5) {
             libraryTab.tap()
         }
@@ -452,8 +452,14 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
 
         // Tap first book
         let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookOther = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         if bookRow.waitForExistence(timeout: 3) {
             bookRow.tap()
+        } else if bookLink.waitForExistence(timeout: 3) {
+            bookLink.tap()
+        } else if bookOther.waitForExistence(timeout: 3) {
+            bookOther.tap()
         } else if app.cells.firstMatch.exists {
             app.cells.firstMatch.tap()
         }
@@ -463,6 +469,10 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
     }
 
     private func findMoreMenuButton() -> XCUIElement {
+        let explicitButton = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
+        if explicitButton.exists {
+            return explicitButton
+        }
         let navButtons = app.navigationBars.buttons
         let predicate = NSPredicate(format: "label CONTAINS 'More' OR label CONTAINS 'ellipsis'")
         let match = navButtons.matching(predicate).firstMatch

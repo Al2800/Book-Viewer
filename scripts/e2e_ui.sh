@@ -5,26 +5,30 @@ set -euo pipefail
 # Runs UI tests with screenshot capture and detailed logging
 #
 # Environment variables:
-#   SCHEME          - Xcode scheme (default: BookQuotesUITests)
+#   SCHEME          - Xcode scheme (default: BookQuotes)
 #   TEST_PLAN       - Test plan name (default: FullRegressionPlan)
-#   DESTINATION     - Simulator destination (default: iPhone 15)
+#   DESTINATION     - Simulator destination (default: iPhone 17)
 #   ARTIFACTS_DIR   - Output directory (default: artifacts/ui-tests)
+#   ONLY_TESTING    - Specific test target to run (optional)
 #   RETRY_COUNT     - Number of retries for flaky tests (default: 1)
-#   TIMEOUT         - Test timeout in seconds (default: 600)
+#   TIMEOUT         - Test timeout in seconds (default: 1200)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT="$PROJECT_DIR/BookQuotes.xcodeproj"
-SCHEME="${SCHEME:-BookQuotesUITests}"
+SCHEME="${SCHEME:-BookQuotes}"
 TEST_PLAN="${TEST_PLAN:-FullRegressionPlan}"
-DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 15}"
+DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 17}"
 ARTIFACTS_DIR="${ARTIFACTS_DIR:-$PROJECT_DIR/artifacts/ui-tests}"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULT_BUNDLE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}.xcresult"
-LOG_FILE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}.log"
+RESULT_BUNDLE_BASE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}"
+LOG_FILE_BASE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}"
+RESULT_BUNDLE=""
+LOG_FILE=""
 SCREENSHOTS_DIR="${ARTIFACTS_DIR}/screenshots"
+ONLY_TESTING="${ONLY_TESTING:-}"
 RETRY_COUNT="${RETRY_COUNT:-1}"
-TIMEOUT="${TIMEOUT:-600}"
+TIMEOUT="${TIMEOUT:-1200}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -72,6 +76,9 @@ run_tests() {
     export CAPTURE_UI_TEST_CHECKPOINTS=1
     export WRITE_UI_TEST_LOGS=1
 
+    RESULT_BUNDLE="${RESULT_BUNDLE_BASE}-attempt${attempt}.xcresult"
+    LOG_FILE="${LOG_FILE_BASE}-attempt${attempt}.log"
+
     local CMD=(
       xcodebuild test
       -project "$PROJECT"
@@ -80,6 +87,10 @@ run_tests() {
       -destination "$DESTINATION"
       -resultBundlePath "$RESULT_BUNDLE"
     )
+
+    if [[ -n "$ONLY_TESTING" ]]; then
+      CMD+=(-only-testing:"$ONLY_TESTING")
+    fi
 
     # Run with timeout
     if timeout "$TIMEOUT" bash -c '"${@}"' _ "${CMD[@]}" 2>&1 | tee "$LOG_FILE"; then
@@ -145,12 +156,7 @@ generate_failure_report() {
 
 # Cleanup old artifacts
 cleanup_old_artifacts() {
-  # Keep only the last 5 test runs (UI tests generate more data)
-  cd "$ARTIFACTS_DIR"
-  ls -td */ 2>/dev/null | tail -n +6 | xargs rm -rf 2>/dev/null || true
-  ls -t *.xcresult 2>/dev/null | tail -n +6 | xargs rm -rf 2>/dev/null || true
-  ls -t *.log 2>/dev/null | tail -n +6 | xargs rm -rf 2>/dev/null || true
-  cd "$PROJECT_DIR"
+  log_warn "Skipping artifact cleanup to avoid deleting files without approval."
 }
 
 # Main

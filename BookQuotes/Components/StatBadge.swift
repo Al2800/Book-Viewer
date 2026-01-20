@@ -82,10 +82,12 @@ struct BookHeaderView: View {
                     .font(.title2)
                     .fontWeight(.bold)
                     .lineLimit(3)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookTitle)
 
                 Text(book.author)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookAuthor)
 
                 if let subtitle = book.subtitle {
                     Text(subtitle)
@@ -111,11 +113,13 @@ struct BookHeaderView: View {
                 Text(book.title)
                     .font(.headline)
                     .lineLimit(1)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookTitle)
 
                 Text(book.author)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookAuthor)
             }
 
             Spacer()

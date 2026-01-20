@@ -25,6 +25,24 @@ struct OnboardingView: View {
 
     var onComplete: (() -> Void)?
 
+    // MARK: - Simulator Auth Skips
+
+    private var allowAuthSkip: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
+        return UITestConfiguration.shouldSkipAuth
+        #endif
+    }
+
+    private var shouldAutoSkipAuth: Bool {
+        #if targetEnvironment(simulator)
+        return !UITestConfiguration.isUITesting
+        #else
+        return false
+        #endif
+    }
+
     // MARK: - Body
 
     var body: some View {
@@ -156,6 +174,15 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, Spacing.lg)
 
+            if allowAuthSkip {
+                Button("Maybe later") {
+                    withAnimation {
+                        currentStep = .subscription
+                    }
+                }
+                .foregroundStyle(Color.textSecondary)
+            }
+
             // Terms
             VStack(spacing: Spacing.xs) {
                 Text("By continuing, you agree to our")
@@ -179,6 +206,12 @@ struct OnboardingView: View {
                 .font(.caption)
             }
             .padding(.bottom, Spacing.xl)
+        }
+        .onAppear {
+            guard shouldAutoSkipAuth else { return }
+            withAnimation {
+                currentStep = .subscription
+            }
         }
     }
 

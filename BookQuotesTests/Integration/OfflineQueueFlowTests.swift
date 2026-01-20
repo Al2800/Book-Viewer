@@ -34,7 +34,7 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
     }
 
     override func tearDown() async throws {
-        queueManager.stop()
+        await queueManager.stop()
         queueManager = nil
         geminiService = nil
         authService = nil
@@ -115,7 +115,7 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
         let expectation = XCTestExpectation(description: "Receive stats updates")
         expectation.expectedFulfillmentCount = 2  // Initial + after add
 
-        await queueManager.statsPublisher
+        queueManager.statsPublisher
             .sink { stats in
                 receivedStats.append(stats)
                 if receivedStats.count >= 2 {
@@ -160,7 +160,7 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
         _ = try await queueManager.addToQueue(image: createTestImage(), book: book)
 
         logger.step(2, "Stopping queue manager")
-        queueManager.stop()
+        await queueManager.stop()
 
         logger.step(3, "Verifying stopped state")
         // Manager should stop gracefully without crashes
@@ -181,7 +181,7 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
         XCTAssertFalse(queueItem.imagePath.isEmpty)
 
         logger.step(3, "Verifying image can be loaded")
-        let loadedImage = queueItem.loadImage()
+        let loadedImage = queueItem.loadFullImage()
         XCTAssertNotNil(loadedImage)
 
         logger.success("Queue item image path persists and loads")

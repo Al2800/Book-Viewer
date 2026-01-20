@@ -187,6 +187,7 @@ struct CoverCaptureView: View {
                 Label("Barcode", systemImage: "barcode.viewfinder").tag(CaptureMode.barcode)
             }
             .pickerStyle(.segmented)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
             .padding(.horizontal, Spacing.xl)
             .padding(.top, Spacing.lg)
 

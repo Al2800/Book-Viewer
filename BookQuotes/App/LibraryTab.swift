@@ -110,6 +110,14 @@ struct LibraryView: View {
             }
         }
         .background(Color.backgroundPrimary)
+        .overlay(alignment: .topLeading) {
+            if UITestConfiguration.isUITesting {
+                Text("\(books.count)")
+                    .font(.caption2)
+                    .opacity(0.01)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestBookCount)
+            }
+        }
         .navigationTitle("Library")
         .searchable(
             text: $searchText,
@@ -159,13 +167,21 @@ struct LibraryView: View {
         }
         .onAppear {
             initializeSearchServices()
+            if UITestConfiguration.isUITesting {
+                print("UITest library books count: \(books.count)")
+            }
             // Trigger entrance animation
-            guard !reduceMotion else {
+            guard !UITestConfiguration.isUITesting, !reduceMotion else {
                 hasAppeared = true
                 return
             }
             withAnimation(.smoothSpring.delay(0.1)) {
                 hasAppeared = true
+            }
+        }
+        .onChange(of: books.count) { _, newValue in
+            if UITestConfiguration.isUITesting {
+                print("UITest library books count updated: \(newValue)")
             }
         }
         .onChange(of: viewMode) { _, _ in
@@ -229,6 +245,9 @@ struct LibraryView: View {
                         BookCoverCard(book: book)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)
+                    .accessibilityLabel("\(book.title) by \(book.author)")
+                    .accessibilityHint("Open book details")
                     // Staggered entrance animation
                     .opacity(hasAppeared ? 1 : 0)
                     .offset(y: hasAppeared ? 0 : 20)
@@ -254,6 +273,8 @@ struct LibraryView: View {
                 NavigationLink(value: book) {
                     BookListRow(book: book)
                 }
+                .accessibilityLabel("\(book.title) by \(book.author)")
+                .accessibilityHint("Open book details")
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                     SwipeActionStyle.deleteButton {
                         bookToDelete = book
@@ -266,6 +287,7 @@ struct LibraryView: View {
                         router.navigate(to: book)
                     }
                 }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookListRow)
                 // Staggered entrance animation
                 .opacity(hasAppeared ? 1 : 0)
                 .offset(x: hasAppeared ? 0 : -20)

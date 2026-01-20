@@ -6,7 +6,7 @@ set -euo pipefail
 #
 # Environment variables:
 #   SCHEME          - Xcode scheme (default: BookQuotes)
-#   DESTINATION     - Simulator destination (default: iPhone 15)
+#   DESTINATION     - Simulator destination (default: iPhone 17)
 #   ARTIFACTS_DIR   - Output directory (default: artifacts/integration-tests)
 #   ONLY_TESTING    - Specific test target to run (optional)
 #   RETRY_COUNT     - Number of retries for flaky tests (default: 0)
@@ -15,11 +15,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT="$PROJECT_DIR/BookQuotes.xcodeproj"
 SCHEME="${SCHEME:-BookQuotes}"
-DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 15}"
+DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 17}"
 ARTIFACTS_DIR="${ARTIFACTS_DIR:-$PROJECT_DIR/artifacts/integration-tests}"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULT_BUNDLE="${ARTIFACTS_DIR}/integration-tests-${TIMESTAMP}.xcresult"
-LOG_FILE="${ARTIFACTS_DIR}/integration-tests-${TIMESTAMP}.log"
+RESULT_BUNDLE_BASE="${ARTIFACTS_DIR}/integration-tests-${TIMESTAMP}"
+LOG_FILE_BASE="${ARTIFACTS_DIR}/integration-tests-${TIMESTAMP}"
+RESULT_BUNDLE=""
+LOG_FILE=""
 ONLY_TESTING="${ONLY_TESTING:-}"
 RETRY_COUNT="${RETRY_COUNT:-0}"
 
@@ -60,6 +62,9 @@ run_tests() {
     fi
 
     log_info "Running integration tests (attempt $attempt)..."
+
+    RESULT_BUNDLE="${RESULT_BUNDLE_BASE}-attempt${attempt}.xcresult"
+    LOG_FILE="${LOG_FILE_BASE}-attempt${attempt}.log"
 
     local CMD=(
       xcodebuild test

@@ -41,6 +41,9 @@ struct SearchResultsView: View {
 
     @State private var didYouMeanSuggestion: String?
     @State private var isLoadingSuggestion = false
+    private var shouldDisableAnimations: Bool {
+        UITestConfiguration.isUITesting || reduceMotion
+    }
 
     // MARK: - Body
 
@@ -64,8 +67,8 @@ struct SearchResultsView: View {
                     .transition(.opacity)
             }
         }
-        .animation(reduceMotion ? .none : .smoothSpring, value: searchService.isSearching)
-        .animation(reduceMotion ? .none : .smoothSpring, value: searchService.results.isEmpty)
+        .animation(shouldDisableAnimations ? .none : .smoothSpring, value: searchService.isSearching)
+        .animation(shouldDisableAnimations ? .none : .smoothSpring, value: searchService.results.isEmpty)
         .onChange(of: searchText) { _, newValue in
             // Clear any existing suggestion when query changes
             didYouMeanSuggestion = nil
@@ -77,7 +80,7 @@ struct SearchResultsView: View {
             searchService.search(searchText, scope: newScope)
             // Trigger staggered entrance for new scope
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                guard !reduceMotion else {
+                guard !shouldDisableAnimations else {
                     hasAppeared = true
                     return
                 }
@@ -92,7 +95,7 @@ struct SearchResultsView: View {
                 resultsKey = UUID()
                 hasAppeared = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                    guard !reduceMotion else {
+                    guard !shouldDisableAnimations else {
                         hasAppeared = true
                         return
                     }
@@ -111,7 +114,7 @@ struct SearchResultsView: View {
             if !searchText.isEmpty {
                 searchService.search(searchText, scope: scope)
             }
-            guard !reduceMotion else {
+            guard !shouldDisableAnimations else {
                 hasAppeared = true
                 return
             }
@@ -133,7 +136,7 @@ struct SearchResultsView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .opacity(hasAppeared ? 1 : 0)
+        .opacity(shouldDisableAnimations ? 1 : (hasAppeared ? 1 : 0))
         .accessibilityIdentifier(AccessibilityIdentifiers.Search.searchingIndicator)
     }
 
@@ -172,11 +175,12 @@ struct SearchResultsView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Search.bookResultRow)
                 // Staggered entrance animation
-                .opacity(hasAppeared ? 1 : 0)
-                .offset(x: hasAppeared ? 0 : -15)
+                .opacity(shouldDisableAnimations ? 1 : (hasAppeared ? 1 : 0))
+                .offset(x: shouldDisableAnimations ? 0 : (hasAppeared ? 0 : -15))
                 .animation(
-                    reduceMotion ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.04),
+                    shouldDisableAnimations ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.04),
                     value: hasAppeared
                 )
             }
@@ -199,11 +203,12 @@ struct SearchResultsView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Search.quoteResultRow)
                 // Staggered entrance animation (offset by book count)
-                .opacity(hasAppeared ? 1 : 0)
-                .offset(x: hasAppeared ? 0 : -15)
+                .opacity(shouldDisableAnimations ? 1 : (hasAppeared ? 1 : 0))
+                .offset(x: shouldDisableAnimations ? 0 : (hasAppeared ? 0 : -15))
                 .animation(
-                    reduceMotion ? .none : .smoothSpring.delay(
+                    shouldDisableAnimations ? .none : .smoothSpring.delay(
                         Double(min(searchService.results.books.count + index, 12)) * 0.04
                     ),
                     value: hasAppeared

@@ -388,13 +388,10 @@ final class GeminiServiceTests: SwiftDataTestCase {
         let customMarkings = [
             MarkingDefinition(
                 name: "Star",
-                meaning: "Favorite passages",
                 visualDescription: "Star drawn next to text",
+                meaning: "Favorite passages",
                 icon: "star.fill",
-                colorName: "yellow",
-                sortOrder: 0,
-                isSystemDefault: false,
-                isEnabled: true
+                colorName: "yellow"
             )
         ]
 

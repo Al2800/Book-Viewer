@@ -158,6 +158,18 @@ enum AccessibilityIdentifiers {
         /// UI test-only button for injecting a test cover image
         static let testCoverButton = "capture_test_cover_button"
 
+        /// Capture mode selection: cover
+        static let modeSelectCover = "capture_mode_select_cover"
+
+        /// Capture mode selection: quote
+        static let modeSelectQuote = "capture_mode_select_quote"
+
+        /// Capture mode selection: batch
+        static let modeSelectBatch = "capture_mode_select_batch"
+
+        /// Book card in capture book selection grid
+        static let bookSelectionCard = "capture_book_selection_card"
+
         /// Mode picker (photo/barcode)
         static let modePicker = "capture_mode_picker"
 
@@ -346,5 +358,14 @@ enum AccessibilityIdentifiers {
 
         /// Dismiss button
         static let dismissButton = "dismiss_button"
+
+        /// Overflow/more menu button (ellipsis)
+        static let moreMenuButton = "more_menu_button"
+
+        /// UI test seed completion marker
+        static let uiTestSeeded = "ui_test_seeded"
+
+        /// UI test visible book count marker
+        static let uiTestBookCount = "ui_test_book_count"
     }
 }

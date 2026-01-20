@@ -49,7 +49,7 @@ struct BookCoverCard: View {
         .opacity(hasAppeared ? 1.0 : 0.0)
         .scaleEffect(hasAppeared ? 1.0 : 0.9)
         .onAppear {
-            guard !reduceMotion else {
+            if UITestConfiguration.isUITesting || reduceMotion {
                 hasAppeared = true
                 return
             }
@@ -247,7 +247,7 @@ struct BookListRow: View {
         .opacity(hasAppeared ? 1.0 : 0.0)
         .offset(x: hasAppeared ? 0 : -10)
         .onAppear {
-            guard !reduceMotion else {
+            if UITestConfiguration.isUITesting || reduceMotion {
                 hasAppeared = true
                 return
             }
@@ -256,17 +256,19 @@ struct BookListRow: View {
             }
         }
         // MARK: - Tap Gesture
-        .onTapGesture {
-            guard let onTap = onTap else { return }
-            HapticManager.light()
-            onTap()
+        .if(onTap != nil) { view in
+            view
+                .onTapGesture {
+                    HapticManager.light()
+                    onTap?()
+                }
+                .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                    guard !hasContextMenu else { return }
+                    withAnimation(.quickSpring) {
+                        isPressed = pressing
+                    }
+                }, perform: {})
         }
-        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-            guard onTap != nil && !hasContextMenu else { return }
-            withAnimation(.quickSpring) {
-                isPressed = pressing
-            }
-        }, perform: {})
         // MARK: - Context Menu
         .if(hasContextMenu) { view in
             view.polishedContextMenu(

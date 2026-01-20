@@ -41,6 +41,18 @@ enum UITestConfiguration {
         hasArgument("--uitesting")
     }
 
+    /// Whether to reset onboarding completion for UI tests.
+    /// Set via `--reset-onboarding` launch argument.
+    static var shouldResetOnboarding: Bool {
+        hasArgument("--reset-onboarding")
+    }
+
+    /// Whether to allow skipping authentication during onboarding.
+    /// Set via `--skip-auth` launch argument.
+    static var shouldSkipAuth: Bool {
+        hasArgument("--skip-auth")
+    }
+
     // MARK: - Data Preloading
 
     /// Whether to preload the library with test books and quotes.
@@ -109,6 +121,8 @@ enum UITestConfiguration {
         if shouldPreloadSearchTestData { flags.append("Search data: preloaded") }
         if shouldPreloadTestBook { flags.append("Test book: preloaded") }
         if shouldStartWithEmptyLibrary { flags.append("Library: empty") }
+        if shouldResetOnboarding { flags.append("Onboarding: reset") }
+        if shouldSkipAuth { flags.append("Auth: skipped") }
         if shouldMockCamera { flags.append("Camera: mocked") }
         if shouldMockMultipleQuotes { flags.append("Gemini: multiple quotes") }
         if shouldMockLowConfidence { flags.append("Gemini: low confidence") }

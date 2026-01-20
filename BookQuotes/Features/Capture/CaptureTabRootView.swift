@@ -26,6 +26,11 @@ struct CaptureTabRootView: View {
         .environment(cameraPermission)
         .onAppear {
             cameraPermission.checkStatus()
+            if UITestConfiguration.isUITesting {
+                hasCompletedCoaching = true
+                showCoaching = false
+                return
+            }
             // Show coaching for first-time users
             if cameraPermission.isAuthorized && !hasCompletedCoaching {
                 showCoaching = true
@@ -202,6 +207,7 @@ struct CaptureModeSelectionView: View {
                         description: "Photograph a book cover to add it to your library",
                         systemImage: "book.closed.fill",
                         color: .brand,
+                        accessibilityId: AccessibilityIdentifiers.Capture.modeSelectCover,
                         action: onSelectCoverCapture
                     )
 
@@ -210,6 +216,7 @@ struct CaptureModeSelectionView: View {
                         description: "Photograph pages with underlined or highlighted passages",
                         systemImage: "text.quote",
                         color: .accent,
+                        accessibilityId: AccessibilityIdentifiers.Capture.modeSelectQuote,
                         action: onSelectQuoteCapture
                     )
 
@@ -218,6 +225,7 @@ struct CaptureModeSelectionView: View {
                         description: "Capture multiple pages quickly, process all at once",
                         systemImage: "square.stack.3d.up.fill",
                         color: .success,
+                        accessibilityId: AccessibilityIdentifiers.Capture.modeSelectBatch,
                         action: onSelectBatchCapture
                     )
                 }
@@ -356,6 +364,7 @@ struct BookGridItem: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.bookSelectionCard)
     }
 }
 

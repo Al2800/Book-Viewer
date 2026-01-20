@@ -97,6 +97,7 @@ struct CaptureButton: View {
                 hasAppeared = true
             }
         }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
         .accessibilityLabel("Capture")
         .accessibilityHint(isProcessing ? "Processing photo" : "Take photo")
     }

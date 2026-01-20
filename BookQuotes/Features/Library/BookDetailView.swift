@@ -165,6 +165,7 @@ struct BookDetailView: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Common.moreMenuButton)
             }
         }
         .sheet(isPresented: $showExportSheet) {
