@@ -58,17 +58,19 @@ struct BookCoverCard: View {
             }
         }
         // MARK: - Tap Gesture with Haptics
-        .onTapGesture {
-            guard let onTap = onTap else { return }
-            HapticManager.light()
-            onTap()
+        .if(onTap != nil) { view in
+            view
+                .onTapGesture {
+                    HapticManager.light()
+                    onTap?()
+                }
+                .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                    guard !hasContextMenu else { return }
+                    withAnimation(.quickSpring) {
+                        isPressed = pressing
+                    }
+                }, perform: {})
         }
-        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-            guard onTap != nil && !hasContextMenu else { return }
-            withAnimation(.quickSpring) {
-                isPressed = pressing
-            }
-        }, perform: {})
         // MARK: - Context Menu
         .if(hasContextMenu) { view in
             view.polishedContextMenu(
@@ -76,6 +78,7 @@ struct BookCoverCard: View {
                 preview: { BookContextMenuPreview(book: book) }
             )
         }
+        .contentShape(Rectangle())
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)
     }
 
@@ -157,14 +160,15 @@ struct BookCoverCard: View {
                         Image(systemName: "book.closed")
                             .font(.title)
                             .symbolEffect(.pulse, options: .repeating.speed(0.3), isActive: !reduceMotion)
+                            .foregroundStyle(Color.textSecondary)
 
                         Text(book.title)
                             .font(.caption2)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
                             .padding(.horizontal, Spacing.xs)
+                            .foregroundStyle(Color.textPrimary)
                     }
-                    .foregroundStyle(.secondary)
                 }
         }
     }

@@ -138,6 +138,7 @@ struct BookMetadata: Sendable, Identifiable {
 enum MetadataSource: String, Sendable {
     case googleBooks
     case openLibrary
+    case coverPhoto
     case manual
     case unknown
 }

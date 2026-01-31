@@ -43,7 +43,7 @@ struct BookEditView: View {
 
     @State private var coverImage: UIImage?
     @State private var selectedPhotoItem: PhotosPickerItem?
-    @State private var showCoverOptions = false
+    @State private var showCameraPicker = false
 
     // MARK: - Milestone State
 
@@ -77,6 +77,9 @@ struct BookEditView: View {
                 readingStatusSection
                 notesSection
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
+            .tint(.brand)
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbarContent }
@@ -84,8 +87,10 @@ struct BookEditView: View {
             .onChange(of: selectedPhotoItem) { _, newValue in
                 loadSelectedPhoto(newValue)
             }
-            .confirmationDialog("Cover Image", isPresented: $showCoverOptions) {
-                coverOptionsDialog
+            .sheet(isPresented: $showCameraPicker) {
+                CameraImagePicker(sourceType: .camera) { image in
+                    coverImage = image
+                }
             }
             .milestoneCelebration(manager: milestoneManager)
             .toolbar {
@@ -118,24 +123,52 @@ struct BookEditView: View {
 
     private var coverSection: some View {
         Section {
-            HStack {
-                Spacer()
-
-                Button {
-                    showCoverOptions = true
-                } label: {
+            VStack(spacing: Spacing.sm) {
+                PhotosPicker(
+                    selection: $selectedPhotoItem,
+                    matching: .images
+                ) {
                     coverImageView
                 }
                 .buttonStyle(.plain)
 
-                Spacer()
+                HStack(spacing: Spacing.sm) {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        Button {
+                            showCameraPicker = true
+                        } label: {
+                            Label("Take Photo", systemImage: "camera")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.brand)
+                    }
+
+                    PhotosPicker(
+                        selection: $selectedPhotoItem,
+                        matching: .images
+                    ) {
+                        Label("Photo Library", systemImage: "photo.on.rectangle")
+                    }
+                    .buttonStyle(.bordered)
+
+                    if coverImage != nil {
+                        Button(role: .destructive) {
+                            coverImage = nil
+                        } label: {
+                            Label("Remove", systemImage: "trash")
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
             }
+            .frame(maxWidth: .infinity)
         } header: {
             Text("Cover")
         } footer: {
-            Text("Tap to change cover image")
+            Text("Tap the cover to choose a photo, or use the buttons below.")
                 .font(.caption)
         }
+        .listRowBackground(Color.backgroundSecondary)
     }
 
     private var coverImageView: some View {
@@ -164,39 +197,25 @@ struct BookEditView: View {
         .elevation(.sm)
     }
 
-    @ViewBuilder
-    private var coverOptionsDialog: some View {
-        PhotosPicker(
-            selection: $selectedPhotoItem,
-            matching: .images
-        ) {
-            Text("Choose from Library")
-        }
-
-        if coverImage != nil {
-            Button("Remove Cover", role: .destructive) {
-                coverImage = nil
-            }
-        }
-
-        Button("Cancel", role: .cancel) {}
-    }
-
     // MARK: - Details Section
 
     private var detailsSection: some View {
         Section("Book Details") {
             TextField("Title", text: $title)
                 .textContentType(.none)
+                .textFieldStyle(.roundedBorder)
                 .shake(trigger: titleShakeTrigger)
 
             TextField("Author", text: $author)
                 .textContentType(.name)
+                .textFieldStyle(.roundedBorder)
                 .shake(trigger: authorShakeTrigger)
 
             TextField("Subtitle", text: $subtitle)
                 .textContentType(.none)
+                .textFieldStyle(.roundedBorder)
         }
+        .listRowBackground(Color.backgroundSecondary)
     }
 
     private var isTitleValid: Bool {
@@ -214,16 +233,20 @@ struct BookEditView: View {
             TextField("ISBN", text: $isbn)
                 .keyboardType(.numberPad)
                 .focused($focusedField, equals: .isbn)
+                .textFieldStyle(.roundedBorder)
 
             TextField("Publisher", text: $publisher)
+                .textFieldStyle(.roundedBorder)
 
             TextField("Year Published", text: $publishYear)
                 .keyboardType(.numberPad)
                 .focused($focusedField, equals: .publishYear)
+                .textFieldStyle(.roundedBorder)
 
             TextField("Page Count", text: $pageCount)
                 .keyboardType(.numberPad)
                 .focused($focusedField, equals: .pageCount)
+                .textFieldStyle(.roundedBorder)
 
             Picker("Genre", selection: $genre) {
                 Text("None").tag("")
@@ -232,6 +255,7 @@ struct BookEditView: View {
                 }
             }
         }
+        .listRowBackground(Color.backgroundSecondary)
     }
 
     // MARK: - Reading Status Section
@@ -245,6 +269,7 @@ struct BookEditView: View {
                 }
             }
         }
+        .listRowBackground(Color.backgroundSecondary)
     }
 
     // MARK: - Notes Section
@@ -253,7 +278,9 @@ struct BookEditView: View {
         Section("Notes") {
             TextField("Add notes about this book...", text: $notes, axis: .vertical)
                 .lineLimit(3...6)
+                .textFieldStyle(.roundedBorder)
         }
+        .listRowBackground(Color.backgroundSecondary)
     }
 
     // MARK: - Toolbar
@@ -271,6 +298,7 @@ struct BookEditView: View {
                 validateAndSave()
             }
             .fontWeight(.semibold)
+            .disabled(!isValidForSave)
         }
     }
 
@@ -454,6 +482,52 @@ struct BookEditView: View {
             dismiss()
         } catch {
             HapticManager.error()
+        }
+    }
+}
+
+// MARK: - Camera Image Picker
+
+private struct CameraImagePicker: UIViewControllerRepresentable {
+    let sourceType: UIImagePickerController.SourceType
+    let onImagePicked: (UIImage) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = sourceType
+        picker.allowsEditing = true
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    final class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        private let parent: CameraImagePicker
+
+        init(parent: CameraImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.dismiss()
+        }
+
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
+            let image = (info[.editedImage] ?? info[.originalImage]) as? UIImage
+            if let image {
+                parent.onImagePicked(image)
+            }
+            parent.dismiss()
         }
     }
 }

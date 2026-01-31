@@ -124,8 +124,8 @@ struct ImageReviewView: View {
 
                 // Individual metrics
                 HStack(spacing: Spacing.md) {
-                    metricIndicator(label: "Blur", score: result.blurScore)
-                    metricIndicator(label: "Light", score: result.brightnessScore)
+                    metricIndicator(label: "Blur", score: normalizedBlurScore(result.blurScore))
+                    metricIndicator(label: "Light", score: normalizedBrightnessScore(result.brightnessScore))
                     metricIndicator(label: "Text", score: result.textConfidence)
                 }
             }
@@ -213,13 +213,16 @@ struct ImageReviewView: View {
 
     private var shouldShowWarning: Bool {
         guard let result = qualityResult else { return false }
-        return result.overallScore < 0.6
+        return !result.isAcceptable && result.overallScore < 0.4
     }
 
     private func qualityColor(for score: Double) -> Color {
-        if score >= 0.8 {
+        if let result = qualityResult, result.isAcceptable {
             return .success
-        } else if score >= 0.6 {
+        }
+        if score >= 0.75 {
+            return .success
+        } else if score >= 0.4 {
             return .warning
         } else {
             return .error
@@ -227,13 +230,25 @@ struct ImageReviewView: View {
     }
 
     private func qualityLabel(for score: Double) -> String {
-        if score >= 0.8 {
+        if let result = qualityResult, result.isAcceptable {
             return "Good Quality"
-        } else if score >= 0.6 {
-            return "Acceptable"
+        }
+        if score >= 0.75 {
+            return "Good Quality"
+        } else if score >= 0.4 {
+            return "Fair (Usable)"
         } else {
             return "Poor Quality"
         }
+    }
+
+    private func normalizedBlurScore(_ blur: Double) -> Double {
+        min(1.0, blur / 500.0)
+    }
+
+    private func normalizedBrightnessScore(_ brightness: Double) -> Double {
+        let penalty = abs(brightness - 0.5) * 2
+        return max(0.0, min(1.0, 1.0 - penalty))
     }
 }
 

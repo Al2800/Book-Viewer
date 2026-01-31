@@ -76,10 +76,29 @@ struct BookQuotesApp: App {
 
     /// Configure global UI appearance for tab bar and navigation bar
     private static func configureAppearance() {
+        // Dynamic colors for light/dark consistency
+        let lightBackground = UIColor(red: 0.984, green: 0.969, blue: 0.933, alpha: 1.0)
+        let darkBackground = UIColor(red: 0.140, green: 0.120, blue: 0.100, alpha: 1.0)
+        let backgroundColor = UIColor { trait in
+            trait.userInterfaceStyle == .dark ? darkBackground : lightBackground
+        }
+
+        let lightText = UIColor(red: 0.10, green: 0.10, blue: 0.10, alpha: 1.0)
+        let darkText = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
+        let titleColor = UIColor { trait in
+            trait.userInterfaceStyle == .dark ? darkText : lightText
+        }
+
+        let tertiaryText = UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.0)
+                : UIColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.0)
+        }
+
         // Tab Bar appearance - warm paper background with brand accent
         let tabAppearance = UITabBarAppearance()
         tabAppearance.configureWithOpaqueBackground()
-        tabAppearance.backgroundColor = UIColor(red: 1.0, green: 0.984, blue: 0.953, alpha: 1.0) // Warm paper
+        tabAppearance.backgroundColor = backgroundColor
 
         // Selected tab - brand color (deep blue #2C3E50)
         let brandColor = UIColor(red: 0.173, green: 0.243, blue: 0.314, alpha: 1.0)
@@ -87,9 +106,8 @@ struct BookQuotesApp: App {
         tabAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: brandColor]
 
         // Normal tab - subtle gray
-        let tertiaryColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
-        tabAppearance.stackedLayoutAppearance.normal.iconColor = tertiaryColor
-        tabAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: tertiaryColor]
+        tabAppearance.stackedLayoutAppearance.normal.iconColor = tertiaryText
+        tabAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: tertiaryText]
 
         UITabBar.appearance().standardAppearance = tabAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabAppearance
@@ -97,9 +115,9 @@ struct BookQuotesApp: App {
         // Navigation Bar appearance - warm paper background
         let navAppearance = UINavigationBarAppearance()
         navAppearance.configureWithOpaqueBackground()
-        navAppearance.backgroundColor = UIColor(red: 0.984, green: 0.969, blue: 0.933, alpha: 1.0) // BackgroundPrimary
-        navAppearance.titleTextAttributes = [.foregroundColor: UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)]
-        navAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)]
+        navAppearance.backgroundColor = backgroundColor
+        navAppearance.titleTextAttributes = [.foregroundColor: titleColor]
+        navAppearance.largeTitleTextAttributes = [.foregroundColor: titleColor]
 
         UINavigationBar.appearance().standardAppearance = navAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navAppearance

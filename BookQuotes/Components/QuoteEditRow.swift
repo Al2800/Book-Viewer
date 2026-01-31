@@ -8,8 +8,9 @@ struct QuoteEditRow: View {
     @Binding var quote: EditableQuote
     let onDelete: () -> Void
 
-    @State private var isExpanded = false
-    @FocusState private var isTextFocused: Bool
+    @State private var showEditor = false
+    @State private var draftText = ""
+    @State private var draftMarginNote = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
@@ -28,6 +29,15 @@ struct QuoteEditRow: View {
                 }
 
                 Button {
+                    openEditor()
+                } label: {
+                    Image(systemName: "pencil")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
+                .buttonStyle(.plain)
+
+                Button {
                     onDelete()
                 } label: {
                     Image(systemName: "trash")
@@ -38,27 +48,18 @@ struct QuoteEditRow: View {
             }
 
             // Quote text editor
-            if isExpanded {
-                TextEditor(text: $quote.text)
-                    .font(.quoteBody)
-                    .frame(minHeight: 100)
-                    .focused($isTextFocused)
-                    .scrollContentBackground(.hidden)
-                    .padding(Spacing.sm)
-                    .background(Color.backgroundTertiary)
-                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-            } else {
-                Text(quote.text)
-                    .font(.quoteBody)
-                    .lineLimit(3)
-                    .foregroundStyle(Color.textPrimary)
-                    .onTapGesture {
-                        withAnimation(.snappy) {
-                            isExpanded = true
-                            isTextFocused = true
-                        }
-                    }
-            }
+            Text(quote.text)
+                .font(.quoteBody)
+                .lineLimit(3)
+                .foregroundStyle(Color.textPrimary)
+                .textSelection(.enabled)
+                .onTapGesture {
+                    openEditor()
+                }
+
+            Text("Tap to edit or select text")
+                .font(.caption2)
+                .foregroundStyle(Color.textTertiary)
 
             // Margin note if present
             if let marginNote = quote.marginNote, !marginNote.isEmpty {
@@ -74,29 +75,82 @@ struct QuoteEditRow: View {
                 }
                 .padding(.top, Spacing.xs)
             }
-
-            // Collapse button when expanded
-            if isExpanded {
-                HStack {
-                    Spacer()
-                    Button {
-                        withAnimation(.snappy) {
-                            isExpanded = false
-                            isTextFocused = false
-                        }
-                    } label: {
-                        Label("Done Editing", systemImage: "checkmark.circle")
-                            .font(.caption)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.brand)
-                }
-                .padding(.top, Spacing.xs)
-            }
         }
         .padding(Spacing.md)
         .background(Color.backgroundSecondary)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .sheet(isPresented: $showEditor) {
+            QuoteEditorSheet(
+                text: $draftText,
+                marginNote: $draftMarginNote,
+                onSave: applyEdits
+            )
+        }
+    }
+
+    private func openEditor() {
+        draftText = quote.text
+        draftMarginNote = quote.marginNote ?? ""
+        showEditor = true
+    }
+
+    private func applyEdits() {
+        let trimmedText = draftText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedNote = draftMarginNote.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if trimmedText != quote.text || trimmedNote != (quote.marginNote ?? "") {
+            quote.text = trimmedText
+            quote.marginNote = trimmedNote.isEmpty ? nil : trimmedNote
+            quote.isModified = true
+        }
+        showEditor = false
+    }
+}
+
+// MARK: - Quote Editor Sheet
+
+private struct QuoteEditorSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var text: String
+    @Binding var marginNote: String
+    let onSave: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: Spacing.md) {
+                TextEditor(text: $text)
+                    .font(.quoteBody)
+                    .scrollContentBackground(.hidden)
+                    .padding(Spacing.sm)
+                    .background(Color.backgroundSecondary)
+                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                    .frame(minHeight: 180)
+
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Text("Margin note (optional)")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                    TextField("Add a note…", text: $marginNote, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                }
+            }
+            .padding(Spacing.md)
+            .navigationTitle("Edit Quote")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        onSave()
+                    }
+                    .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
     }
 }
 

@@ -56,13 +56,14 @@ enum QuoteExtractionPromptBuilder {
 
         Rules:
         1. Extract COMPLETE marked passages - include full sentences when the marking extends across partial text
-        2. Match marking type to the user's vocabulary above
-        3. If multiple marking types are present on the same passage, use the primary/most prominent one
-        4. Preserve original punctuation and formatting where meaningful
-        5. Transcribe handwritten margin notes accurately - include spelling as written
-        6. Include page number if visible anywhere on the page
-        7. Each separate marked passage should be its own quote object
-        8. Set confidence (0.0-1.0) based on extraction accuracy:
+        2. For **Margin Line** (vertical line in the margin): capture ALL text aligned with the line, starting where the line begins and stopping exactly where the line ends. If the line spans multiple sentences/paragraphs, include the full span.
+        3. Match marking type to the user's vocabulary above
+        4. If multiple marking types are present on the same passage, use the primary/most prominent one
+        5. Preserve original punctuation and formatting where meaningful
+        6. Transcribe handwritten margin notes accurately - include spelling as written
+        7. Page number: only read a page number if it appears as a standalone number in the page margin/footer/header (top-left, top-right, bottom-left, bottom-right). Never infer from body text (e.g., dates, references, "Falcon 9", chapter numbers). If you are not confident the number is a page number, set pageNumber to null (both at the page level and per-quote).
+        8. Each separate marked passage should be its own quote object
+        9. Set confidence (0.0-1.0) based on extraction accuracy:
            - 0.9+ : Clear text, unambiguous marking
            - 0.7-0.9 : Minor uncertainty about boundaries or exact text
            - 0.5-0.7 : Significant uncertainty, text may be partially obscured
@@ -85,6 +86,8 @@ enum QuoteExtractionPromptBuilder {
         Return JSON:
         {"quotes":[{"text":"marked text","markingType":"type","confidence":0.9}],"pageNumber":null}
 
+        Page number rule: only set pageNumber if a standalone number appears in the page margin/header/footer (top-left, top-right, bottom-left, bottom-right). Never infer from body text.
+
         JSON only, no markdown.
         """
     }
@@ -103,7 +106,7 @@ enum QuoteExtractionPromptBuilder {
         """
         - **Underline**: Single line drawn under text - Important passage
         - **Highlight**: Text colored with highlighter - Key passage to remember
-        - **Margin Line**: Vertical line in margin - Noteworthy paragraph
+        - **Margin Line**: Vertical line in margin - Capture all text aligned with the line, from where it starts to where it ends
         - **Bracket**: Brackets around text - Discrete section of interest
         - **Circle**: Circle around word/phrase - Key term or concept
         - **Margin Note**: Handwritten text in margin - Personal thought

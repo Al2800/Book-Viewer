@@ -46,11 +46,14 @@ struct LibraryView: View {
     @State private var searchService: SearchService?
     @State private var suggestionsService: SearchSuggestionsService?
     @State private var bookToDelete: Book?
+    @State private var bookToEdit: Book?
     @State private var showDeleteConfirmation = false
+    @State private var showEditSheet = false
     @State private var showAddBookSheet = false
     @State private var hasAppeared = false
     @State private var isRefreshing = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     // MARK: - View Mode
 
@@ -61,54 +64,7 @@ struct LibraryView: View {
     // MARK: - Body
 
     var body: some View {
-        Group {
-            if isSearchActive && !searchText.isEmpty, let service = searchService {
-                // FTS5-powered search results
-                SearchResultsView(
-                    searchService: service,
-                    searchText: searchText,
-                    scope: searchScope,
-                    suggestionsService: suggestionsService,
-                    onQuoteTap: { quoteId in
-                        if let quote = fetchQuote(id: quoteId) {
-                            router.navigate(to: quote)
-                        }
-                    },
-                    onBookTap: { bookId in
-                        if let book = fetchBook(id: bookId) {
-                            router.navigate(to: book)
-                        }
-                    },
-                    onAcceptSuggestion: { suggestion in
-                        searchText = suggestion
-                    },
-                    onScopeChange: { newScope in
-                        searchScope = newScope
-                    }
-                )
-            } else if books.isEmpty {
-                EmptyLibraryView(onAddBook: { showAddBookSheet = true })
-            } else {
-                // Normal library view with animated transitions
-                Group {
-                    switch viewMode {
-                    case .grid:
-                        bookGrid
-                            .transition(.asymmetric(
-                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                                removal: .opacity
-                            ))
-                    case .list:
-                        bookList
-                            .transition(.asymmetric(
-                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                                removal: .opacity
-                            ))
-                    }
-                }
-                .animation(reduceMotion ? .none : .smoothSpring, value: viewMode)
-            }
-        }
+        mainContent
         .background(Color.backgroundPrimary)
         .overlay(alignment: .topLeading) {
             if UITestConfiguration.isUITesting {
@@ -145,26 +101,7 @@ struct LibraryView: View {
                 .environment(suggestionsService)
             }
         }
-        .toolbar {
-            ToolbarItemGroup(placement: .primaryAction) {
-                // View mode picker
-                Picker("View", selection: $viewMode) {
-                    Image(systemName: "square.grid.2x2").tag(ViewMode.grid)
-                    Image(systemName: "list.bullet").tag(ViewMode.list)
-                }
-                .pickerStyle(.segmented)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Library.viewModeToggle)
-
-                // Add book button
-                Button {
-                    HapticManager.light()
-                    showAddBookSheet = true
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .accessibilityIdentifier(AccessibilityIdentifiers.Library.addBookButton)
-            }
-        }
+        .toolbar { toolbarContent }
         .onAppear {
             initializeSearchServices()
             if UITestConfiguration.isUITesting {
@@ -230,6 +167,119 @@ struct LibraryView: View {
                 router.navigate(to: newBook)
             }
         }
+        .sheet(isPresented: $showEditSheet) {
+            if let book = bookToEdit {
+                BookEditView(mode: .edit(book))
+            }
+        }
+    }
+
+    // MARK: - Main Content
+
+    @ViewBuilder
+    private var mainContent: some View {
+        if isSearchActive && !searchText.isEmpty {
+            searchResults
+        } else if books.isEmpty {
+            EmptyLibraryView(onAddBook: { showAddBookSheet = true })
+        } else {
+            libraryContent
+        }
+    }
+
+    private var searchResults: some View {
+        Group {
+            if let service = searchService {
+                // FTS5-powered search results
+                SearchResultsView(
+                    searchService: service,
+                    searchText: searchText,
+                    scope: searchScope,
+                    suggestionsService: suggestionsService,
+                    onQuoteTap: { quoteId in
+                        if let quote = fetchQuote(id: quoteId) {
+                            router.navigate(to: quote)
+                        }
+                    },
+                    onBookTap: { bookId in
+                        if let book = fetchBook(id: bookId) {
+                            router.navigate(to: book)
+                        }
+                    },
+                    onAcceptSuggestion: { suggestion in
+                        searchText = suggestion
+                    },
+                    onScopeChange: { newScope in
+                        searchScope = newScope
+                    }
+                )
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+    }
+
+    private var libraryContent: some View {
+        Group {
+            switch viewMode {
+            case .grid:
+                bookGrid
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                        removal: .opacity
+                    ))
+            case .list:
+                bookList
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                        removal: .opacity
+                    ))
+            }
+        }
+        .animation(reduceMotion ? .none : .smoothSpring, value: viewMode)
+    }
+
+    // MARK: - Toolbar
+
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        if horizontalSizeClass == .compact {
+            ToolbarItem(placement: .principal) {
+                viewModeControl
+            }
+        } else {
+            ToolbarItem(placement: .topBarLeading) {
+                viewModeControl
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            addBookButton
+        }
+    }
+
+    @ViewBuilder
+    private var viewModeControl: some View {
+        Picker("View", selection: $viewMode) {
+            Image(systemName: "square.grid.2x2").tag(ViewMode.grid)
+            Image(systemName: "list.bullet").tag(ViewMode.list)
+        }
+        .pickerStyle(.segmented)
+        .controlSize(horizontalSizeClass == .compact ? .small : .regular)
+        .frame(width: horizontalSizeClass == .compact ? 120 : 140)
+        .fixedSize()
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.viewModeToggle)
+    }
+
+    private var addBookButton: some View {
+        Button {
+            HapticManager.light()
+            showAddBookSheet = true
+        } label: {
+            Image(systemName: "plus")
+        }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.addBookButton)
     }
 
     // MARK: - Grid View
@@ -242,7 +292,17 @@ struct LibraryView: View {
             ) {
                 ForEach(Array(books.enumerated()), id: \.element.id) { index, book in
                     NavigationLink(value: book) {
-                        BookCoverCard(book: book)
+                        BookCoverCard(
+                            book: book,
+                            onEdit: {
+                                bookToEdit = book
+                                showEditSheet = true
+                            },
+                            onDelete: {
+                                bookToDelete = book
+                                showDeleteConfirmation = true
+                            }
+                        )
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)

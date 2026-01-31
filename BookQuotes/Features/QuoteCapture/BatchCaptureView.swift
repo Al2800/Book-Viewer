@@ -292,17 +292,19 @@ struct BatchCaptureView: View {
 
         do {
             let image = try await cameraService.capturePhoto()
+            let cropped = cameraService.cropToPreviewVisibleArea(image)
+            let autoCropped = await cameraService.autoCropDocument(cropped)
 
             // Create and save capture
             try PageCapture.ensureDirectory(for: session.id)
             let imagePath = PageCapture.generateImagePath(sessionId: session.id)
 
             // Process image
-            let processed = try ImagePreprocessor.process(image, config: .highQuality)
+            let processed = try ImagePreprocessor.process(autoCropped, config: .highQuality)
             try PageCapture.saveImage(processed.data, to: imagePath)
 
             // Create thumbnail
-            let thumbnailData = try ImagePreprocessor.createThumbnail(image)
+            let thumbnailData = try ImagePreprocessor.createThumbnail(autoCropped)
 
             // Create capture record
             let capture = PageCapture(imagePath: imagePath, session: session)
@@ -396,10 +398,11 @@ struct BatchCaptureView: View {
     }
 
     private func saveDraft() {
-        session.status = .readyToProcess
+        session.finishCapturing()
         modelContext.insert(session)
         try? modelContext.save()
-        dismiss()
+        HapticManager.success()
+        onCancel()
     }
 }
 

@@ -133,7 +133,7 @@ struct SettingsView: View {
         .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
         .sheet(isPresented: $showExportSheet) {
-            ExportView(quotes: quotes)
+            ExportView(book: nil)
         }
     }
 }

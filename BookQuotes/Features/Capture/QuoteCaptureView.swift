@@ -19,7 +19,7 @@ struct QuoteCaptureView: View {
     // MARK: - State
 
     @State private var cameraService = CameraService()
-    @State private var qualityAnalyzer = ImageQualityAnalyzer()
+    @State private var qualityAnalyzer = ImageQualityAnalyzer(configuration: .lenient)
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureState: CaptureState = .previewing
     @State private var capturedImage: UIImage?
@@ -262,7 +262,9 @@ struct QuoteCaptureView: View {
                 HapticManager.medium()
 
                 let image = try await cameraService.capturePhoto()
-                await handleCapturedImage(image)
+                let cropped = cameraService.cropToPreviewVisibleArea(image)
+                let autoCropped = await cameraService.autoCropDocument(cropped)
+                await handleCapturedImage(autoCropped)
 
             } catch {
                 errorMessage = error.localizedDescription

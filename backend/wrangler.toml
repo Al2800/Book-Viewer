@@ -8,8 +8,8 @@ ENVIRONMENT = "development"
 # KV Namespace for subscriptions and usage tracking
 [[kv_namespaces]]
 binding = "KV"
-id = "your-kv-namespace-id"
-preview_id = "your-preview-kv-namespace-id"
+id = "95463b49b0b040a98a411104d2eaf9dd"
+preview_id = "4f58e38410a74e30abe248160c5994d6"
 
 # Secrets (set via `wrangler secret put`)
 # - GEMINI_API_KEY
@@ -18,7 +18,8 @@ preview_id = "your-preview-kv-namespace-id"
 
 [env.production]
 vars = { ENVIRONMENT = "production" }
+routes = ["api.bookquotes.uk/*"]
 
 [[env.production.kv_namespaces]]
 binding = "KV"
-id = "your-production-kv-namespace-id"
+id = "11fab092c77043889c0c58967729df99"

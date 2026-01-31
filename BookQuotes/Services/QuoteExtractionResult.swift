@@ -146,6 +146,7 @@ struct BookMetadataResult: Codable, Sendable {
     /// Convert to Book model
     func toBook() -> Book {
         let book = Book(title: title, author: author)
+        book.subtitle = subtitle
         book.publisher = publisher
         book.publishYear = publishYear
         book.genre = genre

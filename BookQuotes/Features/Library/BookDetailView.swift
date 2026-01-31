@@ -169,7 +169,7 @@ struct BookDetailView: View {
             }
         }
         .sheet(isPresented: $showExportSheet) {
-            ExportView(quotes: book.quotes)
+            ExportView(book: book)
         }
         .sheet(isPresented: $showEditSheet) {
             BookEditView(mode: .edit(book))

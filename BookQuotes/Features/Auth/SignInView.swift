@@ -154,9 +154,14 @@ struct SignInView: View {
             defer { isSigningIn = false }
 
             do {
-                let user = try await authService.signInWithApple()
-                onSignInComplete?(user)
-                dismiss()
+                switch result {
+                case .success(let authorization):
+                    let user = try await authService.signInWithApple(authorization: authorization)
+                    onSignInComplete?(user)
+                    dismiss()
+                case .failure(let error):
+                    throw error
+                }
             } catch AuthError.signInCancelled {
                 // User cancelled - no error message needed
             } catch {
@@ -237,8 +242,13 @@ struct AppleSignInButton: View {
             defer { isSigningIn = false }
 
             do {
-                let user = try await authService.signInWithApple()
-                onSignInComplete?(user)
+                switch result {
+                case .success(let authorization):
+                    let user = try await authService.signInWithApple(authorization: authorization)
+                    onSignInComplete?(user)
+                case .failure(let error):
+                    throw error
+                }
             } catch AuthError.signInCancelled {
                 // User cancelled
             } catch {

@@ -1,6 +1,9 @@
 import SwiftUI
 import SwiftData
 import AVFoundation
+import Vision
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 // MARK: - Cover Capture View
 
@@ -9,6 +12,7 @@ import AVFoundation
 struct CoverCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(AuthService.self) private var authService
 
     /// Completion handler with the created book
     var onComplete: ((Book) -> Void)?
@@ -99,26 +103,32 @@ struct CoverCaptureView: View {
     }
 
     private var photoCaptureOverlay: some View {
-        VStack {
-            Spacer()
+        GeometryReader { proxy in
+            let maxWidth = min(proxy.size.width * 0.72, 320)
+            let frameHeight = maxWidth * 1.5
 
-            // Guide frame
-            RoundedRectangle(cornerRadius: CornerRadius.md)
-                .stroke(Color.white.opacity(0.5), lineWidth: 2)
-                .frame(width: 250, height: 375) // Book cover aspect ratio
-                .overlay {
-                    VStack(spacing: Spacing.sm) {
-                        Image(systemName: "book.closed")
-                            .font(.title)
-                            .foregroundStyle(.white.opacity(0.6))
+            VStack {
+                Spacer()
 
-                        Text("Position book cover")
-                            .font(.caption)
-                            .foregroundStyle(.white.opacity(0.6))
+                // Guide frame
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .stroke(Color.white.opacity(0.5), lineWidth: 2)
+                    .frame(width: maxWidth, height: frameHeight) // 2:3 cover aspect
+                    .overlay {
+                        VStack(spacing: Spacing.sm) {
+                            Image(systemName: "book.closed")
+                                .font(.title)
+                                .foregroundStyle(.white.opacity(0.6))
+
+                            Text("Fill the frame — we’ll auto-crop the cover")
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.6))
+                        }
                     }
-                }
 
-            Spacer()
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
@@ -309,7 +319,9 @@ struct CoverCaptureView: View {
 
             do {
                 let image = try await cameraService.capturePhoto()
-                await handleCapturedCover(image)
+                let cropped = cameraService.cropToPreviewVisibleArea(image)
+                let autoCropped = await cameraService.autoCropDocument(cropped)
+                await handleCapturedCover(autoCropped)
 
             } catch {
                 isProcessing = false
@@ -334,11 +346,85 @@ struct CoverCaptureView: View {
 
     @MainActor
     private func handleCapturedCover(_ image: UIImage) async {
-        capturedImage = image
+        let detected = await detectCoverCrop(image)
+        let cropped = detected ?? cropCoverImage(image)
+        capturedImage = cropped
 
-        let metadata = await extractCoverMetadata(from: image)
+        let metadata = await extractCoverMetadata(from: cropped)
         extractedMetadata = metadata
+        if metadata.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            errorMessage = "Couldn’t read the cover details. Please enter the title and author manually."
+            showError = true
+        }
         isProcessing = false
+    }
+
+    // MARK: - Cover Detection
+
+    /// Attempts to detect and crop the book cover from the captured image.
+    /// Falls back to the guide-frame crop when detection fails.
+    private func detectCoverCrop(_ image: UIImage) async -> UIImage? {
+        let normalized = normalizeOrientation(image)
+        guard let cgImage = normalized.cgImage else {
+            return nil
+        }
+
+        return await withCheckedContinuation { continuation in
+            let request = VNDetectRectanglesRequest { request, error in
+                if let _ = error {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                guard let rectangles = request.results as? [VNRectangleObservation],
+                      let best = rectangles.max(by: { ($0.boundingBox.width * $0.boundingBox.height) < ($1.boundingBox.width * $1.boundingBox.height) }) else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let ciImage = CIImage(cgImage: cgImage)
+                let size = ciImage.extent.size
+
+                let topLeft = CGPoint(x: best.topLeft.x * size.width, y: best.topLeft.y * size.height)
+                let topRight = CGPoint(x: best.topRight.x * size.width, y: best.topRight.y * size.height)
+                let bottomLeft = CGPoint(x: best.bottomLeft.x * size.width, y: best.bottomLeft.y * size.height)
+                let bottomRight = CGPoint(x: best.bottomRight.x * size.width, y: best.bottomRight.y * size.height)
+
+                let corrected = ciImage.applyingFilter(
+                    "CIPerspectiveCorrection",
+                    parameters: [
+                        "inputTopLeft": CIVector(cgPoint: topLeft),
+                        "inputTopRight": CIVector(cgPoint: topRight),
+                        "inputBottomLeft": CIVector(cgPoint: bottomLeft),
+                        "inputBottomRight": CIVector(cgPoint: bottomRight)
+                    ]
+                )
+
+                let context = CIContext(options: nil)
+                guard let output = context.createCGImage(corrected, from: corrected.extent) else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                continuation.resume(returning: UIImage(cgImage: output))
+            }
+
+            request.maximumObservations = 5
+            request.minimumConfidence = 0.6
+            request.minimumAspectRatio = 0.45
+            request.maximumAspectRatio = 0.9
+            request.minimumSize = 0.25
+            request.quadratureTolerance = 20
+
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    try handler.perform([request])
+                } catch {
+                    continuation.resume(returning: nil)
+                }
+            }
+        }
     }
 
     private func handleBarcodeDetected(_ isbn: String) {
@@ -369,11 +455,97 @@ struct CoverCaptureView: View {
     // MARK: - Extraction (Placeholders)
 
     private func extractCoverMetadata(from image: UIImage) async -> BookMetadata {
-        // TODO: Replace with actual GeminiService call when available
-        // For now, return empty metadata for manual entry
-        var metadata = BookMetadata(title: "", authors: [])
-        metadata.coverImageData = image.jpegData(compressionQuality: 0.8)
-        return metadata
+        let coverData = image.jpegData(compressionQuality: 0.85)
+        let service = GeminiService(authService: authService)
+
+        do {
+            let result = try await service.extractCoverMetadata(from: image)
+            let authors = splitAuthors(result.author)
+            let isbnValue = result.isbn?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let isbn10 = isbnValue?.count == 10 ? isbnValue : nil
+            let isbn13 = isbnValue?.count == 13 ? isbnValue : nil
+            let categories = result.genre.map { [$0] } ?? []
+
+            return BookMetadata(
+                title: result.title,
+                subtitle: result.subtitle,
+                authors: authors,
+                publisher: result.publisher,
+                publishedYear: result.publishYear,
+                isbn10: isbn10,
+                isbn13: isbn13,
+                categories: categories,
+                coverImageData: coverData,
+                source: .coverPhoto
+            )
+        } catch {
+            // Fall back to manual entry but keep cover image
+            var fallback = BookMetadata(title: "", authors: [], source: .manual)
+            fallback.coverImageData = coverData
+            return fallback
+        }
+    }
+
+    private func splitAuthors(_ raw: String) -> [String] {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [] }
+
+        if trimmed.contains("&") {
+            return trimmed
+                .split(separator: "&")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        }
+
+        if trimmed.localizedCaseInsensitiveContains(" and ") {
+            return trimmed
+                .components(separatedBy: " and ")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        }
+
+        if trimmed.contains(",") {
+            let parts = trimmed
+                .split(separator: ",")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            return parts.filter { !$0.isEmpty }
+        }
+
+        return [trimmed]
+    }
+
+    private func cropCoverImage(_ image: UIImage) -> UIImage {
+        let normalized = normalizeOrientation(image)
+        guard let cgImage = normalized.cgImage else { return normalized }
+
+        let targetRatio: CGFloat = 2.0 / 3.0
+        let width = CGFloat(cgImage.width)
+        let height = CGFloat(cgImage.height)
+        let currentRatio = width / height
+
+        let cropRect: CGRect
+        if currentRatio > targetRatio {
+            let newWidth = height * targetRatio
+            let x = (width - newWidth) / 2.0
+            cropRect = CGRect(x: x, y: 0, width: newWidth, height: height)
+        } else if currentRatio < targetRatio {
+            let newHeight = width / targetRatio
+            let y = (height - newHeight) / 2.0
+            cropRect = CGRect(x: 0, y: y, width: width, height: newHeight)
+        } else {
+            return normalized
+        }
+
+        guard let cropped = cgImage.cropping(to: cropRect) else { return normalized }
+        return UIImage(cgImage: cropped, scale: normalized.scale, orientation: .up)
+    }
+
+    private func normalizeOrientation(_ image: UIImage) -> UIImage {
+        guard image.imageOrientation != .up else { return image }
+
+        UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
+        defer { UIGraphicsEndImageContext() }
+
+        image.draw(in: CGRect(origin: .zero, size: image.size))
+        return UIGraphicsGetImageFromCurrentImageContext() ?? image
     }
 
     private func lookupISBN(_ isbn: String) async throws -> BookMetadata {

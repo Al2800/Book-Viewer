@@ -364,6 +364,7 @@ struct BookGridItem: View {
             }
         }
         .buttonStyle(.plain)
+        .contentShape(Rectangle())
         .accessibilityIdentifier(AccessibilityIdentifiers.Capture.bookSelectionCard)
     }
 }
@@ -399,6 +400,7 @@ struct AddBookGridItem: View {
             }
         }
         .buttonStyle(.plain)
+        .contentShape(Rectangle())
     }
 }
 

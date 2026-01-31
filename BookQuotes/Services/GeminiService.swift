@@ -15,12 +15,7 @@ final class GeminiService {
     private let baseURL: URL
 
     /// Default proxy URL
-    private static let defaultBaseURL: URL = {
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = "bookquotes-proxy.your-worker.workers.dev"
-        return components.url ?? URL(fileURLWithPath: "/")
-    }()
+    private static let defaultBaseURL: URL = AuthService.proxyBaseURL
 
     /// Auth service for session tokens
     private let authService: AuthService

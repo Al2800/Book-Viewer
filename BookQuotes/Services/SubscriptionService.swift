@@ -224,15 +224,7 @@ final class SubscriptionService {
         guard let token = authService.getSessionToken() else { return }
 
         // Create sync request
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = "bookquotes-proxy.your-worker.workers.dev"
-        components.path = "/api/subscription/sync"
-
-        guard let serverURL = components.url else {
-            print("Invalid subscription sync URL")
-            return
-        }
+        let serverURL = AuthService.proxyBaseURL.appendingPathComponent("api/subscription/sync")
         var request = URLRequest(url: serverURL)
         request.httpMethod = "POST"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

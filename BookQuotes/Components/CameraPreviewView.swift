@@ -10,6 +10,7 @@ struct CameraPreviewView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> CameraPreviewUIView {
         let view = CameraPreviewUIView()
+        view.cameraService = cameraService
         return view
     }
 
@@ -24,6 +25,8 @@ struct CameraPreviewView: UIViewRepresentable {
 
     /// UIView subclass that hosts the AVCaptureVideoPreviewLayer.
     final class CameraPreviewUIView: UIView {
+        weak var cameraService: CameraService?
+
         var previewLayer: AVCaptureVideoPreviewLayer? {
             didSet {
                 oldValue?.removeFromSuperlayer()
@@ -37,6 +40,10 @@ struct CameraPreviewView: UIViewRepresentable {
         override func layoutSubviews() {
             super.layoutSubviews()
             previewLayer?.frame = bounds
+            if bounds.width > 0, bounds.height > 0 {
+                previewLayer?.connection?.videoOrientation = .portrait
+                cameraService?.updatePreviewSize(bounds.size)
+            }
         }
     }
 }

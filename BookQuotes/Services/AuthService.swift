@@ -27,10 +27,16 @@ final class AuthService: NSObject {
     private let serverBaseURL: URL
 
     /// Default server base URL
-    private static let defaultServerBaseURL: URL = {
+    static let proxyBaseURL: URL = {
+        if let configured = Bundle.main.object(forInfoDictionaryKey: "BookQuotesProxyBaseURL") as? String,
+           let url = resolveBaseURL(from: configured),
+           configured.contains("your-worker") == false {
+            return url
+        }
+
         var components = URLComponents()
         components.scheme = "https"
-        components.host = "bookquotes-proxy.your-worker.workers.dev"
+        components.host = "api.bookquotes.uk"
         return components.url ?? URL(fileURLWithPath: "/")
     }()
 
@@ -50,7 +56,7 @@ final class AuthService: NSObject {
 
     init(
         keychainService: KeychainService = KeychainService(),
-        serverBaseURL: URL = AuthService.defaultServerBaseURL
+        serverBaseURL: URL = AuthService.proxyBaseURL
     ) {
         self.keychainService = keychainService
         self.serverBaseURL = serverBaseURL
@@ -73,15 +79,17 @@ final class AuthService: NSObject {
 
         // Perform sign-in
         let result = try await performSignIn(request: request)
+        return try await completeSignIn(with: result)
+    }
 
-        // Validate with our server and get session token
-        let user = try await validateWithServer(authorization: result)
+    /// Complete sign-in using an existing authorization result
+    func signInWithApple(authorization: ASAuthorization) async throws -> User {
+        isAuthenticating = true
+        lastError = nil
 
-        // Store credentials in keychain
-        try await storeCredentials(user: user)
+        defer { isAuthenticating = false }
 
-        currentUser = user
-        return user
+        return try await completeSignIn(with: authorization)
     }
 
     /// Perform the Apple Sign-In authorization
@@ -97,6 +105,17 @@ final class AuthService: NSObject {
             controller.presentationContextProvider = delegate
             controller.performRequests()
         }
+    }
+
+    private func completeSignIn(with authorization: ASAuthorization) async throws -> User {
+        // Validate with our server and get session token
+        let user = try await validateWithServer(authorization: authorization)
+
+        // Store credentials in keychain
+        try await storeCredentials(user: user)
+
+        currentUser = user
+        return user
     }
 
     /// Validate Apple credential with our backend server
@@ -134,7 +153,15 @@ final class AuthService: NSObject {
 
         guard httpResponse.statusCode == 200 else {
             let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
-            throw AuthError.serverValidationFailed(errorMessage)
+            let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type") ?? "unknown"
+            throw AuthError.serverValidationFailed(
+                trimServerError(
+                    errorMessage,
+                    url: serverBaseURL,
+                    statusCode: httpResponse.statusCode,
+                    contentType: contentType
+                )
+            )
         }
 
         // Parse response
@@ -156,6 +183,39 @@ final class AuthService: NSObject {
             subscriptionExpiresAt: expiresAt,
             sessionToken: authResponse.token
         )
+    }
+
+    private static func resolveBaseURL(from rawValue: String) -> URL? {
+        let trimmed = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        if let url = URL(string: trimmed), url.scheme != nil {
+            return url
+        }
+
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = trimmed
+        return components.url
+    }
+
+    private func trimServerError(
+        _ message: String,
+        url: URL,
+        statusCode: Int = -1,
+        contentType: String = "unknown"
+    ) -> String {
+        let trimmed = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.contains("<html") == false else {
+            return "Server returned HTML (\(statusCode), \(contentType)). Check BookQuotesProxyBaseURL and /api/auth/apple. URL: \(url.absoluteString)"
+        }
+
+        if trimmed.count <= 280 {
+            return "[\(statusCode), \(contentType)] \(trimmed)"
+        }
+
+        let index = trimmed.index(trimmed.startIndex, offsetBy: 280)
+        return "[\(statusCode), \(contentType)] \(trimmed[..<index])…"
     }
 
     // MARK: - Session Management

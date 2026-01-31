@@ -205,6 +205,7 @@ struct QuoteDetailView: View {
             } else {
                 Text(quote.text)
                     .quoteTextStyle()
+                    .textSelection(.enabled)
 
                 // Favorite indicator
                 if quote.isFavorite {
@@ -239,6 +240,7 @@ struct QuoteDetailView: View {
                     .font(.body)
                     .italic()
                     .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
             }
         }
     }

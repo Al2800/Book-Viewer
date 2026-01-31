@@ -65,8 +65,9 @@ enum ExportFileWriter {
     private static let exportDirectoryName = "BookQuotesExports"
 
     static func exportDirectory() throws -> URL {
-        let directory = FileManager.default.temporaryDirectory
-            .appendingPathComponent(exportDirectoryName, isDirectory: true)
+        let baseDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+        let directory = baseDirectory.appendingPathComponent(exportDirectoryName, isDirectory: true)
 
         if !FileManager.default.fileExists(atPath: directory.path) {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

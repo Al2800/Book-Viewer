@@ -8,6 +8,8 @@ import SwiftData
 struct ExtractionReviewView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(GeminiService.self) private var geminiService
+    @Environment(NetworkMonitor.self) private var networkMonitor
 
     let session: CaptureSession
     let book: Book
@@ -21,6 +23,7 @@ struct ExtractionReviewView: View {
     @State private var isLoading = true
     @State private var saveError: Error?
     @State private var hasAppeared = false
+    @State private var hasStartedProcessing = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Processing State
@@ -130,6 +133,7 @@ struct ExtractionReviewView: View {
         .onAppear {
             loadExtractedQuotes()
             selectFirstPage()
+            startProcessingIfNeeded()
             // Trigger entrance animation
             guard !reduceMotion else {
                 hasAppeared = true
@@ -228,6 +232,7 @@ struct ExtractionReviewView: View {
                 .buttonStyle(.borderedProminent)
 
                 Button {
+                    onComplete?()
                     dismiss()
                 } label: {
                     Text("Close")
@@ -273,6 +278,7 @@ struct ExtractionReviewView: View {
         }
 
         ToolbarItem(placement: .confirmationAction) {
+            let canSave = !editingQuotes.isEmpty && !isSaving
             Button {
                 HapticManager.medium()
                 showingSaveConfirmation = true
@@ -281,7 +287,9 @@ struct ExtractionReviewView: View {
                     ProgressView()
                 } else {
                     Text("Save All")
+                        .font(.headline)
                         .fontWeight(.semibold)
+                        .foregroundStyle(canSave ? Color.brand : Color.textSecondary)
                 }
             }
             .disabled(editingQuotes.isEmpty || isSaving)
@@ -343,6 +351,64 @@ struct ExtractionReviewView: View {
             selectedPage = session.captures
                 .sorted(by: { $0.orderIndex < $1.orderIndex })
                 .first
+        }
+    }
+
+    private func startProcessingIfNeeded() {
+        guard !hasStartedProcessing else { return }
+        let hasPending = session.captures.contains { $0.status == .pending }
+        guard hasPending else { return }
+
+        hasStartedProcessing = true
+
+        Task {
+            await processPendingCaptures()
+        }
+    }
+
+    @MainActor
+    private func processPendingCaptures() async {
+        guard networkMonitor.isConnected else {
+            saveError = ExtractionError.networkError(
+                NSError(domain: "ExtractionReview", code: -1009, userInfo: [
+                    NSLocalizedDescriptionKey: "No internet connection"
+                ])
+            )
+            return
+        }
+
+        session.beginProcessing()
+
+        let markingDescriptor = FetchDescriptor<MarkingDefinition>(
+            predicate: #Predicate<MarkingDefinition> { $0.isEnabled }
+        )
+        let markings = (try? modelContext.fetch(markingDescriptor)) ?? []
+
+        for capture in session.captures where capture.status == .pending {
+            capture.beginProcessing()
+
+            do {
+                guard let image = capture.loadFullImage() else {
+                    throw ExtractionError.invalidImage
+                }
+
+                let result = try await geminiService.extractQuotes(from: image, markings: markings)
+
+                capture.storeExtractedQuotes(result.quotes)
+                capture.completeProcessing(
+                    quoteCount: result.quoteCount,
+                    avgConfidence: result.averageConfidence,
+                    pageNumber: result.pageNumber
+                )
+                session.recordSuccess()
+
+            } catch {
+                capture.failProcessing(error: error.localizedDescription)
+                session.recordFailure()
+            }
+
+            try? modelContext.save()
+            loadExtractedQuotes()
         }
     }
 
