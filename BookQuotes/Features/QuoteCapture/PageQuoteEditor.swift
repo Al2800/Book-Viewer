@@ -86,8 +86,14 @@ struct PageQuoteEditor: View {
                 .padding(Spacing.sm)
             }
         }
-        .frame(height: 250)
+        .frame(height: 260)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .overlay(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+        )
+        .padding(Spacing.sm)
+        .paperCard(cornerRadius: CornerRadius.lg)
         .onTapGesture {
             showingFullImage = true
         }
@@ -140,6 +146,7 @@ struct PageQuoteEditor: View {
                 }
             }
         }
+        .paperCard(cornerRadius: CornerRadius.lg)
     }
 
     private var emptyState: some View {
@@ -162,8 +169,7 @@ struct PageQuoteEditor: View {
             } label: {
                 Label("Add Quote Manually", systemImage: "plus")
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.brand)
+            .glassButton()
         }
         .padding(Spacing.xl)
         .frame(maxWidth: .infinity)
@@ -315,8 +321,8 @@ struct PageListView: View {
             }
             .padding(Spacing.sm)
         }
-        .frame(width: 100)
-        .background(Color.backgroundSecondary)
+        .frame(width: 118)
+        .paperCard(cornerRadius: CornerRadius.lg)
     }
 }
 
@@ -355,12 +361,22 @@ struct PageThumbnailCell: View {
                 }
                 .padding(4)
             }
-            .frame(width: 80, height: 100)
+            .frame(width: 86, height: 112)
+            .background(
+                RoundedRectangle(cornerRadius: CornerRadius.sm)
+                    .fill(Color.backgroundCard)
+            )
             .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
             .overlay(
                 RoundedRectangle(cornerRadius: CornerRadius.sm)
-                    .stroke(isSelected ? Color.brand : Color.clear, lineWidth: 3)
+                    .stroke(
+                        isSelected
+                            ? AnyShapeStyle(LinearGradient.brandAccent)
+                            : AnyShapeStyle(Color.quoteBorder.opacity(0.5)),
+                        lineWidth: isSelected ? Stroke.medium.width : Stroke.hairline.width
+                    )
             )
+            .shadow(color: Color.black.opacity(isSelected ? 0.15 : 0), radius: 6, y: 2)
 
             // Quote count
             Text("\(quoteCount)")

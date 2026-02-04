@@ -48,7 +48,8 @@ struct BookSearchResultRow: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
-        .padding(.vertical, Spacing.xs)
+        .padding(Spacing.md)
+        .paperCard(cornerRadius: CornerRadius.lg)
         .accessibilityIdentifier(AccessibilityIdentifiers.Search.bookResultRow)
     }
 
@@ -62,13 +63,17 @@ struct BookSearchResultRow: View {
             Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-                .frame(width: 50, height: 70)
+                .frame(width: 54, height: 76)
                 .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
         } else {
             // Placeholder
             RoundedRectangle(cornerRadius: CornerRadius.sm)
                 .fill(Color.backgroundSecondary)
-                .frame(width: 50, height: 70)
+                .frame(width: 54, height: 76)
                 .overlay {
                     Image(systemName: "book.closed")
                         .foregroundStyle(.secondary)

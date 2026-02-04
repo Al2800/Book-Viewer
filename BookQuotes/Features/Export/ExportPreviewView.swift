@@ -6,12 +6,12 @@ struct ExportPreviewView: View {
     let options: ExportOptions
 
     var body: some View {
-        Section("Preview") {
-            Text(previewText)
-                .font(.caption.monospaced())
-                .foregroundStyle(.secondary)
-                .textSelection(.enabled)
-        }
+        Text(previewText)
+            .font(.caption.monospaced())
+            .foregroundStyle(.secondary)
+            .textSelection(.enabled)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fieldChrome(minHeight: 120)
     }
 
     private var previewText: String {

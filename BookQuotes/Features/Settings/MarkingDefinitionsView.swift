@@ -33,6 +33,7 @@ struct MarkingDefinitionsView: View {
         .navigationTitle("Marking Styles")
         .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
+        .listStyle(.plain)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
@@ -73,6 +74,11 @@ struct MarkingDefinitionsView: View {
                     marking: marking,
                     isEditing: editMode?.wrappedValue.isEditing ?? false
                 )
+                .padding(Spacing.md)
+                .paperCard()
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                 .contentShape(Rectangle())
                 .onTapGesture {
                     if !(editMode?.wrappedValue.isEditing ?? false) {
@@ -93,13 +99,17 @@ struct MarkingDefinitionsView: View {
         } header: {
             HStack {
                 Text("Your Marking Vocabulary")
+                    .font(.sectionHeader)
+                    .foregroundStyle(Color.textSecondary)
                 Spacer()
                 Text("\(enabledCount) active")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textTertiary)
             }
         } footer: {
             Text("The AI looks for these patterns when extracting quotes from your book photos.")
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
         }
     }
 
@@ -111,6 +121,12 @@ struct MarkingDefinitionsView: View {
             } label: {
                 Label("Add Custom Marking", systemImage: "plus.circle.fill")
             }
+            .padding(Spacing.md)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .paperCard()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
         }
     }
 
@@ -129,9 +145,13 @@ struct MarkingDefinitionsView: View {
 
                 Text("The visual description helps the AI recognize your annotation style. Be specific about colors, shapes, and placement.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textSecondary)
             }
-            .padding(.vertical, 4)
+            .padding(Spacing.md)
+            .paperCard()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
         }
     }
 

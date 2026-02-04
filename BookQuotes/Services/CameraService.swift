@@ -298,6 +298,40 @@ final class CameraService: NSObject {
         return UIImage(cgImage: croppedImage, scale: normalized.scale, orientation: .up)
     }
 
+    /// Crop a captured image to a normalized rect (0-1) relative to the image bounds.
+    /// Useful for aligning a UI guide frame with the final captured image.
+    func cropToNormalizedRect(_ image: UIImage, normalizedRect: CGRect) -> UIImage {
+        let normalized = normalizeImage(image)
+        guard let cgImage = normalized.cgImage else { return image }
+
+        let width = CGFloat(cgImage.width)
+        let height = CGFloat(cgImage.height)
+
+        let clamped = clampNormalizedRect(normalizedRect)
+        guard clamped.width > 0, clamped.height > 0 else { return image }
+
+        let cropRect = CGRect(
+            x: clamped.minX * width,
+            y: clamped.minY * height,
+            width: clamped.width * width,
+            height: clamped.height * height
+        )
+
+        let safeRect = cropRect.integral.intersection(CGRect(x: 0, y: 0, width: width, height: height))
+        guard let croppedImage = cgImage.cropping(to: safeRect) else { return image }
+
+        return UIImage(cgImage: croppedImage, scale: normalized.scale, orientation: .up)
+    }
+
+    private func clampNormalizedRect(_ rect: CGRect) -> CGRect {
+        let normalized = rect.standardized
+        let minX = max(0, min(1, normalized.minX))
+        let minY = max(0, min(1, normalized.minY))
+        let maxX = max(minX, min(1, normalized.maxX))
+        let maxY = max(minY, min(1, normalized.maxY))
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
+
     /// Attempt to auto-crop a document/page by detecting the largest rectangle.
     /// Falls back to the original image if no rectangle is detected.
     func autoCropDocument(_ image: UIImage) async -> UIImage {

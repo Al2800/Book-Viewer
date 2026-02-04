@@ -56,15 +56,19 @@ struct MarkingDefinitionEditor: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                previewSection
-                nameSection
-                visualDescriptionSection
-                meaningSection
-                iconSection
-                colorSection
+            ScrollView {
+                VStack(spacing: Spacing.lg) {
+                    previewSection
+                    nameSection
+                    visualDescriptionSection
+                    meaningSection
+                    iconSection
+                    colorSection
+                }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
+                .padding(.bottom, Spacing.xxxl)
             }
-            .scrollContentBackground(.hidden)
             .background(Color.backgroundPrimary)
             .navigationTitle(marking == nil ? "New Marking" : "Edit Marking")
             .navigationBarTitleDisplayMode(.inline)
@@ -97,13 +101,12 @@ struct MarkingDefinitionEditor: View {
 
     @ViewBuilder
     private var previewSection: some View {
-        Section {
+        editorSectionCard(title: "Preview") {
             HStack {
                 Spacer()
                 markingPreview
                 Spacer()
             }
-            .listRowBackground(Color.clear)
         }
     }
 
@@ -128,53 +131,45 @@ struct MarkingDefinitionEditor: View {
 
     @ViewBuilder
     private var nameSection: some View {
-        Section {
+        editorSectionCard(title: "Name", required: true) {
             TextField("e.g., Wavy Underline", text: $name)
                 .textContentType(.name)
-        } header: {
-            HStack {
-                Text("Name")
-                Text("*")
-                    .foregroundStyle(.red)
-            }
+                .textFieldStyle(.plain)
+                .fieldChrome()
         }
     }
 
     @ViewBuilder
     private var visualDescriptionSection: some View {
-        Section {
+        editorSectionCard(title: "Visual Description", required: true) {
             TextField("e.g., Wavy or squiggly line under text", text: $visualDescription, axis: .vertical)
                 .lineLimit(2...4)
-        } header: {
-            HStack {
-                Text("Visual Description")
-                Text("*")
-                    .foregroundStyle(.red)
-            }
-        } footer: {
+                .textFieldStyle(.plain)
+                .fieldChrome(minHeight: 72)
+
             Text("Describe what this looks like on the page. Be specific for AI accuracy.")
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
         }
     }
 
     @ViewBuilder
     private var meaningSection: some View {
-        Section {
+        editorSectionCard(title: "Meaning", required: true) {
             TextField("e.g., I disagree with this statement", text: $meaning, axis: .vertical)
                 .lineLimit(2...4)
-        } header: {
-            HStack {
-                Text("Meaning")
-                Text("*")
-                    .foregroundStyle(.red)
-            }
-        } footer: {
+                .textFieldStyle(.plain)
+                .fieldChrome(minHeight: 72)
+
             Text("What does this marking mean to you? This helps the AI understand your intent.")
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
         }
     }
 
     @ViewBuilder
     private var iconSection: some View {
-        Section("Icon") {
+        editorSectionCard(title: "Icon") {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 48))], spacing: 12) {
                 ForEach(iconOptions, id: \.self) { icon in
                     Button {
@@ -201,13 +196,12 @@ struct MarkingDefinitionEditor: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.vertical, 8)
         }
     }
 
     @ViewBuilder
     private var colorSection: some View {
-        Section("Color") {
+        editorSectionCard(title: "Color") {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: 12) {
                 ForEach(colorOptions, id: \.self) { colorName in
                     Button {
@@ -235,8 +229,30 @@ struct MarkingDefinitionEditor: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.vertical, 8)
         }
+    }
+
+    private func editorSectionCard<Content: View>(
+        title: String,
+        required: Bool = false,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            HStack(spacing: Spacing.xs) {
+                Text(title)
+                    .font(.sectionHeader)
+                    .foregroundStyle(Color.textSecondary)
+                if required {
+                    Text("*")
+                        .foregroundStyle(.red)
+                        .font(.caption)
+                }
+            }
+
+            content()
+        }
+        .padding(Spacing.lg)
+        .paperCard()
     }
 
     // MARK: - Validation

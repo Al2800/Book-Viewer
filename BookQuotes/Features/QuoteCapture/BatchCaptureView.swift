@@ -137,9 +137,6 @@ struct BatchCaptureView: View {
                 Image(systemName: "xmark")
                     .font(.title3)
                     .foregroundStyle(.white)
-                    .padding(Spacing.sm)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
             }
 
             Spacer()
@@ -154,10 +151,6 @@ struct BatchCaptureView: View {
             }
             .font(.subheadline)
             .foregroundStyle(.white)
-            .padding(.horizontal, Spacing.md)
-            .padding(.vertical, Spacing.sm)
-            .background(.ultraThinMaterial)
-            .clipShape(Capsule())
             .animation(.snappy, value: session.totalPages)
 
             Spacer()
@@ -172,13 +165,13 @@ struct BatchCaptureView: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(session.totalPages > 0 ? Color.brand : Color.white.opacity(0.5))
-                    .padding(.horizontal, Spacing.md)
-                    .padding(.vertical, Spacing.sm)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
             }
             .disabled(session.totalPages == 0)
         }
+        .padding(.horizontal, Spacing.lg)
+        .padding(.vertical, Spacing.sm)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xl))
     }
 
     // MARK: - Bottom Controls
@@ -220,7 +213,7 @@ struct BatchCaptureView: View {
             }
             .padding(.bottom, Spacing.xl)
 
-            if UITestConfiguration.isUITesting {
+            if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
                 Button("Use Test Image") {
                     Task {
                         await captureCurrentFrame()
@@ -232,14 +225,10 @@ struct BatchCaptureView: View {
             }
         }
         .padding(.horizontal, Spacing.lg)
-        .background(
-            LinearGradient(
-                colors: [.clear, .black.opacity(0.7)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-        )
+        .padding(.vertical, Spacing.md)
+        .glassFloating(cornerRadius: CornerRadius.xl)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.bottom, Spacing.lg)
     }
 
     // MARK: - Thumbnail Strip
@@ -261,6 +250,7 @@ struct BatchCaptureView: View {
                 .padding(.horizontal, Spacing.md)
             }
             .frame(height: 70)
+            .glassCard(cornerRadius: CornerRadius.lg)
             .onChange(of: session.captures.count) { _, _ in
                 // Scroll to newest capture with smooth animation
                 if let lastCapture = session.captures.last {

@@ -62,11 +62,11 @@ struct QuoteEditRow: View {
                 .foregroundStyle(Color.textTertiary)
 
             // Margin note if present
-            if let marginNote = quote.marginNote, !marginNote.isEmpty {
-                HStack(spacing: Spacing.xs) {
-                    Image(systemName: "note.text")
-                        .font(.caption2)
-                        .foregroundStyle(Color.textTertiary)
+        if let marginNote = quote.marginNote, !marginNote.isEmpty {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "note.text")
+                    .font(.caption2)
+                    .foregroundStyle(Color.textTertiary)
 
                     Text(marginNote)
                         .font(.caption)
@@ -77,8 +77,7 @@ struct QuoteEditRow: View {
             }
         }
         .padding(Spacing.md)
-        .background(Color.backgroundSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .paperCard(cornerRadius: CornerRadius.md)
         .sheet(isPresented: $showEditor) {
             QuoteEditorSheet(
                 text: $draftText,
@@ -121,20 +120,20 @@ private struct QuoteEditorSheet: View {
                 TextEditor(text: $text)
                     .font(.quoteBody)
                     .scrollContentBackground(.hidden)
-                    .padding(Spacing.sm)
-                    .background(Color.backgroundSecondary)
-                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
                     .frame(minHeight: 180)
+                    .fieldChrome(minHeight: 180)
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Margin note (optional)")
                         .font(.caption)
                         .foregroundStyle(Color.textSecondary)
                     TextField("Add a note…", text: $marginNote, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
+                        .textFieldStyle(.plain)
+                        .fieldChrome(minHeight: 56)
                 }
             }
             .padding(Spacing.md)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Edit Quote")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

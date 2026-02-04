@@ -92,10 +92,15 @@ struct CaptureOptionCard: View {
     private var cardButton: some View {
         Button(action: action) {
             HStack(spacing: Spacing.lg) {
-                Image(systemName: systemImage)
-                    .font(.title)
-                    .foregroundStyle(color)
-                    .frame(width: 50)
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 52, height: 52)
+
+                    Image(systemName: systemImage)
+                        .font(.title2)
+                        .foregroundStyle(color)
+                }
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text(title)
@@ -110,13 +115,29 @@ struct CaptureOptionCard: View {
 
                 Spacer()
 
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(.tertiary)
+                ZStack {
+                    Circle()
+                        .fill(Color.backgroundSecondary)
+                        .frame(width: 28, height: 28)
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(Color.textTertiary)
+                }
             }
-            .padding()
-            .background(Color.backgroundCard)
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
-            .elevation(.sm)
+            .padding(.vertical, Spacing.lg)
+            .padding(.horizontal, Spacing.lg)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(alignment: .leading) {
+                RoundedRectangle(cornerRadius: CornerRadius.lg)
+                    .fill(color.opacity(0.1))
+                    .frame(width: 6)
+            }
+            .glassCard(cornerRadius: CornerRadius.lg)
+            .overlay {
+                RoundedRectangle(cornerRadius: CornerRadius.lg)
+                    .stroke(color.opacity(0.15), lineWidth: 1)
+            }
         }
         .buttonStyle(.plain)
     }

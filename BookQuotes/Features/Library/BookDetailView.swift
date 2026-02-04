@@ -107,6 +107,7 @@ struct BookDetailView: View {
             .padding()
             .animation(reduceMotion ? .none : .smoothSpring.delay(0.1), value: hasAppeared)
         }
+        .background(Color.backgroundPrimary)
         // Sort/filter change animations
         .animation(reduceMotion ? .none : .smoothSpring, value: sortOrder)
         .animation(reduceMotion ? .none : .smoothSpring, value: filterMarking)
@@ -222,6 +223,8 @@ struct BookDetailView: View {
 
             Spacer()
         }
+        .padding(Spacing.md)
+        .paperCard()
     }
 
     // MARK: - Controls Bar
@@ -286,6 +289,8 @@ struct BookDetailView: View {
                 .foregroundStyle(filterMarking != nil ? Color.accentColor : .secondary)
             }
         }
+        .padding(Spacing.md)
+        .paperCard()
     }
 
     // MARK: - Quotes Grid
@@ -315,7 +320,7 @@ struct BookDetailView: View {
             } label: {
                 Label("Capture Quotes", systemImage: "camera")
             }
-            .buttonStyle(.bordered)
+            .glassButton()
             .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.captureQuotesButton)
         }
     }

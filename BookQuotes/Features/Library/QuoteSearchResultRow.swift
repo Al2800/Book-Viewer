@@ -75,7 +75,8 @@ struct QuoteSearchResultRow: View {
                 }
             }
         }
-        .padding(.vertical, Spacing.xs)
+        .padding(Spacing.md)
+        .paperCard(cornerRadius: CornerRadius.lg)
         .accessibilityIdentifier(AccessibilityIdentifiers.Search.quoteResultRow)
     }
 
@@ -87,7 +88,7 @@ struct QuoteSearchResultRow: View {
             .font(.caption2)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
-            .background(Color.accent.opacity(0.1))
+            .background(Color.accent.opacity(0.12))
             .clipShape(Capsule())
     }
 }

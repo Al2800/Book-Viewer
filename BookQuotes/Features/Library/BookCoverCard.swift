@@ -22,26 +22,56 @@ struct BookCoverCard: View {
 
     @State private var isPressed = false
     @State private var hasAppeared = false
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Body
 
     var body: some View {
-        VStack(spacing: Spacing.sm) {
-            // Cover image
-            coverImage
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            ZStack(alignment: .topTrailing) {
+                // Cover image
+                coverImage
 
-            // Quote count badge with animation
-            if book.hasQuotes {
-                Text("\(book.quoteCount) quotes")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .contentTransition(.numericText())
+                if book.hasQuotes {
+                    HStack(spacing: 4) {
+                        Image(systemName: "quote.opening")
+                            .font(.caption2)
+                        Text("\(book.quoteCount)")
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .contentTransition(.numericText())
+                    }
+                    .foregroundStyle(Color.textPrimary)
+                    .padding(.horizontal, Spacing.xs)
+                    .padding(.vertical, 4)
+                    .glassFloating(cornerRadius: CornerRadius.sm)
+                    .padding(Spacing.xs)
+                }
+            }
+
+            Text(book.title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.textPrimary)
+                .lineLimit(2)
+
+            Text(book.author)
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
+                .lineLimit(1)
+
+            HStack(spacing: Spacing.xs) {
+                statusBadge
+
+                if book.hasQuotes {
+                    Text("\(book.quoteCount) quotes")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .contentTransition(.numericText())
+                }
             }
         }
-        // MARK: - Elevation
-        .elevation(isPressed ? .xs : .sm, colorScheme: colorScheme)
+        .padding(Spacing.md)
+        .paperCard(cornerRadius: CornerRadius.lg)
         // MARK: - Press State Animation
         .scaleEffect(isPressed ? 0.96 : 1.0)
         .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
@@ -143,7 +173,11 @@ struct BookCoverCard: View {
             Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(2/3, contentMode: .fill)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.md)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
         } else {
             // Placeholder cover with subtle gradient
             RoundedRectangle(cornerRadius: CornerRadius.sm)
@@ -170,6 +204,29 @@ struct BookCoverCard: View {
                             .foregroundStyle(Color.textPrimary)
                     }
                 }
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                        .stroke(Color.quoteBorder.opacity(0.5), lineWidth: Stroke.hairline.width)
+                )
+        }
+    }
+
+    private var statusBadge: some View {
+        Text(book.status.displayName)
+            .font(.caption2)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(statusColor.opacity(0.15))
+            .foregroundStyle(statusColor)
+            .clipShape(Capsule())
+    }
+
+    private var statusColor: Color {
+        switch book.status {
+        case .currentlyReading: return .accent
+        case .finished: return .success
+        case .wantToRead: return .textSecondary
+        case .abandoned: return .textTertiary
         }
     }
 }
@@ -196,7 +253,6 @@ struct BookListRow: View {
 
     @State private var isPressed = false
     @State private var hasAppeared = false
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Body
@@ -238,12 +294,8 @@ struct BookListRow: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
-        .padding(.vertical, Spacing.xs)
-        .padding(.horizontal, Spacing.sm)
-        .background(
-            RoundedRectangle(cornerRadius: CornerRadius.sm)
-                .fill(isPressed ? Color.backgroundSecondary : Color.clear)
-        )
+        .padding(Spacing.md)
+        .paperCard(cornerRadius: CornerRadius.lg)
         // MARK: - Press State
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
@@ -343,17 +395,25 @@ struct BookListRow: View {
             Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-                .frame(width: 44, height: 66)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm - 2))
+                .frame(width: 50, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
         } else {
-            RoundedRectangle(cornerRadius: CornerRadius.sm - 2)
+            RoundedRectangle(cornerRadius: CornerRadius.sm)
                 .fill(Color.backgroundSecondary)
-                .frame(width: 44, height: 66)
+                .frame(width: 50, height: 72)
                 .overlay {
                     Image(systemName: "book.closed")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
         }
     }
 

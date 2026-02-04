@@ -32,25 +32,39 @@ struct CoverCaptureView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var isProcessing = false
+    @State private var previewFrame: CGRect = .zero
+    @State private var guideFrame: CGRect = .zero
+
+    private let coordinateSpaceName = "coverCapture"
 
     // MARK: - Body
 
     var body: some View {
-        ZStack {
-            // Camera preview
-            cameraContent
+        GeometryReader { proxy in
+            ZStack {
+                // Camera preview
+                cameraContent
 
-            // Mode-specific overlay
-            captureOverlay
+                // Mode-specific overlay
+                captureOverlay
 
-            // Processing indicator
-            if isProcessing {
-                processingOverlay
+                // Processing indicator
+                if isProcessing {
+                    processingOverlay
+                }
+
+                // Capture controls
+                controlsOverlay
             }
-
-            // Capture controls
-            controlsOverlay
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                updatePreviewFrame(size: proxy.size)
+            }
+            .onChange(of: proxy.size) { _, newSize in
+                updatePreviewFrame(size: newSize)
+            }
         }
+        .coordinateSpace(name: coordinateSpaceName)
         .navigationTitle("Add Book")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -108,6 +122,20 @@ struct CoverCaptureView: View {
             let frameHeight = maxWidth * 1.5
 
             VStack {
+                HStack(spacing: Spacing.sm) {
+                    Image(systemName: "viewfinder")
+                        .font(.caption)
+                    Text("Align cover inside the frame")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, Spacing.md)
+                .padding(.vertical, Spacing.xs)
+                .background(.ultraThinMaterial)
+                .clipShape(Capsule())
+                .padding(.top, Spacing.lg)
+
                 Spacer()
 
                 // Guide frame
@@ -125,10 +153,21 @@ struct CoverCaptureView: View {
                                 .foregroundStyle(.white.opacity(0.6))
                         }
                     }
+                    .background(
+                        GeometryReader { frameProxy in
+                            Color.clear.preference(
+                                key: CoverGuideFramePreferenceKey.self,
+                                value: frameProxy.frame(in: .named(coordinateSpaceName))
+                            )
+                        }
+                    )
 
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .onPreferenceChange(CoverGuideFramePreferenceKey.self) { rect in
+            guideFrame = rect
         }
     }
 
@@ -190,7 +229,7 @@ struct CoverCaptureView: View {
     // MARK: - Controls Overlay
 
     private var controlsOverlay: some View {
-        VStack {
+        VStack(spacing: Spacing.lg) {
             // Mode switcher at top
             Picker("Mode", selection: $captureMode) {
                 Label("Photo", systemImage: "camera.fill").tag(CaptureMode.photo)
@@ -198,60 +237,46 @@ struct CoverCaptureView: View {
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
-            .padding(.horizontal, Spacing.xl)
+            .padding(.horizontal, Spacing.lg)
+            .padding(.vertical, Spacing.sm)
+            .glassFloating(cornerRadius: CornerRadius.lg)
+            .padding(.horizontal, Spacing.lg)
             .padding(.top, Spacing.lg)
 
             Spacer()
 
-            // Capture button (photo mode only)
-            if captureMode == .photo && !isProcessing {
-                HStack {
-                    Spacer()
-
-                    Button {
+            VStack(spacing: Spacing.md) {
+                if captureMode == .photo && !isProcessing {
+                    CaptureButton(isProcessing: isProcessing) {
                         capturePhoto()
-                    } label: {
-                        ZStack {
-                            Circle()
-                                .fill(.white)
-                                .frame(width: 72, height: 72)
-
-                            Circle()
-                                .stroke(.white.opacity(0.5), lineWidth: 4)
-                                .frame(width: 82, height: 82)
-                        }
                     }
                     .disabled(!cameraService.isSessionRunning)
 
-                    Spacer()
-                }
-                .padding(.bottom, Spacing.xl)
-
-                if UITestConfiguration.isUITesting {
-                    Button("Use Test Cover") {
-                        captureTestCover()
+                    if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
+                        Button("Use Test Cover") {
+                            captureTestCover()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
-                    .padding(.bottom, Spacing.lg)
                 }
-            }
 
-            // Manual entry link
-            if !isProcessing {
-                Button {
-                    showManualEntry()
-                } label: {
-                    Text("Enter manually")
-                        .font(.subheadline)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, Spacing.lg)
-                        .padding(.vertical, Spacing.sm)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
+                if !isProcessing {
+                    Button {
+                        showManualEntry()
+                    } label: {
+                        Text("Enter manually")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .glassButton()
                 }
-                .padding(.bottom, Spacing.lg)
             }
+            .padding(Spacing.lg)
+            .glassFloating(cornerRadius: CornerRadius.xl)
+            .padding(.horizontal, Spacing.lg)
+            .padding(.bottom, Spacing.lg)
         }
     }
 
@@ -319,8 +344,9 @@ struct CoverCaptureView: View {
 
             do {
                 let image = try await cameraService.capturePhoto()
-                let cropped = cameraService.cropToPreviewVisibleArea(image)
-                let autoCropped = await cameraService.autoCropDocument(cropped)
+                let previewCropped = cameraService.cropToPreviewVisibleArea(image)
+                let framed = cropToGuideFrame(previewCropped)
+                let autoCropped = await cameraService.autoCropDocument(framed)
                 await handleCapturedCover(autoCropped)
 
             } catch {
@@ -538,6 +564,44 @@ struct CoverCaptureView: View {
         return UIImage(cgImage: cropped, scale: normalized.scale, orientation: .up)
     }
 
+    private func updatePreviewFrame(size: CGSize) {
+        guard size.width > 0, size.height > 0 else { return }
+        previewFrame = CGRect(origin: .zero, size: size)
+    }
+
+    private func cropToGuideFrame(_ image: UIImage) -> UIImage {
+        guard let normalized = normalizedGuideRect() else {
+            return image
+        }
+        return cameraService.cropToNormalizedRect(image, normalizedRect: normalized)
+    }
+
+    private func normalizedGuideRect() -> CGRect? {
+        guard previewFrame.width > 0, previewFrame.height > 0,
+              guideFrame.width > 0, guideFrame.height > 0 else {
+            return nil
+        }
+
+        let intersection = guideFrame.intersection(previewFrame)
+        guard !intersection.isNull, !intersection.isEmpty else { return nil }
+
+        let x = (intersection.minX - previewFrame.minX) / previewFrame.width
+        let y = (intersection.minY - previewFrame.minY) / previewFrame.height
+        let width = intersection.width / previewFrame.width
+        let height = intersection.height / previewFrame.height
+
+        let rect = CGRect(x: x, y: y, width: width, height: height)
+        let normalized = rect.standardized
+
+        let minX = max(0, min(1, normalized.minX))
+        let minY = max(0, min(1, normalized.minY))
+        let maxX = max(minX, min(1, normalized.maxX))
+        let maxY = max(minY, min(1, normalized.maxY))
+
+        let clamped = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+        return clamped.width > 0 && clamped.height > 0 ? clamped : nil
+    }
+
     private func normalizeOrientation(_ image: UIImage) -> UIImage {
         guard image.imageOrientation != .up else { return image }
 
@@ -566,6 +630,16 @@ extension CoverCaptureView {
         case previewing
         case processing
         case reviewing
+    }
+}
+
+// MARK: - Guide Frame Preference
+
+private struct CoverGuideFramePreferenceKey: PreferenceKey {
+    static var defaultValue: CGRect = .zero
+
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+        value = nextValue()
     }
 }
 

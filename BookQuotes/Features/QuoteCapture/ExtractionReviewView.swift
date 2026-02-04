@@ -84,6 +84,8 @@ struct ExtractionReviewView: View {
                     mainContentView
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Review Extractions")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -152,16 +154,14 @@ struct ExtractionReviewView: View {
 
     /// Main content view with page list and quote editor
     private var mainContentView: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: Spacing.md) {
             // Left: Page thumbnails
             PageListView(
                 session: session,
                 selection: $selectedPage,
                 quoteCounts: quoteCounts
             )
-
-            Divider()
-
+            .frame(maxHeight: .infinity)
             // Right: Quote editor for selected page
             if let page = selectedPage {
                 PageQuoteEditor(
@@ -171,39 +171,45 @@ struct ExtractionReviewView: View {
                         showingAddQuoteSheet = true
                     }
                 )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 noSelectionView
             }
         }
+        .padding(Spacing.md)
     }
 
     /// Processing state view with progress
     private var processingView: some View {
-        VStack(spacing: Spacing.lg) {
-            ProgressView()
-                .scaleEffect(1.5)
+        VStack {
+            VStack(spacing: Spacing.lg) {
+                ProgressView()
+                    .scaleEffect(1.5)
 
-            VStack(spacing: Spacing.sm) {
-                Text("Processing Pages")
-                    .font(.headline)
+                VStack(spacing: Spacing.sm) {
+                    Text("Processing Pages")
+                        .font(.headline)
 
-                Text("Extracting quotes from your captured pages...")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    Text("Extracting quotes from your captured pages...")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
 
-                // Progress bar
-                ProgressView(value: processingProgress)
-                    .progressViewStyle(.linear)
-                    .frame(width: 200)
-                    .padding(.top, Spacing.md)
+                    // Progress bar
+                    ProgressView(value: processingProgress)
+                        .progressViewStyle(.linear)
+                        .frame(width: 200)
+                        .padding(.top, Spacing.md)
 
-                let completedCount = session.captures.filter { $0.status == .completed }.count
-                let totalCount = session.captures.count
-                Text("\(completedCount) of \(totalCount) pages complete")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    let completedCount = session.captures.filter { $0.status == .completed }.count
+                    let totalCount = session.captures.count
+                    Text("\(completedCount) of \(totalCount) pages complete")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
             }
+            .padding(Spacing.xl)
+            .paperCard()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task {

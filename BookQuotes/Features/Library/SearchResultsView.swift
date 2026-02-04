@@ -156,7 +156,7 @@ struct SearchResultsView: View {
                 quotesSection
             }
         }
-        .listStyle(.insetGrouped)
+        .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
     }
@@ -175,6 +175,9 @@ struct SearchResultsView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                 .accessibilityIdentifier(AccessibilityIdentifiers.Search.bookResultRow)
                 // Staggered entrance animation
                 .opacity(shouldDisableAnimations ? 1 : (hasAppeared ? 1 : 0))
@@ -203,6 +206,9 @@ struct SearchResultsView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                 .accessibilityIdentifier(AccessibilityIdentifiers.Search.quoteResultRow)
                 // Staggered entrance animation (offset by book count)
                 .opacity(shouldDisableAnimations ? 1 : (hasAppeared ? 1 : 0))
@@ -222,9 +228,12 @@ struct SearchResultsView: View {
     private func sectionHeader(_ title: String, count: Int) -> some View {
         HStack {
             Text(title)
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
             Spacer()
             Text("\(count)")
-                .foregroundStyle(.secondary)
+                .font(.caption)
+                .foregroundStyle(Color.textTertiary)
                 .contentTransition(.numericText())
         }
         .animation(reduceMotion ? .none : .snappy, value: count)

@@ -52,6 +52,9 @@ extension Color {
 // MARK: - Dark Mode Support
 
 extension ShapeStyle where Self == Color {
+    static var textSecondary: Color { Color.textSecondary }
+    static var textTertiary: Color { Color.textTertiary }
+
     static var adaptiveBackground: Color {
         Color(uiColor: UIColor { traits in
             traits.userInterfaceStyle == .dark
@@ -488,6 +491,41 @@ extension View {
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 .elevation(.lg)
         }
+    }
+
+    /// Apply warm paper card styling with a subtle glassy highlight.
+    /// Designed for form sections and content blocks.
+    func paperCard(cornerRadius: CGFloat = CornerRadius.lg) -> some View {
+        self
+            .background {
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(Color.backgroundCard)
+                    .overlay {
+                        LinearGradient.cardHighlight
+                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
+                    }
+            }
+            .elevation(.xs)
+    }
+
+    /// Apply consistent field styling for inputs.
+    func fieldChrome(minHeight: CGFloat? = nil) -> some View {
+        self
+            .padding(.vertical, Spacing.sm)
+            .padding(.horizontal, Spacing.md)
+            .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .fill(Color.backgroundSecondary)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+            )
     }
 }
 

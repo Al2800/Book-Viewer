@@ -335,6 +335,9 @@ struct LibraryView: View {
                 }
                 .accessibilityLabel("\(book.title) by \(book.author)")
                 .accessibilityHint("Open book details")
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                     SwipeActionStyle.deleteButton {
                         bookToDelete = book
@@ -464,7 +467,7 @@ struct EmptyLibraryView: View {
             } label: {
                 Label("Add Your First Book", systemImage: "plus.circle.fill")
             }
-            .buttonStyle(.borderedProminent)
+            .glassButton()
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.emptyState)
         // Entrance animation

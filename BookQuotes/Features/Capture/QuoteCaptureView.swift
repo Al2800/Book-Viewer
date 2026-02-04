@@ -38,6 +38,11 @@ struct QuoteCaptureView: View {
             // Camera preview / captured image
             cameraContent
 
+            // Top HUD
+            if captureState == .previewing {
+                topHud
+            }
+
             // Quality overlay
             if showQualityOverlay && captureState == .previewing {
                 qualityOverlayContent
@@ -148,52 +153,86 @@ struct QuoteCaptureView: View {
         VStack {
             Spacer()
 
-            HStack(alignment: .center, spacing: Spacing.xl) {
-                // Toggle quality overlay
-                Button {
-                    withAnimation(.snappy) {
-                        showQualityOverlay.toggle()
+            VStack(spacing: Spacing.md) {
+                HStack(alignment: .center, spacing: Spacing.xl) {
+                    // Toggle quality overlay
+                    Button {
+                        withAnimation(.snappy) {
+                            showQualityOverlay.toggle()
+                        }
+                    } label: {
+                        Image(systemName: showQualityOverlay ? "eye.fill" : "eye.slash")
+                            .font(.title2)
+                            .foregroundStyle(.white)
+                            .padding(Spacing.md)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
                     }
-                } label: {
-                    Image(systemName: showQualityOverlay ? "eye.fill" : "eye.slash")
-                        .font(.title2)
+
+                    // Capture button
+                    Button {
+                        capturePhoto()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 72, height: 72)
+
+                            Circle()
+                                .stroke(.white.opacity(0.5), lineWidth: 4)
+                                .frame(width: 82, height: 82)
+                        }
+                    }
+                    .disabled(!cameraService.isSessionRunning)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
+
+                    // Spacer for balance
+                    Color.clear
+                        .frame(width: 44, height: 44)
+                }
+
+                if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
+                    Button("Use Test Image") {
+                        captureTestImage()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
+                }
+            }
+            .padding(Spacing.lg)
+            .glassFloating(cornerRadius: CornerRadius.xl)
+            .padding(.horizontal, Spacing.lg)
+            .padding(.bottom, Spacing.lg)
+        }
+    }
+
+    private var topHud: some View {
+        VStack {
+            HStack(spacing: Spacing.md) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(book.title)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
                         .foregroundStyle(.white)
-                        .padding(Spacing.md)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Circle())
+
+                    Text("Capture a marked page")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.8))
                 }
 
-                // Capture button
-                Button {
-                    capturePhoto()
-                } label: {
-                    ZStack {
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 72, height: 72)
+                Spacer()
 
-                        Circle()
-                            .stroke(.white.opacity(0.5), lineWidth: 4)
-                            .frame(width: 82, height: 82)
-                    }
-                }
-                .disabled(!cameraService.isSessionRunning)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
-
-                // Focus indicator placeholder
-                Color.clear
-                    .frame(width: 44, height: 44)
+                Image(systemName: "text.quote")
+                    .font(.title3)
+                    .foregroundStyle(.white.opacity(0.9))
             }
-            .padding(.bottom, Spacing.xl)
+            .padding(.horizontal, Spacing.lg)
+            .padding(.vertical, Spacing.sm)
+            .glassFloating(cornerRadius: CornerRadius.lg)
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
 
-            if UITestConfiguration.isUITesting {
-                Button("Use Test Image") {
-                    captureTestImage()
-                }
-                .buttonStyle(.borderedProminent)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
-                .padding(.bottom, Spacing.lg)
-            }
+            Spacer()
         }
     }
 

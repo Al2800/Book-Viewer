@@ -25,6 +25,7 @@ struct ImageReviewView: View {
                 // Image preview
                 imagePreview
                     .frame(maxHeight: .infinity)
+                    .background(Color.black)
 
                 // Quality feedback
                 if let result = qualityResult {
@@ -34,7 +35,7 @@ struct ImageReviewView: View {
                 // Action buttons
                 actionButtons
             }
-            .background(Color.black)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Review Photo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -130,7 +131,8 @@ struct ImageReviewView: View {
                 }
             }
             .padding(Spacing.md)
-            .background(Color.black.opacity(0.7))
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
 
             // Warnings if any
             if !result.issues.isEmpty {
@@ -151,6 +153,8 @@ struct ImageReviewView: View {
                 .padding(.bottom, Spacing.sm)
             }
         }
+        .padding(.horizontal, Spacing.lg)
+        .padding(.vertical, Spacing.sm)
     }
 
     private func metricIndicator(label: String, score: Double) -> some View {
@@ -179,12 +183,10 @@ struct ImageReviewView: View {
                     Text("Retake")
                 }
                 .font(.headline)
-                .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, Spacing.md)
-                .background(Color.white.opacity(0.2))
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             }
+            .buttonStyle(.bordered)
+            .tint(Color.textSecondary)
             .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.retakeButton)
 
             // Use photo button
@@ -197,16 +199,15 @@ struct ImageReviewView: View {
                     Text("Use Photo")
                 }
                 .font(.headline)
-                .foregroundStyle(shouldShowWarning ? .black : .white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, Spacing.md)
-                .background(shouldShowWarning ? Color.warning : Color.brand)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             }
+            .glassButton()
             .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.usePhotoButton)
         }
         .padding(Spacing.lg)
-        .background(Color.black)
+        .glassFloating(cornerRadius: CornerRadius.xl)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.bottom, Spacing.lg)
     }
 
     // MARK: - Helpers

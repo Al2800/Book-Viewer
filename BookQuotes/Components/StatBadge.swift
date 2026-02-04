@@ -36,8 +36,14 @@ struct StatBadge: View {
         }
         .padding(.horizontal, Spacing.sm)
         .padding(.vertical, Spacing.xs)
-        .background(Color.backgroundSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.sm)
+                .fill(Color.backgroundSecondary)
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                }
+        )
     }
 }
 
@@ -100,6 +106,8 @@ struct BookHeaderView: View {
                 statusBadge
             }
         }
+        .padding(Spacing.lg)
+        .paperCard()
     }
 
     // MARK: - Compact Header
@@ -124,6 +132,8 @@ struct BookHeaderView: View {
 
             Spacer()
         }
+        .padding(Spacing.md)
+        .paperCard(cornerRadius: CornerRadius.md)
     }
 
     // MARK: - Cover Images
@@ -137,6 +147,10 @@ struct BookHeaderView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 100, height: 150)
                 .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
                 .elevation(.md)
         } else {
             placeholderCover(width: 100, height: 150)
@@ -151,7 +165,11 @@ struct BookHeaderView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 44, height: 66)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm - 2))
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
         } else {
             placeholderCover(width: 44, height: 66)
         }
@@ -166,6 +184,10 @@ struct BookHeaderView: View {
                     .font(width > 60 ? .title : .caption)
                     .foregroundStyle(.secondary)
             }
+            .overlay(
+                RoundedRectangle(cornerRadius: CornerRadius.sm)
+                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+            )
     }
 
     // MARK: - Status Badge

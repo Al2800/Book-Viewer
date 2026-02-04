@@ -69,72 +69,246 @@ struct SettingsView: View {
     @AppStorage("hapticFeedbackEnabled") private var hapticFeedbackEnabled = true
 
     var body: some View {
-        List {
-            Section("Account") {
-                NavigationLink(value: SettingsDestination.account) {
-                    Label("Account & Subscription", systemImage: "person.circle")
-                }
-            }
-
-            Section("Capture") {
-                NavigationLink(value: SettingsDestination.markings) {
-                    Label("Marking Definitions", systemImage: "highlighter")
-                }
-
-                Toggle(isOn: $autoProcessQueue) {
-                    Label("Auto-process Queue", systemImage: "arrow.triangle.2.circlepath")
-                }
-            }
-
-            Section("Display") {
-                Picker(selection: $libraryViewMode) {
-                    Text("Grid").tag("grid")
-                    Text("List").tag("list")
-                } label: {
-                    Label("Library View", systemImage: "square.grid.2x2")
-                }
-
-                Toggle(isOn: $hapticFeedbackEnabled) {
-                    Label("Haptic Feedback", systemImage: "hand.tap")
-                }
-            }
-
-            Section("Data") {
-                Button {
-                    showExportSheet = true
-                } label: {
-                    Label("Export Quotes", systemImage: "square.and.arrow.up")
-                }
-
-                NavigationLink(value: SettingsDestination.storage) {
-                    Label("Storage & Backup", systemImage: "externaldrive")
-                }
-            }
-
-            Section("About") {
-                NavigationLink(value: SettingsDestination.about) {
-                    Label("About BookQuotes", systemImage: "info.circle")
-                }
-
-                if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
-                    Link(destination: privacyURL) {
-                        Label("Privacy Policy", systemImage: "hand.raised")
+        ScrollView {
+            VStack(spacing: Spacing.lg) {
+                settingsSectionCard(title: "Account") {
+                    NavigationLink(value: SettingsDestination.account) {
+                        SettingsRow(
+                            icon: "person.crop.circle",
+                            title: "Account & Subscription",
+                            subtitle: "Manage plan, billing, and sign-in"
+                        )
                     }
                 }
 
-                if let termsURL = URL(string: "https://bookquotes.app/terms") {
-                    Link(destination: termsURL) {
-                        Label("Terms of Service", systemImage: "doc.text")
+                settingsSectionCard(title: "Capture") {
+                    NavigationLink(value: SettingsDestination.markings) {
+                        SettingsRow(
+                            icon: "highlighter",
+                            title: "Marking Definitions",
+                            subtitle: "Customize underline, highlight, notes"
+                        )
+                    }
+
+                    SettingsToggleRow(
+                        icon: "arrow.triangle.2.circlepath",
+                        title: "Auto-process Queue",
+                        subtitle: "Process captures when online",
+                        isOn: $autoProcessQueue
+                    )
+                }
+
+                settingsSectionCard(title: "Display") {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        SettingsRow(
+                            icon: "square.grid.2x2",
+                            title: "Library View",
+                            subtitle: "Grid or list layout"
+                        )
+
+                        Picker(selection: $libraryViewMode) {
+                            Text("Grid").tag("grid")
+                            Text("List").tag("list")
+                        } label: {
+                            EmptyView()
+                        }
+                        .pickerStyle(.segmented)
+                    }
+
+                    SettingsToggleRow(
+                        icon: "hand.tap",
+                        title: "Haptic Feedback",
+                        subtitle: "Subtle taps for actions",
+                        isOn: $hapticFeedbackEnabled
+                    )
+                }
+
+                settingsSectionCard(title: "Data") {
+                    Button {
+                        showExportSheet = true
+                    } label: {
+                        SettingsRow(
+                            icon: "square.and.arrow.up",
+                            title: "Export Quotes",
+                            subtitle: "Markdown, text, JSON, and more"
+                        )
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink(value: SettingsDestination.storage) {
+                        SettingsRow(
+                            icon: "externaldrive",
+                            title: "Storage & Backup",
+                            subtitle: "Cloud sync and local storage"
+                        )
+                    }
+                }
+
+                settingsSectionCard(title: "About") {
+                    NavigationLink(value: SettingsDestination.about) {
+                        SettingsRow(
+                            icon: "info.circle",
+                            title: "About BookQuotes",
+                            subtitle: "Version, credits, and support"
+                        )
+                    }
+
+                    if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
+                        Link(destination: privacyURL) {
+                            SettingsRow(
+                                icon: "hand.raised",
+                                title: "Privacy Policy",
+                                subtitle: "How your data is handled",
+                                trailingIcon: "arrow.up.right"
+                            )
+                        }
+                    }
+
+                    if let termsURL = URL(string: "https://bookquotes.app/terms") {
+                        Link(destination: termsURL) {
+                            SettingsRow(
+                                icon: "doc.text",
+                                title: "Terms of Service",
+                                subtitle: "Usage terms and policies",
+                                trailingIcon: "arrow.up.right"
+                            )
+                        }
                     }
                 }
             }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
+            .padding(.bottom, Spacing.xxxl)
         }
         .navigationTitle("Settings")
-        .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
         .sheet(isPresented: $showExportSheet) {
             ExportView(book: nil)
         }
+    }
+}
+
+private extension SettingsView {
+    func settingsSectionCard<Content: View>(
+        title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text(title)
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
+
+            VStack(spacing: Spacing.sm) {
+                content()
+            }
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+}
+
+private struct SettingsRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String?
+    let trailingIcon: String?
+
+    init(
+        icon: String,
+        title: String,
+        subtitle: String? = nil,
+        trailingIcon: String? = "chevron.right"
+    ) {
+        self.icon = icon
+        self.title = title
+        self.subtitle = subtitle
+        self.trailingIcon = trailingIcon
+    }
+
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            ZStack {
+                Circle()
+                    .fill(Color.backgroundSecondary)
+                    .frame(width: 36, height: 36)
+                    .overlay {
+                        Circle()
+                            .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                    }
+
+                Image(systemName: icon)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.textPrimary)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.textPrimary)
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
+            }
+
+            Spacer()
+
+            if let trailingIcon {
+                Image(systemName: trailingIcon)
+                    .font(.caption)
+                    .foregroundStyle(Color.textTertiary)
+            }
+        }
+        .contentShape(Rectangle())
+    }
+}
+
+private struct SettingsToggleRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String?
+    @Binding var isOn: Bool
+
+    init(icon: String, title: String, subtitle: String? = nil, isOn: Binding<Bool>) {
+        self.icon = icon
+        self.title = title
+        self.subtitle = subtitle
+        self._isOn = isOn
+    }
+
+    var body: some View {
+        Toggle(isOn: $isOn) {
+            HStack(spacing: Spacing.md) {
+                ZStack {
+                    Circle()
+                        .fill(Color.backgroundSecondary)
+                        .frame(width: 36, height: 36)
+                        .overlay {
+                            Circle()
+                                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                        }
+
+                    Image(systemName: icon)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.textPrimary)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.textPrimary)
+
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(Color.textSecondary)
+                    }
+                }
+            }
+        }
+        .toggleStyle(.switch)
     }
 }
 
@@ -413,8 +587,8 @@ struct AboutView: View {
     }
 
     var body: some View {
-        List {
-            Section {
+        ScrollView {
+            VStack(spacing: Spacing.lg) {
                 VStack(spacing: Spacing.md) {
                     Image(systemName: "books.vertical.circle.fill")
                         .font(.system(size: 60))
@@ -430,23 +604,59 @@ struct AboutView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Spacing.lg)
-            }
+                .paperCard()
 
-            Section("Version") {
-                LabeledContent("App Version", value: appVersion)
-                LabeledContent("Build", value: buildNumber)
-            }
+                infoCard(title: "Version") {
+                    InfoRow(label: "App Version", value: appVersion)
+                    InfoRow(label: "Build", value: buildNumber)
+                }
 
-            Section("Credits") {
-                Text("Built with SwiftUI, SwiftData, and Gemini AI")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                infoCard(title: "Credits") {
+                    Text("Built with SwiftUI, SwiftData, and Gemini AI")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
+            .padding(.bottom, Spacing.xxxl)
         }
         .navigationTitle("About")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
+    }
+
+    private func infoCard<Content: View>(
+        title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text(title)
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
+
+            content()
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+}
+
+private struct InfoRow: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
+            Spacer()
+            Text(value)
+                .font(.subheadline)
+                .foregroundStyle(Color.textPrimary)
+        }
+        .fieldChrome()
     }
 }
 
@@ -472,59 +682,18 @@ struct StorageBackupView: View {
     private let exportService = ExportService()
 
     var body: some View {
-        List {
-            // Storage stats
-            Section("Storage Usage") {
-                LabeledContent("Books", value: "\(books.count)")
-                LabeledContent("Quotes", value: "\(quotes.count)")
-                LabeledContent("Images", value: estimatedImageStorage)
+        ScrollView {
+            VStack(spacing: Spacing.lg) {
+                storageCard
+                backupCard
+                cacheCard
             }
-
-            // Backup options
-            Section("Backup") {
-                Button {
-                    showExportOptions = true
-                } label: {
-                    Label("Export All Data", systemImage: "square.and.arrow.up")
-                }
-
-                Text("Export your entire library as a backup file that can be restored later.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            // Data management
-            Section("Data Management") {
-                Button(role: .destructive) {
-                    showClearCacheConfirmation = true
-                } label: {
-                    HStack {
-                        Label("Clear Image Cache", systemImage: "trash")
-                        if isClearingCache {
-                            Spacer()
-                            ProgressView()
-                        }
-                    }
-                }
-                .disabled(isClearingCache)
-
-                if cacheCleared {
-                    Label(
-                        "Cleared \(ByteCountFormatter.string(fromByteCount: bytesCleared, countStyle: .file))",
-                        systemImage: "checkmark.circle.fill"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.green)
-                } else {
-                    Text("Clear cached images to free up storage space. Original images in your library will not be affected.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
+            .padding(.bottom, Spacing.xxxl)
         }
         .navigationTitle("Storage & Backup")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
         .confirmationDialog("Export Options", isPresented: $showExportOptions) {
             Button("Export as JSON") {
@@ -573,6 +742,79 @@ struct StorageBackupView: View {
                     }
             }
         }
+    }
+
+    private var storageCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Storage Usage")
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
+
+            InfoRow(label: "Books", value: "\(books.count)")
+            InfoRow(label: "Quotes", value: "\(quotes.count)")
+            InfoRow(label: "Images", value: estimatedImageStorage)
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+
+    private var backupCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Backup")
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
+
+            Button {
+                showExportOptions = true
+            } label: {
+                Label("Export All Data", systemImage: "square.and.arrow.up")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .glassButton()
+
+            Text("Export your entire library as a backup file that can be restored later.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+
+    private var cacheCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Data Management")
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
+
+            Button(role: .destructive) {
+                showClearCacheConfirmation = true
+            } label: {
+                HStack {
+                    Label("Clear Image Cache", systemImage: "trash")
+                    if isClearingCache {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .buttonStyle(.bordered)
+            .disabled(isClearingCache)
+
+            if cacheCleared {
+                Label(
+                    "Cleared \(ByteCountFormatter.string(fromByteCount: bytesCleared, countStyle: .file))",
+                    systemImage: "checkmark.circle.fill"
+                )
+                .font(.caption)
+                .foregroundStyle(.green)
+            } else {
+                Text("Clear cached images to free up storage space. Original images in your library will not be affected.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(Spacing.lg)
+        .paperCard()
     }
 
     private var estimatedImageStorage: String {

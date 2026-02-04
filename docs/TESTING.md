@@ -165,6 +165,32 @@ Example with custom settings:
 DESTINATION="platform=iOS Simulator,name=iPhone 15 Pro" RETRY_COUNT=2 ARTIFACTS_DIR=./ci-artifacts ./scripts/e2e_full.sh
 ```
 
+### App Store Media (Screenshots + Previews)
+
+Use the App Store media runner to capture iPhone screenshots and preview videos via UI tests:
+
+```bash
+# Screenshots + previews (default)
+./scripts/appstore_media.sh
+
+# Screenshots only
+./scripts/appstore_media.sh --screenshots
+
+# Previews only
+./scripts/appstore_media.sh --previews
+```
+
+Customize devices and output locations:
+
+```bash
+SCREENSHOT_DESTINATIONS="platform=iOS Simulator,name=iPhone 15 Pro Max|platform=iOS Simulator,name=iPhone 15 Pro" \
+PREVIEW_DESTINATION="platform=iOS Simulator,name=iPhone 15 Pro Max" \
+ARTIFACTS_DIR=./artifacts/app-store \
+./scripts/appstore_media.sh
+```
+
+Preview pacing can be tuned by setting `APP_STORE_PREVIEW_STEP_DELAY` (seconds) when running previews.
+
 #### Artifacts Produced
 
 Integration tests (`artifacts/integration-tests/`):
@@ -188,6 +214,23 @@ WRITE_UI_TEST_LOGS=1 xcodebuild test \
   -scheme BookQuotesUITests \
   -destination 'platform=iOS Simulator,name=iPhone 15'
 ```
+
+### App Store Media (Screenshots + Previews)
+
+The app includes an automated UI test flow for App Store screenshots and app preview videos.
+It uses deterministic UI test data plus `simctl recordVideo` for preview capture.
+
+```bash
+# Run automated App Store media capture
+./scripts/appstore_media.sh
+
+# Override simulators and preview duration
+SIMULATORS="iPhone 15 Pro Max,iPhone 15 Pro" PREVIEW_DURATION=15 ./scripts/appstore_media.sh
+```
+
+Artifacts are stored in `artifacts/app-store/<simulator>/`:
+- `screenshots/` (PNG files)
+- `app_preview_<seconds>s.mp4`
 
 To capture checkpoint screenshots and write artifacts to a deterministic directory:
 

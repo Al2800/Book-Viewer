@@ -44,6 +44,7 @@ struct BookEditView: View {
     @State private var coverImage: UIImage?
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var showCameraPicker = false
+    @State private var hasLoadedInitialValues = false
 
     // MARK: - Milestone State
 
@@ -70,15 +71,20 @@ struct BookEditView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                coverSection
-                detailsSection
-                metadataSection
-                readingStatusSection
-                notesSection
+            ScrollView {
+                VStack(spacing: Spacing.lg) {
+                    coverSection
+                    detailsSection
+                    metadataSection
+                    readingStatusSection
+                    notesSection
+                }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
+                .padding(.bottom, Spacing.xxxl)
             }
-            .scrollContentBackground(.hidden)
             .background(Color.backgroundPrimary)
+            .scrollDismissesKeyboard(.interactively)
             .tint(.brand)
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -119,11 +125,39 @@ struct BookEditView: View {
         }
     }
 
+    // MARK: - Section Card
+
+    private func sectionCard<Content: View>(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .font(.sectionHeader)
+                    .foregroundStyle(Color.textSecondary)
+
+                Spacer()
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textTertiary)
+                }
+            }
+
+            content()
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+
     // MARK: - Cover Section
 
     private var coverSection: some View {
-        Section {
-            VStack(spacing: Spacing.sm) {
+        sectionCard(title: "Cover", subtitle: "Optional") {
+            VStack(spacing: Spacing.md) {
                 PhotosPicker(
                     selection: $selectedPhotoItem,
                     matching: .images
@@ -132,24 +166,30 @@ struct BookEditView: View {
                 }
                 .buttonStyle(.plain)
 
+                Text("Tap the cover to choose a photo, or use the buttons below.")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+
                 HStack(spacing: Spacing.sm) {
                     if UIImagePickerController.isSourceTypeAvailable(.camera) {
                         Button {
                             showCameraPicker = true
                         } label: {
-                            Label("Take Photo", systemImage: "camera")
+                            Label("Camera", systemImage: "camera")
                         }
                         .buttonStyle(.bordered)
                         .tint(.brand)
+                        .frame(maxWidth: .infinity)
                     }
 
                     PhotosPicker(
                         selection: $selectedPhotoItem,
                         matching: .images
                     ) {
-                        Label("Photo Library", systemImage: "photo.on.rectangle")
+                        Label("Library", systemImage: "photo.on.rectangle")
                     }
                     .buttonStyle(.bordered)
+                    .frame(maxWidth: .infinity)
 
                     if coverImage != nil {
                         Button(role: .destructive) {
@@ -158,17 +198,12 @@ struct BookEditView: View {
                             Label("Remove", systemImage: "trash")
                         }
                         .buttonStyle(.bordered)
+                        .frame(maxWidth: .infinity)
                     }
                 }
             }
             .frame(maxWidth: .infinity)
-        } header: {
-            Text("Cover")
-        } footer: {
-            Text("Tap the cover to choose a photo, or use the buttons below.")
-                .font(.caption)
         }
-        .listRowBackground(Color.backgroundSecondary)
     }
 
     private var coverImageView: some View {
@@ -192,7 +227,19 @@ struct BookEditView: View {
                     }
             }
         }
-        .frame(width: 120, height: 180)
+        .frame(width: 140, height: 210)
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .fill(Color.backgroundSecondary)
+                .overlay {
+                    LinearGradient.cardHighlight
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.md)
+                        .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
+                }
+        )
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
         .elevation(.sm)
     }
@@ -200,22 +247,26 @@ struct BookEditView: View {
     // MARK: - Details Section
 
     private var detailsSection: some View {
-        Section("Book Details") {
-            TextField("Title", text: $title)
-                .textContentType(.none)
-                .textFieldStyle(.roundedBorder)
-                .shake(trigger: titleShakeTrigger)
+        sectionCard(title: "Book Details") {
+            VStack(spacing: Spacing.md) {
+                TextField("Title", text: $title)
+                    .textContentType(.none)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
+                    .shake(trigger: titleShakeTrigger)
 
-            TextField("Author", text: $author)
-                .textContentType(.name)
-                .textFieldStyle(.roundedBorder)
-                .shake(trigger: authorShakeTrigger)
+                TextField("Author", text: $author)
+                    .textContentType(.name)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
+                    .shake(trigger: authorShakeTrigger)
 
-            TextField("Subtitle", text: $subtitle)
-                .textContentType(.none)
-                .textFieldStyle(.roundedBorder)
+                TextField("Subtitle", text: $subtitle)
+                    .textContentType(.none)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
+            }
         }
-        .listRowBackground(Color.backgroundSecondary)
     }
 
     private var isTitleValid: Bool {
@@ -229,58 +280,70 @@ struct BookEditView: View {
     // MARK: - Metadata Section
 
     private var metadataSection: some View {
-        Section("Additional Info") {
-            TextField("ISBN", text: $isbn)
-                .keyboardType(.numberPad)
-                .focused($focusedField, equals: .isbn)
-                .textFieldStyle(.roundedBorder)
+        sectionCard(title: "Additional Info", subtitle: "Optional") {
+            VStack(spacing: Spacing.md) {
+                TextField("ISBN", text: $isbn)
+                    .keyboardType(.numberPad)
+                    .focused($focusedField, equals: .isbn)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
 
-            TextField("Publisher", text: $publisher)
-                .textFieldStyle(.roundedBorder)
+                TextField("Publisher", text: $publisher)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
 
-            TextField("Year Published", text: $publishYear)
-                .keyboardType(.numberPad)
-                .focused($focusedField, equals: .publishYear)
-                .textFieldStyle(.roundedBorder)
+                HStack(spacing: Spacing.md) {
+                    TextField("Year", text: $publishYear)
+                        .keyboardType(.numberPad)
+                        .focused($focusedField, equals: .publishYear)
+                        .textFieldStyle(.plain)
+                        .fieldChrome()
+                        .frame(maxWidth: .infinity)
 
-            TextField("Page Count", text: $pageCount)
-                .keyboardType(.numberPad)
-                .focused($focusedField, equals: .pageCount)
-                .textFieldStyle(.roundedBorder)
-
-            Picker("Genre", selection: $genre) {
-                Text("None").tag("")
-                ForEach(BookGenre.allCases, id: \.rawValue) { genre in
-                    Text(genre.displayName).tag(genre.rawValue)
+                    TextField("Pages", text: $pageCount)
+                        .keyboardType(.numberPad)
+                        .focused($focusedField, equals: .pageCount)
+                        .textFieldStyle(.plain)
+                        .fieldChrome()
+                        .frame(maxWidth: .infinity)
                 }
+
+                Picker("Genre", selection: $genre) {
+                    Text("None").tag("")
+                    ForEach(BookGenre.allCases, id: \.rawValue) { genre in
+                        Text(genre.displayName).tag(genre.rawValue)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fieldChrome()
             }
         }
-        .listRowBackground(Color.backgroundSecondary)
     }
 
     // MARK: - Reading Status Section
 
     private var readingStatusSection: some View {
-        Section("Reading Status") {
+        sectionCard(title: "Reading Status") {
             Picker("Status", selection: $status) {
                 ForEach(ReadingStatus.allCases) { status in
                     Label(status.displayName, systemImage: status.systemImage)
                         .tag(status)
                 }
             }
+            .pickerStyle(.segmented)
         }
-        .listRowBackground(Color.backgroundSecondary)
     }
 
     // MARK: - Notes Section
 
     private var notesSection: some View {
-        Section("Notes") {
+        sectionCard(title: "Notes", subtitle: "Optional") {
             TextField("Add notes about this book...", text: $notes, axis: .vertical)
                 .lineLimit(3...6)
-                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(.plain)
+                .fieldChrome(minHeight: 88)
         }
-        .listRowBackground(Color.backgroundSecondary)
     }
 
     // MARK: - Toolbar
@@ -342,6 +405,9 @@ struct BookEditView: View {
     // MARK: - Initial Values
 
     private func loadInitialValues() {
+        guard !hasLoadedInitialValues else { return }
+        hasLoadedInitialValues = true
+
         switch mode {
         case .create:
             // Start with empty fields

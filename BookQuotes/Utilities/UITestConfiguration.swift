@@ -109,6 +109,13 @@ enum UITestConfiguration {
         hasArgument("--disable-animations")
     }
 
+    /// Whether the app is running in App Store media capture mode.
+    /// Set via `--app-store-media` launch argument.
+    /// Hides UI-test-only controls and keeps the UI clean for screenshots/videos.
+    static var isAppStoreMediaMode: Bool {
+        hasArgument("--app-store-media")
+    }
+
     // MARK: - Convenience
 
     /// Summary of active test configurations for debugging.
@@ -127,6 +134,7 @@ enum UITestConfiguration {
         if shouldMockMultipleQuotes { flags.append("Gemini: multiple quotes") }
         if shouldMockLowConfidence { flags.append("Gemini: low confidence") }
         if shouldDisableAnimations { flags.append("Animations: disabled") }
+        if isAppStoreMediaMode { flags.append("App Store media mode") }
 
         return flags.joined(separator: ", ")
     }

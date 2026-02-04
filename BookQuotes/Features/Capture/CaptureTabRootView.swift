@@ -187,18 +187,7 @@ struct CaptureModeSelectionView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                // Hero section
-                VStack(spacing: Spacing.md) {
-                    Image(systemName: "camera.viewfinder")
-                        .font(.system(size: 50))
-                        .foregroundStyle(Color.brand)
-
-                    Text("What would you like to capture?")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.textPrimary)
-                }
-                .padding(.vertical, Spacing.xl)
+                heroCard
 
                 // Capture options
                 VStack(spacing: Spacing.md) {
@@ -232,9 +221,49 @@ struct CaptureModeSelectionView: View {
             }
             .padding(Spacing.lg)
         }
-        .background(Color.backgroundPrimary)
+        .background(
+            LinearGradient(
+                colors: [Color.backgroundPrimary, Color.backgroundSecondary],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+        )
         .navigationTitle("Capture")
         .navigationBarTitleDisplayMode(.large)
+    }
+
+    private var heroCard: some View {
+        HStack(spacing: Spacing.lg) {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                Text("Capture Your Quotes")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.textPrimary)
+
+                Text("Snap covers and marked pages. We’ll handle the rest.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.textSecondary)
+            }
+
+            Spacer()
+
+            ZStack {
+                Circle()
+                    .fill(Color.brand.opacity(0.12))
+                    .frame(width: 70, height: 70)
+
+                Image(systemName: "camera.viewfinder")
+                    .font(.system(size: 34))
+                    .foregroundStyle(Color.brand)
+            }
+        }
+        .padding(Spacing.lg)
+        .glassCard(cornerRadius: CornerRadius.xl)
+        .overlay {
+            RoundedRectangle(cornerRadius: CornerRadius.xl)
+                .stroke(Color.brand.opacity(0.12), lineWidth: 1)
+        }
     }
 }
 
@@ -379,24 +408,43 @@ struct AddBookGridItem: View {
         Button(action: action) {
             VStack(spacing: Spacing.sm) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: CornerRadius.sm)
-                        .strokeBorder(Color.brand, style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
+                    RoundedRectangle(cornerRadius: CornerRadius.lg)
+                        .fill(Color.backgroundCard)
+                        .overlay {
+                            LinearGradient.cardHighlight
+                                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
+                        }
+                        .overlay {
+                            RoundedRectangle(cornerRadius: CornerRadius.lg)
+                                .stroke(Color.accent.opacity(0.6), lineWidth: Stroke.thin.width)
+                        }
 
                     VStack(spacing: Spacing.xs) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title)
-                            .foregroundStyle(Color.brand)
+                        ZStack {
+                            Circle()
+                                .fill(.ultraThinMaterial)
+                                .frame(width: 42, height: 42)
+                                .overlay {
+                                    Circle()
+                                        .stroke(Color.accent.opacity(0.5), lineWidth: Stroke.hairline.width)
+                                }
+
+                            Image(systemName: "plus")
+                                .font(.headline.weight(.semibold))
+                                .foregroundStyle(Color.accent)
+                        }
 
                         Text("Add Book")
                             .font(.caption)
                             .fontWeight(.medium)
-                            .foregroundStyle(Color.brand)
+                            .foregroundStyle(Color.textPrimary)
                     }
                 }
                 .frame(height: 140)
 
-                Text(" ") // Spacer for alignment
+                Text("Scan cover or ISBN")
                     .font(.caption)
+                    .foregroundStyle(Color.textTertiary)
             }
         }
         .buttonStyle(.plain)

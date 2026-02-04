@@ -58,12 +58,19 @@ struct BookISBNConfirmationSheet: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                coverSection
-                detailsSection
-                metadataSection
-                statusSection
+            ScrollView {
+                VStack(spacing: Spacing.lg) {
+                    coverSection
+                    detailsSection
+                    metadataSection
+                    statusSection
+                }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
+                .padding(.bottom, Spacing.xxxl)
             }
+            .background(Color.backgroundPrimary)
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Confirm Book")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -86,17 +93,44 @@ struct BookISBNConfirmationSheet: View {
         }
     }
 
+    // MARK: - Section Card
+
+    private func sectionCard<Content: View>(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .font(.sectionHeader)
+                    .foregroundStyle(Color.textSecondary)
+
+                Spacer()
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textTertiary)
+                }
+            }
+
+            content()
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+
     // MARK: - Sections
 
     @ViewBuilder
     private var coverSection: some View {
-        Section {
+        sectionCard(title: "Cover") {
             HStack {
                 Spacer()
                 coverImageView
                 Spacer()
             }
-            .listRowBackground(Color.clear)
         }
     }
 
@@ -105,27 +139,25 @@ struct BookISBNConfirmationSheet: View {
         Group {
             if isLoadingCover {
                 ProgressView()
-                    .frame(width: 120, height: 180)
+                    .frame(width: 140, height: 210)
             } else if let data = coverImageData, let uiImage = UIImage(data: data) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 120, maxHeight: 180)
-                    .cornerRadius(8)
-                    .shadow(radius: 4)
+                    .frame(maxWidth: 140, maxHeight: 210)
             } else {
                 // Placeholder when no cover available
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.secondary.opacity(0.2))
-                    .frame(width: 120, height: 180)
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .fill(Color.backgroundSecondary)
+                    .frame(width: 140, height: 210)
                     .overlay {
-                        VStack(spacing: 8) {
+                        VStack(spacing: Spacing.sm) {
                             Image(systemName: "book.closed")
-                                .font(.system(size: 40))
+                                .font(.largeTitle)
                                 .foregroundStyle(.secondary)
                             if let error = coverLoadError {
                                 Text(error)
-                                    .font(.caption2)
+                                    .font(.caption)
                                     .foregroundStyle(.secondary)
                                     .multilineTextAlignment(.center)
                             }
@@ -134,20 +166,42 @@ struct BookISBNConfirmationSheet: View {
                     }
             }
         }
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .fill(Color.backgroundSecondary)
+                .overlay {
+                    LinearGradient.cardHighlight
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.md)
+                        .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
+                }
+        )
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .elevation(.sm)
     }
 
     @ViewBuilder
     private var detailsSection: some View {
-        Section("Book Details") {
-            TextField("Title", text: $title)
-                .textContentType(.name)
-                .shake(trigger: titleShakeTrigger)
+        sectionCard(title: "Book Details") {
+            VStack(spacing: Spacing.md) {
+                TextField("Title", text: $title)
+                    .textContentType(.name)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
+                    .shake(trigger: titleShakeTrigger)
 
-            TextField("Author", text: $author)
-                .textContentType(.name)
-                .shake(trigger: authorShakeTrigger)
+                TextField("Author", text: $author)
+                    .textContentType(.name)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
+                    .shake(trigger: authorShakeTrigger)
 
-            TextField("Subtitle (optional)", text: $subtitle)
+                TextField("Subtitle (optional)", text: $subtitle)
+                    .textFieldStyle(.plain)
+                    .fieldChrome()
+            }
         }
     }
 
@@ -182,28 +236,29 @@ struct BookISBNConfirmationSheet: View {
 
     @ViewBuilder
     private var metadataSection: some View {
-        Section("From Database") {
-            if let isbn = metadata.bestISBN {
-                LabeledContent("ISBN", value: ISBNValidator.format(isbn))
-            }
+        sectionCard(title: "From Database") {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                if let isbn = metadata.bestISBN {
+                    metadataRow(title: "ISBN", value: ISBNValidator.format(isbn))
+                }
 
-            if !publisher.isEmpty {
-                LabeledContent("Publisher", value: publisher)
-            }
+                if !publisher.isEmpty {
+                    metadataRow(title: "Publisher", value: publisher)
+                }
 
-            if let year = metadata.publishedYear {
-                LabeledContent("Published", value: String(year))
-            }
+                if let year = metadata.publishedYear {
+                    metadataRow(title: "Published", value: String(year))
+                }
 
-            if let pageCount = metadata.pageCount {
-                LabeledContent("Pages", value: String(pageCount))
-            }
+                if let pageCount = metadata.pageCount {
+                    metadataRow(title: "Pages", value: String(pageCount))
+                }
 
-            if !metadata.categories.isEmpty {
-                LabeledContent("Categories") {
-                    Text(metadata.categories.prefix(3).joined(separator: ", "))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                if !metadata.categories.isEmpty {
+                    metadataRow(
+                        title: "Categories",
+                        value: metadata.categories.prefix(3).joined(separator: ", ")
+                    )
                 }
             }
         }
@@ -211,15 +266,31 @@ struct BookISBNConfirmationSheet: View {
 
     @ViewBuilder
     private var statusSection: some View {
-        Section("Reading Status") {
+        sectionCard(title: "Reading Status") {
             Picker("Status", selection: $status) {
                 ForEach(ReadingStatus.allCases) { readingStatus in
                     Label(readingStatus.displayName, systemImage: readingStatus.systemImage)
                         .tag(readingStatus)
                 }
             }
-            .pickerStyle(.menu)
+            .pickerStyle(.segmented)
         }
+    }
+
+    private func metadataRow(title: String, value: String) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
+
+            Spacer()
+
+            Text(value)
+                .font(.subheadline)
+                .foregroundStyle(Color.textPrimary)
+                .multilineTextAlignment(.trailing)
+        }
+        .fieldChrome()
     }
 
     // MARK: - Actions

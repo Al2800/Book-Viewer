@@ -26,30 +26,37 @@ struct ExportView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.backgroundPrimary.ignoresSafeArea()
-
-                Form {
-                    Section("Format") {
+            ScrollView {
+                VStack(spacing: Spacing.lg) {
+                    exportSectionCard(title: "Format") {
                         Picker("Export Format", selection: $selectedFormat) {
                             ForEach(ExportFormat.allCases) { format in
                                 Text(format.rawValue).tag(format)
                             }
                         }
-                        .pickerStyle(.inline)
+                        .pickerStyle(.menu)
+                        .fieldChrome()
                         .accessibilityIdentifier(AccessibilityIdentifiers.Export.formatPicker)
+
+                        Text(formatDescription)
+                            .font(.caption)
+                            .foregroundStyle(Color.textSecondary)
                     }
 
-                    ExportOptionsView(options: $options)
+                    exportSectionCard(title: "Options") {
+                        ExportOptionsView(options: $options)
+                    }
 
-                    ExportPreviewView(
-                        quotes: exportQuotes,
-                        format: selectedFormat,
-                        options: options
-                    )
+                    exportSectionCard(title: "Preview") {
+                        ExportPreviewView(
+                            quotes: exportQuotes,
+                            format: selectedFormat,
+                            options: options
+                        )
+                    }
 
                     if let fileURL = resultFileURL, let filename = resultFilename {
-                        Section("Result") {
+                        exportSectionCard(title: "Result") {
                             Text("Your export is ready. Use Save to Files to choose a destination or share it with another app.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -60,19 +67,23 @@ struct ExportView: View {
                                     .foregroundStyle(.secondary)
                             }
 
-                            Button {
-                                showFileExporter = true
-                            } label: {
-                                Label("Save to Files", systemImage: "folder")
-                            }
-                            .font(.subheadline)
+                            VStack(spacing: Spacing.sm) {
+                                Button {
+                                    Task { await prepareFileExporter() }
+                                } label: {
+                                    Label("Save to Files", systemImage: "folder")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .glassButton()
 
-                            Button {
-                                showShareSheet = true
-                            } label: {
-                                Label("Share \(filename)", systemImage: "square.and.arrow.up")
+                                Button {
+                                    Task { await prepareShareSheet() }
+                                } label: {
+                                    Label("Share \(filename)", systemImage: "square.and.arrow.up")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.bordered)
                             }
-                            .font(.subheadline)
 
                             Text("Saved temporarily at:")
                                 .font(.caption)
@@ -84,9 +95,11 @@ struct ExportView: View {
                         }
                     }
                 }
-                .scrollContentBackground(.hidden)
-                .background(Color.backgroundPrimary)
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
+                .padding(.bottom, Spacing.xxxl)
             }
+            .background(Color.backgroundPrimary)
             .navigationTitle("Export \(exportQuotes.count) Quotes")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -121,10 +134,10 @@ struct ExportView: View {
         }
         .confirmationDialog("Export Ready", isPresented: $showExportActions, titleVisibility: .visible) {
             Button("Save to Files") {
-                showFileExporter = true
+                Task { await prepareFileExporter() }
             }
             Button("Share") {
-                showShareSheet = true
+                Task { await prepareShareSheet() }
             }
             Button("OK", role: .cancel) {}
         } message: {
@@ -137,12 +150,49 @@ struct ExportView: View {
         }
     }
 
+    private var formatDescription: String {
+        switch selectedFormat {
+        case .markdown:
+            return "Great for notes apps and Markdown editors."
+        case .plainText:
+            return "Simple text format for universal sharing."
+        case .json:
+            return "Structured export for automation or backups."
+        case .notion:
+            return "Send quotes to a connected Notion database."
+        case .obsidian:
+            return "Markdown bundle optimized for Obsidian vaults."
+        }
+    }
+
+    private func exportSectionCard<Content: View>(
+        title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text(title)
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
+
+            content()
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+
     private var exportQuotes: [Quote] {
         guard let book = book else { return quotes }
         return quotes.filter { $0.book?.id == book.id }
     }
 
     private func performExport() async {
+        await performExport(showActions: true, onFileReady: nil)
+    }
+
+    private func performExport(
+        showActions: Bool,
+        onFileReady: (() -> Void)?
+    ) async {
         guard !isExporting else { return }
 
         isExporting = true
@@ -155,7 +205,7 @@ struct ExportView: View {
                 options: options
             )
 
-            handleResult(result)
+            handleResult(result, showActions: showActions, onFileReady: onFileReady)
         } catch {
             resultFileURL = nil
             resultFilename = nil
@@ -164,13 +214,21 @@ struct ExportView: View {
         }
     }
 
-    private func handleResult(_ result: ExportResult) {
+    private func handleResult(
+        _ result: ExportResult,
+        showActions: Bool,
+        onFileReady: (() -> Void)?
+    ) {
         switch result {
         case let .file(url, filename):
             resultFileURL = url
             resultFilename = filename
             resultMessage = "Exported \(filename)."
-            showExportActions = true
+            if showActions {
+                showExportActions = true
+            } else {
+                onFileReady?()
+            }
         case let .apiSuccess(message):
             resultFileURL = nil
             resultFilename = nil
@@ -182,6 +240,35 @@ struct ExportView: View {
             resultMessage = message
             showAlert = true
         }
+    }
+
+    private func prepareFileExporter() async {
+        let available = ensureExportFileAvailable()
+        if available {
+            showFileExporter = true
+            return
+        }
+
+        await performExport(showActions: false) {
+            showFileExporter = true
+        }
+    }
+
+    private func prepareShareSheet() async {
+        let available = ensureExportFileAvailable()
+        if available {
+            showShareSheet = true
+            return
+        }
+
+        await performExport(showActions: false) {
+            showShareSheet = true
+        }
+    }
+
+    private func ensureExportFileAvailable() -> Bool {
+        guard let url = resultFileURL else { return false }
+        return FileManager.default.fileExists(atPath: url.path)
     }
 }
 

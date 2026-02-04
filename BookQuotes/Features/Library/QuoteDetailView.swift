@@ -56,9 +56,6 @@ struct QuoteDetailView: View {
                         .offset(y: hasAppeared ? 0 : 15)
                 }
 
-                Divider()
-                    .opacity(hasAppeared ? 1 : 0)
-
                 // Metadata section
                 metadataSection
                     .opacity(hasAppeared ? 1 : 0)
@@ -81,6 +78,7 @@ struct QuoteDetailView: View {
             .padding()
             .animation(reduceMotion ? .none : .smoothSpring.delay(0.1), value: hasAppeared)
         }
+        .background(Color.backgroundPrimary)
         // Edit mode transition animation
         .animation(reduceMotion ? .none : .smoothSpring, value: isEditing)
         .onAppear {
@@ -197,10 +195,9 @@ struct QuoteDetailView: View {
             if isEditing {
                 TextEditor(text: $editedText)
                     .font(.quoteBody)
+                    .scrollContentBackground(.hidden)
                     .frame(minHeight: 150)
-                    .padding(Spacing.sm)
-                    .background(Color.backgroundSecondary)
-                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                    .fieldChrome(minHeight: 150)
                     .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.textEditor)
             } else {
                 Text(quote.text)
@@ -219,6 +216,8 @@ struct QuoteDetailView: View {
                 }
             }
         }
+        .padding(Spacing.lg)
+        .paperCard()
     }
 
     // MARK: - Margin Note Section
@@ -232,9 +231,8 @@ struct QuoteDetailView: View {
             if isEditing {
                 TextField("Add a margin note...", text: $editedMarginNote)
                     .font(.body)
-                    .padding(Spacing.sm)
-                    .background(Color.backgroundSecondary)
-                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                    .textFieldStyle(.plain)
+                    .fieldChrome(minHeight: 56)
             } else if let note = quote.marginNote {
                 Text(note)
                     .font(.body)
@@ -243,6 +241,8 @@ struct QuoteDetailView: View {
                     .textSelection(.enabled)
             }
         }
+        .padding(Spacing.lg)
+        .paperCard()
     }
 
     // MARK: - Metadata Section
@@ -262,7 +262,8 @@ struct QuoteDetailView: View {
                     TextField("Page", text: $editedPageNumber)
                         .keyboardType(.numberPad)
                         .multilineTextAlignment(.trailing)
-                        .frame(width: 80)
+                        .fieldChrome()
+                        .frame(width: 96)
                         .focused($isPageNumberFocused)
                 } else {
                     Text(quote.pageNumber.map { "\($0)" } ?? "Unknown")
@@ -303,6 +304,8 @@ struct QuoteDetailView: View {
             }
         }
         .font(.subheadline)
+        .padding(Spacing.lg)
+        .paperCard()
     }
 
     // MARK: - Source Image Button
@@ -319,8 +322,7 @@ struct QuoteDetailView: View {
                     .foregroundStyle(.tertiary)
             }
             .padding()
-            .background(Color.backgroundSecondary)
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+            .paperCard(cornerRadius: CornerRadius.md)
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.sourceImageButton)
@@ -340,6 +342,8 @@ struct QuoteDetailView: View {
             }
             .buttonStyle(.plain)
         }
+        .padding(Spacing.lg)
+        .paperCard()
     }
 
     // MARK: - Source Image Sheet
