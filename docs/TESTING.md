@@ -49,6 +49,40 @@ BookQuotes uses a three-tier testing pyramid:
 3. **Readability** — Tests serve as documentation; make them clear.
 4. **Fast feedback** — Unit tests should run in milliseconds.
 
+### Policy: "No Mocks / No Fakes"
+
+This repo prefers *integration-first* tests: real implementations, real frameworks, and real persistence where possible.
+
+Definitions used in this repo:
+
+- **Mock**: a test double primarily used to assert how something was called (method/args/call count).
+- **Fake**: a replacement implementation that behaves "like" the real thing but is not the real stack (for example, an in-memory network client that is not URLSession).
+- **Stub**: a simple return-value replacement (often with fixed canned responses).
+- **Hermetic server**: a local HTTP server spun up during tests so production code still uses URLSession, but no external network is required.
+- **Recorded fixture**: a captured request/response pair stored in-repo and replayed deterministically.
+
+Default rule:
+
+- Prefer **real** SwiftData, Vision, URLSession, and app flows.
+- Avoid mocks/fakes/stubs for core behaviors unless the dependency is fundamentally non-deterministic or external.
+
+Decision table (what to do in practice):
+
+| Dependency / Layer | Preferred test approach | Allowed exceptions |
+|---|---|---|
+| SwiftData models + queries | Real `ModelContainer` using in-memory/temporary store, real fetch descriptors | None (this is already deterministic) |
+| Search database (FTS5) | Real sqlite DB in a temp location, real queries | None |
+| Vision OCR / rectangle detection | Real Vision requests over a small fixture image set | If Vision output varies across iOS minors, apply tolerant comparison rules (documented) |
+| Networking (Gemini proxy, ISBN lookups) | URLSession to a hermetic local server + recorded fixtures | For truly external-only behavior, allow "smoke" tests that are opt-in and never run in CI |
+| CloudKit | Excluded from automated tests; use SwiftData without iCloud in tests | Manual QA checklist and/or dedicated non-CI test plan if needed |
+| Camera / Photos | UI tests using simulator camera/photos flows with deterministic media inputs | If simulator APIs are unstable, use checkpoint screenshots + logs and keep tests best-effort |
+| Time/randomness/concurrency | Prefer deterministic clocks and bounded timeouts; avoid `sleep` | Allow injection of `Clock`/scheduler only at seams where it meaningfully reduces flake |
+
+What this policy is *not*:
+
+- It does **not** require 100% code coverage at the expense of test quality.
+- It does **not** forbid all indirection. It forbids test doubles that hide real behavior.
+
 ---
 
 ## Test Organization
@@ -440,6 +474,64 @@ final class SearchDatabaseTests: FTS5TestCase {
 ## Integration Tests
 
 Integration tests verify that multiple components work together correctly.
+
+### Hermetic Network + Recorded Fixtures
+
+Integration tests must be able to run offline and in CI without secrets.
+
+Rules:
+
+- Do not call external services (Gemini proxy, ISBN providers) from default test runs.
+- Prefer URLSession hitting a *local* hermetic HTTP server started by the test process.
+- Use recorded fixtures (checked into the repo) for request/response playback.
+
+Fixture format (recommended):
+
+- Location: `BookQuotesTests/Fixtures/Network/<service>/<case>.json`
+- One file per interaction so diffs stay small.
+- Store both request matcher and response payload.
+
+Example (shape only):
+
+```json
+{
+  "request": { "method": "POST", "path": "/v1/extract", "headers": { "content-type": "application/json" } },
+  "response": { "status": 200, "headers": { "content-type": "application/json" }, "body": { "quotes": [] } }
+}
+```
+
+Redaction rules:
+
+- Never store API keys, auth headers, or user-identifying content.
+- If a payload includes text extracted from personal photos, replace it with synthetic text in the fixture.
+
+Strictness:
+
+- Unknown requests should fail fast with a clear diff (method/path/body).
+- Fixture updates must be explicit (no silent rewrites during a test run).
+
+### Vision and Camera Strategy
+
+Vision and camera behavior is best validated with "golden" integration tests and a small fixture set:
+
+- Store fixture images in the test bundle (asset catalog or bundled resources).
+- Run real Vision requests (`VNRecognizeTextRequest`, rectangle detection) over fixtures.
+- Compare output using tolerant rules (case folding, whitespace normalization) if iOS minors vary.
+
+For camera/PhotosUI:
+
+- Prefer UI tests using deterministic media inputs (seeded library assets, known photos).
+- Keep these tests best-effort, but require high-signal artifacts on failure (logs + checkpoint screenshots).
+
+### CloudKit and Concurrency Rules
+
+CloudKit is excluded from automated tests by default because it is non-deterministic and environment-dependent.
+
+Rules:
+
+- Tests should use SwiftData without iCloud, and avoid code paths that require CloudKit availability.
+- For async behaviors, prefer predicate-based waits over fixed sleeps.
+- Use bounded timeouts and log each wait step so failures are diagnosable from artifacts alone.
 
 ### Capture-to-Search Flow
 
