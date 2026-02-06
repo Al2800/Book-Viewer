@@ -78,8 +78,19 @@ final class ISBNScanner: NSObject {
             return result?.isbn
         } catch {
             let scanError = error as? ISBNScannerError ?? .detectionFailed(error.localizedDescription)
-            self.error = scanError
-            throw scanError
+
+            // For still-image scanning, treat Vision detection failures as "no barcode found" rather than
+            // a hard error. Real-time scanning already returns nil on detection errors, and callers of
+            // `scanImage(_:)` expect nil when no barcode is present.
+            switch scanError {
+            case .invalidImage, .invalidSampleBuffer:
+                self.error = scanError
+                throw scanError
+            case .detectionFailed:
+                return nil
+            case .noBarcodesFound:
+                return nil
+            }
         }
     }
 
@@ -172,14 +183,30 @@ final class ISBNScanner: NSObject {
 
     private nonisolated func performBarcodeDetection(on image: CIImage) async throws -> ScanResult? {
         return try await withCheckedThrowingContinuation { continuation in
+            // Vision can surface errors both via the request completion and by throwing from
+            // `handler.perform(_)`. Resume at most once to avoid fatal continuation misuse.
+            let lock = NSLock()
+            var hasResumed = false
+
+            func resumeOnce(_ action: () -> Void) {
+                lock.lock()
+                defer { lock.unlock() }
+
+                guard !hasResumed else { return }
+                hasResumed = true
+                action()
+            }
+
             let request = VNDetectBarcodesRequest { request, error in
                 if let error = error {
-                    continuation.resume(throwing: ISBNScannerError.detectionFailed(error.localizedDescription))
+                    resumeOnce {
+                        continuation.resume(throwing: ISBNScannerError.detectionFailed(error.localizedDescription))
+                    }
                     return
                 }
 
                 guard let results = request.results as? [VNBarcodeObservation] else {
-                    continuation.resume(returning: nil)
+                    resumeOnce { continuation.resume(returning: nil) }
                     return
                 }
 
@@ -203,12 +230,12 @@ final class ISBNScanner: NSObject {
                             boundingBox: observation.boundingBox,
                             symbology: observation.symbology
                         )
-                        continuation.resume(returning: result)
+                        resumeOnce { continuation.resume(returning: result) }
                         return
                     }
                 }
 
-                continuation.resume(returning: nil)
+                resumeOnce { continuation.resume(returning: nil) }
             }
 
             // Configure request for book barcodes
@@ -219,7 +246,9 @@ final class ISBNScanner: NSObject {
             do {
                 try handler.perform([request])
             } catch {
-                continuation.resume(throwing: ISBNScannerError.detectionFailed(error.localizedDescription))
+                resumeOnce {
+                    continuation.resume(throwing: ISBNScannerError.detectionFailed(error.localizedDescription))
+                }
             }
         }
     }

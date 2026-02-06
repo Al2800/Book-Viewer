@@ -95,9 +95,21 @@ final class CaptureSession {
 
     /// Add a new page capture to the session
     func addCapture(_ capture: PageCapture) {
-        capture.orderIndex = captures.count
-        captures.append(capture)
-        totalPages += 1
+        // SwiftData inverse relationships may already have linked this capture to `captures`
+        // if `capture.session` was set. Make this method idempotent and self-healing.
+        if capture.session?.id != id {
+            capture.session = self
+        }
+
+        if !captures.contains(where: { $0.id == capture.id }) {
+            captures.append(capture)
+        }
+
+        // Normalize ordering and keep derived counts consistent.
+        for (index, item) in captures.enumerated() {
+            item.orderIndex = index
+        }
+        totalPages = captures.count
     }
 
     /// Mark session as ready for processing

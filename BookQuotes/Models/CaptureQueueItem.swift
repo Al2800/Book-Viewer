@@ -30,8 +30,9 @@ final class CaptureQueueItem {
 
     // MARK: - Status
 
-    /// Current processing status
-    var status: QueueItemStatus
+    /// Stored status backing for SwiftData predicates.
+    /// Use the typed `status` computed property (below) in application code.
+    var statusRaw: String
 
     /// Higher priority items are processed first (default 0)
     var priority: Int
@@ -74,7 +75,7 @@ final class CaptureQueueItem {
         self.book = book
         self.imagePath = imagePath
         self.thumbnailData = thumbnailData
-        self.status = .pending
+        self.statusRaw = QueueItemStatus.pending.rawValue
         self.priority = priority
         self.retryCount = 0
         self.dateQueued = Date()
@@ -187,6 +188,15 @@ enum QueueItemStatus: String, Codable, CaseIterable {
         case .completed, .failed, .cancelled:
             return true
         }
+    }
+}
+
+// MARK: - Typed Status
+
+extension CaptureQueueItem {
+    var status: QueueItemStatus {
+        get { QueueItemStatus(rawValue: statusRaw) ?? .pending }
+        set { statusRaw = newValue.rawValue }
     }
 }
 
@@ -323,7 +333,8 @@ extension CaptureQueueItem {
 extension CaptureQueueItem {
     /// Fetch all pending items sorted by priority then date
     static var pendingDescriptor: FetchDescriptor<CaptureQueueItem> {
-        var descriptor = FetchDescriptor<CaptureQueueItem>(
+        let descriptor = FetchDescriptor<CaptureQueueItem>(
+            predicate: #Predicate<CaptureQueueItem> { $0.statusRaw == "pending" },
             sortBy: [
                 SortDescriptor(\.priority, order: .reverse),
                 SortDescriptor(\.dateQueued, order: .forward)
@@ -353,6 +364,7 @@ extension CaptureQueueItem {
     /// Fetch all permanently failed items
     static var failedDescriptor: FetchDescriptor<CaptureQueueItem> {
         FetchDescriptor<CaptureQueueItem>(
+            predicate: #Predicate<CaptureQueueItem> { $0.statusRaw == "failed" },
             sortBy: [SortDescriptor(\.dateQueued, order: .reverse)]
         )
     }

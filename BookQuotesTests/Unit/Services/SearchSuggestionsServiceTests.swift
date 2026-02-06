@@ -7,6 +7,18 @@ import XCTest
 @MainActor
 final class SearchSuggestionsServiceTests: FTS5TestCase {
 
+    override func setUp() async throws {
+        try await super.setUp()
+        // SearchSuggestionsService uses @AppStorage("recentSearches"), which persists across tests.
+        // Make these tests hermetic by clearing the key.
+        UserDefaults.standard.removeObject(forKey: "recentSearches")
+    }
+
+    override func tearDown() async throws {
+        UserDefaults.standard.removeObject(forKey: "recentSearches")
+        try await super.tearDown()
+    }
+
     func testAddToHistoryDedupes() {
         let service = SearchSuggestionsService(searchDB: searchDatabase)
         service.addToHistory("Focus")

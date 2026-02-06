@@ -423,10 +423,10 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
 
         var receivedStats: [QueueStats] = []
         let expectation = XCTestExpectation(description: "Receive stats updates")
-        expectation.expectedFulfillmentCount = 1
 
         queueManager.statsPublisher
             .dropFirst()  // Skip initial value
+            .receive(on: RunLoop.main)
             .sink { stats in
                 receivedStats.append(stats)
                 expectation.fulfill()
@@ -436,12 +436,10 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         logger.step(2, "Triggering stats update via start")
         await queueManager.start()
 
-        // Give time for async updates
-        try await Task.sleep(for: .milliseconds(100))
+        await fulfillment(of: [expectation], timeout: 2.0)
 
         logger.step(3, "Verifying stats received")
-        // Stats should be emitted when start() is called
-        XCTAssertFalse(receivedStats.isEmpty || true)  // May or may not receive depending on timing
+        XCTAssertFalse(receivedStats.isEmpty)
 
         logger.success("Stats publisher emits updates")
     }

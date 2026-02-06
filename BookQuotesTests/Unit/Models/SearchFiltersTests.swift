@@ -36,7 +36,9 @@ final class SearchFiltersTests: SwiftDataTestCase {
 
         XCTAssertTrue(filters.matches(quote: quote, book: book))
 
-        filters.toggleMarkingType(quote.markingType.displayName)
+        // Keep the marking filter active but make it a mismatch to ensure the marking-type filter is honored.
+        filters.toggleMarkingType(quote.markingType.displayName) // remove Underline
+        filters.addMarkingType(MarkingType.highlight.displayName)
         XCTAssertFalse(filters.matches(quote: quote, book: book))
     }
 

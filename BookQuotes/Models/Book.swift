@@ -17,7 +17,9 @@ final class Book {
     var coverThumbnailData: Data?
     var coverFullData: Data?
 
-    var status: ReadingStatus
+    // Store as raw String to keep SwiftData predicates working reliably across toolchains.
+    // Expose a typed enum via the computed `status` property below.
+    var statusRaw: String
 
     var dateAdded: Date
     var dateStarted: Date?
@@ -53,12 +55,21 @@ final class Book {
         self.subtitle = subtitle
         self.publisher = publisher
         self.isbn = isbn
-        self.status = .wantToRead
+        self.statusRaw = ReadingStatus.wantToRead.rawValue
         self.dateAdded = Date()
         self.dateModified = Date()
         self.quotes = []
         self.collections = []
         self.tags = []
+    }
+}
+
+// MARK: - Typed Status
+
+extension Book {
+    var status: ReadingStatus {
+        get { ReadingStatus(rawValue: statusRaw) ?? .wantToRead }
+        set { statusRaw = newValue.rawValue }
     }
 }
 
@@ -92,6 +103,7 @@ extension Book {
     /// Books currently being read
     static var currentlyReading: FetchDescriptor<Book> {
         FetchDescriptor<Book>(
+            predicate: #Predicate<Book> { $0.statusRaw == "currently_reading" },
             sortBy: [SortDescriptor(\.dateStarted, order: .reverse)]
         )
     }

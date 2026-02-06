@@ -113,9 +113,10 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
         logger.step(1, "Setting up stats observer")
         var receivedStats: [QueueStats] = []
         let expectation = XCTestExpectation(description: "Receive stats updates")
-        expectation.expectedFulfillmentCount = 2  // Initial + after add
+        // Fulfill once when we have observed both the initial value and at least one change.
 
         queueManager.statsPublisher
+            .receive(on: RunLoop.main)
             .sink { stats in
                 receivedStats.append(stats)
                 if receivedStats.count >= 2 {
