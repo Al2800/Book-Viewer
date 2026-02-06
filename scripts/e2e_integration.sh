@@ -16,10 +16,19 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT="$PROJECT_DIR/BookQuotes.xcodeproj"
 SCHEME="${SCHEME:-BookQuotes}"
 DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 17}"
-ARTIFACTS_DIR="${ARTIFACTS_DIR:-$PROJECT_DIR/artifacts/integration-tests}"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULT_BUNDLE_BASE="${ARTIFACTS_DIR}/integration-tests-${TIMESTAMP}"
-LOG_FILE_BASE="${ARTIFACTS_DIR}/integration-tests-${TIMESTAMP}"
+
+SCRIPT_SLUG="$(basename "${BASH_SOURCE[0]}" .sh)"
+GIT_SHA="$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo nogit)"
+RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)-$GIT_SHA}"
+ARTIFACTS_BASE="${ARTIFACTS_BASE:-$PROJECT_DIR/artifacts}"
+ARTIFACTS_DIR="${ARTIFACTS_DIR:-$ARTIFACTS_BASE/$SCRIPT_SLUG/$RUN_ID}"
+
+LOGS_DIR="$ARTIFACTS_DIR/logs"
+XCRESULTS_DIR="$ARTIFACTS_DIR/xcresults"
+REPORTS_DIR="$ARTIFACTS_DIR/reports"
+
+RESULT_BUNDLE_BASE="${XCRESULTS_DIR}/integration-tests"
+LOG_FILE_BASE="${LOGS_DIR}/integration-tests"
 RESULT_BUNDLE=""
 LOG_FILE=""
 ONLY_TESTING="${ONLY_TESTING:-}"
@@ -46,7 +55,7 @@ log_error() {
 # Setup
 setup() {
   log_info "Setting up integration test run..."
-  mkdir -p "$ARTIFACTS_DIR"
+  mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR"
 
 }
 
@@ -93,10 +102,10 @@ run_tests() {
 generate_coverage() {
   if [[ -d "$RESULT_BUNDLE" ]]; then
     log_info "Generating coverage report..."
-    xcrun xccov view --report "$RESULT_BUNDLE" > "${ARTIFACTS_DIR}/coverage-${TIMESTAMP}.txt" 2>/dev/null || true
+    xcrun xccov view --report "$RESULT_BUNDLE" > "${REPORTS_DIR}/coverage.txt" 2>/dev/null || true
 
     # Also generate JSON for programmatic access
-    xcrun xccov view --report --json "$RESULT_BUNDLE" > "${ARTIFACTS_DIR}/coverage-${TIMESTAMP}.json" 2>/dev/null || true
+    xcrun xccov view --report --json "$RESULT_BUNDLE" > "${REPORTS_DIR}/coverage.json" 2>/dev/null || true
   fi
 }
 

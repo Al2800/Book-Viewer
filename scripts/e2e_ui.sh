@@ -19,13 +19,22 @@ PROJECT="$PROJECT_DIR/BookQuotes.xcodeproj"
 SCHEME="${SCHEME:-BookQuotes}"
 TEST_PLAN="${TEST_PLAN:-FullRegressionPlan}"
 DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 17}"
-ARTIFACTS_DIR="${ARTIFACTS_DIR:-$PROJECT_DIR/artifacts/ui-tests}"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULT_BUNDLE_BASE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}"
-LOG_FILE_BASE="${ARTIFACTS_DIR}/ui-tests-${TIMESTAMP}"
+
+SCRIPT_SLUG="$(basename "${BASH_SOURCE[0]}" .sh)"
+GIT_SHA="$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo nogit)"
+RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)-$GIT_SHA}"
+ARTIFACTS_BASE="${ARTIFACTS_BASE:-$PROJECT_DIR/artifacts}"
+ARTIFACTS_DIR="${ARTIFACTS_DIR:-$ARTIFACTS_BASE/$SCRIPT_SLUG/$RUN_ID}"
+
+LOGS_DIR="$ARTIFACTS_DIR/logs"
+XCRESULTS_DIR="$ARTIFACTS_DIR/xcresults"
+REPORTS_DIR="$ARTIFACTS_DIR/reports"
+SCREENSHOTS_DIR="$ARTIFACTS_DIR/screenshots"
+
+RESULT_BUNDLE_BASE="${XCRESULTS_DIR}/ui-tests"
+LOG_FILE_BASE="${LOGS_DIR}/ui-tests"
 RESULT_BUNDLE=""
 LOG_FILE=""
-SCREENSHOTS_DIR="${ARTIFACTS_DIR}/screenshots"
 ONLY_TESTING="${ONLY_TESTING:-}"
 RETRY_COUNT="${RETRY_COUNT:-1}"
 TIMEOUT="${TIMEOUT:-1200}"
@@ -51,8 +60,7 @@ log_error() {
 # Setup
 setup() {
   log_info "Setting up UI test run..."
-  mkdir -p "$ARTIFACTS_DIR"
-  mkdir -p "$SCREENSHOTS_DIR"
+  mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR" "$SCREENSHOTS_DIR"
 
   # Intentionally avoid destructive cleanup steps here.
 }
@@ -114,7 +122,7 @@ extract_screenshots() {
     log_info "Extracting screenshots from test results..."
 
     # Use xcresulttool to extract attachments
-    xcrun xcresulttool get --path "$RESULT_BUNDLE" --format json > "${ARTIFACTS_DIR}/results-${TIMESTAMP}.json" 2>/dev/null || true
+    xcrun xcresulttool get --path "$RESULT_BUNDLE" --format json > "${REPORTS_DIR}/results.json" 2>/dev/null || true
 
     # Copy any screenshots captured during test
     if [[ -d "$SCREENSHOTS_DIR" ]] && [[ "$(ls -A "$SCREENSHOTS_DIR" 2>/dev/null)" ]]; then
@@ -134,7 +142,7 @@ extract_summary() {
 # Generate failure report
 generate_failure_report() {
   if [[ -f "$LOG_FILE" ]]; then
-    local FAILURE_REPORT="${ARTIFACTS_DIR}/failures-${TIMESTAMP}.txt"
+    local FAILURE_REPORT="${REPORTS_DIR}/failures.txt"
 
     log_info "Generating failure report..."
 
