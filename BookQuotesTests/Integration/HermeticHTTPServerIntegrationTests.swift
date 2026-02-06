@@ -31,6 +31,19 @@ final class HermeticHTTPServerIntegrationTests: XCTestCase {
         XCTAssertEqual(requests.count, 1)
         XCTAssertEqual(requests[0].path, "/hello")
         XCTAssertEqual(requests[0].headers["Authorization"], "<redacted>")
+
+        let lines = server.allStructuredLogLines()
+        XCTAssertEqual(lines.count, 1)
+
+        let obj = try XCTUnwrap(try JSONSerialization.jsonObject(with: Data(lines[0].utf8)) as? [String: Any])
+        XCTAssertEqual(obj["type"] as? String, "hermetic_http")
+        XCTAssertEqual(obj["method"] as? String, "GET")
+        XCTAssertEqual(obj["path"] as? String, "/hello")
+        XCTAssertEqual(obj["status"] as? Int, 200)
+        XCTAssertEqual(obj["matched_route"] as? Bool, true)
+
+        let headers = try XCTUnwrap(obj["request_headers"] as? [String: Any])
+        XCTAssertEqual(headers["Authorization"] as? String, "<redacted>")
     }
 
     func testServer_UnknownRequest_ReturnsDiagnosticBody_AndRecords() async throws {
@@ -58,6 +71,15 @@ final class HermeticHTTPServerIntegrationTests: XCTestCase {
         let messages = server.allUnexpectedRequestMessages()
         XCTAssertEqual(messages.count, 1)
         XCTAssertTrue(messages[0].contains("Unexpected request: GET /nope"))
+
+        let lines = server.allStructuredLogLines()
+        XCTAssertEqual(lines.count, 1)
+
+        let obj = try XCTUnwrap(try JSONSerialization.jsonObject(with: Data(lines[0].utf8)) as? [String: Any])
+        XCTAssertEqual(obj["method"] as? String, "GET")
+        XCTAssertEqual(obj["path"] as? String, "/nope")
+        XCTAssertEqual(obj["status"] as? Int, 500)
+        XCTAssertEqual(obj["matched_route"] as? Bool, false)
     }
 
     func testServer_ParsesRequestBody() async throws {

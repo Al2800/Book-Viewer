@@ -55,6 +55,7 @@ final class HermeticHTTPServer {
     private let routes = LockedState<[RouteKey: Handler]>([:])
     private let requestsLog = LockedState<[Request]>([])
     private let unexpectedRequestMessages = LockedState<[String]>([])
+    private let structuredLogLines = LockedState<[String]>([])
 
     private let redactHeaderNames: Set<String>
     private let failOnUnknownRequests: Bool
@@ -95,12 +96,21 @@ final class HermeticHTTPServer {
         unexpectedRequestMessages.current
     }
 
+    /// Structured logs, one JSON object per line, suitable for saving as a CI artifact.
+    func allStructuredLogLines() -> [String] {
+        structuredLogLines.current
+    }
+
     func resetRequests() {
         requestsLog.withLock { $0.removeAll(keepingCapacity: true) }
     }
 
     func resetUnexpectedRequests() {
         unexpectedRequestMessages.withLock { $0.removeAll(keepingCapacity: true) }
+    }
+
+    func resetStructuredLogs() {
+        structuredLogLines.withLock { $0.removeAll(keepingCapacity: true) }
     }
 
     func start() async throws {
@@ -253,28 +263,50 @@ final class HermeticHTTPServer {
     private func dispatch(_ request: Request) -> Response {
         let key = RouteKey(method: request.method.uppercased(), path: Self.normalizePath(request.path))
         let handler = routes.withLock { $0[key] }
+        let started = CFAbsoluteTimeGetCurrent()
+
+        let response: Response
+        let matchedRoute: Bool
+
         if let handler {
-            return handler(request)
+            matchedRoute = true
+            response = handler(request)
+        } else {
+            matchedRoute = false
+
+            let message = unexpectedRequestDiagnostic(for: request)
+            unexpectedRequestMessages.withLock { $0.append(message) }
+
+            if failOnUnknownRequests {
+                XCTFail(message)
+            }
+
+            // 500 is intentional: this is a test-time contract violation, not a real 404.
+            response = Response.text(500, message)
         }
 
-        let message = unexpectedRequestDiagnostic(for: request)
-        unexpectedRequestMessages.withLock { $0.append(message) }
+        let durationMs = Int(((CFAbsoluteTimeGetCurrent() - started) * 1000.0).rounded())
+        let redactedRequest = redact(request: request)
+        let redactedResponseHeaders = redact(headers: response.headers)
 
-        if failOnUnknownRequests {
-            XCTFail(message)
+        structuredLogLines.withLock { logs in
+            logs.append(
+                Self.formatStructuredLogLine(
+                    request: redactedRequest,
+                    responseStatus: response.statusCode,
+                    responseHeaders: redactedResponseHeaders,
+                    responseBodyBytes: response.body.count,
+                    matchedRoute: matchedRoute,
+                    durationMs: durationMs
+                )
+            )
         }
 
-        // 500 is intentional: this is a test-time contract violation, not a real 404.
-        return Response.text(500, message)
+        return response
     }
 
     private func redact(request: Request) -> Request {
-        var headers = request.headers
-        for (k, _) in headers {
-            if redactHeaderNames.contains(k.lowercased()) {
-                headers[k] = "<redacted>"
-            }
-        }
+        let headers = redact(headers: request.headers)
         return Request(
             method: request.method,
             path: request.path,
@@ -282,6 +314,16 @@ final class HermeticHTTPServer {
             headers: headers,
             body: request.body
         )
+    }
+
+    private func redact(headers: [String: String]) -> [String: String] {
+        var redacted = headers
+        for (k, _) in redacted {
+            if redactHeaderNames.contains(k.lowercased()) {
+                redacted[k] = "<redacted>"
+            }
+        }
+        return redacted
     }
 
     private func unexpectedRequestDiagnostic(for request: Request) -> String {
@@ -347,6 +389,49 @@ final class HermeticHTTPServer {
     private static func normalizePath(_ path: String) -> String {
         if path.isEmpty { return "/" }
         return path.hasPrefix("/") ? path : "/" + path
+    }
+
+    private static func formatStructuredLogLine(
+        request: Request,
+        responseStatus: Int,
+        responseHeaders: [String: String],
+        responseBodyBytes: Int,
+        matchedRoute: Bool,
+        durationMs: Int
+    ) -> String {
+        // Keep values small and stable; avoid copying the full request/response bodies into logs.
+        var obj: [String: Any] = [
+            "type": "hermetic_http",
+            "method": request.method.uppercased(),
+            "path": request.path,
+            "query": request.query ?? "",
+            "matched_route": matchedRoute,
+            "status": responseStatus,
+            "duration_ms": durationMs,
+            "request_body_bytes": request.body.count,
+            "response_body_bytes": responseBodyBytes,
+            "request_headers": request.headers,
+            "response_headers": responseHeaders
+        ]
+
+        if let keys = jsonTopLevelKeys(from: request.body) {
+            obj["request_json_keys"] = keys
+        }
+
+        // Response keys are sometimes useful, but only attempt if the content-type is JSON.
+        // (We do not have the response body in this method, just size; keys are omitted intentionally.)
+
+        let data = (try? JSONSerialization.data(withJSONObject: obj, options: [.sortedKeys])) ?? Data()
+        return String(data: data, encoding: .utf8) ?? "{}"
+    }
+
+    private static func jsonTopLevelKeys(from data: Data) -> [String]? {
+        guard !data.isEmpty else { return nil }
+        guard let obj = try? JSONSerialization.jsonObject(with: data) else { return nil }
+        if let dict = obj as? [String: Any] {
+            return dict.keys.sorted()
+        }
+        return nil
     }
 }
 
