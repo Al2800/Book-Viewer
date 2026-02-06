@@ -164,3 +164,160 @@ final class BookQuoteRelationshipIntegrationTests: SwiftDataTestCase {
         XCTAssertEqual(results.last?.id, q1.id)
     }
 }
+
+// MARK: - BookModelFetchDescriptorsIntegrationTests
+
+/// SwiftData integration tests that validate production fetch descriptors and predicates
+/// on real in-memory SwiftData containers (no CloudKit).
+@MainActor
+final class BookModelFetchDescriptorsIntegrationTests: SwiftDataTestCase {
+
+    func testFetchDescriptor_BookRecentlyAdded_SortsByDateAddedDescending() throws {
+        let older = Date(timeIntervalSince1970: 1_700_000_000)
+        let newer = Date(timeIntervalSince1970: 1_700_100_000)
+
+        let bookOld = TestFixtures.book { builder in
+            builder.title = "Old Added"
+            builder.author = "A"
+        }
+        bookOld.dateAdded = older
+
+        let bookNew = TestFixtures.book { builder in
+            builder.title = "New Added"
+            builder.author = "B"
+        }
+        bookNew.dateAdded = newer
+
+        modelContext.insert(bookOld)
+        modelContext.insert(bookNew)
+        try modelContext.save()
+
+        let results = try modelContext.fetch(Book.recentlyAdded)
+        XCTAssertEqual(results.map(\.id), [bookNew.id, bookOld.id])
+    }
+
+    func testFetchDescriptor_BookCurrentlyReading_FiltersAndSortsByDateStartedDescending() throws {
+        let older = Date(timeIntervalSince1970: 1_700_000_000)
+        let newer = Date(timeIntervalSince1970: 1_700_100_000)
+
+        let readingOld = TestFixtures.book { builder in
+            builder.title = "Reading Old"
+            builder.author = "Author"
+        }
+        readingOld.status = .currentlyReading
+        readingOld.dateStarted = older
+
+        let readingNew = TestFixtures.book { builder in
+            builder.title = "Reading New"
+            builder.author = "Author"
+        }
+        readingNew.status = .currentlyReading
+        readingNew.dateStarted = newer
+
+        let want = TestFixtures.book { builder in
+            builder.title = "Want To Read"
+            builder.author = "Author"
+        }
+        want.status = .wantToRead
+
+        modelContext.insert(readingOld)
+        modelContext.insert(readingNew)
+        modelContext.insert(want)
+        try modelContext.save()
+
+        let results = try modelContext.fetch(Book.currentlyReading)
+        XCTAssertEqual(results.count, 2)
+        XCTAssertEqual(results.map(\.id), [readingNew.id, readingOld.id])
+    }
+
+    func testFetchDescriptor_BookSearch_MatchesTitleOrAuthor() throws {
+        let book1 = TestFixtures.book { builder in
+            builder.title = "Atomic Habits"
+            builder.author = "James Clear"
+        }
+        let book2 = TestFixtures.book { builder in
+            builder.title = "Thinking, Fast and Slow"
+            builder.author = "Daniel Kahneman"
+        }
+        modelContext.insert(book1)
+        modelContext.insert(book2)
+        try modelContext.save()
+
+        let byAuthor = try modelContext.fetch(Book.search("clear"))
+        XCTAssertEqual(byAuthor.count, 1)
+        XCTAssertEqual(byAuthor.first?.id, book1.id)
+
+        let byTitle = try modelContext.fetch(Book.search("thinking"))
+        XCTAssertEqual(byTitle.count, 1)
+        XCTAssertEqual(byTitle.first?.id, book2.id)
+    }
+
+    func testFetchDescriptor_QuoteFavorites_FiltersAndSortsByCaptureDateDescending() throws {
+        let older = Date(timeIntervalSince1970: 1_700_000_000)
+        let newer = Date(timeIntervalSince1970: 1_700_100_000)
+
+        let book = TestFixtures.book()
+        modelContext.insert(book)
+
+        let favOld = TestFixtures.quote { builder in
+            builder.book = book
+            builder.text = "Favorite older quote content that is long enough to be valid."
+        }
+        favOld.isFavorite = true
+        favOld.captureDate = older
+
+        let favNew = TestFixtures.quote { builder in
+            builder.book = book
+            builder.text = "Favorite newer quote content that is long enough to be valid."
+        }
+        favNew.isFavorite = true
+        favNew.captureDate = newer
+
+        let notFav = TestFixtures.quote { builder in
+            builder.book = book
+            builder.text = "Non-favorite quote content that is long enough to be valid."
+        }
+        notFav.isFavorite = false
+
+        modelContext.insert(favOld)
+        modelContext.insert(favNew)
+        modelContext.insert(notFav)
+        try modelContext.save()
+
+        let results = try modelContext.fetch(Quote.favorites)
+        XCTAssertEqual(results.count, 2)
+        XCTAssertEqual(results.map(\.id), [favNew.id, favOld.id])
+    }
+
+    func testFetchDescriptor_QuoteSearch_MatchesTextOrMarginNote() throws {
+        let book = TestFixtures.book()
+        modelContext.insert(book)
+
+        let q1 = TestFixtures.quote { builder in
+            builder.book = book
+            builder.text = "This quote mentions productivity and habit building."
+        }
+        q1.marginNote = "underline this"
+
+        let q2 = TestFixtures.quote { builder in
+            builder.book = book
+            builder.text = "This quote is about something else entirely."
+        }
+        q2.marginNote = "remember: productivity"
+
+        let q3 = TestFixtures.quote { builder in
+            builder.book = book
+            builder.text = "Unrelated quote with no matching terms."
+        }
+
+        modelContext.insert(q1)
+        modelContext.insert(q2)
+        modelContext.insert(q3)
+        try modelContext.save()
+
+        let results = try modelContext.fetch(Quote.search("productivity"))
+        XCTAssertEqual(results.count, 2)
+        XCTAssertTrue(results.map(\.id).contains(q1.id))
+        XCTAssertTrue(results.map(\.id).contains(q2.id))
+    }
+}
