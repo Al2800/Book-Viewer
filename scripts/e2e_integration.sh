@@ -26,6 +26,7 @@ ARTIFACTS_DIR="${ARTIFACTS_DIR:-$ARTIFACTS_BASE/$SCRIPT_SLUG/$RUN_ID}"
 LOGS_DIR="$ARTIFACTS_DIR/logs"
 XCRESULTS_DIR="$ARTIFACTS_DIR/xcresults"
 REPORTS_DIR="$ARTIFACTS_DIR/reports"
+SCREENSHOTS_DIR="$ARTIFACTS_DIR/screenshots"
 
 RESULT_BUNDLE_BASE="${XCRESULTS_DIR}/integration-tests"
 LOG_FILE_BASE="${LOGS_DIR}/integration-tests"
@@ -52,10 +53,47 @@ log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
 }
 
+destination_sim_udid() {
+  local destination="$1"
+
+  if [[ "$destination" == *"id="* ]]; then
+    local id="${destination#*id=}"
+    id="${id%%,*}"
+    echo "$id"
+    return 0
+  fi
+
+  if [[ "$destination" == *"name="* ]]; then
+    local name="${destination#*name=}"
+    name="${name%%,*}"
+    xcrun simctl list devices available | grep -F "$name" | head -1 | grep -oE '[0-9A-F-]{36}' || true
+    return 0
+  fi
+
+  echo ""
+}
+
+capture_failure_artifacts() {
+  local attempt="$1"
+
+  mkdir -p "$REPORTS_DIR" "$SCREENSHOTS_DIR"
+
+  local udid
+  udid="$(destination_sim_udid "$DESTINATION")"
+  if [[ -z "$udid" ]]; then
+    udid="booted"
+  fi
+
+  # Best-effort: grab a screenshot and some diagnostics. These may fail if the simulator isn't booted.
+  xcrun simctl io "$udid" screenshot "${SCREENSHOTS_DIR}/failure-attempt${attempt}.png" 2>/dev/null || true
+  xcrun simctl diagnose "$udid" > "${REPORTS_DIR}/simctl-diagnose-attempt${attempt}.txt" 2>&1 || true
+  xcrun simctl spawn "$udid" log collect --output "${REPORTS_DIR}/simulator-logs-attempt${attempt}.logarchive" --last 5m 2>/dev/null || true
+}
+
 # Setup
 setup() {
   log_info "Setting up integration test run..."
-  mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR"
+  mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR" "$SCREENSHOTS_DIR"
 
 }
 
@@ -87,6 +125,10 @@ run_tests() {
     if [[ -n "$ONLY_TESTING" ]]; then
       CMD+=(-only-testing:"$ONLY_TESTING")
     fi
+
+    # Save the exact invocation for reproducibility.
+    printf '%q ' "${CMD[@]}" > "${REPORTS_DIR}/xcodebuild-command-attempt${attempt}.txt"
+    echo "" >> "${REPORTS_DIR}/xcodebuild-command-attempt${attempt}.txt"
 
     if "${CMD[@]}" 2>&1 | tee "$LOG_FILE"; then
       return 0
@@ -135,6 +177,7 @@ main() {
   else
     log_error "Integration tests failed!"
     extract_summary
+    capture_failure_artifacts "$((RETRY_COUNT + 1))"
 
     local END_TIME=$(date +%s)
     log_info "Duration: $((END_TIME - START_TIME))s"
