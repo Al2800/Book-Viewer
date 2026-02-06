@@ -101,4 +101,16 @@ final class CoverOCRHeuristicsTests: XCTestCase {
         XCTAssertEqual(guess.title, "Thinking, Fast and Slow")
         XCTAssertEqual(guess.author, "Daniel Kahneman")
     }
+
+    func testGuessTitleAndAuthor_PrefersLowestBottomCandidateForAuthor() {
+        let lines: [(text: String, box: CGRect)] = [
+            ("Atomic Habits", CGRect(x: 0.1, y: 0.78, width: 0.8, height: 0.1)),
+            // Subtitle can land in the bottom region depending on OCR box placement.
+            ("Tiny Changes, Remarkable Results", CGRect(x: 0.1, y: 0.44, width: 0.8, height: 0.08)),
+            ("James Clear", CGRect(x: 0.1, y: 0.20, width: 0.6, height: 0.06))
+        ]
+
+        let guess = CoverOCRHeuristics.guessTitleAndAuthor(from: lines)
+        XCTAssertEqual(guess.author, "James Clear")
+    }
 }

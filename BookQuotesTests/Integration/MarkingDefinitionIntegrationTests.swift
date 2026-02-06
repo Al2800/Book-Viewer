@@ -1,5 +1,7 @@
 import XCTest
 import SwiftData
+import UIKit
+import Vision
 
 @testable import BookQuotes
 
@@ -150,3 +152,170 @@ final class MarkingDefinitionIntegrationTests: SwiftDataTestCase {
     }
 }
 
+// MARK: - VisionOCRCoverExtractionIntegrationTests
+
+/// Golden integration tests that run real Vision OCR against synthetic cover fixtures.
+///
+/// Tolerance rules (to reduce iOS-minor OCR drift):
+/// - Compare using lowercase alphanumeric "word" tokens (punctuation/spacing ignored).
+/// - Require expected words to be a subset of detected words (allows subtitles, badges, etc).
+final class VisionOCRCoverExtractionIntegrationTests: XCTestCase {
+
+    func testVisionOCR_Covers_ProduceExpectedTitleAndAuthorTokens() async throws {
+        for cover in TestFixtures.OCRCoverFixtures.all {
+            try await assertCover(cover)
+        }
+    }
+
+    private func assertCover(_ cover: TestFixtures.OCRCoverFixtures.Cover) async throws {
+        let lines = try await recognizeTextLines(from: cover.image)
+
+        // Mirror production ordering: top-to-bottom (Vision coordinates), then left-to-right.
+        let sorted = lines.sorted { a, b in
+            if abs(a.box.midY - b.box.midY) > 0.03 {
+                return a.box.midY > b.box.midY
+            }
+            return a.box.minX < b.box.minX
+        }
+
+        let cleaned = sorted
+            .map { (text: CoverOCRHeuristics.sanitizeLine($0.text), box: $0.box) }
+            .filter { !$0.text.isEmpty }
+
+        let guess = CoverOCRHeuristics.guessTitleAndAuthor(from: cleaned)
+
+        if guess.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+            guess.author.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        {
+            let debug = debugDump(cover: cover, rawLines: sorted, cleanedLines: cleaned, guess: guess)
+            add(XCTAttachment(string: debug))
+            XCTFail("OCR guess unexpectedly empty for fixture id=\(cover.id)")
+            return
+        }
+
+        // Title: allow subtitles/badges and occasional OCR misses (one missing word for longer titles).
+        assertExpectedTitle(
+            expected: cover.expectedTitle,
+            actual: guess.title,
+            coverID: cover.id
+        )
+
+        // Author: compare compact alphanumeric strings so initials remain stable (e.g. "B.H." vs "BH").
+        assertExpectedAuthor(
+            expected: cover.expectedAuthor,
+            actual: guess.author,
+            coverID: cover.id
+        )
+    }
+
+    private func recognizeTextLines(from image: UIImage) async throws -> [(text: String, box: CGRect)] {
+        guard let cgImage = image.cgImage else {
+            throw NSError(domain: "VisionOCRCoverExtractionIntegrationTests", code: 1)
+        }
+
+        let observations: [VNRecognizedTextObservation] = await withCheckedContinuation { cont in
+            let request = VNRecognizeTextRequest { request, error in
+                if error != nil {
+                    cont.resume(returning: [])
+                    return
+                }
+                cont.resume(returning: (request.results as? [VNRecognizedTextObservation]) ?? [])
+            }
+            request.recognitionLevel = .accurate
+            request.usesLanguageCorrection = true
+            request.minimumTextHeight = 0.02
+
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    try handler.perform([request])
+                } catch {
+                    cont.resume(returning: [])
+                }
+            }
+        }
+
+        return observations.compactMap { obs in
+            guard let text = obs.topCandidates(1).first?.string else { return nil }
+            let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { return nil }
+            return (trimmed, obs.boundingBox)
+        }
+    }
+
+    private func assertExpectedTitle(expected: String, actual: String, coverID: String) {
+        let expectedWords = words(from: expected)
+        let actualWords = Set(words(from: actual))
+
+        let missing = expectedWords.filter { !actualWords.contains($0) }
+
+        // Strict for very short titles; tolerant for longer titles.
+        let allowedMissing = expectedWords.count <= 2 ? 0 : 1
+        if missing.count > allowedMissing {
+            let message =
+                "Missing title words for fixture id=\(coverID).\n" +
+                "Expected: \(expected)\n" +
+                "Actual:   \(actual)\n" +
+                "Missing:  \(missing.joined(separator: ", "))"
+            XCTFail(message)
+        }
+    }
+
+    private func assertExpectedAuthor(expected: String, actual: String, coverID: String) {
+        let expectedCompact = compactAlnum(expected)
+        let actualCompact = compactAlnum(actual)
+
+        if expectedCompact.isEmpty || actualCompact.isEmpty || !actualCompact.contains(expectedCompact) {
+            let message =
+                "Author mismatch for fixture id=\(coverID).\n" +
+                "Expected: \(expected)\n" +
+                "Actual:   \(actual)\n" +
+                "ExpectedCompact: \(expectedCompact)\n" +
+                "ActualCompact:   \(actualCompact)"
+            XCTFail(message)
+        }
+    }
+
+    private func words(from s: String) -> [String] {
+        let lowered = s.lowercased()
+        let cleaned = lowered.map { ch -> Character in
+            if ch.isLetter || ch.isNumber {
+                return ch
+            }
+            return " "
+        }
+        return String(cleaned)
+            .split(separator: " ")
+            .map(String.init)
+            .filter { !$0.isEmpty }
+    }
+
+    private func compactAlnum(_ s: String) -> String {
+        String(s.lowercased().filter { $0.isLetter || $0.isNumber })
+    }
+
+    private func debugDump(
+        cover: TestFixtures.OCRCoverFixtures.Cover,
+        rawLines: [(text: String, box: CGRect)],
+        cleanedLines: [(text: String, box: CGRect)],
+        guess: (title: String, author: String)
+    ) -> String {
+        var out: [String] = []
+        out.append("Fixture id: \(cover.id)")
+        out.append("Expected title: \(cover.expectedTitle)")
+        out.append("Expected author: \(cover.expectedAuthor)")
+        out.append("Guessed title: \(guess.title)")
+        out.append("Guessed author: \(guess.author)")
+        out.append("")
+        out.append("Raw lines (sorted):")
+        for item in rawLines {
+            out.append("  - y=\(String(format: "%.3f", item.box.midY)) x=\(String(format: "%.3f", item.box.minX)) : \(item.text)")
+        }
+        out.append("")
+        out.append("Cleaned lines:")
+        for item in cleanedLines {
+            out.append("  - y=\(String(format: "%.3f", item.box.midY)) x=\(String(format: "%.3f", item.box.minX)) : \(item.text)")
+        }
+        return out.joined(separator: "\n")
+    }
+}

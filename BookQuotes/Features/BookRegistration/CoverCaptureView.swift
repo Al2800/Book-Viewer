@@ -804,8 +804,12 @@ struct CoverOCRHeuristics {
         }
 
         // Otherwise pick a plausible line near the bottom.
+        //
+        // Prefer the lowest candidate (closest to the bottom edge), since subtitles often appear
+        // above the author and can otherwise be misclassified.
         let bottomCandidates = lines
             .filter { $0.box.midY < 0.45 }
+            .sorted { $0.box.midY < $1.box.midY } // lowest first
             .map(\.text)
             .filter { $0.count >= 5 && $0.count <= 40 }
             .filter { !$0.lowercased().contains("isbn") }
