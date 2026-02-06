@@ -46,10 +46,45 @@ jobs:
             -derivedDataPath artifacts/DerivedData \
             -enableCodeCoverage YES
 
+      - name: Generate Coverage HTML
+        if: always()
+        run: |
+          set -euxo pipefail
+
+          RESULT_BUNDLE="artifacts/xcresults/BookQuotesTests.xcresult"
+          OUTDIR="artifacts/coverage/ci"
+          THRESHOLDS="scripts/coverage_thresholds.json"
+
+          if [[ ! -d "$RESULT_BUNDLE" ]]; then
+            echo "No xcresult bundle found at $RESULT_BUNDLE; skipping coverage generation."
+            exit 0
+          fi
+
+          mkdir -p "$OUTDIR"
+
+          xcrun xccov view --report "$RESULT_BUNDLE" > "${OUTDIR}/summary.txt"
+          xcrun xccov view --report --json "$RESULT_BUNDLE" > "${OUTDIR}/coverage_report.json"
+          xcrun xccov view --archive --json "$RESULT_BUNDLE" > "${OUTDIR}/coverage_archive.json"
+
+          python3 scripts/coverage_report.py \
+            --report-json "${OUTDIR}/coverage_report.json" \
+            --archive-json "${OUTDIR}/coverage_archive.json" \
+            --lcov "${OUTDIR}/coverage.lcov" \
+            --html "${OUTDIR}/coverage.html" \
+            --thresholds "$THRESHOLDS"
+
       - name: Upload xcresult
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: xcresult-BookQuotesTests-${{ github.run_id }}
           path: artifacts/xcresults/BookQuotesTests.xcresult
+          if-no-files-found: warn
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-BookQuotes-${{ github.run_id }}
+          path: artifacts/coverage/ci
           if-no-files-found: warn
