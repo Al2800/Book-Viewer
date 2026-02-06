@@ -94,6 +94,7 @@ class BaseUITestCase: XCTestCase {
         if let failureCount = testRun?.failureCount, failureCount > 0 {
             logger.error("Test failed with \(failureCount) failure(s)")
             captureFailureScreenshot()
+            captureFailureHierarchy()
         }
 
         // Print log summary
@@ -184,6 +185,21 @@ class BaseUITestCase: XCTestCase {
     /// Capture a failure screenshot and add as attachment.
     private func captureFailureScreenshot() {
         let attachment = screenshots.captureFailure(failureMessage: "Test failed")
+        add(attachment)
+    }
+
+    /// Capture the current view hierarchy as a text attachment for debugging failures.
+    private func captureFailureHierarchy() {
+        // Keep size bounded so CI attachments remain usable.
+        let maxChars = 200_000
+        var hierarchy = app.debugDescription
+        if hierarchy.count > maxChars {
+            hierarchy = String(hierarchy.prefix(maxChars)) + "\n\n… (truncated to \(maxChars) chars)"
+        }
+
+        let attachment = XCTAttachment(string: hierarchy)
+        attachment.name = "ViewHierarchy"
+        attachment.lifetime = .keepAlways
         add(attachment)
     }
 
