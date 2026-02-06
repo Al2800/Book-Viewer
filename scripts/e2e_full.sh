@@ -102,8 +102,28 @@ setup() {
   SIMULATOR_UDID=$(xcrun simctl list devices available | grep "$SIMULATOR_NAME" | head -1 | grep -oE '[0-9A-F-]{36}' || true)
 
   if [[ -n "$SIMULATOR_UDID" ]]; then
-    log_info "Booting simulator: $SIMULATOR_NAME ($SIMULATOR_UDID)"
-    xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
+    local max_attempts="${SIM_BOOT_RETRY_COUNT:-3}"
+    local attempt=1
+
+    log_info "Ensuring simulator is booted: $SIMULATOR_NAME ($SIMULATOR_UDID) (max_attempts=$max_attempts)"
+    while [[ $attempt -le $max_attempts ]]; do
+      if [[ $attempt -gt 1 ]]; then
+        log_warn "Simulator boot retry $attempt/$max_attempts..."
+        sleep $((attempt * 2))
+      fi
+
+      xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
+      if xcrun simctl bootstatus "$SIMULATOR_UDID" -b 2>/dev/null; then
+        break
+      fi
+
+      {
+        echo "bootstatus failed (attempt=$attempt udid=$SIMULATOR_UDID name=$SIMULATOR_NAME time=$(date))"
+        xcrun simctl list devices "$SIMULATOR_UDID" 2>/dev/null || true
+      } > "${REPORTS_DIR}/sim-bootstatus-failure-attempt${attempt}.txt" 2>&1 || true
+
+      attempt=$((attempt + 1))
+    done
   else
     log_warn "Simulator '$SIMULATOR_NAME' not found, will use default"
   fi

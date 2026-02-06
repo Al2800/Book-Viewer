@@ -105,6 +105,48 @@ destination_sim_udid() {
   echo ""
 }
 
+boot_simulator_with_retries() {
+  local udid="$1"
+  local max_attempts="${SIM_BOOT_RETRY_COUNT:-3}"
+  local attempt=1
+
+  if [[ -z "$udid" ]]; then
+    return 0
+  fi
+
+  log_info "Ensuring simulator is booted: $udid (max_attempts=$max_attempts)"
+
+  while [[ $attempt -le $max_attempts ]]; do
+    if [[ $attempt -gt 1 ]]; then
+      log_warn "Simulator boot retry $attempt/$max_attempts..."
+      sleep $((attempt * 2))
+    fi
+
+    # boot may fail if already booted; ignore that and rely on bootstatus.
+    xcrun simctl boot "$udid" 2>/dev/null || true
+    if xcrun simctl bootstatus "$udid" -b 2>/dev/null; then
+      return 0
+    fi
+
+    # Best-effort snapshot for debugging boot flake.
+    {
+      echo "bootstatus failed (attempt=$attempt udid=$udid destination=$DESTINATION time=$(date))"
+      xcrun simctl list devices "$udid" 2>/dev/null || true
+    } > "${REPORTS_DIR}/sim-bootstatus-failure-attempt${attempt}.txt" 2>&1 || true
+
+    attempt=$((attempt + 1))
+  done
+
+  return 1
+}
+
+ensure_destination_simulator_booted() {
+  local udid
+  udid="$(destination_sim_udid "$DESTINATION")"
+  [[ -z "$udid" ]] && return 0
+  boot_simulator_with_retries "$udid"
+}
+
 capture_failure_artifacts() {
   local attempt="$1"
 
@@ -127,6 +169,7 @@ setup() {
   log_info "Setting up integration test run..."
   mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR" "$SCREENSHOTS_DIR"
   write_diagnostics_header
+  ensure_destination_simulator_booted || log_warn "Simulator bootstatus did not succeed; proceeding anyway."
 
 }
 
