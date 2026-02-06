@@ -302,6 +302,10 @@ struct BookDetailView: View {
                     QuoteCardView(quote: quote)
                 }
                 .buttonStyle(.plain)
+                // UI automation: make the tappable NavigationLink itself addressable.
+                // QuoteCardView may collapse its subtree into a single accessibility element; putting the
+                // identifier here ensures UI tests can tap and navigate reliably.
+                .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.container)
             }
         }
     }

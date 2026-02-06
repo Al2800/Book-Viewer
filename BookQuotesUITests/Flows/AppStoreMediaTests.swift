@@ -25,22 +25,36 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
         switchToGridViewIfPossible()
         captureScreenshot(named: "01_library_grid", description: "Library grid with seeded books")
 
-        logger.step(2, "Book detail")
+        logger.step(2, "Library list")
+        navigateToLibraryTabIfNeeded()
+        switchToListViewIfPossible()
+        captureScreenshot(named: "02_library_list", description: "Library list with seeded books")
+
+        logger.step(3, "Book detail")
+        switchToGridViewIfPossible()
         openFirstBookDetailForMedia()
-        captureScreenshot(named: "02_book_detail", description: "Book detail with quotes")
+        captureScreenshot(named: "03_book_detail", description: "Book detail with quotes")
 
-        logger.step(3, "Quote detail")
+        logger.step(4, "Quote detail")
         openFirstQuoteDetailForMedia()
-        captureScreenshot(named: "03_quote_detail", description: "Quote detail editor")
+        captureScreenshot(named: "04_quote_detail", description: "Quote detail editor")
 
-        logger.step(4, "Search results")
+        logger.step(5, "Search results")
         returnToLibraryRootForMedia()
         showSearchResultsForMedia(query: UITestData.SearchTokens.habits)
-        captureScreenshot(named: "04_search_results", description: "Search results for seeded quotes")
+        captureScreenshot(named: "05_search_results", description: "Search results for seeded quotes")
 
-        logger.step(5, "Capture")
+        logger.step(6, "Capture")
         showQuoteCaptureCameraForMedia()
-        captureScreenshot(named: "05_capture", description: "Quote capture camera")
+        captureScreenshot(named: "06_capture", description: "Quote capture camera")
+
+        logger.step(7, "Add Book")
+        openCoverCaptureForMedia()
+        captureScreenshot(named: "07_add_book", description: "Add Book cover capture flow")
+
+        logger.step(8, "Settings")
+        showSettingsForMedia()
+        captureScreenshot(named: "08_settings", description: "Settings")
     }
 }
 
@@ -104,6 +118,14 @@ fileprivate extension BaseUITestCase {
         }
     }
 
+    func switchToListViewIfPossible() {
+        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
+        guard viewModeToggle.waitForExistence(timeout: 2) else { return }
+        if viewModeToggle.buttons.count > 1 {
+            viewModeToggle.buttons.element(boundBy: 1).tap()
+        }
+    }
+
     func openFirstBookDetailForMedia() {
         // Try list row first
         let bookRow = app.descendants(matching: .any)
@@ -132,30 +154,102 @@ fileprivate extension BaseUITestCase {
     }
 
     func openFirstQuoteDetailForMedia() {
-        let quoteCard = app.otherElements
-            .matching(identifier: AccessibilityIdentifiers.QuoteCard.container)
-            .firstMatch
-        if quoteCard.waitForExistence(timeout: 4) {
-            quoteCard.tap()
-        } else {
-            let quoteCell = app.cells
-                .matching(identifier: AccessibilityIdentifiers.QuoteCard.container)
-                .firstMatch
-            if quoteCell.waitForExistence(timeout: 3) {
-                quoteCell.tap()
+        // Quotes may be below the fold in book detail. Also, with SwiftUI `NavigationLink`,
+        // the tappable element may present as a button or as a descendant static text.
+        // We scroll until we can find a hittable tap target, then tap via coordinates for reliability.
+
+        // Ensure we're on book detail.
+        _ = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 2)
+
+        // Start from a predictable position.
+        app.swipeDown()
+
+        let found = waitUntil("hittable quote tap target appears", timeout: 12) { [weak self] in
+            guard let self else { return false }
+
+            if self.firstHittableQuoteTapTarget() != nil { return true }
+            self.app.swipeUp()
+            return false
+        }
+        XCTAssertTrue(found, "Quote card not found or not hittable in book detail")
+
+        guard let tapTarget = firstHittableQuoteTapTarget() else { return }
+        tapReliably(tapTarget)
+
+        let editor = app.textViews[AccessibilityIdentifiers.QuoteDetail.textEditor]
+        let favoriteButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.favoriteButton]
+        let navTitle = app.navigationBars["Quote"]
+        let moreMenu = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
+
+        // If the first tap didn't navigate, retry once with a coordinate-tap (more reliable for SwiftUI).
+        if !favoriteButton.waitForExistence(timeout: 2) && !navTitle.waitForExistence(timeout: 2) {
+            tapReliably(tapTarget, forceCoordinateTap: true)
+        }
+
+        let isOnDetail = favoriteButton.waitForExistence(timeout: 3) || navTitle.waitForExistence(timeout: 3)
+        XCTAssertTrue(isOnDetail, "Quote detail screen not found")
+
+        // For App Store media we want the editing UI visible.
+        if !editor.exists {
+            if moreMenu.waitForExistence(timeout: 3) {
+                moreMenu.tap()
+                let edit = app.buttons["Edit"]
+                if edit.waitForExistence(timeout: 3) {
+                    edit.tap()
+                }
             }
         }
 
-        let editor = app.textViews[AccessibilityIdentifiers.QuoteDetail.textEditor]
-        if !editor.waitForExistence(timeout: 4) {
-            let favoriteButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.favoriteButton]
-            let navTitle = app.navigationBars["Quote"]
-            let isOnDetail = favoriteButton.exists || navTitle.exists
-            XCTAssertTrue(isOnDetail, "Quote detail screen not found")
+        XCTAssertTrue(editor.waitForExistence(timeout: 4), "Quote editor not shown (TextEditor missing)")
+    }
+
+    func firstHittableQuoteTapTarget() -> XCUIElement? {
+        // Prefer the actual tappable NavigationLink button when available.
+        let buttons = app.buttons
+            .matching(identifier: AccessibilityIdentifiers.QuoteCard.container)
+            .allElementsBoundByIndex
+        if let element = buttons.first(where: { $0.exists && $0.isHittable }) {
+            return element
         }
+
+        // Prefer quote text, as it's very likely to be hittable even when the container isn't.
+        let quoteTexts = app.staticTexts
+            .matching(identifier: AccessibilityIdentifiers.QuoteCard.quoteText)
+            .allElementsBoundByIndex
+        if let element = quoteTexts.first(where: { $0.exists && $0.isHittable }) {
+            return element
+        }
+
+        // Fallback: container (can appear under different element types).
+        let containers = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.QuoteCard.container)
+            .allElementsBoundByIndex
+        if let element = containers.first(where: { $0.exists && $0.isHittable }) {
+            return element
+        }
+
+        return nil
+    }
+
+    func tapReliably(_ element: XCUIElement, forceCoordinateTap: Bool = false) {
+        // Coordinate taps tend to be more reliable with SwiftUI lists and NavigationLinks.
+        guard element.exists else { return }
+        if element.isHittable && !forceCoordinateTap {
+            element.tap()
+            return
+        }
+        element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
     }
 
     func returnToLibraryRootForMedia() {
+        dismissKeyboard()
+
+        // Exit search focus if it is active (focused search can hide toolbar buttons like "+").
+        let cancelA = app.buttons["Cancel"]
+        let cancelB = app.navigationBars.buttons["Cancel"]
+        if cancelA.exists && cancelA.isHittable { cancelA.tap() }
+        if cancelB.exists && cancelB.isHittable { cancelB.tap() }
+
         // Try to pop navigation stack if we're in detail views
         for _ in 0..<2 {
             if app.navigationBars.buttons.element(boundBy: 0).exists {
@@ -178,24 +272,76 @@ fileprivate extension BaseUITestCase {
     }
 
     func showQuoteCaptureCameraForMedia() {
+        // Ensure the tab bar is tappable (keyboard can cover it after search).
+        dismissKeyboard()
+
         let captureTab = tabButton(.capture)
         assertExists(captureTab, timeout: 3, "Capture tab not found")
         captureTab.tap()
 
+        // For App Store media, capture the "Capture" landing screen (options list). This is stable,
+        // looks good in marketing, and avoids simulator camera permission/state flakiness.
         let quoteMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-        if quoteMode.waitForExistence(timeout: 4) {
-            quoteMode.tap()
+        assertExists(quoteMode, timeout: 5, "Capture options not visible")
+    }
+
+    func openCoverCaptureForMedia() {
+        // Assumes we're already on the Capture landing screen.
+        let coverMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
+        assertExists(coverMode, timeout: 5, "Cover capture option not visible")
+        coverMode.tap()
+
+        let nav = app.navigationBars["Add Book"]
+        assertExists(nav, timeout: 5, "Add Book flow not shown")
+    }
+
+    func openAddBookFlowForMedia() {
+        navigateToLibraryTabIfNeeded()
+        dismissKeyboard()
+
+        // Ensure search isn't active (search focus hides trailing toolbar items).
+        let searchField = app.searchFields.firstMatch
+        if searchField.exists {
+            searchField.tap()
+            let clearText = app.buttons["Clear text"]
+            if clearText.exists && clearText.isHittable {
+                clearText.tap()
+            }
         }
 
-        let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-        if bookCard.waitForExistence(timeout: 5) {
-            bookCard.tap()
+        let cancelA = app.buttons["Cancel"]
+        let cancelB = app.navigationBars.buttons["Cancel"]
+        if cancelA.exists && cancelA.isHittable { cancelA.tap() }
+        if cancelB.exists && cancelB.isHittable { cancelB.tap() }
+        dismissKeyboard()
+
+        // The "+" is a toolbar item; it can surface under navigationBars.buttons.
+        let addByNavId = app.navigationBars.buttons[AccessibilityIdentifiers.Library.addBookButton]
+        let addByAnyId = app.buttons[AccessibilityIdentifiers.Library.addBookButton]
+        let addByLabel = app.navigationBars.buttons["Add"]
+
+        if addByNavId.waitForExistence(timeout: 2) && addByNavId.isHittable {
+            addByNavId.tap()
+        } else if addByAnyId.waitForExistence(timeout: 2) && addByAnyId.isHittable {
+            addByAnyId.tap()
+        } else if addByLabel.waitForExistence(timeout: 2) && addByLabel.isHittable {
+            addByLabel.tap()
+        } else if app.navigationBars.buttons.count > 0 {
+            app.navigationBars.buttons.element(boundBy: app.navigationBars.buttons.count - 1).tap()
         }
 
-        let captureReady =
-            app.buttons[AccessibilityIdentifiers.Capture.captureButton].waitForExistence(timeout: 5) ||
-            app.otherElements[AccessibilityIdentifiers.Capture.cameraPreview].waitForExistence(timeout: 5)
-        XCTAssertTrue(captureReady, "Capture UI not visible")
+        let nav = app.navigationBars["Add Book"]
+        assertExists(nav, timeout: 5, "Add Book screen not shown")
+    }
+
+    func showSettingsForMedia() {
+        let settingsTab = tabButton(.settings)
+        assertExists(settingsTab, timeout: 3, "Settings tab not found")
+        settingsTab.tap()
+
+        // We don't have a single stable identifier for settings root; accept either nav title or a known toggle.
+        _ = app.navigationBars["Settings"].waitForExistence(timeout: 4) ||
+            app.staticTexts["Settings"].waitForExistence(timeout: 2)
     }
 
     func waitForSearchResults(timeout: TimeInterval) -> Bool {

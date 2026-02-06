@@ -87,18 +87,23 @@ struct QuoteCardView: View {
                 hasAppeared = true
             }
         }
-        // MARK: - Tap Gesture with Haptics
-        .onTapGesture {
-            guard let onTap = onTap else { return }
-            HapticManager.light()
-            onTap()
+        // MARK: - Tap/Press Gestures (Opt-In)
+        //
+        // Important: Only attach these gestures when we actually have an `onTap` handler.
+        // Otherwise, an inert gesture can intercept taps and break parent `NavigationLink` behavior.
+        .if(onTap != nil) { view in
+            view
+                .onTapGesture {
+                    HapticManager.light()
+                    onTap?()
+                }
+                .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                    guard !hasContextMenu else { return }
+                    withAnimation(.quickSpring) {
+                        isPressed = pressing
+                    }
+                }, perform: {})
         }
-        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-            guard onTap != nil && !hasContextMenu else { return }
-            withAnimation(.quickSpring) {
-                isPressed = pressing
-            }
-        }, perform: {})
         // MARK: - Context Menu
         .if(hasContextMenu) { view in
             view.polishedContextMenu(

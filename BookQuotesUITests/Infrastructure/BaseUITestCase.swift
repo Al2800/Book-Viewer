@@ -394,7 +394,9 @@ class BaseUITestCase: XCTestCase {
 
     func tabButton(_ tab: UITestTab) -> XCUIElement {
         let byIdentifier = app.tabBars.buttons[tab.identifier]
-        if byIdentifier.exists {
+        // Prefer the visible, tappable element. Some tab bar items expose an accessibilityIdentifier
+        // on a non-hittable subview, which can yield a valid query with an invalid hit point.
+        if byIdentifier.exists && byIdentifier.isHittable {
             return byIdentifier
         }
         return app.tabBars.buttons[tab.label]
@@ -421,10 +423,13 @@ class BaseUITestCase: XCTestCase {
 
             // If still visible, try Done/Return
             if app.keyboards.firstMatch.exists {
-                if app.keyboards.buttons["Done"].exists {
-                    app.keyboards.buttons["Done"].tap()
-                } else if app.keyboards.buttons["Return"].exists {
-                    app.keyboards.buttons["Return"].tap()
+                let candidates = ["Done", "Return", "Search", "Go", "Hide keyboard"]
+                for label in candidates {
+                    let button = app.keyboards.buttons[label]
+                    if button.exists && button.isHittable {
+                        button.tap()
+                        break
+                    }
                 }
             }
         }

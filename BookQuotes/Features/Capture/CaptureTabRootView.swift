@@ -17,7 +17,8 @@ struct CaptureTabRootView: View {
         ZStack {
             Color.backgroundPrimary.ignoresSafeArea()
 
-            if cameraPermission.isAuthorized {
+            // UI tests: bypass the camera permission gate so App Store media capture is deterministic.
+            if UITestConfiguration.isUITesting || cameraPermission.isAuthorized {
                 authorizedContent
             } else {
                 CameraPermissionView()
