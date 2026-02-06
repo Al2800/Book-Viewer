@@ -33,6 +33,33 @@ final class HermeticHTTPServerIntegrationTests: XCTestCase {
         XCTAssertEqual(requests[0].headers["Authorization"], "<redacted>")
     }
 
+    func testServer_UnknownRequest_ReturnsDiagnosticBody_AndRecords() async throws {
+        let server = HermeticHTTPServer(failOnUnknownRequests: false)
+        server.route(method: "GET", path: "/hello") { _ in
+            return .text(200, "world")
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        var request = URLRequest(url: server.baseURL.appendingPathComponent("nope"))
+        request.httpMethod = "GET"
+        request.timeoutInterval = 10
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let http = try XCTUnwrap(response as? HTTPURLResponse)
+        XCTAssertEqual(http.statusCode, 500)
+
+        let body = String(data: data, encoding: .utf8) ?? ""
+        XCTAssertTrue(body.contains("Unexpected request: GET /nope"))
+        XCTAssertTrue(body.contains("Known routes"))
+        XCTAssertTrue(body.contains("GET /hello"))
+
+        let messages = server.allUnexpectedRequestMessages()
+        XCTAssertEqual(messages.count, 1)
+        XCTAssertTrue(messages[0].contains("Unexpected request: GET /nope"))
+    }
+
     func testServer_ParsesRequestBody() async throws {
         let server = HermeticHTTPServer()
         server.route(method: "POST", path: "/echo") { req in

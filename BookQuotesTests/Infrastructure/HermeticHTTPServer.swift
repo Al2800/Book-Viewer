@@ -1,6 +1,7 @@
 import Foundation
 import Dispatch
 import Darwin
+import XCTest
 
 /// A tiny in-process HTTP/1.1 server intended for integration tests.
 ///
@@ -53,8 +54,10 @@ final class HermeticHTTPServer {
 
     private let routes = LockedState<[RouteKey: Handler]>([:])
     private let requestsLog = LockedState<[Request]>([])
+    private let unexpectedRequestMessages = LockedState<[String]>([])
 
     private let redactHeaderNames: Set<String>
+    private let failOnUnknownRequests: Bool
     private let queue = DispatchQueue(label: "HermeticHTTPServer.queue")
     private let queueKey = DispatchSpecificKey<Bool>()
 
@@ -63,8 +66,12 @@ final class HermeticHTTPServer {
     private let clients = LockedState<[Int32: ClientHandler]>([:])
     private(set) var port: UInt16?
 
-    init(redactHeaderNames: Set<String> = ["authorization", "cookie"]) {
+    init(
+        redactHeaderNames: Set<String> = ["authorization", "cookie"],
+        failOnUnknownRequests: Bool = true
+    ) {
         self.redactHeaderNames = Set(redactHeaderNames.map { $0.lowercased() })
+        self.failOnUnknownRequests = failOnUnknownRequests
         self.queue.setSpecific(key: queueKey, value: true)
     }
 
@@ -84,8 +91,16 @@ final class HermeticHTTPServer {
         requestsLog.current
     }
 
+    func allUnexpectedRequestMessages() -> [String] {
+        unexpectedRequestMessages.current
+    }
+
     func resetRequests() {
         requestsLog.withLock { $0.removeAll(keepingCapacity: true) }
+    }
+
+    func resetUnexpectedRequests() {
+        unexpectedRequestMessages.withLock { $0.removeAll(keepingCapacity: true) }
     }
 
     func start() async throws {
@@ -241,7 +256,16 @@ final class HermeticHTTPServer {
         if let handler {
             return handler(request)
         }
-        return Response.text(404, "no route for \(key.method) \(key.path)")
+
+        let message = unexpectedRequestDiagnostic(for: request)
+        unexpectedRequestMessages.withLock { $0.append(message) }
+
+        if failOnUnknownRequests {
+            XCTFail(message)
+        }
+
+        // 500 is intentional: this is a test-time contract violation, not a real 404.
+        return Response.text(500, message)
     }
 
     private func redact(request: Request) -> Request {
@@ -258,6 +282,66 @@ final class HermeticHTTPServer {
             headers: headers,
             body: request.body
         )
+    }
+
+    private func unexpectedRequestDiagnostic(for request: Request) -> String {
+        let redacted = redact(request: request)
+
+        let querySuffix: String
+        if let q = redacted.query, !q.isEmpty {
+            querySuffix = "?\(q)"
+        } else {
+            querySuffix = ""
+        }
+
+        let knownRoutes: [String] = routes.withLock { dict in
+            dict.keys
+                .map { "\($0.method) \($0.path)" }
+                .sorted()
+        }
+
+        var lines: [String] = []
+        lines.append("Unexpected request: \(redacted.method) \(redacted.path)\(querySuffix)")
+        lines.append("Known routes (\(knownRoutes.count)):")
+        if knownRoutes.isEmpty {
+            lines.append("  <none>")
+        } else {
+            for route in knownRoutes {
+                lines.append("  - \(route)")
+            }
+        }
+
+        let headerPairs = redacted.headers.sorted { $0.key.lowercased() < $1.key.lowercased() }
+        lines.append("Headers (\(headerPairs.count)):")
+        if headerPairs.isEmpty {
+            lines.append("  <none>")
+        } else {
+            for (k, v) in headerPairs {
+                lines.append("  - \(k): \(v)")
+            }
+        }
+
+        if redacted.body.isEmpty {
+            lines.append("Body: <empty>")
+        } else if let utf8 = String(data: redacted.body, encoding: .utf8) {
+            // If it's JSON, try to pretty print for better diffs.
+            if
+                let obj = try? JSONSerialization.jsonObject(with: redacted.body),
+                let pretty = try? JSONSerialization.data(withJSONObject: obj, options: [.prettyPrinted, .sortedKeys]),
+                let prettyString = String(data: pretty, encoding: .utf8)
+            {
+                lines.append("Body (json, \(redacted.body.count) bytes):")
+                lines.append(prettyString)
+            } else {
+                lines.append("Body (utf8, \(redacted.body.count) bytes):")
+                lines.append(utf8)
+            }
+        } else {
+            lines.append("Body (base64, \(redacted.body.count) bytes):")
+            lines.append(redacted.body.base64EncodedString())
+        }
+
+        return lines.joined(separator: "\n")
     }
 
     private static func normalizePath(_ path: String) -> String {
