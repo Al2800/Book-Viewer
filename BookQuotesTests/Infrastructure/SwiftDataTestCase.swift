@@ -81,15 +81,17 @@ class SwiftDataTestCase: XCTestCase {
     override func tearDown() async throws {
         logger.info("Tearing down SwiftData test environment")
 
-        // Clear all data
-        try? modelContext.delete(model: Quote.self)
-        try? modelContext.delete(model: Book.self)
-        try? modelContext.delete(model: MarkingDefinition.self)
-        try? modelContext.delete(model: Collection.self)
-        try? modelContext.delete(model: Tag.self)
-        try? modelContext.delete(model: CaptureSession.self)
-        try? modelContext.delete(model: PageCapture.self)
-        try? modelContext.delete(model: CaptureQueueItem.self)
+        // Clear all data. Avoid SwiftData/CoreData batch delete here because it can produce
+        // noisy constraint trigger violations when relationships exist.
+        try? deleteAll(Quote.self)
+        try? deleteAll(Book.self)
+        try? deleteAll(MarkingDefinition.self)
+        try? deleteAll(Collection.self)
+        try? deleteAll(Tag.self)
+        try? deleteAll(CaptureSession.self)
+        try? deleteAll(PageCapture.self)
+        try? deleteAll(CaptureQueueItem.self)
+        try? modelContext.save()
 
         modelContext = nil
         modelContainer = nil
@@ -97,6 +99,16 @@ class SwiftDataTestCase: XCTestCase {
         print(logger.summary())
 
         try await super.tearDown()
+    }
+
+    // MARK: - Cleanup Helpers
+
+    /// Delete all instances of a model type via per-instance deletes (not batch delete).
+    func deleteAll<T: PersistentModel>(_ modelType: T.Type) throws {
+        let items = try modelContext.fetch(FetchDescriptor<T>())
+        for item in items {
+            modelContext.delete(item)
+        }
     }
 
     // MARK: - Book Helpers
@@ -356,14 +368,14 @@ class SwiftDataTestCase: XCTestCase {
 
     /// Clear all data from context
     func clearAllData() throws {
-        try modelContext.delete(model: QuoteCorrection.self)
-        try modelContext.delete(model: Quote.self)
-        try modelContext.delete(model: Book.self)
-        try modelContext.delete(model: Collection.self)
-        try modelContext.delete(model: Tag.self)
-        try modelContext.delete(model: CaptureSession.self)
-        try modelContext.delete(model: PageCapture.self)
-        try modelContext.delete(model: CaptureQueueItem.self)
+        try deleteAll(QuoteCorrection.self)
+        try deleteAll(Quote.self)
+        try deleteAll(Book.self)
+        try deleteAll(Collection.self)
+        try deleteAll(Tag.self)
+        try deleteAll(CaptureSession.self)
+        try deleteAll(PageCapture.self)
+        try deleteAll(CaptureQueueItem.self)
         // Don't delete marking definitions - they should persist
         try modelContext.save()
         logger.debug("All data cleared")

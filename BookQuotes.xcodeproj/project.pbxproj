@@ -43,6 +43,7 @@
 		54313069E98048215B2B6E27 /* BookQuotes/Services/GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325C4BC08BDA497283297C60 /* BookQuotes/Services/GeminiService.swift */; };
 		55B8B6CEE3673749EB08ED15 /* BookQuotesUITests/Infrastructure/UITestLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C30B949544460092A9E6 /* BookQuotesUITests/Infrastructure/UITestLogger.swift */; };
 		55E7A430F1EDF9C258623B5A /* BookQuotesTests/Integration/CaptureToSearchFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B3BF388A44C3DAE40CFF6 /* BookQuotesTests/Integration/CaptureToSearchFlowTests.swift */; };
+		BDE5C470FC6240E1A9F23D69 /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D7629F2F65F49C2AB0A203B /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift */; };
 		578658D04612AB40000270C9 /* BookQuotesTests/Infrastructure/FTS5TestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABF9EC452BB861AA300CDBE /* BookQuotesTests/Infrastructure/FTS5TestCase.swift */; };
 		592BB3779ACC1E262132C971 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD800F634F9F9D7878756657 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift */; };
 		598ED41C555670E86BDDE523 /* BookQuotes/Components/CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BC0C35E2D6D878FA276F97 /* BookQuotes/Components/CaptureButton.swift */; };
@@ -200,6 +201,7 @@
 /* Begin PBXFileReference section */
 		0135236ACFC0C82EFD26C7DD /* BookQuotes/Services/SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Services/SubscriptionService.swift; sourceTree = SOURCE_ROOT; };
 		04EBEC9D6459A18C4DAEE7BA /* BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift; sourceTree = SOURCE_ROOT; };
+		3D7629F2F65F49C2AB0A203B /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift; sourceTree = SOURCE_ROOT; };
 		083C0E7212BA89EDBF1FCE49 /* BookQuotes/Services/CaptureQueueManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Services/CaptureQueueManager.swift; sourceTree = SOURCE_ROOT; };
 		08C6BF76ED5C08B39024A49B /* BookQuotesTests/Unit/Services/SearchServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Services/SearchServiceTests.swift; sourceTree = SOURCE_ROOT; };
 		0AA063B67952D226B7F05EEB /* OnboardingFlowTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingFlowTests.swift; sourceTree = "<group>"; };
@@ -613,6 +615,7 @@
 				327638572A478F489EA17DBC /* BookQuotesTests/Infrastructure/TestFixtures.swift */,
 				59C5DC5FA7E66C3C56987ECE /* BookQuotesTests/Infrastructure/TestLogger.swift */,
 				918B3BF388A44C3DAE40CFF6 /* BookQuotesTests/Integration/CaptureToSearchFlowTests.swift */,
+				3D7629F2F65F49C2AB0A203B /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift */,
 				04EBEC9D6459A18C4DAEE7BA /* BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift */,
 				C6DA27C0608CB11528988E30 /* BookQuotesTests/Integration/ExportFlowTests.swift */,
 				FD800F634F9F9D7878756657 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift */,
@@ -913,6 +916,7 @@
 				1DE825D909A3A8377B88A95F /* BookQuotesTests/Infrastructure/TestFixtures.swift in Sources */,
 				0EE23616F008FFDB5EFF241F /* BookQuotesTests/Infrastructure/TestLogger.swift in Sources */,
 				55E7A430F1EDF9C258623B5A /* BookQuotesTests/Integration/CaptureToSearchFlowTests.swift in Sources */,
+				BDE5C470FC6240E1A9F23D69 /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift in Sources */,
 				AE7E52FBBB886000C5A32E33 /* BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift in Sources */,
 				60C9C32D4022236EEC607658 /* BookQuotesTests/Integration/ExportFlowTests.swift in Sources */,
 				592BB3779ACC1E262132C971 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift in Sources */,
