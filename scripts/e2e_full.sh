@@ -18,6 +18,7 @@ RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)-$GIT_SHA}"
 ARTIFACTS_BASE="${ARTIFACTS_BASE:-$PROJECT_DIR/artifacts}"
 ARTIFACTS_DIR="${ARTIFACTS_DIR:-$ARTIFACTS_BASE/$SCRIPT_SLUG/$RUN_ID}"
 SUITE_LOG="$ARTIFACTS_DIR/logs/suite.log"
+REPORTS_DIR="$ARTIFACTS_DIR/reports"
 
 RUN_INTEGRATION=true
 RUN_UI=true
@@ -58,13 +59,43 @@ log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
 }
 
+write_diagnostics_header() {
+  log_info "Diagnostics:"
+  log_info "  run_id: $RUN_ID"
+  log_info "  git_sha: $GIT_SHA"
+  log_info "  artifacts: $ARTIFACTS_DIR"
+
+  local diag_file="${REPORTS_DIR}/diagnostics.txt"
+  {
+    echo "run_id=$RUN_ID"
+    echo "script=$SCRIPT_SLUG"
+    echo "project_dir=$PROJECT_DIR"
+    echo "git_sha=$GIT_SHA"
+    echo ""
+    echo "xcode_select=$(xcode-select -p 2>/dev/null || true)"
+    echo ""
+    xcodebuild -version 2>/dev/null || true
+    echo ""
+    sw_vers 2>/dev/null || true
+    echo ""
+    echo "RUN_INTEGRATION=$RUN_INTEGRATION"
+    echo "RUN_UI=$RUN_UI"
+    echo "SIMULATOR_NAME=${SIMULATOR_NAME:-iPhone 17}"
+    echo ""
+    xcrun simctl list devices available 2>/dev/null || true
+  } > "$diag_file" 2>&1 || true
+
+  log_info "Diagnostics file: $diag_file"
+}
+
 # Pre-test setup
 setup() {
   log_info "Setting up test environment..."
 
-  mkdir -p "$ARTIFACTS_DIR/logs"
+  mkdir -p "$ARTIFACTS_DIR/logs" "$REPORTS_DIR"
   # Capture suite-level output for debugging. Child scripts emit their own logs too.
   exec > >(tee -a "$SUITE_LOG") 2>&1
+  write_diagnostics_header
 
   # Boot simulator if needed
   SIMULATOR_NAME="${SIMULATOR_NAME:-iPhone 17}"

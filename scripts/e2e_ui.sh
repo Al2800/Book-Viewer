@@ -57,6 +57,40 @@ log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
 }
 
+write_diagnostics_header() {
+  log_info "Diagnostics:"
+  log_info "  run_id: $RUN_ID"
+  log_info "  git_sha: $GIT_SHA"
+  log_info "  scheme: $SCHEME"
+  log_info "  destination: $DESTINATION"
+  log_info "  artifacts: $ARTIFACTS_DIR"
+
+  local diag_file="${REPORTS_DIR}/diagnostics.txt"
+  {
+    echo "run_id=$RUN_ID"
+    echo "script=$SCRIPT_SLUG"
+    echo "project_dir=$PROJECT_DIR"
+    echo "git_sha=$GIT_SHA"
+    echo ""
+    echo "xcode_select=$(xcode-select -p 2>/dev/null || true)"
+    echo ""
+    xcodebuild -version 2>/dev/null || true
+    echo ""
+    sw_vers 2>/dev/null || true
+    echo ""
+    echo "SCHEME=$SCHEME"
+    echo "DESTINATION=$DESTINATION"
+    echo "TEST_PLAN=$TEST_PLAN"
+    echo "ONLY_TESTING=$ONLY_TESTING"
+    echo "RETRY_COUNT=$RETRY_COUNT"
+    echo "TIMEOUT=$TIMEOUT"
+    echo ""
+    xcrun simctl list devices available 2>/dev/null || true
+  } > "$diag_file" 2>&1 || true
+
+  log_info "Diagnostics file: $diag_file"
+}
+
 destination_sim_udid() {
   local destination="$1"
 
@@ -96,6 +130,7 @@ capture_failure_artifacts() {
 setup() {
   log_info "Setting up UI test run..."
   mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR" "$SCREENSHOTS_DIR"
+  write_diagnostics_header
 
   # Intentionally avoid destructive cleanup steps here.
 }
