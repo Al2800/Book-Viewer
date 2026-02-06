@@ -1,0 +1,55 @@
+name: iOS Unit + Integration Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+concurrency:
+  group: ios-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Xcode Version
+        run: |
+          xcodebuild -version
+          xcode-select -p
+
+      - name: List Simulators (Debug)
+        run: |
+          xcrun simctl list devices available | sed -n '1,200p'
+
+      - name: Run Tests
+        env:
+          NSUnbufferedIO: "YES"
+        run: |
+          set -euxo pipefail
+
+          DESTINATION="platform=iOS Simulator,name=iPhone 15,OS=latest"
+          RESULT_BUNDLE="artifacts/xcresults/BookQuotesTests.xcresult"
+
+          mkdir -p "$(dirname "$RESULT_BUNDLE")"
+
+          xcodebuild test \
+            -project BookQuotes.xcodeproj \
+            -scheme BookQuotes \
+            -destination "$DESTINATION" \
+            -resultBundlePath "$RESULT_BUNDLE" \
+            -derivedDataPath artifacts/DerivedData \
+            -enableCodeCoverage YES
+
+      - name: Upload xcresult
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcresult-BookQuotesTests-${{ github.run_id }}
+          path: artifacts/xcresults/BookQuotesTests.xcresult
+          if-no-files-found: warn
