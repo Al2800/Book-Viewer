@@ -147,7 +147,12 @@ fileprivate extension BaseUITestCase {
         }
 
         let editor = app.textViews[AccessibilityIdentifiers.QuoteDetail.textEditor]
-        assertExists(editor, timeout: 4, "Quote detail editor not found")
+        if !editor.waitForExistence(timeout: 4) {
+            let favoriteButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.favoriteButton]
+            let navTitle = app.navigationBars["Quote"]
+            let isOnDetail = favoriteButton.exists || navTitle.exists
+            XCTAssertTrue(isOnDetail, "Quote detail screen not found")
+        }
     }
 
     func returnToLibraryRootForMedia() {

@@ -52,16 +52,27 @@ struct CoverCaptureView: View {
                 if isProcessing {
                     processingOverlay
                 }
-
-                // Capture controls
-                controlsOverlay
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Keep controls out of the main overlay layout so they do not cover the guide frame.
+            .safeAreaInset(edge: .top, spacing: 0) {
+                modeSwitcher
+            }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                bottomControls
+            }
             .onAppear {
                 updatePreviewFrame(size: proxy.size)
             }
             .onChange(of: proxy.size) { _, newSize in
                 updatePreviewFrame(size: newSize)
+            }
+            .onPreferenceChange(CoverPreviewFramePreferenceKey.self) { rect in
+                // Use the actual visible preview frame for guide-frame cropping.
+                // This stays correct even when we reserve safe area space for controls.
+                if rect.width > 0, rect.height > 0 {
+                    previewFrame = rect
+                }
             }
         }
         .coordinateSpace(name: coordinateSpaceName)
@@ -98,9 +109,25 @@ struct CoverCaptureView: View {
         if cameraService.isAuthorized {
             CameraPreviewView(cameraService: cameraService)
                 .ignoresSafeArea()
+                .background(
+                    GeometryReader { frameProxy in
+                        Color.clear.preference(
+                            key: CoverPreviewFramePreferenceKey.self,
+                            value: frameProxy.frame(in: .named(coordinateSpaceName))
+                        )
+                    }
+                )
         } else {
             CameraPermissionView()
                 .environment(cameraPermission)
+                .background(
+                    GeometryReader { frameProxy in
+                        Color.clear.preference(
+                            key: CoverPreviewFramePreferenceKey.self,
+                            value: frameProxy.frame(in: .named(coordinateSpaceName))
+                        )
+                    }
+                )
         }
     }
 
@@ -228,56 +255,54 @@ struct CoverCaptureView: View {
 
     // MARK: - Controls Overlay
 
-    private var controlsOverlay: some View {
-        VStack(spacing: Spacing.lg) {
-            // Mode switcher at top
-            Picker("Mode", selection: $captureMode) {
-                Label("Photo", systemImage: "camera.fill").tag(CaptureMode.photo)
-                Label("Barcode", systemImage: "barcode.viewfinder").tag(CaptureMode.barcode)
-            }
-            .pickerStyle(.segmented)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
-            .padding(.horizontal, Spacing.lg)
-            .padding(.vertical, Spacing.sm)
-            .glassFloating(cornerRadius: CornerRadius.lg)
-            .padding(.horizontal, Spacing.lg)
-            .padding(.top, Spacing.lg)
-
-            Spacer()
-
-            VStack(spacing: Spacing.md) {
-                if captureMode == .photo && !isProcessing {
-                    CaptureButton(isProcessing: isProcessing) {
-                        capturePhoto()
-                    }
-                    .disabled(!cameraService.isSessionRunning)
-
-                    if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
-                        Button("Use Test Cover") {
-                            captureTestCover()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
-                    }
-                }
-
-                if !isProcessing {
-                    Button {
-                        showManualEntry()
-                    } label: {
-                        Text("Enter manually")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .glassButton()
-                }
-            }
-            .padding(Spacing.lg)
-            .glassFloating(cornerRadius: CornerRadius.xl)
-            .padding(.horizontal, Spacing.lg)
-            .padding(.bottom, Spacing.lg)
+    private var modeSwitcher: some View {
+        Picker("Mode", selection: $captureMode) {
+            Label("Photo", systemImage: "camera.fill").tag(CaptureMode.photo)
+            Label("Barcode", systemImage: "barcode.viewfinder").tag(CaptureMode.barcode)
         }
+        .pickerStyle(.segmented)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.vertical, Spacing.sm)
+        .glassFloating(cornerRadius: CornerRadius.lg)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.top, Spacing.sm)
+    }
+
+    private var bottomControls: some View {
+        VStack(spacing: Spacing.md) {
+            if captureMode == .photo && !isProcessing {
+                CaptureButton(isProcessing: isProcessing) {
+                    capturePhoto()
+                }
+                .disabled(!cameraService.isSessionRunning)
+
+                if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
+                    Button("Use Test Cover") {
+                        captureTestCover()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
+                }
+            }
+
+            if !isProcessing {
+                Button {
+                    showManualEntry()
+                } label: {
+                    Text("Enter manually")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                }
+                .glassButton()
+            }
+        }
+        .padding(Spacing.md)
+        .frame(maxWidth: .infinity)
+        .glassFloating(cornerRadius: CornerRadius.xl)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.bottom, Spacing.md)
     }
 
     // MARK: - Toolbar
@@ -346,8 +371,8 @@ struct CoverCaptureView: View {
                 let image = try await cameraService.capturePhoto()
                 let previewCropped = cameraService.cropToPreviewVisibleArea(image)
                 let framed = cropToGuideFrame(previewCropped)
-                let autoCropped = await cameraService.autoCropDocument(framed)
-                await handleCapturedCover(autoCropped)
+                // Avoid double-cropping: document auto-crop is tuned for pages and can over-crop covers.
+                await handleCapturedCover(framed)
 
             } catch {
                 isProcessing = false
@@ -486,11 +511,23 @@ struct CoverCaptureView: View {
 
         do {
             let result = try await service.extractCoverMetadata(from: image)
-            let authors = splitAuthors(result.author)
+            var authors = splitAuthors(result.author)
             let isbnValue = result.isbn?.trimmingCharacters(in: .whitespacesAndNewlines)
             let isbn10 = isbnValue?.count == 10 ? isbnValue : nil
             let isbn13 = isbnValue?.count == 13 ? isbnValue : nil
             let categories = result.genre.map { [$0] } ?? []
+
+            // If Gemini fails to read key fields but did not throw, use OCR to backfill.
+            let titleTrimmed = result.title.trimmingCharacters(in: .whitespacesAndNewlines)
+            if titleTrimmed.isEmpty || authors.isEmpty {
+                let ocr = await extractCoverMetadataViaOCR(from: image, coverImageData: coverData)
+                if titleTrimmed.isEmpty, !ocr.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    return ocr
+                }
+                if authors.isEmpty, !ocr.authors.isEmpty {
+                    authors = ocr.authors
+                }
+            }
 
             return BookMetadata(
                 title: result.title,
@@ -505,11 +542,164 @@ struct CoverCaptureView: View {
                 source: .coverPhoto
             )
         } catch {
-            // Fall back to manual entry but keep cover image
-            var fallback = BookMetadata(title: "", authors: [], source: .manual)
-            fallback.coverImageData = coverData
-            return fallback
+            // Gemini can fail due to network/model issues. Fall back to on-device OCR to prefill.
+            let ocrFallback = await extractCoverMetadataViaOCR(from: image, coverImageData: coverData)
+            if !ocrFallback.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return ocrFallback
+            }
+
+            // Final fallback: manual entry but keep cover image.
+            return BookMetadata(
+                title: "",
+                authors: [],
+                coverImageData: coverData,
+                source: .manual
+            )
         }
+    }
+
+    private func extractCoverMetadataViaOCR(from image: UIImage, coverImageData: Data?) async -> BookMetadata {
+        guard let cgImage = normalizeOrientation(image).cgImage else {
+            return BookMetadata(
+                title: "",
+                authors: [],
+                coverImageData: coverImageData,
+                source: .manual
+            )
+        }
+
+        let observations: [VNRecognizedTextObservation] = await withCheckedContinuation { continuation in
+            let request = VNRecognizeTextRequest { request, error in
+                if error != nil {
+                    continuation.resume(returning: [])
+                    return
+                }
+                continuation.resume(returning: (request.results as? [VNRecognizedTextObservation]) ?? [])
+            }
+            request.recognitionLevel = .accurate
+            request.usesLanguageCorrection = true
+            request.minimumTextHeight = 0.02
+
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    try handler.perform([request])
+                } catch {
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+
+        // Sort top-to-bottom, then left-to-right.
+        let lines: [(text: String, box: CGRect)] = observations.compactMap { obs in
+            guard let text = obs.topCandidates(1).first?.string else { return nil }
+            let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { return nil }
+            return (trimmed, obs.boundingBox)
+        }
+        .sorted { a, b in
+            if abs(a.box.midY - b.box.midY) > 0.03 {
+                return a.box.midY > b.box.midY
+            }
+            return a.box.minX < b.box.minX
+        }
+
+        let cleaned = lines
+            .map { (text: sanitizeCoverOCRLine($0.text), box: $0.box) }
+            .filter { !$0.text.isEmpty }
+
+        let guess = guessTitleAndAuthor(from: cleaned)
+        return BookMetadata(
+            title: guess.title,
+            authors: guess.author.isEmpty ? [] : splitAuthors(guess.author),
+            coverImageData: coverImageData,
+            source: .coverPhoto
+        )
+    }
+
+    private func sanitizeCoverOCRLine(_ line: String) -> String {
+        var s = line
+            .replacingOccurrences(of: "\n", with: " ")
+            .replacingOccurrences(of: "  ", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Drop common UI/irrelevant strings if they leak into the crop.
+        let lowered = s.lowercased()
+        if lowered.contains("cancel") || lowered.contains("add book") || lowered.contains("confirm book") {
+            return ""
+        }
+
+        // Drop barcode/ISBN-heavy lines.
+        let digitCount = s.filter { $0.isNumber }.count
+        if digitCount >= max(5, s.count / 3) {
+            return ""
+        }
+
+        // Remove leading "BY " patterns.
+        if lowered.hasPrefix("by ") {
+            s = String(s.dropFirst(3)).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        return s
+    }
+
+    private func guessTitleAndAuthor(from lines: [(text: String, box: CGRect)]) -> (title: String, author: String) {
+        guard !lines.isEmpty else { return ("", "") }
+
+        // Prefer text near the top for title.
+        let topLines = lines.filter { $0.box.midY > 0.55 }.map(\.text)
+        let allLines = lines.map(\.text)
+        let titleSource = topLines.isEmpty ? allLines : topLines
+
+        let title = buildTitle(from: titleSource)
+        let author = findAuthor(in: lines) ?? ""
+        return (title, author)
+    }
+
+    private func buildTitle(from lines: [String]) -> String {
+        var parts: [String] = []
+        var total = 0
+        for line in lines {
+            let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard t.count >= 3 else { continue }
+            if t.lowercased().contains("isbn") { continue }
+            parts.append(t)
+            total += t.count
+            if parts.count >= 3 || total >= 40 {
+                break
+            }
+        }
+        return parts.joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func findAuthor(in lines: [(text: String, box: CGRect)]) -> String? {
+        // Explicit "by <author>"
+        for item in lines {
+            let lowered = item.text.lowercased()
+            if lowered.hasPrefix("by ") {
+                return String(item.text.dropFirst(3)).trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            if let range = lowered.range(of: " by ") {
+                let author = item.text[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+                if author.count >= 3 { return author }
+            }
+        }
+
+        // Otherwise pick a plausible line near the bottom.
+        let bottomCandidates = lines
+            .filter { $0.box.midY < 0.45 }
+            .map(\.text)
+            .filter { $0.count >= 5 && $0.count <= 40 }
+            .filter { !$0.lowercased().contains("isbn") }
+
+        // Heuristic: 2-4 "words" looks like a name.
+        for text in bottomCandidates {
+            let words = text.split(separator: " ")
+            if (2...5).contains(words.count) {
+                return text
+            }
+        }
+        return bottomCandidates.first
     }
 
     private func splitAuthors(_ raw: String) -> [String] {
@@ -636,6 +826,14 @@ extension CoverCaptureView {
 // MARK: - Guide Frame Preference
 
 private struct CoverGuideFramePreferenceKey: PreferenceKey {
+    static var defaultValue: CGRect = .zero
+
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+        value = nextValue()
+    }
+}
+
+private struct CoverPreviewFramePreferenceKey: PreferenceKey {
     static var defaultValue: CGRect = .zero
 
     static func reduce(value: inout CGRect, nextValue: () -> CGRect) {

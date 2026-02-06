@@ -1,2 +1,11 @@
 # bv (beads viewer) local config and caches
 .bv/
+
+# Xcode user-specific state (should never be committed)
+*.xcuserstate
+*.xcuserdata
+**/xcuserdata/
+
+# Derived artifacts created by scripts and builds
+artifacts/
+build/

@@ -214,6 +214,9 @@ struct BookCoverCard: View {
     private var statusBadge: some View {
         Text(book.status.displayName)
             .font(.caption2)
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+            .allowsTightening(true)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(statusColor.opacity(0.15))
@@ -421,6 +424,9 @@ struct BookListRow: View {
     private var statusBadge: some View {
         Text(book.status.displayName)
             .font(.caption2)
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+            .allowsTightening(true)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(statusColor.opacity(0.15))

@@ -60,7 +60,9 @@ struct BookEditView: View {
     @FocusState private var focusedField: Field?
 
     enum Field: Hashable {
+        case title, author, subtitle
         case isbn, publishYear, pageCount
+        case publisher, genre, notes
     }
 
     // MARK: - Query for book count
@@ -179,6 +181,9 @@ struct BookEditView: View {
                         }
                         .buttonStyle(.bordered)
                         .tint(.brand)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                        .allowsTightening(true)
                         .frame(maxWidth: .infinity)
                     }
 
@@ -189,6 +194,9 @@ struct BookEditView: View {
                         Label("Library", systemImage: "photo.on.rectangle")
                     }
                     .buttonStyle(.bordered)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .allowsTightening(true)
                     .frame(maxWidth: .infinity)
 
                     if coverImage != nil {
@@ -198,6 +206,9 @@ struct BookEditView: View {
                             Label("Remove", systemImage: "trash")
                         }
                         .buttonStyle(.bordered)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                        .allowsTightening(true)
                         .frame(maxWidth: .infinity)
                     }
                 }
@@ -251,18 +262,27 @@ struct BookEditView: View {
             VStack(spacing: Spacing.md) {
                 TextField("Title", text: $title)
                     .textContentType(.none)
+                    .submitLabel(.next)
+                    .focused($focusedField, equals: .title)
+                    .onSubmit { focusedField = .author }
                     .textFieldStyle(.plain)
                     .fieldChrome()
                     .shake(trigger: titleShakeTrigger)
 
                 TextField("Author", text: $author)
                     .textContentType(.name)
+                    .submitLabel(.next)
+                    .focused($focusedField, equals: .author)
+                    .onSubmit { focusedField = .subtitle }
                     .textFieldStyle(.plain)
                     .fieldChrome()
                     .shake(trigger: authorShakeTrigger)
 
                 TextField("Subtitle", text: $subtitle)
                     .textContentType(.none)
+                    .submitLabel(.done)
+                    .focused($focusedField, equals: .subtitle)
+                    .onSubmit { focusedField = nil }
                     .textFieldStyle(.plain)
                     .fieldChrome()
             }
@@ -289,6 +309,9 @@ struct BookEditView: View {
                     .fieldChrome()
 
                 TextField("Publisher", text: $publisher)
+                    .submitLabel(.next)
+                    .focused($focusedField, equals: .publisher)
+                    .onSubmit { focusedField = .publishYear }
                     .textFieldStyle(.plain)
                     .fieldChrome()
 
@@ -315,6 +338,7 @@ struct BookEditView: View {
                     }
                 }
                 .pickerStyle(.menu)
+                .focused($focusedField, equals: .genre)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fieldChrome()
             }
@@ -341,6 +365,9 @@ struct BookEditView: View {
         sectionCard(title: "Notes", subtitle: "Optional") {
             TextField("Add notes about this book...", text: $notes, axis: .vertical)
                 .lineLimit(3...6)
+                .submitLabel(.done)
+                .focused($focusedField, equals: .notes)
+                .onSubmit { focusedField = nil }
                 .textFieldStyle(.plain)
                 .fieldChrome(minHeight: 88)
         }

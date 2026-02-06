@@ -117,7 +117,7 @@ struct CaptureOptionCard: View {
 
                 ZStack {
                     Circle()
-                        .fill(Color.backgroundSecondary)
+                        .fill(color.opacity(0.12))
                         .frame(width: 28, height: 28)
 
                     Image(systemName: "chevron.right")
@@ -128,11 +128,6 @@ struct CaptureOptionCard: View {
             .padding(.vertical, Spacing.lg)
             .padding(.horizontal, Spacing.lg)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(alignment: .leading) {
-                RoundedRectangle(cornerRadius: CornerRadius.lg)
-                    .fill(color.opacity(0.1))
-                    .frame(width: 6)
-            }
             .glassCard(cornerRadius: CornerRadius.lg)
             .overlay {
                 RoundedRectangle(cornerRadius: CornerRadius.lg)

@@ -20,8 +20,8 @@ set -euo pipefail
 #   APP_STORE_PREVIEW_STEP_DELAY - Seconds per preview step (set in test env)
 #
 # Example:
-#   SCREENSHOT_DESTINATIONS="platform=iOS Simulator,name=iPhone 15 Pro Max|platform=iOS Simulator,name=iPhone 15 Pro" \
-#   PREVIEW_DESTINATION="platform=iOS Simulator,name=iPhone 15 Pro Max" \
+#   SCREENSHOT_DESTINATIONS="platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro Max|platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro" \
+#   PREVIEW_DESTINATION="platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro Max" \
 #   ./scripts/appstore_media.sh
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -33,8 +33,8 @@ PREVIEW_TEST="${PREVIEW_TEST:-BookQuotesUITests/AppStorePreviewsTests/testPrevie
 ARTIFACTS_DIR="${ARTIFACTS_DIR:-$PROJECT_DIR/artifacts/app-store}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 BASE_DIR="$ARTIFACTS_DIR/$RUN_ID"
-SCREENSHOT_DESTINATIONS="${SCREENSHOT_DESTINATIONS:-platform=iOS Simulator,name=iPhone 15 Pro Max|platform=iOS Simulator,name=iPhone 15 Pro}"
-PREVIEW_DESTINATION="${PREVIEW_DESTINATION:-platform=iOS Simulator,name=iPhone 15 Pro Max}"
+SCREENSHOT_DESTINATIONS="${SCREENSHOT_DESTINATIONS:-platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro Max|platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro}"
+PREVIEW_DESTINATION="${PREVIEW_DESTINATION:-platform=iOS Simulator,OS=18.6,name=iPhone 16 Pro Max}"
 
 RUN_SCREENSHOTS=true
 RUN_PREVIEWS=true
