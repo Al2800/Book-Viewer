@@ -129,3 +129,102 @@ final class HermeticHTTPServerIntegrationTests: XCTestCase {
         XCTAssertEqual(generationConfig?["responseMimeType"] as? String, "application/json")
     }
 }
+
+final class ISBNLookupServiceHermeticPlaybackTests: XCTestCase {
+
+    func testISBNLookupService_Playback_UsesGoogleBooksFixture() async throws {
+        let server = HermeticHTTPServer()
+        server.route(method: "GET", path: "/books/v1/volumes") { req in
+            XCTAssertTrue(req.query?.contains("q=isbn:9780735211292") ?? false)
+
+            let json =
+                #"""
+                {
+                  "kind": "books#volumes",
+                  "totalItems": 1,
+                  "items": [
+                    {
+                      "id": "gb-atomic-habits",
+                      "volumeInfo": {
+                        "title": "Atomic Habits",
+                        "authors": ["James Clear"],
+                        "industryIdentifiers": [
+                          { "type": "ISBN_13", "identifier": "9780735211292" }
+                        ],
+                        "categories": ["Self-Help"],
+                        "language": "en"
+                      }
+                    }
+                  ]
+                }
+                """#
+
+            return .json(200, Data(json.utf8))
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let service = ISBNLookupService(
+            googleBooksBaseURL: server.baseURL.appendingPathComponent("books/v1/volumes"),
+            openLibraryBaseURL: server.baseURL.appendingPathComponent("api/books")
+        )
+
+        let metadata = try await service.lookup(isbn: "9780735211292")
+        XCTAssertEqual(metadata.title, "Atomic Habits")
+        XCTAssertEqual(metadata.primaryAuthor, "James Clear")
+        XCTAssertEqual(metadata.source, .googleBooks)
+    }
+
+    func testISBNLookupService_Playback_FallsBackToOpenLibrary() async throws {
+        let server = HermeticHTTPServer()
+        server.route(method: "GET", path: "/books/v1/volumes") { req in
+            XCTAssertTrue(req.query?.contains("q=isbn:9780451524935") ?? false)
+
+            let json =
+                #"""
+                {
+                  "kind": "books#volumes",
+                  "totalItems": 0,
+                  "items": null
+                }
+                """#
+
+            return .json(200, Data(json.utf8))
+        }
+
+        server.route(method: "GET", path: "/api/books") { req in
+            XCTAssertTrue(req.query?.contains("bibkeys=ISBN:9780451524935") ?? false)
+
+            let json =
+                #"""
+                {
+                  "ISBN:9780451524935": {
+                    "key": "/books/OL123M",
+                    "title": "Nineteen Eighty-Four",
+                    "authors": [{ "name": "George Orwell" }],
+                    "identifiers": {
+                      "isbn_13": ["9780451524935"],
+                      "isbn_10": ["0451524934"]
+                    }
+                  }
+                }
+                """#
+
+            return .json(200, Data(json.utf8))
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let service = ISBNLookupService(
+            googleBooksBaseURL: server.baseURL.appendingPathComponent("books/v1/volumes"),
+            openLibraryBaseURL: server.baseURL.appendingPathComponent("api/books")
+        )
+
+        let metadata = try await service.lookup(isbn: "9780451524935")
+        XCTAssertEqual(metadata.title, "Nineteen Eighty-Four")
+        XCTAssertEqual(metadata.primaryAuthor, "George Orwell")
+        XCTAssertEqual(metadata.source, .openLibrary)
+    }
+}

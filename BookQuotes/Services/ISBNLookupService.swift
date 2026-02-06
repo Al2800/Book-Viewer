@@ -168,16 +168,20 @@ actor ISBNLookupService {
 
     // MARK: - Initialization
 
-    init(session: URLSession = .shared) {
-        self.session = session
-        self.googleBooksBaseURL = ISBNLookupService.makeBaseURL(
+    init(
+        session: URLSession = .shared,
+        googleBooksBaseURL: URL = ISBNLookupService.makeBaseURL(
             host: "www.googleapis.com",
             path: "/books/v1/volumes"
-        )
-        self.openLibraryBaseURL = ISBNLookupService.makeBaseURL(
+        ),
+        openLibraryBaseURL: URL = ISBNLookupService.makeBaseURL(
             host: "openlibrary.org",
             path: "/api/books"
         )
+    ) {
+        self.session = session
+        self.googleBooksBaseURL = googleBooksBaseURL
+        self.openLibraryBaseURL = openLibraryBaseURL
     }
 
     // MARK: - Public API
