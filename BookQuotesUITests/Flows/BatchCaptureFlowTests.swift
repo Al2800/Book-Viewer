@@ -109,8 +109,11 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         // Look for scrollable horizontal content or image elements
         let thumbnails = app.scrollViews.images
 
-        // Give time for thumbnail to render
-        sleep(1)
+        // Wait for the thumbnail strip to update (avoid fixed sleeps).
+        _ = waitUntil("thumbnail appears", timeout: 3) { [weak self] in
+            guard let self else { return false }
+            return thumbnails.count > 0 || self.app.images.count > 0
+        }
 
         logger.step(3, "Verifying thumbnail exists")
         // The thumbnail strip should have at least one item
@@ -134,11 +137,23 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         }
 
         logger.step(2, "Capturing multiple images")
+        func waitForPageCount(_ expected: Int) {
+            let counter = app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
+            _ = waitUntil("page counter shows \(expected)", timeout: 6) {
+                if counter.exists, counter.label.contains("\(expected)") { return true }
+                let match = self.app.staticTexts.matching(
+                    NSPredicate(format: "label CONTAINS %@", "\(expected)")
+                ).firstMatch
+                return match.exists
+            }
+        }
+
         testImageButton.tap()
-        sleep(1)
+        waitForPageCount(1)
         testImageButton.tap()
-        sleep(1)
+        waitForPageCount(2)
         testImageButton.tap()
+        waitForPageCount(3)
 
         logger.step(3, "Verifying page count")
         let threePages = app.staticTexts.matching(
@@ -212,7 +227,12 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         }
 
         testImageButton.tap()
-        sleep(1)
+        // Wait for capture state to settle before attempting to complete.
+        _ = waitUntil("capture recorded", timeout: 6) { [weak self] in
+            guard let self else { return false }
+            let counter = self.app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
+            return counter.exists || self.app.staticTexts.matching(NSPredicate(format: "label CONTAINS '1'")).firstMatch.exists
+        }
 
         let doneButton = app.buttons["Done"]
         doneButton.tap()
@@ -251,7 +271,12 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         }
 
         testImageButton.tap()
-        sleep(1)
+        // Wait for capture state to settle before attempting to complete.
+        _ = waitUntil("capture recorded", timeout: 6) { [weak self] in
+            guard let self else { return false }
+            let counter = self.app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
+            return counter.exists || self.app.staticTexts.matching(NSPredicate(format: "label CONTAINS '1'")).firstMatch.exists
+        }
 
         let doneButton = app.buttons["Done"]
         doneButton.tap()
@@ -318,7 +343,11 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         }
 
         testImageButton.tap()
-        sleep(1)
+        _ = waitUntil("capture recorded", timeout: 6) { [weak self] in
+            guard let self else { return false }
+            let counter = self.app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
+            return counter.exists || self.app.staticTexts.matching(NSPredicate(format: "label CONTAINS '1'")).firstMatch.exists
+        }
 
         logger.step(2, "Tapping cancel with captures")
         // The X button in top left should show confirmation when there are captures

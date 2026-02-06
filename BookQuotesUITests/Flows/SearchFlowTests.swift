@@ -166,26 +166,18 @@ final class SearchFlowTests: BaseUITestCase {
     }
 
     private func waitForResultsOrEmpty(timeout: TimeInterval) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if hasResults() {
-                return true
-            }
-            // Check for no results state using accessibility identifier
-            let noResults = app.otherElements[AccessibilityIdentifiers.Search.noResultsView]
-            if noResults.exists {
-                return true
-            }
-            // Also check for text-based no results
-            let noResultsText = app.staticTexts.matching(
+        return waitUntil("search results or empty state", timeout: timeout) { [weak self] in
+            guard let self else { return false }
+            if self.hasResults() { return true }
+
+            let noResults = self.app.otherElements[AccessibilityIdentifiers.Search.noResultsView]
+            if noResults.exists { return true }
+
+            let noResultsText = self.app.staticTexts.matching(
                 NSPredicate(format: "label CONTAINS 'No results'")
             ).firstMatch
-            if noResultsText.exists {
-                return true
-            }
-            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+            return noResultsText.exists
         }
-        return false
     }
 
     private func tapFirstHittable(_ elements: [XCUIElement]) -> Bool {

@@ -196,6 +196,29 @@ class BaseUITestCase: XCTestCase {
 
     // MARK: - Wait Utilities
 
+    /// Wait for an arbitrary condition to become true.
+    ///
+    /// Uses `XCTNSPredicateExpectation` to avoid fixed sleeps and to integrate with XCTest's waiting.
+    @discardableResult
+    func waitUntil(
+        _ description: String,
+        timeout: TimeInterval = 5,
+        file: StaticString = #file,
+        line: UInt = #line,
+        condition: @escaping () -> Bool
+    ) -> Bool {
+        let predicate = NSPredicate { _, _ in
+            condition()
+        }
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: self)
+        let result = XCTWaiter().wait(for: [expectation], timeout: timeout)
+        if result != .completed {
+            logger.warning("Timeout waiting for condition: \(description) (timeout=\(timeout)s)")
+            return false
+        }
+        return true
+    }
+
     /// Wait for an element to exist.
     /// - Parameters:
     ///   - element: The element to wait for.
@@ -225,16 +248,15 @@ class BaseUITestCase: XCTestCase {
         _ element: XCUIElement,
         timeout: TimeInterval = 5
     ) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-
-        while Date() < deadline {
-            if element.exists && element.isHittable {
-                return true
-            }
-            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        // KVC keys for predicate evaluation: `exists`, `hittable`, `enabled`.
+        let predicate = NSPredicate(format: "exists == true && hittable == true")
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: element)
+        let result = XCTWaiter().wait(for: [expectation], timeout: timeout)
+        if result != .completed {
+            logger.warning("Element not hittable after timeout=\(timeout)s. elementLabel='\(element.label)' elementId='\(element.identifier)'")
+            return false
         }
-
-        return false
+        return true
     }
 
     /// Wait for text to appear anywhere on screen.

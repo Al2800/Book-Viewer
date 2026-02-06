@@ -199,26 +199,21 @@ fileprivate extension BaseUITestCase {
     }
 
     func waitForSearchResults(timeout: TimeInterval) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
+        return waitUntil("search results or empty state", timeout: timeout) { [weak self] in
+            guard let self else { return false }
 
-        while Date() < deadline {
-            let bookRows = app.otherElements.matching(identifier: AccessibilityIdentifiers.Search.bookResultRow)
-            let quoteRows = app.otherElements.matching(identifier: AccessibilityIdentifiers.Search.quoteResultRow)
-            let bookButtons = app.buttons.matching(identifier: AccessibilityIdentifiers.Search.bookResultRow)
-            let quoteButtons = app.buttons.matching(identifier: AccessibilityIdentifiers.Search.quoteResultRow)
+            let bookRows = self.app.otherElements.matching(identifier: AccessibilityIdentifiers.Search.bookResultRow)
+            let quoteRows = self.app.otherElements.matching(identifier: AccessibilityIdentifiers.Search.quoteResultRow)
+            let bookButtons = self.app.buttons.matching(identifier: AccessibilityIdentifiers.Search.bookResultRow)
+            let quoteButtons = self.app.buttons.matching(identifier: AccessibilityIdentifiers.Search.quoteResultRow)
+
             if bookRows.count > 0 || quoteRows.count > 0 || bookButtons.count > 0 || quoteButtons.count > 0 {
                 return true
             }
 
-            let noResults = app.otherElements[AccessibilityIdentifiers.Search.noResultsView]
-            if noResults.exists {
-                return true
-            }
-
-            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+            let noResults = self.app.otherElements[AccessibilityIdentifiers.Search.noResultsView]
+            return noResults.exists
         }
-
-        return false
     }
 
     var previewStepPause: TimeInterval {
