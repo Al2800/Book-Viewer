@@ -22,6 +22,9 @@ class BaseUITestCase: XCTestCase {
 
     // MARK: - Properties
 
+    /// Keep references to interruption monitors so they remain active.
+    private var interruptionMonitors: [NSObjectProtocol] = []
+
     /// The application under test.
     var app: XCUIApplication!
 
@@ -81,9 +84,16 @@ class BaseUITestCase: XCTestCase {
             )
         }
 
+        installSystemInterruptionMonitors()
+
         // Launch app
         logger.info("Launching app with arguments: \(app.launchArguments)")
         app.launch()
+
+        // Attempt to clear any system permission alerts that can block automation.
+        // This is best-effort; on some simulator/OS versions AX may still be flaky.
+        sweepSpringboardAlerts()
+        app.tap()
 
         // Wait for app to be ready
         waitForAppReady()
@@ -108,6 +118,7 @@ class BaseUITestCase: XCTestCase {
         app = nil
         logger = nil
         screenshots = nil
+        interruptionMonitors.removeAll()
 
         super.tearDown()
     }
@@ -233,6 +244,86 @@ class BaseUITestCase: XCTestCase {
             return false
         }
         return true
+    }
+
+    // MARK: - Permission Handling
+
+    private func installSystemInterruptionMonitors() {
+        let token = addUIInterruptionMonitor(withDescription: "System permission alerts") { [weak self] alert in
+            guard let self else { return false }
+
+            // Prefer allowing permissions so flows can proceed (mock camera may still show prompts).
+            let allowLabels = [
+                "Allow While Using App",
+                "Allow Once",
+                "Allow",
+                "OK"
+            ]
+            for label in allowLabels {
+                let button = alert.buttons[label]
+                if button.exists {
+                    self.logger.info("Dismissing system alert by tapping '\(label)'")
+                    button.tap()
+                    return true
+                }
+            }
+
+            // Fallback: decline to avoid the alert blocking the run forever.
+            let denyLabels = [
+                "Don’t Allow",
+                "Don't Allow",
+                "Not Now"
+            ]
+            for label in denyLabels {
+                let button = alert.buttons[label]
+                if button.exists {
+                    self.logger.warning("Dismissing system alert by tapping '\(label)'")
+                    button.tap()
+                    return true
+                }
+            }
+
+            return false
+        }
+
+        interruptionMonitors.append(token)
+    }
+
+    /// Best-effort: tap through SpringBoard alerts that can block automation (camera/photos prompts).
+    private func sweepSpringboardAlerts() {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let alert = springboard.alerts.firstMatch
+        guard alert.exists else { return }
+
+        // Try the same allow-first strategy as the interruption monitor.
+        let allowLabels = [
+            "Allow While Using App",
+            "Allow Once",
+            "Allow",
+            "OK"
+        ]
+        for label in allowLabels {
+            let button = alert.buttons[label]
+            if button.exists {
+                logger.info("SpringBoard alert: tapping '\(label)'")
+                button.tap()
+                return
+            }
+        }
+
+        let denyLabels = [
+            "Don’t Allow",
+            "Don't Allow",
+            "Not Now"
+        ]
+        for label in denyLabels {
+            let button = alert.buttons[label]
+            if button.exists {
+                logger.warning("SpringBoard alert: tapping '\(label)'")
+                button.tap()
+                return
+            }
+        }
     }
 
     /// Wait for an element to exist.
