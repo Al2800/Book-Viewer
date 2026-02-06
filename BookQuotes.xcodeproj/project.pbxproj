@@ -45,6 +45,7 @@
 		55E7A430F1EDF9C258623B5A /* BookQuotesTests/Integration/CaptureToSearchFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B3BF388A44C3DAE40CFF6 /* BookQuotesTests/Integration/CaptureToSearchFlowTests.swift */; };
 		BBCBFEFA60694EDA96556676 /* BookQuotesTests/Integration/CollectionTagRelationshipIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2BD6E80B7BC4B47B9019AAE /* BookQuotesTests/Integration/CollectionTagRelationshipIntegrationTests.swift */; };
 		C382C16F1B1C4127AD23BBE7 /* BookQuotesTests/Integration/MarkingDefinitionIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89088A54BF114A3888722FE6 /* BookQuotesTests/Integration/MarkingDefinitionIntegrationTests.swift */; };
+		B72E5865B4F545B1886BB6D8 /* BookQuotesTests/Integration/FTSQueryCorrectnessIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0109DC7732AD43DD8A20D931 /* BookQuotesTests/Integration/FTSQueryCorrectnessIntegrationTests.swift */; };
 		BDE5C470FC6240E1A9F23D69 /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D7629F2F65F49C2AB0A203B /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift */; };
 		578658D04612AB40000270C9 /* BookQuotesTests/Infrastructure/FTS5TestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABF9EC452BB861AA300CDBE /* BookQuotesTests/Infrastructure/FTS5TestCase.swift */; };
 		592BB3779ACC1E262132C971 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD800F634F9F9D7878756657 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift */; };
@@ -203,6 +204,7 @@
 /* Begin PBXFileReference section */
 		0135236ACFC0C82EFD26C7DD /* BookQuotes/Services/SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Services/SubscriptionService.swift; sourceTree = SOURCE_ROOT; };
 		04EBEC9D6459A18C4DAEE7BA /* BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift; sourceTree = SOURCE_ROOT; };
+		0109DC7732AD43DD8A20D931 /* BookQuotesTests/Integration/FTSQueryCorrectnessIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Integration/FTSQueryCorrectnessIntegrationTests.swift; sourceTree = SOURCE_ROOT; };
 		3D7629F2F65F49C2AB0A203B /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift; sourceTree = SOURCE_ROOT; };
 		A2BD6E80B7BC4B47B9019AAE /* BookQuotesTests/Integration/CollectionTagRelationshipIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Integration/CollectionTagRelationshipIntegrationTests.swift; sourceTree = SOURCE_ROOT; };
 		89088A54BF114A3888722FE6 /* BookQuotesTests/Integration/MarkingDefinitionIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Integration/MarkingDefinitionIntegrationTests.swift; sourceTree = SOURCE_ROOT; };
@@ -622,6 +624,7 @@
 				3D7629F2F65F49C2AB0A203B /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift */,
 				A2BD6E80B7BC4B47B9019AAE /* BookQuotesTests/Integration/CollectionTagRelationshipIntegrationTests.swift */,
 				89088A54BF114A3888722FE6 /* BookQuotesTests/Integration/MarkingDefinitionIntegrationTests.swift */,
+				0109DC7732AD43DD8A20D931 /* BookQuotesTests/Integration/FTSQueryCorrectnessIntegrationTests.swift */,
 				04EBEC9D6459A18C4DAEE7BA /* BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift */,
 				C6DA27C0608CB11528988E30 /* BookQuotesTests/Integration/ExportFlowTests.swift */,
 				FD800F634F9F9D7878756657 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift */,
@@ -925,6 +928,7 @@
 				BDE5C470FC6240E1A9F23D69 /* BookQuotesTests/Integration/BookQuoteRelationshipIntegrationTests.swift in Sources */,
 				BBCBFEFA60694EDA96556676 /* BookQuotesTests/Integration/CollectionTagRelationshipIntegrationTests.swift in Sources */,
 				C382C16F1B1C4127AD23BBE7 /* BookQuotesTests/Integration/MarkingDefinitionIntegrationTests.swift in Sources */,
+				B72E5865B4F545B1886BB6D8 /* BookQuotesTests/Integration/FTSQueryCorrectnessIntegrationTests.swift in Sources */,
 				AE7E52FBBB886000C5A32E33 /* BookQuotesTests/Integration/DuplicateDetectionFlowTests.swift in Sources */,
 				60C9C32D4022236EEC607658 /* BookQuotesTests/Integration/ExportFlowTests.swift in Sources */,
 				592BB3779ACC1E262132C971 /* BookQuotesTests/Integration/OfflineQueueFlowTests.swift in Sources */,

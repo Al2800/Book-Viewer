@@ -33,11 +33,8 @@ class FTS5TestCase: SwiftDataTestCase {
 
     // MARK: - Properties
 
-    /// Search database with temporary file
+    /// Search database instance for tests.
     var searchDatabase: SearchDatabase!
-
-    /// Path to temporary database file
-    private var tempDatabasePath: URL!
 
     // MARK: - Lifecycle
 
@@ -46,15 +43,12 @@ class FTS5TestCase: SwiftDataTestCase {
 
         logger.info("Setting up FTS5 test environment")
 
-        // Create unique temp database path
-        let tempDir = FileManager.default.temporaryDirectory
-        let uniqueName = "test_search_\(UUID().uuidString).sqlite"
-        tempDatabasePath = tempDir.appendingPathComponent(uniqueName)
-
         do {
-            searchDatabase = try SearchDatabase(path: tempDatabasePath)
+            // Use in-memory DB to avoid filesystem side effects (and to respect the repo rule
+            // that agents must not delete files/directories without explicit approval).
+            searchDatabase = try SearchDatabase(inMemory: true)
             logger.success("FTS5 database created", context: [
-                "path": tempDatabasePath.lastPathComponent
+                "path": ":memory:"
             ])
         } catch {
             logger.error("Failed to create FTS5 database", error: error)
@@ -67,18 +61,6 @@ class FTS5TestCase: SwiftDataTestCase {
 
         // Close database connection by releasing reference
         searchDatabase = nil
-
-        // Delete temp database files
-        if let path = tempDatabasePath {
-            let fileManager = FileManager.default
-            try? fileManager.removeItem(at: path)
-            // WAL mode creates additional files
-            let walPath = URL(fileURLWithPath: path.path + "-wal")
-            let shmPath = URL(fileURLWithPath: path.path + "-shm")
-            try? fileManager.removeItem(at: walPath)
-            try? fileManager.removeItem(at: shmPath)
-            logger.debug("Cleaned up temp database files")
-        }
 
         try await super.tearDown()
     }

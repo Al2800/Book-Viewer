@@ -7,14 +7,23 @@ import SQLite3
 /// Uses porter stemming for word variations and BM25 for relevance ranking.
 actor SearchDatabase {
     private var db: OpaquePointer?
-    private let dbPath: URL
+    private let sqlitePath: String
 
     // MARK: - Initialization
 
     /// Initialize with default path in documents directory
     init() throws {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        dbPath = docs.appendingPathComponent("search_index.sqlite")
+        sqlitePath = docs.appendingPathComponent("search_index.sqlite").path
+
+        try openDatabase()
+        try createFTSTables()
+    }
+
+    /// Initialize an in-memory database (for tests).
+    init(inMemory: Bool) throws {
+        precondition(inMemory, "Use init() or init(path:) for on-disk databases")
+        sqlitePath = ":memory:"
 
         try openDatabase()
         try createFTSTables()
@@ -22,7 +31,7 @@ actor SearchDatabase {
 
     /// Initialize with a custom path (for testing)
     init(path: URL) throws {
-        dbPath = path
+        sqlitePath = path.path
 
         try openDatabase()
         try createFTSTables()
@@ -37,7 +46,7 @@ actor SearchDatabase {
     // MARK: - Database Setup
 
     private func openDatabase() throws {
-        guard sqlite3_open(dbPath.path, &db) == SQLITE_OK else {
+        guard sqlite3_open(sqlitePath, &db) == SQLITE_OK else {
             throw SearchError.databaseOpenFailed
         }
     }
@@ -98,13 +107,9 @@ actor SearchDatabase {
     private func buildFTSQuery(_ input: String) -> String {
         let terms = input
             .lowercased()
-            .trimmingCharacters(in: .whitespaces)
-            .components(separatedBy: .whitespaces)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
             .filter { !$0.isEmpty }
-            .map { term -> String in
-                // Escape special FTS5 characters
-                term.replacingOccurrences(of: "\"", with: "\"\"")
-            }
 
         guard !terms.isEmpty else { return "" }
 
