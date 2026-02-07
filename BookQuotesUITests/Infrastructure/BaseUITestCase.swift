@@ -402,6 +402,34 @@ class BaseUITestCase: XCTestCase {
         return app.tabBars.buttons[tab.label]
     }
 
+    @discardableResult
+    func tapTab(_ tab: UITestTab, timeout: TimeInterval = 3, file: StaticString = #file, line: UInt = #line) -> Bool {
+        // iPad can present TabView with a different element hierarchy than iPhone. Prefer identifiers,
+        // but fall back to labels and broader queries. Coordinate taps are typically more reliable
+        // than `.tap()` when isHittable is false on SwiftUI elements.
+
+        let candidates: [XCUIElement] = [
+            app.tabBars.buttons[tab.identifier],
+            app.buttons[tab.identifier],
+            app.tabBars.buttons[tab.label],
+            app.buttons[tab.label]
+        ]
+
+        for element in candidates {
+            if element.waitForExistence(timeout: timeout) {
+                if element.isHittable {
+                    element.tap()
+                } else {
+                    element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+                }
+                return true
+            }
+        }
+
+        XCTFail("Tab '\(tab.label)' not found", file: file, line: line)
+        return false
+    }
+
     /// Tap the back button in navigation.
     func tapBackButton() {
         let backButton = app.navigationBars.buttons.element(boundBy: 0)

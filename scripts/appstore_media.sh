@@ -53,6 +53,7 @@ RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 BASE_DIR="$ARTIFACTS_DIR/$RUN_ID"
 SCREENSHOT_DESTINATIONS="${SCREENSHOT_DESTINATIONS:-platform=iOS Simulator,OS=latest,name=iPhone 17 Pro Max|platform=iOS Simulator,OS=latest,name=iPad Pro 13-inch (M5)}"
 PREVIEW_DESTINATION="${PREVIEW_DESTINATION:-platform=iOS Simulator,OS=latest,name=iPhone 17 Pro Max}"
+MAX_UI_TEST_RETRIES="${MAX_UI_TEST_RETRIES:-2}"
 
 RUN_SCREENSHOTS=true
 RUN_PREVIEWS=true
@@ -91,6 +92,37 @@ log_warn() {
 
 log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
+}
+
+is_retryable_ui_test_failure() {
+  local log_file="$1"
+  [[ -f "$log_file" ]] || return 1
+
+  # iOS 26 simulator flake: UI test runner fails to initialize due to AX not loading.
+  if rg -q "Timed out waiting for AX loaded notification" "$log_file"; then
+    return 0
+  fi
+  if rg -q "Failed to initialize for UI testing" "$log_file"; then
+    return 0
+  fi
+  if rg -q "XCTDaemonErrorDomain Code=18" "$log_file"; then
+    return 0
+  fi
+
+  return 1
+}
+
+reboot_simulator() {
+  local destination="$1"
+  local udid
+  udid="$(destination_sim_udid "$destination")"
+  [[ -z "$udid" ]] && return 0
+
+  log_warn "Rebooting simulator udid=$udid"
+  xcrun simctl shutdown "$udid" 2>/dev/null || true
+  xcrun simctl boot "$udid" 2>/dev/null || true
+  xcrun simctl bootstatus "$udid" -b 2>/dev/null || true
+  sleep 3
 }
 
 destination_device_name() {
@@ -171,43 +203,61 @@ run_screenshots_for_destination() {
   local slug
   slug="$(destination_slug "$destination")"
   local output_dir="$BASE_DIR/screenshots/$slug"
-  local result_bundle="$output_dir/screenshots.xcresult"
-  local log_file="$output_dir/screenshots.log"
-  local cmd_file="$output_dir/reports/xcodebuild-command.txt"
 
   mkdir -p "$output_dir"
   mkdir -p "$output_dir/reports"
+  boot_simulator "$destination"
 
   log_info "Running screenshots on: $destination"
-  {
-    printf '%q ' xcodebuild test \
-      -project "$PROJECT" \
-      -scheme "$SCHEME" \
-      -destination "$destination" \
-      -only-testing:"$SCREENSHOT_TEST" \
-      -resultBundlePath "$result_bundle"
-    echo ""
-  } > "$cmd_file" 2>&1 || true
+  local attempt=1
+  while [[ $attempt -le $MAX_UI_TEST_RETRIES ]]; do
+    local result_bundle="$output_dir/screenshots_attempt${attempt}.xcresult"
+    local log_file="$output_dir/screenshots_attempt${attempt}.log"
+    local cmd_file="$output_dir/reports/xcodebuild-command_attempt${attempt}.txt"
 
-  set +e
-  UI_TEST_ARTIFACTS_DIR="$output_dir" \
-    WRITE_UI_TEST_LOGS=1 \
-    xcodebuild test \
-      -project "$PROJECT" \
-      -scheme "$SCHEME" \
-      -destination "$destination" \
-      -only-testing:"$SCREENSHOT_TEST" \
-      -resultBundlePath "$result_bundle" \
-      2>&1 | tee "$log_file"
-  local ec=${PIPESTATUS[0]}
-  set -e
+    {
+      printf '%q ' xcodebuild test \
+        -project "$PROJECT" \
+        -scheme "$SCHEME" \
+        -destination "$destination" \
+        -only-testing:"$SCREENSHOT_TEST" \
+        -resultBundlePath "$result_bundle"
+      echo ""
+    } > "$cmd_file" 2>&1 || true
 
-  if [[ $ec -ne 0 ]]; then
+    if [[ $attempt -gt 1 ]]; then
+      log_warn "Retrying screenshots (attempt $attempt/$MAX_UI_TEST_RETRIES): $destination"
+      reboot_simulator "$destination"
+    fi
+
+    set +e
+    UI_TEST_ARTIFACTS_DIR="$output_dir" \
+      WRITE_UI_TEST_LOGS=1 \
+      xcodebuild test \
+        -project "$PROJECT" \
+        -scheme "$SCHEME" \
+        -destination "$destination" \
+        -only-testing:"$SCREENSHOT_TEST" \
+        -resultBundlePath "$result_bundle" \
+        2>&1 | tee "$log_file"
+    local ec=${PIPESTATUS[0]}
+    set -e
+
+    if [[ $ec -eq 0 ]]; then
+      log_info "Screenshots saved to: $output_dir/screenshots"
+      return 0
+    fi
+
+    if is_retryable_ui_test_failure "$log_file" && [[ $attempt -lt $MAX_UI_TEST_RETRIES ]]; then
+      attempt=$((attempt + 1))
+      continue
+    fi
+
     capture_failure_artifacts "$destination" "$output_dir" "screenshots"
     return $ec
-  fi
+  done
 
-  log_info "Screenshots saved to: $output_dir/screenshots"
+  return 1
 }
 
 run_previews_for_destination() {
@@ -215,74 +265,101 @@ run_previews_for_destination() {
   local slug
   slug="$(destination_slug "$destination")"
   local output_dir="$BASE_DIR/previews/$slug"
-  local result_bundle="$output_dir/preview.xcresult"
-  local log_file="$output_dir/preview.log"
-  local video_file="$output_dir/app_preview.mov"
-  local cmd_file="$output_dir/reports/xcodebuild-command.txt"
 
   mkdir -p "$output_dir"
   mkdir -p "$output_dir/reports"
   boot_simulator "$destination"
 
-  log_info "Recording preview video: $video_file"
-  xcrun simctl io booted recordVideo --codec=h264 "$video_file" &
-  local record_pid=$!
+  local attempt=1
+  while [[ $attempt -le $MAX_UI_TEST_RETRIES ]]; do
+    local result_bundle="$output_dir/preview_attempt${attempt}.xcresult"
+    local log_file="$output_dir/preview_attempt${attempt}.log"
+    local video_file_attempt="$output_dir/app_preview_attempt${attempt}.mov"
+    local cmd_file="$output_dir/reports/xcodebuild-command_attempt${attempt}.txt"
 
-  cleanup_recording() {
+    {
+      printf '%q ' xcodebuild test \
+        -project "$PROJECT" \
+        -scheme "$SCHEME" \
+        -destination "$destination" \
+        -only-testing:"$PREVIEW_TEST" \
+        -resultBundlePath "$result_bundle"
+      echo ""
+    } > "$cmd_file" 2>&1 || true
+
+    if [[ $attempt -gt 1 ]]; then
+      log_warn "Retrying previews (attempt $attempt/$MAX_UI_TEST_RETRIES): $destination"
+      reboot_simulator "$destination"
+    fi
+
+    log_info "Recording preview video: $video_file_attempt"
+    xcrun simctl io booted recordVideo --codec=h264 "$video_file_attempt" &
+    local record_pid=$!
+
+    set +e
+    UI_TEST_ARTIFACTS_DIR="$output_dir" \
+      WRITE_UI_TEST_LOGS=1 \
+      xcodebuild test \
+        -project "$PROJECT" \
+        -scheme "$SCHEME" \
+        -destination "$destination" \
+        -only-testing:"$PREVIEW_TEST" \
+        -resultBundlePath "$result_bundle" \
+        2>&1 | tee "$log_file"
+    local ec=${PIPESTATUS[0]}
+    set -e
+
     if kill -INT "$record_pid" 2>/dev/null; then
       wait "$record_pid" || true
     fi
-  }
-  trap cleanup_recording RETURN
 
-  {
-    printf '%q ' xcodebuild test \
-      -project "$PROJECT" \
-      -scheme "$SCHEME" \
-      -destination "$destination" \
-      -only-testing:"$PREVIEW_TEST" \
-      -resultBundlePath "$result_bundle"
-    echo ""
-  } > "$cmd_file" 2>&1 || true
+    if [[ $ec -eq 0 ]]; then
+      # Keep a stable filename for upload tooling.
+      cp -f "$video_file_attempt" "$output_dir/app_preview.mov" 2>/dev/null || true
+      log_info "Preview video saved to: $output_dir/app_preview.mov"
+      return 0
+    fi
 
-  set +e
-  UI_TEST_ARTIFACTS_DIR="$output_dir" \
-    WRITE_UI_TEST_LOGS=1 \
-    xcodebuild test \
-      -project "$PROJECT" \
-      -scheme "$SCHEME" \
-      -destination "$destination" \
-      -only-testing:"$PREVIEW_TEST" \
-      -resultBundlePath "$result_bundle" \
-      2>&1 | tee "$log_file"
-  local ec=${PIPESTATUS[0]}
-  set -e
+    if is_retryable_ui_test_failure "$log_file" && [[ $attempt -lt $MAX_UI_TEST_RETRIES ]]; then
+      attempt=$((attempt + 1))
+      continue
+    fi
 
-  if [[ $ec -ne 0 ]]; then
     capture_failure_artifacts "$destination" "$output_dir" "previews"
     return $ec
-  fi
+  done
 
-  log_info "Preview video saved to: $video_file"
+  return 1
 }
 
 main() {
   log_info "BookQuotes App Store Media"
   log_info "Run ID: $RUN_ID"
 
+  local failures=0
+
   if $RUN_SCREENSHOTS; then
     IFS='|' read -r -a DESTS <<< "$SCREENSHOT_DESTINATIONS"
     for destination in "${DESTS[@]}"; do
-      run_screenshots_for_destination "$destination"
+      if ! run_screenshots_for_destination "$destination"; then
+        failures=$((failures + 1))
+      fi
     done
   fi
 
   if $RUN_PREVIEWS; then
-    run_previews_for_destination "$PREVIEW_DESTINATION"
+    if ! run_previews_for_destination "$PREVIEW_DESTINATION"; then
+      failures=$((failures + 1))
+    fi
   fi
 
   log_info "Done."
   log_info "Artifacts: $BASE_DIR"
+
+  if [[ $failures -gt 0 ]]; then
+    log_error "Completed with $failures failure(s). See per-destination logs under $BASE_DIR."
+    exit 1
+  fi
 }
 
 main

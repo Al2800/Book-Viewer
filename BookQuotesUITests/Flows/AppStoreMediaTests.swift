@@ -104,10 +104,7 @@ final class AppStorePreviewsTests: BaseUITestCase {
 
 fileprivate extension BaseUITestCase {
     func navigateToLibraryTabIfNeeded() {
-        let libraryTab = tabButton(.library)
-        if libraryTab.waitForExistence(timeout: 3) && libraryTab.isHittable {
-            libraryTab.tap()
-        }
+        _ = tapTab(.library, timeout: 3)
     }
 
     func switchToGridViewIfPossible() {
@@ -275,9 +272,7 @@ fileprivate extension BaseUITestCase {
         // Ensure the tab bar is tappable (keyboard can cover it after search).
         dismissKeyboard()
 
-        let captureTab = tabButton(.capture)
-        assertExists(captureTab, timeout: 3, "Capture tab not found")
-        captureTab.tap()
+        _ = tapTab(.capture, timeout: 3)
 
         // For App Store media, capture the "Capture" landing screen (options list). This is stable,
         // looks good in marketing, and avoids simulator camera permission/state flakiness.
@@ -335,9 +330,7 @@ fileprivate extension BaseUITestCase {
     }
 
     func showSettingsForMedia() {
-        let settingsTab = tabButton(.settings)
-        assertExists(settingsTab, timeout: 3, "Settings tab not found")
-        settingsTab.tap()
+        _ = tapTab(.settings, timeout: 3)
 
         // We don't have a single stable identifier for settings root; accept either nav title or a known toggle.
         _ = app.navigationBars["Settings"].waitForExistence(timeout: 4) ||
