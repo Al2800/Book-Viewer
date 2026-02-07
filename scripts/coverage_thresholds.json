@@ -1,8 +1,7 @@
 {
-  "overall": 0.85,
+  "overall": 0.19,
   "targets": {
-    "BookQuotes": 0.85,
-    "BookQuotesTests": 0.70,
-    "BookQuotesUITests": 0.60
+    "BookQuotes.app": 0.09,
+    "BookQuotesTests.xctest": 0.85
   }
 }

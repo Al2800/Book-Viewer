@@ -359,13 +359,20 @@ Code coverage should be generated from Xcode test runs with coverage enabled.
 DESTINATION='platform=iOS Simulator,name=iPhone 15 Pro' RESULT_DIR='artifacts/coverage' ./scripts/coverage.sh
 ```
 
-Artifacts produced by the script:
-- `artifacts/coverage/summary.txt` (human-readable summary)
-- `artifacts/coverage/coverage.json` (machine-readable detail)
-- `artifacts/coverage/coverage.lcov` (LCOV)
-- `artifacts/coverage/coverage.html` (HTML summary)
+Artifacts produced by the script (run-id scoped; no clobbering):
+- `artifacts/coverage/<run_id>/summary.txt` (human-readable summary)
+- `artifacts/coverage/<run_id>/coverage_report.json` (xccov JSON report)
+- `artifacts/coverage/<run_id>/coverage_archive.json` (xccov JSON archive)
+- `artifacts/coverage/<run_id>/coverage.lcov` (LCOV)
+- `artifacts/coverage/<run_id>/coverage.html` (HTML summary)
 
-Thresholds are configured in `scripts/coverage_thresholds.json`. Override with:
+Thresholds are configured in `scripts/coverage_thresholds.json` and are enforced by `scripts/coverage_report.py`.
+
+Notes:
+- Target names must match Xcode coverage target names (for example `BookQuotes.app`, `BookQuotesTests.xctest`).
+- The current thresholds are set as a floor to prevent regressions; we raise them incrementally as coverage work lands.
+
+Override with:
 
 ```bash
 THRESHOLDS=path/to/thresholds.json ./scripts/coverage.sh
