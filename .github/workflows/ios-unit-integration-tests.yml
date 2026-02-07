@@ -85,6 +85,7 @@ jobs:
           name: xcresult-BookQuotesTests-${{ github.run_id }}
           path: artifacts/xcresults/BookQuotesTests.xcresult
           if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload coverage report
         if: always()
@@ -93,6 +94,7 @@ jobs:
           name: coverage-BookQuotes-${{ github.run_id }}
           path: artifacts/coverage/ci
           if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload logs
         if: always()
@@ -101,3 +103,4 @@ jobs:
           name: logs-ios-tests-${{ github.run_id }}
           path: artifacts/logs
           if-no-files-found: warn
+          retention-days: 14

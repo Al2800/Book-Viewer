@@ -1031,6 +1031,9 @@ enum UITestConfiguration {
 
 ## Continuous Integration
 
+CI uploads high-signal debugging artifacts (xcresult bundles, coverage reports, and logs) on every run.
+Artifact retention is currently set to **14 days** (see `.github/workflows/ios-unit-integration-tests.yml`).
+
 ### GitHub Actions Workflow
 
 ```yaml
