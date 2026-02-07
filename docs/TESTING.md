@@ -282,9 +282,70 @@ WRITE_UI_TEST_LOGS=1 xcodebuild test \
 
 ### Troubleshooting
 
-- UI tests fail to launch simulator: verify `DESTINATION` matches an installed device.
-- Coverage report missing: ensure tests were run with `-enableCodeCoverage YES` or via `scripts/coverage.sh`.
-- Missing screenshots/logs: confirm `WRITE_UI_TEST_LOGS=1` and `CAPTURE_UI_TEST_CHECKPOINTS=1` are set.
+#### Simulator Boot / CoreSimulator Issues
+
+Common symptoms:
+1. `xcrun simctl list devices available` hangs forever.
+2. `xcodebuild test` fails during launch with `NSMachErrorDomain Code=-308` (ipc/mig server died).
+3. UI tests fail to start with `Timed out while loading Accessibility`.
+
+Practical fixes (best-effort, in increasing order of disruption):
+1. Ensure your destination exists: `xcrun simctl list devices available | rg "iPhone|iPad"`.
+2. Reboot the specific simulator:
+```bash
+xcrun simctl shutdown <UDID>
+xcrun simctl boot <UDID>
+xcrun simctl bootstatus <UDID> -b
+```
+3. Restart Simulator + CoreSimulator services (this will terminate running sims):
+```bash
+killall -9 Simulator || true
+killall -9 com.apple.CoreSimulator.CoreSimulatorService || true
+```
+4. If you intentionally want a clean device state (destructive): `xcrun simctl erase <UDID>`
+
+#### xcodebuild Test Flakiness
+
+If UI tests are intermittently failing on CI or locally:
+1. Prefer scripts that capture xcresult + logs and apply retries: `scripts/e2e_ui.sh` and `scripts/appstore_media.sh`.
+2. Make sure UI tests do not accidentally run in unit/integration CI jobs. Use `-skip-testing:BookQuotesUITests` in CI.
+3. When debugging, always write an xcresult bundle:
+```bash
+xcodebuild test ... -resultBundlePath artifacts/xcresults/run.xcresult
+```
+
+#### Coverage Missing / xccov Parsing
+
+Coverage can be missing or empty when:
+1. Tests were run without `-enableCodeCoverage YES`.
+2. You ran a scheme that does not have coverage enabled in Xcode.
+3. The failing run never produced a result bundle.
+
+Debug commands:
+```bash
+xcrun xccov view --report artifacts/xcresults/run.xcresult
+xcrun xccov view --report --json artifacts/xcresults/run.xcresult > /tmp/coverage_report.json
+```
+
+#### Inspecting xcresult Bundles
+
+Useful commands:
+```bash
+# GUI explorer
+open artifacts/**/**.xcresult
+
+# Raw JSON (can be large)
+xcrun xcresulttool get --path artifacts/**/**.xcresult --format json > /tmp/xcresult.json
+
+# Export screenshot attachments
+xcrun xcresulttool export attachments --path artifacts/**/**.xcresult --output-path /tmp/xcresult_attachments
+```
+
+#### Missing Screenshots / Logs
+
+For UI test scripts:
+1. Ensure `WRITE_UI_TEST_LOGS=1` is set (writes `UITestLogger` summaries).
+2. Ensure `CAPTURE_UI_TEST_CHECKPOINTS=1` is set if you want per-step checkpoint screenshots.
 
 ## Coverage Reporting
 
