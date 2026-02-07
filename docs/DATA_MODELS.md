@@ -711,3 +711,29 @@ For optimal query performance:
 8. **Collection.sortOrder** - For ordered collection display
 
 SwiftData handles most indexing automatically, but complex queries may benefit from explicit index hints in future versions.
+
+---
+
+## Schema Changes and Migrations
+
+BookQuotes defines an explicit SwiftData schema at app launch (see `BookQuotes/App/BookQuotesApp.swift`). When you add or change `@Model` types, you must update that schema list so the model is actually persisted in production (tests use a separate in-memory container).
+
+### Practical Rules
+
+1. Additive changes (new optional properties, new models) are usually safe, but should still be validated on an existing store.
+2. Destructive changes (renames, type changes, removing properties, relationship changes) should be treated as requiring an explicit migration plan.
+3. CloudKit-backed stores can surface migration problems later than local-only stores. Always test upgrade flows.
+
+### Manual Upgrade Test (Recommended)
+
+1. Install an older build on a simulator or device.
+2. Create representative data: books, quotes, tags, collections, offline queue items.
+3. Install the new build over the old one.
+4. Verify:
+   - App launches without a storage initialization error.
+   - Existing objects load correctly and basic CRUD still works.
+   - Console logs do not show SwiftData/CoreData migration failures.
+
+### Automation Note
+
+Our unit/integration tests use in-memory SwiftData containers, which validate model logic and predicates but do not validate disk-store migrations. Treat model/schema changes as needing a manual upgrade check unless we add a versioned `SchemaMigrationPlan`.

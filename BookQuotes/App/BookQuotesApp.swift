@@ -19,6 +19,7 @@ struct BookQuotesApp: App {
         let schema = Schema([
             Book.self,
             Quote.self,
+            QuoteCorrection.self,
             Collection.self,
             Tag.self,
             MarkingDefinition.self,
@@ -164,6 +165,7 @@ extension ModelContainer {
         let schema = Schema([
             Book.self,
             Quote.self,
+            QuoteCorrection.self,
             Collection.self,
             Tag.self,
             MarkingDefinition.self,
