@@ -257,7 +257,9 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         try navigateToExtractionReview()
 
         logger.step(1, "Finding cancel button")
-        let cancelButton = app.buttons["Cancel"]
+        // There can be multiple "Cancel" buttons on-screen (e.g. capture flow + nav bars).
+        // Prefer the explicit capture cancel identifier for determinism.
+        let cancelButton = app.buttons[AccessibilityIdentifiers.Capture.cancelButton]
         let backButton = app.navigationBars.buttons.element(boundBy: 0)
 
         if cancelButton.waitForExistence(timeout: 3) {
@@ -278,7 +280,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             logger.success("Discard confirmation shown")
 
             // Cancel to stay in review
-            let stayButton = app.buttons["Cancel"]
+            let stayButton = discardAlert.buttons["Cancel"]
             if stayButton.exists {
                 stayButton.tap()
             }
