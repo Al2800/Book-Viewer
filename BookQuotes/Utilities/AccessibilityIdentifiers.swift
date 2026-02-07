@@ -181,6 +181,17 @@ enum AccessibilityIdentifiers {
 
         /// Thumbnail strip in batch capture
         static let thumbnailStrip = "capture_thumbnail_strip"
+
+        // MARK: Extraction Review (Quote Capture)
+
+        /// Edit button (pencil) on an extracted quote row during extraction review.
+        static let extractionQuoteEditButton = "capture_extraction_quote_edit_button"
+
+        /// Text editor inside the "Edit Quote" sheet during extraction review.
+        static let extractionQuoteTextEditor = "capture_extraction_quote_text_editor"
+
+        /// Margin note field inside the "Edit Quote" sheet during extraction review.
+        static let extractionQuoteMarginNoteField = "capture_extraction_quote_margin_note_field"
     }
 
     // MARK: - Collections

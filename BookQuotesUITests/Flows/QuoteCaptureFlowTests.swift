@@ -182,24 +182,31 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     func testQuoteEditor_CanEditText() throws {
         try navigateToExtractionReview()
 
-        logger.step(1, "Finding quote text editor")
-        let textEditor = app.textViews.firstMatch
+        logger.step(1, "Opening quote editor sheet")
+        let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton]
+        guard editButton.waitForExistence(timeout: 5) else {
+            throw XCTSkip("Quote edit button not found")
+        }
+        editButton.tap()
+
+        logger.step(2, "Finding quote text editor")
+        let textEditor = app.textViews[AccessibilityIdentifiers.Capture.extractionQuoteTextEditor]
         guard textEditor.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Quote text editor not found")
+            throw XCTSkip("Quote text editor not found in edit sheet")
         }
 
-        logger.step(2, "Editing quote text")
+        logger.step(3, "Editing quote text")
         textEditor.tap()
         // Type some additional text
         textEditor.typeText(" - edited")
 
-        logger.step(3, "Verifying edit")
-        // The text should now contain "edited"
+        logger.step(4, "Verifying edit")
         let editedText = app.textViews.matching(
-            NSPredicate(format: "value CONTAINS 'edited'")
+            NSPredicate(format: "identifier == %@ AND value CONTAINS 'edited'",
+                        AccessibilityIdentifiers.Capture.extractionQuoteTextEditor)
         ).firstMatch
 
-        XCTAssertTrue(editedText.exists, "Edited text should be visible")
+        XCTAssertTrue(editedText.waitForExistence(timeout: 2), "Edited text should be present in the text editor")
 
         logger.success("Quote text edited successfully")
     }

@@ -36,6 +36,7 @@ struct QuoteEditRow: View {
                         .foregroundStyle(Color.textSecondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
 
                 Button {
                     onDelete()
@@ -122,6 +123,7 @@ private struct QuoteEditorSheet: View {
                     .scrollContentBackground(.hidden)
                     .frame(minHeight: 180)
                     .fieldChrome(minHeight: 180)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteTextEditor)
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Margin note (optional)")
@@ -130,6 +132,7 @@ private struct QuoteEditorSheet: View {
                     TextField("Add a note…", text: $marginNote, axis: .vertical)
                         .textFieldStyle(.plain)
                         .fieldChrome(minHeight: 56)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteMarginNoteField)
                 }
             }
             .padding(Spacing.md)

@@ -616,6 +616,11 @@ enum AccessibilityIdentifiers {
         static let pageCounter = "capture_page_counter"
         static let doneButton = "capture_done_button"
         static let thumbnailStrip = "capture_thumbnail_strip"
+
+        // Extraction review (quote capture)
+        static let extractionQuoteEditButton = "capture_extraction_quote_edit_button"
+        static let extractionQuoteTextEditor = "capture_extraction_quote_text_editor"
+        static let extractionQuoteMarginNoteField = "capture_extraction_quote_margin_note_field"
     }
 
     enum Collections {
