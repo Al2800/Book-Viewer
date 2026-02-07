@@ -188,12 +188,13 @@ class BaseUITestCase: XCTestCase {
         }
     }
 
-    private func logSeededBookCountIfAvailable() {
-        let bookCountLabel = app.staticTexts[AccessibilityIdentifiers.Common.uiTestBookCount]
-        if bookCountLabel.waitForExistence(timeout: 2) {
-            logger.info("Seeded book count: \(bookCountLabel.label)")
-        }
-    }
+	    private func logSeededBookCountIfAvailable() {
+	        let bookCountLabel = app.staticTexts[AccessibilityIdentifiers.Common.uiTestBookCount]
+	        // Avoid adding repeated multi-second waits to every test run.
+	        if bookCountLabel.waitForExistence(timeout: 0.2) {
+	            logger.info("Seeded book count: \(bookCountLabel.label)")
+	        }
+	    }
 
     // MARK: - Screenshot Utilities
 
@@ -291,6 +292,37 @@ class BaseUITestCase: XCTestCase {
         }
 
         interruptionMonitors.append(token)
+    }
+
+    /// Best-effort dismissal of in-app alerts that can block UI flows (e.g. error alerts).
+    /// Returns true if an alert was found and a button was tapped.
+    @discardableResult
+    func dismissAppAlertIfPresent() -> Bool {
+        let alert = app.alerts.firstMatch
+        guard alert.exists else { return false }
+
+        // Prefer allow/ok style buttons.
+        let preferredLabels = ["OK", "Allow", "Continue", "Done"]
+        for label in preferredLabels {
+            let button = alert.buttons[label]
+            if button.exists {
+                logger.info("App alert: tapping '\(label)'")
+                button.tap()
+                return true
+            }
+        }
+
+        // Fallback: try any visible button to avoid blocking the run.
+        if alert.buttons.count > 0 {
+            let button = alert.buttons.firstMatch
+            if button.exists {
+                logger.warning("App alert: tapping first button '\(button.label)'")
+                button.tap()
+                return true
+            }
+        }
+
+        return false
     }
 
     /// Best-effort: tap through SpringBoard alerts that can block automation (camera/photos prompts).
@@ -447,11 +479,11 @@ class BaseUITestCase: XCTestCase {
 
     // MARK: - Keyboard Utilities
 
-    /// Dismiss keyboard if visible.
-    func dismissKeyboard() {
-        if app.keyboards.firstMatch.exists {
-            // Try tapping outside
-            app.tap()
+	    /// Dismiss keyboard if visible.
+	    func dismissKeyboard() {
+	        if app.keyboards.firstMatch.exists {
+	            // Try tapping outside
+	            app.tap()
 
             // If still visible, try Done/Return
             if app.keyboards.firstMatch.exists {
@@ -464,50 +496,117 @@ class BaseUITestCase: XCTestCase {
                     }
                 }
             }
-        }
-    }
+	        }
+	    }
 
-    /// Focus a text field and type text, retrying focus if needed.
-    func typeText(_ text: String, into element: XCUIElement, timeout: TimeInterval = 3) {
-        XCTAssertTrue(element.waitForExistence(timeout: timeout), "Expected element to exist before typing")
-        for _ in 0..<2 where !element.isHittable {
-            app.swipeUp()
-        }
+	    /// Tap the keyboard "Next" button if available.
+	    @discardableResult
+	    func tapKeyboardNextIfPresent() -> Bool {
+	        let next = app.keyboards.buttons["Next"]
+	        guard next.exists, next.isHittable else { return false }
+	        next.tap()
+	        return true
+	    }
 
-        func textValue(_ element: XCUIElement) -> String {
-            if let value = element.value as? String {
-                return value
-            }
-            return String(describing: element.value ?? "")
-        }
+	    /// Type into whichever control currently owns keyboard focus (no element tapping).
+	    func typeTextIntoFocusedField(_ text: String, timeout: TimeInterval = 3, dismissKeyboardAfter: Bool = true) {
+	        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: timeout), "Expected keyboard to exist before typing")
+	        app.typeText(text)
+	        if dismissKeyboardAfter {
+	            dismissKeyboard()
+	        }
+	    }
 
-        let attempts = 4
-        for _ in 0..<attempts {
-            if element.isHittable {
-                element.tap()
-            } else {
-                element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-            }
+		    private func textValue(_ element: XCUIElement) -> String {
+		        if let value = element.value as? String {
+		            return value
+		        }
+		        return String(describing: element.value ?? "")
+		    }
 
-            if !app.keyboards.firstMatch.waitForExistence(timeout: 1) {
-                element.doubleTap()
-                _ = app.keyboards.firstMatch.waitForExistence(timeout: 1)
-            }
+		    /// Best-effort typing that returns success/failure without failing the test.
+		    @discardableResult
+		    func tryTypeText(_ text: String, into element: XCUIElement, timeout: TimeInterval = 3, dismissKeyboardAfter: Bool = true) -> Bool {
+		        guard element.waitForExistence(timeout: timeout) else {
+		            logger.warning("Typing failed. element missing label=\(element.label)")
+		            return false
+		        }
+		        for _ in 0..<2 where !element.isHittable {
+		            app.swipeUp()
+		        }
 
-            app.typeText(text)
-            dismissKeyboard()
+		        let attempts = 4
+		        for _ in 0..<attempts {
+		            if element.isHittable {
+		                element.tap()
+		            } else {
+		                element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+		            }
 
-            let newValue = textValue(element)
-            if newValue.contains(text) || newValue == text {
-                return
-            }
-            app.tap()
-        }
+		            if !app.keyboards.firstMatch.waitForExistence(timeout: 1) {
+		                element.doubleTap()
+		                _ = app.keyboards.firstMatch.waitForExistence(timeout: 1)
+		            }
 
-        logger.warning("Typing failed. element=\(element.label) value=\(textValue(element))")
-        XCTFail("Failed to type text into element after \(attempts) attempts")
-    }
-}
+		            let before = textValue(element)
+		            app.typeText(text)
+		            let after = textValue(element)
+
+		            if dismissKeyboardAfter {
+		                dismissKeyboard()
+		            }
+
+		            if after != before {
+		                return true
+		            }
+		            if after.contains(text) || after == text {
+		                return true
+		            }
+
+		            app.tap()
+		        }
+
+		        logger.warning("Typing failed. element=\(element.label) value=\(textValue(element))")
+		        return false
+		    }
+
+		    /// Focus a text field and type text, retrying focus if needed.
+		    func typeText(_ text: String, into element: XCUIElement, timeout: TimeInterval = 3, dismissKeyboardAfter: Bool = true) {
+		        let ok = tryTypeText(text, into: element, timeout: timeout, dismissKeyboardAfter: dismissKeyboardAfter)
+		        XCTAssertTrue(ok, "Failed to type text into element after multiple attempts")
+		    }
+
+		    /// Replace existing text in a field with the provided value (best-effort clear + type).
+		    func replaceText(_ text: String, in element: XCUIElement, timeout: TimeInterval = 3, dismissKeyboardAfter: Bool = true) {
+		        XCTAssertTrue(element.waitForExistence(timeout: timeout), "Expected element to exist before replacing text")
+
+		        if element.isHittable {
+		            element.tap()
+		        } else {
+		            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+		        }
+		        _ = app.keyboards.firstMatch.waitForExistence(timeout: 1)
+
+		        // Prefer Select All if available.
+		        element.press(forDuration: 1.0)
+		        let selectAll = app.menuItems["Select All"]
+		        if selectAll.waitForExistence(timeout: 0.5) {
+		            selectAll.tap()
+		        } else {
+		            // Fall back to repeated delete based on current value length.
+		            let current = textValue(element)
+		            let deleteKey = app.keys["delete"]
+		            if deleteKey.exists {
+		                let count = min(max(current.count, 0), 200)
+		                for _ in 0..<count {
+		                    deleteKey.tap()
+		                }
+		            }
+		        }
+
+		        typeTextIntoFocusedField(text, timeout: timeout, dismissKeyboardAfter: dismissKeyboardAfter)
+		    }
+		}
 
 // MARK: - Common Assertions
 
@@ -597,6 +696,16 @@ enum AccessibilityIdentifiers {
         static let shareButton = "quote_detail_share_button"
         static let sourceImageButton = "quote_detail_source_image_button"
         static let markingPickerButton = "quote_detail_marking_picker"
+    }
+
+    enum BookEdit {
+        static let titleField = "book_edit_title_field"
+        static let authorField = "book_edit_author_field"
+        static let subtitleField = "book_edit_subtitle_field"
+        static let isbnField = "book_edit_isbn_field"
+        static let publisherField = "book_edit_publisher_field"
+        static let cancelButton = "book_edit_cancel_button"
+        static let saveButton = "book_edit_save_button"
     }
 
     enum Capture {

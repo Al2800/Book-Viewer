@@ -131,6 +131,31 @@ enum AccessibilityIdentifiers {
         static let markingPickerButton = "quote_detail_marking_picker"
     }
 
+    // MARK: - Book Edit
+
+    enum BookEdit {
+        /// Title field on the add/edit book form
+        static let titleField = "book_edit_title_field"
+
+        /// Author field on the add/edit book form
+        static let authorField = "book_edit_author_field"
+
+        /// Subtitle field on the add/edit book form
+        static let subtitleField = "book_edit_subtitle_field"
+
+        /// ISBN field on the add/edit book form
+        static let isbnField = "book_edit_isbn_field"
+
+        /// Publisher field on the add/edit book form
+        static let publisherField = "book_edit_publisher_field"
+
+        /// Cancel button on the add/edit book form
+        static let cancelButton = "book_edit_cancel_button"
+
+        /// Save/Add button on the add/edit book form
+        static let saveButton = "book_edit_save_button"
+    }
+
     // MARK: - Capture
 
     enum Capture {

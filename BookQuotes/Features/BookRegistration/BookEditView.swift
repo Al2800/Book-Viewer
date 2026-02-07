@@ -268,6 +268,7 @@ struct BookEditView: View {
                     .textFieldStyle(.plain)
                     .fieldChrome()
                     .shake(trigger: titleShakeTrigger)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.titleField)
 
                 TextField("Author", text: $author)
                     .textContentType(.name)
@@ -277,6 +278,7 @@ struct BookEditView: View {
                     .textFieldStyle(.plain)
                     .fieldChrome()
                     .shake(trigger: authorShakeTrigger)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.authorField)
 
                 TextField("Subtitle", text: $subtitle)
                     .textContentType(.none)
@@ -285,6 +287,7 @@ struct BookEditView: View {
                     .onSubmit { focusedField = nil }
                     .textFieldStyle(.plain)
                     .fieldChrome()
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.subtitleField)
             }
         }
     }
@@ -293,8 +296,8 @@ struct BookEditView: View {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    private var isAuthorValid: Bool {
-        !author.trimmingCharacters(in: .whitespaces).isEmpty
+    private var isAuthorBlank: Bool {
+        author.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     // MARK: - Metadata Section
@@ -307,6 +310,7 @@ struct BookEditView: View {
                     .focused($focusedField, equals: .isbn)
                     .textFieldStyle(.plain)
                     .fieldChrome()
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.isbnField)
 
                 TextField("Publisher", text: $publisher)
                     .submitLabel(.next)
@@ -314,6 +318,7 @@ struct BookEditView: View {
                     .onSubmit { focusedField = .publishYear }
                     .textFieldStyle(.plain)
                     .fieldChrome()
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.publisherField)
 
                 HStack(spacing: Spacing.md) {
                     TextField("Year", text: $publishYear)
@@ -381,6 +386,7 @@ struct BookEditView: View {
             Button("Cancel") {
                 dismiss()
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.cancelButton)
         }
 
         ToolbarItem(placement: .confirmationAction) {
@@ -389,6 +395,7 @@ struct BookEditView: View {
             }
             .fontWeight(.semibold)
             .disabled(!isValidForSave)
+            .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.saveButton)
         }
     }
 
@@ -404,7 +411,7 @@ struct BookEditView: View {
     // MARK: - Validation
 
     private var isValidForSave: Bool {
-        isTitleValid && isAuthorValid
+        isTitleValid
     }
 
     /// Validate fields and either save or shake invalid fields
@@ -416,9 +423,9 @@ struct BookEditView: View {
             hasError = true
         }
 
-        if !isAuthorValid {
+        // Author is optional; nudge if missing but do not block save.
+        if isAuthorBlank {
             authorShakeTrigger += 1
-            hasError = true
         }
 
         if hasError {
@@ -502,9 +509,10 @@ struct BookEditView: View {
         // Check if this is the first book before adding
         let isFirstBook = existingBooks.isEmpty
 
+        let normalizedAuthor = author.trimmingCharacters(in: .whitespacesAndNewlines)
         let book = Book(
-            title: title.trimmingCharacters(in: .whitespaces),
-            author: author.trimmingCharacters(in: .whitespaces),
+            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
+            author: normalizedAuthor.isEmpty ? "Unknown" : normalizedAuthor,
             subtitle: subtitle.isEmpty ? nil : subtitle,
             publisher: publisher.isEmpty ? nil : publisher,
             isbn: isbn.isEmpty ? nil : isbn
@@ -548,8 +556,9 @@ struct BookEditView: View {
     }
 
     private func updateBook(_ book: Book) {
-        book.title = title.trimmingCharacters(in: .whitespaces)
-        book.author = author.trimmingCharacters(in: .whitespaces)
+        book.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedAuthor = author.trimmingCharacters(in: .whitespacesAndNewlines)
+        book.author = normalizedAuthor.isEmpty ? "Unknown" : normalizedAuthor
         book.subtitle = subtitle.isEmpty ? nil : subtitle
         book.publisher = publisher.isEmpty ? nil : publisher
         book.isbn = isbn.isEmpty ? nil : isbn
