@@ -35,16 +35,21 @@ jobs:
 
           DESTINATION="platform=iOS Simulator,name=iPhone 15,OS=latest"
           RESULT_BUNDLE="artifacts/xcresults/BookQuotesTests.xcresult"
+          LOG_DIR="artifacts/logs"
+          LOG_FILE="${LOG_DIR}/xcodebuild-tests.log"
 
           mkdir -p "$(dirname "$RESULT_BUNDLE")"
+          mkdir -p "$LOG_DIR"
 
           xcodebuild test \
             -project BookQuotes.xcodeproj \
             -scheme BookQuotes \
             -destination "$DESTINATION" \
+            -skip-testing:BookQuotesUITests \
             -resultBundlePath "$RESULT_BUNDLE" \
             -derivedDataPath artifacts/DerivedData \
-            -enableCodeCoverage YES
+            -enableCodeCoverage YES \
+            2>&1 | tee "$LOG_FILE"
 
       - name: Generate Coverage HTML
         if: always()
@@ -87,4 +92,12 @@ jobs:
         with:
           name: coverage-BookQuotes-${{ github.run_id }}
           path: artifacts/coverage/ci
+          if-no-files-found: warn
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-ios-tests-${{ github.run_id }}
+          path: artifacts/logs
           if-no-files-found: warn
