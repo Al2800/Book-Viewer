@@ -217,13 +217,15 @@ Use the App Store media runner to capture iPhone screenshots and preview videos 
 Customize devices and output locations:
 
 ```bash
-SCREENSHOT_DESTINATIONS="platform=iOS Simulator,name=iPhone 15 Pro Max|platform=iOS Simulator,name=iPhone 15 Pro" \
-PREVIEW_DESTINATION="platform=iOS Simulator,name=iPhone 15 Pro Max" \
+# `SCREENSHOT_DESTINATIONS` is '|' separated (xcodebuild destinations).
+SCREENSHOT_DESTINATIONS="platform=iOS Simulator,OS=latest,name=iPhone 17 Pro Max|platform=iOS Simulator,OS=latest,name=iPad Pro 13-inch (M5)" \
+PREVIEW_DESTINATION="platform=iOS Simulator,OS=latest,name=iPhone 17 Pro Max" \
 ARTIFACTS_DIR=./artifacts/app-store \
 ./scripts/appstore_media.sh
 ```
 
 Preview pacing can be tuned by setting `APP_STORE_PREVIEW_STEP_DELAY` (seconds) when running previews.
+Retries can be controlled with `MAX_UI_TEST_RETRIES` (default: `2`).
 
 #### Artifacts Produced
 
@@ -239,6 +241,12 @@ UI tests (`artifacts/ui-tests/`):
 - `screenshots/` — Test screenshots directory
 - `results-{timestamp}.json` — Extracted test results
 
+App Store media (`artifacts/app-store/<RUN_ID>/`):
+- `screenshots/<device_slug>/screenshots/01_library_grid.png` (and `02_...` through `08_...`) for upload
+- `screenshots/<device_slug>/screenshots_attemptN.xcresult` and `screenshots_attemptN.log` for debugging
+- `screenshots/<device_slug>/attachments_attemptN/manifest.json` mapping attachment names to files
+- `screenshots/<device_slug>/reports/simctl-diagnose.txt` and `reports/simulator-logs.logarchive` on failure
+
 ### UI Tests with Logging
 
 ```bash
@@ -249,40 +257,22 @@ WRITE_UI_TEST_LOGS=1 xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 15'
 ```
 
-### App Store Media (Screenshots + Previews)
+#### Upload To App Store Connect
 
-The app includes an automated UI test flow for App Store screenshots and app preview videos.
-It uses deterministic UI test data plus `simctl recordVideo` for preview capture.
-
-```bash
-# Run automated App Store media capture
-./scripts/appstore_media.sh
-
-# Override simulators and preview duration
-SIMULATORS="iPhone 15 Pro Max,iPhone 15 Pro" PREVIEW_DURATION=15 ./scripts/appstore_media.sh
-```
-
-Artifacts are stored in `artifacts/app-store/<simulator>/`:
-- `screenshots/` (PNG files)
-- `app_preview_<seconds>s.mp4`
-
-To capture checkpoint screenshots and write artifacts to a deterministic directory:
-
-```bash
-UI_TEST_ARTIFACTS_DIR=artifacts/ui-tests \
-CAPTURE_UI_TEST_CHECKPOINTS=1 \
-WRITE_UI_TEST_LOGS=1 \
-xcodebuild test \
-  -project BookQuotes.xcodeproj \
-  -scheme BookQuotesUITests \
-  -destination 'platform=iOS Simulator,name=iPhone 15'
-```
-
-Artifacts produced:
-- `artifacts/ui-tests/logs/<TestName>.log` (human-readable summary)
-- `artifacts/ui-tests/logs/<TestName>.json` (machine-readable entries)
-- `artifacts/ui-tests/screenshots/<TestName>_step_N.png` (checkpoint screenshots)
-- `artifacts/ui-tests/screenshots/<TestName>_FAILURE.png` (failure screenshot)
+1. Generate screenshots:
+   ```bash
+   ./scripts/appstore_media.sh --screenshots
+   ```
+2. Locate PNGs:
+   - iPhone: `artifacts/app-store/<RUN_ID>/screenshots/iPhone_17_Pro_Max/screenshots/*.png`
+   - iPad: `artifacts/app-store/<RUN_ID>/screenshots/iPad_Pro_13-inch_M5/screenshots/*.png`
+3. Upload in App Store Connect:
+   - App Store Connect -> Your app -> App Store -> iOS App -> App Previews and Screenshots
+   - Select the correct device size group (6.9" iPhone, 13" iPad)
+   - Upload the `01_...` through `08_...` PNGs in order
+4. If you hit tooling flake:
+   - Re-run with a new `RUN_ID` and increase retries: `MAX_UI_TEST_RETRIES=3 ./scripts/appstore_media.sh --screenshots`
+   - Inspect failure diagnostics under `.../reports/` for the failing device destination.
 
 ### CI Notes
 
