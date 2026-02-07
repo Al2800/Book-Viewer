@@ -67,7 +67,8 @@ final class AppStorePreviewsTests: BaseUITestCase {
         [
             "--preload-search-test-data",
             "--mock-camera",
-            "--app-store-media"
+            "--app-store-media",
+            "--disable-animations"
         ]
     }
 
@@ -77,26 +78,27 @@ final class AppStorePreviewsTests: BaseUITestCase {
     }
 
     func testPreview_LibraryToQuoteFlow() {
-        let stepPause = previewStepPause
-
         navigateToLibraryTabIfNeeded()
         switchToGridViewIfPossible()
-        pause(stepPause)
+        waitForLibraryLoadedForMedia()
 
         openFirstBookDetailForMedia()
-        pause(stepPause)
+        waitForBookDetailLoadedForMedia()
 
         app.swipeUp()
-        pause(stepPause)
+        pause(previewStepPause)
 
         openFirstQuoteDetailForMedia()
-        pause(stepPause)
+        waitForQuoteDetailLoadedForMedia()
+        pause(previewStepPause)
 
         tapBackButton()
-        pause(stepPause)
+        waitForBookDetailLoadedForMedia()
+        pause(previewStepPause)
 
         showQuoteCaptureCameraForMedia()
-        pause(stepPause)
+        waitForCaptureLandingLoadedForMedia()
+        pause(previewStepPause)
     }
 }
 
@@ -121,6 +123,30 @@ fileprivate extension BaseUITestCase {
         if viewModeToggle.buttons.count > 1 {
             viewModeToggle.buttons.element(boundBy: 1).tap()
         }
+    }
+
+    func waitForLibraryLoadedForMedia() {
+        // Any stable element that indicates we're on the library root.
+        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
+        assertExists(viewModeToggle, timeout: 6, "Library root not loaded (view mode toggle missing)")
+    }
+
+    func waitForBookDetailLoadedForMedia() {
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        assertExists(title, timeout: 6, "Book detail not loaded (title missing)")
+    }
+
+    func waitForQuoteDetailLoadedForMedia() {
+        // Quote detail can be in view mode or edit mode; either is fine for previews.
+        let favoriteButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.favoriteButton]
+        let editor = app.textViews[AccessibilityIdentifiers.QuoteDetail.textEditor]
+        let isReady = favoriteButton.waitForExistence(timeout: 6) || editor.waitForExistence(timeout: 6)
+        XCTAssertTrue(isReady, "Quote detail not loaded (favorite button or editor missing)")
+    }
+
+    func waitForCaptureLandingLoadedForMedia() {
+        let quoteMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
+        assertExists(quoteMode, timeout: 6, "Capture landing not loaded (quote mode button missing)")
     }
 
     func openFirstBookDetailForMedia() {

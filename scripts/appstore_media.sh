@@ -54,6 +54,9 @@ BASE_DIR="$ARTIFACTS_DIR/$RUN_ID"
 SCREENSHOT_DESTINATIONS="${SCREENSHOT_DESTINATIONS:-platform=iOS Simulator,OS=latest,name=iPhone 17 Pro Max|platform=iOS Simulator,OS=latest,name=iPad Pro 13-inch (M5)}"
 PREVIEW_DESTINATION="${PREVIEW_DESTINATION:-platform=iOS Simulator,OS=latest,name=iPhone 17 Pro Max}"
 MAX_UI_TEST_RETRIES="${MAX_UI_TEST_RETRIES:-2}"
+XCODEBUILD_TIMEOUT_SECONDS="${XCODEBUILD_TIMEOUT_SECONDS:-600}"
+SIMCTL_LOG_TIMEOUT_SECONDS="${SIMCTL_LOG_TIMEOUT_SECONDS:-25}"
+SIMCTL_LIST_TIMEOUT_SECONDS="${SIMCTL_LIST_TIMEOUT_SECONDS:-6}"
 
 RUN_SCREENSHOTS=true
 RUN_PREVIEWS=true
@@ -94,6 +97,95 @@ log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
 }
 
+run_with_timeout_to_file() {
+  local timeout_seconds="$1"
+  local out_file="$2"
+  shift 2
+
+  python3 - "$timeout_seconds" "$out_file" "$@" <<'PY'
+import subprocess
+import sys
+
+timeout = float(sys.argv[1])
+out_path = sys.argv[2]
+cmd = sys.argv[3:]
+
+with open(out_path, "w", encoding="utf-8", errors="replace") as f:
+    try:
+        proc = subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT, text=True)
+        proc.wait(timeout=timeout)
+        sys.exit(proc.returncode)
+    except subprocess.TimeoutExpired:
+        try:
+            proc.terminate()
+            proc.wait(timeout=5)
+        except Exception:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+        sys.exit(124)
+PY
+}
+
+run_xcodebuild_with_timeout_and_tee() {
+  local timeout_seconds="$1"
+  local log_file="$2"
+  shift 2
+
+  python3 - "$timeout_seconds" "$log_file" "$@" <<'PY'
+import selectors
+import subprocess
+import sys
+import time
+
+timeout = float(sys.argv[1])
+log_path = sys.argv[2]
+cmd = sys.argv[3:]
+
+start = time.monotonic()
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+sel = selectors.DefaultSelector()
+sel.register(proc.stdout, selectors.EVENT_READ)
+
+with open(log_path, "w", encoding="utf-8", errors="replace") as f:
+    while True:
+        if time.monotonic() - start > timeout:
+            try:
+                proc.terminate()
+                proc.wait(timeout=5)
+            except Exception:
+                try:
+                    proc.kill()
+                except Exception:
+                    pass
+            msg = f"\n[TIMEOUT] xcodebuild exceeded {timeout:.0f}s\n"
+            f.write(msg)
+            sys.stdout.write(msg)
+            sys.stdout.flush()
+            sys.exit(124)
+
+        if proc.poll() is not None:
+            remaining = proc.stdout.read() if proc.stdout else ""
+            if remaining:
+                f.write(remaining)
+                f.flush()
+                sys.stdout.write(remaining)
+                sys.stdout.flush()
+            sys.exit(proc.returncode)
+
+        events = sel.select(timeout=0.25)
+        for key, _ in events:
+            line = key.fileobj.readline()
+            if not line:
+                continue
+            f.write(line)
+            f.flush()
+            sys.stdout.write(line)
+            sys.stdout.flush()
+PY
+}
+
 is_retryable_ui_test_failure() {
   local log_file="$1"
   [[ -f "$log_file" ]] || return 1
@@ -106,6 +198,16 @@ is_retryable_ui_test_failure() {
     return 0
   fi
   if rg -q "XCTDaemonErrorDomain Code=18" "$log_file"; then
+    return 0
+  fi
+  # iOS simulator flake: simulator services die during launch/test bootstrap.
+  if rg -q "NSMachErrorDomain" "$log_file"; then
+    return 0
+  fi
+  if rg -q "Mach error -308" "$log_file"; then
+    return 0
+  fi
+  if rg -q "server died" "$log_file"; then
     return 0
   fi
 
@@ -132,6 +234,26 @@ destination_device_name() {
   echo "$name"
 }
 
+simctl_list_devices_available() {
+  python3 - "$SIMCTL_LIST_TIMEOUT_SECONDS" <<'PY'
+import subprocess
+import sys
+
+timeout = float(sys.argv[1])
+try:
+    out = subprocess.check_output(
+        ["xcrun", "simctl", "list", "devices", "available"],
+        stderr=subprocess.STDOUT,
+        timeout=timeout,
+        text=True,
+    )
+    sys.stdout.write(out)
+except Exception:
+    # Best-effort: when CoreSimulator is wedged, callers should degrade gracefully.
+    sys.stdout.write("")
+PY
+}
+
 destination_sim_udid() {
   local destination="$1"
 
@@ -145,7 +267,7 @@ destination_sim_udid() {
   if [[ "$destination" == *"name="* ]]; then
     local name
     name="$(destination_device_name "$destination")"
-    xcrun simctl list devices available | grep -F "$name" | head -1 | grep -oE '[0-9A-F-]{36}' || true
+    simctl_list_devices_available | grep -F "$name" | head -1 | grep -oE '[0-9A-F-]{36}' || true
     return 0
   fi
 
@@ -189,13 +311,17 @@ capture_failure_artifacts() {
 
   log_warn "Capturing failure diagnostics ($phase) for udid=$udid"
 
-  xcrun simctl diagnose "$udid" > "${reports_dir}/simctl-diagnose.txt" 2>&1 || true
-  xcrun simctl spawn "$udid" log collect --output "${reports_dir}/simulator-logs.logarchive" --last 5m 2>/dev/null || true
+  run_with_timeout_to_file "$SIMCTL_LOG_TIMEOUT_SECONDS" "${reports_dir}/simctl-diagnose.txt" \
+    xcrun simctl diagnose "$udid" || true
+  # log collect can be slow; best-effort and timeboxed.
+  run_with_timeout_to_file "$SIMCTL_LOG_TIMEOUT_SECONDS" "${reports_dir}/log-collect.txt" \
+    xcrun simctl spawn "$udid" log collect --output "${reports_dir}/simulator-logs.logarchive" --last 5m || true
 
   # Quick, grep-friendly extract for common iOS 26 UI-test daemon/accessibility issues.
-  xcrun simctl spawn "$udid" log show --style compact --last 5m \
-    --predicate '(eventMessage CONTAINS[c] "AX" OR eventMessage CONTAINS[c] "accessibility" OR eventMessage CONTAINS[c] "XCTDaemon" OR eventMessage CONTAINS[c] "Mach" OR subsystem CONTAINS[c] "com.apple.Accessibility")' \
-    > "${reports_dir}/accessibility_log_last5m.txt" 2>&1 || true
+  run_with_timeout_to_file "$SIMCTL_LOG_TIMEOUT_SECONDS" "${reports_dir}/accessibility_log_last5m.txt" \
+    xcrun simctl spawn "$udid" log show --style compact --last 5m \
+      --predicate '(eventMessage CONTAINS[c] "AX" OR eventMessage CONTAINS[c] "accessibility" OR eventMessage CONTAINS[c] "XCTDaemon" OR eventMessage CONTAINS[c] "Mach" OR subsystem CONTAINS[c] "com.apple.Accessibility")' \
+    || true
 }
 
 run_screenshots_for_destination() {
@@ -233,14 +359,14 @@ run_screenshots_for_destination() {
     set +e
     UI_TEST_ARTIFACTS_DIR="$output_dir" \
       WRITE_UI_TEST_LOGS=1 \
-      xcodebuild test \
-        -project "$PROJECT" \
-        -scheme "$SCHEME" \
-        -destination "$destination" \
-        -only-testing:"$SCREENSHOT_TEST" \
-        -resultBundlePath "$result_bundle" \
-        2>&1 | tee "$log_file"
-    local ec=${PIPESTATUS[0]}
+      run_xcodebuild_with_timeout_and_tee "$XCODEBUILD_TIMEOUT_SECONDS" "$log_file" \
+        xcodebuild test \
+          -project "$PROJECT" \
+          -scheme "$SCHEME" \
+          -destination "$destination" \
+          -only-testing:"$SCREENSHOT_TEST" \
+          -resultBundlePath "$result_bundle"
+    local ec=$?
     set -e
 
     if [[ $ec -eq 0 ]]; then
@@ -313,6 +439,10 @@ run_previews_for_destination() {
   mkdir -p "$output_dir/reports"
   boot_simulator "$destination"
 
+  local udid
+  udid="$(destination_sim_udid "$destination")"
+  [[ -z "$udid" ]] && udid="booted"
+
   local attempt=1
   while [[ $attempt -le $MAX_UI_TEST_RETRIES ]]; do
     local result_bundle="$output_dir/preview_attempt${attempt}.xcresult"
@@ -336,20 +466,20 @@ run_previews_for_destination() {
     fi
 
     log_info "Recording preview video: $video_file_attempt"
-    xcrun simctl io booted recordVideo --codec=h264 "$video_file_attempt" &
+    xcrun simctl io "$udid" recordVideo --codec=h264 "$video_file_attempt" &
     local record_pid=$!
 
     set +e
     UI_TEST_ARTIFACTS_DIR="$output_dir" \
       WRITE_UI_TEST_LOGS=1 \
-      xcodebuild test \
-        -project "$PROJECT" \
-        -scheme "$SCHEME" \
-        -destination "$destination" \
-        -only-testing:"$PREVIEW_TEST" \
-        -resultBundlePath "$result_bundle" \
-        2>&1 | tee "$log_file"
-    local ec=${PIPESTATUS[0]}
+      run_xcodebuild_with_timeout_and_tee "$XCODEBUILD_TIMEOUT_SECONDS" "$log_file" \
+        xcodebuild test \
+          -project "$PROJECT" \
+          -scheme "$SCHEME" \
+          -destination "$destination" \
+          -only-testing:"$PREVIEW_TEST" \
+          -resultBundlePath "$result_bundle"
+    local ec=$?
     set -e
 
     if kill -INT "$record_pid" 2>/dev/null; then

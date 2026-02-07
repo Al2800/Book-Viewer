@@ -92,7 +92,11 @@ class BaseUITestCase: XCTestCase {
 
         // Attempt to clear any system permission alerts that can block automation.
         // This is best-effort; on some simulator/OS versions AX may still be flaky.
-        sweepSpringboardAlerts()
+        // App Store media runs mock camera and avoid permission prompts; SpringBoard alert queries can
+        // hang on iOS 26 simulator builds, so skip the sweep in that mode and rely on interruption monitors.
+        if !app.launchArguments.contains("--app-store-media") {
+            sweepSpringboardAlerts()
+        }
         app.tap()
 
         // Wait for app to be ready
