@@ -244,6 +244,49 @@ run_screenshots_for_destination() {
     set -e
 
     if [[ $ec -eq 0 ]]; then
+      # Export attachments from the xcresult bundle and materialize a stable PNG set for upload.
+      # XCTest stores screenshots as attachments; exporting them avoids depending on test-runner FS access.
+      local export_dir="$output_dir/attachments_attempt${attempt}"
+      local screenshots_dir="$output_dir/screenshots"
+      mkdir -p "$export_dir"
+      mkdir -p "$screenshots_dir"
+
+      xcrun xcresulttool export attachments \
+        --path "$result_bundle" \
+        --output-path "$export_dir" \
+        >/dev/null 2>&1 || true
+
+      local manifest="$export_dir/manifest.json"
+      if [[ -f "$manifest" ]]; then
+        local keys=(
+          "01_library_grid"
+          "02_library_list"
+          "03_book_detail"
+          "04_quote_detail"
+          "05_search_results"
+          "06_capture"
+          "07_add_book"
+          "08_settings"
+        )
+
+        for key in "${keys[@]}"; do
+          local exported
+          exported="$(jq -r --arg key "$key" '
+            .[]?.attachments[]?
+            | select(.suggestedHumanReadableName? and (.suggestedHumanReadableName | contains("_" + $key + "_")))
+            | .exportedFileName
+          ' "$manifest" 2>/dev/null | head -n 1)"
+
+          if [[ -n "${exported:-}" ]] && [[ -f "$export_dir/$exported" ]]; then
+            cp -f "$export_dir/$exported" "$screenshots_dir/$key.png" 2>/dev/null || true
+          else
+            log_warn "Could not locate exported screenshot for key=$key (see $manifest)"
+          fi
+        done
+      else
+        log_warn "No attachment manifest produced (xcresult export may have failed): $manifest"
+      fi
+
       log_info "Screenshots saved to: $output_dir/screenshots"
       return 0
     fi
