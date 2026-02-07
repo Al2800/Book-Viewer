@@ -1034,6 +1034,8 @@ enum UITestConfiguration {
 CI uploads high-signal debugging artifacts (xcresult bundles, coverage reports, and logs) on every run.
 Artifact retention is currently set to **14 days** (see `.github/workflows/ios-unit-integration-tests.yml`).
 
+UI tests run in a separate best-effort workflow (manual trigger + nightly schedule): `.github/workflows/ios-ui-tests.yml`.
+
 ### GitHub Actions Workflow
 
 ```yaml

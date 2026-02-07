@@ -1,0 +1,97 @@
+name: iOS UI Tests (Best Effort)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+concurrency:
+  group: ios-ui-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ui-tests:
+    runs-on: macos-15
+    timeout-minutes: 75
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Xcode Version
+        run: |
+          xcodebuild -version
+          xcode-select -p
+
+      - name: Pick Simulator Destination
+        id: pick-destination
+        run: |
+          set -euxo pipefail
+
+          python3 - <<'PY' > destination.txt
+          import json
+          import re
+          import subprocess
+          
+          out = subprocess.check_output(["xcrun", "simctl", "list", "-j", "devices", "available"], text=True)
+          data = json.loads(out)
+          devices = data.get("devices", {})
+          
+          def runtime_version(runtime_id: str):
+            m = re.search(r"iOS-(\\d+)-(\\d+)", runtime_id)
+            if not m:
+              return (0, 0)
+            return (int(m.group(1)), int(m.group(2)))
+          
+          ios_runtimes = [k for k in devices.keys() if ".iOS-" in k]
+          ios_runtimes.sort(key=runtime_version, reverse=True)
+          if not ios_runtimes:
+            raise SystemExit("No iOS runtimes available in simctl output.")
+          
+          chosen_runtime = ios_runtimes[0]
+          runtime_devices = devices.get(chosen_runtime, [])
+          
+          iphones = [d for d in runtime_devices if d.get("isAvailable") and str(d.get("name", "")).startswith("iPhone")]
+          if not iphones:
+            raise SystemExit(f"No available iPhone devices for runtime {chosen_runtime}.")
+          
+          # Prefer iPhone 15 if present; otherwise take the first available iPhone.
+          preferred = next((d for d in iphones if d.get("name") == "iPhone 15"), None)
+          chosen = preferred or iphones[0]
+          
+          udid = chosen.get("udid")
+          if not udid:
+            raise SystemExit("Chosen device has no UDID.")
+          
+          print(f"platform=iOS Simulator,id={udid}")
+          PY
+
+          echo "DESTINATION=$(cat destination.txt)" >> "$GITHUB_ENV"
+          echo "Chosen destination: $(cat destination.txt)"
+
+      - name: Run UI Tests (Smoke)
+        env:
+          NSUnbufferedIO: "YES"
+        run: |
+          set -euxo pipefail
+
+          ARTIFACTS_DIR="artifacts/ui-tests/ci-${{ github.run_id }}"
+          mkdir -p "$ARTIFACTS_DIR"
+
+          RUN_ID="ci-${{ github.run_id }}" \
+          ARTIFACTS_DIR="$ARTIFACTS_DIR" \
+          DESTINATION="$DESTINATION" \
+          TEST_PLAN="Full Regression" \
+          ONLY_TESTING="BookQuotesUITests/SearchFlowTests" \
+          RETRY_COUNT="1" \
+          TIMEOUT="1800" \
+          scripts/e2e_ui.sh
+
+      - name: Upload UI Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-tests-${{ github.run_id }}
+          path: artifacts/ui-tests/ci-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14

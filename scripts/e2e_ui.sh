@@ -57,6 +57,81 @@ log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
 }
 
+run_with_timeout() {
+  local timeout_s="$1"
+  shift
+
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$timeout_s" "$@"
+    return $?
+  fi
+
+  if command -v gtimeout >/dev/null 2>&1; then
+    gtimeout "$timeout_s" "$@"
+    return $?
+  fi
+
+  # macOS does not always ship `timeout`. Use a small Python wrapper as a fallback.
+  python3 - "$timeout_s" "$@" <<'PY'
+import selectors
+import subprocess
+import sys
+import time
+
+timeout = float(sys.argv[1])
+cmd = sys.argv[2:]
+
+proc = subprocess.Popen(
+    cmd,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT,
+    text=True,
+    bufsize=1,
+)
+
+sel = selectors.DefaultSelector()
+assert proc.stdout is not None
+sel.register(proc.stdout, selectors.EVENT_READ)
+
+start = time.monotonic()
+timed_out = False
+
+while True:
+    if time.monotonic() - start > timeout:
+        timed_out = True
+        break
+
+    events = sel.select(timeout=0.25)
+    for key, _ in events:
+        line = key.fileobj.readline()
+        if not line:
+            continue
+        sys.stdout.write(line)
+        sys.stdout.flush()
+
+    if proc.poll() is not None:
+        # Drain remaining output.
+        remaining = proc.stdout.read()
+        if remaining:
+            sys.stdout.write(remaining)
+            sys.stdout.flush()
+        break
+
+if timed_out:
+    try:
+        proc.terminate()
+        proc.wait(timeout=5)
+    except Exception:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+    sys.exit(124)
+
+sys.exit(proc.returncode or 0)
+PY
+}
+
 write_diagnostics_header() {
   log_info "Diagnostics:"
   log_info "  run_id: $RUN_ID"
@@ -219,7 +294,7 @@ run_tests() {
     echo "" >> "${REPORTS_DIR}/xcodebuild-command-attempt${attempt}.txt"
 
     # Run with timeout
-    if timeout "$TIMEOUT" bash -c '"${@}"' _ "${CMD[@]}" 2>&1 | tee "$LOG_FILE"; then
+    if run_with_timeout "$TIMEOUT" "${CMD[@]}" 2>&1 | tee "$LOG_FILE"; then
       return 0
     fi
 
