@@ -165,10 +165,36 @@ struct SignInView: View {
             } catch AuthError.signInCancelled {
                 // User cancelled - no error message needed
             } catch {
-                errorMessage = error.localizedDescription
+                errorMessage = signInErrorMessage(for: error)
                 showError = true
             }
         }
+    }
+
+    private func signInErrorMessage(for error: Error) -> String {
+        if let authError = error as? ASAuthorizationError {
+            switch authError.code {
+            case .unknown:
+                // Commonly caused by missing "Sign In with Apple" capability/entitlements in the signed app.
+                return "Sign in with Apple is unavailable for this build (error 1000). Ensure the app has the \"Sign In with Apple\" capability enabled and is signed with the correct entitlements, then install a new build."
+            case .invalidResponse:
+                return "Sign in with Apple returned an invalid response. Please try again."
+            case .notHandled:
+                return "Sign in with Apple could not be handled. Please try again."
+            case .failed:
+                return "Sign in with Apple failed. Please try again."
+            case .canceled:
+                return "Sign in was cancelled."
+            @unknown default:
+                return "Sign in with Apple failed: \(authError.localizedDescription)"
+            }
+        }
+
+        if let authError = error as? AuthError {
+            return authError.localizedDescription
+        }
+
+        return error.localizedDescription
     }
 }
 
@@ -252,10 +278,35 @@ struct AppleSignInButton: View {
             } catch AuthError.signInCancelled {
                 // User cancelled
             } catch {
-                errorMessage = error.localizedDescription
+                errorMessage = signInErrorMessage(for: error)
                 showError = true
             }
         }
+    }
+
+    private func signInErrorMessage(for error: Error) -> String {
+        if let authError = error as? ASAuthorizationError {
+            switch authError.code {
+            case .unknown:
+                return "Sign in with Apple is unavailable for this build (error 1000). Ensure the app has the \"Sign In with Apple\" capability enabled and is signed with the correct entitlements, then install a new build."
+            case .invalidResponse:
+                return "Sign in with Apple returned an invalid response. Please try again."
+            case .notHandled:
+                return "Sign in with Apple could not be handled. Please try again."
+            case .failed:
+                return "Sign in with Apple failed. Please try again."
+            case .canceled:
+                return "Sign in was cancelled."
+            @unknown default:
+                return "Sign in with Apple failed: \(authError.localizedDescription)"
+            }
+        }
+
+        if let authError = error as? AuthError {
+            return authError.localizedDescription
+        }
+
+        return error.localizedDescription
     }
 }
 
