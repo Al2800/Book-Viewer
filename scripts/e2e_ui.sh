@@ -18,7 +18,7 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT="$PROJECT_DIR/BookQuotes.xcodeproj"
 SCHEME="${SCHEME:-BookQuotes}"
 TEST_PLAN="${TEST_PLAN:-}"
-DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 17}"
+DESTINATION="${DESTINATION:-}"
 
 SCRIPT_SLUG="$(basename "${BASH_SOURCE[0]}" .sh)"
 GIT_SHA="$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo nogit)"
@@ -38,6 +38,92 @@ LOG_FILE=""
 ONLY_TESTING="${ONLY_TESTING:-}"
 RETRY_COUNT="${RETRY_COUNT:-1}"
 TIMEOUT="${TIMEOUT:-1200}"
+
+# Default simulator selection (only if DESTINATION is not provided).
+pick_default_sim_udid() {
+  python3 - <<'PY'
+import json
+import subprocess
+import sys
+
+try:
+    raw = subprocess.check_output(["xcrun", "simctl", "list", "-j", "devices", "available"], text=True)
+    data = json.loads(raw)
+except Exception:
+    print("")
+    sys.exit(0)
+
+devices = data.get("devices", {}) or {}
+ios_runtimes = [rt for rt in devices.keys() if "SimRuntime.iOS-" in rt]
+
+def runtime_rank(rt: str) -> int:
+    if "SimRuntime.iOS-26-2" in rt:
+        return 0
+    if "SimRuntime.iOS-26-1" in rt:
+        return 1
+    if "SimRuntime.iOS-26-0" in rt:
+        return 2
+    if "SimRuntime.iOS-18-" in rt:
+        return 3
+    return 9
+
+ios_runtimes_sorted = sorted(ios_runtimes, key=runtime_rank)
+preferred_runtimes = [rt for rt in ios_runtimes_sorted if runtime_rank(rt) <= 2]
+fallback_runtimes = [rt for rt in ios_runtimes_sorted if runtime_rank(rt) > 2]
+
+def iter_devs(runtimes):
+    for rt in runtimes:
+        for d in devices.get(rt, []) or []:
+            yield rt, d
+
+def is_available_iphone(d: dict) -> bool:
+    return d.get("isAvailable") and ("iPhone" in (d.get("name") or ""))
+
+for rt in preferred_runtimes:
+    for d in devices.get(rt, []) or []:
+        if is_available_iphone(d) and d.get("state") == "Booted" and d.get("udid"):
+            print(d["udid"])
+            sys.exit(0)
+
+for rt, d in iter_devs(preferred_runtimes):
+    name = (d.get("name") or "")
+    if is_available_iphone(d) and (("iPhone 17" in name) or ("iPhone Air" in name)) and d.get("udid"):
+        print(d["udid"])
+        sys.exit(0)
+
+for rt, d in iter_devs(preferred_runtimes):
+    if is_available_iphone(d) and d.get("udid"):
+        print(d["udid"])
+        sys.exit(0)
+
+for rt in fallback_runtimes:
+    for d in devices.get(rt, []) or []:
+        if is_available_iphone(d) and d.get("state") == "Booted" and d.get("udid"):
+            print(d["udid"])
+            sys.exit(0)
+
+for rt, d in iter_devs(fallback_runtimes):
+    if is_available_iphone(d) and "iPhone 16" in (d.get("name") or "") and d.get("udid"):
+        print(d["udid"])
+        sys.exit(0)
+
+for rt, d in iter_devs(fallback_runtimes):
+    if is_available_iphone(d) and d.get("udid"):
+        print(d["udid"])
+        sys.exit(0)
+
+print("")
+PY
+}
+
+if [[ -z "${DESTINATION}" ]]; then
+  DEFAULT_UDID="$(pick_default_sim_udid)"
+  if [[ -n "${DEFAULT_UDID}" ]]; then
+    DESTINATION="platform=iOS Simulator,id=${DEFAULT_UDID}"
+  else
+    DESTINATION="platform=iOS Simulator,name=iPhone 17"
+  fi
+fi
 
 # Colors for output
 RED='\033[0;31m'
