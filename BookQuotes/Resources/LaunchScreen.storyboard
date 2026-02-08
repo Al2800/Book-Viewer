@@ -8,7 +8,7 @@
                     <view key="view" contentMode="scaleToFill" id="LaunchView">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <subviews>
-                            <imageView contentMode="scaleAspectFit" image="LaunchLogoStatic" translatesAutoresizingMaskIntoConstraints="NO" id="LaunchLogoView">
+                            <imageView contentMode="scaleAspectFit" image="LaunchLogoV3" translatesAutoresizingMaskIntoConstraints="NO" id="LaunchLogoView">
                                 <constraints>
                                     <constraint firstAttribute="height" multiplier="0.8" secondItem="LaunchView" secondAttribute="height" id="LaunchLogoHeight"/>
                                     <constraint firstAttribute="width" multiplier="0.9" secondItem="LaunchView" secondAttribute="width" id="LaunchLogoWidth"/>
@@ -27,7 +27,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchLogoStatic" width="704" height="1520"/>
+        <image name="LaunchLogoV3" width="704" height="1520"/>
         <namedColor name="BackgroundPrimary">
             <color red="0.969" green="0.953" blue="0.910" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
