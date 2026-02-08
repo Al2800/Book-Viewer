@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import os
 
 @main
 @MainActor
@@ -15,6 +16,8 @@ struct BookQuotesApp: App {
     init() {
         // Configure global UI appearance before any views are created
         Self.configureAppearance()
+
+        let logger = Logger(subsystem: "com.acampbell.bookquotes", category: "persistence")
 
         let schema = Schema([
             Book.self,
@@ -58,8 +61,31 @@ struct BookQuotesApp: App {
             containerResult = try ModelContainer(for: schema, configurations: [config])
             errorResult = nil
         } catch {
-            containerResult = nil
-            errorResult = error
+            // Most common real-world cause is CloudKit capability / entitlement mismatch on a build.
+            // If CloudKit-backed SwiftData fails to initialize, fall back to local-only storage so the
+            // app can still boot. We keep the original error around for diagnostics if fallback fails.
+            logger.error("SwiftData container init failed (cloudKit=automatic): \(String(describing: error))")
+
+            if !isUITesting {
+                let localOnlyConfig = ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: false,
+                    cloudKitDatabase: .none
+                )
+
+                do {
+                    containerResult = try ModelContainer(for: schema, configurations: [localOnlyConfig])
+                    errorResult = nil
+                    logger.warning("SwiftData initialized in local-only mode (cloudKit=none) after CloudKit init failure.")
+                } catch {
+                    containerResult = nil
+                    errorResult = error
+                    logger.error("SwiftData container init failed (cloudKit=none): \(String(describing: error))")
+                }
+            } else {
+                containerResult = nil
+                errorResult = error
+            }
         }
 
         container = containerResult
