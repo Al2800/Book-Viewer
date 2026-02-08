@@ -324,23 +324,35 @@ struct QuoteCaptureView: View {
         }
     }
 
-    @MainActor
     private func handleCapturedImage(_ image: UIImage) async {
-        capturedImage = image
-
-        // Analyze quality
-        isAnalyzingQuality = true
-        do {
-            let result = try await qualityAnalyzer.analyze(image: image)
-            qualityResult = result
-        } catch {
-            errorMessage = error.localizedDescription
-            showError = true
+        await MainActor.run {
+            capturedImage = image
+            isAnalyzingQuality = true
+            qualityResult = nil
         }
-        isAnalyzingQuality = false
 
-        // Show review sheet
-        captureState = .reviewing
+        // Vision-based analysis can be expensive. Keep it off the MainActor to prevent the capture UI from freezing.
+        do {
+            let result = try await Task.detached(priority: .userInitiated) {
+                let analyzer = ImageQualityAnalyzer(configuration: .lenient)
+                return try await analyzer.analyze(image: image)
+            }.value
+
+            await MainActor.run {
+                qualityResult = result
+            }
+        } catch {
+            await MainActor.run {
+                errorMessage = error.localizedDescription
+                showError = true
+            }
+        }
+
+        await MainActor.run {
+            isAnalyzingQuality = false
+            // Show review sheet
+            captureState = .reviewing
+        }
     }
 
     private func retakePhoto() {

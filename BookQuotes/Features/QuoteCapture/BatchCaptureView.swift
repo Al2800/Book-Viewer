@@ -289,12 +289,21 @@ struct BatchCaptureView: View {
             try PageCapture.ensureDirectory(for: session.id)
             let imagePath = PageCapture.generateImagePath(sessionId: session.id)
 
-            // Process image
-            let processed = try ImagePreprocessor.process(autoCropped, config: .highQuality)
-            try PageCapture.saveImage(processed.data, to: imagePath)
+            // Image processing is CPU-heavy and can stall the capture UI if performed on the main actor.
+            // Do it on a background queue and only update SwiftUI/SwiftData state afterwards.
+            let (processed, thumbnailData) = try await withCheckedThrowingContinuation { continuation in
+                DispatchQueue.global(qos: .userInitiated).async {
+                    do {
+                        let processed = try ImagePreprocessor.process(autoCropped, config: .highQuality)
+                        let thumbnailData = try ImagePreprocessor.createThumbnail(autoCropped)
+                        continuation.resume(returning: (processed, thumbnailData))
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
 
-            // Create thumbnail
-            let thumbnailData = try ImagePreprocessor.createThumbnail(autoCropped)
+            try PageCapture.saveImage(processed.data, to: imagePath)
 
             // Create capture record
             let capture = PageCapture(imagePath: imagePath, session: session)
