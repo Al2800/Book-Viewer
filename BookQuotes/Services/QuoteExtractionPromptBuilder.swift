@@ -8,10 +8,46 @@ enum QuoteExtractionPromptBuilder {
 
     // MARK: - Prompt Generation
 
+    /// Concurrency-safe snapshot of a marking definition used for prompt building.
+    ///
+    /// Avoid passing SwiftData model objects (e.g. `MarkingDefinition`) across concurrency domains.
+    struct MarkingPrompt: Sendable {
+        let name: String
+        let visualDescription: String
+        let meaning: String
+        let isEnabled: Bool
+
+        init(
+            name: String,
+            visualDescription: String,
+            meaning: String,
+            isEnabled: Bool = true
+        ) {
+            self.name = name
+            self.visualDescription = visualDescription
+            self.meaning = meaning
+            self.isEnabled = isEnabled
+        }
+
+        init(_ definition: MarkingDefinition) {
+            self.init(
+                name: definition.name,
+                visualDescription: definition.visualDescription,
+                meaning: definition.meaning,
+                isEnabled: definition.isEnabled
+            )
+        }
+    }
+
     /// Build a quote extraction prompt with user's marking definitions
     /// - Parameter markings: User's enabled marking definitions
     /// - Returns: Complete prompt string for Gemini API
     static func buildPrompt(markings: [MarkingDefinition]) -> String {
+        buildPrompt(markings: markings.map(MarkingPrompt.init))
+    }
+
+    /// Build a quote extraction prompt with marking definitions snapshots.
+    static func buildPrompt(markings: [MarkingPrompt]) -> String {
         let enabledMarkings = markings.filter { $0.isEnabled }
 
         // Build marking descriptions
@@ -75,6 +111,11 @@ enum QuoteExtractionPromptBuilder {
 
     /// Build a simplified prompt for quick extraction (fewer instructions)
     static func buildQuickPrompt(markings: [MarkingDefinition]) -> String {
+        buildQuickPrompt(markings: markings.map(MarkingPrompt.init))
+    }
+
+    /// Build a simplified prompt for quick extraction (fewer instructions) using marking snapshots.
+    static func buildQuickPrompt(markings: [MarkingPrompt]) -> String {
         let enabledMarkings = markings.filter { $0.isEnabled }
         let markingNames = enabledMarkings.map { $0.name }.joined(separator: ", ")
 

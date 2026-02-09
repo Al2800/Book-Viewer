@@ -27,7 +27,7 @@ final class AuthService: NSObject {
     private let serverBaseURL: URL
 
     /// Default server base URL
-    static let proxyBaseURL: URL = {
+    nonisolated static let proxyBaseURL: URL = {
         if let configured = Bundle.main.object(forInfoDictionaryKey: "BookQuotesProxyBaseURL") as? String,
            let url = resolveBaseURL(from: configured),
            configured.contains("your-worker") == false {
@@ -185,7 +185,7 @@ final class AuthService: NSObject {
         )
     }
 
-    private static func resolveBaseURL(from rawValue: String) -> URL? {
+    nonisolated private static func resolveBaseURL(from rawValue: String) -> URL? {
         let trimmed = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
 

@@ -370,9 +370,10 @@ actor CaptureQueueManager {
                 predicate: #Predicate<MarkingDefinition> { $0.isEnabled }
             )
             let markings = (try? context.fetch(markingDescriptor)) ?? []
+            let markingPrompts = markings.map { QuoteExtractionPromptBuilder.MarkingPrompt($0) }
 
             // Call Gemini API for extraction
-            let result = try await geminiService.extractQuotes(from: image, markings: markings)
+            let result = try await geminiService.extractQuotes(from: image, markings: markingPrompts)
 
             // Create Quote objects from extracted data
             guard let book = contextItem.book else {

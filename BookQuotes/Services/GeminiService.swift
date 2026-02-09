@@ -11,7 +11,6 @@ private enum GeminiImagePrepError: Error {
 
 /// Service for communicating with Gemini API through the BookQuotes proxy.
 /// Handles authentication, request formatting, and response parsing.
-@MainActor
 @Observable
 final class GeminiService {
 
@@ -28,14 +27,6 @@ final class GeminiService {
 
     /// URL session for requests
     private let session: URLSession
-
-    // MARK: - State
-
-    /// Whether a request is in progress
-    private(set) var isProcessing = false
-
-    /// Last error encountered
-    private(set) var lastError: ExtractionError?
 
     // MARK: - Initialization
 
@@ -62,12 +53,8 @@ final class GeminiService {
     /// - Returns: Extraction result with quotes
     func extractQuotes(
         from image: UIImage,
-        markings: [MarkingDefinition] = []
+        markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
-        isProcessing = true
-        lastError = nil
-        defer { isProcessing = false }
-
         // Build the prompt
         let prompt = QuoteExtractionPromptBuilder.buildPrompt(markings: markings)
 
@@ -85,12 +72,8 @@ final class GeminiService {
     /// Quick extraction with simplified prompt (faster but less detailed)
     func quickExtractQuotes(
         from image: UIImage,
-        markings: [MarkingDefinition] = []
+        markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
-        isProcessing = true
-        lastError = nil
-        defer { isProcessing = false }
-
         let prompt = QuoteExtractionPromptBuilder.buildQuickPrompt(markings: markings)
 
         let response = try await makeRequest(
@@ -108,10 +91,6 @@ final class GeminiService {
     /// - Parameter image: The book cover image
     /// - Returns: Book metadata result
     func extractCoverMetadata(from image: UIImage) async throws -> BookMetadataResult {
-        isProcessing = true
-        lastError = nil
-        defer { isProcessing = false }
-
         let prompt = QuoteExtractionPromptBuilder.buildCoverExtractionPrompt()
 
         let response = try await makeRequest(
@@ -132,20 +111,15 @@ final class GeminiService {
         prompt: String
     ) async throws -> String {
         // Get auth token
-        guard let token = authService.getSessionToken() else {
-            let error = ExtractionError.authenticationRequired
-            lastError = error
-            throw error
-        }
+        let token = await MainActor.run { authService.getSessionToken() }
+        guard let token else { throw ExtractionError.authenticationRequired }
 
         // Prepare image data (can be expensive; keep it off the MainActor).
         let imageData: Data
         do {
             imageData = try await prepareImageData(image)
         } catch {
-            let extractionError = (error as? ExtractionError) ?? ExtractionError.invalidImage
-            lastError = extractionError
-            throw extractionError
+            throw (error as? ExtractionError) ?? ExtractionError.invalidImage
         }
 
         // Build request body
@@ -178,7 +152,6 @@ final class GeminiService {
             request.httpBody = try JSONEncoder().encode(requestBody)
         } catch {
             let extractionError = ExtractionError.networkError(error)
-            lastError = extractionError
             throw extractionError
         }
 
@@ -195,11 +168,9 @@ final class GeminiService {
             return try parseGeminiResponse(data)
 
         } catch let error as ExtractionError {
-            lastError = error
             throw error
         } catch {
             let extractionError = ExtractionError.networkError(error)
-            lastError = extractionError
             throw extractionError
         }
     }

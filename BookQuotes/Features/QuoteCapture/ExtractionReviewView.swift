@@ -372,49 +372,83 @@ struct ExtractionReviewView: View {
         }
     }
 
-    @MainActor
     private func processPendingCaptures() async {
-        guard networkMonitor.isConnected else {
-            saveError = ExtractionError.networkError(
-                NSError(domain: "ExtractionReview", code: -1009, userInfo: [
-                    NSLocalizedDescriptionKey: "No internet connection"
-                ])
-            )
+        let isConnected = await MainActor.run { networkMonitor.isConnected }
+        guard isConnected else {
+            await MainActor.run {
+                saveError = ExtractionError.networkError(
+                    NSError(domain: "ExtractionReview", code: -1009, userInfo: [
+                        NSLocalizedDescriptionKey: "No internet connection"
+                    ])
+                )
+            }
             return
         }
 
-        session.beginProcessing()
+        // Fetch marking definitions on the main actor, then snapshot them into Sendable values.
+        let markingPrompts: [QuoteExtractionPromptBuilder.MarkingPrompt] = await MainActor.run {
+            let markingDescriptor = FetchDescriptor<MarkingDefinition>(
+                predicate: #Predicate<MarkingDefinition> { $0.isEnabled }
+            )
+            let markings = (try? modelContext.fetch(markingDescriptor)) ?? []
+            return markings.map { QuoteExtractionPromptBuilder.MarkingPrompt($0) }
+        }
 
-        let markingDescriptor = FetchDescriptor<MarkingDefinition>(
-            predicate: #Predicate<MarkingDefinition> { $0.isEnabled }
-        )
-        let markings = (try? modelContext.fetch(markingDescriptor)) ?? []
+        // Mark session as processing on the main actor (SwiftData objects are not concurrency-safe).
+        await MainActor.run {
+            session.beginProcessing()
+            try? modelContext.save()
+        }
 
-        for capture in session.captures where capture.status == .pending {
-            capture.beginProcessing()
+        // Snapshot pending captures into plain values for background work.
+        let pending: [(id: UUID, imageURL: URL?)] = await MainActor.run {
+            session.captures
+                .filter { $0.status == .pending }
+                .map { (id: $0.id, imageURL: $0.imageURL) }
+        }
 
-            do {
-                guard let image = capture.loadFullImage() else {
-                    throw ExtractionError.invalidImage
+        for item in pending {
+            await MainActor.run {
+                if let capture = session.captures.first(where: { $0.id == item.id }) {
+                    capture.beginProcessing()
+                    try? modelContext.save()
                 }
-
-                let result = try await geminiService.extractQuotes(from: image, markings: markings)
-
-                capture.storeExtractedQuotes(result.quotes)
-                capture.completeProcessing(
-                    quoteCount: result.quoteCount,
-                    avgConfidence: result.averageConfidence,
-                    pageNumber: result.pageNumber
-                )
-                session.recordSuccess()
-
-            } catch {
-                capture.failProcessing(error: error.localizedDescription)
-                session.recordFailure()
             }
 
-            try? modelContext.save()
-            loadExtractedQuotes()
+            do {
+                // Disk IO + image decode off the main actor.
+                let image = try await Task.detached(priority: .userInitiated) { () throws -> UIImage in
+                    guard let url = item.imageURL else { throw ExtractionError.invalidImage }
+                    guard let img = UIImage(contentsOfFile: url.path) else { throw ExtractionError.invalidImage }
+                    return img
+                }.value
+
+                // Network + image encoding runs off main now that GeminiService is not @MainActor.
+                let result = try await geminiService.extractQuotes(from: image, markings: markingPrompts)
+
+                await MainActor.run {
+                    if let capture = session.captures.first(where: { $0.id == item.id }) {
+                        capture.storeExtractedQuotes(result.quotes)
+                        capture.completeProcessing(
+                            quoteCount: result.quoteCount,
+                            avgConfidence: result.averageConfidence,
+                            pageNumber: result.pageNumber
+                        )
+                        session.recordSuccess()
+                        try? modelContext.save()
+                        loadExtractedQuotes()
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    if let capture = session.captures.first(where: { $0.id == item.id }) {
+                        capture.failProcessing(error: error.localizedDescription)
+                        session.recordFailure()
+                        try? modelContext.save()
+                        loadExtractedQuotes()
+                    }
+                }
+            }
         }
     }
 
