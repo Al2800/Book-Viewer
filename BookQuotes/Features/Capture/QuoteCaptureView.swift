@@ -367,29 +367,38 @@ struct QuoteCaptureView: View {
 
         Task {
             do {
-                // Preprocess image
-                let processed = try ImagePreprocessor.processForQuoteExtraction(image)
+                // Preprocessing + disk IO can be expensive and should not run on the main actor.
+                // Generate a stable session id up front so we can write files before inserting SwiftData models.
+                let sessionID = UUID()
 
-                // Create a single-page capture session
+                let (imagePath, thumbnailData) = try await withCheckedThrowingContinuation { continuation in
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        do {
+                            let processed = try ImagePreprocessor.processForQuoteExtraction(image)
+
+                            try PageCapture.ensureDirectory(for: sessionID)
+                            let imagePath = PageCapture.generateImagePath(sessionId: sessionID)
+                            try PageCapture.saveImage(processed.data, to: imagePath)
+
+                            let thumbnailData = try? ImagePreprocessor.createThumbnail(image)
+                            continuation.resume(returning: (imagePath, thumbnailData))
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
+                    }
+                }
+
+                // Create a single-page capture session (SwiftData work stays on the main actor).
                 let session = CaptureSession(book: book)
+                session.id = sessionID
                 modelContext.insert(session)
-
-                // Create page capture
-                try PageCapture.ensureDirectory(for: session.id)
-                let imagePath = PageCapture.generateImagePath(sessionId: session.id)
-                try PageCapture.saveImage(processed.data, to: imagePath)
 
                 let pageCapture = PageCapture(imagePath: imagePath, session: session)
                 pageCapture.orderIndex = 0
-
-                // Generate and save thumbnail
-                if let thumbnailData = try? ImagePreprocessor.createThumbnail(image) {
-                    pageCapture.thumbnailData = thumbnailData
-                }
+                pageCapture.thumbnailData = thumbnailData
 
                 modelContext.insert(pageCapture)
-                session.captures.append(pageCapture)
-                session.totalPages = 1
+                session.addCapture(pageCapture)
 
                 if UITestConfiguration.isUITesting {
                     seedExtractionForUITest(pageCapture: pageCapture, session: session)

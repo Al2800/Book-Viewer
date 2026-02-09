@@ -1,6 +1,8 @@
 import UIKit
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import ImageIO
+import UniformTypeIdentifiers
 
 // MARK: - Image Preprocessor
 
@@ -59,33 +61,33 @@ enum ImagePreprocessor {
     ///   - config: Processing configuration
     /// - Returns: Processed result with JPEG data and metadata
     static func process(_ image: UIImage, config: Config = .default) throws -> Result {
-        // 1. Normalize orientation
-        let normalizedImage = normalizeOrientation(image)
+        // This code is used in capture flows and may run off the main actor.
+        // Avoid UIKit image rendering APIs (UIGraphics...) and do all work via CoreImage/CoreGraphics.
 
-        // 2. Resize if needed
-        let resizedImage = resize(normalizedImage, maxDimension: config.maxDimension)
+        let originalSize = image.size
 
-        // 3. Apply contrast enhancement if enabled
-        let finalImage: UIImage
+        guard let oriented = makeOrientedCIImage(from: image) else {
+            throw PreprocessorError.invalidImage
+        }
+
+        let resized = resize(oriented, maxDimension: config.maxDimension)
+        let finalCI: CIImage
         if config.enhanceContrast {
-            finalImage = enhanceContrast(resizedImage, amount: config.contrastAmount) ?? resizedImage
+            finalCI = enhanceContrast(resized, amount: config.contrastAmount) ?? resized
         } else {
-            finalImage = resizedImage
+            finalCI = resized
         }
 
-        // 4. Compress to JPEG
-        guard let jpegData = finalImage.jpegData(compressionQuality: config.compressionQuality) else {
-            throw PreprocessorError.compressionFailed
-        }
+        let (jpegData, renderedSize) = try renderJPEG(finalCI, compressionQuality: config.compressionQuality)
 
-        // 5. Calculate metrics
-        let originalEstimatedSize = image.size.width * image.size.height * 4 // RGBA
-        let compressionRatio = Double(jpegData.count) / originalEstimatedSize
+        // Calculate metrics
+        let originalEstimatedSize = max(1, originalSize.width * originalSize.height * 4) // RGBA
+        let compressionRatio = Double(jpegData.count) / Double(originalEstimatedSize)
 
         return Result(
             data: jpegData,
-            originalSize: image.size,
-            processedSize: finalImage.size,
+            originalSize: originalSize,
+            processedSize: renderedSize,
             compressionRatio: compressionRatio,
             contrastEnhanced: config.enhanceContrast
         )
@@ -109,61 +111,92 @@ enum ImagePreprocessor {
 
     // MARK: - Private Helpers
 
-    /// Normalize image orientation to .up
-    private static func normalizeOrientation(_ image: UIImage) -> UIImage {
-        guard image.imageOrientation != .up else { return image }
+    private static func makeOrientedCIImage(from image: UIImage) -> CIImage? {
+        if let cgImage = image.cgImage {
+            let base = CIImage(cgImage: cgImage)
+            return base.oriented(cgImagePropertyOrientation(from: image.imageOrientation))
+        }
 
-        UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
-        defer { UIGraphicsEndImageContext() }
+        if let ciImage = image.ciImage {
+            return ciImage.oriented(cgImagePropertyOrientation(from: image.imageOrientation))
+        }
 
-        image.draw(in: CGRect(origin: .zero, size: image.size))
-        return UIGraphicsGetImageFromCurrentImageContext() ?? image
+        return nil
     }
 
-    /// Resize image to fit within max dimension while preserving aspect ratio
-    private static func resize(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
-        let size = image.size
+    /// Resize image to fit within max dimension while preserving aspect ratio.
+    /// Uses Lanczos scaling for quality.
+    private static func resize(_ image: CIImage, maxDimension: CGFloat) -> CIImage {
+        let size = image.extent.size
+        guard size.width > 0, size.height > 0 else { return image }
 
-        // Check if resizing is needed
-        guard size.width > maxDimension || size.height > maxDimension else {
-            return image
-        }
+        let currentMax = max(size.width, size.height)
+        guard currentMax > maxDimension else { return image }
 
-        // Calculate new size preserving aspect ratio
-        let aspectRatio = size.width / size.height
-        let newSize: CGSize
+        let scale = maxDimension / currentMax
 
-        if size.width > size.height {
-            newSize = CGSize(width: maxDimension, height: maxDimension / aspectRatio)
-        } else {
-            newSize = CGSize(width: maxDimension * aspectRatio, height: maxDimension)
-        }
-
-        // Resize using high-quality interpolation
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-        return renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-        }
+        let filter = CIFilter.lanczosScaleTransform()
+        filter.inputImage = image
+        filter.scale = Float(scale)
+        filter.aspectRatio = 1.0
+        return filter.outputImage ?? image.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
     }
 
-    /// Apply light contrast enhancement using Core Image
-    private static func enhanceContrast(_ image: UIImage, amount: CGFloat) -> UIImage? {
-        guard let ciImage = CIImage(image: image) else { return nil }
-
-        let context = CIContext()
-
-        // Apply color controls filter
+    /// Apply light contrast enhancement using Core Image.
+    private static func enhanceContrast(_ image: CIImage, amount: CGFloat) -> CIImage? {
         let filter = CIFilter.colorControls()
-        filter.inputImage = ciImage
+        filter.inputImage = image
         filter.contrast = Float(1.0 + amount)
-        filter.brightness = Float(amount * 0.05) // Slight brightness boost
+        filter.brightness = Float(amount * 0.05) // slight brightness boost
+        return filter.outputImage
+    }
 
-        guard let outputImage = filter.outputImage,
-              let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else {
-            return nil
+    private static func renderJPEG(_ image: CIImage, compressionQuality: CGFloat) throws -> (data: Data, size: CGSize) {
+        let extent = image.extent.integral
+        guard extent.width > 0, extent.height > 0 else {
+            throw PreprocessorError.invalidImage
         }
 
-        return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
+        let context = CIContext(options: [.useSoftwareRenderer: false])
+        guard let cgImage = context.createCGImage(image, from: extent) else {
+            throw PreprocessorError.processingFailed("Failed to render processed image")
+        }
+
+        let outputData = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(
+            outputData,
+            UTType.jpeg.identifier as CFString,
+            1,
+            nil
+        ) else {
+            throw PreprocessorError.compressionFailed
+        }
+
+        let options: CFDictionary = [
+            kCGImageDestinationLossyCompressionQuality: compressionQuality
+        ] as CFDictionary
+
+        CGImageDestinationAddImage(destination, cgImage, options)
+        guard CGImageDestinationFinalize(destination) else {
+            throw PreprocessorError.compressionFailed
+        }
+
+        let renderedSize = CGSize(width: cgImage.width, height: cgImage.height)
+        return (outputData as Data, renderedSize)
+    }
+
+    private static func cgImagePropertyOrientation(from orientation: UIImage.Orientation) -> CGImagePropertyOrientation {
+        switch orientation {
+        case .up: return .up
+        case .down: return .down
+        case .left: return .left
+        case .right: return .right
+        case .upMirrored: return .upMirrored
+        case .downMirrored: return .downMirrored
+        case .leftMirrored: return .leftMirrored
+        case .rightMirrored: return .rightMirrored
+        @unknown default: return .up
+        }
     }
 }
 
