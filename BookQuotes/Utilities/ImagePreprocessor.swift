@@ -2,6 +2,7 @@ import UIKit
 import CoreImage
 import CoreImage.CIFilterBuiltins
 import ImageIO
+import Vision
 import UniformTypeIdentifiers
 
 // MARK: - Image Preprocessor
@@ -107,6 +108,113 @@ enum ImagePreprocessor {
     /// Process for quote extraction (high quality for OCR)
     static func processForQuoteExtraction(_ image: UIImage) throws -> Result {
         try process(image, config: .highQuality)
+    }
+
+    // MARK: - Capture Helpers
+
+    /// Crop to the aspect-fill region a camera preview would display for a given preview size.
+    /// This matches `CameraService.cropToPreviewVisibleArea` but is safe to run off the MainActor.
+    static func cropToAspectFillPreview(_ image: UIImage, previewSize: CGSize) throws -> UIImage {
+        guard previewSize.width > 0, previewSize.height > 0 else { return image }
+
+        guard let oriented = makeOrientedCIImage(from: image) else {
+            throw PreprocessorError.invalidImage
+        }
+
+        let extent = oriented.extent.integral
+        guard extent.width > 0, extent.height > 0 else { return image }
+
+        let targetRatio = previewSize.width / previewSize.height
+        let currentRatio = extent.width / extent.height
+
+        let cropRect: CGRect
+        if currentRatio > targetRatio {
+            let newWidth = extent.height * targetRatio
+            let x = extent.minX + (extent.width - newWidth) / 2.0
+            cropRect = CGRect(x: x, y: extent.minY, width: newWidth, height: extent.height)
+        } else if currentRatio < targetRatio {
+            let newHeight = extent.width / targetRatio
+            let y = extent.minY + (extent.height - newHeight) / 2.0
+            cropRect = CGRect(x: extent.minX, y: y, width: extent.width, height: newHeight)
+        } else {
+            cropRect = extent
+        }
+
+        let cropped = oriented.cropped(to: cropRect.integral)
+        let context = CIContext(options: [.useSoftwareRenderer: false])
+        guard let cgImage = context.createCGImage(cropped, from: cropped.extent.integral) else {
+            throw PreprocessorError.processingFailed("Failed to render cropped image")
+        }
+
+        return UIImage(cgImage: cgImage, scale: image.scale, orientation: .up)
+    }
+
+    /// Best-effort document auto-crop using Vision rectangle detection.
+    /// Falls back to the original image if no rectangle is detected.
+    static func autoCropDocument(_ image: UIImage) async -> UIImage {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                guard let oriented = makeOrientedCIImage(from: image) else {
+                    continuation.resume(returning: image)
+                    return
+                }
+
+                let extent = oriented.extent.integral
+                guard extent.width > 0, extent.height > 0 else {
+                    continuation.resume(returning: image)
+                    return
+                }
+
+                let context = CIContext(options: [.useSoftwareRenderer: false])
+                guard let cgImage = context.createCGImage(oriented, from: extent) else {
+                    continuation.resume(returning: image)
+                    return
+                }
+
+                let request = VNDetectRectanglesRequest { request, _ in
+                    guard let observation = (request.results as? [VNRectangleObservation])?.first else {
+                        continuation.resume(returning: image)
+                        return
+                    }
+
+                    let width = extent.width
+                    let height = extent.height
+
+                    let topLeft = CGPoint(x: extent.minX + observation.topLeft.x * width, y: extent.minY + observation.topLeft.y * height)
+                    let topRight = CGPoint(x: extent.minX + observation.topRight.x * width, y: extent.minY + observation.topRight.y * height)
+                    let bottomLeft = CGPoint(x: extent.minX + observation.bottomLeft.x * width, y: extent.minY + observation.bottomLeft.y * height)
+                    let bottomRight = CGPoint(x: extent.minX + observation.bottomRight.x * width, y: extent.minY + observation.bottomRight.y * height)
+
+                    let corrected = oriented.applyingFilter(
+                        "CIPerspectiveCorrection",
+                        parameters: [
+                            "inputTopLeft": CIVector(cgPoint: topLeft),
+                            "inputTopRight": CIVector(cgPoint: topRight),
+                            "inputBottomLeft": CIVector(cgPoint: bottomLeft),
+                            "inputBottomRight": CIVector(cgPoint: bottomRight)
+                        ]
+                    )
+
+                    if let output = context.createCGImage(corrected, from: corrected.extent.integral) {
+                        continuation.resume(returning: UIImage(cgImage: output, scale: image.scale, orientation: .up))
+                    } else {
+                        continuation.resume(returning: image)
+                    }
+                }
+
+                request.maximumObservations = 1
+                request.minimumConfidence = 0.6
+                request.minimumAspectRatio = 0.5
+                request.minimumSize = 0.3
+
+                let handler = VNImageRequestHandler(cgImage: cgImage, orientation: .up, options: [:])
+                do {
+                    try handler.perform([request])
+                } catch {
+                    continuation.resume(returning: image)
+                }
+            }
+        }
     }
 
     // MARK: - Private Helpers

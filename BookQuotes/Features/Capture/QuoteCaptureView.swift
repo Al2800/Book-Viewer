@@ -301,9 +301,18 @@ struct QuoteCaptureView: View {
                 HapticManager.medium()
 
                 let image = try await cameraService.capturePhoto()
-                let cropped = cameraService.cropToPreviewVisibleArea(image)
-                let autoCropped = await cameraService.autoCropDocument(cropped)
-                await handleCapturedImage(autoCropped)
+                let previewSize = cameraService.currentPreviewSizeForCropping()
+
+                // Crop + document detection can be expensive. Do it off the MainActor so capture doesn't freeze.
+                let prepared = await Task.detached(priority: .userInitiated) { () -> UIImage in
+                    var working = image
+                    if let previewSize {
+                        working = (try? ImagePreprocessor.cropToAspectFillPreview(working, previewSize: previewSize)) ?? working
+                    }
+                    return await ImagePreprocessor.autoCropDocument(working)
+                }.value
+
+                await handleCapturedImage(prepared)
 
             } catch {
                 errorMessage = error.localizedDescription

@@ -278,37 +278,38 @@ struct BatchCaptureView: View {
         guard !isCapturing else { return }
 
         isCapturing = true
+        defer { isCapturing = false }
+
         HapticManager.impact(.medium)
 
         do {
             let image = try await cameraService.capturePhoto()
-            let cropped = cameraService.cropToPreviewVisibleArea(image)
-            let autoCropped = await cameraService.autoCropDocument(cropped)
+            let previewSize = cameraService.currentPreviewSizeForCropping()
+            let sessionID = session.id
+            let qualityScore = currentQuality?.overallScore
 
-            // Create and save capture
-            try PageCapture.ensureDirectory(for: session.id)
-            let imagePath = PageCapture.generateImagePath(sessionId: session.id)
-
-            // Image processing is CPU-heavy and can stall the capture UI if performed on the main actor.
-            // Do it on a background queue and only update SwiftUI/SwiftData state afterwards.
-            let (processed, thumbnailData) = try await withCheckedThrowingContinuation { continuation in
-                DispatchQueue.global(qos: .userInitiated).async {
-                    do {
-                        let processed = try ImagePreprocessor.process(autoCropped, config: .highQuality)
-                        let thumbnailData = try ImagePreprocessor.createThumbnail(autoCropped)
-                        continuation.resume(returning: (processed, thumbnailData))
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
+            // Heavy work: crop, document detection, preprocess + thumbnail.
+            let (imageData, thumbnailData, finalQualityScore) = try await Task.detached(priority: .userInitiated) { () throws -> (Data, Data, Double?) in
+                var working = image
+                if let previewSize {
+                    working = (try? ImagePreprocessor.cropToAspectFillPreview(working, previewSize: previewSize)) ?? working
                 }
-            }
+                working = await ImagePreprocessor.autoCropDocument(working)
 
-            try PageCapture.saveImage(processed.data, to: imagePath)
+                let processed = try ImagePreprocessor.process(working, config: .highQuality)
+                let thumbnailData = try ImagePreprocessor.createThumbnail(working)
+                return (processed.data, thumbnailData, qualityScore)
+            }.value
+
+            // Create and save capture (disk IO; keep off the critical UI path).
+            try PageCapture.ensureDirectory(for: sessionID)
+            let imagePath = PageCapture.generateImagePath(sessionId: sessionID)
+            try PageCapture.saveImage(imageData, to: imagePath)
 
             // Create capture record
             let capture = PageCapture(imagePath: imagePath, session: session)
             capture.thumbnailData = thumbnailData
-            capture.qualityScore = currentQuality?.overallScore
+            capture.qualityScore = finalQualityScore
 
             // Add to session
             session.addCapture(capture)
@@ -322,8 +323,6 @@ struct BatchCaptureView: View {
         } catch {
             HapticManager.error()
         }
-
-        isCapturing = false
     }
 
     private func removeCapture(_ capture: PageCapture) {

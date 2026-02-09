@@ -183,6 +183,14 @@ final class CameraService: NSObject {
         lastPreviewSize = size
     }
 
+    /// Best-effort preview size for aspect-fill cropping.
+    /// Used to move heavy cropping work off the MainActor while still matching what the user framed.
+    func currentPreviewSizeForCropping() -> CGSize? {
+        let size = previewLayer?.bounds.size ?? lastPreviewSize
+        guard let size, size.width > 0, size.height > 0 else { return nil }
+        return size
+    }
+
     /// Start the capture session
     func startSession() {
         // In mock mode, session is always "running"
