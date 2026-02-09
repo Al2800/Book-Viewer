@@ -430,6 +430,52 @@ recover_simulator_for_retry() {
   run_with_timeout "${SIM_BOOTSTATUS_TIMEOUT:-90}" xcrun simctl bootstatus "$udid" -b 2>/dev/null || true
 }
 
+create_fresh_simulator() {
+  # Non-destructive: creates a new simulator device and returns its UDID.
+  # This can work around cases where an existing device becomes permanently flaky with AX init.
+  local runtime_id="${FRESH_SIM_RUNTIME_ID:-com.apple.CoreSimulator.SimRuntime.iOS-26-2}"
+  local device_type_id="${FRESH_SIM_DEVICE_TYPE_ID:-com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max}"
+  local name="BookQuotes-UITest-$(date +%Y%m%d-%H%M%S)"
+
+  # IMPORTANT: write logs to stderr so the caller can capture stdout as a clean UDID.
+  log_warn "Creating a fresh simulator device (runtime=$runtime_id device=$device_type_id name=$name)..." >&2
+
+  local udid
+  udid="$(run_with_timeout 30 xcrun simctl create "$name" "$device_type_id" "$runtime_id" 2>/dev/null || true)"
+  udid="$(echo "$udid" | tr -d '\r\n' | tail -n 1)"
+  if [[ -z "$udid" ]]; then
+    log_warn "Failed to create fresh simulator (simctl create returned empty)." >&2
+    echo ""
+    return 1
+  fi
+
+  echo "$udid"
+  return 0
+}
+
+maybe_switch_to_fresh_simulator() {
+  # If AX init is repeatedly failing, create a new simulator and switch DESTINATION to it.
+  local attempt="$1"
+  local max_attempts="$2"
+  local enabled="${FRESH_SIM_ON_AX_FAILURE:-1}"
+
+  [[ "$enabled" == "1" ]] || return 0
+
+  # Only switch once we have at least 2 failures, and still have retries left.
+  if [[ "$attempt" -lt 2 ]] || [[ "$attempt" -ge "$max_attempts" ]]; then
+    return 0
+  fi
+
+  local new_udid
+  new_udid="$(create_fresh_simulator)"
+  if [[ -n "$new_udid" ]]; then
+    DESTINATION="platform=iOS Simulator,id=${new_udid}"
+    log_warn "Switched destination to fresh simulator: $DESTINATION"
+    open -a Simulator >/dev/null 2>&1 || true
+    ensure_destination_simulator_booted || true
+  fi
+}
+
 is_accessibility_init_failure() {
   local log_file="$1"
   [[ -f "$log_file" ]] || return 1
@@ -526,6 +572,9 @@ run_tests() {
       log_warn "Detected accessibility init failure in attempt $attempt; forcing simulator recovery..."
       recover_simulator_for_retry
       sleep 5
+
+      # If it's failing repeatedly, try a fresh simulator device (non-destructive create).
+      maybe_switch_to_fresh_simulator "$attempt" "$max_attempts"
     fi
 
     attempt=$((attempt + 1))
