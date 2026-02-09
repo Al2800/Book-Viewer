@@ -212,16 +212,27 @@ struct BookCoverCard: View {
     }
 
     private var statusBadge: some View {
-        Text(book.status.displayName)
+        Text(statusBadgeLabel)
             .font(.caption2)
             .lineLimit(1)
-            .minimumScaleFactor(0.75)
+            .minimumScaleFactor(0.6)
             .allowsTightening(true)
+            .layoutPriority(1)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(statusColor.opacity(0.15))
             .foregroundStyle(statusColor)
             .clipShape(Capsule())
+    }
+
+    private var statusBadgeLabel: String {
+        switch book.status {
+        case .wantToRead:
+            // Keep the grid badge compact; the full label reads awkwardly on narrow cards.
+            return "Want"
+        default:
+            return book.status.displayName
+        }
     }
 
     private var statusColor: Color {

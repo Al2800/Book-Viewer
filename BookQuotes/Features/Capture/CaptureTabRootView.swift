@@ -236,33 +236,35 @@ struct CaptureModeSelectionView: View {
 
     private var heroCard: some View {
         HStack(spacing: Spacing.lg) {
-            VStack(alignment: .leading, spacing: Spacing.sm) {
+            ZStack {
+                Circle()
+                    .fill(Color.brand.opacity(0.15))
+                    .frame(width: 52, height: 52)
+
+                Image(systemName: "camera.viewfinder")
+                    .font(.title2)
+                    .foregroundStyle(Color.brand)
+            }
+
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text("Capture Your Quotes")
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                    .font(.headline)
                     .foregroundStyle(Color.textPrimary)
 
                 Text("Snap covers and marked pages. We’ll handle the rest.")
                     .font(.subheadline)
                     .foregroundStyle(Color.textSecondary)
+                    .multilineTextAlignment(.leading)
             }
 
             Spacer()
-
-            ZStack {
-                Circle()
-                    .fill(Color.brand.opacity(0.12))
-                    .frame(width: 70, height: 70)
-
-                Image(systemName: "camera.viewfinder")
-                    .font(.system(size: 34))
-                    .foregroundStyle(Color.brand)
-            }
         }
-        .padding(Spacing.lg)
-        .glassCard(cornerRadius: CornerRadius.xl)
+        .padding(.vertical, Spacing.lg)
+        .padding(.horizontal, Spacing.lg)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .glassCard(cornerRadius: CornerRadius.lg)
         .overlay {
-            RoundedRectangle(cornerRadius: CornerRadius.xl)
+            RoundedRectangle(cornerRadius: CornerRadius.lg)
                 .stroke(Color.brand.opacity(0.12), lineWidth: 1)
         }
     }
