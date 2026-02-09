@@ -12,6 +12,7 @@ struct ExportPreviewView: View {
             .textSelection(.enabled)
             .frame(maxWidth: .infinity, alignment: .leading)
             .fieldChrome(minHeight: 120)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Export.previewText)
     }
 
     private var previewText: String {

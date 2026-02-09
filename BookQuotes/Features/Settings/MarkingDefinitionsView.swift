@@ -30,6 +30,7 @@ struct MarkingDefinitionsView: View {
             addSection
             infoSection
         }
+        .accessibilityIdentifier(AccessibilityIdentifiers.MarkingDefinitions.listView)
         .navigationTitle("Marking Styles")
         .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
@@ -76,6 +77,7 @@ struct MarkingDefinitionsView: View {
                 )
                 .padding(Spacing.md)
                 .paperCard()
+                .accessibilityIdentifier(AccessibilityIdentifiers.MarkingDefinitions.markingRow)
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
@@ -121,6 +123,7 @@ struct MarkingDefinitionsView: View {
             } label: {
                 Label("Add Custom Marking", systemImage: "plus.circle.fill")
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.MarkingDefinitions.addButton)
             .padding(Spacing.md)
             .frame(maxWidth: .infinity, alignment: .leading)
             .paperCard()

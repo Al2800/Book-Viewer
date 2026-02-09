@@ -16,6 +16,7 @@
 			0SI00A9L8VOS5X0KZQ5DYE8B /* ImagePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = O28R21V3XNQTLMPAXF1IB3Y7 /* ImagePreprocessor.swift */; };
 			1135DBE00724A0EADA69B82A /* BookQuotes/Services/SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0135236ACFC0C82EFD26C7DD /* BookQuotes/Services/SubscriptionService.swift */; };
 		117D73B13DBB8776DDF32895 /* BookQuotesUITests/Flows/LibraryManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D008FE3FA62825489705B3A /* BookQuotesUITests/Flows/LibraryManagementTests.swift */; };
+		4530AC65134C4A67B51291D7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D385EB78B1B4C2EA480CCF7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift */; };
 		148E3DC2F79A23F6F74C5B7B /* BookQuotes/Features/Auth/SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F6182EAE584D7BF5212203 /* BookQuotes/Features/Auth/SignInView.swift */; };
 		17C8042D0AC02773B83CD325 /* BookQuotes/Features/Capture/ImageReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB801457360DB93D592BE927 /* BookQuotes/Features/Capture/ImageReviewView.swift */; };
 		186641B6B29AA14330F31029 /* BookQuotesTests/Unit/Models/CollectionModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91424D4BD1E320F6C4FC9BE /* BookQuotesTests/Unit/Models/CollectionModelTests.swift */; };
@@ -252,6 +253,7 @@
 		697RZ7MMGVBE2X5QDNZUUY5N /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
 		6ABF9EC452BB861AA300CDBE /* BookQuotesTests/Infrastructure/FTS5TestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Infrastructure/FTS5TestCase.swift; sourceTree = SOURCE_ROOT; };
 		6D008FE3FA62825489705B3A /* BookQuotesUITests/Flows/LibraryManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Flows/LibraryManagementTests.swift; sourceTree = SOURCE_ROOT; };
+		0D385EB78B1B4C2EA480CCF7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift; sourceTree = SOURCE_ROOT; };
 		FE897A2EB1714A4FA0EEE4BB /* BookQuotesUITests/Flows/AppStoreMediaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Flows/AppStoreMediaTests.swift; sourceTree = SOURCE_ROOT; };
 		6XBJW6W8XE065Y30BQLYR1KC /* SearchScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchScope.swift; sourceTree = "<group>"; };
 		749FE0948378235813974A93 /* BookQuotesTests/Infrastructure/SwiftDataTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Infrastructure/SwiftDataTestCase.swift; sourceTree = SOURCE_ROOT; };
@@ -612,10 +614,11 @@
 				8C1FF64778074E1309A827B4 /* BookQuotesUITests/Flows/BatchCaptureFlowTests.swift */,
 				2C95AF334DA9D7D7DA47C2E0 /* BookQuotesUITests/Flows/BookRegistrationFlowTests.swift */,
 				128FD3F2AB0A7A55F02F62C8 /* BookQuotesUITests/Flows/CollectionsTagsFlowTests.swift */,
-				2442A786C04A3375354D62DD /* BookQuotesUITests/Flows/CoverCaptureFlowTests.swift */,
-				6D008FE3FA62825489705B3A /* BookQuotesUITests/Flows/LibraryManagementTests.swift */,
-				5D78BD4AFA4B2C050830CF32 /* BookQuotesUITests/Flows/OnboardingFlowTests.swift */,
-				4C68EF64599EE15B525F5DF1 /* BookQuotesUITests/Flows/QuoteCaptureFlowTests.swift */,
+					2442A786C04A3375354D62DD /* BookQuotesUITests/Flows/CoverCaptureFlowTests.swift */,
+					6D008FE3FA62825489705B3A /* BookQuotesUITests/Flows/LibraryManagementTests.swift */,
+					0D385EB78B1B4C2EA480CCF7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift */,
+					5D78BD4AFA4B2C050830CF32 /* BookQuotesUITests/Flows/OnboardingFlowTests.swift */,
+					4C68EF64599EE15B525F5DF1 /* BookQuotesUITests/Flows/QuoteCaptureFlowTests.swift */,
 				AF9223BCD98E9CFF1171A579 /* BookQuotesUITests/Flows/SearchFlowTests.swift */,
 				D9E9B0611F00296A3A60D700 /* BookQuotesUITests/Infrastructure/BaseUITestCase.swift */,
 				47618ADC5CDB6413750D6B80 /* BookQuotesUITests/Infrastructure/ScreenshotCapture.swift */,
@@ -1106,10 +1109,11 @@
 				CBC8C3B9BF64FF3657F789FC /* BookQuotesUITests/Flows/BatchCaptureFlowTests.swift in Sources */,
 				97D5D8683ED1960C84108BED /* BookQuotesUITests/Flows/BookRegistrationFlowTests.swift in Sources */,
 				7A6F5C0E2F75F8DD366CF178 /* BookQuotesUITests/Flows/CollectionsTagsFlowTests.swift in Sources */,
-				F320C77FA80DB4BB9F232742 /* BookQuotesUITests/Flows/CoverCaptureFlowTests.swift in Sources */,
-				117D73B13DBB8776DDF32895 /* BookQuotesUITests/Flows/LibraryManagementTests.swift in Sources */,
-				6A27BA4018594ABCBA3CC645 /* BookQuotesUITests/Flows/AppStoreMediaTests.swift in Sources */,
-				E08291146D986A78DC4469A7 /* BookQuotesUITests/Flows/OnboardingFlowTests.swift in Sources */,
+					F320C77FA80DB4BB9F232742 /* BookQuotesUITests/Flows/CoverCaptureFlowTests.swift in Sources */,
+					117D73B13DBB8776DDF32895 /* BookQuotesUITests/Flows/LibraryManagementTests.swift in Sources */,
+					4530AC65134C4A67B51291D7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift in Sources */,
+					6A27BA4018594ABCBA3CC645 /* BookQuotesUITests/Flows/AppStoreMediaTests.swift in Sources */,
+					E08291146D986A78DC4469A7 /* BookQuotesUITests/Flows/OnboardingFlowTests.swift in Sources */,
 				D2AF360F8EE60249E68D90F8 /* BookQuotesUITests/Flows/QuoteCaptureFlowTests.swift in Sources */,
 				27B85B6C7879C5143B51C114 /* BookQuotesUITests/Flows/SearchFlowTests.swift in Sources */,
 				F0082F5C3641E6E84BA9921E /* BookQuotesUITests/Infrastructure/BaseUITestCase.swift in Sources */,

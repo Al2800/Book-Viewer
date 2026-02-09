@@ -135,8 +135,54 @@ final class LibraryManagementTests: BaseUITestCase {
         let exportButton = app.buttons[AccessibilityIdentifiers.Export.exportButton]
         XCTAssertTrue(exportButton.waitForExistence(timeout: 3), "Export sheet should be displayed")
 
+        logger.step(5, "Verifying preview text exists")
+        let previewText = app.staticTexts[AccessibilityIdentifiers.Export.previewText]
+        let previewFallback = app.otherElements[AccessibilityIdentifiers.Export.previewText]
+        XCTAssertTrue(
+            previewText.waitForExistence(timeout: 3) || previewFallback.waitForExistence(timeout: 1),
+            "Export preview text should be visible"
+        )
+
+        logger.step(6, "Switching format to JSON and verifying preview updates")
+        switchExportFormat(to: "JSON")
+        let jsonPreview = previewText.exists ? previewText.label : previewFallback.label
+        XCTAssertTrue(
+            jsonPreview.contains("{") || jsonPreview.contains("\"text\""),
+            "JSON preview should look like JSON (got: \(jsonPreview.prefix(60)))"
+        )
+
+        logger.step(7, "Switching format back to Markdown and verifying preview updates")
+        switchExportFormat(to: "Markdown")
+        let mdPreview = previewText.exists ? previewText.label : previewFallback.label
+        XCTAssertTrue(
+            mdPreview.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix(">"),
+            "Markdown preview should start with '>' (got: \(mdPreview.prefix(60)))"
+        )
+
         logger.success("Export sheet displayed")
         app.swipeDown()
+    }
+
+    private func switchExportFormat(to formatLabel: String) {
+        let pickerButton = app.buttons[AccessibilityIdentifiers.Export.formatPicker]
+        let pickerOther = app.otherElements[AccessibilityIdentifiers.Export.formatPicker]
+
+        if pickerButton.waitForExistence(timeout: 2) {
+            pickerButton.tap()
+        } else if pickerOther.waitForExistence(timeout: 2) {
+            pickerOther.tap()
+        } else {
+            XCTFail("Export format picker not found")
+            return
+        }
+
+        // Menu picker presents options as buttons in a popover/sheet.
+        let option = app.buttons[formatLabel]
+        XCTAssertTrue(option.waitForExistence(timeout: 2), "Export format option '\(formatLabel)' should appear")
+        option.tap()
+
+        // Dismiss any transient popover by tapping somewhere safe.
+        app.tap()
     }
 
     // MARK: - Deletion Tests

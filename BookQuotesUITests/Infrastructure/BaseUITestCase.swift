@@ -761,6 +761,7 @@ enum AccessibilityIdentifiers {
         static let exportButton = "export_button"
         static let formatPicker = "export_format_picker"
         static let previewSection = "export_preview"
+        static let previewText = "export_preview_text"
         static let shareButton = "export_share_button"
         static let includeBookInfoToggle = "export_include_book_info"
         static let includePageNumbersToggle = "export_include_page_numbers"
@@ -791,6 +792,21 @@ enum AccessibilityIdentifiers {
         static let subscriptionStatus = "settings_subscription_status"
         static let restorePurchasesButton = "settings_restore_purchases"
         static let manageSubscriptionButton = "settings_manage_subscription"
+        static let markingDefinitionsRow = "settings_marking_definitions_row"
+    }
+
+    enum MarkingDefinitions {
+        static let listView = "marking_definitions_list_view"
+        static let addButton = "marking_definitions_add_button"
+        static let markingRow = "marking_definitions_row"
+    }
+
+    enum MarkingEditor {
+        static let nameField = "marking_editor_name_field"
+        static let visualDescriptionField = "marking_editor_visual_description_field"
+        static let meaningField = "marking_editor_meaning_field"
+        static let saveButton = "marking_editor_save_button"
+        static let cancelButton = "marking_editor_cancel_button"
     }
 
     enum Tabs {

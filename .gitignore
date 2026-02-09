@@ -12,3 +12,4 @@
 # Derived artifacts created by scripts and builds
 artifacts/
 build/
+TestResults/

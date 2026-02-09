@@ -417,14 +417,23 @@ recover_simulator_for_retry() {
   log_warn "Attempting simulator recovery for retry (udid=$udid)..."
 
   # Best-effort: restart Simulator + CoreSimulator if the runtime is wedged.
+  # AX flake (XCTDaemonErrorDomain 18/19) is often only recoverable by restarting CoreSimulatorService.
   killall Simulator 2>/dev/null || true
   killall com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
+  killall -9 Simulator 2>/dev/null || true
+  killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
   sleep 3
 
   open -a Simulator >/dev/null 2>&1 || true
   run_with_timeout 20 xcrun simctl shutdown "$udid" 2>/dev/null || true
   run_with_timeout 20 xcrun simctl boot "$udid" 2>/dev/null || true
   run_with_timeout "${SIM_BOOTSTATUS_TIMEOUT:-90}" xcrun simctl bootstatus "$udid" -b 2>/dev/null || true
+}
+
+is_accessibility_init_failure() {
+  local log_file="$1"
+  [[ -f "$log_file" ]] || return 1
+  grep -Eq "XCTDaemonErrorDomain.*Code=(18|19)|AX loaded notification|AXDisableAccessibilityOnTermination" "$log_file"
 }
 
 capture_failure_artifacts() {
@@ -507,6 +516,16 @@ run_tests() {
     local EXIT_CODE=$?
     if [[ $EXIT_CODE -eq 124 ]]; then
       log_error "Test run timed out after ${TIMEOUT}s"
+    fi
+
+    # Capture per-attempt artifacts; wedged sims can change after recovery.
+    capture_failure_artifacts "$attempt"
+
+    # If we hit the common AX initialization flake, do an immediate recovery before retrying.
+    if is_accessibility_init_failure "$LOG_FILE"; then
+      log_warn "Detected accessibility init failure in attempt $attempt; forcing simulator recovery..."
+      recover_simulator_for_retry
+      sleep 5
     fi
 
     attempt=$((attempt + 1))

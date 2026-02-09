@@ -77,6 +77,7 @@ struct MarkingDefinitionEditor: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.cancelButton)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
@@ -84,6 +85,7 @@ struct MarkingDefinitionEditor: View {
                     }
                     .fontWeight(.semibold)
                     .disabled(!isValid)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.saveButton)
                 }
             }
             .onAppear {
@@ -136,6 +138,7 @@ struct MarkingDefinitionEditor: View {
                 .textContentType(.name)
                 .textFieldStyle(.plain)
                 .fieldChrome()
+                .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.nameField)
         }
     }
 
@@ -146,6 +149,7 @@ struct MarkingDefinitionEditor: View {
                 .lineLimit(2...4)
                 .textFieldStyle(.plain)
                 .fieldChrome(minHeight: 72)
+                .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.visualDescriptionField)
 
             Text("Describe what this looks like on the page. Be specific for AI accuracy.")
                 .font(.caption)
@@ -160,6 +164,7 @@ struct MarkingDefinitionEditor: View {
                 .lineLimit(2...4)
                 .textFieldStyle(.plain)
                 .fieldChrome(minHeight: 72)
+                .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.meaningField)
 
             Text("What does this marking mean to you? This helps the AI understand your intent.")
                 .font(.caption)

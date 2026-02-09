@@ -291,6 +291,9 @@ enum AccessibilityIdentifiers {
         /// Preview section
         static let previewSection = "export_preview"
 
+        /// Preview text content
+        static let previewText = "export_preview_text"
+
         /// Share link button
         static let shareButton = "export_share_button"
 
@@ -365,6 +368,32 @@ enum AccessibilityIdentifiers {
 
         /// Manage subscription button
         static let manageSubscriptionButton = "settings_manage_subscription"
+
+        /// Marking definitions navigation row
+        static let markingDefinitionsRow = "settings_marking_definitions_row"
+    }
+
+    // MARK: - Marking Definitions
+
+    enum MarkingDefinitions {
+        /// Root list view
+        static let listView = "marking_definitions_list_view"
+
+        /// Add custom marking button
+        static let addButton = "marking_definitions_add_button"
+
+        /// A single marking row/card
+        static let markingRow = "marking_definitions_row"
+    }
+
+    // MARK: - Marking Definition Editor
+
+    enum MarkingEditor {
+        static let nameField = "marking_editor_name_field"
+        static let visualDescriptionField = "marking_editor_visual_description_field"
+        static let meaningField = "marking_editor_meaning_field"
+        static let saveButton = "marking_editor_save_button"
+        static let cancelButton = "marking_editor_cancel_button"
     }
 
     // MARK: - Tabs

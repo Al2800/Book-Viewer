@@ -89,6 +89,7 @@ struct SettingsView: View {
                             subtitle: "Customize underline, highlight, notes"
                         )
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.markingDefinitionsRow)
 
                     SettingsToggleRow(
                         icon: "arrow.triangle.2.circlepath",
