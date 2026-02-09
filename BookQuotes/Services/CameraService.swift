@@ -47,6 +47,9 @@ final class CameraService: NSObject {
     // MARK: - Continuations for async capture
 
     private var photoContinuation: CheckedContinuation<UIImage, Error>?
+    private var activePhotoCaptureID: UUID?
+    private var photoTimeoutTask: Task<Void, Never>?
+    private static let defaultCaptureTimeoutSeconds: UInt64 = 15
 
     // MARK: - Initialization
 
@@ -229,8 +232,32 @@ final class CameraService: NSObject {
             throw CameraError.sessionNotConfigured
         }
 
+        let captureID = UUID()
+        activePhotoCaptureID = captureID
+
+        // Only one capture at a time; cancel any stale timeout watcher.
+        photoTimeoutTask?.cancel()
+
         return try await withCheckedThrowingContinuation { continuation in
             photoContinuation = continuation
+
+            // Safety valve: if AVCapturePhotoOutput never calls back, don't freeze the UI forever.
+            // If a later capture starts, the captureID check prevents timing out the wrong request.
+            photoTimeoutTask = Task { [weak self] in
+                do {
+                    try await Task.sleep(nanoseconds: Self.defaultCaptureTimeoutSeconds * 1_000_000_000)
+                } catch {
+                    return
+                }
+
+                guard let self,
+                      self.activePhotoCaptureID == captureID,
+                      self.photoContinuation != nil else { return }
+
+                self.photoContinuation?.resume(throwing: CameraError.captureTimedOut)
+                self.photoContinuation = nil
+                self.activePhotoCaptureID = nil
+            }
 
             let settings = AVCapturePhotoSettings()
             settings.isHighResolutionPhotoEnabled = true
@@ -456,6 +483,11 @@ final class CameraService: NSObject {
     // MARK: - Cleanup
 
     func cleanup() {
+        photoTimeoutTask?.cancel()
+        photoTimeoutTask = nil
+        activePhotoCaptureID = nil
+        photoContinuation = nil
+
         stopSession()
         captureSession = nil
         photoOutput = nil
@@ -470,6 +502,10 @@ final class CameraService: NSObject {
 extension CameraService: AVCapturePhotoCaptureDelegate {
     nonisolated func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         Task { @MainActor in
+            photoTimeoutTask?.cancel()
+            photoTimeoutTask = nil
+            activePhotoCaptureID = nil
+
             if let error = error {
                 photoContinuation?.resume(throwing: CameraError.captureFailed(error))
                 photoContinuation = nil
@@ -503,6 +539,7 @@ enum CameraError: LocalizedError {
     case sessionNotConfigured
     case captureFailed(Error)
     case imageProcessingFailed
+    case captureTimedOut
 
     var errorDescription: String? {
         switch self {
@@ -522,6 +559,8 @@ enum CameraError: LocalizedError {
             return "Photo capture failed: \(error.localizedDescription)"
         case .imageProcessingFailed:
             return "Failed to process captured image"
+        case .captureTimedOut:
+            return "Camera capture timed out. Please try again."
         }
     }
 }

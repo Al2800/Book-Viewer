@@ -1,7 +1,13 @@
 import Foundation
+import ImageIO
 import UIKit
+import UniformTypeIdentifiers
 
 // MARK: - GeminiService
+
+private enum GeminiImagePrepError: Error {
+    case failed
+}
 
 /// Service for communicating with Gemini API through the BookQuotes proxy.
 /// Handles authentication, request formatting, and response parsing.
@@ -15,7 +21,7 @@ final class GeminiService {
     private let baseURL: URL
 
     /// Default proxy URL
-    private static let defaultBaseURL: URL = AuthService.proxyBaseURL
+    nonisolated private static let defaultBaseURL: URL = AuthService.proxyBaseURL
 
     /// Auth service for session tokens
     private let authService: AuthService
@@ -132,11 +138,14 @@ final class GeminiService {
             throw error
         }
 
-        // Prepare image data
-        guard let imageData = prepareImageData(image) else {
-            let error = ExtractionError.invalidImage
-            lastError = error
-            throw error
+        // Prepare image data (can be expensive; keep it off the MainActor).
+        let imageData: Data
+        do {
+            imageData = try await prepareImageData(image)
+        } catch {
+            let extractionError = (error as? ExtractionError) ?? ExtractionError.invalidImage
+            lastError = extractionError
+            throw extractionError
         }
 
         // Build request body
@@ -195,39 +204,81 @@ final class GeminiService {
         }
     }
 
-    /// Prepare image data for upload (resize and compress if needed)
-    private func prepareImageData(_ image: UIImage) -> Data? {
-        // Maximum dimension for Gemini
+    /// Prepare image data for upload (resize and compress if needed).
+    ///
+    /// Important: this work can take hundreds of ms on device for large photos.
+    /// It must not run on the MainActor or it will appear as a "freeze" after capture.
+    private func prepareImageData(_ image: UIImage) async throws -> Data {
+        do {
+            return try await Task.detached(priority: .userInitiated) {
+                try Self.prepareImageDataThreadSafe(image)
+            }.value
+        } catch {
+            throw ExtractionError.invalidImage
+        }
+    }
+
+    nonisolated private static func prepareImageDataThreadSafe(_ image: UIImage) throws -> Data {
         let maxDimension: CGFloat = 2048
+        let maxBytes = 4_000_000
 
-        var targetImage = image
+        guard let cgImage = image.cgImage else { throw GeminiImagePrepError.failed }
 
-        // Resize if too large
-        if image.size.width > maxDimension || image.size.height > maxDimension {
-            let scale = maxDimension / max(image.size.width, image.size.height)
-            let newSize = CGSize(
-                width: image.size.width * scale,
-                height: image.size.height * scale
-            )
+        let width = CGFloat(cgImage.width)
+        let height = CGFloat(cgImage.height)
+        let scale = min(1.0, maxDimension / max(width, height))
 
-            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-            targetImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
-            UIGraphicsEndImageContext()
+        let resizedCGImage: CGImage
+        if scale < 1.0 {
+            let targetWidth = max(1, Int((width * scale).rounded(.down)))
+            let targetHeight = max(1, Int((height * scale).rounded(.down)))
+
+            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
+            guard let context = CGContext(
+                data: nil,
+                width: targetWidth,
+                height: targetHeight,
+                bitsPerComponent: 8,
+                bytesPerRow: 0,
+                space: colorSpace,
+                bitmapInfo: bitmapInfo
+            ) else { throw GeminiImagePrepError.failed }
+
+            context.interpolationQuality = .high
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: targetWidth, height: targetHeight))
+            guard let output = context.makeImage() else { throw GeminiImagePrepError.failed }
+            resizedCGImage = output
+        } else {
+            resizedCGImage = cgImage
         }
 
-        // Compress to JPEG with good quality
-        // Start with high quality and reduce if too large
         var quality: CGFloat = 0.85
-        var imageData = targetImage.jpegData(compressionQuality: quality)
-
-        // Reduce quality if over 4MB
-        while let data = imageData, data.count > 4_000_000, quality > 0.3 {
+        while true {
+            let encoded = try encodeJPEG(resizedCGImage, quality: quality)
+            if encoded.count <= maxBytes || quality <= 0.3 {
+                return encoded
+            }
             quality -= 0.1
-            imageData = targetImage.jpegData(compressionQuality: quality)
         }
+    }
 
-        return imageData
+    nonisolated private static func encodeJPEG(_ image: CGImage, quality: CGFloat) throws -> Data {
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(
+            data,
+            UTType.jpeg.identifier as CFString,
+            1,
+            nil
+        ) else { throw GeminiImagePrepError.failed }
+
+        let options: [CFString: Any] = [
+            kCGImageDestinationLossyCompressionQuality: quality
+        ]
+        CGImageDestinationAddImage(destination, image, options as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { throw GeminiImagePrepError.failed }
+
+        return data as Data
     }
 
     /// Handle HTTP response status codes

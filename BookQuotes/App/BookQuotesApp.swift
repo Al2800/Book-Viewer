@@ -67,8 +67,17 @@ struct BookQuotesApp: App {
             logger.error("SwiftData container init failed (cloudKit=automatic): \(String(describing: error))")
 
             if !isUITesting {
+                // Use a distinct on-disk store for local-only fallback so we don't keep retrying the same
+                // potentially-corrupted / CloudKit-misconfigured store file.
+                let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+                if let appSupport {
+                    try? FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
+                }
+
+                let localStoreURL = appSupport?.appendingPathComponent("BookQuotesLocal.store")
                 let localOnlyConfig = ModelConfiguration(
                     schema: schema,
+                    url: localStoreURL,
                     isStoredInMemoryOnly: false,
                     cloudKitDatabase: .none
                 )

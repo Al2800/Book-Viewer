@@ -349,14 +349,23 @@ private class SignInDelegate: NSObject, ASAuthorizationControllerDelegate, ASAut
     }
 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        // Return the key window for presenting the sign-in sheet
-        if let scene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first,
-           let window = scene.windows.first(where: { $0.isKeyWindow }) ?? scene.windows.first {
+        // Prefer a foreground-active window scene; returning an unattached UIWindow can cause
+        // ASAuthorizationError.unknown (1000) in some real-world situations.
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let preferredScene = scenes.first(where: { $0.activationState == .foregroundActive })
+            ?? scenes.first(where: { $0.activationState == .foregroundInactive })
+            ?? scenes.first
+
+        if let window = preferredScene?.windows.first(where: { $0.isKeyWindow })
+            ?? preferredScene?.windows.first {
             return window
         }
 
+        if let anyWindow = scenes.flatMap(\.windows).first {
+            return anyWindow
+        }
+
+        // Last resort: return a window (may still fail if not attached).
         return UIWindow(frame: UIScreen.main.bounds)
     }
 }
