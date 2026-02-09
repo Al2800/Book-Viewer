@@ -182,7 +182,36 @@ wanted = [
     "iPhone 16",
 ]
 
-best = None  # (booted_rank, name_rank, udid)
+track = (os.environ.get("UI_TEST_RUNTIME_TRACK") or "stable").strip().lower()
+
+def runtime_rank(runtime: str) -> int:
+    # Same rationale as pick_default_sim_udid(): older runtimes can be more AX-stable on hosted Macs.
+    if track != "latest":
+        if "SimRuntime.iOS-18-6" in runtime:
+            return 0
+        if "SimRuntime.iOS-18-" in runtime:
+            return 1
+        if "SimRuntime.iOS-26-2" in runtime:
+            return 2
+        if "SimRuntime.iOS-26-1" in runtime:
+            return 3
+        if "SimRuntime.iOS-26-0" in runtime:
+            return 4
+        return 9
+
+    if "SimRuntime.iOS-26-2" in runtime:
+        return 0
+    if "SimRuntime.iOS-26-1" in runtime:
+        return 1
+    if "SimRuntime.iOS-26-0" in runtime:
+        return 2
+    if "SimRuntime.iOS-18-6" in runtime:
+        return 3
+    if "SimRuntime.iOS-18-" in runtime:
+        return 4
+    return 9
+
+best = None  # (runtime_rank, booted_rank, name_rank, udid)
 paths = glob.glob(os.path.expanduser("~/Library/Developer/CoreSimulator/Devices/*/device.plist"))
 for path in paths:
     try:
@@ -197,19 +226,22 @@ for path in paths:
     if "iPhone" not in name:
         continue
 
+    runtime = (pl.get("runtime") or "").strip()
+    rr = runtime_rank(runtime)
+
     state = pl.get("state")
     booted_rank = 0 if state == 3 else 1
 
     for rank, pat in enumerate(wanted):
         if pat in name:
             udid = os.path.basename(os.path.dirname(path))
-            cand = (booted_rank, rank, udid)
+            cand = (rr, booted_rank, rank, udid)
             if best is None or cand < best:
                 best = cand
             break
 
 if best:
-    print(best[2])
+    print(best[3])
 else:
     print("")
 PY
@@ -393,11 +425,21 @@ normalize_destination_to_udid() {
 boot_simulator_with_retries() {
   local udid="$1"
   local max_attempts="${SIM_BOOT_RETRY_COUNT:-3}"
-  local bootstatus_timeout_s="${SIM_BOOTSTATUS_TIMEOUT:-90}"
+  local bootstatus_timeout_s="${SIM_BOOTSTATUS_TIMEOUT:-}"
   local attempt=1
 
   if [[ -z "$udid" ]]; then
     return 0
+  fi
+
+  # Default bootstatus timeout: older iOS runtimes can take longer to reach a "terminal" boot state
+  # on hosted Macs. Prefer a more patient default on the stable track.
+  if [[ -z "${bootstatus_timeout_s}" ]]; then
+    if [[ "${UI_TEST_RUNTIME_TRACK}" == "latest" ]]; then
+      bootstatus_timeout_s=120
+    else
+      bootstatus_timeout_s=180
+    fi
   fi
 
   log_info "Ensuring simulator is booted: $udid (max_attempts=$max_attempts)"
@@ -446,7 +488,7 @@ recover_simulator_for_retry() {
   killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
   sleep 3
 
-  open -a Simulator >/dev/null 2>&1 || true
+  open -a Simulator --args -CurrentDeviceUDID "$udid" >/dev/null 2>&1 || true
   run_with_timeout 20 xcrun simctl shutdown "$udid" 2>/dev/null || true
   run_with_timeout 20 xcrun simctl boot "$udid" 2>/dev/null || true
   run_with_timeout "${SIM_BOOTSTATUS_TIMEOUT:-90}" xcrun simctl bootstatus "$udid" -b 2>/dev/null || true
@@ -532,8 +574,14 @@ setup() {
   mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR" "$SCREENSHOTS_DIR"
   normalize_destination_to_udid
   write_diagnostics_header
-  # Keeping Simulator open tends to reduce first-run accessibility flake.
-  open -a Simulator >/dev/null 2>&1 || true
+  # Keeping Simulator open (and selecting the destination) tends to reduce first-run accessibility flake.
+  local udid
+  udid="$(destination_sim_udid "$DESTINATION")"
+  if [[ -n "$udid" ]]; then
+    open -a Simulator --args -CurrentDeviceUDID "$udid" >/dev/null 2>&1 || true
+  else
+    open -a Simulator >/dev/null 2>&1 || true
+  fi
   ensure_destination_simulator_booted || log_warn "Simulator bootstatus did not succeed; proceeding anyway."
 
   # Intentionally avoid destructive cleanup steps here.
