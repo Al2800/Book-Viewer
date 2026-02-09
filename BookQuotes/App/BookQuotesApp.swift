@@ -38,13 +38,12 @@ struct BookQuotesApp: App {
             UserDefaults.standard.set(message, forKey: Self.persistenceRecoveryMessageKey)
         }
 
-        func localStoreURL(appSupport: URL) -> URL {
-            let name = UserDefaults.standard.string(forKey: Self.persistenceLocalStoreNameKey) ?? "BookQuotesLocal.store"
-            return appSupport.appendingPathComponent(name)
+        func localStoreName() -> String {
+            UserDefaults.standard.string(forKey: Self.persistenceLocalStoreNameKey) ?? "BookQuotesLocal"
         }
 
         func rotateLocalStoreName() -> String {
-            let name = "BookQuotesLocal-\(UUID().uuidString).store"
+            let name = "BookQuotesLocal-\(UUID().uuidString)"
             UserDefaults.standard.set(name, forKey: Self.persistenceLocalStoreNameKey)
             return name
         }
@@ -86,28 +85,23 @@ struct BookQuotesApp: App {
             logger.error("SwiftData container init failed (cloudKit=automatic): domain=\(nsError.domain, privacy: .public) code=\(nsError.code, privacy: .public) desc=\(nsError.localizedDescription, privacy: .public)")
 
             if !isUITesting {
-                // Use a distinct on-disk store for local-only fallback so we don't keep retrying the same
-                // potentially-corrupted / CloudKit-misconfigured store file.
-                let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-                if let appSupport {
-                    try? FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
+                // Use a distinct local-only configuration name so we don't keep retrying the same
+                // potentially-corrupted / CloudKit-misconfigured store.
+                func makeLocalOnlyConfig(name: String) -> ModelConfiguration {
+                    ModelConfiguration(
+                        name,
+                        schema: schema,
+                        isStoredInMemoryOnly: false,
+                        cloudKitDatabase: .none
+                    )
                 }
 
-                if let appSupport {
-                    func makeLocalOnlyConfig(storeURL: URL) -> ModelConfiguration {
-                        ModelConfiguration(
-                            schema: schema,
-                            url: storeURL,
-                            isStoredInMemoryOnly: false,
-                            cloudKitDatabase: .none
-                        )
-                    }
-
-                    let firstLocalURL = localStoreURL(appSupport: appSupport)
+                do {
+                    let firstLocalName = localStoreName()
                     do {
                         containerResult = try ModelContainer(
                             for: schema,
-                            configurations: [makeLocalOnlyConfig(storeURL: firstLocalURL)]
+                            configurations: [makeLocalOnlyConfig(name: firstLocalName)]
                         )
                         errorResult = nil
                         logger.warning("SwiftData initialized in local-only mode (cloudKit=none) after CloudKit init failure.")
@@ -119,11 +113,10 @@ struct BookQuotesApp: App {
                         // If the local store itself is corrupted/misconfigured, rotate to a fresh store
                         // without deleting the old one (safe recovery for early versions).
                         let rotatedName = rotateLocalStoreName()
-                        let rotatedURL = appSupport.appendingPathComponent(rotatedName)
                         do {
                             containerResult = try ModelContainer(
                                 for: schema,
-                                configurations: [makeLocalOnlyConfig(storeURL: rotatedURL)]
+                                configurations: [makeLocalOnlyConfig(name: rotatedName)]
                             )
                             errorResult = nil
                             logger.warning("SwiftData initialized using rotated local store after local init failure.")
@@ -150,6 +143,9 @@ struct BookQuotesApp: App {
                             }
                         }
                     }
+                } catch {
+                    containerResult = nil
+                    errorResult = error
                 }
             } else {
                 containerResult = nil
