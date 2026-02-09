@@ -47,16 +47,19 @@ struct QuoteCaptureView: View {
             if showQualityOverlay && captureState == .previewing {
                 qualityOverlayContent
             }
-
-            // Capture controls
-            if captureState == .previewing {
-                captureControls
-            }
         }
         .navigationTitle("Capture Quote")
         .navigationBarTitleDisplayMode(.inline)
+        // The system tab bar can overlap full-screen camera controls on newer iOS versions.
+        // Hide it during capture so the shutter controls are always visible.
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             toolbarContent
+        }
+        .safeAreaInset(edge: .bottom) {
+            if captureState == .previewing {
+                bottomCaptureControls
+            }
         }
         .sheet(isPresented: .init(
             get: { captureState == .reviewing },
@@ -149,61 +152,58 @@ struct QuoteCaptureView: View {
 
     // MARK: - Capture Controls
 
-    private var captureControls: some View {
-        VStack {
-            Spacer()
-
-            VStack(spacing: Spacing.md) {
-                HStack(alignment: .center, spacing: Spacing.xl) {
-                    // Toggle quality overlay
-                    Button {
-                        withAnimation(.snappy) {
-                            showQualityOverlay.toggle()
-                        }
-                    } label: {
-                        Image(systemName: showQualityOverlay ? "eye.fill" : "eye.slash")
-                            .font(.title2)
-                            .foregroundStyle(.white)
-                            .padding(Spacing.md)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
+    private var bottomCaptureControls: some View {
+        VStack(spacing: Spacing.md) {
+            HStack(alignment: .center, spacing: Spacing.xl) {
+                // Toggle quality overlay
+                Button {
+                    withAnimation(.snappy) {
+                        showQualityOverlay.toggle()
                     }
-
-                    // Capture button
-                    Button {
-                        capturePhoto()
-                    } label: {
-                        ZStack {
-                            Circle()
-                                .fill(.white)
-                                .frame(width: 72, height: 72)
-
-                            Circle()
-                                .stroke(.white.opacity(0.5), lineWidth: 4)
-                                .frame(width: 82, height: 82)
-                        }
-                    }
-                    .disabled(!cameraService.isSessionRunning)
-                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
-
-                    // Spacer for balance
-                    Color.clear
-                        .frame(width: 44, height: 44)
+                } label: {
+                    Image(systemName: showQualityOverlay ? "eye.fill" : "eye.slash")
+                        .font(.title2)
+                        .foregroundStyle(.white)
+                        .padding(Spacing.md)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
                 }
 
-                if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
-                    Button("Use Test Image") {
-                        captureTestImage()
+                // Capture button
+                Button {
+                    capturePhoto()
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 72, height: 72)
+
+                        Circle()
+                            .stroke(.white.opacity(0.5), lineWidth: 4)
+                            .frame(width: 82, height: 82)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
                 }
+                .disabled(!cameraService.isSessionRunning)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
+
+                // Spacer for balance
+                Color.clear
+                    .frame(width: 44, height: 44)
             }
-            .padding(Spacing.lg)
-            .glassFloating(cornerRadius: CornerRadius.xl)
-            .padding(.horizontal, Spacing.lg)
-            .padding(.bottom, Spacing.lg)
+
+            if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
+                Button("Use Test Image") {
+                    captureTestImage()
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
+            }
         }
+        .padding(Spacing.lg)
+        .glassFloating(cornerRadius: CornerRadius.xl)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.bottom, Spacing.lg)
+        .padding(.top, Spacing.sm)
     }
 
     private var topHud: some View {

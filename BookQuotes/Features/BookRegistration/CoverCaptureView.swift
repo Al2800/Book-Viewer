@@ -76,6 +76,8 @@ struct CoverCaptureView: View {
             }
         }
         .coordinateSpace(name: coordinateSpaceName)
+        // Prevent the system tab bar from overlapping camera capture UI.
+        .toolbar(.hidden, for: .tabBar)
         .navigationTitle("Add Book")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

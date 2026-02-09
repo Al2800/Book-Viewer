@@ -61,6 +61,8 @@ struct BatchCaptureView: View {
             }
         }
         .statusBarHidden()
+        // Prevent the system tab bar from overlapping camera capture UI.
+        .toolbar(.hidden, for: .tabBar)
         .onAppear {
             setupCamera()
         }

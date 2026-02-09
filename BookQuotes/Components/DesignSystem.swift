@@ -436,6 +436,9 @@ extension View {
                         .fill(.regularMaterial)
                         .glassEffect()
                 }
+                // Without an explicit clip, some iOS 26 glass backgrounds can render as a rectangular
+                // layer behind the rounded overlay, which looks like two styles stacked.
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         } else {
             // Pre-iOS 26: Material-based fallback with similar visual feel
             self
@@ -484,6 +487,7 @@ extension View {
                         .fill(.thickMaterial)
                         .glassEffect()
                 }
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 .elevation(.lg)
         } else {
             self
