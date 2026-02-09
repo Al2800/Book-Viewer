@@ -13,6 +13,8 @@ set -euo pipefail
 #   RETRY_COUNT     - Number of retries for flaky tests (default: 1)
 #   TIMEOUT         - Test timeout in seconds (default: 1200)
 #   DESTINATION_TIMEOUT - Destination discovery timeout in seconds (default: 60)
+#   UI_TEST_RUNTIME_TRACK - "stable" (default) prefers iOS 18.6 sims for better AX stability,
+#                           "latest" prefers iOS 26.2 sims.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -39,6 +41,7 @@ LOG_FILE=""
 ONLY_TESTING="${ONLY_TESTING:-}"
 RETRY_COUNT="${RETRY_COUNT:-1}"
 TIMEOUT="${TIMEOUT:-1200}"
+UI_TEST_RUNTIME_TRACK="${UI_TEST_RUNTIME_TRACK:-stable}"
 
 # Default simulator selection (only if DESTINATION is not provided).
 pick_default_sim_udid() {
@@ -84,15 +87,34 @@ except Exception:
 devices = data.get("devices", {}) or {}
 ios_runtimes = [rt for rt in devices.keys() if "SimRuntime.iOS-" in rt]
 
+track = (__import__("os").environ.get("UI_TEST_RUNTIME_TRACK") or "stable").strip().lower()
+
 def runtime_rank(rt: str) -> int:
+    # UI tests are often more reliable on older runtimes on hosted CI/MacInCloud.
+    # Prefer iOS 18.6 unless explicitly asked for "latest".
+    if track != "latest":
+        if "SimRuntime.iOS-18-6" in rt:
+            return 0
+        if "SimRuntime.iOS-18-" in rt:
+            return 1
+        if "SimRuntime.iOS-26-2" in rt:
+            return 2
+        if "SimRuntime.iOS-26-1" in rt:
+            return 3
+        if "SimRuntime.iOS-26-0" in rt:
+            return 4
+        return 9
+
     if "SimRuntime.iOS-26-2" in rt:
         return 0
     if "SimRuntime.iOS-26-1" in rt:
         return 1
     if "SimRuntime.iOS-26-0" in rt:
         return 2
-    if "SimRuntime.iOS-18-" in rt:
+    if "SimRuntime.iOS-18-6" in rt:
         return 3
+    if "SimRuntime.iOS-18-" in rt:
+        return 4
     return 9
 
 ios_runtimes_sorted = sorted(ios_runtimes, key=runtime_rank)
@@ -115,7 +137,7 @@ for rt in preferred_runtimes:
 
 for rt, d in iter_devs(preferred_runtimes):
     name = (d.get("name") or "")
-    if is_available_iphone(d) and (("iPhone 17" in name) or ("iPhone Air" in name)) and d.get("udid"):
+    if is_available_iphone(d) and (("iPhone 17" in name) or ("iPhone Air" in name) or ("iPhone 16" in name)) and d.get("udid"):
         print(d["udid"])
         sys.exit(0)
 
@@ -433,8 +455,15 @@ recover_simulator_for_retry() {
 create_fresh_simulator() {
   # Non-destructive: creates a new simulator device and returns its UDID.
   # This can work around cases where an existing device becomes permanently flaky with AX init.
-  local runtime_id="${FRESH_SIM_RUNTIME_ID:-com.apple.CoreSimulator.SimRuntime.iOS-26-2}"
-  local device_type_id="${FRESH_SIM_DEVICE_TYPE_ID:-com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max}"
+  local runtime_id=""
+  local device_type_id=""
+  if [[ "${UI_TEST_RUNTIME_TRACK}" == "latest" ]]; then
+    runtime_id="${FRESH_SIM_RUNTIME_ID:-com.apple.CoreSimulator.SimRuntime.iOS-26-2}"
+    device_type_id="${FRESH_SIM_DEVICE_TYPE_ID:-com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max}"
+  else
+    runtime_id="${FRESH_SIM_RUNTIME_ID:-com.apple.CoreSimulator.SimRuntime.iOS-18-6}"
+    device_type_id="${FRESH_SIM_DEVICE_TYPE_ID:-com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro}"
+  fi
   local name="BookQuotes-UITest-$(date +%Y%m%d-%H%M%S)"
 
   # IMPORTANT: write logs to stderr so the caller can capture stdout as a clean UDID.
