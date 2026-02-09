@@ -29,6 +29,7 @@ struct TagsView: View {
             content
                 .navigationTitle("Tags")
                 .searchable(text: $searchText, prompt: "Search tags")
+                .accessibilityIdentifier(AccessibilityIdentifiers.Tags.listView)
                 .toolbar { toolbarContent }
                 .sheet(isPresented: $showCreateSheet) {
                     TagEditorSheet(mode: .create)
@@ -118,6 +119,7 @@ struct TagsView: View {
             message: "Tags help you categorize and find quotes quickly. Create tags like 'inspiration', 'productivity', or any label that works for you.",
             action: ("Create Tag", { showCreateSheet = true })
         )
+        .accessibilityIdentifier(AccessibilityIdentifiers.Tags.emptyState)
     }
 
     // MARK: - Toolbar
@@ -131,6 +133,7 @@ struct TagsView: View {
                 Image(systemName: "plus")
             }
             .accessibilityLabel("Create Tag")
+            .accessibilityIdentifier(AccessibilityIdentifiers.Tags.addButton)
         }
     }
 
@@ -203,6 +206,7 @@ private struct TagRow: View {
             .foregroundStyle(tagColor)
             .clipShape(Capsule())
         }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Tags.tagChip)
     }
 
     private var tagColor: Color {
@@ -235,6 +239,7 @@ struct TagEditorSheet: View {
                     TextField("Enter tag name", text: $name)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Tags.nameField)
                 }
 
                 Section("Color") {

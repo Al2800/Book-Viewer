@@ -45,6 +45,7 @@ struct CollectionDetailView: View {
         content
             .navigationTitle(collection.name)
             .navigationBarTitleDisplayMode(.large)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Collections.detailView)
             .toolbar { toolbarContent }
             .searchable(text: $searchText, prompt: "Search quotes")
             .sheet(isPresented: $showEditSheet) {

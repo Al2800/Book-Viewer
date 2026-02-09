@@ -54,6 +54,7 @@ struct TagChip: View {
         .foregroundStyle(foregroundColor)
         .clipShape(Capsule())
         .contentShape(Capsule())
+        .accessibilityIdentifier(AccessibilityIdentifiers.Tags.tagChip)
         // Selection animation
         .animation(reduceMotion ? .none : .snappy, value: isSelected)
         // Press state

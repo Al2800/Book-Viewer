@@ -36,6 +36,7 @@ struct CollectionsView: View {
                             Image(systemName: "plus")
                         }
                         .accessibilityLabel("Create Collection")
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Collections.createButton)
                     }
                 }
                 .sheet(isPresented: $showCreateSheet) {
@@ -65,6 +66,7 @@ struct CollectionsView: View {
                         CollectionCard(collection: collection)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Collections.collectionRow)
                 }
             }
             .padding(Spacing.lg)
@@ -84,6 +86,7 @@ struct CollectionsView: View {
             message: "Create collections to organize quotes across books by topic, theme, or project.",
             action: ("Create Collection", { showCreateSheet = true })
         )
+        .accessibilityIdentifier(AccessibilityIdentifiers.Collections.emptyState)
     }
 }
 
@@ -112,6 +115,7 @@ struct CollectionEditorSheet: View {
             Form {
                 Section("Collection Details") {
                     TextField("Name", text: $name)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Collections.nameField)
 
                     Picker("Color", selection: $colorName) {
                         ForEach(CollectionColor.allCases) { color in

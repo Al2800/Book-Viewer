@@ -39,6 +39,7 @@ struct AddToCollectionSheet: View {
             }
             .navigationTitle("Add to Collection")
             .navigationBarTitleDisplayMode(.inline)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Collections.addButton)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -79,6 +80,7 @@ struct AddToCollectionSheet: View {
                     ) {
                         toggleSelection(collection.id)
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Collections.collectionRow)
                 }
             }
         }
@@ -93,6 +95,7 @@ struct AddToCollectionSheet: View {
             } label: {
                 Label("Create New Collection", systemImage: "folder.badge.plus")
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Collections.createButton)
         }
     }
 

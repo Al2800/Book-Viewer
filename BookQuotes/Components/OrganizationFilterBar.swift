@@ -54,6 +54,7 @@ struct OrganizationFilterBar: View {
             ) {
                 toggleCollection(collection.id)
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Collections.collectionRow)
         }
     }
 
@@ -68,6 +69,7 @@ struct OrganizationFilterBar: View {
             ) {
                 toggleTag(tag.id)
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Tags.tagChip)
         }
     }
 
