@@ -59,6 +59,79 @@ log_error() {
   echo -e "${RED}[ERROR]${NC} $1"
 }
 
+run_with_timeout() {
+  local timeout_s="$1"
+  shift
+
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$timeout_s" "$@"
+    return $?
+  fi
+
+  if command -v gtimeout >/dev/null 2>&1; then
+    gtimeout "$timeout_s" "$@"
+    return $?
+  fi
+
+  python3 - "$timeout_s" "$@" <<'PY'
+import selectors
+import subprocess
+import sys
+import time
+
+timeout = float(sys.argv[1])
+cmd = sys.argv[2:]
+
+proc = subprocess.Popen(
+    cmd,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT,
+    text=True,
+    bufsize=1,
+)
+
+sel = selectors.DefaultSelector()
+assert proc.stdout is not None
+sel.register(proc.stdout, selectors.EVENT_READ)
+
+start = time.monotonic()
+timed_out = False
+
+while True:
+    if time.monotonic() - start > timeout:
+        timed_out = True
+        break
+
+    events = sel.select(timeout=0.25)
+    for key, _ in events:
+        line = key.fileobj.readline()
+        if not line:
+            continue
+        sys.stdout.write(line)
+        sys.stdout.flush()
+
+    if proc.poll() is not None:
+        remaining = proc.stdout.read()
+        if remaining:
+            sys.stdout.write(remaining)
+            sys.stdout.flush()
+        break
+
+if timed_out:
+    try:
+        proc.terminate()
+        proc.wait(timeout=5)
+    except Exception:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+    sys.exit(124)
+
+sys.exit(proc.returncode or 0)
+PY
+}
+
 write_diagnostics_header() {
   log_info "Diagnostics:"
   log_info "  run_id: $RUN_ID"
@@ -82,7 +155,7 @@ write_diagnostics_header() {
     echo "RUN_UI=$RUN_UI"
     echo "DESTINATION=${DESTINATION:-<auto>}"
     echo ""
-    xcrun simctl list devices available 2>/dev/null || true
+    run_with_timeout 30 xcrun simctl list devices available 2>/dev/null || true
   } > "$diag_file" 2>&1 || true
 
   log_info "Diagnostics file: $diag_file"
@@ -95,9 +168,36 @@ import subprocess
 import sys
 
 try:
-    raw = subprocess.check_output(["xcrun", "simctl", "list", "-j", "devices", "available"], text=True)
-    data = json.loads(raw)
+    p = subprocess.run(
+        ["xcrun", "simctl", "list", "-j", "devices", "available"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    )
+    data = json.loads(p.stdout)
 except Exception:
+    # Fallback: use text output and grab the first iPhone UDID we can find.
+    try:
+        import re
+
+        p2 = subprocess.run(
+            ["xcrun", "simctl", "list", "devices", "available"],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+        )
+        for line in (p2.stdout or "").splitlines():
+            if "iPhone" not in line:
+                continue
+            m = re.search(r"([0-9A-F-]{36})", line)
+            if m:
+                print(m.group(1))
+                sys.exit(0)
+    except Exception:
+        pass
+
     print("")
     sys.exit(0)
 
@@ -158,7 +258,79 @@ destination_sim_udid() {
   if [[ "$destination" == *"name="* ]]; then
     local name="${destination#*name=}"
     name="${name%%,*}"
-    xcrun simctl list devices available | grep -F "$name" | head -1 | grep -oE '[0-9A-F-]{36}' || true
+    python3 - "$name" <<'PY'
+import json
+import subprocess
+import sys
+
+name = sys.argv[1]
+
+try:
+    p = subprocess.run(
+        ["xcrun", "simctl", "list", "-j", "devices", "available"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    )
+    data = json.loads(p.stdout)
+except Exception:
+    # Fallback: use text output and grab the first UDID from a matching line.
+    try:
+        import re
+
+        p2 = subprocess.run(
+            ["xcrun", "simctl", "list", "devices", "available"],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+        )
+        for line in (p2.stdout or "").splitlines():
+            if name not in line:
+                continue
+            m = re.search(r"([0-9A-F-]{36})", line)
+            if m:
+                print(m.group(1))
+                sys.exit(0)
+    except Exception:
+        pass
+
+    print("")
+    sys.exit(0)
+
+devices = data.get("devices", {}) or {}
+ios_runtimes = [rt for rt in devices.keys() if "SimRuntime.iOS-" in rt]
+
+def runtime_rank(rt: str) -> int:
+    if "SimRuntime.iOS-26-2" in rt:
+        return 0
+    if "SimRuntime.iOS-26-1" in rt:
+        return 1
+    if "SimRuntime.iOS-26-0" in rt:
+        return 2
+    if "SimRuntime.iOS-18-" in rt:
+        return 3
+    return 9
+
+cands = []
+for rt in sorted(ios_runtimes, key=runtime_rank):
+    for d in devices.get(rt, []) or []:
+        if not d.get("isAvailable") or not d.get("udid"):
+            continue
+        dn = d.get("name") or ""
+        if dn == name or name in dn:
+            exact = 0 if dn == name else 1
+            booted = 0 if d.get("state") == "Booted" else 1
+            cands.append((runtime_rank(rt), booted, exact, dn, d["udid"]))
+
+if not cands:
+    print("")
+    sys.exit(0)
+
+cands.sort()
+print(cands[0][4])
+PY
     return 0
   fi
 
@@ -188,6 +360,7 @@ setup() {
 
   if [[ -n "$SIMULATOR_UDID" ]]; then
     local max_attempts="${SIM_BOOT_RETRY_COUNT:-3}"
+    local bootstatus_timeout_s="${SIM_BOOTSTATUS_TIMEOUT:-90}"
     local attempt=1
 
     log_info "Ensuring simulator is booted: $DESTINATION ($SIMULATOR_UDID) (max_attempts=$max_attempts)"
@@ -197,14 +370,14 @@ setup() {
         sleep $((attempt * 2))
       fi
 
-      xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
-      if xcrun simctl bootstatus "$SIMULATOR_UDID" -b 2>/dev/null; then
+      run_with_timeout 20 xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
+      if run_with_timeout "$bootstatus_timeout_s" xcrun simctl bootstatus "$SIMULATOR_UDID" -b 2>/dev/null; then
         break
       fi
 
       {
         echo "bootstatus failed (attempt=$attempt udid=$SIMULATOR_UDID destination=$DESTINATION time=$(date))"
-        xcrun simctl list devices "$SIMULATOR_UDID" 2>/dev/null || true
+        run_with_timeout 30 xcrun simctl list devices "$SIMULATOR_UDID" 2>/dev/null || true
       } > "${REPORTS_DIR}/sim-bootstatus-failure-attempt${attempt}.txt" 2>&1 || true
 
       attempt=$((attempt + 1))

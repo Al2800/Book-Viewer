@@ -28,9 +28,36 @@ import subprocess
 import sys
 
 try:
-    raw = subprocess.check_output(["xcrun", "simctl", "list", "-j", "devices", "available"], text=True)
-    data = json.loads(raw)
+    p = subprocess.run(
+        ["xcrun", "simctl", "list", "-j", "devices", "available"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    )
+    data = json.loads(p.stdout)
 except Exception:
+    # Fallback: use text output and grab the first iPhone UDID we can find.
+    try:
+        import re
+
+        p2 = subprocess.run(
+            ["xcrun", "simctl", "list", "devices", "available"],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+        )
+        for line in (p2.stdout or "").splitlines():
+            if "iPhone" not in line:
+                continue
+            m = re.search(r"([0-9A-F-]{36})", line)
+            if m:
+                print(m.group(1))
+                sys.exit(0)
+    except Exception:
+        pass
+
     print("")
     sys.exit(0)
 
@@ -115,12 +142,71 @@ if [[ -z "${DESTINATION}" ]]; then
   fi
 fi
 
+# Normalize name-based destinations into an explicit UDID. xcodebuild can fail to resolve
+# simulator names even when simctl can, but it generally works when given an id= destination.
+if [[ "$DESTINATION" == *"platform=iOS Simulator"* ]] && [[ "$DESTINATION" == *"name="* ]] && [[ "$DESTINATION" != *"id="* ]]; then
+  NAME="${DESTINATION#*name=}"
+  NAME="${NAME%%,*}"
+  RESOLVED_UDID="$(python3 - "$NAME" <<'PY'
+import json
+import subprocess
+import sys
+
+name = sys.argv[1]
+try:
+    p = subprocess.run(
+        ["xcrun", "simctl", "list", "-j", "devices", "available"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    )
+    data = json.loads(p.stdout)
+except Exception:
+    # Fallback: use text output and grab the first UDID from a matching line.
+    try:
+        import re
+
+        p2 = subprocess.run(
+            ["xcrun", "simctl", "list", "devices", "available"],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+        )
+        for line in (p2.stdout or "").splitlines():
+            if name not in line:
+                continue
+            m = re.search(r"([0-9A-F-]{36})", line)
+            if m:
+                print(m.group(1))
+                sys.exit(0)
+    except Exception:
+        pass
+
+    print("")
+    sys.exit(0)
+
+for rt, devices in (data.get("devices") or {}).items():
+    for d in devices or []:
+        if d.get("isAvailable") and (d.get("name") == name) and d.get("udid"):
+            print(d["udid"])
+            sys.exit(0)
+print("")
+PY
+)"
+  if [[ -n "${RESOLVED_UDID}" ]]; then
+    DESTINATION="platform=iOS Simulator,id=${RESOLVED_UDID}"
+  fi
+fi
+
 mkdir -p "$RESULT_DIR"
 
 CMD=(xcodebuild test)
 CMD+=(-project "$PROJECT")
 CMD+=(-scheme "$SCHEME")
 CMD+=(-destination "$DESTINATION")
+CMD+=(-destination-timeout "${DESTINATION_TIMEOUT:-60}")
 CMD+=(-enableCodeCoverage YES)
 CMD+=(-resultBundlePath "$RESULT_BUNDLE")
 

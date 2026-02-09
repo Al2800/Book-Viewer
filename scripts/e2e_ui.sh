@@ -12,6 +12,7 @@ set -euo pipefail
 #   ONLY_TESTING    - Specific test target to run (optional)
 #   RETRY_COUNT     - Number of retries for flaky tests (default: 1)
 #   TIMEOUT         - Test timeout in seconds (default: 1200)
+#   DESTINATION_TIMEOUT - Destination discovery timeout in seconds (default: 60)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -47,9 +48,36 @@ import subprocess
 import sys
 
 try:
-    raw = subprocess.check_output(["xcrun", "simctl", "list", "-j", "devices", "available"], text=True)
-    data = json.loads(raw)
+    p = subprocess.run(
+        ["xcrun", "simctl", "list", "-j", "devices", "available"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    )
+    data = json.loads(p.stdout)
 except Exception:
+    # Fallback: use text output and grab the first iPhone UDID we can find.
+    try:
+        import re
+
+        p2 = subprocess.run(
+            ["xcrun", "simctl", "list", "devices", "available"],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+        )
+        for line in (p2.stdout or "").splitlines():
+            if "iPhone" not in line:
+                continue
+            m = re.search(r"([0-9A-F-]{36})", line)
+            if m:
+                print(m.group(1))
+                sys.exit(0)
+    except Exception:
+        pass
+
     print("")
     sys.exit(0)
 
@@ -117,7 +145,56 @@ PY
 }
 
 if [[ -z "${DESTINATION}" ]]; then
-  DEFAULT_UDID="$(pick_default_sim_udid)"
+  # Prefer a filesystem-derived simulator UDID to avoid hanging on simctl when CoreSimulator is wedged.
+  DEFAULT_UDID="$(python3 - <<'PY'
+import glob
+import os
+import plistlib
+
+wanted = [
+    "iPhone 17 Pro",
+    "iPhone 17 Pro Max",
+    "iPhone Air",
+    "iPhone 17",
+    "iPhone 16 Pro",
+    "iPhone 16",
+]
+
+best = None  # (booted_rank, name_rank, udid)
+paths = glob.glob(os.path.expanduser("~/Library/Developer/CoreSimulator/Devices/*/device.plist"))
+for path in paths:
+    try:
+        with open(path, "rb") as f:
+            pl = plistlib.load(f)
+    except Exception:
+        continue
+
+    name = (pl.get("name") or "").strip()
+    if not name:
+        continue
+    if "iPhone" not in name:
+        continue
+
+    state = pl.get("state")
+    booted_rank = 0 if state == 3 else 1
+
+    for rank, pat in enumerate(wanted):
+        if pat in name:
+            udid = os.path.basename(os.path.dirname(path))
+            cand = (booted_rank, rank, udid)
+            if best is None or cand < best:
+                best = cand
+            break
+
+if best:
+    print(best[2])
+else:
+    print("")
+PY
+)"
+  if [[ -z "${DEFAULT_UDID}" ]]; then
+    DEFAULT_UDID="$(pick_default_sim_udid)"
+  fi
   if [[ -n "${DEFAULT_UDID}" ]]; then
     DESTINATION="platform=iOS Simulator,id=${DEFAULT_UDID}"
   else
@@ -246,7 +323,7 @@ write_diagnostics_header() {
     echo "RETRY_COUNT=$RETRY_COUNT"
     echo "TIMEOUT=$TIMEOUT"
     echo ""
-    xcrun simctl list devices available 2>/dev/null || true
+    run_with_timeout 30 xcrun simctl list devices available 2>/dev/null || true
   } > "$diag_file" 2>&1 || true
 
   log_info "Diagnostics file: $diag_file"
@@ -265,16 +342,36 @@ destination_sim_udid() {
   if [[ "$destination" == *"name="* ]]; then
     local name="${destination#*name=}"
     name="${name%%,*}"
-    xcrun simctl list devices available | grep -F "$name" | head -1 | grep -oE '[0-9A-F-]{36}' || true
+    /usr/bin/find "$HOME/Library/Developer/CoreSimulator/Devices" -maxdepth 2 -name device.plist -print 2>/dev/null | while IFS= read -r plist; do
+      dn=$(/usr/bin/plutil -extract name raw -o - "$plist" 2>/dev/null || true)
+      [[ -z "$dn" ]] && continue
+      if [[ "$dn" == "$name" ]] || [[ "$dn" == *"$name"* ]]; then
+        basename "$(dirname "$plist")"
+        break
+      fi
+    done
     return 0
   fi
 
   echo ""
 }
 
+normalize_destination_to_udid() {
+  # Normalize name-based destinations into an explicit UDID. xcodebuild sometimes fails to resolve
+  # simulator names even when simctl can, but it generally works when given an id= destination.
+  if [[ "$DESTINATION" == *"platform=iOS Simulator"* ]] && [[ "$DESTINATION" == *"name="* ]] && [[ "$DESTINATION" != *"id="* ]]; then
+    local udid
+    udid="$(destination_sim_udid "$DESTINATION")"
+    if [[ -n "$udid" ]]; then
+      DESTINATION="platform=iOS Simulator,id=${udid}"
+    fi
+  fi
+}
+
 boot_simulator_with_retries() {
   local udid="$1"
   local max_attempts="${SIM_BOOT_RETRY_COUNT:-3}"
+  local bootstatus_timeout_s="${SIM_BOOTSTATUS_TIMEOUT:-90}"
   local attempt=1
 
   if [[ -z "$udid" ]]; then
@@ -289,14 +386,14 @@ boot_simulator_with_retries() {
       sleep $((attempt * 2))
     fi
 
-    xcrun simctl boot "$udid" 2>/dev/null || true
-    if xcrun simctl bootstatus "$udid" -b 2>/dev/null; then
+    run_with_timeout 20 xcrun simctl boot "$udid" 2>/dev/null || true
+    if run_with_timeout "$bootstatus_timeout_s" xcrun simctl bootstatus "$udid" -b 2>/dev/null; then
       return 0
     fi
 
     {
       echo "bootstatus failed (attempt=$attempt udid=$udid destination=$DESTINATION time=$(date))"
-      xcrun simctl list devices "$udid" 2>/dev/null || true
+      run_with_timeout 30 xcrun simctl list devices "$udid" 2>/dev/null || true
     } > "${REPORTS_DIR}/sim-bootstatus-failure-attempt${attempt}.txt" 2>&1 || true
 
     attempt=$((attempt + 1))
@@ -312,6 +409,24 @@ ensure_destination_simulator_booted() {
   boot_simulator_with_retries "$udid"
 }
 
+recover_simulator_for_retry() {
+  local udid
+  udid="$(destination_sim_udid "$DESTINATION")"
+  [[ -z "$udid" ]] && return 0
+
+  log_warn "Attempting simulator recovery for retry (udid=$udid)..."
+
+  # Best-effort: restart Simulator + CoreSimulator if the runtime is wedged.
+  killall Simulator 2>/dev/null || true
+  killall com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
+  sleep 3
+
+  open -a Simulator >/dev/null 2>&1 || true
+  run_with_timeout 20 xcrun simctl shutdown "$udid" 2>/dev/null || true
+  run_with_timeout 20 xcrun simctl boot "$udid" 2>/dev/null || true
+  run_with_timeout "${SIM_BOOTSTATUS_TIMEOUT:-90}" xcrun simctl bootstatus "$udid" -b 2>/dev/null || true
+}
+
 capture_failure_artifacts() {
   local attempt="$1"
 
@@ -322,16 +437,19 @@ capture_failure_artifacts() {
   fi
 
   # Best-effort: grab a screenshot and some diagnostics. These may fail if the simulator isn't booted.
-  xcrun simctl io "$udid" screenshot "${SCREENSHOTS_DIR}/failure-attempt${attempt}.png" 2>/dev/null || true
-  xcrun simctl diagnose "$udid" > "${REPORTS_DIR}/simctl-diagnose-attempt${attempt}.txt" 2>&1 || true
-  xcrun simctl spawn "$udid" log collect --output "${REPORTS_DIR}/simulator-logs-attempt${attempt}.logarchive" --last 5m 2>/dev/null || true
+  run_with_timeout 15 xcrun simctl io "$udid" screenshot "${SCREENSHOTS_DIR}/failure-attempt${attempt}.png" 2>/dev/null || true
+  run_with_timeout 30 xcrun simctl diagnose "$udid" > "${REPORTS_DIR}/simctl-diagnose-attempt${attempt}.txt" 2>&1 || true
+  run_with_timeout 30 xcrun simctl spawn "$udid" log collect --output "${REPORTS_DIR}/simulator-logs-attempt${attempt}.logarchive" --last 5m 2>/dev/null || true
 }
 
 # Setup
 setup() {
   log_info "Setting up UI test run..."
   mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR" "$SCREENSHOTS_DIR"
+  normalize_destination_to_udid
   write_diagnostics_header
+  # Keeping Simulator open tends to reduce first-run accessibility flake.
+  open -a Simulator >/dev/null 2>&1 || true
   ensure_destination_simulator_booted || log_warn "Simulator bootstatus did not succeed; proceeding anyway."
 
   # Intentionally avoid destructive cleanup steps here.
@@ -346,6 +464,7 @@ run_tests() {
     if [[ $attempt -gt 1 ]]; then
       log_warn "Retry attempt $attempt of $max_attempts..."
       # On retry, don't erase simulator - may have useful state
+      recover_simulator_for_retry
       sleep 5
     fi
 
@@ -364,6 +483,7 @@ run_tests() {
       -project "$PROJECT"
       -scheme "$SCHEME"
       -destination "$DESTINATION"
+      -destination-timeout "${DESTINATION_TIMEOUT:-60}"
       -resultBundlePath "$RESULT_BUNDLE"
     )
 
