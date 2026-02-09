@@ -1,6 +1,9 @@
 # bv (beads viewer) local config and caches
 .bv/
 
+# XcodeBuildMCP local config
+.xcodebuildmcp/
+
 # Xcode user-specific state (should never be committed)
 *.xcuserstate
 *.xcuserdata
