@@ -59,6 +59,7 @@ struct ContentView: View {
                     .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.settingsTab)
             }
             .tint(Color.brand)
+            .glassTabBar()
             .background(Color.backgroundPrimary.ignoresSafeArea())
 
             if UITestConfiguration.isUITesting && uiTestSeeded {
@@ -137,7 +138,42 @@ struct ContentView: View {
     }
 
     private func seedTestDataIfNeeded() async {
-        guard UITestConfiguration.isUITesting, !uiTestSeeded, !isSeedingTestData else { return }
+        guard UITestConfiguration.isUITesting, !isSeedingTestData else { return }
+
+        // If we're intentionally starting empty for a given UI test run, ensure the wipe happens
+        // even if `uiTestSeeded` is already set from a prior install/run.
+        if UITestConfiguration.shouldStartWithEmptyLibrary {
+            isSeedingTestData = true
+            defer { isSeedingTestData = false }
+
+            let seeder = UITestDataSeeder(modelContext: modelContext)
+            do {
+                try await seeder.seedTestDataIfNeeded()
+                uiTestSeeded = true
+            } catch {
+                print("UI test empty-library seeding failed: \(error)")
+            }
+            return
+        }
+
+        // `uiTestSeeded` lives in UserDefaults and can survive situations where the SwiftData store
+        // is empty (for example: data reset, model container recovery, or app re-install oddities).
+        // If the DB is empty, allow re-seeding.
+        if uiTestSeeded {
+            do {
+                let descriptor = FetchDescriptor<Book>()
+                let count = try modelContext.fetchCount(descriptor)
+                if count > 0 {
+                    return
+                }
+            } catch {
+                // If we can't count, fall through and attempt to reseed.
+            }
+
+            uiTestSeeded = false
+        }
+
+        guard !uiTestSeeded else { return }
         isSeedingTestData = true
 
         defer { isSeedingTestData = false }

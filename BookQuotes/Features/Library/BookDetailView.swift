@@ -25,6 +25,7 @@ struct BookDetailView: View {
     @State private var showExportSheet = false
     @State private var showEditSheet = false
     @State private var showQuoteCaptureSheet = false
+    @State private var quoteCaptureSheetID = UUID()
     @State private var showDeleteConfirmation = false
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -148,6 +149,10 @@ struct BookDetailView: View {
 
                     Button {
                         HapticManager.light()
+                        // Force a fresh QuoteCaptureView each time the sheet is presented.
+                        // SwiftUI may preserve sheet state across presentations, which can leave the capture
+                        // view in a non-preview state (camera visible but no shutter controls).
+                        quoteCaptureSheetID = UUID()
                         showQuoteCaptureSheet = true
                     } label: {
                         Label("Add Quotes", systemImage: "camera")
@@ -180,6 +185,7 @@ struct BookDetailView: View {
                 QuoteCaptureView(book: book, onComplete: {
                     showQuoteCaptureSheet = false
                 })
+                .id(quoteCaptureSheetID)
             }
         }
         .confirmationDialog(
@@ -320,6 +326,7 @@ struct BookDetailView: View {
         } actions: {
             Button {
                 HapticManager.light()
+                quoteCaptureSheetID = UUID()
                 showQuoteCaptureSheet = true
             } label: {
                 Label("Capture Quotes", systemImage: "camera")

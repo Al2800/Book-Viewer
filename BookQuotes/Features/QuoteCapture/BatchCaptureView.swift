@@ -228,7 +228,12 @@ struct BatchCaptureView: View {
         }
         .padding(.horizontal, Spacing.lg)
         .padding(.vertical, Spacing.md)
-        .glassFloating(cornerRadius: CornerRadius.xl)
+        // Lighter chrome on top of camera preview; thick glass can look like a black slab.
+        .glassCard(cornerRadius: CornerRadius.xl)
+        .overlay {
+            RoundedRectangle(cornerRadius: CornerRadius.xl)
+                .stroke(Color.white.opacity(0.10), lineWidth: 1)
+        }
         .padding(.horizontal, Spacing.lg)
         .padding(.bottom, Spacing.lg)
     }
