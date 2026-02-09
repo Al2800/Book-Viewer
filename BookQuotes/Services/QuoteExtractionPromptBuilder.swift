@@ -43,12 +43,12 @@ enum QuoteExtractionPromptBuilder {
     /// - Parameter markings: User's enabled marking definitions
     /// - Returns: Complete prompt string for Gemini API
     static func buildPrompt(markings: [MarkingDefinition]) -> String {
-        buildPrompt(markings: markings.map(MarkingPrompt.init))
+        buildPrompt(markingPrompts: markings.map(MarkingPrompt.init))
     }
 
     /// Build a quote extraction prompt with marking definitions snapshots.
-    static func buildPrompt(markings: [MarkingPrompt]) -> String {
-        let enabledMarkings = markings.filter { $0.isEnabled }
+    static func buildPrompt(markingPrompts: [MarkingPrompt]) -> String {
+        let enabledMarkings = markingPrompts.filter { $0.isEnabled }
 
         // Build marking descriptions
         let markingDescriptions = enabledMarkings.map { marking in
@@ -111,12 +111,12 @@ enum QuoteExtractionPromptBuilder {
 
     /// Build a simplified prompt for quick extraction (fewer instructions)
     static func buildQuickPrompt(markings: [MarkingDefinition]) -> String {
-        buildQuickPrompt(markings: markings.map(MarkingPrompt.init))
+        buildQuickPrompt(markingPrompts: markings.map(MarkingPrompt.init))
     }
 
     /// Build a simplified prompt for quick extraction (fewer instructions) using marking snapshots.
-    static func buildQuickPrompt(markings: [MarkingPrompt]) -> String {
-        let enabledMarkings = markings.filter { $0.isEnabled }
+    static func buildQuickPrompt(markingPrompts: [MarkingPrompt]) -> String {
+        let enabledMarkings = markingPrompts.filter { $0.isEnabled }
         let markingNames = enabledMarkings.map { $0.name }.joined(separator: ", ")
 
         return """

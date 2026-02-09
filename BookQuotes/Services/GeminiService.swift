@@ -56,7 +56,7 @@ final class GeminiService {
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
         // Build the prompt
-        let prompt = QuoteExtractionPromptBuilder.buildPrompt(markings: markings)
+        let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: markings)
 
         // Make the request
         let response = try await makeRequest(
@@ -74,7 +74,7 @@ final class GeminiService {
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
-        let prompt = QuoteExtractionPromptBuilder.buildQuickPrompt(markings: markings)
+        let prompt = QuoteExtractionPromptBuilder.buildQuickPrompt(markingPrompts: markings)
 
         let response = try await makeRequest(
             endpoint: "/api/extract-quotes",
