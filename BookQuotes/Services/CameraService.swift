@@ -509,6 +509,10 @@ final class CameraService: NSObject {
 
 extension CameraService: AVCapturePhotoCaptureDelegate {
     nonisolated func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        // Keep any heavy work (fileDataRepresentation + JPEG decode) off the MainActor.
+        // On some devices this decode can be expensive enough to freeze the capture UI.
+        let imageData = photo.fileDataRepresentation()
+
         Task { @MainActor in
             photoTimeoutTask?.cancel()
             photoTimeoutTask = nil
@@ -520,18 +524,29 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
                 return
             }
 
-            guard let imageData = photo.fileDataRepresentation(),
-                  let image = UIImage(data: imageData) else {
+            guard let imageData else {
                 photoContinuation?.resume(throwing: CameraError.imageProcessingFailed)
                 photoContinuation = nil
                 return
             }
 
-            // Store the captured image
-            capturedImage = image
+            Task.detached(priority: .userInitiated) { [imageData] in
+                let image = UIImage(data: imageData)
 
-            photoContinuation?.resume(returning: image)
-            photoContinuation = nil
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+
+                    guard let image else {
+                        self.photoContinuation?.resume(throwing: CameraError.imageProcessingFailed)
+                        self.photoContinuation = nil
+                        return
+                    }
+
+                    self.capturedImage = image
+                    self.photoContinuation?.resume(returning: image)
+                    self.photoContinuation = nil
+                }
+            }
         }
     }
 }
