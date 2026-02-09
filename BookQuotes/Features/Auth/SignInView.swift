@@ -21,6 +21,7 @@ struct SignInView: View {
     @State private var isSigningIn = false
     @State private var errorMessage: String?
     @State private var showError = false
+    @State private var lastAuthorizationError: ASAuthorizationError?
 
     // MARK: - Body
 
@@ -117,6 +118,18 @@ struct SignInView: View {
                 ProgressView()
                     .progressViewStyle(.circular)
             }
+
+            // If the system button path fails with error 1000, offer an alternate flow that uses our
+            // explicit ASAuthorizationController presentation anchor handling.
+            if let lastAuthorizationError, lastAuthorizationError.code == .unknown {
+                Button("Try Alternate Sign In") {
+                    Task {
+                        await attemptAlternateSignIn()
+                    }
+                }
+                .buttonStyle(.secondary)
+                .disabled(isSigningIn)
+            }
         }
     }
 
@@ -156,6 +169,7 @@ struct SignInView: View {
             do {
                 switch result {
                 case .success(let authorization):
+                    lastAuthorizationError = nil
                     let user = try await authService.signInWithApple(authorization: authorization)
                     onSignInComplete?(user)
                     dismiss()
@@ -165,9 +179,28 @@ struct SignInView: View {
             } catch AuthError.signInCancelled {
                 // User cancelled - no error message needed
             } catch {
+                lastAuthorizationError = error as? ASAuthorizationError
                 errorMessage = signInErrorMessage(for: error)
                 showError = true
             }
+        }
+    }
+
+    private func attemptAlternateSignIn() async {
+        isSigningIn = true
+        defer { isSigningIn = false }
+
+        do {
+            lastAuthorizationError = nil
+            let user = try await authService.signInWithApple()
+            onSignInComplete?(user)
+            dismiss()
+        } catch AuthError.signInCancelled {
+            // no-op
+        } catch {
+            lastAuthorizationError = error as? ASAuthorizationError
+            errorMessage = signInErrorMessage(for: error)
+            showError = true
         }
     }
 

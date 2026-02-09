@@ -326,6 +326,7 @@ final class AuthService: NSObject {
 private class SignInDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
 
     private let continuation: CheckedContinuation<ASAuthorization, Error>
+    private var fallbackWindow: UIWindow?
 
     init(continuation: CheckedContinuation<ASAuthorization, Error>) {
         self.continuation = continuation
@@ -365,8 +366,20 @@ private class SignInDelegate: NSObject, ASAuthorizationControllerDelegate, ASAut
             return anyWindow
         }
 
-        // Last resort: return a window (may still fail if not attached).
-        return UIWindow(frame: UIScreen.main.bounds)
+        // Last resort: create a temporary attached window for presentation.
+        if let scene = preferredScene {
+            let window = UIWindow(windowScene: scene)
+            window.rootViewController = UIViewController()
+            window.isHidden = false
+            window.makeKeyAndVisible()
+            fallbackWindow = window
+            return window
+        }
+
+        // If there is truly no scene, return a window (may still fail if not attached).
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        fallbackWindow = window
+        return window
     }
 }
 
