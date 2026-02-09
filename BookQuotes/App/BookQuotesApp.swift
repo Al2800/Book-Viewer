@@ -8,6 +8,9 @@ struct BookQuotesApp: App {
     let container: ModelContainer?
     let containerError: Error?
 
+    private static let persistenceLocalStoreNameKey = "persistence_local_store_name"
+    private static let persistenceRecoveryMessageKey = "persistence_recovery_message"
+
     /// Shared services initialized at app launch
     @State private var authService: AuthService
     @State private var geminiService: GeminiService
@@ -30,6 +33,21 @@ struct BookQuotesApp: App {
             PageCapture.self,
             CaptureQueueItem.self
         ])
+
+        func setRecoveryMessage(_ message: String) {
+            UserDefaults.standard.set(message, forKey: Self.persistenceRecoveryMessageKey)
+        }
+
+        func localStoreURL(appSupport: URL) -> URL {
+            let name = UserDefaults.standard.string(forKey: Self.persistenceLocalStoreNameKey) ?? "BookQuotesLocal.store"
+            return appSupport.appendingPathComponent(name)
+        }
+
+        func rotateLocalStoreName() -> String {
+            let name = "BookQuotesLocal-\(UUID().uuidString).store"
+            UserDefaults.standard.set(name, forKey: Self.persistenceLocalStoreNameKey)
+            return name
+        }
 
         // Use in-memory storage for UI tests to avoid mutating real user data
         let isUITesting = UITestConfiguration.isUITesting
@@ -64,7 +82,8 @@ struct BookQuotesApp: App {
             // Most common real-world cause is CloudKit capability / entitlement mismatch on a build.
             // If CloudKit-backed SwiftData fails to initialize, fall back to local-only storage so the
             // app can still boot. We keep the original error around for diagnostics if fallback fails.
-            logger.error("SwiftData container init failed (cloudKit=automatic): \(String(describing: error))")
+            let nsError = error as NSError
+            logger.error("SwiftData container init failed (cloudKit=automatic): domain=\(nsError.domain, privacy: .public) code=\(nsError.code, privacy: .public) desc=\(nsError.localizedDescription, privacy: .public)")
 
             if !isUITesting {
                 // Use a distinct on-disk store for local-only fallback so we don't keep retrying the same
@@ -74,22 +93,63 @@ struct BookQuotesApp: App {
                     try? FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
                 }
 
-                let localStoreURL = appSupport?.appendingPathComponent("BookQuotesLocal.store")
-                let localOnlyConfig = ModelConfiguration(
-                    schema: schema,
-                    url: localStoreURL,
-                    isStoredInMemoryOnly: false,
-                    cloudKitDatabase: .none
-                )
+                if let appSupport {
+                    func makeLocalOnlyConfig(storeURL: URL) -> ModelConfiguration {
+                        ModelConfiguration(
+                            schema: schema,
+                            url: storeURL,
+                            isStoredInMemoryOnly: false,
+                            cloudKitDatabase: .none
+                        )
+                    }
 
-                do {
-                    containerResult = try ModelContainer(for: schema, configurations: [localOnlyConfig])
-                    errorResult = nil
-                    logger.warning("SwiftData initialized in local-only mode (cloudKit=none) after CloudKit init failure.")
-                } catch {
-                    containerResult = nil
-                    errorResult = error
-                    logger.error("SwiftData container init failed (cloudKit=none): \(String(describing: error))")
+                    let firstLocalURL = localStoreURL(appSupport: appSupport)
+                    do {
+                        containerResult = try ModelContainer(
+                            for: schema,
+                            configurations: [makeLocalOnlyConfig(storeURL: firstLocalURL)]
+                        )
+                        errorResult = nil
+                        logger.warning("SwiftData initialized in local-only mode (cloudKit=none) after CloudKit init failure.")
+                        setRecoveryMessage("Cloud sync is temporarily disabled. Local-only storage is in use.")
+                    } catch {
+                        let localNSError = error as NSError
+                        logger.error("SwiftData container init failed (cloudKit=none): domain=\(localNSError.domain, privacy: .public) code=\(localNSError.code, privacy: .public) desc=\(localNSError.localizedDescription, privacy: .public)")
+
+                        // If the local store itself is corrupted/misconfigured, rotate to a fresh store
+                        // without deleting the old one (safe recovery for early versions).
+                        let rotatedName = rotateLocalStoreName()
+                        let rotatedURL = appSupport.appendingPathComponent(rotatedName)
+                        do {
+                            containerResult = try ModelContainer(
+                                for: schema,
+                                configurations: [makeLocalOnlyConfig(storeURL: rotatedURL)]
+                            )
+                            errorResult = nil
+                            logger.warning("SwiftData initialized using rotated local store after local init failure.")
+                            setRecoveryMessage("Storage was reset due to a startup issue. Your previous local store was preserved; a fresh local store is now in use.")
+                        } catch {
+                            // Last resort: allow app to boot in-memory so user can still access the UI.
+                            let rescueNSError = error as NSError
+                            logger.error("SwiftData rescue init failed (in-memory): domain=\(rescueNSError.domain, privacy: .public) code=\(rescueNSError.code, privacy: .public) desc=\(rescueNSError.localizedDescription, privacy: .public)")
+
+                            let rescueConfig = ModelConfiguration(
+                                schema: schema,
+                                isStoredInMemoryOnly: true,
+                                cloudKitDatabase: .none
+                            )
+
+                            if let rescueContainer = try? ModelContainer(for: schema, configurations: [rescueConfig]) {
+                                containerResult = rescueContainer
+                                errorResult = error
+                                logger.warning("SwiftData running in rescue in-memory mode; data will not persist.")
+                                setRecoveryMessage("Storage could not be opened. Running in temporary mode; data will not persist. Please reinstall the app or contact support if this repeats.")
+                            } else {
+                                containerResult = nil
+                                errorResult = error
+                            }
+                        }
+                    }
                 }
             } else {
                 containerResult = nil

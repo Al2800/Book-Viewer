@@ -7,6 +7,7 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .library
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("uiTestSeeded") private var uiTestSeeded = false
+    @AppStorage("persistence_recovery_message") private var persistenceRecoveryMessage = ""
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(NetworkMonitor.self) private var networkMonitor
@@ -15,6 +16,8 @@ struct ContentView: View {
     @State private var subscriptionService: SubscriptionService?
     @State private var showOnboarding = false
     @State private var isSeedingTestData = false
+
+    @State private var showPersistenceBanner = false
 
     /// Queue stats for badge display
     @State private var queueStats = QueueStats()
@@ -64,11 +67,27 @@ struct ContentView: View {
                     .opacity(0.01)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestSeeded)
             }
+
+            if showPersistenceBanner, !persistenceRecoveryMessage.isEmpty {
+                VStack {
+                    ErrorBanner(
+                        message: persistenceRecoveryMessage,
+                        onDismiss: {
+                            showPersistenceBanner = false
+                            persistenceRecoveryMessage = ""
+                        },
+                        style: .warning
+                    )
+                    Spacer()
+                }
+                .ignoresSafeArea(.container, edges: .top)
+            }
         }
         .onAppear {
             subscribeToQueueStats()
             ensureSubscriptionService()
             updateOnboardingVisibility()
+            presentPersistenceRecoveryIfNeeded()
         }
         .onChange(of: hasCompletedOnboarding) { _, _ in
             updateOnboardingVisibility()
@@ -135,6 +154,18 @@ struct ContentView: View {
             uiTestSeeded = true
         } catch {
             print("UI test seeding failed: \(error)")
+        }
+    }
+
+    private func presentPersistenceRecoveryIfNeeded() {
+        guard !persistenceRecoveryMessage.isEmpty else { return }
+        showPersistenceBanner = true
+
+        // Auto-dismiss after a short period unless the user dismisses sooner.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
+            guard showPersistenceBanner else { return }
+            showPersistenceBanner = false
+            persistenceRecoveryMessage = ""
         }
     }
 
