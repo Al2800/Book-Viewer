@@ -410,6 +410,41 @@ destination_sim_udid() {
   echo ""
 }
 
+simulator_device_dir() {
+  local udid="$1"
+  echo "$HOME/Library/Developer/CoreSimulator/Devices/$udid"
+}
+
+simulator_device_dir_exists() {
+  local udid="$1"
+  [[ -n "$udid" ]] || return 1
+  [[ -d "$(simulator_device_dir "$udid")" ]]
+}
+
+wait_for_simulator_device_dir() {
+  # After restarting CoreSimulatorService, the device directory can temporarily disappear
+  # from the filesystem even though it will return shortly. Timebox this instead of
+  # immediately creating new devices.
+  local udid="$1"
+  local timeout_s="${2:-20}"
+
+  [[ -n "$udid" ]] || return 0
+
+  local start_ts
+  start_ts="$(date +%s)"
+  while true; do
+    if simulator_device_dir_exists "$udid"; then
+      return 0
+    fi
+    local now_ts
+    now_ts="$(date +%s)"
+    if (( now_ts - start_ts >= timeout_s )); then
+      return 1
+    fi
+    sleep 1
+  done
+}
+
 normalize_destination_to_udid() {
   # Normalize name-based destinations into an explicit UDID. xcodebuild sometimes fails to resolve
   # simulator names even when simctl can, but it generally works when given an id= destination.
@@ -422,6 +457,20 @@ normalize_destination_to_udid() {
   fi
 }
 
+ensure_destination_has_arch() {
+  # xcodebuild can report multiple matches for a single simulator UDID with different arches.
+  # Pin to arm64 to avoid "Using the first of multiple matching destinations" ambiguity.
+  if [[ "$DESTINATION" == *"platform=iOS Simulator"* ]] && [[ "$DESTINATION" == *"id="* ]] && [[ "$DESTINATION" != *"arch="* ]]; then
+    DESTINATION="${DESTINATION},arch=arm64"
+  fi
+}
+
+is_simulator_booted() {
+  local udid="$1"
+  [[ -n "$udid" ]] || return 1
+  run_with_timeout 10 xcrun simctl list devices "$udid" 2>/dev/null | grep -q "(Booted)"
+}
+
 boot_simulator_with_retries() {
   local udid="$1"
   local max_attempts="${SIM_BOOT_RETRY_COUNT:-3}"
@@ -429,6 +478,12 @@ boot_simulator_with_retries() {
   local attempt=1
 
   if [[ -z "$udid" ]]; then
+    return 0
+  fi
+
+  # Fast-path: if CoreSimulator reports Booted, don't block on bootstatus (which can hang
+  # "Waiting on System App" indefinitely on hosted Macs).
+  if is_simulator_booted "$udid"; then
     return 0
   fi
 
@@ -451,7 +506,14 @@ boot_simulator_with_retries() {
     fi
 
     run_with_timeout 20 xcrun simctl boot "$udid" 2>/dev/null || true
+    if is_simulator_booted "$udid"; then
+      return 0
+    fi
     if run_with_timeout "$bootstatus_timeout_s" xcrun simctl bootstatus "$udid" -b 2>/dev/null; then
+      return 0
+    fi
+    if is_simulator_booted "$udid"; then
+      log_warn "Simulator is booted but bootstatus did not reach terminal state; proceeding anyway (udid=$udid)."
       return 0
     fi
 
@@ -487,6 +549,13 @@ recover_simulator_for_retry() {
   killall -9 Simulator 2>/dev/null || true
   killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
   sleep 3
+
+  if ! wait_for_simulator_device_dir "$udid" 15; then
+    log_warn "Destination simulator directory missing after CoreSimulator restart; switching to a fresh simulator..."
+    switch_to_fresh_simulator_now || true
+    udid="$(destination_sim_udid "$DESTINATION")"
+    [[ -z "$udid" ]] && return 0
+  fi
 
   open -a Simulator --args -CurrentDeviceUDID "$udid" >/dev/null 2>&1 || true
   run_with_timeout 20 xcrun simctl shutdown "$udid" 2>/dev/null || true
@@ -550,7 +619,28 @@ maybe_switch_to_fresh_simulator() {
 is_accessibility_init_failure() {
   local log_file="$1"
   [[ -f "$log_file" ]] || return 1
-  grep -Eq "XCTDaemonErrorDomain.*Code=(18|19)|AX loaded notification|AXDisableAccessibilityOnTermination" "$log_file"
+  grep -Eq "XCTDaemonErrorDomain.*Code=(18|19)|AX loaded notification|Timed out while loading Accessibility|AXDisableAccessibilityOnTermination" "$log_file"
+}
+
+is_destination_resolution_failure() {
+  local log_file="$1"
+  [[ -f "$log_file" ]] || return 1
+  grep -Eq "Unable to find a device matching the provided destination specifier|no available devices matched the request|No available devices found for destination" "$log_file"
+}
+
+switch_to_fresh_simulator_now() {
+  local new_udid
+  new_udid="$(create_fresh_simulator)"
+  if [[ -z "$new_udid" ]]; then
+    return 1
+  fi
+
+  DESTINATION="platform=iOS Simulator,id=${new_udid}"
+  log_warn "Switched destination to fresh simulator: $DESTINATION"
+
+  open -a Simulator --args -CurrentDeviceUDID "$new_udid" >/dev/null 2>&1 || true
+  ensure_destination_simulator_booted || true
+  return 0
 }
 
 capture_failure_artifacts() {
@@ -573,10 +663,21 @@ setup() {
   log_info "Setting up UI test run..."
   mkdir -p "$LOGS_DIR" "$XCRESULTS_DIR" "$REPORTS_DIR" "$SCREENSHOTS_DIR"
   normalize_destination_to_udid
+  ensure_destination_has_arch
   write_diagnostics_header
-  # Keeping Simulator open (and selecting the destination) tends to reduce first-run accessibility flake.
+
+  # If the destination simulator vanished (common after wedged CoreSimulator restarts),
+  # proactively swap to a fresh simulator instead of letting xcodebuild fail later.
   local udid
   udid="$(destination_sim_udid "$DESTINATION")"
+  if [[ -n "$udid" ]] && ! simulator_device_dir_exists "$udid"; then
+    log_warn "Destination simulator directory missing for $udid; switching to a fresh simulator..."
+    switch_to_fresh_simulator_now || true
+    udid="$(destination_sim_udid "$DESTINATION")"
+    ensure_destination_has_arch
+  fi
+
+  # Keeping Simulator open (and selecting the destination) tends to reduce first-run accessibility flake.
   if [[ -n "$udid" ]]; then
     open -a Simulator --args -CurrentDeviceUDID "$udid" >/dev/null 2>&1 || true
   else
@@ -591,16 +692,23 @@ setup() {
 run_tests() {
   local attempt=1
   local max_attempts=$((RETRY_COUNT + 1))
+  local recovered_for_next_attempt=0
 
   while [[ $attempt -le $max_attempts ]]; do
     if [[ $attempt -gt 1 ]]; then
       log_warn "Retry attempt $attempt of $max_attempts..."
       # On retry, don't erase simulator - may have useful state
-      recover_simulator_for_retry
+      if [[ "$recovered_for_next_attempt" == "1" ]]; then
+        log_info "Skipping recovery at attempt start; already recovered after previous failure."
+        recovered_for_next_attempt=0
+      else
+        recover_simulator_for_retry
+      fi
       sleep 5
     fi
 
     log_info "Running UI tests (attempt $attempt)..."
+    ensure_destination_has_arch
 
     # Set environment for test artifacts
     export UI_TEST_ARTIFACTS_DIR="$ARTIFACTS_DIR"
@@ -617,6 +725,8 @@ run_tests() {
       -destination "$DESTINATION"
       -destination-timeout "${DESTINATION_TIMEOUT:-60}"
       -resultBundlePath "$RESULT_BUNDLE"
+      -parallel-testing-enabled NO
+      -maximum-concurrent-test-simulator-destinations 1
     )
 
     if [[ -n "$TEST_PLAN" ]]; then
@@ -644,11 +754,19 @@ run_tests() {
     # Capture per-attempt artifacts; wedged sims can change after recovery.
     capture_failure_artifacts "$attempt"
 
+    # If xcodebuild can't resolve the simulator destination after a CoreSimulator restart,
+    # try swapping to a freshly-created simulator (non-destructive).
+    if is_destination_resolution_failure "$LOG_FILE"; then
+      log_warn "Detected destination resolution failure in attempt $attempt; switching to a fresh simulator..."
+      switch_to_fresh_simulator_now || true
+    fi
+
     # If we hit the common AX initialization flake, do an immediate recovery before retrying.
     if is_accessibility_init_failure "$LOG_FILE"; then
       log_warn "Detected accessibility init failure in attempt $attempt; forcing simulator recovery..."
       recover_simulator_for_retry
       sleep 5
+      recovered_for_next_attempt=1
 
       # If it's failing repeatedly, try a fresh simulator device (non-destructive create).
       maybe_switch_to_fresh_simulator "$attempt" "$max_attempts"

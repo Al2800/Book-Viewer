@@ -295,8 +295,9 @@ struct BatchCaptureView: View {
             let sessionID = session.id
             let qualityScore = currentQuality?.overallScore
 
-            // Heavy work: crop, document detection, preprocess + thumbnail.
-            let (imageData, thumbnailData, finalQualityScore) = try await Task.detached(priority: .userInitiated) { () throws -> (Data, Data, Double?) in
+            // Heavy work: crop, document detection, preprocess + thumbnail + disk IO.
+            // Keep it off the main actor so the capture UI doesn't stall after shutter.
+            let (imagePath, thumbnailData, finalQualityScore) = try await Task.detached(priority: .userInitiated) { () throws -> (String, Data, Double?) in
                 var working = image
                 if let previewSize {
                     working = (try? ImagePreprocessor.cropToAspectFillPreview(working, previewSize: previewSize)) ?? working
@@ -305,13 +306,13 @@ struct BatchCaptureView: View {
 
                 let processed = try ImagePreprocessor.process(working, config: .highQuality)
                 let thumbnailData = try ImagePreprocessor.createThumbnail(working)
-                return (processed.data, thumbnailData, qualityScore)
-            }.value
 
-            // Create and save capture (disk IO; keep off the critical UI path).
-            try PageCapture.ensureDirectory(for: sessionID)
-            let imagePath = PageCapture.generateImagePath(sessionId: sessionID)
-            try PageCapture.saveImage(imageData, to: imagePath)
+                try PageCapture.ensureDirectory(for: sessionID)
+                let imagePath = PageCapture.generateImagePath(sessionId: sessionID)
+                try PageCapture.saveImage(processed.data, to: imagePath)
+
+                return (imagePath, thumbnailData, qualityScore)
+            }.value
 
             // Create capture record
             let capture = PageCapture(imagePath: imagePath, session: session)
