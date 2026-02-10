@@ -15,6 +15,7 @@ set -euo pipefail
 #   DESTINATION_TIMEOUT - Destination discovery timeout in seconds (default: 60)
 #   UI_TEST_RUNTIME_TRACK - "stable" (default) prefers iOS 18.6 sims for better AX stability,
 #                           "latest" prefers iOS 26.2 sims.
+#   FORCE_SIM_REBOOT_ON_SETUP - "1" (default) shuts down + boots the destination sim before attempt 1.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -42,6 +43,7 @@ ONLY_TESTING="${ONLY_TESTING:-}"
 RETRY_COUNT="${RETRY_COUNT:-1}"
 TIMEOUT="${TIMEOUT:-1200}"
 UI_TEST_RUNTIME_TRACK="${UI_TEST_RUNTIME_TRACK:-stable}"
+FORCE_SIM_REBOOT_ON_SETUP="${FORCE_SIM_REBOOT_ON_SETUP:-1}"
 
 # Default simulator selection (only if DESTINATION is not provided).
 pick_default_sim_udid() {
@@ -535,6 +537,43 @@ ensure_destination_simulator_booted() {
   boot_simulator_with_retries "$udid"
 }
 
+force_reboot_simulator() {
+  # Clean shutdown+boot even if already Booted. Booted sims can be "Booted but broken" for AX init.
+  local udid="$1"
+  [[ -z "$udid" ]] && return 0
+
+  log_info "Forcing destination simulator reboot (udid=$udid)..."
+  run_with_timeout 20 xcrun simctl shutdown "$udid" 2>/dev/null || true
+  run_with_timeout 20 xcrun simctl boot "$udid" 2>/dev/null || true
+
+  local bootstatus_timeout_s
+  if [[ "${UI_TEST_RUNTIME_TRACK}" == "latest" ]]; then
+    bootstatus_timeout_s="${SIM_BOOTSTATUS_TIMEOUT:-120}"
+  else
+    bootstatus_timeout_s="${SIM_BOOTSTATUS_TIMEOUT:-180}"
+  fi
+  run_with_timeout "$bootstatus_timeout_s" xcrun simctl bootstatus "$udid" -b 2>/dev/null || true
+}
+
+warmup_accessibility() {
+  # Empirically, AX init flake is reduced if we "touch" the simulator UI before xcodebuild launches tests.
+  # This is non-destructive and safe to run on retries.
+  local udid="$1"
+  [[ -z "$udid" ]] && return 0
+
+  log_info "Warming up simulator UI + Accessibility (udid=$udid)..."
+
+  # Launch Settings to force SpringBoard/app lifecycle + AX services to come up.
+  run_with_timeout 20 xcrun simctl launch "$udid" com.apple.Preferences >/dev/null 2>&1 || true
+  sleep 3
+
+  # A screenshot often forces WindowServer/AX to fully initialize.
+  run_with_timeout 15 xcrun simctl io "$udid" screenshot "${SCREENSHOTS_DIR}/warmup-${udid}.png" >/dev/null 2>&1 || true
+
+  # Don't leave Settings in foreground; keep the simulator closer to a clean baseline.
+  run_with_timeout 10 xcrun simctl terminate "$udid" com.apple.Preferences >/dev/null 2>&1 || true
+}
+
 recover_simulator_for_retry() {
   local udid
   udid="$(destination_sim_udid "$DESTINATION")"
@@ -561,6 +600,7 @@ recover_simulator_for_retry() {
   run_with_timeout 20 xcrun simctl shutdown "$udid" 2>/dev/null || true
   run_with_timeout 20 xcrun simctl boot "$udid" 2>/dev/null || true
   run_with_timeout "${SIM_BOOTSTATUS_TIMEOUT:-90}" xcrun simctl bootstatus "$udid" -b 2>/dev/null || true
+  warmup_accessibility "$udid" || true
 }
 
 create_fresh_simulator() {
@@ -601,8 +641,9 @@ maybe_switch_to_fresh_simulator() {
 
   [[ "$enabled" == "1" ]] || return 0
 
-  # Only switch once we have at least 2 failures, and still have retries left.
-  if [[ "$attempt" -lt 2 ]] || [[ "$attempt" -ge "$max_attempts" ]]; then
+  # If we have retries left, switching to a fresh simulator is a cheap, non-destructive workaround.
+  # For max_attempts=2, we want attempt=1 failure to be able to switch for attempt=2.
+  if [[ "$attempt" -lt 1 ]] || [[ "$attempt" -ge "$max_attempts" ]]; then
     return 0
   fi
 
@@ -683,7 +724,12 @@ setup() {
   else
     open -a Simulator >/dev/null 2>&1 || true
   fi
-  ensure_destination_simulator_booted || log_warn "Simulator bootstatus did not succeed; proceeding anyway."
+  if [[ -n "$udid" ]] && [[ "$FORCE_SIM_REBOOT_ON_SETUP" == "1" ]]; then
+    force_reboot_simulator "$udid" || true
+  else
+    ensure_destination_simulator_booted || log_warn "Simulator bootstatus did not succeed; proceeding anyway."
+  fi
+  warmup_accessibility "$udid" || true
 
   # Intentionally avoid destructive cleanup steps here.
 }
