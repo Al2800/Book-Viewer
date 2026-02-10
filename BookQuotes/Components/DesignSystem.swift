@@ -435,6 +435,9 @@ extension View {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .fill(.regularMaterial)
                         .glassEffect()
+                        // Some iOS 26 glass backgrounds can render as a rectangular layer behind
+                        // the intended rounded shape. Mask it explicitly to the same shape.
+                        .mask(RoundedRectangle(cornerRadius: cornerRadius))
                 }
                 // Without an explicit clip, some iOS 26 glass backgrounds can render as a rectangular
                 // layer behind the rounded overlay, which looks like two styles stacked.

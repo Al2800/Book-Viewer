@@ -133,6 +133,8 @@ struct CaptureOptionCard: View {
                 RoundedRectangle(cornerRadius: CornerRadius.lg)
                     .stroke(color.opacity(0.15), lineWidth: 1)
             }
+            .contentShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
         }
         .buttonStyle(.plain)
     }
