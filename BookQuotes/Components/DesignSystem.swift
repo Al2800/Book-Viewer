@@ -427,7 +427,7 @@ extension View {
     ///     .glassCard()
     /// ```
     @ViewBuilder
-    func glassCard(cornerRadius: CGFloat = CornerRadius.lg) -> some View {
+    func glassCard(cornerRadius: CGFloat = CornerRadius.lg, elevated: Bool = true) -> some View {
         if #available(iOS 26, *) {
             // iOS 26: Use native Liquid Glass effect
             self
@@ -441,14 +441,25 @@ extension View {
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         } else {
             // Pre-iOS 26: Material-based fallback with similar visual feel
-            self
-                .background {
-                    // Avoid rectangular material backgrounds showing behind rounded overlays.
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(.ultraThinMaterial)
-                }
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                .elevation(.sm)
+            if elevated {
+                self
+                    .background {
+                        // Avoid rectangular material backgrounds showing behind rounded overlays.
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(.ultraThinMaterial)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    .elevation(.sm)
+            } else {
+                // For chrome layered on top of a live camera preview, even a small shadow reads as a dark slab.
+                // Use the same shaped material but skip elevation.
+                self
+                    .background {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(.ultraThinMaterial)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            }
         }
     }
 

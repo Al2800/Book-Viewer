@@ -229,7 +229,7 @@ struct BatchCaptureView: View {
         .padding(.horizontal, Spacing.lg)
         .padding(.vertical, Spacing.md)
         // Lighter chrome on top of camera preview; thick glass can look like a black slab.
-        .glassCard(cornerRadius: CornerRadius.xl)
+        .glassCard(cornerRadius: CornerRadius.xl, elevated: false)
         .overlay {
             RoundedRectangle(cornerRadius: CornerRadius.xl)
                 .stroke(Color.white.opacity(0.10), lineWidth: 1)
@@ -257,7 +257,7 @@ struct BatchCaptureView: View {
                 .padding(.horizontal, Spacing.md)
             }
             .frame(height: 70)
-            .glassCard(cornerRadius: CornerRadius.lg)
+            .glassCard(cornerRadius: CornerRadius.lg, elevated: false)
             .onChange(of: session.captures.count) { _, _ in
                 // Scroll to newest capture with smooth animation
                 if let lastCapture = session.captures.last {

@@ -303,7 +303,7 @@ struct CoverCaptureView: View {
         .padding(Spacing.md)
         .frame(maxWidth: .infinity)
         // Lighter chrome on top of camera preview; thick glass can look like a black slab.
-        .glassCard(cornerRadius: CornerRadius.xl)
+        .glassCard(cornerRadius: CornerRadius.xl, elevated: false)
         .overlay {
             RoundedRectangle(cornerRadius: CornerRadius.xl)
                 .stroke(Color.white.opacity(0.10), lineWidth: 1)
