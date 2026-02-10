@@ -381,6 +381,7 @@ struct QuoteCaptureView: View {
         cameraService.clearCapturedImage()
     }
 
+    @MainActor
     private func confirmPhoto(_ image: UIImage) {
         captureState = .processing
 
@@ -407,7 +408,7 @@ struct QuoteCaptureView: View {
                     }
                 }
 
-                // Create a single-page capture session (SwiftData work stays on the main actor).
+                // SwiftData work must stay on the main actor.
                 let session = CaptureSession(book: book)
                 session.id = sessionID
                 modelContext.insert(session)
@@ -428,18 +429,14 @@ struct QuoteCaptureView: View {
 
                 try modelContext.save()
 
-                await MainActor.run {
-                    captureState = .completed(session: session)
-                    capturedSession = session
-                    showExtractionReview = true
-                }
+                captureState = .completed(session: session)
+                capturedSession = session
+                showExtractionReview = true
 
             } catch {
-                await MainActor.run {
-                    captureState = .previewing
-                    errorMessage = error.localizedDescription
-                    showError = true
-                }
+                captureState = .previewing
+                errorMessage = error.localizedDescription
+                showError = true
             }
         }
     }

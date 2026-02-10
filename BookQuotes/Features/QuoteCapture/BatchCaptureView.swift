@@ -281,6 +281,7 @@ struct BatchCaptureView: View {
         }
     }
 
+    @MainActor
     private func captureCurrentFrame() async {
         guard !isCapturing else { return }
 
