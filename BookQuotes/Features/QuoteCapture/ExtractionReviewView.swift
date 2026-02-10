@@ -131,7 +131,9 @@ struct ExtractionReviewView: View {
                 Text("These quotes will be added to your library.")
             }
         }
-        .interactiveDismissDisabled(hasChanges)
+        // Prevent swipe-to-dismiss. If the user dismisses this early (for example while processing),
+        // the underlying capture view can be left in a "completed" state with no shutter controls.
+        .interactiveDismissDisabled(true)
         .onAppear {
             loadExtractedQuotes()
             selectFirstPage()

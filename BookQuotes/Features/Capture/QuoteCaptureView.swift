@@ -90,7 +90,11 @@ struct QuoteCaptureView: View {
         } message: {
             Text(errorMessage)
         }
-        .fullScreenCover(isPresented: $showExtractionReview) {
+        .fullScreenCover(isPresented: $showExtractionReview, onDismiss: {
+            // Always reset to previewing when the review flow is dismissed.
+            // This prevents returning to a camera preview with no shutter controls.
+            retakePhoto()
+        }) {
             if let session = capturedSession {
                 ExtractionReviewView(
                     session: session,
