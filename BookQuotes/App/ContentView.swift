@@ -62,7 +62,7 @@ struct ContentView: View {
             .glassTabBar()
             .background(Color.backgroundPrimary.ignoresSafeArea())
 
-            if UITestConfiguration.isUITesting && uiTestSeeded {
+            if UITestConfiguration.isUITesting && uiTestSeeded && !UITestConfiguration.isAppStoreMediaMode {
                 Text("UI Test Seeded")
                     .font(.caption2)
                     .opacity(0.01)
@@ -87,6 +87,7 @@ struct ContentView: View {
         .onAppear {
             subscribeToQueueStats()
             ensureSubscriptionService()
+            applyAppStoreMediaOverrides()
             updateOnboardingVisibility()
             presentPersistenceRecoveryIfNeeded()
         }
@@ -111,6 +112,34 @@ struct ContentView: View {
         }
         .task {
             await seedTestDataIfNeeded()
+        }
+    }
+
+    private func applyAppStoreMediaOverrides() {
+        guard UITestConfiguration.isAppStoreMediaMode else { return }
+
+        let screen = (UITestConfiguration.appStoreMediaScreen ?? "library")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        switch screen {
+        case "onboarding":
+            hasCompletedOnboarding = false
+            selectedTab = .library
+
+        case "capture":
+            hasCompletedOnboarding = true
+            selectedTab = .capture
+
+        case "settings":
+            hasCompletedOnboarding = true
+            selectedTab = .settings
+
+        case "library":
+            fallthrough
+        default:
+            hasCompletedOnboarding = true
+            selectedTab = .library
         }
     }
 

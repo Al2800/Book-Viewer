@@ -33,6 +33,26 @@ enum UITestConfiguration {
         arguments.contains(flag)
     }
 
+    private static func valueAfterArgument(_ flag: String) -> String? {
+        if let idx = arguments.firstIndex(of: flag), arguments.indices.contains(idx + 1) {
+            return arguments[idx + 1]
+        }
+        return nil
+    }
+
+    private static func valueForEqualsArgument(_ flag: String) -> String? {
+        // Supports `--flag=value` forms.
+        let prefix = flag + "="
+        for arg in arguments where arg.hasPrefix(prefix) {
+            return String(arg.dropFirst(prefix.count))
+        }
+        return nil
+    }
+
+    private static func value(for flag: String) -> String? {
+        valueForEqualsArgument(flag) ?? valueAfterArgument(flag)
+    }
+
     // MARK: - Core Test Mode
 
     /// Whether the app is running under UI test automation.
@@ -114,6 +134,15 @@ enum UITestConfiguration {
     /// Hides UI-test-only controls and keeps the UI clean for screenshots/videos.
     static var isAppStoreMediaMode: Bool {
         hasArgument("--app-store-media")
+    }
+
+    // MARK: - App Store Media Routing
+
+    /// Optional routing hint for App Store media capture.
+    /// Use `--media-screen <name>` (or `--media-screen=<name>`) to force the initial screen.
+    /// Intended for simulator screenshot automation via simctl launch args.
+    static var appStoreMediaScreen: String? {
+        value(for: "--media-screen")
     }
 
     // MARK: - Convenience
