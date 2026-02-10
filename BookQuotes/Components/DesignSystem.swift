@@ -442,7 +442,11 @@ extension View {
         } else {
             // Pre-iOS 26: Material-based fallback with similar visual feel
             self
-                .background(.ultraThinMaterial)
+                .background {
+                    // Avoid rectangular material backgrounds showing behind rounded overlays.
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(.ultraThinMaterial)
+                }
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 .elevation(.sm)
         }
@@ -491,7 +495,10 @@ extension View {
                 .elevation(.lg)
         } else {
             self
-                .background(.thickMaterial)
+                .background {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(.thickMaterial)
+                }
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 .elevation(.lg)
         }
