@@ -461,8 +461,42 @@ extension View {
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .fill(.ultraThinMaterial)
                     }
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             }
+        }
+    }
+
+    /// Chrome specifically tuned for camera controls layered on top of a live preview.
+    /// Material + elevation can read as a dark slab; keep it light and avoid double-layered shapes.
+    @ViewBuilder
+    func cameraChrome(cornerRadius: CGFloat = CornerRadius.xl) -> some View {
+        if #available(iOS 26, *) {
+            self
+                .background {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(.thinMaterial)
+                        .overlay {
+                            // Subtle highlight to keep controls readable over dark previews.
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.10),
+                                    Color.clear
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                        }
+                        .mask(RoundedRectangle(cornerRadius: cornerRadius))
+                }
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        } else {
+            self
+                .background {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(.thinMaterial)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         }
     }
 

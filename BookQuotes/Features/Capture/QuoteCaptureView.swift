@@ -203,16 +203,15 @@ struct QuoteCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
             }
         }
-        .padding(Spacing.lg)
-        // glassFloating can render overly dark on top of a live camera preview.
-        // Use a lighter chrome here so the shutter control doesn't look like a black slab.
-        .glassCard(cornerRadius: CornerRadius.xl, elevated: false)
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, Spacing.md)
+        .cameraChrome(cornerRadius: CornerRadius.xl)
         .overlay {
             RoundedRectangle(cornerRadius: CornerRadius.xl)
                 .stroke(Color.white.opacity(0.10), lineWidth: 1)
         }
         .padding(.horizontal, Spacing.lg)
-        .padding(.bottom, Spacing.lg)
+        .padding(.bottom, Spacing.md)
         .padding(.top, Spacing.sm)
     }
 

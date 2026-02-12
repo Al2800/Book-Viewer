@@ -9,6 +9,10 @@ struct CaptureTabRootView: View {
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureMode: CaptureMode = .selection
     @State private var selectedBook: Book?
+    // SwiftUI can preserve view state when switching between enum-driven branches.
+    // Force fresh capture flows so we never return to a camera preview with stale state (e.g. missing shutter).
+    @State private var quoteCaptureFlowID = UUID()
+    @State private var batchCaptureFlowID = UUID()
     @State private var showCoaching = false
     @AppStorage("hasCompletedCaptureCoaching") private var hasCompletedCoaching = false
     @Environment(\.scenePhase) private var scenePhase
@@ -88,6 +92,7 @@ struct CaptureTabRootView: View {
                 onSelectBook: { book in
                     HapticManager.medium()
                     selectedBook = book
+                    quoteCaptureFlowID = UUID()
                     captureMode = .quoteCapture
                 },
                 onAddNewBook: {
@@ -103,6 +108,7 @@ struct CaptureTabRootView: View {
                 onSelectBook: { book in
                     HapticManager.medium()
                     selectedBook = book
+                    batchCaptureFlowID = UUID()
                     captureMode = .batchCapture
                 },
                 onAddNewBook: {
@@ -135,6 +141,7 @@ struct CaptureTabRootView: View {
                     captureMode = .selection
                 }
             )
+            .id(quoteCaptureFlowID)
 
         case .batchCapture:
             BatchCaptureFlowView(
@@ -148,6 +155,7 @@ struct CaptureTabRootView: View {
                     captureMode = .selection
                 }
             )
+            .id(batchCaptureFlowID)
         }
     }
 }
