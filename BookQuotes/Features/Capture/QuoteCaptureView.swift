@@ -25,7 +25,6 @@ struct QuoteCaptureView: View {
     @State private var capturedImage: UIImage?
     @State private var qualityResult: ImageQualityAnalyzer.QualityResult?
     @State private var isAnalyzingQuality = false
-    @State private var showQualityOverlay = true
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showExtractionReview = false
@@ -38,13 +37,8 @@ struct QuoteCaptureView: View {
             // Camera preview / captured image
             cameraContent
 
-            // Top HUD
-            if captureState == .previewing {
-                topHud
-            }
-
             // Quality overlay
-            if showQualityOverlay && captureState == .previewing {
+            if captureState == .previewing {
                 qualityOverlayContent
             }
         }
@@ -134,10 +128,7 @@ struct QuoteCaptureView: View {
     @ViewBuilder
     private var qualityOverlayContent: some View {
         VStack {
-            if let result = qualityResult {
-                MinimalQualityOverlay(qualityResult: result)
-                    .padding(.top, Spacing.lg)
-            } else if isAnalyzingQuality {
+            if isAnalyzingQuality {
                 HStack {
                     ProgressView()
                         .tint(.white)
@@ -149,6 +140,9 @@ struct QuoteCaptureView: View {
                 .background(.ultraThinMaterial)
                 .clipShape(Capsule())
                 .padding(.top, Spacing.lg)
+            } else if let result = qualityResult, !result.isAcceptable {
+                MinimalQualityOverlay(qualityResult: result)
+                    .padding(.top, Spacing.lg)
             }
             Spacer()
         }
@@ -158,21 +152,8 @@ struct QuoteCaptureView: View {
 
     private var bottomCaptureControls: some View {
         VStack(spacing: Spacing.md) {
-            HStack(alignment: .center, spacing: Spacing.xl) {
-                // Toggle quality overlay
-                Button {
-                    withAnimation(.snappy) {
-                        showQualityOverlay.toggle()
-                    }
-                } label: {
-                    Image(systemName: showQualityOverlay ? "eye.fill" : "eye.slash")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                        .padding(Spacing.md)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Circle())
-                }
-
+            HStack {
+                Spacer()
                 // Capture button
                 Button {
                     capturePhoto()
@@ -189,10 +170,7 @@ struct QuoteCaptureView: View {
                 }
                 .disabled(!cameraService.isSessionRunning)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
-
-                // Spacer for balance
-                Color.clear
-                    .frame(width: 44, height: 44)
+                Spacer()
             }
 
             if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
@@ -203,46 +181,7 @@ struct QuoteCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
             }
         }
-        .padding(.horizontal, Spacing.md)
-        .padding(.vertical, Spacing.md)
-        .cameraChrome(cornerRadius: CornerRadius.xl)
-        .overlay {
-            RoundedRectangle(cornerRadius: CornerRadius.xl)
-                .stroke(Color.white.opacity(0.10), lineWidth: 1)
-        }
-        .padding(.horizontal, Spacing.lg)
         .padding(.bottom, Spacing.md)
-        .padding(.top, Spacing.sm)
-    }
-
-    private var topHud: some View {
-        VStack {
-            HStack(spacing: Spacing.md) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(book.title)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-
-                    Text("Capture a marked page")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.8))
-                }
-
-                Spacer()
-
-                Image(systemName: "text.quote")
-                    .font(.title3)
-                    .foregroundStyle(.white.opacity(0.9))
-            }
-            .padding(.horizontal, Spacing.lg)
-            .padding(.vertical, Spacing.sm)
-            .glassFloating(cornerRadius: CornerRadius.lg)
-            .padding(.horizontal, Spacing.lg)
-            .padding(.top, Spacing.lg)
-
-            Spacer()
-        }
     }
 
     // MARK: - Processing View
@@ -274,14 +213,6 @@ struct QuoteCaptureView: View {
                 dismiss()
             }
             .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
-        }
-
-        ToolbarItem(placement: .principal) {
-            VStack(spacing: 2) {
-                Text(book.title)
-                    .font(.headline)
-                    .lineLimit(1)
-            }
         }
     }
 
