@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 const navLinks = [
   { href: '#features', label: 'Features' },
   { href: '#how-it-works', label: 'How It Works' },
-  { href: '#pricing', label: 'Pricing' },
+  { href: '#access', label: 'Access' },
 ]
 
 export function Header() {
@@ -53,7 +53,7 @@ export function Header() {
               </a>
             ))}
             <a
-              href="https://apps.apple.com/app/bookquotes"
+              href="https://apps.apple.com/app/id6758091579"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -91,7 +91,7 @@ export function Header() {
                 </a>
               ))}
               <a
-                href="https://apps.apple.com/app/bookquotes"
+                href="https://apps.apple.com/app/id6758091579"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2"

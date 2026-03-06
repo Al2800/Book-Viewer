@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <main className="pt-24 pb-16">
         <article className="container-narrow prose prose-ink max-w-none">
           <h1 className="font-display">Privacy Policy</h1>
-          <p className="text-ink-medium text-lg">Last updated: January 2025</p>
+          <p className="text-ink-medium text-lg">Last updated: March 2026</p>
 
           <section className="mt-12">
             <h2>Our Commitment</h2>
@@ -30,8 +30,8 @@ export default function PrivacyPage() {
             <h3>Account Information</h3>
             <p>
               When you sign in with Apple, we receive only your Apple-provided identifier
-              and (optionally) your email address. We use this solely to manage your
-              subscription status.
+              and (optionally) your email address. We use this solely to authenticate
+              requests to the BookQuotes service.
             </p>
 
             <h3>Image Processing</h3>
@@ -45,8 +45,8 @@ export default function PrivacyPage() {
             <h3>Your Quotes and Books</h3>
             <p>
               Your extracted quotes, book metadata, and library organization are stored
-              <strong> locally on your device</strong>. If you enable iCloud sync, this
-              data syncs via your personal iCloud account &mdash; we never see it.
+              <strong> locally on your device</strong>. Cloud sync is not enabled in this
+              v1 release.
             </p>
           </section>
 
@@ -76,9 +76,6 @@ export default function PrivacyPage() {
                 <strong>Apple Sign-In</strong> &mdash; For secure authentication without
                 passwords.
               </li>
-              <li>
-                <strong>Apple StoreKit</strong> &mdash; For subscription management.
-              </li>
             </ul>
           </section>
 
@@ -103,8 +100,8 @@ export default function PrivacyPage() {
             <h2>Contact</h2>
             <p>
               Questions about privacy? Email us at{' '}
-              <a href="mailto:privacy@bookquotes.app" className="text-gold-primary">
-                privacy@bookquotes.app
+              <a href="mailto:acampbell193@googlemail.com" className="text-gold-primary">
+                acampbell193@googlemail.com
               </a>
             </p>
           </section>

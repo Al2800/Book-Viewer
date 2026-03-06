@@ -69,20 +69,25 @@ export async function updateSubscription(
 }
 
 /**
- * Create a trial subscription for new users
+ * Create the default included access record for new users.
+ *
+ * v1 ships without paid App Store subscriptions enabled. We still create an
+ * access record so authenticated users can use the extraction backend without
+ * hitting the legacy 7-day trial gate.
  */
-export async function createTrialSubscription(
+export async function createDefaultAccessGrant(
   userId: string,
   env: Env
 ): Promise<SubscriptionRecord> {
-  // 7-day trial
+  // Give the included-access entitlement a long horizon so the record remains
+  // valid until paid products are introduced.
   const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 7);
+  expiresAt.setFullYear(expiresAt.getFullYear() + 10);
 
   const subscription: SubscriptionRecord = {
     userId,
-    status: 'trial',
-    productId: 'trial',
+    status: 'active',
+    productId: 'included_access',
     expiresAt: expiresAt.toISOString(),
   };
 

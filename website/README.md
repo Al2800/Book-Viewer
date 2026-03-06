@@ -95,13 +95,13 @@ Before deploying, add:
 
 ## Customization
 
-### Update App Store Link
+### Current App Store Link
 
-Search for `https://apps.apple.com/app/bookquotes` and replace with your actual App Store URL.
+Use `https://apps.apple.com/app/id6758091579` for the production App Store URL.
 
-### Update Contact Info
+### Current Contact Info
 
-Search for `@bookquotes.app` email addresses and update with your actual contact info.
+Support and legal contact should use `acampbell193@googlemail.com`.
 
 ## License
 

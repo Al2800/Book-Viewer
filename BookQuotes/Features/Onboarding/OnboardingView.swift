@@ -20,6 +20,7 @@ struct OnboardingView: View {
     @State private var currentPage = 0
     @State private var signedInUser: User?
     @State private var isCompleting = false
+    @State private var presentedLegalDocument: LegalDocument?
 
     // MARK: - Callbacks
 
@@ -76,6 +77,9 @@ struct OnboardingView: View {
             }
         }
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: currentStep)
+        .sheet(item: $presentedLegalDocument) { document in
+            LegalDocumentView(document: document)
+        }
     }
 
     // MARK: - Welcome Carousel
@@ -156,7 +160,11 @@ struct OnboardingView: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                Text("Sign in to sync your library across devices and unlock all features")
+                Text(
+                    AppReleaseConfiguration.cloudSyncEnabled
+                        ? "Sign in to sync your library across devices and unlock all features"
+                        : "Sign in to enable AI extraction while keeping your library stored on this device"
+                )
                     .font(.subheadline)
                     .foregroundStyle(Color.textSecondary)
                     .multilineTextAlignment(.center)
@@ -168,17 +176,13 @@ struct OnboardingView: View {
             // Sign-in button
             AppleSignInButton(authService: authService) { user in
                 signedInUser = user
-                withAnimation {
-                    currentStep = .subscription
-                }
+                advanceFromSignIn()
             }
             .padding(.horizontal, Spacing.lg)
 
             if allowAuthSkip {
                 Button("Maybe later") {
-                    withAnimation {
-                        currentStep = .subscription
-                    }
+                    advanceFromSignIn()
                 }
                 .foregroundStyle(Color.textSecondary)
             }
@@ -190,18 +194,10 @@ struct OnboardingView: View {
                     .foregroundStyle(.secondary)
 
                 HStack(spacing: Spacing.xs) {
-                    if let termsURL = URL(string: "https://bookquotes.app/terms") {
-                        Link("Terms", destination: termsURL)
-                    } else {
-                        Text("Terms")
-                    }
-                    Text("and")
-                        .foregroundStyle(.secondary)
-                    if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
-                        Link("Privacy Policy", destination: privacyURL)
-                    } else {
-                        Text("Privacy Policy")
-                    }
+                    LegalLinksRow(
+                        presentedDocument: $presentedLegalDocument,
+                        compactLabels: true
+                    )
                 }
                 .font(.caption)
             }
@@ -209,9 +205,7 @@ struct OnboardingView: View {
         }
         .onAppear {
             guard shouldAutoSkipAuth else { return }
-            withAnimation {
-                currentStep = .subscription
-            }
+            advanceFromSignIn()
         }
     }
 
@@ -235,6 +229,12 @@ struct OnboardingView: View {
                     currentStep = .markingSetup
                 }
             }
+        }
+    }
+
+    private func advanceFromSignIn() {
+        withAnimation {
+            currentStep = AppReleaseConfiguration.subscriptionsEnabled ? .subscription : .markingSetup
         }
     }
 

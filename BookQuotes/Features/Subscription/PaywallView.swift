@@ -20,32 +20,38 @@ struct PaywallView: View {
     @State private var isPurchasing = false
     @State private var showError = false
     @State private var errorMessage: String?
+    @State private var presentedLegalDocument: LegalDocument?
 
     // MARK: - Body
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: Spacing.xl) {
-                    // Header
-                    headerSection
+                if AppReleaseConfiguration.subscriptionsEnabled {
+                    VStack(spacing: Spacing.xl) {
+                        // Header
+                        headerSection
 
-                    // Features
-                    PremiumFeatureList()
+                        // Features
+                        PremiumFeatureList()
 
-                    // Pricing options
-                    pricingSection
+                        // Pricing options
+                        pricingSection
 
-                    // Subscribe button
-                    subscribeButton
+                        // Subscribe button
+                        subscribeButton
 
-                    // Restore purchases
-                    restoreButton
+                        // Restore purchases
+                        restoreButton
 
-                    // Legal
-                    legalSection
+                        // Legal
+                        legalSection
+                    }
+                    .padding(Spacing.lg)
+                } else {
+                    unavailableSection
+                        .padding(Spacing.lg)
                 }
-                .padding(Spacing.lg)
             }
             .navigationTitle("Unlock BookQuotes")
             .navigationBarTitleDisplayMode(.inline)
@@ -57,6 +63,7 @@ struct PaywallView: View {
                 }
             }
             .task {
+                guard AppReleaseConfiguration.subscriptionsEnabled else { return }
                 if subscriptionService.products.isEmpty {
                     await subscriptionService.loadProducts()
                 }
@@ -70,6 +77,9 @@ struct PaywallView: View {
             } message: {
                 Text(errorMessage ?? "An error occurred")
             }
+        }
+        .sheet(item: $presentedLegalDocument) { document in
+            LegalDocumentView(document: document)
         }
     }
 
@@ -177,22 +187,38 @@ struct PaywallView: View {
             }
 
             HStack(spacing: Spacing.md) {
-                if let termsURL = URL(string: "https://bookquotes.app/terms") {
-                    Link("Terms", destination: termsURL)
-                } else {
-                    Text("Terms")
-                }
-                Text("•")
-                    .foregroundStyle(.secondary)
-                if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
-                    Link("Privacy", destination: privacyURL)
-                } else {
-                    Text("Privacy")
-                }
+                LegalLinksRow(
+                    presentedDocument: $presentedLegalDocument,
+                    compactLabels: true
+                )
             }
             .font(.caption2)
         }
         .padding(.top, Spacing.md)
+    }
+
+    private var unavailableSection: some View {
+        VStack(spacing: Spacing.lg) {
+            Image(systemName: "checkmark.seal")
+                .font(.system(size: 48))
+                .foregroundStyle(Color.brand)
+
+            Text("Premium plans are not enabled in this build")
+                .font(.title3.weight(.semibold))
+                .multilineTextAlignment(.center)
+
+            Text("BookQuotes v1 ships without in-app purchases while App Store Connect products are being finalized.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+
+            LegalLinksRow(
+                presentedDocument: $presentedLegalDocument,
+                compactLabels: true
+            )
+            .font(.caption)
+        }
+        .frame(maxWidth: .infinity)
     }
 
     private func subscriptionTerms(for product: Product) -> String {

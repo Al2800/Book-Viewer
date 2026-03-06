@@ -22,6 +22,7 @@ struct SignInView: View {
     @State private var errorMessage: String?
     @State private var showError = false
     @State private var lastAuthorizationError: ASAuthorizationError?
+    @State private var presentedLegalDocument: LegalDocument?
 
     // MARK: - Body
 
@@ -50,6 +51,9 @@ struct SignInView: View {
             }
         } message: {
             Text(errorMessage ?? "An unknown error occurred")
+        }
+        .sheet(item: $presentedLegalDocument) { document in
+            LegalDocumentView(document: document)
         }
     }
 
@@ -83,9 +87,11 @@ struct SignInView: View {
             )
 
             FeatureRow(
-                icon: "icloud",
-                title: "Sync Everywhere",
-                description: "Access your library on all your devices"
+                icon: AppReleaseConfiguration.cloudSyncEnabled ? "icloud" : "books.vertical",
+                title: AppReleaseConfiguration.cloudSyncEnabled ? "Sync Everywhere" : "On-Device Library",
+                description: AppReleaseConfiguration.cloudSyncEnabled
+                    ? "Access your library on all your devices"
+                    : "Your books and quotes stay stored on this iPhone or iPad"
             )
 
             FeatureRow(
@@ -142,18 +148,7 @@ struct SignInView: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: Spacing.xs) {
-                if let termsURL = URL(string: "https://bookquotes.app/terms") {
-                    Link("Terms of Service", destination: termsURL)
-                } else {
-                    Text("Terms of Service")
-                }
-                Text("and")
-                    .foregroundStyle(.secondary)
-                if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
-                    Link("Privacy Policy", destination: privacyURL)
-                } else {
-                    Text("Privacy Policy")
-                }
+                LegalLinksRow(presentedDocument: $presentedLegalDocument)
             }
             .font(.caption)
         }

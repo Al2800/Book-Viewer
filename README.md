@@ -61,7 +61,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 |-------|------------|
 | UI | SwiftUI (iOS 17+, iOS 26 Liquid Glass ready) |
 | Architecture | MV pattern (Model-View) |
-| Persistence | SwiftData with CloudKit |
+| Persistence | SwiftData (local-first in v1; Cloud sync planned) |
 | AI | Google Gemini API (proxied via BookQuotes backend) |
 | Camera | AVFoundation |
 
@@ -123,13 +123,13 @@ BookQuotes/
 1. Clone the repository
 2. Open `BookQuotes.xcodeproj` in Xcode
 3. Build and run on device/simulator
-4. Sign in with Apple and start the free trial
+4. Sign in with Apple to enable AI extraction
 
 ## Privacy
 
 - **Your images**: Sent to the BookQuotes proxy and then to Gemini for processing; not stored after processing
-- **Your data**: Stored locally on device, synced via your iCloud (optional)
-- **Minimal account data**: Apple Sign-In identifier and subscription status only
+- **Your data**: Stored locally on device in this v1 release
+- **Minimal account data**: Apple Sign-In identifier, optional email relay, and session status only
 - **No analytics**: No tracking, no telemetry, no ad network SDKs
 
 ## Supported Marking Styles

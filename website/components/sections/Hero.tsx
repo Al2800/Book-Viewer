@@ -39,7 +39,7 @@ export function Hero() {
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
               <a
-                href="https://apps.apple.com/app/bookquotes"
+                href="https://apps.apple.com/app/id6758091579"
                 target="_blank"
                 rel="noopener noreferrer"
               >

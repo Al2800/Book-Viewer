@@ -2,51 +2,49 @@
 
 import { AnimatedSection, StaggeredContainer, StaggeredItem } from '@/components/ui/AnimatedSection'
 import { Button } from '@/components/ui/Button'
-import { Check, Shield, Sparkles } from 'lucide-react'
+import { Check, Shield } from 'lucide-react'
 
 const plans = [
   {
-    name: 'Free',
-    description: 'Perfect for getting started',
+    name: 'Included in v1',
+    description: 'Everything needed for the launch build',
     price: '$0',
-    period: 'forever',
+    period: 'for now',
     features: [
-      '10 extractions per month',
-      'Unlimited books',
-      'Basic search',
-      'Markdown export',
+      'Sign in with Apple for secure access',
+      'AI-powered cover and quote extraction',
+      'Batch capture, search, tags, and collections',
+      'Markdown, plain text, JSON, Notion, and Obsidian export',
     ],
-    cta: 'Get Started',
-    variant: 'secondary' as const,
-    popular: false,
-  },
-  {
-    name: 'Premium',
-    description: 'For serious readers',
-    price: '$4.99',
-    period: '/month',
-    features: [
-      'Unlimited extractions',
-      'Batch capture mode',
-      'Advanced search with filters',
-      'Obsidian & Notion export',
-      'Offline capture queue',
-      'Priority processing',
-    ],
-    cta: 'Start Free Trial',
+    cta: 'View App Store Listing',
     variant: 'primary' as const,
     popular: true,
+  },
+  {
+    name: 'Future plans',
+    description: 'Optional pricing may be introduced later',
+    price: 'TBD',
+    period: '',
+    features: [
+      'No paid subscription is required in this release',
+      'Any future pricing will appear first in App Store Connect',
+      'Launch users should expect the core app experience to remain available',
+      'Policy changes will be reflected in the app and legal pages',
+    ],
+    cta: 'Read Support Notes',
+    variant: 'secondary' as const,
+    popular: false,
   },
 ]
 
 export function Pricing() {
   return (
-    <section id="pricing" className="section-padding bg-paper-warm">
+    <section id="access" className="section-padding bg-paper-warm">
       <div className="container-standard">
         <AnimatedSection className="text-center mb-12">
-          <h2 className="mb-4">Start Capturing Your Insights</h2>
+          <h2 className="mb-4">Access in the Launch Build</h2>
           <p className="text-ink-medium text-lg max-w-prose mx-auto">
-            Choose the plan that fits your reading habits
+            BookQuotes v1 ships without paid in-app purchases while the first App Store release settles.
           </p>
         </AnimatedSection>
 
@@ -60,9 +58,8 @@ export function Pricing() {
               >
                 {/* Popular badge */}
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold-primary text-paper-cream px-4 py-1 rounded-full font-ui text-xs font-medium flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" />
-                    Most Popular
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold-primary text-paper-cream px-4 py-1 rounded-full font-ui text-xs font-medium">
+                    Current Release
                   </div>
                 )}
 
@@ -90,9 +87,9 @@ export function Pricing() {
 
                 {/* CTA */}
                 <a
-                  href="https://apps.apple.com/app/bookquotes"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={plan.name === 'Included in v1' ? 'https://apps.apple.com/app/id6758091579' : '/support'}
+                  target={plan.name === 'Included in v1' ? '_blank' : undefined}
+                  rel={plan.name === 'Included in v1' ? 'noopener noreferrer' : undefined}
                 >
                   <Button variant={plan.variant} className="w-full">
                     {plan.cta}
@@ -108,7 +105,7 @@ export function Pricing() {
           <div className="inline-flex items-center gap-2 bg-paper-aged px-6 py-3 rounded-full">
             <Shield className="w-5 h-5 text-sage" />
             <span className="text-ink-medium font-ui text-sm">
-              Privacy-first. Your data stays on your device.
+              Privacy-first. Your library stays on your device in this release.
             </span>
           </div>
         </AnimatedSection>

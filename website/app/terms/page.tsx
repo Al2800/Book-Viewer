@@ -14,7 +14,7 @@ export default function TermsPage() {
       <main className="pt-24 pb-16">
         <article className="container-narrow prose prose-ink max-w-none">
           <h1 className="font-display">Terms of Service</h1>
-          <p className="text-ink-medium text-lg">Last updated: January 2025</p>
+          <p className="text-ink-medium text-lg">Last updated: March 2026</p>
 
           <section className="mt-12">
             <h2>Agreement to Terms</h2>
@@ -65,17 +65,12 @@ export default function TermsPage() {
           </section>
 
           <section className="mt-8">
-            <h2>Subscriptions and Payments</h2>
+            <h2>Pricing and Access</h2>
             <p>
-              BookQuotes offers both free and premium subscription tiers. Premium
-              subscriptions are billed through the Apple App Store and are subject to
-              Apple&apos;s payment terms.
+              This v1 release does not require a paid subscription. Future versions may
+              introduce optional paid plans, and any such changes would be communicated in
+              the app and through the App Store before taking effect.
             </p>
-            <ul>
-              <li>Subscriptions automatically renew unless cancelled</li>
-              <li>You can cancel anytime through your App Store settings</li>
-              <li>Refunds are handled according to Apple&apos;s refund policy</li>
-            </ul>
           </section>
 
           <section className="mt-8">
@@ -109,8 +104,8 @@ export default function TermsPage() {
             <h2>Contact</h2>
             <p>
               Questions about these terms? Email us at{' '}
-              <a href="mailto:legal@bookquotes.app" className="text-gold-primary">
-                legal@bookquotes.app
+              <a href="mailto:acampbell193@googlemail.com" className="text-gold-primary">
+                acampbell193@googlemail.com
               </a>
             </p>
           </section>

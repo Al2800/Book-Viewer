@@ -1,15 +1,15 @@
-import { BookOpen, Twitter, Instagram, Github } from 'lucide-react'
+import { BookOpen, Github, Mail } from 'lucide-react'
 
 const footerLinks = {
   product: [
     { label: 'Features', href: '#features' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'Download', href: 'https://apps.apple.com/app/bookquotes' },
+    { label: 'How It Works', href: '#how-it-works' },
+    { label: 'App Store', href: 'https://apps.apple.com/app/id6758091579' },
   ],
-  company: [
-    { label: 'About', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: 'mailto:hello@bookquotes.app' },
+  resources: [
+    { label: 'Support', href: '/support' },
+    { label: 'Contact', href: 'mailto:acampbell193@googlemail.com' },
+    { label: 'GitHub', href: 'https://github.com/Al2800' },
   ],
   legal: [
     { label: 'Privacy Policy', href: '/privacy' },
@@ -18,9 +18,8 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { icon: Twitter, href: 'https://twitter.com/bookquotesapp', label: 'Twitter' },
-  { icon: Instagram, href: 'https://instagram.com/bookquotesapp', label: 'Instagram' },
-  { icon: Github, href: 'https://github.com/bookquotes', label: 'GitHub' },
+  { icon: Mail, href: 'mailto:acampbell193@googlemail.com', label: 'Email support' },
+  { icon: Github, href: 'https://github.com/Al2800', label: 'GitHub' },
 ]
 
 export function Footer() {
@@ -56,15 +55,17 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Resource Links */}
           <div>
-            <h4 className="font-ui font-semibold text-ink-black mb-4">Company</h4>
+            <h4 className="font-ui font-semibold text-ink-black mb-4">Resources</h4>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
+              {footerLinks.resources.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     className="text-ink-medium hover:text-gold-primary transition-colors font-ui text-sm"
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
                     {link.label}
                   </a>

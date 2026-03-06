@@ -1,6 +1,6 @@
 import type { Env, GeminiRequest, ErrorResponse, UsageResponse } from './types';
 import { validateSessionToken, validateAppleToken, createSessionToken } from './auth';
-import { hasActiveSubscription, handleAppStoreNotification, getSubscription, createTrialSubscription } from './subscription';
+import { hasActiveSubscription, handleAppStoreNotification, getSubscription, createDefaultAccessGrant } from './subscription';
 import { checkRateLimit, incrementUsage, getUsageStats } from './rate-limit';
 
 // Gemini API base URL
@@ -100,10 +100,10 @@ export default {
         return errorResponse('Invalid Apple token', 'AUTH_INVALID', 401);
       }
 
-      // Check if user has subscription, create trial if new
+      // Ensure authenticated users have an access record for the extraction API.
       let subscription = await getSubscription(userId, env);
       if (!subscription) {
-        subscription = await createTrialSubscription(userId, env);
+        subscription = await createDefaultAccessGrant(userId, env);
       }
 
       // Create session token

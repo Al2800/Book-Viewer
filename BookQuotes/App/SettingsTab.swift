@@ -61,6 +61,7 @@ struct SettingsView: View {
     @Environment(RouterPath.self) private var router
     @Query private var quotes: [Quote]
     @State private var showExportSheet = false
+    @State private var legalDocument: LegalDocument?
 
     // MARK: - App Storage
 
@@ -75,8 +76,10 @@ struct SettingsView: View {
                     NavigationLink(value: SettingsDestination.account) {
                         SettingsRow(
                             icon: "person.crop.circle",
-                            title: "Account & Subscription",
-                            subtitle: "Manage plan, billing, and sign-in"
+                            title: AppReleaseConfiguration.subscriptionsEnabled ? "Account & Subscription" : "Account",
+                            subtitle: AppReleaseConfiguration.subscriptionsEnabled
+                                ? "Manage plan, billing, and sign-in"
+                                : "Manage sign-in and account access"
                         )
                     }
                 }
@@ -140,7 +143,9 @@ struct SettingsView: View {
                         SettingsRow(
                             icon: "externaldrive",
                             title: "Storage & Backup",
-                            subtitle: "Cloud sync and local storage"
+                            subtitle: AppReleaseConfiguration.cloudSyncEnabled
+                                ? "Cloud sync and local storage"
+                                : "Local storage and exports"
                         )
                     }
                 }
@@ -154,27 +159,29 @@ struct SettingsView: View {
                         )
                     }
 
-                    if let privacyURL = URL(string: "https://bookquotes.app/privacy") {
-                        Link(destination: privacyURL) {
-                            SettingsRow(
-                                icon: "hand.raised",
-                                title: "Privacy Policy",
-                                subtitle: "How your data is handled",
-                                trailingIcon: "arrow.up.right"
-                            )
-                        }
+                    Button {
+                        legalDocument = .privacyPolicy
+                    } label: {
+                        SettingsRow(
+                            icon: "hand.raised",
+                            title: "Privacy Policy",
+                            subtitle: "How your data is handled",
+                            trailingIcon: "doc.text.magnifyingglass"
+                        )
                     }
+                    .buttonStyle(.plain)
 
-                    if let termsURL = URL(string: "https://bookquotes.app/terms") {
-                        Link(destination: termsURL) {
-                            SettingsRow(
-                                icon: "doc.text",
-                                title: "Terms of Service",
-                                subtitle: "Usage terms and policies",
-                                trailingIcon: "arrow.up.right"
-                            )
-                        }
+                    Button {
+                        legalDocument = .termsOfService
+                    } label: {
+                        SettingsRow(
+                            icon: "doc.text",
+                            title: "Terms of Service",
+                            subtitle: "Usage terms and policies",
+                            trailingIcon: "doc.text.magnifyingglass"
+                        )
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, Spacing.lg)
@@ -185,6 +192,9 @@ struct SettingsView: View {
         .background(Color.backgroundPrimary)
         .sheet(isPresented: $showExportSheet) {
             ExportView(book: nil)
+        }
+        .sheet(item: $legalDocument) { document in
+            LegalDocumentView(document: document)
         }
     }
 }
@@ -331,6 +341,10 @@ struct AccountView: View {
     @State private var showError = false
     @State private var errorMessage: String?
 
+    private var subscriptionsEnabled: Bool {
+        AppReleaseConfiguration.subscriptionsEnabled
+    }
+
     // MARK: - Body
 
     var body: some View {
@@ -343,7 +357,9 @@ struct AccountView: View {
             }
 
             // Subscription section
-            subscriptionSection
+            if subscriptionsEnabled {
+                subscriptionSection
+            }
 
             // Actions section
             actionsSection
@@ -372,6 +388,7 @@ struct AccountView: View {
             Text(errorMessage ?? "An error occurred")
         }
         .task {
+            guard subscriptionsEnabled else { return }
             await subscriptionService.loadProducts()
         }
     }
@@ -401,8 +418,19 @@ struct AccountView: View {
 
                 Spacer()
 
-                // Subscription badge
-                SubscriptionBadge(subscriptionService: subscriptionService)
+                if subscriptionsEnabled {
+                    SubscriptionBadge(subscriptionService: subscriptionService)
+                } else {
+                    Text("Signed In")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, Spacing.xxs)
+                        .background(
+                            Capsule()
+                                .fill(Color.secondary.opacity(0.1))
+                        )
+                }
             }
             .padding(.vertical, Spacing.xs)
         }
@@ -418,7 +446,11 @@ struct AccountView: View {
                 Text("Sign In Required")
                     .font(.headline)
 
-                Text("Sign in with Apple to sync your library across devices and access your subscription.")
+                Text(
+                    subscriptionsEnabled
+                        ? "Sign in with Apple to sync your library across devices and access your subscription."
+                        : "Sign in with Apple to enable AI extraction. Your library stays stored on this device."
+                )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -513,23 +545,24 @@ struct AccountView: View {
 
     private var actionsSection: some View {
         Section {
-            // Restore purchases
-            Button {
-                Task {
-                    await restorePurchases()
-                }
-            } label: {
-                HStack {
-                    Label("Restore Purchases", systemImage: "arrow.clockwise")
+            if subscriptionsEnabled {
+                Button {
+                    Task {
+                        await restorePurchases()
+                    }
+                } label: {
+                    HStack {
+                        Label("Restore Purchases", systemImage: "arrow.clockwise")
 
-                    if isRestoring {
-                        Spacer()
-                        ProgressView()
+                        if isRestoring {
+                            Spacer()
+                            ProgressView()
+                        }
                     }
                 }
+                .disabled(isRestoring)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Settings.restorePurchasesButton)
             }
-            .disabled(isRestoring)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Settings.restorePurchasesButton)
 
             // Sign out (only if signed in)
             if authService.isAuthenticated {
@@ -1004,6 +1037,220 @@ struct StorageBackupView: View {
         try? fileManager.removeItem(at: capturesDir)
 
         return bytesCleared
+    }
+}
+
+enum LegalDocument: String, Identifiable {
+    case privacyPolicy
+    case termsOfService
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .privacyPolicy:
+            return "Privacy Policy"
+        case .termsOfService:
+            return "Terms of Service"
+        }
+    }
+
+    var sections: [LegalDocumentSection] {
+        switch self {
+        case .privacyPolicy:
+            return [
+                LegalDocumentSection(
+                    title: "Our Commitment",
+                    paragraphs: [
+                        "BookQuotes is designed to keep your reading notes personal. Your library is stored locally on your device in this release."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "What We Collect",
+                    paragraphs: [
+                        "When you sign in with Apple, we receive your Apple-provided identifier and, if Apple shares it, your email address. We use that information only to authenticate requests to the BookQuotes service.",
+                        "When you capture a page or cover for extraction, the image is sent to the BookQuotes proxy and then to Google Gemini for processing. Images are processed in-flight and are not retained after extraction completes.",
+                        "Your books, quotes, tags, and collections are stored on-device. Cloud sync is not enabled in this v1 release."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "What We Do Not Collect",
+                    bullets: [
+                        "Analytics or tracking data",
+                        "Advertising identifiers",
+                        "Location information",
+                        "Contacts or unrelated personal files",
+                        "Telemetry for ad targeting"
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Third-Party Services",
+                    bullets: [
+                        "Google Gemini for AI-powered extraction from images",
+                        "Sign in with Apple for secure authentication"
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Security",
+                    paragraphs: [
+                        "Network requests use TLS. Your local library is protected by the security of your Apple device and iOS data protection."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Contact",
+                    paragraphs: [
+                        "Questions about privacy can be sent to \(AppReleaseConfiguration.supportEmail)."
+                    ]
+                )
+            ]
+        case .termsOfService:
+            return [
+                LegalDocumentSection(
+                    title: "Agreement",
+                    paragraphs: [
+                        "By downloading or using BookQuotes, you agree to these terms. If you do not agree, do not use the app."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Service Description",
+                    paragraphs: [
+                        "BookQuotes helps you capture and organize quotes from physical books using image capture and AI-assisted text extraction."
+                    ],
+                    bullets: [
+                        "Image capture and review",
+                        "AI-powered quote extraction",
+                        "Organization with books, tags, and collections",
+                        "Export and backup tools"
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Your Responsibilities",
+                    bullets: [
+                        "Use the app only for lawful purposes",
+                        "Capture and store content only where you have the right to do so",
+                        "Do not attempt to reverse engineer or misuse the service",
+                        "Keep your device and sign-in credentials secure"
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Copyright and Fair Use",
+                    paragraphs: [
+                        "BookQuotes is intended for personal use with books you own or are otherwise permitted to annotate. You are responsible for complying with copyright and fair use rules in your jurisdiction."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Availability",
+                    paragraphs: [
+                        "AI extraction requires an internet connection and may occasionally be unavailable. Features may change over time as the app evolves."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Liability",
+                    paragraphs: [
+                        "BookQuotes is provided as-is without warranties. We are not liable for losses resulting from extraction errors, service interruptions, or data loss outside the protections provided by the platform."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Contact",
+                    paragraphs: [
+                        "Questions about these terms can be sent to \(AppReleaseConfiguration.supportEmail)."
+                    ]
+                )
+            ]
+        }
+    }
+}
+
+struct LegalDocumentSection: Identifiable {
+    let title: String
+    var paragraphs: [String] = []
+    var bullets: [String] = []
+
+    var id: String { title }
+}
+
+struct LegalLinksRow: View {
+    @Binding var presentedDocument: LegalDocument?
+    var compactLabels = false
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            Button(compactLabels ? "Terms" : "Terms of Service") {
+                presentedDocument = .termsOfService
+            }
+            .buttonStyle(.plain)
+
+            Text("and")
+                .foregroundStyle(.secondary)
+
+            Button("Privacy Policy") {
+                presentedDocument = .privacyPolicy
+            }
+            .buttonStyle(.plain)
+        }
+        .foregroundStyle(Color.brand)
+    }
+}
+
+struct LegalDocumentView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    let document: LegalDocument
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
+                    VStack(alignment: .leading, spacing: Spacing.xs) {
+                        Text(document.title)
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(Color.textPrimary)
+
+                        Text("Last updated: \(AppReleaseConfiguration.legalLastUpdated)")
+                            .font(.caption)
+                            .foregroundStyle(Color.textSecondary)
+                    }
+
+                    ForEach(document.sections) { section in
+                        VStack(alignment: .leading, spacing: Spacing.sm) {
+                            Text(section.title)
+                                .font(.headline)
+                                .foregroundStyle(Color.textPrimary)
+
+                            ForEach(Array(section.paragraphs.enumerated()), id: \.offset) { _, paragraph in
+                                Text(paragraph)
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.textSecondary)
+                            }
+
+                            ForEach(Array(section.bullets.enumerated()), id: \.offset) { _, bullet in
+                                HStack(alignment: .top, spacing: Spacing.sm) {
+                                    Text("•")
+                                    Text(bullet)
+                                }
+                                .font(.subheadline)
+                                .foregroundStyle(Color.textSecondary)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(Spacing.lg)
+                        .paperCard()
+                    }
+                }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.vertical, Spacing.lg)
+            }
+            .navigationTitle(document.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .background(Color.backgroundPrimary)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }
 

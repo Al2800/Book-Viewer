@@ -99,7 +99,7 @@ const features = [
           <span className="font-ui text-[10px] text-ink-light">pages queued</span>
         </div>
         <div className="mt-auto bg-gold-primary/10 rounded-lg p-2 text-center">
-          <span className="font-ui text-[10px] text-gold-primary">Will sync when online</span>
+          <span className="font-ui text-[10px] text-gold-primary">Ready to process when online</span>
         </div>
       </div>
     ),
