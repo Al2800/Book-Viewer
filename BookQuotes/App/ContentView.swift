@@ -124,6 +124,8 @@ struct ContentView: View {
 
         switch screen {
         case "onboarding":
+            fallthrough
+        case "subscription":
             hasCompletedOnboarding = false
             selectedTab = .library
 
@@ -163,7 +165,9 @@ struct ContentView: View {
     /// Ensure subscription service is initialized once.
     private func ensureSubscriptionService() {
         guard subscriptionService == nil else { return }
-        subscriptionService = SubscriptionService(authService: authService)
+        let service = SubscriptionService(authService: authService)
+        service.startListening()
+        subscriptionService = service
     }
 
     private func seedTestDataIfNeeded() async {
@@ -253,6 +257,9 @@ struct ContentView: View {
         case .active:
             // App came to foreground - resume queue processing
             Task {
+                if let subscriptionService {
+                    await subscriptionService.updateSubscriptionStatus()
+                }
                 if let queueManager = CaptureQueueManager.shared {
                     await queueManager.start()
                 }
@@ -261,7 +268,7 @@ struct ContentView: View {
         case .background:
             // App going to background - stop queue processing
             Task {
-                CaptureQueueManager.shared?.stop()
+                await CaptureQueueManager.shared?.stop()
             }
 
         case .inactive:

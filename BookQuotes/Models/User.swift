@@ -66,7 +66,7 @@ enum SubscriptionStatus: String, Codable, Sendable {
     /// Subscription has expired
     case expired
     /// User cancelled subscription
-    case cancelled
+    case cancelled = "canceled"
 
     /// Human-readable display name
     var displayName: String {

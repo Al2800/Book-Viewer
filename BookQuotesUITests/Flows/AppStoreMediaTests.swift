@@ -102,6 +102,63 @@ final class AppStorePreviewsTests: BaseUITestCase {
     }
 }
 
+// MARK: - Subscription Review Screenshot
+
+/// Captures the onboarding paywall used for subscription review metadata.
+final class AppStoreSubscriptionReviewTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--reset-onboarding",
+            "--skip-auth",
+            "--app-store-media",
+            "--disable-animations"
+        ]
+    }
+
+    override func waitForAppReady() {
+        let welcomeTitle = app.staticTexts["Capture Quotes Instantly"]
+        let signInTitle = app.staticTexts["Create Your Account"]
+        let paywallTitle = app.staticTexts["Choose Your Plan"]
+
+        let isReady = welcomeTitle.waitForExistence(timeout: 5)
+            || signInTitle.waitForExistence(timeout: 2)
+            || paywallTitle.waitForExistence(timeout: 2)
+
+        XCTAssertTrue(isReady, "Expected onboarding flow to launch for subscription review capture")
+    }
+
+    func testSubscriptionReviewScreenshot() {
+        let skipButton = app.buttons["Skip"]
+        if skipButton.waitForExistence(timeout: 3) {
+            skipButton.tap()
+        }
+
+        let signInTitle = app.staticTexts["Create Your Account"]
+        assertExists(signInTitle, timeout: 5, "Sign-in screen not shown")
+
+        let maybeLater = app.buttons["Maybe later"]
+        assertExists(maybeLater, timeout: 3, "Expected auth skip control for media capture")
+        maybeLater.tap()
+
+        let paywallTitle = app.staticTexts["Choose Your Plan"]
+        assertExists(paywallTitle, timeout: 5, "Subscription screen not shown")
+
+        let freeTrialBadge = app.staticTexts.matching(
+            NSPredicate(format: "label CONTAINS 'free trial'")
+        ).firstMatch
+        XCTAssertTrue(
+            freeTrialBadge.waitForExistence(timeout: 5),
+            "Expected free trial messaging on subscription screen"
+        )
+
+        captureScreenshot(
+            named: "subscription_review",
+            description: "Subscription review screenshot from onboarding paywall"
+        )
+    }
+}
+
 // MARK: - Shared Helpers
 
 fileprivate extension BaseUITestCase {

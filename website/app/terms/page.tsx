@@ -65,11 +65,19 @@ export default function TermsPage() {
           </section>
 
           <section className="mt-8">
-            <h2>Pricing and Access</h2>
+            <h2>Subscriptions and Billing</h2>
             <p>
-              This v1 release does not require a paid subscription. Future versions may
-              introduce optional paid plans, and any such changes would be communicated in
-              the app and through the App Store before taking effect.
+              BookQuotes offers monthly and yearly auto-renewable subscriptions through
+              the Apple App Store.
+            </p>
+            <p>
+              Eligible new subscribers may receive a 7-day introductory free trial. After
+              the trial period, the selected subscription renews automatically unless it is
+              cancelled at least 24 hours before the current period ends.
+            </p>
+            <p>
+              Billing, renewal, cancellation, and refunds are managed by Apple under the
+              terms of your App Store account.
             </p>
           </section>
 

@@ -6,34 +6,34 @@ import { Check, Shield } from 'lucide-react'
 
 const plans = [
   {
-    name: 'Included in v1',
-    description: 'Everything needed for the launch build',
-    price: '$0',
-    period: 'for now',
+    name: 'Monthly',
+    description: 'Flexible access for regular readers',
+    price: '$4.99',
+    period: '/month',
     features: [
-      'Sign in with Apple for secure access',
+      '7-day free trial for eligible new subscribers',
       'AI-powered cover and quote extraction',
       'Batch capture, search, tags, and collections',
       'Markdown, plain text, JSON, Notion, and Obsidian export',
     ],
-    cta: 'View App Store Listing',
-    variant: 'primary' as const,
-    popular: true,
-  },
-  {
-    name: 'Future plans',
-    description: 'Optional pricing may be introduced later',
-    price: 'TBD',
-    period: '',
-    features: [
-      'No paid subscription is required in this release',
-      'Any future pricing will appear first in App Store Connect',
-      'Launch users should expect the core app experience to remain available',
-      'Policy changes will be reflected in the app and legal pages',
-    ],
-    cta: 'Read Support Notes',
+    cta: 'Start 7-Day Trial',
     variant: 'secondary' as const,
     popular: false,
+  },
+  {
+    name: 'Yearly',
+    description: 'Best value for committed readers',
+    price: '$39.99',
+    period: '/year',
+    features: [
+      '7-day free trial for eligible new subscribers',
+      'Everything in Monthly',
+      'Lower effective monthly cost',
+      'Save 33% compared with monthly billing',
+    ],
+    cta: 'Start 7-Day Trial',
+    variant: 'primary' as const,
+    popular: true,
   },
 ]
 
@@ -42,9 +42,9 @@ export function Pricing() {
     <section id="access" className="section-padding bg-paper-warm">
       <div className="container-standard">
         <AnimatedSection className="text-center mb-12">
-          <h2 className="mb-4">Access in the Launch Build</h2>
+          <h2 className="mb-4">Choose Your Plan</h2>
           <p className="text-ink-medium text-lg max-w-prose mx-auto">
-            BookQuotes v1 ships without paid in-app purchases while the first App Store release settles.
+            Start with a 7-day trial, then continue on a monthly or yearly auto-renewable plan.
           </p>
         </AnimatedSection>
 
@@ -59,7 +59,7 @@ export function Pricing() {
                 {/* Popular badge */}
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold-primary text-paper-cream px-4 py-1 rounded-full font-ui text-xs font-medium">
-                    Current Release
+                    Best Value
                   </div>
                 )}
 
@@ -87,9 +87,9 @@ export function Pricing() {
 
                 {/* CTA */}
                 <a
-                  href={plan.name === 'Included in v1' ? 'https://apps.apple.com/app/id6758091579' : '/support'}
-                  target={plan.name === 'Included in v1' ? '_blank' : undefined}
-                  rel={plan.name === 'Included in v1' ? 'noopener noreferrer' : undefined}
+                  href="https://apps.apple.com/app/id6758091579"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Button variant={plan.variant} className="w-full">
                     {plan.cta}

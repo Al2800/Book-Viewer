@@ -124,7 +124,7 @@ final class OnboardingFlowTests: BaseUITestCase {
 
         // Description
         let description = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS 'sync your library'")
+            NSPredicate(format: "label CONTAINS '7-day free trial'")
         ).firstMatch
         XCTAssertTrue(description.exists, "Sign-in description should be visible")
 
@@ -267,14 +267,19 @@ final class OnboardingFlowTests: BaseUITestCase {
     private func navigateToMarkingSetup() throws {
         navigateToSignInStep()
 
-        // In test mode with --skip-auth, try to find a way to bypass sign-in
-        // Look for "Maybe later" or continue button
-        let maybeLater = app.buttons["Maybe later"]
-        if maybeLater.waitForExistence(timeout: 3) {
+        // In test mode with --skip-auth, bypass sign-in.
+        if app.buttons["Maybe later"].waitForExistence(timeout: 3) {
+            app.buttons["Maybe later"].tap()
+        }
+
+        // Subscription-enabled builds insert a paywall step before marking setup.
+        let subscriptionHeader = app.staticTexts["Choose Your Plan"]
+        if subscriptionHeader.waitForExistence(timeout: 5) {
+            let maybeLater = app.buttons["Maybe later"]
+            XCTAssertTrue(maybeLater.waitForExistence(timeout: 3), "Subscription step should offer a skip path in UI tests")
             maybeLater.tap()
         }
 
-        // Wait for marking setup or completion
         let markingHeader = app.staticTexts["How Do You Mark Books?"]
         if !markingHeader.waitForExistence(timeout: 5) {
             throw XCTSkip("Could not navigate to marking setup - may require auth")

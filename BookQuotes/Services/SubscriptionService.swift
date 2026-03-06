@@ -31,8 +31,14 @@ final class SubscriptionService {
     /// Currently purchased subscription
     private(set) var purchasedSubscription: Product?
 
+    /// Purchased product identifier retained even before product metadata is loaded.
+    private(set) var purchasedProductID: String?
+
     /// Current subscription status
     private(set) var subscriptionStatus: Product.SubscriptionInfo.Status?
+
+    /// Expiration date for the current entitlement.
+    private(set) var currentExpirationDate: Date?
 
     /// Whether products are loading
     private(set) var isLoading = false
@@ -58,7 +64,15 @@ final class SubscriptionService {
                 return false
             }
         }
-        return purchasedSubscription != nil
+
+        if purchasedProductID != nil {
+            if let currentExpirationDate {
+                return currentExpirationDate > Date()
+            }
+            return true
+        }
+
+        return false
     }
 
     /// Whether user is in free trial
@@ -135,7 +149,7 @@ final class SubscriptionService {
             await updateSubscriptionStatus()
 
             // Sync with backend
-            await syncSubscriptionWithServer(transaction)
+            await syncSubscriptionWithServer(transaction, status: currentBackendStatus)
 
             return transaction
 
@@ -172,11 +186,16 @@ final class SubscriptionService {
     /// Update subscription status from App Store
     func updateSubscriptionStatus() async {
         purchasedSubscription = nil
+        purchasedProductID = nil
         subscriptionStatus = nil
+        currentExpirationDate = nil
 
         for await result in Transaction.currentEntitlements {
             if case .verified(let transaction) = result {
                 if transaction.productType == .autoRenewable {
+                    purchasedProductID = transaction.productID
+                    currentExpirationDate = transaction.expirationDate
+
                     // Find the product
                     purchasedSubscription = products.first { $0.id == transaction.productID }
 
@@ -188,7 +207,7 @@ final class SubscriptionService {
                     }
 
                     // Sync with backend
-                    await syncSubscriptionWithServer(transaction)
+                    await syncSubscriptionWithServer(transaction, status: currentBackendStatus)
                 }
             }
         }
@@ -219,8 +238,12 @@ final class SubscriptionService {
 
     // MARK: - Backend Sync
 
+    private var currentBackendStatus: String {
+        isInTrial ? "trial" : "active"
+    }
+
     /// Sync subscription status with backend server
-    private func syncSubscriptionWithServer(_ transaction: Transaction) async {
+    private func syncSubscriptionWithServer(_ transaction: Transaction, status: String) async {
         guard let token = authService.getSessionToken() else { return }
 
         // Create sync request
@@ -236,17 +259,36 @@ final class SubscriptionService {
             "originalTransactionId": transaction.originalID,
             "purchaseDate": ISO8601DateFormatter().string(from: transaction.purchaseDate),
             "expirationDate": transaction.expirationDate.map { ISO8601DateFormatter().string(from: $0) } as Any,
+            "status": status,
             "isUpgraded": transaction.isUpgraded,
             "environment": transaction.environment.rawValue
         ]
 
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await URLSession.shared.data(for: request)
 
             if let httpResponse = response as? HTTPURLResponse,
                httpResponse.statusCode != 200 {
                 print("Backend sync failed: \(httpResponse.statusCode)")
+                return
+            }
+
+            struct SyncResponse: Decodable {
+                let status: String
+                let expiresAt: String?
+            }
+
+            let syncResponse = try JSONDecoder().decode(SyncResponse.self, from: data)
+            let formatter = ISO8601DateFormatter()
+            let normalizedStatus = SubscriptionStatus(rawValue: syncResponse.status) ?? .active
+            let expiresAt = syncResponse.expiresAt.flatMap { formatter.date(from: $0) }
+
+            authService.updateSubscriptionState(status: normalizedStatus, expiresAt: expiresAt)
+            currentExpirationDate = expiresAt ?? transaction.expirationDate
+
+            if purchasedProductID == nil {
+                purchasedProductID = transaction.productID
             }
         } catch {
             print("Backend sync error: \(error)")
@@ -270,7 +312,7 @@ final class SubscriptionService {
     func requestRefund(for transactionId: UInt64) async {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
             do {
-                try await Transaction.beginRefundRequest(for: transactionId, in: windowScene)
+                _ = try await Transaction.beginRefundRequest(for: transactionId, in: windowScene)
             } catch {
                 print("Failed to begin refund request: \(error)")
             }
@@ -363,7 +405,7 @@ extension Product {
         }
 
         let monthlyPrice = price / 12
-        return monthlyPrice.formatted(.currency(code: priceFormatStyle.currencyCode ?? "USD"))
+        return monthlyPrice.formatted(.currency(code: priceFormatStyle.currencyCode))
     }
 
     /// Savings percentage compared to monthly

@@ -145,6 +145,11 @@ enum UITestConfiguration {
         value(for: "--media-screen")
     }
 
+    /// Whether App Store media capture should open the onboarding subscription step directly.
+    static var shouldOpenSubscriptionMediaScreen: Bool {
+        isAppStoreMediaMode && appStoreMediaScreen?.lowercased() == "subscription"
+    }
+
     // MARK: - Convenience
 
     /// Summary of active test configurations for debugging.

@@ -30,8 +30,8 @@ export default function PrivacyPage() {
             <h3>Account Information</h3>
             <p>
               When you sign in with Apple, we receive only your Apple-provided identifier
-              and (optionally) your email address. We use this solely to authenticate
-              requests to the BookQuotes service.
+              and (optionally) your email address. We use this to authenticate requests
+              to the BookQuotes service and maintain your subscription access state.
             </p>
 
             <h3>Image Processing</h3>
@@ -75,6 +75,10 @@ export default function PrivacyPage() {
               <li>
                 <strong>Apple Sign-In</strong> &mdash; For secure authentication without
                 passwords.
+              </li>
+              <li>
+                <strong>Apple StoreKit</strong> &mdash; For subscription billing, trial
+                eligibility, renewal status, and purchase management.
               </li>
             </ul>
           </section>

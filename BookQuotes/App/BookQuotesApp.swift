@@ -240,8 +240,8 @@ enum AppReleaseConfiguration {
     /// v1 ships with local-only persistence until CloudKit has been validated in production.
     static let cloudSyncEnabled = false
 
-    /// v1 review build does not expose paid plans until App Store Connect products are configured.
-    static let subscriptionsEnabled = false
+    /// v1 ships with StoreKit-managed subscriptions and a 7-day introductory trial.
+    static let subscriptionsEnabled = true
 
     static let legalLastUpdated = "March 2026"
     static let supportEmail = "acampbell193@googlemail.com"

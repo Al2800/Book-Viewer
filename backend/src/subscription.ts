@@ -69,33 +69,6 @@ export async function updateSubscription(
 }
 
 /**
- * Create the default included access record for new users.
- *
- * v1 ships without paid App Store subscriptions enabled. We still create an
- * access record so authenticated users can use the extraction backend without
- * hitting the legacy 7-day trial gate.
- */
-export async function createDefaultAccessGrant(
-  userId: string,
-  env: Env
-): Promise<SubscriptionRecord> {
-  // Give the included-access entitlement a long horizon so the record remains
-  // valid until paid products are introduced.
-  const expiresAt = new Date();
-  expiresAt.setFullYear(expiresAt.getFullYear() + 10);
-
-  const subscription: SubscriptionRecord = {
-    userId,
-    status: 'active',
-    productId: 'included_access',
-    expiresAt: expiresAt.toISOString(),
-  };
-
-  await updateSubscription(userId, subscription, env);
-  return subscription;
-}
-
-/**
  * Handle App Store Server Notification v2
  * See: https://developer.apple.com/documentation/appstoreservernotifications
  */

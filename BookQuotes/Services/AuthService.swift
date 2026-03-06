@@ -318,6 +318,14 @@ final class AuthService: NSObject {
     func getSessionToken() -> String? {
         currentUser?.sessionToken ?? keychainService.getSessionToken()
     }
+
+    /// Keep the in-memory user model aligned with StoreKit/backend subscription changes.
+    func updateSubscriptionState(status: SubscriptionStatus, expiresAt: Date?) {
+        guard var currentUser else { return }
+        currentUser.subscriptionStatus = status
+        currentUser.subscriptionExpiresAt = expiresAt
+        self.currentUser = currentUser
+    }
 }
 
 // MARK: - SignInDelegate

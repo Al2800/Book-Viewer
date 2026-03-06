@@ -96,3 +96,14 @@ export interface ErrorResponse {
   code: string;
   details?: string;
 }
+
+export interface SubscriptionSyncRequest {
+  productId: string;
+  transactionId: string;
+  originalTransactionId?: string;
+  purchaseDate: string;
+  expirationDate?: string | null;
+  status?: 'active' | 'trial' | 'expired' | 'canceled';
+  isUpgraded?: boolean;
+  environment?: string;
+}

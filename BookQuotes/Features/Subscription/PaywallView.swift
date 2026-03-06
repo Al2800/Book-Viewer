@@ -207,7 +207,7 @@ struct PaywallView: View {
                 .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
 
-            Text("BookQuotes v1 ships without in-app purchases while App Store Connect products are being finalized.")
+            Text("Subscriptions are temporarily unavailable on this device.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

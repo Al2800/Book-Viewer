@@ -20,6 +20,10 @@ const supportTopics = [
     title: 'Library and storage',
     body: 'In this v1 release, books and quotes are stored locally on your device. Use exports regularly if you want a manual backup outside the app.',
   },
+  {
+    title: 'Trials and billing',
+    body: 'BookQuotes uses auto-renewable monthly and yearly subscriptions. Eligible new subscribers start with a 7-day free trial, and billing continues automatically unless cancelled in App Store settings before renewal.',
+  },
 ]
 
 export default function SupportPage() {

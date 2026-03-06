@@ -123,13 +123,13 @@ BookQuotes/
 1. Clone the repository
 2. Open `BookQuotes.xcodeproj` in Xcode
 3. Build and run on device/simulator
-4. Sign in with Apple to enable AI extraction
+4. Sign in with Apple and start the 7-day free trial
 
 ## Privacy
 
 - **Your images**: Sent to the BookQuotes proxy and then to Gemini for processing; not stored after processing
 - **Your data**: Stored locally on device in this v1 release
-- **Minimal account data**: Apple Sign-In identifier, optional email relay, and session status only
+- **Minimal account data**: Apple Sign-In identifier, optional email relay, and subscription status only
 - **No analytics**: No tracking, no telemetry, no ad network SDKs
 
 ## Supported Marking Styles

@@ -448,7 +448,7 @@ struct AccountView: View {
 
                 Text(
                     subscriptionsEnabled
-                        ? "Sign in with Apple to sync your library across devices and access your subscription."
+                        ? "Sign in with Apple to start your 7-day free trial and manage your subscription. Your library stays stored on this device."
                         : "Sign in with Apple to enable AI extraction. Your library stays stored on this device."
                 )
                     .font(.subheadline)
@@ -512,7 +512,7 @@ struct AccountView: View {
                     Text("Unlock Premium")
                         .font(.headline)
 
-                    Text("Get unlimited quote captures, cloud sync, and more.")
+                    Text("Start a 7-day free trial, then continue with monthly or yearly auto-renewing access.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
@@ -531,14 +531,24 @@ struct AccountView: View {
 
     private var subscriptionTitle: String {
         if let product = subscriptionService.purchasedSubscription {
-            if product.id.contains("yearly") {
-                return "BookQuotes Yearly"
-            } else if product.id.contains("monthly") {
-                return "BookQuotes Monthly"
-            }
-            return product.displayName
+            return planTitle(for: product.id, fallback: product.displayName)
         }
+
+        if let productID = subscriptionService.purchasedProductID {
+            return planTitle(for: productID, fallback: "BookQuotes Premium")
+        }
+
         return "BookQuotes Premium"
+    }
+
+    private func planTitle(for productID: String, fallback: String) -> String {
+        if productID.contains("yearly") {
+            return "BookQuotes Yearly"
+        } else if productID.contains("monthly") {
+            return "BookQuotes Monthly"
+        }
+
+        return fallback
     }
 
     // MARK: - Actions Section
@@ -1068,7 +1078,7 @@ enum LegalDocument: String, Identifiable {
                 LegalDocumentSection(
                     title: "What We Collect",
                     paragraphs: [
-                        "When you sign in with Apple, we receive your Apple-provided identifier and, if Apple shares it, your email address. We use that information only to authenticate requests to the BookQuotes service.",
+                        "When you sign in with Apple, we receive your Apple-provided identifier and, if Apple shares it, your email address. We use that information to authenticate requests to the BookQuotes service and maintain your subscription access state.",
                         "When you capture a page or cover for extraction, the image is sent to the BookQuotes proxy and then to Google Gemini for processing. Images are processed in-flight and are not retained after extraction completes.",
                         "Your books, quotes, tags, and collections are stored on-device. Cloud sync is not enabled in this v1 release."
                     ]
@@ -1087,7 +1097,8 @@ enum LegalDocument: String, Identifiable {
                     title: "Third-Party Services",
                     bullets: [
                         "Google Gemini for AI-powered extraction from images",
-                        "Sign in with Apple for secure authentication"
+                        "Sign in with Apple for secure authentication",
+                        "Apple StoreKit for subscription billing, trial eligibility, and purchase management"
                     ]
                 ),
                 LegalDocumentSection(
@@ -1142,6 +1153,14 @@ enum LegalDocument: String, Identifiable {
                     title: "Availability",
                     paragraphs: [
                         "AI extraction requires an internet connection and may occasionally be unavailable. Features may change over time as the app evolves."
+                    ]
+                ),
+                LegalDocumentSection(
+                    title: "Subscriptions and Billing",
+                    paragraphs: [
+                        "BookQuotes offers monthly and yearly auto-renewable subscriptions through the Apple App Store.",
+                        "Eligible new subscribers can start with a 7-day free trial. After the trial, the subscription renews automatically unless it is cancelled at least 24 hours before the current period ends.",
+                        "Billing, renewal, cancellation, and refunds are managed by Apple through your App Store account settings."
                     ]
                 ),
                 LegalDocumentSection(

@@ -107,14 +107,24 @@ struct SubscriptionStatusView: View {
 
     private var subscriptionTitle: String {
         if let product = subscriptionService.purchasedSubscription {
-            if product.id.contains("yearly") {
-                return "BookQuotes Yearly"
-            } else if product.id.contains("monthly") {
-                return "BookQuotes Monthly"
-            }
-            return product.displayName
+            return planTitle(for: product.id, fallback: product.displayName)
         }
+
+        if let productID = subscriptionService.purchasedProductID {
+            return planTitle(for: productID, fallback: "BookQuotes Premium")
+        }
+
         return "BookQuotes Premium"
+    }
+
+    private func planTitle(for productID: String, fallback: String) -> String {
+        if productID.contains("yearly") {
+            return "BookQuotes Yearly"
+        } else if productID.contains("monthly") {
+            return "BookQuotes Monthly"
+        }
+
+        return fallback
     }
 
     // MARK: - Helper Views
@@ -176,7 +186,7 @@ struct UpgradePrompt: View {
                     Text("Unlock Premium")
                         .font(.headline)
 
-                    Text("Get unlimited captures and more")
+                    Text("Start a 7-day free trial, then continue with monthly or yearly auto-renewing access.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 // MARK: - Onboarding View
 
@@ -16,7 +17,7 @@ struct OnboardingView: View {
 
     // MARK: - State
 
-    @State private var currentStep: OnboardingStep = .welcome
+    @State private var currentStep: OnboardingStep = UITestConfiguration.shouldOpenSubscriptionMediaScreen ? .subscription : .welcome
     @State private var currentPage = 0
     @State private var signedInUser: User?
     @State private var isCompleting = false
@@ -161,9 +162,11 @@ struct OnboardingView: View {
                     .fontWeight(.bold)
 
                 Text(
-                    AppReleaseConfiguration.cloudSyncEnabled
-                        ? "Sign in to sync your library across devices and unlock all features"
-                        : "Sign in to enable AI extraction while keeping your library stored on this device"
+                    AppReleaseConfiguration.subscriptionsEnabled
+                        ? "Sign in to start your 7-day free trial and unlock AI extraction while keeping your library stored on this device"
+                        : AppReleaseConfiguration.cloudSyncEnabled
+                            ? "Sign in to sync your library across devices and unlock all features"
+                            : "Sign in to enable AI extraction while keeping your library stored on this device"
                 )
                     .font(.subheadline)
                     .foregroundStyle(Color.textSecondary)
@@ -397,7 +400,7 @@ enum WelcomePage: Int, CaseIterable, Identifiable {
         case .capture:
             return "Point your camera at any marked page. Our AI extracts underlines, highlights, and margin notes automatically."
         case .organize:
-            return "Organize quotes by book, topic, or custom collections. Everything syncs across your devices."
+            return "Organize quotes by book, topic, or custom collections. Your library stays available on this device, with exports ready whenever you want a backup."
         case .discover:
             return "Search your entire library instantly. Surface forgotten insights and share your favorite passages."
         }
@@ -498,8 +501,10 @@ private struct PaywallEmbeddedView: View {
     let subscriptionService: SubscriptionService
     let onContinue: () -> Void
 
-    @State private var selectedPlan: SubscriptionPlan = .monthly
+    @State private var selectedProduct: Product?
+    @State private var selectedMediaPlan: MediaSubscriptionPlan = .yearly
     @State private var isProcessing = false
+    @State private var errorMessage: String?
 
     var body: some View {
         VStack(spacing: Spacing.lg) {
@@ -507,7 +512,7 @@ private struct PaywallEmbeddedView: View {
             HStack {
                 Image(systemName: "gift.fill")
                     .foregroundStyle(Color.brand)
-                Text("Start with a 7-day free trial")
+                Text(selectedProduct?.freeTrialDescription ?? "Start with a 7-day free trial")
                     .font(.subheadline)
                     .fontWeight(.medium)
             }
@@ -517,22 +522,43 @@ private struct PaywallEmbeddedView: View {
             .clipShape(Capsule())
 
             // Plan options
-            VStack(spacing: Spacing.md) {
-                PlanOptionRow(
-                    plan: .monthly,
-                    isSelected: selectedPlan == .monthly
-                ) {
-                    selectedPlan = .monthly
-                }
-
-                PlanOptionRow(
-                    plan: .yearly,
-                    isSelected: selectedPlan == .yearly
-                ) {
-                    selectedPlan = .yearly
+            Group {
+                if subscriptionService.isLoading {
+                    ProgressView()
+                        .padding(.vertical, Spacing.xl)
+                } else if shouldShowMediaPlans {
+                    VStack(spacing: Spacing.md) {
+                        ForEach(MediaSubscriptionPlan.allCases) { plan in
+                            MediaSubscriptionOptionCard(
+                                plan: plan,
+                                isSelected: selectedMediaPlan == plan
+                            ) {
+                                selectedMediaPlan = plan
+                            }
+                        }
+                    }
+                    .padding(.horizontal, Spacing.lg)
+                } else if subscriptionService.products.isEmpty {
+                    Text("Unable to load subscription options right now.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Spacing.xl)
+                } else {
+                    VStack(spacing: Spacing.md) {
+                        ForEach(subscriptionService.products) { product in
+                            SubscriptionOptionCard(
+                                product: product,
+                                isSelected: selectedProduct?.id == product.id,
+                                monthlyProduct: subscriptionService.monthlyProduct
+                            ) {
+                                selectedProduct = product
+                            }
+                        }
+                    }
+                    .padding(.horizontal, Spacing.lg)
                 }
             }
-            .padding(.horizontal, Spacing.lg)
 
             Spacer()
 
@@ -554,7 +580,15 @@ private struct PaywallEmbeddedView: View {
             .foregroundStyle(.white)
             .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             .padding(.horizontal, Spacing.lg)
-            .disabled(isProcessing)
+            .disabled(isProcessing || (!shouldShowMediaPlans && selectedProduct == nil))
+
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.caption)
+                    .foregroundStyle(Color.error)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, Spacing.lg)
+            }
 
             // Skip option
             Button("Maybe later") {
@@ -563,85 +597,165 @@ private struct PaywallEmbeddedView: View {
             .foregroundStyle(Color.textSecondary)
             .padding(.bottom, Spacing.lg)
         }
+        .task {
+            if subscriptionService.products.isEmpty {
+                await subscriptionService.loadProducts()
+            }
+            selectedProduct = subscriptionService.yearlyProduct ?? subscriptionService.monthlyProduct
+        }
+    }
+
+    private var shouldShowMediaPlans: Bool {
+        UITestConfiguration.shouldOpenSubscriptionMediaScreen && subscriptionService.products.isEmpty
     }
 
     private func startTrial() {
-        isProcessing = true
-        Task {
-            // In production, this would initiate the StoreKit purchase
-            try? await Task.sleep(for: .seconds(1))
-            isProcessing = false
+        if shouldShowMediaPlans {
             onContinue()
+            return
+        }
+
+        guard let selectedProduct else { return }
+        isProcessing = true
+        errorMessage = nil
+
+        Task {
+            defer { isProcessing = false }
+
+            do {
+                let transaction = try await subscriptionService.purchase(selectedProduct)
+                if transaction != nil || subscriptionService.hasActiveSubscription {
+                    onContinue()
+                }
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
     }
 }
 
-// MARK: - Plan Option Row
+private enum MediaSubscriptionPlan: String, CaseIterable, Identifiable {
+    case monthly
+    case yearly
 
-private struct PlanOptionRow: View {
-    let plan: SubscriptionPlan
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .monthly:
+            return "Monthly"
+        case .yearly:
+            return "Yearly"
+        }
+    }
+
+    var price: String {
+        switch self {
+        case .monthly:
+            return "$4.99"
+        case .yearly:
+            return "$39.99"
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .monthly:
+            return "Flexible access for regular readers"
+        case .yearly:
+            return "Best value for committed readers"
+        }
+    }
+
+    var period: String {
+        switch self {
+        case .monthly:
+            return "per month"
+        case .yearly:
+            return "per year"
+        }
+    }
+
+    var badge: String? {
+        switch self {
+        case .monthly:
+            return nil
+        case .yearly:
+            return "Best Value"
+        }
+    }
+}
+
+private struct MediaSubscriptionOptionCard: View {
+    let plan: MediaSubscriptionPlan
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack {
-                VStack(alignment: .leading, spacing: Spacing.xxs) {
-                    Text(plan.displayName)
-                        .font(.headline)
+            HStack(spacing: Spacing.md) {
+                ZStack {
+                    Circle()
+                        .strokeBorder(isSelected ? Color.brand : Color.secondary.opacity(0.3), lineWidth: 2)
+                        .frame(width: 24, height: 24)
 
-                    Text(plan.priceDescription)
+                    if isSelected {
+                        Circle()
+                            .fill(Color.brand)
+                            .frame(width: 14, height: 14)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    HStack {
+                        Text(plan.title)
+                            .font(.headline)
+
+                        if let badge = plan.badge {
+                            Text(badge)
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, Spacing.sm)
+                                .padding(.vertical, Spacing.xxs)
+                                .background(Color.brand, in: Capsule())
+                        }
+                    }
+
+                    Text("7-day free trial for eligible new subscribers")
                         .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Text(plan.subtitle)
+                        .font(.caption2)
                         .foregroundStyle(Color.textSecondary)
                 }
 
                 Spacer()
 
-                if plan == .yearly {
-                    Text("Best Value")
-                        .font(.caption2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, Spacing.sm)
-                        .padding(.vertical, Spacing.xxs)
-                        .background(Color.success)
-                        .clipShape(Capsule())
-                }
+                VStack(alignment: .trailing, spacing: Spacing.xxs) {
+                    Text(plan.price)
+                        .font(.headline)
 
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? Color.brand : Color.textTertiary)
-                    .font(.title2)
+                    Text(plan.period)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(Spacing.md)
-            .background(isSelected ? Color.brand.opacity(0.1) : Color.backgroundSecondary)
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+            .background(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .fill(isSelected ? Color.brand.opacity(0.1) : Color(.secondarySystemBackground))
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .stroke(isSelected ? Color.brand : Color.clear, lineWidth: 2)
+                    .strokeBorder(
+                        isSelected ? Color.brand : Color.clear,
+                        lineWidth: 2
+                    )
             )
         }
         .buttonStyle(.plain)
-    }
-}
-
-// MARK: - Subscription Plan
-
-private enum SubscriptionPlan {
-    case monthly
-    case yearly
-
-    var displayName: String {
-        switch self {
-        case .monthly: return "Monthly"
-        case .yearly: return "Yearly"
-        }
-    }
-
-    var priceDescription: String {
-        switch self {
-        case .monthly: return "$4.99/month"
-        case .yearly: return "$39.99/year (Save 33%)"
-        }
     }
 }
 
