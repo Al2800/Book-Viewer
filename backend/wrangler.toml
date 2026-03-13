@@ -15,6 +15,11 @@ preview_id = "4f58e38410a74e30abe248160c5994d6"
 # - GEMINI_API_KEY
 # - APPLE_TEAM_ID
 # - JWT_SECRET
+# - APPLE_BUNDLE_ID
+# - APPLE_IAP_KEY_ID
+# - APPLE_IAP_ISSUER_ID
+# - APPLE_IAP_PRIVATE_KEY
+# - APPLE_APP_ID (optional)
 
 [env.production]
 vars = { ENVIRONMENT = "production" }

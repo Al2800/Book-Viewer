@@ -7,18 +7,65 @@ export interface Env {
   GEMINI_API_KEY: string;
   APPLE_TEAM_ID: string;
   JWT_SECRET: string;
+  APPLE_BUNDLE_ID: string;
+  APPLE_IAP_KEY_ID: string;
+  APPLE_IAP_ISSUER_ID: string;
+  APPLE_IAP_PRIVATE_KEY: string;
+  APPLE_APP_ID?: string;
 
   // Variables
   ENVIRONMENT: string;
 }
 
+export type SubscriptionStatus =
+  | 'none'
+  | 'trial'
+  | 'active'
+  | 'billing_retry'
+  | 'grace_period'
+  | 'expired'
+  | 'canceled'
+  | 'revoked';
+
+export type ClientSubscriptionStatus =
+  | 'none'
+  | 'trial'
+  | 'active'
+  | 'expired'
+  | 'canceled';
+
+export type AppStoreEnvironment = 'Production' | 'Sandbox';
+
 // Subscription status stored in KV
 export interface SubscriptionRecord {
+  schemaVersion: 2;
   userId: string;
-  status: 'active' | 'expired' | 'canceled' | 'trial';
+  status: SubscriptionStatus;
   productId: string;
-  expiresAt: string; // ISO date
-  originalTransactionId?: string;
+  expiresAt?: string;
+  gracePeriodExpiresAt?: string;
+  originalTransactionId: string;
+  latestTransactionId: string;
+  appAccountToken?: string;
+  environment: AppStoreEnvironment;
+  autoRenewStatus?: boolean;
+  isInBillingRetryPeriod?: boolean;
+  offerType?: number;
+  offerIdentifier?: string;
+  ownershipType?: string;
+  revocationDate?: string;
+  revocationReason?: number;
+  transactionSignedDate?: string;
+  renewalSignedDate?: string;
+  lastVerifiedAt: string;
+  source: 'app_store_server_api' | 'app_store_server_notification' | 'legacy_claim';
+}
+
+export interface SubscriptionOwnerRecord {
+  userId: string;
+  originalTransactionId: string;
+  linkedAt: string;
+  source: 'verified_app_account_token' | 'legacy_claim';
 }
 
 // Usage record stored in KV
@@ -98,12 +145,18 @@ export interface ErrorResponse {
 }
 
 export interface SubscriptionSyncRequest {
-  productId: string;
-  transactionId: string;
+  transactionId?: string;
   originalTransactionId?: string;
-  purchaseDate: string;
-  expirationDate?: string | null;
-  status?: 'active' | 'trial' | 'expired' | 'canceled';
-  isUpgraded?: boolean;
+  appAccountToken?: string;
   environment?: string;
+}
+
+export interface SubscriptionSyncResponse {
+  ok: true;
+  status: ClientSubscriptionStatus;
+  rawStatus: SubscriptionStatus;
+  expiresAt?: string;
+  productId?: string;
+  checkedAt: string;
+  source: 'app_store_server_api' | 'cache';
 }

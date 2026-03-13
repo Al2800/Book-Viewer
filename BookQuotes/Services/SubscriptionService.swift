@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import StoreKit
 
@@ -140,16 +141,13 @@ final class SubscriptionService {
     func purchase(_ product: Product) async throws -> Transaction? {
         lastError = nil
 
-        let result = try await product.purchase()
+        let result = try await product.purchase(options: purchaseOptions())
 
         switch result {
         case .success(let verification):
             let transaction = try checkVerified(verification)
             await transaction.finish()
             await updateSubscriptionStatus()
-
-            // Sync with backend
-            await syncSubscriptionWithServer(transaction, status: currentBackendStatus)
 
             return transaction
 
@@ -189,27 +187,33 @@ final class SubscriptionService {
         purchasedProductID = nil
         subscriptionStatus = nil
         currentExpirationDate = nil
+        var latestTransaction: Transaction?
 
         for await result in Transaction.currentEntitlements {
             if case .verified(let transaction) = result {
                 if transaction.productType == .autoRenewable {
-                    purchasedProductID = transaction.productID
-                    currentExpirationDate = transaction.expirationDate
-
-                    // Find the product
-                    purchasedSubscription = products.first { $0.id == transaction.productID }
-
-                    // Get detailed subscription status
-                    if let product = purchasedSubscription,
-                       let subscription = product.subscription {
-                        let statuses = try? await subscription.status
-                        subscriptionStatus = statuses?.first { $0.state != .expired && $0.state != .revoked }
+                    if shouldReplaceCurrentEntitlement(with: transaction, current: latestTransaction) {
+                        latestTransaction = transaction
                     }
-
-                    // Sync with backend
-                    await syncSubscriptionWithServer(transaction, status: currentBackendStatus)
                 }
             }
+        }
+
+        if let latestTransaction {
+            purchasedProductID = latestTransaction.productID
+            currentExpirationDate = latestTransaction.expirationDate
+
+            purchasedSubscription = products.first { $0.id == latestTransaction.productID }
+
+            if let product = purchasedSubscription,
+               let subscription = product.subscription {
+                let statuses = try? await subscription.status
+                subscriptionStatus = statuses?.first { $0.state != .expired && $0.state != .revoked }
+            }
+
+            await refreshSubscriptionWithServer(transaction: latestTransaction)
+        } else {
+            await refreshSubscriptionWithServer(transaction: nil)
         }
     }
 
@@ -238,31 +242,60 @@ final class SubscriptionService {
 
     // MARK: - Backend Sync
 
-    private var currentBackendStatus: String {
-        isInTrial ? "trial" : "active"
+    private func shouldReplaceCurrentEntitlement(with candidate: Transaction, current: Transaction?) -> Bool {
+        guard let current else { return true }
+
+        let candidateExpiry = candidate.expirationDate ?? candidate.purchaseDate
+        let currentExpiry = current.expirationDate ?? current.purchaseDate
+        if candidateExpiry != currentExpiry {
+            return candidateExpiry > currentExpiry
+        }
+
+        return candidate.purchaseDate > current.purchaseDate
     }
 
-    /// Sync subscription status with backend server
-    private func syncSubscriptionWithServer(_ transaction: Transaction, status: String) async {
+    private func purchaseOptions() -> Set<Product.PurchaseOption> {
+        guard let userID = authService.currentUser?.id else {
+            return []
+        }
+
+        return [.appAccountToken(Self.appAccountToken(for: userID))]
+    }
+
+    private static func appAccountToken(for userID: String) -> UUID {
+        let digest = SHA256.hash(data: Data("bookquotes:subscription-account:\(userID)".utf8))
+        var bytes = Array(digest.prefix(16))
+        bytes[6] = (bytes[6] & 0x0F) | 0x50
+        bytes[8] = (bytes[8] & 0x3F) | 0x80
+
+        let uuid = uuid_t(
+            bytes[0], bytes[1], bytes[2], bytes[3],
+            bytes[4], bytes[5], bytes[6], bytes[7],
+            bytes[8], bytes[9], bytes[10], bytes[11],
+            bytes[12], bytes[13], bytes[14], bytes[15]
+        )
+        return UUID(uuid: uuid)
+    }
+
+    /// Ask the backend to verify subscription status against the App Store Server API.
+    private func refreshSubscriptionWithServer(transaction: Transaction?) async {
         guard let token = authService.getSessionToken() else { return }
 
-        // Create sync request
         let serverURL = AuthService.proxyBaseURL.appendingPathComponent("api/subscription/sync")
         var request = URLRequest(url: serverURL)
         request.httpMethod = "POST"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let body: [String: Any] = [
-            "productId": transaction.productID,
-            "transactionId": String(transaction.id),
-            "originalTransactionId": transaction.originalID,
-            "purchaseDate": ISO8601DateFormatter().string(from: transaction.purchaseDate),
-            "expirationDate": transaction.expirationDate.map { ISO8601DateFormatter().string(from: $0) } as Any,
-            "status": status,
-            "isUpgraded": transaction.isUpgraded,
-            "environment": transaction.environment.rawValue
-        ]
+        var body: [String: Any] = [:]
+        if let transaction {
+            body["transactionId"] = String(transaction.id)
+            body["originalTransactionId"] = transaction.originalID
+            body["environment"] = transaction.environment.rawValue
+            if let appAccountToken = transaction.appAccountToken {
+                body["appAccountToken"] = appAccountToken.uuidString.lowercased()
+            }
+        }
 
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
@@ -270,28 +303,30 @@ final class SubscriptionService {
 
             if let httpResponse = response as? HTTPURLResponse,
                httpResponse.statusCode != 200 {
-                print("Backend sync failed: \(httpResponse.statusCode)")
+                print("Backend verification failed: \(httpResponse.statusCode)")
                 return
             }
 
             struct SyncResponse: Decodable {
                 let status: String
+                let rawStatus: String
                 let expiresAt: String?
+                let productId: String?
             }
 
             let syncResponse = try JSONDecoder().decode(SyncResponse.self, from: data)
             let formatter = ISO8601DateFormatter()
-            let normalizedStatus = SubscriptionStatus(rawValue: syncResponse.status) ?? .active
+            let normalizedStatus = SubscriptionStatus(rawValue: syncResponse.status) ?? .none
             let expiresAt = syncResponse.expiresAt.flatMap { formatter.date(from: $0) }
 
             authService.updateSubscriptionState(status: normalizedStatus, expiresAt: expiresAt)
-            currentExpirationDate = expiresAt ?? transaction.expirationDate
+            currentExpirationDate = expiresAt
 
             if purchasedProductID == nil {
-                purchasedProductID = transaction.productID
+                purchasedProductID = syncResponse.productId ?? transaction?.productID
             }
         } catch {
-            print("Backend sync error: \(error)")
+            print("Backend verification error: \(error)")
         }
     }
 

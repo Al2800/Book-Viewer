@@ -9,7 +9,7 @@ iOS App → Cloudflare Workers Proxy → Gemini API
               ↓
          Validates:
          - Apple Sign-In JWT
-         - Subscription status (KV)
+         - App Store-verified subscription status
          - Rate limits (KV)
 ```
 
@@ -44,12 +44,23 @@ npm install
    wrangler secret put GEMINI_API_KEY
    wrangler secret put APPLE_TEAM_ID
    wrangler secret put JWT_SECRET
+   wrangler secret put APPLE_BUNDLE_ID
+   wrangler secret put APPLE_IAP_KEY_ID
+   wrangler secret put APPLE_IAP_ISSUER_ID
+   wrangler secret put APPLE_IAP_PRIVATE_KEY
    ```
 
 3. **Configure Apple Sign-In:**
    - In Apple Developer Portal, create a Services ID for Sign in with Apple
    - Configure your app's bundle ID as the audience
    - Set `APPLE_TEAM_ID` to your app's bundle ID or team ID
+
+4. **Configure App Store Server API:**
+   - In App Store Connect, create an In-App Purchase key under `Users and Access > Integrations > In-App Purchase`
+   - Set `APPLE_BUNDLE_ID` to `com.acampbell.bookquotes`
+   - Set `APPLE_IAP_KEY_ID` and `APPLE_IAP_ISSUER_ID` from that key
+   - Paste the `.p8` contents into `APPLE_IAP_PRIVATE_KEY`
+   - Optional: set `APPLE_APP_ID` if you later add full notification JWS certificate-chain verification
 
 ### Development
 
@@ -133,6 +144,23 @@ App Store Server Notification endpoint.
 
 Configure this URL in App Store Connect for subscription status updates.
 
+### Subscription Verification
+
+#### `POST /api/subscription/sync`
+Reconciles the signed-in user against the App Store Server API.
+
+The app should send a verified StoreKit transaction identifier when it has one:
+
+```json
+{
+  "transactionId": "2000000123456789",
+  "originalTransactionId": "2000000098765432",
+  "environment": "Sandbox"
+}
+```
+
+If the device currently has no active entitlement, the app may send `{}` and the worker will refresh from the last known original transaction ID.
+
 ## Rate Limits
 
 - **Per minute:** 30 requests
@@ -154,5 +182,8 @@ Configure this URL in App Store Connect for subscription status updates.
 - Apple Sign-In tokens are verified against Apple's public keys
 - Session tokens are signed with HS256 and expire after 7 days
 - Gemini API key is never exposed to clients
-- All subscription status is stored in Cloudflare KV
+- Subscription access is granted from App Store Server API state, not client-declared status
+- Subscription ownership is bound to a deterministic `appAccountToken`
+- App Store notifications trigger server-side reconciliation before entitlements are mutated
+- The worker stores the normalized entitlement cache in Cloudflare KV
 - CORS headers allow requests from any origin (iOS app)

@@ -1,6 +1,19 @@
-import type { Env, GeminiRequest, ErrorResponse, UsageResponse, SubscriptionSyncRequest } from './types';
+import type {
+  Env,
+  GeminiRequest,
+  ErrorResponse,
+  UsageResponse,
+  SubscriptionSyncRequest,
+} from './types';
 import { validateSessionToken, validateAppleToken, createSessionToken } from './auth';
-import { hasActiveSubscription, handleAppStoreNotification, getSubscription, updateSubscription } from './subscription';
+import {
+  getSubscription,
+  handleAppStoreNotification,
+  hasActiveSubscription,
+  reconcileSubscription,
+  rememberUserAppAccountToken,
+  toClientSubscriptionStatus,
+} from './subscription';
 import { checkRateLimit, incrementUsage, getUsageStats } from './rate-limit';
 
 // Gemini API base URL
@@ -101,6 +114,7 @@ export default {
       }
 
       const subscription = await getSubscription(userId, env);
+      await rememberUserAppAccountToken(userId, env);
 
       // Create session token
       const sessionToken = await createSessionToken(userId, env);
@@ -108,8 +122,8 @@ export default {
       return jsonResponse({
         token: sessionToken,
         subscription: {
-          status: subscription?.status ?? 'none',
-          expiresAt: subscription?.expiresAt,
+          status: toClientSubscriptionStatus(subscription),
+          expiresAt: subscription?.gracePeriodExpiresAt ?? subscription?.expiresAt,
         },
       });
     }
@@ -142,8 +156,8 @@ export default {
       const response: UsageResponse = {
         extractionsThisMonth: stats.extractionsThisMonth,
         extractionsLimit: stats.extractionsLimit,
-        subscriptionStatus: subscription?.status || 'unknown',
-        expiresAt: subscription?.expiresAt,
+        subscriptionStatus: toClientSubscriptionStatus(subscription),
+        expiresAt: subscription?.gracePeriodExpiresAt ?? subscription?.expiresAt,
       };
 
       return jsonResponse(response);
@@ -152,34 +166,12 @@ export default {
     if (path === '/api/subscription/sync' && request.method === 'POST') {
       try {
         const body = (await request.json()) as SubscriptionSyncRequest;
-
-        if (!body.productId || !body.transactionId || !body.expirationDate) {
-          return errorResponse(
-            'Missing required subscription sync fields',
-            'SUBSCRIPTION_SYNC_INVALID',
-            400
-          );
-        }
-
-        const normalizedStatus = body.status === 'trial' ? 'trial' : 'active';
-
-        await updateSubscription(userId, {
-          userId,
-          status: normalizedStatus,
-          productId: body.productId,
-          expiresAt: body.expirationDate,
-          originalTransactionId: body.originalTransactionId,
-        }, env);
-
-        return jsonResponse({
-          ok: true,
-          status: normalizedStatus,
-          expiresAt: body.expirationDate,
-        });
+        const syncResponse = await reconcileSubscription(userId, body, env);
+        return jsonResponse(syncResponse);
       } catch (error) {
         console.error('Subscription sync error:', error);
         return errorResponse(
-          'Failed to sync subscription',
+          'Failed to verify subscription with App Store',
           'SUBSCRIPTION_SYNC_FAILED',
           500
         );
