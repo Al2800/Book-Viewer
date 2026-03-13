@@ -15,4 +15,5 @@ build/
 TestResults/
 .DerivedData/
 .DerivedData-prodcheck/
+.DerivedData-capturecheck/
 backend/node_modules/

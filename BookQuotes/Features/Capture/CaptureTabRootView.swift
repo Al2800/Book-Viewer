@@ -196,46 +196,62 @@ struct CaptureModeSelectionView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                // Capture options
-                VStack(spacing: Spacing.md) {
-                    CaptureOptionCard(
+                CaptureSummaryCard()
+
+                CaptureSectionCard(title: "Choose Capture Mode") {
+                    CaptureModeRow(
                         title: "Add New Book",
-                        description: "Photograph a book cover to add it to your library",
+                        subtitle: "Photograph a cover and create a library entry",
                         systemImage: "book.closed.fill",
-                        color: .brand,
+                        accentColor: .brand,
                         accessibilityId: AccessibilityIdentifiers.Capture.modeSelectCover,
                         action: onSelectCoverCapture
                     )
 
-                    CaptureOptionCard(
+                    CaptureModeRow(
                         title: "Capture Quotes",
-                        description: "Photograph pages with underlined or highlighted passages",
+                        subtitle: "Scan a marked page and review one passage at a time",
                         systemImage: "text.quote",
-                        color: .accent,
+                        accentColor: .accent,
                         accessibilityId: AccessibilityIdentifiers.Capture.modeSelectQuote,
                         action: onSelectQuoteCapture
                     )
 
-                    CaptureOptionCard(
+                    CaptureModeRow(
                         title: "Batch Mode",
-                        description: "Capture multiple pages quickly, process all at once",
+                        subtitle: "Capture several pages first and process the session together",
                         systemImage: "square.stack.3d.up.fill",
-                        color: .success,
+                        accentColor: .success,
                         accessibilityId: AccessibilityIdentifiers.Capture.modeSelectBatch,
                         action: onSelectBatchCapture
                     )
                 }
+
+                CaptureSectionCard(title: "Before You Start") {
+                    CaptureHintRow(
+                        systemImage: "sun.max",
+                        title: "Use even light",
+                        subtitle: "Avoid shadows across the page and keep the full passage visible."
+                    )
+
+                    CaptureHintRow(
+                        systemImage: "viewfinder",
+                        title: "Fill the frame",
+                        subtitle: "Keep the page square in view so extraction needs less correction."
+                    )
+
+                    CaptureHintRow(
+                        systemImage: "highlighter",
+                        title: "Pick the right flow",
+                        subtitle: "Single capture works best for one page. Batch mode is better for a run of notes."
+                    )
+                }
             }
-            .padding(Spacing.lg)
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
+            .padding(.bottom, Spacing.xxxl)
         }
-        .background(
-            LinearGradient(
-                colors: [Color.backgroundPrimary, Color.backgroundSecondary],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-        )
+        .background(Color.backgroundPrimary)
         .navigationTitle("Capture")
         .navigationBarTitleDisplayMode(.large)
     }
@@ -252,17 +268,18 @@ struct BookSelectionForCaptureView: View {
     @Query(sort: \Book.dateLastQuoteAdded, order: .reverse)
     private var books: [Book]
 
-    private let columns = [
-        GridItem(.adaptive(minimum: 100, maximum: 140), spacing: Spacing.md)
-    ]
-
     var body: some View {
         ScrollView {
-            if books.isEmpty {
-                emptyState
-            } else {
-                bookGrid
+            VStack(spacing: Spacing.lg) {
+                if books.isEmpty {
+                    emptyState
+                } else {
+                    librarySection
+                }
             }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
+            .padding(.bottom, Spacing.xxxl)
         }
         .background(Color.backgroundPrimary)
         .navigationTitle("Select Book")
@@ -277,57 +294,395 @@ struct BookSelectionForCaptureView: View {
     }
 
     @ViewBuilder
-    private var bookGrid: some View {
-        LazyVGrid(columns: columns, spacing: Spacing.lg) {
-            // Add new book option
-            AddBookGridItem(action: onAddNewBook)
+    private var librarySection: some View {
+        VStack(spacing: Spacing.lg) {
+            CaptureSectionCard(title: "Library") {
+                AddBookLibraryRow(action: onAddNewBook)
 
-            // Existing books
-            ForEach(books) { book in
-                BookGridItem(book: book) {
-                    onSelectBook(book)
+                ForEach(books) { book in
+                    CaptureBookRow(book: book) {
+                        onSelectBook(book)
+                    }
                 }
             }
+
+            CaptureSectionCard(title: "Capture Notes") {
+                CaptureHintRow(
+                    systemImage: "text.quote",
+                    title: "Single capture",
+                    subtitle: "Best when you want to review and save one marked page immediately."
+                )
+
+                CaptureHintRow(
+                    systemImage: "square.stack.3d.up.fill",
+                    title: "Batch capture",
+                    subtitle: "Best when you are moving through several pages from the same book."
+                )
+            }
         }
-        .padding(Spacing.lg)
     }
 
     @ViewBuilder
     private var emptyState: some View {
-        VStack(spacing: Spacing.xl) {
-            Spacer()
+        CaptureSectionCard(title: "Library") {
+            VStack(alignment: .leading, spacing: Spacing.lg) {
+                HStack(spacing: Spacing.md) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.backgroundSecondary)
+                            .frame(width: 44, height: 44)
+                            .overlay {
+                                Circle()
+                                    .stroke(
+                                        Color.quoteBorder.opacity(0.6),
+                                        lineWidth: Stroke.hairline.width
+                                    )
+                            }
 
-            Image(systemName: "books.vertical")
-                .font(.system(size: 60))
-                .foregroundStyle(Color.textTertiary)
+                        Image(systemName: "books.vertical")
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(Color.textPrimary)
+                    }
 
-            VStack(spacing: Spacing.sm) {
-                Text("No Books Yet")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(Color.textPrimary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("No Books Yet")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.textPrimary)
 
-                Text("Add a book first by capturing its cover")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.textSecondary)
-                    .multilineTextAlignment(.center)
+                        Text("Add a book first so quote capture has somewhere to save your passages.")
+                            .font(.caption)
+                            .foregroundStyle(Color.textSecondary)
+                    }
+                }
+
+                Button(action: onAddNewBook) {
+                    HStack(spacing: Spacing.md) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.backgroundSecondary)
+                                .frame(width: 36, height: 36)
+                                .overlay {
+                                    Circle()
+                                        .stroke(
+                                            Color.quoteBorder.opacity(0.6),
+                                            lineWidth: Stroke.hairline.width
+                                        )
+                                }
+
+                            Image(systemName: "plus")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Color.accent)
+                        }
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Add Your First Book")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Color.textPrimary)
+
+                            Text("Scan the cover or ISBN to start a capture session.")
+                                .font(.caption)
+                                .foregroundStyle(Color.textSecondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(Color.textTertiary)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
-
-            Button {
-                onAddNewBook()
-            } label: {
-                Label("Add Your First Book", systemImage: "plus")
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.brand)
-
-            Spacer()
         }
-        .padding(Spacing.xl)
     }
 }
 
-// MARK: - Book Grid Item
+// MARK: - Capture Styling
+
+private struct CaptureSectionCard<Content: View>: View {
+    let title: String
+    let content: Content
+
+    init(title: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text(title)
+                .font(.sectionHeader)
+                .foregroundStyle(Color.textSecondary)
+
+            VStack(spacing: Spacing.sm) {
+                content
+            }
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+}
+
+private struct CaptureSummaryCard: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Capture")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(Color.textPrimary)
+
+            Text("Choose a flow, keep the page clear in frame, and save quotes into the right book without leaving the tab.")
+                .font(.subheadline)
+                .foregroundStyle(Color.textSecondary)
+
+            HStack(spacing: Spacing.sm) {
+                CaptureSummaryPill(systemImage: "camera", text: "Camera Ready")
+                CaptureSummaryPill(systemImage: "text.viewfinder", text: "Review Before Save")
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+}
+
+private struct CaptureSummaryPill: View {
+    let systemImage: String
+    let text: String
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            Image(systemName: systemImage)
+                .font(.caption.weight(.semibold))
+
+            Text(text)
+                .font(.caption.weight(.medium))
+        }
+        .foregroundStyle(Color.textPrimary)
+        .padding(.vertical, Spacing.xs)
+        .padding(.horizontal, Spacing.sm)
+        .background(
+            Capsule()
+                .fill(Color.backgroundSecondary)
+        )
+        .overlay {
+            Capsule()
+                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+        }
+    }
+}
+
+private struct CaptureModeRow: View {
+    let title: String
+    let subtitle: String
+    let systemImage: String
+    let accentColor: Color
+    let accessibilityId: String?
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: Spacing.md) {
+                ZStack {
+                    Circle()
+                        .fill(Color.backgroundSecondary)
+                        .frame(width: 40, height: 40)
+                        .overlay {
+                            Circle()
+                                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                        }
+
+                    Image(systemName: systemImage)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(accentColor)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.textPrimary)
+
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(Color.textTertiary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .applyCaptureAccessibilityIdentifier(accessibilityId)
+    }
+}
+
+private struct CaptureHintRow: View {
+    let systemImage: String
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: Spacing.md) {
+            ZStack {
+                Circle()
+                    .fill(Color.backgroundSecondary)
+                    .frame(width: 36, height: 36)
+                    .overlay {
+                        Circle()
+                            .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                    }
+
+                Image(systemName: systemImage)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.textPrimary)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.textPrimary)
+
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+    }
+}
+
+private struct CaptureBookRow: View {
+    let book: Book
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: Spacing.md) {
+                captureCover
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(book.title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.textPrimary)
+                        .lineLimit(2)
+
+                    Text(book.author)
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                        .lineLimit(1)
+
+                    Text(bookCaptureSubtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textTertiary)
+                        .lineLimit(1)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(Color.textTertiary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.bookSelectionCard)
+    }
+
+    private var bookCaptureSubtitle: String {
+        if book.quoteCount == 0 {
+            return "Ready for first capture"
+        }
+
+        let quoteLabel = book.quoteCount == 1 ? "quote" : "quotes"
+        return "\(book.quoteCount) \(quoteLabel) saved"
+    }
+
+    @ViewBuilder
+    private var captureCover: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: CornerRadius.sm)
+                .fill(Color.backgroundSecondary)
+
+            if let coverData = book.coverThumbnailData ?? book.coverFullData,
+               let uiImage = UIImage(data: coverData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } else {
+                Image(systemName: "book.closed.fill")
+                    .font(.headline)
+                    .foregroundStyle(Color.textTertiary)
+            }
+        }
+        .frame(width: 44, height: 60)
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+        .overlay {
+            RoundedRectangle(cornerRadius: CornerRadius.sm)
+                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+        }
+    }
+}
+
+private struct AddBookLibraryRow: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: Spacing.md) {
+                ZStack {
+                    Circle()
+                        .fill(Color.backgroundSecondary)
+                        .frame(width: 40, height: 40)
+                        .overlay {
+                            Circle()
+                                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                        }
+
+                    Image(systemName: "plus")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.accent)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Add New Book")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.textPrimary)
+
+                    Text("Scan a cover or ISBN before capturing quotes.")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(Color.textTertiary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func applyCaptureAccessibilityIdentifier(_ identifier: String?) -> some View {
+        if let identifier {
+            accessibilityIdentifier(identifier)
+        } else {
+            self
+        }
+    }
+}
+
+// MARK: - Legacy Grid Items
 
 /// Grid item showing a book for selection
 struct BookGridItem: View {
@@ -335,94 +690,16 @@ struct BookGridItem: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: Spacing.sm) {
-                // Cover placeholder
-                ZStack {
-                    RoundedRectangle(cornerRadius: CornerRadius.sm)
-                        .fill(Color.backgroundSecondary)
-
-                    if let coverData = book.coverThumbnailData ?? book.coverFullData,
-                       let uiImage = UIImage(data: coverData) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else {
-                        Image(systemName: "book.closed.fill")
-                            .font(.title)
-                            .foregroundStyle(Color.textTertiary)
-                    }
-                }
-                .frame(height: 140)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-                .elevation(.sm)
-
-                // Title
-                Text(book.title)
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundStyle(Color.textPrimary)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-            }
-        }
-        .buttonStyle(.plain)
-        .contentShape(Rectangle())
-        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.bookSelectionCard)
+        CaptureBookRow(book: book, action: action)
     }
 }
-
-// MARK: - Add Book Grid Item
 
 /// Grid item for adding a new book
 struct AddBookGridItem: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: Spacing.sm) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: CornerRadius.lg)
-                        .fill(Color.backgroundCard)
-                        .overlay {
-                            LinearGradient.cardHighlight
-                                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
-                        }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: CornerRadius.lg)
-                                .stroke(Color.accent.opacity(0.6), lineWidth: Stroke.thin.width)
-                        }
-
-                    VStack(spacing: Spacing.xs) {
-                        ZStack {
-                            Circle()
-                                .fill(.ultraThinMaterial)
-                                .frame(width: 42, height: 42)
-                                .overlay {
-                                    Circle()
-                                        .stroke(Color.accent.opacity(0.5), lineWidth: Stroke.hairline.width)
-                                }
-
-                            Image(systemName: "plus")
-                                .font(.headline.weight(.semibold))
-                                .foregroundStyle(Color.accent)
-                        }
-
-                        Text("Add Book")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.textPrimary)
-                    }
-                }
-                .frame(height: 140)
-
-                Text("Scan cover or ISBN")
-                    .font(.caption)
-                    .foregroundStyle(Color.textTertiary)
-            }
-        }
-        .buttonStyle(.plain)
-        .contentShape(Rectangle())
+        AddBookLibraryRow(action: action)
     }
 }
 
