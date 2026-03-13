@@ -79,6 +79,7 @@ export interface UsageRecord {
 // Rate limit configuration
 export interface RateLimitConfig {
   maxRequestsPerMinute: number;
+  maxRequestsPerIPPerMinute: number;
   maxExtractionsPerMonth: number;
 }
 
@@ -111,6 +112,7 @@ export interface GeminiRequest {
     topK?: number;
     topP?: number;
     maxOutputTokens?: number;
+    responseMimeType?: string;
   };
 }
 

@@ -3,6 +3,7 @@ import type { Env, UsageRecord, RateLimitConfig } from './types';
 // Default rate limits
 const DEFAULT_LIMITS: RateLimitConfig = {
   maxRequestsPerMinute: 30,
+  maxRequestsPerIPPerMinute: 120,
   maxExtractionsPerMonth: 1000,
 };
 
@@ -77,6 +78,7 @@ export async function incrementUsage(
 export async function checkRateLimit(
   userId: string,
   env: Env,
+  clientKey?: string,
   limits: RateLimitConfig = DEFAULT_LIMITS
 ): Promise<{
   allowed: boolean;
@@ -108,6 +110,25 @@ export async function checkRateLimit(
       currentUsage: minuteCount,
       limit: limits.maxRequestsPerMinute,
     };
+  }
+
+  if (clientKey) {
+    const ipMinuteKey = `ratelimit:ip:${clientKey}:${Math.floor(Date.now() / 60000)}`;
+    const ipMinuteCountStr = await env.KV.get(ipMinuteKey);
+    const ipMinuteCount = ipMinuteCountStr ? parseInt(ipMinuteCountStr, 10) : 0;
+
+    if (ipMinuteCount >= limits.maxRequestsPerIPPerMinute) {
+      return {
+        allowed: false,
+        reason: 'Too many requests from this network',
+        currentUsage: ipMinuteCount,
+        limit: limits.maxRequestsPerIPPerMinute,
+      };
+    }
+
+    await env.KV.put(ipMinuteKey, String(ipMinuteCount + 1), {
+      expirationTtl: 120,
+    });
   }
 
   // Increment per-minute counter
