@@ -46,21 +46,16 @@ struct BatchCaptureView: View {
                 // Top bar with session info
                 sessionHeader
                     .padding(.horizontal, Spacing.lg)
-                    .padding(.top, Spacing.md)
+                    .padding(.top, Spacing.sm)
 
                 Spacer()
-
-                // Quality overlay (minimal)
-                if let quality = currentQuality {
-                    MinimalQualityOverlay(qualityResult: quality)
-                        .padding(.bottom, Spacing.md)
-                }
 
                 // Bottom controls
                 bottomControls
             }
         }
         .statusBarHidden()
+        .toolbar(.hidden, for: .navigationBar)
         // Prevent the system tab bar from overlapping camera capture UI.
         .toolbar(.hidden, for: .tabBar)
         .onAppear {
@@ -127,60 +122,35 @@ struct BatchCaptureView: View {
 
     @ViewBuilder
     private var sessionHeader: some View {
-        HStack {
-            // Cancel button
-            Button {
-                if session.totalPages > 0 {
-                    showFinishConfirmation = true
-                } else {
-                    onCancel()
-                }
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.title3)
-                    .foregroundStyle(.white)
-            }
-
-            Spacer()
-
-            // Page counter with animated count
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: "doc.on.doc")
-                Text("\(session.totalPages)")
-                    .fontWeight(.semibold)
-                    .contentTransition(.numericText())
-                Text("pages")
-            }
-            .font(.subheadline)
-            .foregroundStyle(.white)
-            .animation(.snappy, value: session.totalPages)
-
-            Spacer()
-
-            // Done button
+        CaptureHeaderBar(
+            title: book.title,
+            subtitle: "\(session.totalPages) page\(session.totalPages == 1 ? "" : "s") in session",
+            onCancel: cancelBatchCapture
+        ) {
             Button {
                 if session.totalPages > 0 {
                     showFinishConfirmation = true
                 }
             } label: {
                 Text("Done")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(session.totalPages > 0 ? Color.brand : Color.white.opacity(0.5))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(session.totalPages > 0 ? Color.brand : Color.white.opacity(0.45))
             }
+            .buttonStyle(.plain)
             .disabled(session.totalPages == 0)
         }
-        .padding(.horizontal, Spacing.lg)
-        .padding(.vertical, Spacing.sm)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xl))
     }
 
     // MARK: - Bottom Controls
 
     @ViewBuilder
     private var bottomControls: some View {
-        VStack(spacing: Spacing.md) {
+        CaptureControlTray {
+            if let statusPill = batchStatusPill {
+                statusPill
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+
             // Thumbnail strip
             if !session.captures.isEmpty {
                 thumbnailStrip
@@ -227,14 +197,6 @@ struct BatchCaptureView: View {
             }
         }
         .padding(.horizontal, Spacing.lg)
-        .padding(.vertical, Spacing.md)
-        // Lighter chrome on top of camera preview; thick glass can look like a black slab.
-        .cameraChrome(cornerRadius: CornerRadius.xl)
-        .overlay {
-            RoundedRectangle(cornerRadius: CornerRadius.xl)
-                .stroke(Color.white.opacity(0.10), lineWidth: 1)
-        }
-        .padding(.horizontal, Spacing.lg)
         .padding(.bottom, Spacing.lg)
     }
 
@@ -257,7 +219,11 @@ struct BatchCaptureView: View {
                 .padding(.horizontal, Spacing.md)
             }
             .frame(height: 70)
-            .glassCard(cornerRadius: CornerRadius.lg, elevated: false)
+            .cameraChrome(cornerRadius: CornerRadius.lg)
+            .overlay {
+                RoundedRectangle(cornerRadius: CornerRadius.lg)
+                    .stroke(Color.white.opacity(0.10), lineWidth: 1)
+            }
             .onChange(of: session.captures.count) { _, _ in
                 // Scroll to newest capture with smooth animation
                 if let lastCapture = session.captures.last {
@@ -410,6 +376,31 @@ struct BatchCaptureView: View {
         try? modelContext.save()
         HapticManager.success()
         onCancel()
+    }
+
+    private var batchStatusPill: CaptureStatusPill? {
+        if let quality = currentQuality, !quality.isAcceptable {
+            return CaptureStatusPill(
+                systemImage: "exclamationmark.triangle.fill",
+                text: quality.issues.first?.advice ?? "Adjust framing before the next page",
+                tint: Color.warning
+            )
+        }
+
+        return CaptureStatusPill(
+            systemImage: "doc.on.doc",
+            text: session.totalPages == 0
+                ? "Capture pages for one review session"
+                : "\(session.totalPages) page\(session.totalPages == 1 ? "" : "s") ready to process"
+        )
+    }
+
+    private func cancelBatchCapture() {
+        if session.totalPages > 0 {
+            showFinishConfirmation = true
+        } else {
+            onCancel()
+        }
     }
 }
 

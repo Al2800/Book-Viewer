@@ -77,12 +77,8 @@ struct CoverCaptureView: View {
         }
         .coordinateSpace(name: coordinateSpaceName)
         // Prevent the system tab bar from overlapping camera capture UI.
+        .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
-        .navigationTitle("Add Book")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            toolbarContent
-        }
         .sheet(item: $extractedMetadata) { metadata in
             BookEditView(mode: .createFromMetadata(metadata)) { book in
                 onComplete?(book)
@@ -151,20 +147,6 @@ struct CoverCaptureView: View {
             let frameHeight = maxWidth * 1.5
 
             VStack {
-                HStack(spacing: Spacing.sm) {
-                    Image(systemName: "viewfinder")
-                        .font(.caption)
-                    Text("Align cover inside the frame")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                }
-                .foregroundStyle(.white)
-                .padding(.horizontal, Spacing.md)
-                .padding(.vertical, Spacing.xs)
-                .background(.ultraThinMaterial)
-                .clipShape(Capsule())
-                .padding(.top, Spacing.lg)
-
                 Spacer()
 
                 // Guide frame
@@ -205,23 +187,12 @@ struct CoverCaptureView: View {
             Spacer()
 
             // Barcode scanner area
-            VStack(spacing: Spacing.md) {
-                RoundedRectangle(cornerRadius: CornerRadius.sm)
-                    .stroke(Color.brand, lineWidth: 3)
-                    .frame(width: 280, height: 100)
-                    .overlay {
-                        // Scan line animation
-                        ScanLineView()
-                    }
-
-                Text("Align barcode within frame")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.8))
-                    .padding(.horizontal, Spacing.md)
-                    .padding(.vertical, Spacing.xs)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
-            }
+            RoundedRectangle(cornerRadius: CornerRadius.sm)
+                .stroke(Color.brand, lineWidth: 3)
+                .frame(width: 280, height: 100)
+                .overlay {
+                    ScanLineView()
+                }
 
             Spacer()
         }
@@ -258,21 +229,38 @@ struct CoverCaptureView: View {
     // MARK: - Controls Overlay
 
     private var modeSwitcher: some View {
-        Picker("Mode", selection: $captureMode) {
-            Label("Photo", systemImage: "camera.fill").tag(CaptureMode.photo)
-            Label("Barcode", systemImage: "barcode.viewfinder").tag(CaptureMode.barcode)
+        VStack(spacing: Spacing.md) {
+            CaptureHeaderBar(
+                title: "Add Book",
+                subtitle: captureMode == .photo ? "Scan the cover or switch to ISBN" : "Scan the ISBN barcode",
+                onCancel: cancelCapture
+            )
+
+            Picker("Mode", selection: $captureMode) {
+                Label("Photo", systemImage: "camera.fill").tag(CaptureMode.photo)
+                Label("Barcode", systemImage: "barcode.viewfinder").tag(CaptureMode.barcode)
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
+            .cameraChrome(cornerRadius: CornerRadius.xl)
+            .overlay {
+                RoundedRectangle(cornerRadius: CornerRadius.xl)
+                    .stroke(Color.white.opacity(0.10), lineWidth: 1)
+            }
         }
-        .pickerStyle(.segmented)
-        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
-        .padding(.horizontal, Spacing.lg)
-        .padding(.vertical, Spacing.sm)
-        .glassFloating(cornerRadius: CornerRadius.lg)
         .padding(.horizontal, Spacing.lg)
         .padding(.top, Spacing.sm)
     }
 
     private var bottomControls: some View {
-        VStack(spacing: Spacing.md) {
+        CaptureControlTray {
+            if let statusPill = coverStatusPill {
+                statusPill
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+
             if captureMode == .photo && !isProcessing {
                 CaptureButton(isProcessing: isProcessing) {
                     capturePhoto()
@@ -292,7 +280,7 @@ struct CoverCaptureView: View {
                 Button {
                     showManualEntry()
                 } label: {
-                    Text("Enter manually")
+                    Text(captureMode == .photo ? "Enter details manually" : "Enter ISBN manually")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
@@ -300,28 +288,8 @@ struct CoverCaptureView: View {
                 .glassButton()
             }
         }
-        .padding(Spacing.md)
-        .frame(maxWidth: .infinity)
-        // Lighter chrome on top of camera preview; thick glass can look like a black slab.
-        .glassCard(cornerRadius: CornerRadius.xl, elevated: false)
-        .overlay {
-            RoundedRectangle(cornerRadius: CornerRadius.xl)
-                .stroke(Color.white.opacity(0.10), lineWidth: 1)
-        }
         .padding(.horizontal, Spacing.lg)
         .padding(.bottom, Spacing.md)
-    }
-
-    // MARK: - Toolbar
-
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button("Cancel") {
-                onCancel?()
-                dismiss()
-            }
-        }
     }
 
     // MARK: - Camera Setup
@@ -508,6 +476,34 @@ struct CoverCaptureView: View {
     private func showManualEntry() {
         // Create empty metadata to trigger manual entry
         extractedMetadata = BookMetadata(title: "", authors: [])
+    }
+
+    private var coverStatusPill: CaptureStatusPill? {
+        if isProcessing {
+            let text = captureMode == .photo ? "Reading cover…" : "Looking up ISBN…"
+            return CaptureStatusPill(systemImage: "viewfinder", text: text)
+        }
+
+        switch captureMode {
+        case .photo:
+            return CaptureStatusPill(
+                systemImage: "book.closed.fill",
+                text: "Center the cover inside the frame"
+            )
+        case .barcode:
+            return CaptureStatusPill(
+                systemImage: "barcode.viewfinder",
+                text: "Hold the barcode steady inside the scanner"
+            )
+        }
+    }
+
+    private func cancelCapture() {
+        if let onCancel {
+            onCancel()
+        } else {
+            dismiss()
+        }
     }
 
     // MARK: - Extraction (Placeholders)

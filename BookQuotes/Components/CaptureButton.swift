@@ -260,6 +260,132 @@ struct CaptureControlsBar: View {
     }
 }
 
+// MARK: - Shared Camera Chrome
+
+struct CaptureHeaderBar<Trailing: View>: View {
+    let title: String
+    let subtitle: String?
+    let onCancel: () -> Void
+    let trailing: Trailing
+
+    init(
+        title: String,
+        subtitle: String? = nil,
+        onCancel: @escaping () -> Void,
+        @ViewBuilder trailing: () -> Trailing
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.onCancel = onCancel
+        self.trailing = trailing()
+    }
+
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            CameraIconButton(systemImage: "xmark", action: onCancel)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.72))
+                        .lineLimit(1)
+                }
+            }
+
+            Spacer(minLength: 0)
+
+            trailing
+        }
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, Spacing.sm)
+        .cameraChrome(cornerRadius: CornerRadius.xl)
+        .overlay {
+            RoundedRectangle(cornerRadius: CornerRadius.xl)
+                .stroke(Color.white.opacity(0.10), lineWidth: 1)
+        }
+    }
+}
+
+extension CaptureHeaderBar where Trailing == EmptyView {
+    init(
+        title: String,
+        subtitle: String? = nil,
+        onCancel: @escaping () -> Void
+    ) {
+        self.init(title: title, subtitle: subtitle, onCancel: onCancel) {
+            EmptyView()
+        }
+    }
+}
+
+struct CaptureControlTray<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(spacing: Spacing.md) {
+            content
+        }
+        .padding(.horizontal, Spacing.lg)
+        .padding(.vertical, Spacing.md)
+        .cameraChrome(cornerRadius: CornerRadius.xl)
+        .overlay {
+            RoundedRectangle(cornerRadius: CornerRadius.xl)
+                .stroke(Color.white.opacity(0.10), lineWidth: 1)
+        }
+    }
+}
+
+struct CaptureStatusPill: View {
+    let systemImage: String
+    let text: String
+    var tint: Color = .white
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            Image(systemName: systemImage)
+                .font(.caption.weight(.semibold))
+
+            Text(text)
+                .font(.caption.weight(.medium))
+                .lineLimit(1)
+        }
+        .foregroundStyle(tint)
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, Spacing.xs)
+        .background(.ultraThinMaterial)
+        .clipShape(Capsule())
+    }
+}
+
+struct CameraIconButton: View {
+    let systemImage: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 36, height: 36)
+                .background(
+                    Circle()
+                        .fill(Color.white.opacity(0.12))
+                )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 // MARK: - Camera Control Button Style
 
 /// Specialized button style for camera controls (flash, flip).

@@ -16,4 +16,5 @@ TestResults/
 .DerivedData/
 .DerivedData-prodcheck/
 .DerivedData-capturecheck/
+.DerivedData-cameraharmonize/
 backend/node_modules/

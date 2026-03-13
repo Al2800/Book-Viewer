@@ -16,6 +16,9 @@ struct QuoteCaptureView: View {
     /// Completion handler when capture flow finishes
     var onComplete: (() -> Void)?
 
+    /// Cancellation handler for callers embedding the capture flow in custom navigation.
+    var onCancel: (() -> Void)?
+
     // MARK: - State
 
     @State private var cameraService = CameraService()
@@ -37,19 +40,24 @@ struct QuoteCaptureView: View {
             // Camera preview / captured image
             cameraContent
 
-            // Quality overlay
             if captureState == .previewing {
-                qualityOverlayContent
+                VStack(spacing: 0) {
+                    CaptureHeaderBar(
+                        title: book.title,
+                        subtitle: "Single page capture",
+                        onCancel: cancelCapture
+                    )
+
+                    Spacer()
+                }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.sm)
             }
         }
-        .navigationTitle("Capture Quote")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .navigationBar)
         // The system tab bar can overlap full-screen camera controls on newer iOS versions.
         // Hide it during capture so the shutter controls are always visible.
         .toolbar(.hidden, for: .tabBar)
-        .toolbar {
-            toolbarContent
-        }
         .safeAreaInset(edge: .bottom) {
             if captureState == .previewing {
                 bottomCaptureControls
@@ -123,38 +131,18 @@ struct QuoteCaptureView: View {
         }
     }
 
-    // MARK: - Quality Overlay
-
-    @ViewBuilder
-    private var qualityOverlayContent: some View {
-        VStack {
-            if isAnalyzingQuality {
-                HStack {
-                    ProgressView()
-                        .tint(.white)
-                    Text("Analyzing...")
-                        .font(.caption)
-                        .foregroundStyle(.white)
-                }
-                .padding(Spacing.sm)
-                .background(.ultraThinMaterial)
-                .clipShape(Capsule())
-                .padding(.top, Spacing.lg)
-            } else if let result = qualityResult, !result.isAcceptable {
-                MinimalQualityOverlay(qualityResult: result)
-                    .padding(.top, Spacing.lg)
-            }
-            Spacer()
-        }
-    }
-
     // MARK: - Capture Controls
 
     private var bottomCaptureControls: some View {
-        VStack(spacing: Spacing.md) {
+        CaptureControlTray {
+            if let statusPill = qualityStatusPill {
+                statusPill
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+
             HStack {
                 Spacer()
-                // Capture button
+
                 Button {
                     capturePhoto()
                 } label: {
@@ -170,6 +158,7 @@ struct QuoteCaptureView: View {
                 }
                 .disabled(!cameraService.isSessionRunning)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
+
                 Spacer()
             }
 
@@ -181,7 +170,8 @@ struct QuoteCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
             }
         }
-        .padding(.bottom, Spacing.md)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.bottom, Spacing.lg)
     }
 
     // MARK: - Processing View
@@ -204,16 +194,35 @@ struct QuoteCaptureView: View {
         .background(Color.backgroundPrimary)
     }
 
-    // MARK: - Toolbar
-
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button("Cancel") {
-                dismiss()
-            }
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
+    private var qualityStatusPill: CaptureStatusPill? {
+        if isAnalyzingQuality {
+            return CaptureStatusPill(
+                systemImage: "viewfinder",
+                text: "Analyzing image…"
+            )
         }
+
+        guard let result = qualityResult else {
+            return CaptureStatusPill(
+                systemImage: "text.viewfinder",
+                text: "Center one marked passage and capture the page"
+            )
+        }
+
+        if result.isAcceptable {
+            return CaptureStatusPill(
+                systemImage: "checkmark.circle.fill",
+                text: "Ready to capture",
+                tint: .white
+            )
+        }
+
+        let issueText = result.issues.isEmpty ? "Adjust framing" : result.issues[0].advice
+        return CaptureStatusPill(
+            systemImage: "exclamationmark.triangle.fill",
+            text: issueText,
+            tint: Color.warning
+        )
     }
 
     // MARK: - Camera Setup
@@ -376,6 +385,14 @@ struct QuoteCaptureView: View {
             onComplete()
         } else {
             retakePhoto()
+        }
+    }
+
+    private func cancelCapture() {
+        if let onCancel {
+            onCancel()
+        } else {
+            dismiss()
         }
     }
 

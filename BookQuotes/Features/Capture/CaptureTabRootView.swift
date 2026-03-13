@@ -726,7 +726,11 @@ struct QuoteCaptureFlowView: View {
 
     var body: some View {
         if let book = book {
-            QuoteCaptureView(book: book, onComplete: onComplete)
+            QuoteCaptureView(
+                book: book,
+                onComplete: onComplete,
+                onCancel: onCancel
+            )
         } else {
             // Fallback for missing book (shouldn't happen in normal flow)
             ContentUnavailableView {

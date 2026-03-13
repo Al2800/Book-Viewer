@@ -180,13 +180,17 @@ struct BookDetailView: View {
         .sheet(isPresented: $showEditSheet) {
             BookEditView(mode: .edit(book))
         }
-        .sheet(isPresented: $showQuoteCaptureSheet) {
-            NavigationStack {
-                QuoteCaptureView(book: book, onComplete: {
+        .fullScreenCover(isPresented: $showQuoteCaptureSheet) {
+            QuoteCaptureView(
+                book: book,
+                onComplete: {
                     showQuoteCaptureSheet = false
-                })
-                .id(quoteCaptureSheetID)
-            }
+                },
+                onCancel: {
+                    showQuoteCaptureSheet = false
+                }
+            )
+            .id(quoteCaptureSheetID)
         }
         .confirmationDialog(
             "Delete \"\(book.title)\"?",
