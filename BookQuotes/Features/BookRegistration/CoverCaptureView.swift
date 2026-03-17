@@ -26,59 +26,57 @@ struct CoverCaptureView: View {
     @State private var isbnScanner = ISBNScanner()
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureMode: CaptureMode = .photo
-    @State private var captureState: CaptureState = .previewing
     @State private var capturedImage: UIImage?
+    @State private var showCropReview = false
     @State private var extractedMetadata: BookMetadata?
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var isProcessing = false
-    @State private var previewFrame: CGRect = .zero
-    @State private var guideFrame: CGRect = .zero
-
-    private let coordinateSpaceName = "coverCapture"
 
     // MARK: - Body
 
     var body: some View {
-        GeometryReader { proxy in
-            ZStack {
-                // Camera preview
-                cameraContent
+        ZStack {
+            cameraContent
 
-                // Mode-specific overlay
-                captureOverlay
+            if captureMode == .barcode {
+                barcodeScanOverlay
+            }
 
-                // Processing indicator
-                if isProcessing {
-                    processingOverlay
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            // Keep controls out of the main overlay layout so they do not cover the guide frame.
-            .safeAreaInset(edge: .top, spacing: 0) {
-                modeSwitcher
-            }
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                bottomControls
-            }
-            .onAppear {
-                updatePreviewFrame(size: proxy.size)
-            }
-            .onChange(of: proxy.size) { _, newSize in
-                updatePreviewFrame(size: newSize)
-            }
-            .onPreferenceChange(CoverPreviewFramePreferenceKey.self) { rect in
-                // Use the actual visible preview frame for guide-frame cropping.
-                // This stays correct even when we reserve safe area space for controls.
-                if rect.width > 0, rect.height > 0 {
-                    previewFrame = rect
-                }
+            if isProcessing {
+                processingOverlay
             }
         }
-        .coordinateSpace(name: coordinateSpaceName)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            modeSwitcher
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            bottomControls
+        }
         // Prevent the system tab bar from overlapping camera capture UI.
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
+        .fullScreenCover(isPresented: $showCropReview, onDismiss: {
+            if !isProcessing {
+                capturedImage = nil
+            }
+        }) {
+            if let capturedImage {
+                CoverCropReviewView(
+                    image: capturedImage,
+                    onRetake: {
+                        resetCapturedPhoto()
+                    },
+                    onUse: { croppedImage in
+                        resetCapturedPhoto()
+                        Task {
+                            await processCapturedCover(croppedImage)
+                        }
+                    }
+                )
+            }
+        }
         .sheet(item: $extractedMetadata) { metadata in
             BookEditView(mode: .createFromMetadata(metadata)) { book in
                 onComplete?(book)
@@ -107,78 +105,9 @@ struct CoverCaptureView: View {
         if cameraService.isAuthorized {
             CameraPreviewView(cameraService: cameraService)
                 .ignoresSafeArea()
-                .background(
-                    GeometryReader { frameProxy in
-                        Color.clear.preference(
-                            key: CoverPreviewFramePreferenceKey.self,
-                            value: frameProxy.frame(in: .named(coordinateSpaceName))
-                        )
-                    }
-                )
         } else {
             CameraPermissionView()
                 .environment(cameraPermission)
-                .background(
-                    GeometryReader { frameProxy in
-                        Color.clear.preference(
-                            key: CoverPreviewFramePreferenceKey.self,
-                            value: frameProxy.frame(in: .named(coordinateSpaceName))
-                        )
-                    }
-                )
-        }
-    }
-
-    // MARK: - Capture Overlay
-
-    @ViewBuilder
-    private var captureOverlay: some View {
-        switch captureMode {
-        case .photo:
-            photoCaptureOverlay
-        case .barcode:
-            barcodeScanOverlay
-        }
-    }
-
-    private var photoCaptureOverlay: some View {
-        GeometryReader { proxy in
-            let maxWidth = min(proxy.size.width * 0.72, 320)
-            let frameHeight = maxWidth * 1.5
-
-            VStack {
-                Spacer()
-
-                // Guide frame
-                RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .stroke(Color.white.opacity(0.5), lineWidth: 2)
-                    .frame(width: maxWidth, height: frameHeight) // 2:3 cover aspect
-                    .overlay {
-                        VStack(spacing: Spacing.sm) {
-                            Image(systemName: "book.closed")
-                                .font(.title)
-                                .foregroundStyle(.white.opacity(0.6))
-
-                            Text("Fill the frame — we’ll auto-crop the cover")
-                                .font(.caption)
-                                .foregroundStyle(.white.opacity(0.6))
-                        }
-                    }
-                    .background(
-                        GeometryReader { frameProxy in
-                            Color.clear.preference(
-                                key: CoverGuideFramePreferenceKey.self,
-                                value: frameProxy.frame(in: .named(coordinateSpaceName))
-                            )
-                        }
-                    )
-
-                Spacer()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .onPreferenceChange(CoverGuideFramePreferenceKey.self) { rect in
-            guideFrame = rect
         }
     }
 
@@ -339,18 +268,17 @@ struct CoverCaptureView: View {
 
     private func capturePhoto() {
         Task {
-            isProcessing = true
             HapticManager.medium()
 
             do {
                 let image = try await cameraService.capturePhoto()
                 let previewCropped = cameraService.cropToPreviewVisibleArea(image)
-                let framed = cropToGuideFrame(previewCropped)
-                // Avoid double-cropping: document auto-crop is tuned for pages and can over-crop covers.
-                await handleCapturedCover(framed)
+                await MainActor.run {
+                    capturedImage = normalizeOrientation(previewCropped)
+                    showCropReview = true
+                }
 
             } catch {
-                isProcessing = false
                 errorMessage = error.localizedDescription
                 showError = true
                 HapticManager.error()
@@ -360,23 +288,22 @@ struct CoverCaptureView: View {
 
     private func captureTestCover() {
         Task {
-            isProcessing = true
             let image = MockCameraImages.getTestImage(
                 multipleQuotes: false,
                 lowConfidence: false,
                 index: 0
             )
-            await handleCapturedCover(image)
+            await MainActor.run {
+                capturedImage = normalizeOrientation(image)
+                showCropReview = true
+            }
         }
     }
 
     @MainActor
-    private func handleCapturedCover(_ image: UIImage) async {
-        let detected = await detectCoverCrop(image)
-        let cropped = detected ?? cropCoverImage(image)
-        capturedImage = cropped
-
-        let metadata = await extractCoverMetadata(from: cropped)
+    private func processCapturedCover(_ image: UIImage) async {
+        isProcessing = true
+        let metadata = await extractCoverMetadata(from: image)
         extractedMetadata = metadata
         if metadata.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             errorMessage = "Couldn’t read the cover details. Please enter the title and author manually."
@@ -486,10 +413,7 @@ struct CoverCaptureView: View {
 
         switch captureMode {
         case .photo:
-            return CaptureStatusPill(
-                systemImage: "book.closed.fill",
-                text: "Center the cover inside the frame"
-            )
+            return nil
         case .barcode:
             return CaptureStatusPill(
                 systemImage: "barcode.viewfinder",
@@ -504,6 +428,11 @@ struct CoverCaptureView: View {
         } else {
             dismiss()
         }
+    }
+
+    private func resetCapturedPhoto() {
+        capturedImage = nil
+        showCropReview = false
     }
 
     // MARK: - Extraction (Placeholders)
@@ -647,71 +576,6 @@ struct CoverCaptureView: View {
 
         return [trimmed]
     }
-
-    private func cropCoverImage(_ image: UIImage) -> UIImage {
-        let normalized = normalizeOrientation(image)
-        guard let cgImage = normalized.cgImage else { return normalized }
-
-        let targetRatio: CGFloat = 2.0 / 3.0
-        let width = CGFloat(cgImage.width)
-        let height = CGFloat(cgImage.height)
-        let currentRatio = width / height
-
-        let cropRect: CGRect
-        if currentRatio > targetRatio {
-            let newWidth = height * targetRatio
-            let x = (width - newWidth) / 2.0
-            cropRect = CGRect(x: x, y: 0, width: newWidth, height: height)
-        } else if currentRatio < targetRatio {
-            let newHeight = width / targetRatio
-            let y = (height - newHeight) / 2.0
-            cropRect = CGRect(x: 0, y: y, width: width, height: newHeight)
-        } else {
-            return normalized
-        }
-
-        guard let cropped = cgImage.cropping(to: cropRect) else { return normalized }
-        return UIImage(cgImage: cropped, scale: normalized.scale, orientation: .up)
-    }
-
-    private func updatePreviewFrame(size: CGSize) {
-        guard size.width > 0, size.height > 0 else { return }
-        previewFrame = CGRect(origin: .zero, size: size)
-    }
-
-    private func cropToGuideFrame(_ image: UIImage) -> UIImage {
-        guard let normalized = normalizedGuideRect() else {
-            return image
-        }
-        return cameraService.cropToNormalizedRect(image, normalizedRect: normalized)
-    }
-
-    private func normalizedGuideRect() -> CGRect? {
-        guard previewFrame.width > 0, previewFrame.height > 0,
-              guideFrame.width > 0, guideFrame.height > 0 else {
-            return nil
-        }
-
-        let intersection = guideFrame.intersection(previewFrame)
-        guard !intersection.isNull, !intersection.isEmpty else { return nil }
-
-        let x = (intersection.minX - previewFrame.minX) / previewFrame.width
-        let y = (intersection.minY - previewFrame.minY) / previewFrame.height
-        let width = intersection.width / previewFrame.width
-        let height = intersection.height / previewFrame.height
-
-        let rect = CGRect(x: x, y: y, width: width, height: height)
-        let normalized = rect.standardized
-
-        let minX = max(0, min(1, normalized.minX))
-        let minY = max(0, min(1, normalized.minY))
-        let maxX = max(minX, min(1, normalized.maxX))
-        let maxY = max(minY, min(1, normalized.maxY))
-
-        let clamped = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
-        return clamped.width > 0 && clamped.height > 0 ? clamped : nil
-    }
-
     private func normalizeOrientation(_ image: UIImage) -> UIImage {
         guard image.imageOrientation != .up else { return image }
 
@@ -835,30 +699,6 @@ extension CoverCaptureView {
         case photo
         case barcode
     }
-
-    enum CaptureState {
-        case previewing
-        case processing
-        case reviewing
-    }
-}
-
-// MARK: - Guide Frame Preference
-
-private struct CoverGuideFramePreferenceKey: PreferenceKey {
-    static var defaultValue: CGRect = .zero
-
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-        value = nextValue()
-    }
-}
-
-private struct CoverPreviewFramePreferenceKey: PreferenceKey {
-    static var defaultValue: CGRect = .zero
-
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-        value = nextValue()
-    }
 }
 
 // MARK: - Scan Line View
@@ -880,6 +720,237 @@ struct ScanLineView: View {
                     offset = 30
                 }
             }
+    }
+}
+
+private struct CoverCropReviewView: View {
+    let image: UIImage
+    let onRetake: () -> Void
+    let onUse: (UIImage) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var viewportSize: CGSize = .zero
+    @State private var zoomScale: CGFloat = 1.0
+    @State private var lastZoomScale: CGFloat = 1.0
+    @State private var imageOffset: CGSize = .zero
+    @State private var lastOffset: CGSize = .zero
+
+    private let maxZoomScale: CGFloat = 4.0
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: Spacing.lg) {
+                cropViewport
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                VStack(spacing: Spacing.sm) {
+                    Text("Adjust Cover Crop")
+                        .font(.headline)
+                        .foregroundStyle(Color.textPrimary)
+
+                    Text("Move and zoom the photo until the full cover sits inside the frame.")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.horizontal, Spacing.xl)
+
+                HStack(spacing: Spacing.lg) {
+                    Button {
+                        onRetake()
+                        dismiss()
+                    } label: {
+                        Label("Retake", systemImage: "arrow.counterclockwise")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(Color.textSecondary)
+
+                    Button {
+                        onUse(croppedImage())
+                        dismiss()
+                    } label: {
+                        Label("Use Crop", systemImage: "checkmark")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .glassButton()
+                }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.bottom, Spacing.lg)
+            }
+            .padding(.top, Spacing.lg)
+            .background(Color.backgroundPrimary)
+            .navigationTitle("Cover")
+            .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        onRetake()
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private var cropViewport: some View {
+        GeometryReader { geometry in
+            let size = cropViewportSize(for: geometry.size)
+
+            ZStack {
+                Color.black
+
+                ZStack {
+                    Image(uiImage: image)
+                        .resizable()
+                        .frame(width: displayedImageSize(in: size).width, height: displayedImageSize(in: size).height)
+                        .offset(clampedOffset(in: size))
+                }
+                .frame(width: size.width, height: size.height)
+                .clipped()
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.lg)
+                        .stroke(Color.white.opacity(0.8), lineWidth: 2)
+                }
+                .shadow(color: .black.opacity(0.35), radius: 16, y: 10)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .gesture(
+                SimultaneousGesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            let proposedScale = max(1.0, min(lastZoomScale * value, maxZoomScale))
+                            zoomScale = proposedScale
+                            imageOffset = clampedOffset(in: size)
+                        }
+                        .onEnded { _ in
+                            zoomScale = max(1.0, min(zoomScale, maxZoomScale))
+                            lastZoomScale = zoomScale
+                            imageOffset = clampedOffset(in: size)
+                            lastOffset = imageOffset
+                        },
+                    DragGesture()
+                        .onChanged { value in
+                            let proposedOffset = CGSize(
+                                width: lastOffset.width + value.translation.width,
+                                height: lastOffset.height + value.translation.height
+                            )
+                            imageOffset = clampedOffset(proposedOffset, in: size)
+                        }
+                        .onEnded { _ in
+                            imageOffset = clampedOffset(imageOffset, in: size)
+                            lastOffset = imageOffset
+                        }
+                )
+            )
+            .onAppear {
+                viewportSize = size
+                imageOffset = clampedOffset(in: size)
+                lastOffset = imageOffset
+            }
+            .onChange(of: geometry.size) { _, _ in
+                viewportSize = size
+                imageOffset = clampedOffset(in: size)
+                lastOffset = imageOffset
+            }
+        }
+    }
+
+    private func cropViewportSize(for availableSize: CGSize) -> CGSize {
+        let maxWidth = min(availableSize.width - (Spacing.xl * 2), 340)
+        let height = maxWidth * 1.5
+        let constrainedHeight = min(height, max(220, availableSize.height - 140))
+        let width = constrainedHeight / 1.5
+        return CGSize(width: width, height: constrainedHeight)
+    }
+
+    private func baseScale(for viewport: CGSize) -> CGFloat {
+        let normalized = normalizedImage
+        guard normalized.size.width > 0, normalized.size.height > 0 else { return 1.0 }
+        return max(viewport.width / normalized.size.width, viewport.height / normalized.size.height)
+    }
+
+    private func displayedImageSize(in viewport: CGSize) -> CGSize {
+        let normalized = normalizedImage
+        let totalScale = baseScale(for: viewport) * zoomScale
+        return CGSize(
+            width: normalized.size.width * totalScale,
+            height: normalized.size.height * totalScale
+        )
+    }
+
+    private func clampedOffset(in viewport: CGSize) -> CGSize {
+        clampedOffset(imageOffset, in: viewport)
+    }
+
+    private func clampedOffset(_ proposedOffset: CGSize, in viewport: CGSize) -> CGSize {
+        let displayedSize = displayedImageSize(in: viewport)
+        let maxX = max(0, (displayedSize.width - viewport.width) / 2)
+        let maxY = max(0, (displayedSize.height - viewport.height) / 2)
+
+        return CGSize(
+            width: min(max(proposedOffset.width, -maxX), maxX),
+            height: min(max(proposedOffset.height, -maxY), maxY)
+        )
+    }
+
+    private var normalizedImage: UIImage {
+        guard image.imageOrientation != .up else { return image }
+
+        UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
+        defer { UIGraphicsEndImageContext() }
+
+        image.draw(in: CGRect(origin: .zero, size: image.size))
+        return UIGraphicsGetImageFromCurrentImageContext() ?? image
+    }
+
+    private func croppedImage() -> UIImage {
+        let normalized = normalizedImage
+        guard let cgImage = normalized.cgImage,
+              viewportSize.width > 0,
+              viewportSize.height > 0 else {
+            return normalized
+        }
+
+        let displayedSize = displayedImageSize(in: viewportSize)
+        let totalScale = displayedSize.width / normalized.size.width
+        guard totalScale > 0 else { return normalized }
+
+        let clamped = clampedOffset(in: viewportSize)
+        let displayedOrigin = CGPoint(
+            x: (viewportSize.width - displayedSize.width) / 2 + clamped.width,
+            y: (viewportSize.height - displayedSize.height) / 2 + clamped.height
+        )
+
+        let cropRectInPoints = CGRect(
+            x: (0 - displayedOrigin.x) / totalScale,
+            y: (0 - displayedOrigin.y) / totalScale,
+            width: viewportSize.width / totalScale,
+            height: viewportSize.height / totalScale
+        ).intersection(CGRect(origin: .zero, size: normalized.size))
+
+        guard !cropRectInPoints.isNull, !cropRectInPoints.isEmpty else {
+            return normalized
+        }
+
+        let pixelScaleX = CGFloat(cgImage.width) / normalized.size.width
+        let pixelScaleY = CGFloat(cgImage.height) / normalized.size.height
+        let cropRectInPixels = CGRect(
+            x: cropRectInPoints.minX * pixelScaleX,
+            y: cropRectInPoints.minY * pixelScaleY,
+            width: cropRectInPoints.width * pixelScaleX,
+            height: cropRectInPoints.height * pixelScaleY
+        ).integral.intersection(CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height))
+
+        guard let cropped = cgImage.cropping(to: cropRectInPixels) else {
+            return normalized
+        }
+
+        return UIImage(cgImage: cropped, scale: normalized.scale, orientation: .up)
     }
 }
 
