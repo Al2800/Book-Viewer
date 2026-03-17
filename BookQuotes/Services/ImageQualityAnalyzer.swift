@@ -115,6 +115,17 @@ actor ImageQualityAnalyzer {
             case .lowTextConfidence: return "text.badge.xmark"
             }
         }
+
+        var advice: String {
+            switch self {
+            case .tooBlurry(let advice),
+                 .tooDark(let advice),
+                 .tooBright(let advice),
+                 .noTextDetected(let advice),
+                 .lowTextConfidence(let advice):
+                return advice
+            }
+        }
     }
 
     // MARK: - Properties
