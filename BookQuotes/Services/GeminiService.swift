@@ -55,6 +55,10 @@ final class GeminiService {
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
+        if let result = uiTestQuoteExtractionResult() {
+            return result
+        }
+
         // Build the prompt
         let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: markings)
 
@@ -74,6 +78,10 @@ final class GeminiService {
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
+        if let result = uiTestQuoteExtractionResult() {
+            return result
+        }
+
         let prompt = QuoteExtractionPromptBuilder.buildQuickPrompt(markingPrompts: markings)
 
         let response = try await makeRequest(
@@ -103,6 +111,50 @@ final class GeminiService {
     }
 
     // MARK: - Private Methods
+
+    private func uiTestQuoteExtractionResult() -> QuoteExtractionResult? {
+        guard UITestConfiguration.isUITesting,
+              UITestConfiguration.shouldMockCamera,
+              !UITestConfiguration.isAppStoreMediaMode else {
+            return nil
+        }
+
+        let quotes: [ExtractedQuoteData]
+        if UITestConfiguration.shouldMockMultipleQuotes {
+            quotes = [
+                ExtractedQuoteData(
+                    text: "Every action you take is a vote for the type of person you wish to become.",
+                    pageNumber: 38,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.95
+                ),
+                ExtractedQuoteData(
+                    text: "You do not rise to the level of your goals. You fall to the level of your systems.",
+                    pageNumber: 27,
+                    marginNote: "key insight",
+                    markingType: "highlight",
+                    confidence: 0.89
+                )
+            ]
+        } else {
+            quotes = [
+                ExtractedQuoteData(
+                    text: "Every action you take is a vote for the type of person you wish to become.",
+                    pageNumber: 38,
+                    marginNote: UITestConfiguration.shouldMockLowConfidence ? "hard to read" : nil,
+                    markingType: "underline",
+                    confidence: UITestConfiguration.shouldMockLowConfidence ? 0.48 : 0.95
+                )
+            ]
+        }
+
+        return QuoteExtractionResult(
+            quotes: quotes,
+            pageNumber: quotes.first?.pageNumber,
+            processingNotes: "UI test mock extraction"
+        )
+    }
 
     /// Make a request to the proxy server
     private func makeRequest(

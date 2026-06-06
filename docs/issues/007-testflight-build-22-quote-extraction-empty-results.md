@@ -1,6 +1,6 @@
 # 007 - TestFlight Build 22 Quote Extraction Empty Results
 
-Status: closed
+Status: in_progress
 Area: Quote capture
 Priority: high
 
@@ -51,3 +51,21 @@ Build 22 on TestFlight signs in successfully but returns no quotes from pages th
 ## Residual Risk
 
 - If the same TestFlight symptom persists with real images, the next diagnostic should compare proxy/model responses against the failing images because this issue now prevents valid empty arrays from masquerading as successful extraction.
+
+## Reopened
+
+2026-06-06:
+
+- Build 23 still reports no quote returns during TestFlight review.
+- Current diagnosis: the review UI was still collapsing failed extraction pages into the same no-quotes presentation, so authentication, proxy, parsing, blocked-content, and model-empty-output failures were not distinguishable from a valid empty extraction.
+- The simulator acceptance test also only asserted that the review route appeared; it did not prove that extracted quote controls were present.
+- Backend review found `/api/extract-quotes` requires an active subscription/trial after sign-in. A signed-in user without synced active entitlement receives `402 SUBSCRIPTION_REQUIRED`, which build 23 could present as no quotes.
+
+Additional acceptance criteria:
+
+- Failed extraction pages must show an explicit failure state with the captured error message, not the generic "No Quotes Found" state.
+- Pending pages must not remain indefinitely in processing if the extraction cannot start because network is unavailable.
+- Mock-camera simulator extraction must use deterministic mock quote results so UI tests assert quote-review behaviour without depending on live Gemini/auth.
+- The quote capture UI smoke must fail if extraction review opens without editable extracted quote controls.
+- Remaining TestFlight work: compare a failing real image/proxy response once the app surfaces the actual failure cause.
+- If the surfaced failure is subscription-related, verify the TestFlight user has started the sandbox trial/subscription and that `/api/subscription/sync` writes active entitlement state for that user.

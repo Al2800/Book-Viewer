@@ -53,6 +53,19 @@ ASC_CONFIG_PATH=/path/to/config.json node scripts/appstoreconnect_status.js
 
 ## Latest TestFlight Verification
 
+Build 24 was uploaded on 2026-06-06 and verified through the App Store Connect API:
+
+- App: `BookQuotes`
+- App ID: `6758091579`
+- Bundle ID: `com.acampbell.bookquotes`
+- Build ID: `c31545d4-d867-454c-b501-e6efa5ffc5bf`
+- Processing state: `VALID`
+- Encryption status: `usesNonExemptEncryption: false`
+
+Alastair Campbell is in the internal `Test v1` beta group. That group has `hasAccessToAllBuilds: true`, so App Store Connect does not allow assigning individual builds to it manually.
+
+## Build 23 Verification
+
 Build 23 was uploaded on 2026-06-06 and verified through the App Store Connect API:
 
 - App: `BookQuotes`
@@ -82,6 +95,7 @@ Alastair Campbell is in the internal `Test v1` beta group. That group has `hasAc
 Detailed build evidence is logged in:
 
 ```text
+docs/refactor-foundation/verification/2026-06-06-testflight-build-24.md
 docs/refactor-foundation/verification/2026-06-06-testflight-build-23.md
 docs/refactor-foundation/verification/2026-06-06-testflight-build-22.md
 ```

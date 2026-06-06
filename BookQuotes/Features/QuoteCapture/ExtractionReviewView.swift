@@ -38,8 +38,13 @@ struct ExtractionReviewView: View {
         return Double(completed) / Double(total)
     }
 
-    private var hasNoQuotes: Bool {
-        !quoteState.isLoading && !isProcessing && quoteState.editingQuotes.isEmpty
+    private var processingSummary: ExtractionReviewProcessingSummary {
+        ExtractionReviewProcessingSummary(
+            isQuoteStateLoading: quoteState.isLoading,
+            isProcessing: isProcessing,
+            totalQuoteCount: quoteState.totalQuoteCount,
+            captures: session.captures.map(ExtractionReviewCaptureStatusSnapshot.init)
+        )
     }
 
     // MARK: - Milestone State
@@ -76,7 +81,9 @@ struct ExtractionReviewView: View {
             Group {
                 if quoteState.isLoading || isProcessing {
                     processingView
-                } else if hasNoQuotes {
+                } else if processingSummary.hasExtractionFailures {
+                    extractionFailureView
+                } else if processingSummary.hasNoQuotes {
                     noQuotesView
                 } else {
                     mainContentView
@@ -249,6 +256,38 @@ struct ExtractionReviewView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    private var extractionFailureView: some View {
+        ContentUnavailableView {
+            Label("Extraction Failed", systemImage: "exclamationmark.triangle")
+        } description: {
+            VStack(spacing: Spacing.sm) {
+                Text(processingSummary.primaryFailureMessage ?? "The captured page could not be processed.")
+                Text("Try again with a clear photo, or add the quote manually if the marked text is readable.")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+            }
+        } actions: {
+            HStack(spacing: Spacing.md) {
+                Button {
+                    HapticManager.light()
+                    showingAddQuoteSheet = true
+                } label: {
+                    Label("Add Quote Manually", systemImage: "plus")
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button {
+                    onComplete?()
+                    dismiss()
+                } label: {
+                    Text("Close")
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
     private var noSelectionView: some View {
         ContentUnavailableView {
             Label("Select a Page", systemImage: "doc.text.viewfinder")
@@ -348,11 +387,12 @@ struct ExtractionReviewView: View {
         let isConnected = await MainActor.run { networkMonitor.isConnected }
         guard isConnected else {
             await MainActor.run {
-                saveError = ExtractionError.networkError(
+                let error = ExtractionError.networkError(
                     NSError(domain: "ExtractionReview", code: -1009, userInfo: [
                         NSLocalizedDescriptionKey: "No internet connection"
                     ])
                 )
+                failPendingCaptures(with: error)
             }
             return
         }
@@ -417,6 +457,23 @@ struct ExtractionReviewView: View {
                 }
             }
         }
+    }
+
+    private func failPendingCaptures(with error: Error) {
+        let pendingCaptures = session.captures.filter { $0.status == .pending || $0.status == .processing }
+        guard !pendingCaptures.isEmpty else { return }
+
+        if session.status == .readyToProcess {
+            session.beginProcessing()
+        }
+
+        for capture in pendingCaptures {
+            capture.failProcessing(error: error.localizedDescription)
+            session.recordFailure()
+        }
+
+        try? modelContext.save()
+        loadExtractedQuotes()
     }
 
     private func saveAllQuotes() {

@@ -70,4 +70,44 @@ final class ExtractionReviewQuoteStateTests: XCTestCase {
         XCTAssertEqual(state.quotes(for: firstPageId).map(\.text), ["Replacement"])
         XCTAssertEqual(state.editingQuotes.map(\.text), ["Second", "Replacement"])
     }
+
+    func testProcessingSummaryTreatsFailedPagesAsExtractionFailureNotNoQuotes() {
+        let failedPage = ExtractionReviewCaptureStatusSnapshot(
+            pageId: UUID(),
+            status: .failed,
+            errorMessage: "Please sign in to continue",
+            quoteCount: 0
+        )
+
+        let summary = ExtractionReviewProcessingSummary(
+            isQuoteStateLoading: false,
+            isProcessing: false,
+            totalQuoteCount: 0,
+            captures: [failedPage]
+        )
+
+        XCTAssertTrue(summary.hasExtractionFailures)
+        XCTAssertFalse(summary.hasNoQuotes)
+        XCTAssertEqual(summary.primaryFailureMessage, "Please sign in to continue")
+    }
+
+    func testProcessingSummaryTreatsCompletedEmptyPagesAsNoQuotes() {
+        let completedPage = ExtractionReviewCaptureStatusSnapshot(
+            pageId: UUID(),
+            status: .completed,
+            errorMessage: nil,
+            quoteCount: 0
+        )
+
+        let summary = ExtractionReviewProcessingSummary(
+            isQuoteStateLoading: false,
+            isProcessing: false,
+            totalQuoteCount: 0,
+            captures: [completedPage]
+        )
+
+        XCTAssertFalse(summary.hasExtractionFailures)
+        XCTAssertTrue(summary.hasNoQuotes)
+        XCTAssertNil(summary.primaryFailureMessage)
+    }
 }

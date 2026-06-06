@@ -16,6 +16,46 @@ extension ExtractionReviewPageQuoteSnapshot {
     }
 }
 
+struct ExtractionReviewCaptureStatusSnapshot {
+    let pageId: UUID
+    let status: PageCapture.CaptureStatus
+    let errorMessage: String?
+    let quoteCount: Int
+}
+
+extension ExtractionReviewCaptureStatusSnapshot {
+    init(capture: PageCapture) {
+        self.init(
+            pageId: capture.id,
+            status: capture.status,
+            errorMessage: capture.errorMessage,
+            quoteCount: capture.extractedQuoteCount
+        )
+    }
+}
+
+struct ExtractionReviewProcessingSummary {
+    let isQuoteStateLoading: Bool
+    let isProcessing: Bool
+    let totalQuoteCount: Int
+    let captures: [ExtractionReviewCaptureStatusSnapshot]
+
+    var hasExtractionFailures: Bool {
+        !isQuoteStateLoading && !isProcessing && totalQuoteCount == 0 && captures.contains { $0.status == .failed }
+    }
+
+    var hasNoQuotes: Bool {
+        !isQuoteStateLoading && !isProcessing && totalQuoteCount == 0 && !hasExtractionFailures
+    }
+
+    var primaryFailureMessage: String? {
+        captures
+            .filter { $0.status == .failed }
+            .compactMap(\.errorMessage)
+            .first
+    }
+}
+
 struct ExtractionReviewQuoteState {
     var editingQuotes: [EditableQuote]
     var isLoading: Bool

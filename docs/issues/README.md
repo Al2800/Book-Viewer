@@ -16,7 +16,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `004-design-system-modular-refactor.md` - closed
 - `005-settings-tab-modular-refactor.md` - closed
 - `006-extraction-review-simulator-route-repair.md` - closed
-- `007-testflight-build-22-quote-extraction-empty-results.md` - closed
+- `007-testflight-build-22-quote-extraction-empty-results.md` - in_progress
 - `008-cover-metadata-noisy-title-author-extraction.md` - closed
 - `009-cover-capture-white-screen-after-use-photo.md` - closed
 - `010-testing-note-intake-and-refactor-mapping.md` - open

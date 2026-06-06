@@ -160,21 +160,22 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         }
 
         logger.step(3, "Waiting for extraction results")
-        // Wait for extraction review view
+        // Wait for extraction review view with actual extracted quote controls.
         let reviewTitle = app.navigationBars["Review Extractions"]
-        let quoteEditor = app.textViews.firstMatch
-        let saveButton = app.buttons["Save Quotes"]
+        let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton]
+        let saveButton = app.buttons["Save All"]
+        let failureTitle = app.staticTexts["Extraction Failed"]
+        let noQuotesTitle = app.staticTexts["No Quotes Found"]
 
-        // Give time for AI processing
-        let hasReviewUI = reviewTitle.waitForExistence(timeout: 15) ||
-                         quoteEditor.waitForExistence(timeout: 15) ||
-                         saveButton.waitForExistence(timeout: 15)
+        XCTAssertTrue(reviewTitle.waitForExistence(timeout: 15), "Extraction review should appear")
+        XCTAssertFalse(failureTitle.exists, "Extraction should not fail in mock-camera UI smoke")
+        XCTAssertFalse(noQuotesTitle.exists, "Mock-camera extraction should return at least one quote")
 
-        if hasReviewUI {
-            logger.success("Extraction review displayed")
-        } else {
-            logger.info("Extraction may need more time or network")
-        }
+        let hasExtractedQuoteControls = editButton.waitForExistence(timeout: 10) || saveButton.waitForExistence(timeout: 2)
+        XCTAssertTrue(hasExtractedQuoteControls, "Extraction review should show editable extracted quote controls")
+        XCTAssertTrue(saveButton.exists && saveButton.isEnabled, "Save All should be enabled when mock extraction returns quotes")
+
+        logger.success("Extraction review displayed extracted quotes")
     }
 
     // MARK: - Quote Editing Tests
