@@ -69,3 +69,19 @@ Additional acceptance criteria:
 - The quote capture UI smoke must fail if extraction review opens without editable extracted quote controls.
 - Remaining TestFlight work: compare a failing real image/proxy response once the app surfaces the actual failure cause.
 - If the surfaced failure is subscription-related, verify the TestFlight user has started the sandbox trial/subscription and that `/api/subscription/sync` writes active entitlement state for that user.
+
+## Build 24 Follow-Up
+
+2026-06-06:
+
+- Build 24 surfaced the masked failure as expected: `Extraction Failed` with `A subscription is required to continue`.
+- This proves signed-in TestFlight extraction is blocked before the Gemini proxy path is reached.
+- The user cannot currently start a subscription/trial in TestFlight, so the subscription gate prevents validation of real quote extraction.
+
+Additional acceptance criteria:
+
+- The backend must support an explicit beta/testing policy that allows authenticated extraction without an active subscription.
+- The beta policy must remain opt-in through backend environment configuration.
+- When the beta policy is disabled, signed-in non-subscribers must still receive `SUBSCRIPTION_REQUIRED` and Gemini must not be called.
+- Existing rate limits must still apply when beta authenticated extraction is enabled.
+- Deploying the backend policy should unblock build 24 without requiring another iOS build, because the app already targets `api.bookquotes.uk`.

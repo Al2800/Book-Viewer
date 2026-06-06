@@ -84,6 +84,10 @@ function getClientKey(request: Request, userId: string): string {
   return `user:${userId}`;
 }
 
+function allowsAuthenticatedExtraction(env: Env): boolean {
+  return env.ALLOW_AUTHENTICATED_EXTRACTION === 'true';
+}
+
 function estimateBase64Bytes(base64: string): number {
   const normalized = base64.trim();
   const padding =
@@ -329,7 +333,7 @@ export default {
 
     // Check subscription status
     const hasSubscription = await hasActiveSubscription(userId, env);
-    if (!hasSubscription) {
+    if (!hasSubscription && !allowsAuthenticatedExtraction(env)) {
       return errorResponse(
         'Active subscription required',
         'SUBSCRIPTION_REQUIRED',

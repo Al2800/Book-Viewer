@@ -15,6 +15,7 @@ export interface Env {
 
   // Variables
   ENVIRONMENT: string;
+  ALLOW_AUTHENTICATED_EXTRACTION?: string;
 }
 
 export type SubscriptionStatus =
