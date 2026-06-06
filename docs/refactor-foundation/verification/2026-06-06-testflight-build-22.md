@@ -118,6 +118,21 @@ Result:
 
 No raw Gemini API key is shipped in the iOS app. The app uses `AuthService.proxyBaseURL` and `GeminiService` sends authorized requests to the BookQuotes proxy. The backend expects `GEMINI_API_KEY` as a Cloudflare Worker secret.
 
+## TestFlight Group Assignment
+
+Status: verified through the App Store Connect API.
+
+Observed:
+
+- The provided team key ID `6JS7J77LTP` does not have a matching local private key file. The only local `.p8` file found is `~/.appstoreconnect/private_keys/AuthKey_2DTSJAJ0SZB9.p8`.
+- The local key `2DTSJAJ0SZB9` authenticates as an individual App Store Connect key when the JWT includes `sub: "user"`.
+- BookQuotes app ID: `6758091579`.
+- Today's uploaded build 22 ID: `5748fdc4-4c6e-4c68-bc7b-44d4ec082a6f`.
+- Build 22 processing state: `VALID`.
+- Build 22 encryption status was set and verified as `usesNonExemptEncryption: false`.
+- Alastair Campbell (`acampbell193@googlemail.com`) is in the internal `Test v1` beta group.
+- The internal `Test v1` beta group has `hasAccessToAllBuilds: true`, so App Store Connect does not allow explicitly assigning individual builds to it.
+
 ## Remaining Work
 
 After TestFlight processing, manually confirm build 22 appears in App Store Connect/TestFlight and run device-level smoke checks. The next planned engineering slice remains `book-quote-capture-tab-root-modular-followup`.

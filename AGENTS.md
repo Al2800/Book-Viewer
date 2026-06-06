@@ -84,6 +84,7 @@ BookQuotes/
 - `IMPLEMENTATION_PLAN.md` - Full project plan, phases, architecture
 - `docs/DATA_MODELS.md` - SwiftData models, relationships, queries
 - `docs/API_INTEGRATION.md` - Gemini API service, prompts, error handling
+- `docs/APP_STORE_CONNECT.md` - TestFlight/App Store Connect API process and local key config shape
 - `docs/UI_COMPONENTS.md` - Design system, components, screens
 - `docs/CUSTOM_MARKINGS.md` - User-defined annotation vocabulary system
 - `docs/OFFLINE_AND_EXPORTS.md` - Offline queue, Notion/Obsidian export
