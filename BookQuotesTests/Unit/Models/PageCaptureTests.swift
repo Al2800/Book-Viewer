@@ -52,4 +52,48 @@ final class PageCaptureTests: SwiftDataTestCase {
         XCTAssertEqual(capture.extractedQuoteCount, 2)
         XCTAssertNotNil(capture.averageConfidence)
     }
+
+    func testCompleteExtractionStoresNonEmptyResult() throws {
+        let capture = PageCapture(imagePath: "captures/test.jpg")
+        capture.beginProcessing()
+        let result = QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "A marked passage",
+                    pageNumber: 42,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.91
+                )
+            ],
+            pageNumber: 42,
+            processingNotes: "clear marking"
+        )
+
+        try capture.completeExtraction(with: result)
+
+        XCTAssertEqual(capture.status, .completed)
+        XCTAssertEqual(capture.extractedQuoteCount, 1)
+        XCTAssertEqual(capture.detectedPageNumber, 42)
+        XCTAssertEqual(capture.loadExtractedQuotes().first?.text, "A marked passage")
+    }
+
+    func testCompleteExtractionFailsForEmptyResult() {
+        let capture = PageCapture(imagePath: "captures/test.jpg")
+        capture.beginProcessing()
+        let result = QuoteExtractionResult(
+            quotes: [],
+            pageNumber: nil,
+            processingNotes: "No marked passages found"
+        )
+
+        XCTAssertThrowsError(try capture.completeExtraction(with: result)) { error in
+            guard case ExtractionError.noQuotesFound = error else {
+                return XCTFail("Expected noQuotesFound, got \(error)")
+            }
+        }
+        XCTAssertEqual(capture.status, .processing)
+        XCTAssertEqual(capture.extractedQuoteCount, 0)
+        XCTAssertTrue(capture.loadExtractedQuotes().isEmpty)
+    }
 }

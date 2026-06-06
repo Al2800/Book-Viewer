@@ -14,13 +14,12 @@ struct ExtractionReviewView: View {
     let session: CaptureSession
     let book: Book
 
-    @State private var editingQuotes: [EditableQuote] = []
+    @State private var quoteState = ExtractionReviewQuoteState()
     @State private var selectedPage: PageCapture?
     @State private var showingSaveConfirmation = false
     @State private var showingAddQuoteSheet = false
     @State private var showingDiscardAlert = false
     @State private var isSaving = false
-    @State private var isLoading = true
     @State private var saveError: Error?
     @State private var hasAppeared = false
     @State private var hasStartedProcessing = false
@@ -40,7 +39,7 @@ struct ExtractionReviewView: View {
     }
 
     private var hasNoQuotes: Bool {
-        !isLoading && !isProcessing && editingQuotes.isEmpty
+        !quoteState.isLoading && !isProcessing && quoteState.editingQuotes.isEmpty
     }
 
     // MARK: - Milestone State
@@ -54,21 +53,20 @@ struct ExtractionReviewView: View {
     // MARK: - Computed Properties
 
     private var quoteCounts: [UUID: Int] {
-        Dictionary(grouping: editingQuotes, by: \.pageId)
-            .mapValues { $0.count }
+        quoteState.quoteCounts
     }
 
     private var totalQuoteCount: Int {
-        editingQuotes.count
+        quoteState.totalQuoteCount
     }
 
     private var hasChanges: Bool {
-        !editingQuotes.isEmpty
+        quoteState.hasChanges
     }
 
     private var quotesForSelectedPage: [EditableQuote] {
         guard let page = selectedPage else { return [] }
-        return editingQuotes.filter { $0.pageId == page.id }
+        return quoteState.quotes(for: page.id)
     }
 
     // MARK: - Body
@@ -76,7 +74,7 @@ struct ExtractionReviewView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if isLoading || isProcessing {
+                if quoteState.isLoading || isProcessing {
                     processingView
                 } else if hasNoQuotes {
                     noQuotesView
@@ -113,7 +111,7 @@ struct ExtractionReviewView: View {
                         pageId: page.id,
                         pageNumber: page.detectedPageNumber,
                         onAdd: { quote in
-                            editingQuotes.append(quote)
+                            quoteState.append(quote)
                         }
                     )
                 }
@@ -286,7 +284,7 @@ struct ExtractionReviewView: View {
         }
 
         ToolbarItem(placement: .confirmationAction) {
-            let canSave = !editingQuotes.isEmpty && !isSaving
+            let canSave = !quoteState.editingQuotes.isEmpty && !isSaving
             Button {
                 HapticManager.medium()
                 showingSaveConfirmation = true
@@ -300,7 +298,7 @@ struct ExtractionReviewView: View {
                         .foregroundStyle(canSave ? Color.brand : Color.textSecondary)
                 }
             }
-            .disabled(editingQuotes.isEmpty || isSaving)
+            .disabled(quoteState.editingQuotes.isEmpty || isSaving)
         }
     }
 
@@ -309,13 +307,10 @@ struct ExtractionReviewView: View {
     private func bindingForPage(_ page: PageCapture) -> Binding<[EditableQuote]> {
         Binding(
             get: {
-                editingQuotes.filter { $0.pageId == page.id }
+                quoteState.quotes(for: page.id)
             },
             set: { newQuotes in
-                // Remove old quotes for this page
-                editingQuotes.removeAll { $0.pageId == page.id }
-                // Add new quotes
-                editingQuotes.append(contentsOf: newQuotes)
+                quoteState.replaceQuotes(for: page.id, with: newQuotes)
             }
         )
     }
@@ -323,35 +318,10 @@ struct ExtractionReviewView: View {
     // MARK: - Actions
 
     private func loadExtractedQuotes() {
-        // Load extracted quotes from each completed page capture
-        var loadedQuotes: [EditableQuote] = []
-
-        for capture in session.captures where capture.status == .completed {
-            let extractedData = capture.loadExtractedQuotes()
-
-            for data in extractedData {
-                let editableQuote = EditableQuote(
-                    pageId: capture.id,
-                    text: data.text,
-                    markingType: data.markingType,
-                    confidence: data.confidence,
-                    pageNumber: data.pageNumber ?? capture.detectedPageNumber,
-                    marginNote: data.marginNote,
-                    isManual: false
-                )
-                loadedQuotes.append(editableQuote)
-            }
-        }
-
-        // Only update if quotes have changed to avoid unnecessary redraws
-        // Compare by IDs since EditableQuote generates new UUIDs on each load
-        let loadedIds = Set(loadedQuotes.map { "\($0.pageId)-\($0.text.prefix(50))" })
-        let existingIds = Set(editingQuotes.map { "\($0.pageId)-\($0.text.prefix(50))" })
-        if loadedIds != existingIds {
-            editingQuotes = loadedQuotes
-        }
-
-        isLoading = false
+        let snapshots = session.captures
+            .filter { $0.status == .completed }
+            .map(ExtractionReviewPageQuoteSnapshot.init)
+        quoteState.loadCompletedQuotes(from: snapshots)
     }
 
     private func selectFirstPage() {
@@ -428,14 +398,9 @@ struct ExtractionReviewView: View {
                 // Network + image encoding runs off main now that GeminiService is not @MainActor.
                 let result = try await geminiService.extractQuotes(from: image, markings: markingPrompts)
 
-                await MainActor.run {
+                try await MainActor.run {
                     if let capture = session.captures.first(where: { $0.id == item.id }) {
-                        capture.storeExtractedQuotes(result.quotes)
-                        capture.completeProcessing(
-                            quoteCount: result.quoteCount,
-                            avgConfidence: result.averageConfidence,
-                            pageNumber: result.pageNumber
-                        )
+                        try capture.completeExtraction(with: result)
                         session.recordSuccess()
                         try? modelContext.save()
                         loadExtractedQuotes()
@@ -455,11 +420,11 @@ struct ExtractionReviewView: View {
     }
 
     private func saveAllQuotes() {
-        guard !editingQuotes.isEmpty else { return }
+        guard !quoteState.editingQuotes.isEmpty else { return }
 
         // Capture quote count before saving for milestone check
         let previousCount = existingQuotes.count
-        let savedCount = editingQuotes.count
+        let savedCount = quoteState.editingQuotes.count
 
         isSaving = true
 
@@ -467,7 +432,7 @@ struct ExtractionReviewView: View {
             do {
                 let saveService = QuoteSaveService(modelContext: modelContext)
 
-                let extractedQuotes = editingQuotes.map { $0.toExtractedQuote() }
+                let extractedQuotes = quoteState.editingQuotes.map { $0.toExtractedQuote() }
                 let result = saveService.saveMultiple(extractedQuotes, to: book)
 
                 await MainActor.run {
@@ -497,9 +462,7 @@ struct ExtractionReviewView: View {
                         }
                     } else if result.isPartialSuccess {
                         // Show partial success - some quotes saved
-                        editingQuotes = editingQuotes.filter { quote in
-                            result.failures.contains { $0.index == editingQuotes.firstIndex(of: quote) }
-                        }
+                        quoteState.replaceAfterPartialSave(with: result.failures)
                         HapticManager.warning()
                     } else {
                         saveError = QuoteSaveError.persistenceFailed(
@@ -521,264 +484,4 @@ struct ExtractionReviewView: View {
             }
         }
     }
-}
-
-// MARK: - Add Manual Quote Sheet
-
-/// Sheet for manually adding a quote that the AI missed.
-struct AddManualQuoteSheet: View {
-    @Environment(\.dismiss) private var dismiss
-
-    let pageId: UUID
-    let pageNumber: Int?
-    let onAdd: (EditableQuote) -> Void
-
-    @State private var quoteText = ""
-    @State private var selectedMarkingType = "underline"
-    @State private var marginNote = ""
-    @State private var hasAppeared = false
-    @State private var quoteTextShakeTrigger = 0
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    private let markingTypes = [
-        "underline",
-        "highlight",
-        "margin_line",
-        "bracket",
-        "circle",
-        "margin_note",
-        "asterisk",
-        "question_mark",
-        "box"
-    ]
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Quote Text") {
-                    TextEditor(text: $quoteText)
-                        .frame(minHeight: 100)
-                        .shake(trigger: quoteTextShakeTrigger)
-                }
-
-                Section("Marking Type") {
-                    Picker("Type", selection: $selectedMarkingType) {
-                        ForEach(markingTypes, id: \.self) { type in
-                            Text(type.replacingOccurrences(of: "_", with: " ").capitalized)
-                                .tag(type)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                }
-
-                Section("Margin Note (Optional)") {
-                    TextField("Any note in the margin...", text: $marginNote)
-                }
-
-                if let pageNum = pageNumber {
-                    Section {
-                        HStack {
-                            Text("Page Number")
-                            Spacer()
-                            Text("\(pageNum)")
-                                .foregroundStyle(Color.textSecondary)
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Add Quote")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        HapticManager.light()
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        validateAndAddQuote()
-                    }
-                    .fontWeight(.semibold)
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-        // Entrance animation
-        .opacity(hasAppeared ? 1 : 0)
-        .offset(y: hasAppeared ? 0 : 10)
-        .onAppear {
-            guard !reduceMotion else {
-                hasAppeared = true
-                return
-            }
-            withAnimation(.smoothSpring) {
-                hasAppeared = true
-            }
-        }
-    }
-
-    private var isQuoteTextValid: Bool {
-        !quoteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
-
-    private func validateAndAddQuote() {
-        guard isQuoteTextValid else {
-            quoteTextShakeTrigger += 1
-            HapticManager.error()
-            return
-        }
-        addQuote()
-    }
-
-    private func addQuote() {
-        let trimmedText = quoteText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedText.isEmpty else { return }
-
-        let quote = EditableQuote(
-            pageId: pageId,
-            text: trimmedText,
-            markingType: selectedMarkingType,
-            confidence: nil,
-            pageNumber: pageNumber,
-            marginNote: marginNote.isEmpty ? nil : marginNote,
-            isManual: true
-        )
-
-        onAdd(quote)
-        HapticManager.light()
-        dismiss()
-    }
-}
-
-// MARK: - Review Summary View
-
-/// Summary view shown before final save.
-struct ReviewSummaryView: View {
-    let quotes: [EditableQuote]
-    let book: Book
-
-    private var quotesByPage: [(pageNumber: Int?, count: Int)] {
-        Dictionary(grouping: quotes, by: \.pageNumber)
-            .map { (pageNumber: $0.key, count: $0.value.count) }
-            .sorted { ($0.pageNumber ?? Int.max) < ($1.pageNumber ?? Int.max) }
-    }
-
-    private var markingTypeCounts: [(type: String, count: Int)] {
-        Dictionary(grouping: quotes, by: \.markingType)
-            .map { (type: $0.key, count: $0.value.count) }
-            .sorted { $0.count > $1.count }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.lg) {
-            // Book info
-            HStack {
-                Image(systemName: "book.closed.fill")
-                    .foregroundStyle(Color.brand)
-                VStack(alignment: .leading) {
-                    Text(book.title)
-                        .font(.headline)
-                    Text(book.author)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.textSecondary)
-                }
-            }
-
-            Divider()
-
-            // Quote count
-            HStack {
-                Image(systemName: "text.quote")
-                Text("\(quotes.count) quotes to save")
-                    .font(.subheadline)
-            }
-
-            // By page
-            if !quotesByPage.isEmpty {
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text("By Page")
-                        .font(.caption)
-                        .foregroundStyle(Color.textTertiary)
-
-                    ForEach(quotesByPage, id: \.pageNumber) { item in
-                        HStack {
-                            if let page = item.pageNumber {
-                                Text("Page \(page)")
-                            } else {
-                                Text("Unknown page")
-                            }
-                            Spacer()
-                            Text("\(item.count)")
-                                .foregroundStyle(Color.textSecondary)
-                        }
-                        .font(.caption)
-                    }
-                }
-            }
-
-            // By marking type
-            if !markingTypeCounts.isEmpty {
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text("By Marking Type")
-                        .font(.caption)
-                        .foregroundStyle(Color.textTertiary)
-
-                    ForEach(markingTypeCounts, id: \.type) { item in
-                        HStack {
-                            Text(item.type.replacingOccurrences(of: "_", with: " ").capitalized)
-                            Spacer()
-                            Text("\(item.count)")
-                                .foregroundStyle(Color.textSecondary)
-                        }
-                        .font(.caption)
-                    }
-                }
-            }
-        }
-        .padding()
-        .background(Color.backgroundSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-    }
-}
-
-// MARK: - Preview
-
-#Preview("Extraction Review") {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try? ModelContainer(
-        for: Book.self,
-        Quote.self,
-        CaptureSession.self,
-        PageCapture.self,
-        configurations: config
-    )
-
-    Group {
-        if let container {
-            let (book, session): (Book, CaptureSession) = {
-                let book = Book(title: "Atomic Habits", author: "James Clear")
-                container.mainContext.insert(book)
-
-                let session = CaptureSession(book: book)
-                container.mainContext.insert(session)
-                return (book, session)
-            }()
-
-            ExtractionReviewView(session: session, book: book)
-                .modelContainer(container)
-        } else {
-            Text("Preview unavailable")
-                .foregroundStyle(.secondary)
-        }
-    }
-}
-
-#Preview("Add Manual Quote") {
-    AddManualQuoteSheet(
-        pageId: UUID(),
-        pageNumber: 42,
-        onAdd: { _ in }
-    )
 }

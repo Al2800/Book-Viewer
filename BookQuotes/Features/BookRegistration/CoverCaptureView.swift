@@ -26,8 +26,7 @@ struct CoverCaptureView: View {
     @State private var isbnScanner = ISBNScanner()
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureMode: CaptureMode = .photo
-    @State private var capturedImage: UIImage?
-    @State private var showCropReview = false
+    @State private var cropLifecycle = CoverCaptureCropLifecycleState()
     @State private var extractedMetadata: BookMetadata?
     @State private var showError = false
     @State private var errorMessage = ""
@@ -57,22 +56,21 @@ struct CoverCaptureView: View {
         // Prevent the system tab bar from overlapping camera capture UI.
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
-        .fullScreenCover(isPresented: $showCropReview, onDismiss: {
-            if !isProcessing {
-                capturedImage = nil
+        .fullScreenCover(isPresented: $cropLifecycle.isReviewPresented, onDismiss: {
+            if let image = cropLifecycle.consumePendingCroppedCoverAfterReviewDismiss(isProcessing: isProcessing) {
+                Task {
+                    await processCapturedCover(image)
+                }
             }
         }) {
-            if let capturedImage {
+            if let capturedImage = cropLifecycle.capturedImage {
                 CoverCropReviewView(
                     image: capturedImage,
                     onRetake: {
                         resetCapturedPhoto()
                     },
                     onUse: { croppedImage in
-                        resetCapturedPhoto()
-                        Task {
-                            await processCapturedCover(croppedImage)
-                        }
+                        cropLifecycle.acceptCrop(croppedImage)
                     }
                 )
             }
@@ -196,8 +194,7 @@ struct CoverCaptureView: View {
                 let image = try await cameraService.capturePhoto()
                 let previewCropped = cameraService.cropToPreviewVisibleArea(image)
                 await MainActor.run {
-                    capturedImage = normalizeOrientation(previewCropped)
-                    showCropReview = true
+                    cropLifecycle.presentCapturedImage(normalizeOrientation(previewCropped))
                 }
 
             } catch {
@@ -330,8 +327,7 @@ struct CoverCaptureView: View {
     }
 
     private func resetCapturedPhoto() {
-        capturedImage = nil
-        showCropReview = false
+        cropLifecycle.reset()
     }
 
     // MARK: - Extraction (Placeholders)
@@ -423,6 +419,46 @@ struct CoverCaptureView: View {
     private func lookupISBN(_ isbn: String) async throws -> BookMetadata {
         let service = ISBNLookupService()
         return try await service.lookup(isbn: isbn)
+    }
+}
+
+// MARK: - Cover Crop Lifecycle State
+
+struct CoverCaptureCropLifecycleState {
+    var capturedImage: UIImage?
+    var pendingCroppedCover: UIImage?
+    var isReviewPresented = false
+
+    mutating func presentCapturedImage(_ image: UIImage) {
+        capturedImage = image
+        pendingCroppedCover = nil
+        isReviewPresented = true
+    }
+
+    mutating func acceptCrop(_ image: UIImage) {
+        pendingCroppedCover = image
+        isReviewPresented = false
+    }
+
+    mutating func reset() {
+        capturedImage = nil
+        pendingCroppedCover = nil
+        isReviewPresented = false
+    }
+
+    mutating func consumePendingCroppedCoverAfterReviewDismiss(isProcessing: Bool) -> UIImage? {
+        isReviewPresented = false
+
+        guard let image = pendingCroppedCover else {
+            if !isProcessing {
+                capturedImage = nil
+            }
+            return nil
+        }
+
+        pendingCroppedCover = nil
+        capturedImage = nil
+        return image
     }
 }
 

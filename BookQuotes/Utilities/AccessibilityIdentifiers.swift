@@ -279,6 +279,16 @@ enum AccessibilityIdentifiers {
         static let cancelButton = "image_review_cancel_button"
     }
 
+    // MARK: - Cover Crop Review
+
+    enum CoverCrop {
+        /// Retake cover crop button
+        static let retakeButton = "cover_crop_retake_button"
+
+        /// Accept cropped cover button
+        static let useCropButton = "cover_crop_use_button"
+    }
+
     // MARK: - Export
 
     enum Export {
@@ -371,6 +381,15 @@ enum AccessibilityIdentifiers {
 
         /// Marking definitions navigation row
         static let markingDefinitionsRow = "settings_marking_definitions_row"
+
+        /// Export quotes row button
+        static let exportQuotesButton = "settings_export_quotes_button"
+
+        /// Privacy policy row button
+        static let privacyPolicyButton = "settings_privacy_policy_button"
+
+        /// Terms of service row button
+        static let termsOfServiceButton = "settings_terms_of_service_button"
     }
 
     // MARK: - Marking Definitions

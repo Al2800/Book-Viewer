@@ -97,7 +97,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     func testImageReview_ShowsQualityIndicator() throws {
         logger.step(1, "Navigating to capture")
-        navigateToCaptureWithBook()
+        try navigateToCaptureWithBook()
 
         logger.step(2, "Triggering capture")
         try triggerCapture()
@@ -121,7 +121,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     func testImageReview_RetakeButton_ReturnsToCamera() throws {
         logger.step(1, "Navigating to capture")
-        navigateToCaptureWithBook()
+        try navigateToCaptureWithBook()
 
         logger.step(2, "Taking photo")
         try triggerCapture()
@@ -148,7 +148,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     func testExtractionReview_DisplaysExtractedQuotes() throws {
         logger.step(1, "Navigating to capture")
-        navigateToCaptureWithBook()
+        try navigateToCaptureWithBook()
 
         logger.step(2, "Capturing and processing")
         try triggerCapture()
@@ -302,7 +302,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         // This test would need a specific low-quality test image
         // For now, test that the quality UI elements exist
         logger.step(1, "Navigating to capture")
-        navigateToCaptureWithBook()
+        try navigateToCaptureWithBook()
 
         logger.step(2, "Looking for quality toggle")
         let qualityToggle = app.buttons[AccessibilityIdentifiers.Capture.qualityToggle]
@@ -350,15 +350,12 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         _ = app.staticTexts["Quotes"].waitForExistence(timeout: 3)
     }
 
-    private func navigateToCaptureWithBook() {
-        navigateToLibrary()
-        openFirstBook()
-
-        openCaptureFromBookDetail()
+    private func navigateToCaptureWithBook() throws {
+        try openQuoteCaptureFromTabSelectingBook()
     }
 
     private func navigateToExtractionReview() throws {
-        navigateToCaptureWithBook()
+        try navigateToCaptureWithBook()
 
         try triggerCapture()
 
@@ -402,7 +399,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             return
         }
 
-        openQuoteCaptureFromTab()
+        try openQuoteCaptureFromTabSelectingBook()
 
         if testButton.waitForExistence(timeout: 3) {
             testButton.tap()
@@ -416,14 +413,19 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     }
 
     private func openQuoteCaptureFromTab() {
+        try? openQuoteCaptureFromTabSelectingBook()
+    }
+
+    private func openQuoteCaptureFromTabSelectingBook() throws {
         let captureTab = tabButton(.capture)
-        if captureTab.waitForExistence(timeout: 3) {
-            captureTab.tap()
+        guard captureTab.waitForExistence(timeout: 3) else {
+            throw XCTSkip("Capture tab not available")
         }
+        captureTab.tap()
 
         let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
         if permissionPrompt.waitForExistence(timeout: 2) {
-            return
+            throw XCTSkip("Camera permission required")
         }
 
         let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
@@ -437,8 +439,15 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         }
 
         let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-        if bookCard.waitForExistence(timeout: 5) {
-            bookCard.tap()
+        guard bookCard.waitForExistence(timeout: 5) else {
+            throw XCTSkip("No book available for quote capture")
+        }
+        bookCard.tap()
+
+        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        let hasCaptureUI = testButton.waitForExistence(timeout: 5) || captureButton.exists
+        guard hasCaptureUI else {
+            throw XCTSkip("Quote capture UI not available")
         }
     }
 

@@ -757,6 +757,11 @@ enum AccessibilityIdentifiers {
         static let cancelButton = "image_review_cancel_button"
     }
 
+    enum CoverCrop {
+        static let retakeButton = "cover_crop_retake_button"
+        static let useCropButton = "cover_crop_use_button"
+    }
+
     enum Export {
         static let exportButton = "export_button"
         static let formatPicker = "export_format_picker"
@@ -793,6 +798,9 @@ enum AccessibilityIdentifiers {
         static let restorePurchasesButton = "settings_restore_purchases"
         static let manageSubscriptionButton = "settings_manage_subscription"
         static let markingDefinitionsRow = "settings_marking_definitions_row"
+        static let exportQuotesButton = "settings_export_quotes_button"
+        static let privacyPolicyButton = "settings_privacy_policy_button"
+        static let termsOfServiceButton = "settings_terms_of_service_button"
     }
 
     enum MarkingDefinitions {

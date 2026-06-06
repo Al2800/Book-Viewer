@@ -42,4 +42,23 @@ final class QuoteExtractionPromptBuilderTests: XCTestCase {
         let prompt = QuoteExtractionPromptBuilder.buildQuickPrompt(markings: [marking])
         XCTAssertTrue(prompt.contains("Margin Note"))
     }
+
+    func testBuildPromptRequestsBestEffortMarkedTextWhenBoundariesAreUncertain() {
+        let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: [])
+            .lowercased()
+
+        XCTAssertTrue(prompt.contains("best-effort"))
+        XCTAssertTrue(prompt.contains("lower confidence"))
+        XCTAssertTrue(prompt.contains("do not return an empty quotes array"))
+    }
+
+    func testBuildCoverExtractionPromptRejectsPraiseAndMarketingCopyAsMetadata() {
+        let prompt = QuoteExtractionPromptBuilder.buildCoverExtractionPrompt()
+            .lowercased()
+
+        XCTAssertTrue(prompt.contains("praise quotes"))
+        XCTAssertTrue(prompt.contains("bestseller"))
+        XCTAssertTrue(prompt.contains("marketing blurbs"))
+        XCTAssertTrue(prompt.contains("do not include"))
+    }
 }

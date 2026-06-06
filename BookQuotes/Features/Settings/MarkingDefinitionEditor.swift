@@ -29,6 +29,13 @@ struct MarkingDefinitionEditor: View {
 
     @State private var showIconPicker = false
     @State private var showValidationError = false
+    @FocusState private var focusedField: EditorField?
+
+    private enum EditorField {
+        case name
+        case visualDescription
+        case meaning
+    }
 
     // MARK: - Icon and Color Options
 
@@ -137,6 +144,11 @@ struct MarkingDefinitionEditor: View {
             TextField("e.g., Wavy Underline", text: $name)
                 .textContentType(.name)
                 .textFieldStyle(.plain)
+                .submitLabel(.next)
+                .focused($focusedField, equals: .name)
+                .onSubmit {
+                    focusedField = .visualDescription
+                }
                 .fieldChrome()
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.nameField)
         }
@@ -148,6 +160,11 @@ struct MarkingDefinitionEditor: View {
             TextField("e.g., Wavy or squiggly line under text", text: $visualDescription, axis: .vertical)
                 .lineLimit(2...4)
                 .textFieldStyle(.plain)
+                .submitLabel(.next)
+                .focused($focusedField, equals: .visualDescription)
+                .onSubmit {
+                    focusedField = .meaning
+                }
                 .fieldChrome(minHeight: 72)
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.visualDescriptionField)
 
@@ -163,6 +180,11 @@ struct MarkingDefinitionEditor: View {
             TextField("e.g., I disagree with this statement", text: $meaning, axis: .vertical)
                 .lineLimit(2...4)
                 .textFieldStyle(.plain)
+                .submitLabel(.done)
+                .focused($focusedField, equals: .meaning)
+                .onSubmit {
+                    focusedField = nil
+                }
                 .fieldChrome(minHeight: 72)
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.meaningField)
 

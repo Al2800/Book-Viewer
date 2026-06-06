@@ -4,6 +4,21 @@ import XCTest
 
 final class CaptureFlowStateTests: XCTestCase {
 
+    func testCaptureModeOptionsPreserveOrderAndAccessibilityContracts() {
+        let options = CaptureModeOption.all
+
+        XCTAssertEqual(options.map(\.kind), [.cover, .quote, .batch])
+        XCTAssertEqual(options.map(\.title), ["Add New Book", "Capture Quotes", "Batch Mode"])
+        XCTAssertEqual(
+            options.map(\.accessibilityId),
+            [
+                AccessibilityIdentifiers.Capture.modeSelectCover,
+                AccessibilityIdentifiers.Capture.modeSelectQuote,
+                AccessibilityIdentifiers.Capture.modeSelectBatch
+            ]
+        )
+    }
+
     func testSelectionEventsMoveToExpectedModes() {
         var state = CaptureFlowState()
 

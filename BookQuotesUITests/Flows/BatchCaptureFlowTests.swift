@@ -127,6 +127,44 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         }
     }
 
+    func testBatchCapture_ThumbnailDetail_CanRemoveCapture() throws {
+        logger.step(1, "Opening batch capture and capturing")
+        try openBatchCapture()
+
+        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        guard testImageButton.waitForExistence(timeout: 5) else {
+            throw XCTSkip("Test image button not available")
+        }
+
+        testImageButton.tap()
+        _ = waitUntil("thumbnail appears", timeout: 6) { [weak self] in
+            guard let self else { return false }
+            return self.app.scrollViews.images.count > 0 || self.app.images.count > 0
+        }
+
+        logger.step(2, "Opening thumbnail detail")
+        let thumbnail = app.scrollViews.images.firstMatch.exists
+            ? app.scrollViews.images.firstMatch
+            : app.images.firstMatch
+        guard thumbnail.waitForExistence(timeout: 3) else {
+            throw XCTSkip("Thumbnail not available")
+        }
+        thumbnail.tap()
+
+        logger.step(3, "Removing captured page")
+        let removeButton = app.buttons["Remove Page"]
+        XCTAssertTrue(removeButton.waitForExistence(timeout: 3), "Capture detail should show remove action")
+        removeButton.tap()
+
+        logger.step(4, "Verifying page count returns to zero")
+        let zeroPages = app.staticTexts.matching(
+            NSPredicate(format: "label CONTAINS '0' AND label CONTAINS 'page'")
+        ).firstMatch
+        XCTAssertTrue(zeroPages.waitForExistence(timeout: 5), "Removing the only capture should return page count to zero")
+
+        logger.success("Thumbnail detail can remove capture")
+    }
+
     func testBatchCapture_MultipleCaptures_ShowsMultipleThumbnails() throws {
         logger.step(1, "Opening batch capture")
         try openBatchCapture()

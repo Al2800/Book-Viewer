@@ -44,6 +44,7 @@ struct CoverCropReviewView: View {
                     }
                     .buttonStyle(.bordered)
                     .tint(Color.textSecondary)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.CoverCrop.retakeButton)
 
                     Button {
                         onUse(croppedImage())
@@ -54,6 +55,7 @@ struct CoverCropReviewView: View {
                             .frame(maxWidth: .infinity)
                     }
                     .glassButton()
+                    .accessibilityIdentifier(AccessibilityIdentifiers.CoverCrop.useCropButton)
                 }
                 .padding(.horizontal, Spacing.lg)
                 .padding(.bottom, Spacing.lg)

@@ -51,6 +51,19 @@ The helper reads `~/.appstoreconnect/config.json` by default. Override with:
 ASC_CONFIG_PATH=/path/to/config.json node scripts/appstoreconnect_status.js
 ```
 
+## Latest TestFlight Verification
+
+Build 23 was uploaded on 2026-06-06 and verified through the App Store Connect API:
+
+- App: `BookQuotes`
+- App ID: `6758091579`
+- Bundle ID: `com.acampbell.bookquotes`
+- Build ID: `3bad4149-6941-4626-89a5-4f6562f407b6`
+- Processing state: `VALID`
+- Encryption status: `usesNonExemptEncryption: false`
+
+Alastair Campbell is in the internal `Test v1` beta group. That group has `hasAccessToAllBuilds: true`, so App Store Connect does not allow assigning individual builds to it manually.
+
 ## Build 22 Verification
 
 Build 22 was uploaded on 2026-06-06 and verified through the App Store Connect API:
@@ -66,9 +79,10 @@ Alastair Campbell is in the internal `Test v1` beta group. That group has `hasAc
 
 ## Release Notes
 
-Detailed build 22 evidence is logged in:
+Detailed build evidence is logged in:
 
 ```text
+docs/refactor-foundation/verification/2026-06-06-testflight-build-23.md
 docs/refactor-foundation/verification/2026-06-06-testflight-build-22.md
 ```
 

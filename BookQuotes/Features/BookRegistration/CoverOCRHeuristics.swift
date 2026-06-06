@@ -19,6 +19,10 @@ struct CoverOCRHeuristics {
             return ""
         }
 
+        if isMarketingLine(s) {
+            return ""
+        }
+
         // Drop barcode/ISBN-heavy lines.
         let digitCount = s.filter { $0.isNumber }.count
         if digitCount >= max(5, s.count / 3) {
@@ -53,6 +57,7 @@ struct CoverOCRHeuristics {
             let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
             guard t.count >= 3 else { continue }
             if t.lowercased().contains("isbn") { continue }
+            if isMarketingLine(t) { continue }
             parts.append(t)
             total += t.count
             if parts.count >= 3 || total >= 40 {
@@ -88,5 +93,35 @@ struct CoverOCRHeuristics {
             }
         }
         return bottomCandidates.first
+    }
+
+    static func isMarketingLine(_ line: String) -> Bool {
+        let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lowered = trimmed.lowercased()
+
+        if trimmed.count > 8,
+           let first = trimmed.first,
+           "\"'\u{201c}\u{2018}".contains(first) {
+            return true
+        }
+
+        let marketingPhrases = [
+            "bestseller",
+            "best seller",
+            "winner of",
+            "shortlisted",
+            "longlisted",
+            "award-winning",
+            "award winning",
+            "prize-winning",
+            "prize winning",
+            "praise for",
+            "now a major",
+            "soon to be",
+            "as seen on",
+            "review quote"
+        ]
+
+        return marketingPhrases.contains { lowered.contains($0) }
     }
 }

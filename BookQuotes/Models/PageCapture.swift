@@ -171,6 +171,20 @@ final class PageCapture {
             confidenceValues.reduce(0, +) / Double(confidenceValues.count)
     }
 
+    /// Complete processing only when extraction found quote content.
+    func completeExtraction(with result: QuoteExtractionResult) throws {
+        guard result.isSuccessful else {
+            throw ExtractionError.noQuotesFound
+        }
+
+        storeExtractedQuotes(result.quotes)
+        completeProcessing(
+            quoteCount: result.quoteCount,
+            avgConfidence: result.averageConfidence,
+            pageNumber: result.pageNumber
+        )
+    }
+
     /// Retrieve stored extracted quotes
     func loadExtractedQuotes() -> [ExtractedQuoteData] {
         guard let data = extractedQuotesData else { return [] }

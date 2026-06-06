@@ -1,4 +1,6 @@
 import XCTest
+import UIKit
+
 @testable import BookQuotes
 
 final class CoverCropGeometryTests: XCTestCase {
@@ -48,5 +50,38 @@ final class CoverCropGeometryTests: XCTestCase {
         XCTAssertEqual(cropRect?.origin.y ?? -1, 150, accuracy: 0.001)
         XCTAssertEqual(cropRect?.width ?? -1, 150, accuracy: 0.001)
         XCTAssertEqual(cropRect?.height ?? -1, 300, accuracy: 0.001)
+    }
+
+    func testCropLifecycleKeepsCapturedImageUntilDismissConsumesPendingCrop() {
+        let captured = UIImage()
+        let cropped = UIImage()
+        var state = CoverCaptureCropLifecycleState()
+
+        state.presentCapturedImage(captured)
+        XCTAssertTrue(state.isReviewPresented)
+        XCTAssertTrue(state.capturedImage === captured)
+
+        state.acceptCrop(cropped)
+        XCTAssertFalse(state.isReviewPresented)
+        XCTAssertTrue(state.capturedImage === captured)
+        XCTAssertTrue(state.pendingCroppedCover === cropped)
+
+        let imageToProcess = state.consumePendingCroppedCoverAfterReviewDismiss(isProcessing: false)
+        XCTAssertTrue(imageToProcess === cropped)
+        XCTAssertNil(state.capturedImage)
+        XCTAssertNil(state.pendingCroppedCover)
+    }
+
+    func testCropLifecycleDismissWithoutPendingCropClearsCapturedImageWhenIdle() {
+        let captured = UIImage()
+        var state = CoverCaptureCropLifecycleState()
+
+        state.presentCapturedImage(captured)
+        let imageToProcess = state.consumePendingCroppedCoverAfterReviewDismiss(isProcessing: false)
+
+        XCTAssertNil(imageToProcess)
+        XCTAssertNil(state.capturedImage)
+        XCTAssertNil(state.pendingCroppedCover)
+        XCTAssertFalse(state.isReviewPresented)
     }
 }

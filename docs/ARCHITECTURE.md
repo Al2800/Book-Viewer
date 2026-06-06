@@ -101,6 +101,12 @@ BookQuotes/
 | Business logic / API calls | `Services/` as an `actor` or `@Observable` class |
 | New screen in existing feature | `Features/<FeatureName>/` |
 | Capture-tab flow transition logic | `Features/Capture/CaptureFlowState.swift` |
+| Capture-tab mode metadata and accessibility contracts | `Features/Capture/CaptureModeOption.swift` |
+| Capture-tab landing UI | `Features/Capture/CaptureModeSelectionView.swift` |
+| Capture-tab existing-book picker | `Features/Capture/BookSelectionForCaptureView.swift` |
+| Capture-tab quote, batch, and cover flow wrappers | `Features/Capture/CaptureFlowViews.swift` |
+| Extraction-review editable quote state and page counts | `Features/QuoteCapture/ExtractionReviewQuoteState.swift` |
+| Extraction-review manual quote sheet or summary UI | `Features/QuoteCapture/ExtractionReviewSupplementaryViews.swift` |
 | Cover metadata extraction fallback logic | `Features/BookRegistration/CoverExtractionOrchestrator.swift` |
 | Cover crop sizing, zoom, offset, or crop-rect logic | `Features/BookRegistration/CoverCropGeometry.swift` |
 | Cover capture screen chrome sections | `Features/BookRegistration/CoverCaptureChrome.swift` |
@@ -142,8 +148,39 @@ New book edit UI should be added to the relevant section in `BookEditSections.sw
 `Features/Capture/` keeps `CaptureTabRootView` as the SwiftUI shell for permission gating, coaching presentation, haptics, selected `Book` storage, and branch rendering. Deterministic flow decisions go through:
 
 - `CaptureFlowState`: value type for current capture mode, quote/batch flow identity refreshes, and commands that tell the view when to clear selected-book state.
+- `CaptureModeOption`: value type for capture mode ordering, display metadata, colour, icon, and accessibility identifiers.
+- `CaptureModeSelectionView`: landing UI for choosing cover, quote, or batch capture.
+- `BookSelectionForCaptureView`: existing-book picker used before quote or batch capture, including the empty-library path into cover capture.
+- `CaptureFlowViews`: wrappers for quote, batch, cover, and missing-book fallback branches.
 
 New capture-tab navigation behavior should be added to `CaptureFlowState` first with characterization tests. `CaptureTabRootView` should then delegate to the flow state and keep only UI orchestration that depends on SwiftUI, callbacks, or concrete `Book` objects.
+
+### Quote Capture Seams
+
+`Features/QuoteCapture/` keeps `ExtractionReviewView` as the orchestration shell for processing pending captures, fetching marking definitions, saving quotes, milestone side effects, alerts, and dismissal. Deterministic review state goes through:
+
+- `ExtractionReviewQuoteState`: value type for editable quote loading, quote counts by page, page-specific replacement, and partial-save failure filtering.
+- `ExtractionReviewSupplementaryViews`: manual quote sheet, review summary, and previews.
+- `BatchCaptureLifecycleState`: value type for batch capture in-progress state, finish/cancel decisions, status text, and offline queue confirmation decisions.
+- `BatchCaptureSupplementaryViews`: thumbnail strip item, capture detail sheet, offline queue confirmation sheet, deprecated offline toast, and previews.
+
+New extraction-review quote mapping or page-replacement behavior should be characterized in `ExtractionReviewQuoteStateTests` before touching `ExtractionReviewView`. Simulator coverage for the review screen is currently tracked by `docs/issues/006-extraction-review-simulator-route-repair.md`.
+
+New batch capture lifecycle decisions should be characterized in `BatchCaptureLifecycleStateTests` before touching `BatchCaptureView`. `BatchCaptureView` should keep concrete camera setup, capture execution, model persistence, image preprocessing handoff, queue insertion, haptics, milestones, and callbacks. Thumbnail/detail/offline confirmation presentation belongs in `BatchCaptureSupplementaryViews` unless it starts owning capture or persistence decisions.
+
+### Testing Notes and Refactor Inputs
+
+Live testing notes are part of the refactor foundation. Before changing a feature module, check `docs/issues/` for open notes in that area and fold them into characterization.
+
+Each note should map to a module seam:
+
+- Quote extraction notes usually map to `QuoteExtractionPromptBuilder`, `GeminiService`, `ExtractionReviewView`, and the simulator route tracked by issue 006.
+- Cover metadata notes usually map to `CoverExtractionOrchestrator`, `CoverMetadataNormalizer`, and `CoverOCRHeuristics`.
+- Cover camera/crop notes usually map to `CoverCaptureView`, `CoverCropReviewView`, and `CoverCropGeometry`.
+- Capture navigation notes usually map to `CaptureFlowState` and `CaptureFlowViews`.
+- Batch capture notes usually map to `BatchCaptureLifecycleState`, `BatchCaptureView`, and `BatchCaptureSupplementaryViews`.
+
+The refactor order should prioritize notes that reveal both user-visible bugs and missing characterization seams. If the note cannot be reproduced locally, keep it open with the missing evidence required to close the loop.
 
 ---
 

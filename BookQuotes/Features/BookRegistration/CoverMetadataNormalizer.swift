@@ -7,7 +7,7 @@ struct CoverMetadataNormalizer {
         coverImageData: Data?,
         ocrFallback: BookMetadata?
     ) -> BookMetadata {
-        let title = result.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title = normalizedTitle(result.title, ocrFallback: ocrFallback)
         var authors = splitAuthors(result.author)
 
         if title.isEmpty,
@@ -26,7 +26,7 @@ struct CoverMetadataNormalizer {
         let categories = result.genre.map { [$0] } ?? []
 
         return BookMetadata(
-            title: result.title,
+            title: title,
             subtitle: result.subtitle,
             authors: authors,
             publisher: result.publisher,
@@ -74,5 +74,31 @@ struct CoverMetadataNormalizer {
         }
 
         return [trimmed]
+    }
+
+    private static func normalizedTitle(_ raw: String, ocrFallback: BookMetadata?) -> String {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return "" }
+
+        let sanitizedLines = trimmed
+            .components(separatedBy: .newlines)
+            .map(CoverOCRHeuristics.sanitizeLine)
+            .filter { !$0.isEmpty }
+
+        let cleaned = sanitizedLines
+            .joined(separator: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if !cleaned.isEmpty {
+            return cleaned
+        }
+
+        if CoverOCRHeuristics.isMarketingLine(trimmed),
+           let fallbackTitle = ocrFallback?.title.trimmingCharacters(in: .whitespacesAndNewlines),
+           !fallbackTitle.isEmpty {
+            return fallbackTitle
+        }
+
+        return trimmed
     }
 }

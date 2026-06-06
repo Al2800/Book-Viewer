@@ -104,6 +104,8 @@ enum QuoteExtractionPromptBuilder {
            - 0.7-0.9 : Minor uncertainty about boundaries or exact text
            - 0.5-0.7 : Significant uncertainty, text may be partially obscured
            - <0.5 : Low confidence, marking unclear or text hard to read
+        10. If a passage appears intentionally marked but boundaries are uncertain, return best-effort marked text with lower confidence rather than dropping it.
+        11. Do not return an empty quotes array when readable marked text is visible. Only return an empty quotes array when no marked/readable text is visible at all.
 
         Respond with ONLY valid JSON. No markdown formatting, no code blocks, no explanatory text.
         """
@@ -128,6 +130,8 @@ enum QuoteExtractionPromptBuilder {
         {"quotes":[{"text":"marked text","markingType":"type","confidence":0.9}],"pageNumber":null}
 
         Page number rule: only set pageNumber if a standalone number appears in the page margin/header/footer (top-left, top-right, bottom-left, bottom-right). Never infer from body text.
+        If readable marked text is visible but the boundaries are uncertain, return best-effort text with lower confidence.
+        Do not return an empty quotes array unless no marked/readable text is visible.
 
         JSON only, no markdown.
         """
@@ -181,6 +185,8 @@ extension QuoteExtractionPromptBuilder {
         3. Genre should be a single category: Fiction, Non-Fiction, Biography, Science, History, Self-Help, Business, Philosophy, etc.
         4. confidence is 0.0-1.0 for overall extraction accuracy
         5. Only include ISBN if clearly visible (usually on back cover)
+        6. Ignore praise quotes, reviews, bestseller badges, award text, endorsement copy, and marketing blurbs.
+        7. Do not include praise, publication names, review quotes, bestseller text, awards, or marketing copy in the title, subtitle, or author fields.
 
         Respond with ONLY valid JSON. No markdown, no code blocks.
         """

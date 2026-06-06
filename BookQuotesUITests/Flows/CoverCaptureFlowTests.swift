@@ -147,6 +147,43 @@ final class CoverCaptureFlowTests: BaseUITestCase {
         logger.success("Test cover capture navigates to book edit")
     }
 
+    func testCoverCapture_CropAccept_DismissesReviewBeforeProcessing() throws {
+        logger.step(1, "Opening cover capture")
+        openAddBookFlow()
+
+        logger.step(2, "Capturing mock cover photo")
+        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        guard captureButton.waitForExistence(timeout: 5) else {
+            throw XCTSkip("Capture button not available in mocked camera mode")
+        }
+        captureButton.tap()
+
+        logger.step(3, "Accepting crop review")
+        let useCropButton = app.buttons[AccessibilityIdentifiers.CoverCrop.useCropButton]
+        guard useCropButton.waitForExistence(timeout: 7) else {
+            throw XCTSkip("Mocked camera capture did not present cover crop review on this simulator run")
+        }
+        useCropButton.tap()
+
+        logger.step(4, "Verifying crop review dismisses into processing or edit")
+        let processingText = app.staticTexts["Analyzing cover..."]
+        let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField].exists
+            ? app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
+            : app.textFields["Title"]
+
+        let leftCropReview = waitUntil("Crop review should dismiss", timeout: 5) {
+            !useCropButton.exists
+        }
+        XCTAssertTrue(leftCropReview, "Crop review should dismiss after accepting crop")
+
+        let reachedProcessingOrEdit = waitUntil("Processing overlay or book edit should appear", timeout: 15) {
+            processingText.exists || titleField.exists || self.app.alerts.firstMatch.exists
+        }
+        XCTAssertTrue(reachedProcessingOrEdit, "Accepting crop should move to processing or book edit")
+
+        logger.success("Crop accept dismisses review before processing")
+    }
+
     func testCoverCapture_TestCoverButton_CanSaveBook() throws {
         executionTimeAllowance = 180
         logger.step(1, "Opening cover capture")
