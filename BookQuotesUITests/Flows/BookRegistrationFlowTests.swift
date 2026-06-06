@@ -387,29 +387,28 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             }
         }
 
-        // Tap first book
-        let bookRowCell = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookRowButton = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookRowElement = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookRowLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookCardButton = app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch
-        let bookCardLink = app.links[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch
+        // Tap first book. SwiftUI rows/cards use gestures, so coordinate taps are
+        // more reliable than semantic taps on accessibility wrapper elements.
+        let candidates = [
+            app.staticTexts[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.images[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.staticTexts[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.images[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.links[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.cells.firstMatch,
+        ]
 
-        if bookRowCell.waitForExistence(timeout: 3) {
-            bookRowCell.tap()
-        } else if bookRowButton.exists {
-            bookRowButton.tap()
-        } else if bookRowElement.exists {
-            bookRowElement.tap()
-        } else if bookRowLink.exists {
-            bookRowLink.tap()
-        } else if bookCardButton.waitForExistence(timeout: 2) {
-            bookCardButton.tap()
-        } else if bookCardLink.waitForExistence(timeout: 2) {
-            bookCardLink.tap()
-        } else if app.cells.firstMatch.exists {
-            app.cells.firstMatch.tap()
+        let tappedBook = candidates.contains { element in
+            guard element.waitForExistence(timeout: 2) else { return false }
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            return true
         }
+        XCTAssertTrue(tappedBook, "A tappable library book should exist")
 
         // Wait for detail view
         let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]

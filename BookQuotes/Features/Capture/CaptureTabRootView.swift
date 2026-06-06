@@ -7,12 +7,9 @@ import SwiftData
 /// Handles permission checking and mode switching between cover and quote capture.
 struct CaptureTabRootView: View {
     @State private var cameraPermission = CameraPermissionService()
-    @State private var captureMode: CaptureMode = .selection
+    @State private var captureFlow = CaptureFlowState()
     @State private var selectedBook: Book?
-    // SwiftUI can preserve view state when switching between enum-driven branches.
-    // Force fresh capture flows so we never return to a camera preview with stale state (e.g. missing shutter).
-    @State private var quoteCaptureFlowID = UUID()
-    @State private var batchCaptureFlowID = UUID()
+    var onBookCreated: ((Book) -> Void)?
     @State private var showCoaching = false
     @AppStorage("hasCompletedCaptureCoaching") private var hasCompletedCoaching = false
     @Environment(\.scenePhase) private var scenePhase
@@ -70,20 +67,20 @@ struct CaptureTabRootView: View {
 
     @ViewBuilder
     private var captureContent: some View {
-        switch captureMode {
+        switch captureFlow.mode {
         case .selection:
             CaptureModeSelectionView(
                 onSelectCoverCapture: {
                     HapticManager.light()
-                    captureMode = .coverCapture
+                    handleCaptureFlowEvent(.selectCoverCapture)
                 },
                 onSelectQuoteCapture: {
                     HapticManager.light()
-                    captureMode = .bookSelection
+                    handleCaptureFlowEvent(.selectQuoteCapture)
                 },
                 onSelectBatchCapture: {
                     HapticManager.light()
-                    captureMode = .bookSelectionForBatch
+                    handleCaptureFlowEvent(.selectBatchCapture)
                 }
             )
 
@@ -92,14 +89,13 @@ struct CaptureTabRootView: View {
                 onSelectBook: { book in
                     HapticManager.medium()
                     selectedBook = book
-                    quoteCaptureFlowID = UUID()
-                    captureMode = .quoteCapture
+                    handleCaptureFlowEvent(.selectBookForQuoteCapture)
                 },
                 onAddNewBook: {
-                    captureMode = .coverCapture
+                    handleCaptureFlowEvent(.addNewBook)
                 },
                 onCancel: {
-                    captureMode = .selection
+                    handleCaptureFlowEvent(.cancelBookSelection)
                 }
             )
 
@@ -108,24 +104,24 @@ struct CaptureTabRootView: View {
                 onSelectBook: { book in
                     HapticManager.medium()
                     selectedBook = book
-                    batchCaptureFlowID = UUID()
-                    captureMode = .batchCapture
+                    handleCaptureFlowEvent(.selectBookForBatchCapture)
                 },
                 onAddNewBook: {
-                    captureMode = .coverCapture
+                    handleCaptureFlowEvent(.addNewBook)
                 },
                 onCancel: {
-                    captureMode = .selection
+                    handleCaptureFlowEvent(.cancelBookSelection)
                 }
             )
 
         case .coverCapture:
             CoverCaptureFlowView(
-                onComplete: { _ in
-                    captureMode = .selection
+                onComplete: { book in
+                    handleCaptureFlowEvent(.completeCoverCapture)
+                    onBookCreated?(book)
                 },
                 onCancel: {
-                    captureMode = .selection
+                    handleCaptureFlowEvent(.cancelCoverCapture)
                 }
             )
 
@@ -133,55 +129,33 @@ struct CaptureTabRootView: View {
             QuoteCaptureFlowView(
                 book: selectedBook,
                 onComplete: {
-                    selectedBook = nil
-                    captureMode = .selection
+                    handleCaptureFlowEvent(.completeQuoteCapture)
                 },
                 onCancel: {
-                    selectedBook = nil
-                    captureMode = .selection
+                    handleCaptureFlowEvent(.cancelQuoteCapture)
                 }
             )
-            .id(quoteCaptureFlowID)
+            .id(captureFlow.quoteCaptureFlowID)
 
         case .batchCapture:
             BatchCaptureFlowView(
                 book: selectedBook,
                 onComplete: { _ in
-                    selectedBook = nil
-                    captureMode = .selection
+                    handleCaptureFlowEvent(.completeBatchCapture)
                 },
                 onCancel: {
-                    selectedBook = nil
-                    captureMode = .selection
+                    handleCaptureFlowEvent(.cancelBatchCapture)
                 }
             )
-            .id(batchCaptureFlowID)
+            .id(captureFlow.batchCaptureFlowID)
         }
     }
-}
 
-// MARK: - Capture Mode
-
-extension CaptureTabRootView {
-    /// Modes for the capture tab
-    enum CaptureMode {
-        /// Initial mode selection screen
-        case selection
-
-        /// Selecting a book for single quote capture
-        case bookSelection
-
-        /// Selecting a book for batch capture
-        case bookSelectionForBatch
-
-        /// Capturing a book cover
-        case coverCapture
-
-        /// Capturing quotes for a selected book (single mode)
-        case quoteCapture
-
-        /// Batch capturing multiple pages for a selected book
-        case batchCapture
+    private func handleCaptureFlowEvent(_ event: CaptureFlowState.Event) {
+        let command = captureFlow.handle(event)
+        if command.clearsSelectedBook {
+            selectedBook = nil
+        }
     }
 }
 

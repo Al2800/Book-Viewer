@@ -215,7 +215,9 @@ final class CoverCaptureFlowTests: BaseUITestCase {
 
         logger.step(5, "Verifying book was created")
         // We may land on book detail or back in library.
-        let titleOnScreen = app.staticTexts[titleToUse].firstMatch
+        let titleOnScreen = app.staticTexts.matching(
+            NSPredicate(format: "label CONTAINS %@", titleToUse)
+        ).firstMatch
         XCTAssertTrue(titleOnScreen.waitForExistence(timeout: 8), "Created book title should appear")
 
         logger.success("Cover capture flow can create a book")

@@ -76,6 +76,22 @@ CaptureModeSelectionView(
 | **Capture Quotes** | Extract from one page | Select book → Photo → AI extraction → Review |
 | **Batch Mode** | Extract from many pages | Select book → Multiple photos → Process all → Review all |
 
+In UI tests, cover capture exposes a `Use Test Cover` affordance. That button injects deterministic cover metadata and opens `BookEditView` directly. Production capture still uses the real photo/crop/extraction path.
+
+### Flow State (`CaptureFlowState`)
+
+`CaptureTabRootView` owns SwiftUI concerns: permission gating, first-capture coaching, haptics, selected `Book` storage, and branch rendering. Deterministic mode changes live in `CaptureFlowState`.
+
+`CaptureFlowState` handles:
+
+- mode selection: `selection` to cover, book selection, or batch book selection;
+- book-selection transitions into quote or batch capture;
+- fresh quote and batch flow IDs so SwiftUI does not reuse stale capture child state;
+- completion/cancellation transitions back to selection;
+- selected-book clearing commands for quote and batch completion/cancellation.
+
+When adding or changing capture-tab navigation, characterize the transition in `CaptureFlowStateTests` first, then delegate from `CaptureTabRootView`.
+
 ---
 
 ## Single Quote Capture
@@ -352,6 +368,21 @@ Registering a new book from a cover photo.
 |--------|----------|-------|----------|
 | ISBN Scan | ~99% (database lookup) | Fast | Books with visible barcode |
 | Photo | ~85% (AI) | Slower | Books without barcode, foreign editions |
+
+### Photo Metadata Extraction
+
+`CoverCaptureView` owns camera services, captured image state, crop-review sheet presentation, loading/error state, image data creation, and concrete service wiring. Screen chrome sections live in `CoverCaptureChrome`, crop-review presentation lives in `CoverCropReviewView`, pure crop math lives in `CoverCropGeometry`, OCR text-line heuristics live in `CoverOCRHeuristics`, and the deterministic photo metadata decision path lives in `CoverExtractionOrchestrator`.
+
+`CoverExtractionOrchestrator` handles:
+
+- Gemini success with usable title and author: normalize the Gemini result and skip OCR.
+- Gemini success with a blank title or missing authors: run OCR and let `CoverMetadataNormalizer` use OCR fallback values.
+- Gemini failure with an OCR title: use the OCR metadata directly.
+- Gemini failure with no OCR title: return manual fallback metadata while preserving cover image data.
+
+When changing extraction fallback behavior, characterize it in `CoverExtractionOrchestratorTests` first, then keep the simulator cover flow green through `CoverCaptureFlowTests`.
+
+When changing cover crop behavior, characterize the math in `CoverCropGeometryTests` before editing `CoverCropReviewView`. When changing cover-screen controls, mode switching, or manual/test-cover affordances, keep `CoverCaptureFlowTests` green on the simulator. A direct simulator assertion for the real crop-review sheet is still a testability gap: the current mock camera acceptance path uses deterministic metadata to avoid OCR/network/camera flake.
 
 ---
 

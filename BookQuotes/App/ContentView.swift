@@ -41,7 +41,9 @@ struct ContentView: View {
                     .tag(Tab.library)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
 
-                CaptureTab()
+                CaptureTab(onBookCreated: { _ in
+                    selectedTab = .library
+                })
                     .tabItem {
                         Label(Tab.capture.title, systemImage: Tab.capture.systemImage)
                             .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.captureTab)

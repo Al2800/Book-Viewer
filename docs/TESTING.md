@@ -65,6 +65,9 @@ Default rule:
 
 - Prefer **real** SwiftData, Vision, URLSession, and app flows.
 - Avoid mocks/fakes/stubs for core behaviors unless the dependency is fundamentally non-deterministic or external.
+- UI-test-only affordances are allowed when they make simulator tests deterministic without changing production behavior. Example: the cover-capture `Use Test Cover` button injects fixed `BookMetadata` so the acceptance test covers navigation into `BookEditView` without relying on OCR, network/API availability, or camera hardware.
+- Refactor slices should characterize behavior through pure seams first, then keep simulator acceptance over user-visible flows. Current examples: `BookEditDraftTests` cover source-to-form loading, `BookEditSaveDraftTests` cover form-to-`Book` save behavior, `CoverMetadataNormalizerTests` cover Gemini/OCR/manual cover metadata normalization, `CoverExtractionOrchestratorTests` cover Gemini/OCR/manual extraction fallback decisions, `CoverCropGeometryTests` cover cover-crop math, `CoverOCRHeuristicsTests` cover OCR title/author guessing, and `CaptureFlowStateTests` cover capture-tab transition behavior.
+- UI section extractions should be verified with behavior-level UI tests rather than snapshotting SwiftUI structure. For `BookEditSections`, use `BookRegistrationFlowTests` paths that cover manual create, all-fields create, empty-title validation, cancel, cover-section presence, existing-book edit entry, and create-then-edit persisted title.
 
 Decision table (what to do in practice):
 
@@ -77,6 +80,8 @@ Decision table (what to do in practice):
 | CloudKit | Excluded from automated tests; use SwiftData without iCloud in tests | Manual QA checklist and/or dedicated non-CI test plan if needed |
 | Camera / Photos | UI tests using simulator camera/photos flows with deterministic media inputs | If simulator APIs are unstable, use checkpoint screenshots + logs and keep tests best-effort |
 | Time/randomness/concurrency | Prefer deterministic clocks and bounded timeouts; avoid `sleep` | Allow injection of `Clock`/scheduler only at seams where it meaningfully reduces flake |
+
+UI helper note: SwiftUI gesture rows may expose identifiers on child `StaticText`/`Image` elements rather than cells or buttons. When a UI test needs to tap these rows, prefer a visible child element plus coordinate tap and document the hierarchy evidence in the slice verification notes.
 
 What this policy is *not*:
 
@@ -371,6 +376,8 @@ Thresholds are configured in `scripts/coverage_thresholds.json` and are enforced
 Notes:
 - Target names must match Xcode coverage target names (for example `BookQuotes.app`, `BookQuotesTests.xctest`).
 - The current thresholds are set as a floor to prevent regressions; we raise them incrementally as coverage work lands.
+- Focused refactor runs may intentionally select only a small characterization set with `ONLY_TESTING`. Treat those as local seam evidence and CRAP-proxy input, not as full-suite threshold gates, unless the selected tests are broad enough to satisfy `scripts/coverage_thresholds.json`.
+- If no cyclomatic-complexity tool is available, label any CRAP analysis as a proxy and include the inputs used. Current refactor verification uses xccov line coverage plus a branch-token count so follow-on issues can be prioritized without pretending to have exact function-level CRAP scores.
 
 Override with:
 

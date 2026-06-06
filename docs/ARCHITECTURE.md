@@ -100,9 +100,50 @@ BookQuotes/
 | New data type to persist | `Models/` as a `@Model` class |
 | Business logic / API calls | `Services/` as an `actor` or `@Observable` class |
 | New screen in existing feature | `Features/<FeatureName>/` |
+| Capture-tab flow transition logic | `Features/Capture/CaptureFlowState.swift` |
+| Cover metadata extraction fallback logic | `Features/BookRegistration/CoverExtractionOrchestrator.swift` |
+| Cover crop sizing, zoom, offset, or crop-rect logic | `Features/BookRegistration/CoverCropGeometry.swift` |
+| Cover capture screen chrome sections | `Features/BookRegistration/CoverCaptureChrome.swift` |
+| Cover OCR title/author text heuristics | `Features/BookRegistration/CoverOCRHeuristics.swift` |
+| Book edit form UI sections | `Features/BookRegistration/BookEditSections.swift` |
 | Entirely new feature | Create `Features/<NewFeature>/` folder |
 | Shared UI component | `Components/` |
 | Helper function or extension | `Utilities/` |
+
+---
+
+### Book Registration Seams
+
+`Features/BookRegistration/` keeps `BookEditView.Mode` as the caller-facing interface for create, edit, and metadata-confirmation flows. Internally, form loading goes through:
+
+- `BookEditSource`: create, edit existing book, or metadata source.
+- `BookEditDraft`: value object for title, author, optional metadata strings, status, and cover image data.
+- `BookEditOptions`: genre option list and display labels.
+- `BookEditSaveDraft`: value object for form-to-`Book` create/update mapping.
+- `BookEditCoverImageData`: compressed thumbnail/full cover image data passed into save mapping.
+- `BookEditSections`: SwiftUI-only form sections for cover, details, metadata, reading status, and notes.
+- `CoverMetadataNormalizer`: pure mapper from Gemini/OCR/manual extraction results into `BookMetadata`.
+- `CoverExtractionOrchestrator`: async decision seam for Gemini success/failure, OCR fallback, and manual fallback.
+- `CoverCaptureChrome`: cover-capture top mode switcher, barcode overlay, processing overlay, and bottom controls.
+- `CoverCropGeometry`: pure crop viewport, scale, offset clamp, and image crop-rect calculations.
+- `CoverCropReviewView`: crop-review sheet UI for move/zoom/use/retake.
+- `CoverOCRHeuristics`: pure Vision text-line sanitizing and title/author guessing.
+
+This keeps source-to-form mapping, save mapping, form section composition, and cover metadata normalization testable without exposing SwiftUI state, `ModelContext`, haptics, dismissal, API calls, camera services, Vision requests, or photo picker behavior. Further refactor slices should apply the same pattern to cover/image picking.
+
+New cover extraction behavior should be characterized in `CoverExtractionOrchestratorTests` first. `CoverCaptureView` should keep the concrete image, Vision OCR, API service, loading/error, and sheet presentation concerns while delegating deterministic extraction decisions to the orchestrator.
+
+New cover crop math should be characterized in `CoverCropGeometryTests` before touching `CoverCropReviewView`. New OCR title/author heuristics should be characterized in `CoverOCRHeuristicsTests`. Cover screen chrome changes should keep `CoverCaptureFlowTests` green because their observable behavior is user navigation and controls, not the internal SwiftUI section layout.
+
+New book edit UI should be added to the relevant section in `BookEditSections.swift` unless it owns mode, persistence, photo loading, validation, save/update, dismissal, or milestone behavior. Those orchestration concerns remain in `BookEditView.swift`. Simulator coverage for this area should include manual create, validation, cancel, cover section visibility, and create-then-edit persisted title behavior.
+
+### Capture Feature Seams
+
+`Features/Capture/` keeps `CaptureTabRootView` as the SwiftUI shell for permission gating, coaching presentation, haptics, selected `Book` storage, and branch rendering. Deterministic flow decisions go through:
+
+- `CaptureFlowState`: value type for current capture mode, quote/batch flow identity refreshes, and commands that tell the view when to clear selected-book state.
+
+New capture-tab navigation behavior should be added to `CaptureFlowState` first with characterization tests. `CaptureTabRootView` should then delegate to the flow state and keep only UI orchestration that depends on SwiftUI, callbacks, or concrete `Book` objects.
 
 ---
 

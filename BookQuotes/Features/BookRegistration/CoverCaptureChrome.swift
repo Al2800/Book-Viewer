@@ -1,0 +1,154 @@
+import SwiftUI
+
+struct CoverBarcodeScanOverlay: View {
+    var body: some View {
+        VStack {
+            Spacer()
+
+            RoundedRectangle(cornerRadius: CornerRadius.sm)
+                .stroke(Color.brand, lineWidth: 3)
+                .frame(width: 280, height: 100)
+                .overlay {
+                    CoverScanLineView()
+                }
+
+            Spacer()
+        }
+    }
+}
+
+struct CoverProcessingOverlay: View {
+    let message: String
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.6)
+                .ignoresSafeArea()
+
+            VStack(spacing: Spacing.lg) {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .tint(.white)
+
+                Text(message)
+                    .font(.headline)
+                    .foregroundStyle(.white)
+            }
+        }
+    }
+}
+
+struct CoverCaptureModeSwitcher: View {
+    @Binding var captureMode: CoverCaptureView.CaptureMode
+    let onCancel: () -> Void
+
+    var body: some View {
+        VStack(spacing: Spacing.md) {
+            CaptureHeaderBar(
+                title: "Add Book",
+                subtitle: captureMode == .photo ? "Scan the cover or switch to ISBN" : "Scan the ISBN barcode",
+                onCancel: onCancel
+            )
+
+            Picker("Mode", selection: $captureMode) {
+                Label("Photo", systemImage: "camera.fill").tag(CoverCaptureView.CaptureMode.photo)
+                Label("Barcode", systemImage: "barcode.viewfinder").tag(CoverCaptureView.CaptureMode.barcode)
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
+            .cameraChrome(cornerRadius: CornerRadius.xl)
+            .overlay {
+                RoundedRectangle(cornerRadius: CornerRadius.xl)
+                    .stroke(Color.white.opacity(0.10), lineWidth: 1)
+            }
+        }
+        .padding(.horizontal, Spacing.lg)
+        .padding(.top, Spacing.sm)
+    }
+}
+
+struct CoverCaptureBottomControls: View {
+    let captureMode: CoverCaptureView.CaptureMode
+    let isProcessing: Bool
+    let isSessionRunning: Bool
+    let showsTestCoverButton: Bool
+    let onCapturePhoto: () -> Void
+    let onUseTestCover: () -> Void
+    let onManualEntry: () -> Void
+
+    var body: some View {
+        CaptureControlTray {
+            if let statusPill {
+                statusPill
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+
+            if captureMode == .photo && !isProcessing {
+                CaptureButton(isProcessing: isProcessing) {
+                    onCapturePhoto()
+                }
+                .disabled(!isSessionRunning)
+
+                if showsTestCoverButton {
+                    Button("Use Test Cover") {
+                        onUseTestCover()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
+                }
+            }
+
+            if !isProcessing {
+                Button {
+                    onManualEntry()
+                } label: {
+                    Text(captureMode == .photo ? "Enter details manually" : "Enter ISBN manually")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                }
+                .glassButton()
+            }
+        }
+        .padding(.horizontal, Spacing.lg)
+        .padding(.bottom, Spacing.md)
+    }
+
+    private var statusPill: CaptureStatusPill? {
+        if isProcessing {
+            let text = captureMode == .photo ? "Reading cover..." : "Looking up ISBN..."
+            return CaptureStatusPill(systemImage: "viewfinder", text: text)
+        }
+
+        switch captureMode {
+        case .photo:
+            return nil
+        case .barcode:
+            return CaptureStatusPill(
+                systemImage: "barcode.viewfinder",
+                text: "Hold the barcode steady inside the scanner"
+            )
+        }
+    }
+}
+
+private struct CoverScanLineView: View {
+    @State private var offset: CGFloat = -30
+
+    var body: some View {
+        Rectangle()
+            .fill(Color.brand)
+            .frame(height: 2)
+            .offset(y: offset)
+            .onAppear {
+                withAnimation(
+                    .linear(duration: 1.5)
+                    .repeatForever(autoreverses: true)
+                ) {
+                    offset = 30
+                }
+            }
+    }
+}

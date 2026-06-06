@@ -75,11 +75,32 @@ struct BookEditView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.lg) {
-                    coverSection
-                    detailsSection
-                    metadataSection
-                    readingStatusSection
-                    notesSection
+                    BookEditCoverSection(
+                        coverImage: $coverImage,
+                        selectedPhotoItem: $selectedPhotoItem,
+                        showCameraPicker: $showCameraPicker
+                    )
+                    BookEditDetailsSection(
+                        title: $title,
+                        author: $author,
+                        subtitle: $subtitle,
+                        focusedField: $focusedField,
+                        titleShakeTrigger: titleShakeTrigger,
+                        authorShakeTrigger: authorShakeTrigger
+                    )
+                    BookEditMetadataSection(
+                        isbn: $isbn,
+                        publisher: $publisher,
+                        publishYear: $publishYear,
+                        pageCount: $pageCount,
+                        genre: $genre,
+                        focusedField: $focusedField
+                    )
+                    BookEditReadingStatusSection(status: $status)
+                    BookEditNotesSection(
+                        notes: $notes,
+                        focusedField: $focusedField
+                    )
                 }
                 .padding(.horizontal, Spacing.lg)
                 .padding(.top, Spacing.lg)
@@ -127,255 +148,12 @@ struct BookEditView: View {
         }
     }
 
-    // MARK: - Section Card
-
-    private func sectionCard<Content: View>(
-        title: String,
-        subtitle: String? = nil,
-        @ViewBuilder content: () -> Content
-    ) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(title)
-                    .font(.sectionHeader)
-                    .foregroundStyle(Color.textSecondary)
-
-                Spacer()
-
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(Color.textTertiary)
-                }
-            }
-
-            content()
-        }
-        .padding(Spacing.lg)
-        .paperCard()
-    }
-
-    // MARK: - Cover Section
-
-    private var coverSection: some View {
-        sectionCard(title: "Cover", subtitle: "Optional") {
-            VStack(spacing: Spacing.md) {
-                PhotosPicker(
-                    selection: $selectedPhotoItem,
-                    matching: .images
-                ) {
-                    coverImageView
-                }
-                .buttonStyle(.plain)
-
-                Text("Tap the cover to choose a photo, or use the buttons below.")
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-
-                HStack(spacing: Spacing.sm) {
-                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                        Button {
-                            showCameraPicker = true
-                        } label: {
-                            Label("Camera", systemImage: "camera")
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.brand)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                        .allowsTightening(true)
-                        .frame(maxWidth: .infinity)
-                    }
-
-                    PhotosPicker(
-                        selection: $selectedPhotoItem,
-                        matching: .images
-                    ) {
-                        Label("Library", systemImage: "photo.on.rectangle")
-                    }
-                    .buttonStyle(.bordered)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                    .allowsTightening(true)
-                    .frame(maxWidth: .infinity)
-
-                    if coverImage != nil {
-                        Button(role: .destructive) {
-                            coverImage = nil
-                        } label: {
-                            Label("Remove", systemImage: "trash")
-                        }
-                        .buttonStyle(.bordered)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                        .allowsTightening(true)
-                        .frame(maxWidth: .infinity)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-        }
-    }
-
-    private var coverImageView: some View {
-        Group {
-            if let image = coverImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } else {
-                RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .fill(Color.backgroundSecondary)
-                    .overlay {
-                        VStack(spacing: Spacing.sm) {
-                            Image(systemName: "book.closed")
-                                .font(.largeTitle)
-                                .foregroundStyle(.secondary)
-                            Text("Add Cover")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-            }
-        }
-        .frame(width: 140, height: 210)
-        .background(
-            RoundedRectangle(cornerRadius: CornerRadius.md)
-                .fill(Color.backgroundSecondary)
-                .overlay {
-                    LinearGradient.cardHighlight
-                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: CornerRadius.md)
-                        .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
-                }
-        )
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-        .elevation(.sm)
-    }
-
-    // MARK: - Details Section
-
-    private var detailsSection: some View {
-        sectionCard(title: "Book Details") {
-            VStack(spacing: Spacing.md) {
-                TextField("Title", text: $title)
-                    .textContentType(.none)
-                    .submitLabel(.next)
-                    .focused($focusedField, equals: .title)
-                    .onSubmit { focusedField = .author }
-                    .textFieldStyle(.plain)
-                    .fieldChrome()
-                    .shake(trigger: titleShakeTrigger)
-                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.titleField)
-
-                TextField("Author", text: $author)
-                    .textContentType(.name)
-                    .submitLabel(.next)
-                    .focused($focusedField, equals: .author)
-                    .onSubmit { focusedField = .subtitle }
-                    .textFieldStyle(.plain)
-                    .fieldChrome()
-                    .shake(trigger: authorShakeTrigger)
-                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.authorField)
-
-                TextField("Subtitle", text: $subtitle)
-                    .textContentType(.none)
-                    .submitLabel(.done)
-                    .focused($focusedField, equals: .subtitle)
-                    .onSubmit { focusedField = nil }
-                    .textFieldStyle(.plain)
-                    .fieldChrome()
-                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.subtitleField)
-            }
-        }
-    }
-
     private var isTitleValid: Bool {
-        !title.trimmingCharacters(in: .whitespaces).isEmpty
+        makeSaveDraft(includeCoverData: false).isValidForSave
     }
 
     private var isAuthorBlank: Bool {
-        author.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
-
-    // MARK: - Metadata Section
-
-    private var metadataSection: some View {
-        sectionCard(title: "Additional Info", subtitle: "Optional") {
-            VStack(spacing: Spacing.md) {
-                TextField("ISBN", text: $isbn)
-                    .keyboardType(.numberPad)
-                    .focused($focusedField, equals: .isbn)
-                    .textFieldStyle(.plain)
-                    .fieldChrome()
-                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.isbnField)
-
-                TextField("Publisher", text: $publisher)
-                    .submitLabel(.next)
-                    .focused($focusedField, equals: .publisher)
-                    .onSubmit { focusedField = .publishYear }
-                    .textFieldStyle(.plain)
-                    .fieldChrome()
-                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.publisherField)
-
-                HStack(spacing: Spacing.md) {
-                    TextField("Year", text: $publishYear)
-                        .keyboardType(.numberPad)
-                        .focused($focusedField, equals: .publishYear)
-                        .textFieldStyle(.plain)
-                        .fieldChrome()
-                        .frame(maxWidth: .infinity)
-
-                    TextField("Pages", text: $pageCount)
-                        .keyboardType(.numberPad)
-                        .focused($focusedField, equals: .pageCount)
-                        .textFieldStyle(.plain)
-                        .fieldChrome()
-                        .frame(maxWidth: .infinity)
-                }
-
-                Picker("Genre", selection: $genre) {
-                    Text("None").tag("")
-                    ForEach(BookGenre.allCases, id: \.rawValue) { genre in
-                        Text(genre.displayName).tag(genre.rawValue)
-                    }
-                }
-                .pickerStyle(.menu)
-                .focused($focusedField, equals: .genre)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fieldChrome()
-            }
-        }
-    }
-
-    // MARK: - Reading Status Section
-
-    private var readingStatusSection: some View {
-        sectionCard(title: "Reading Status") {
-            Picker("Status", selection: $status) {
-                ForEach(ReadingStatus.allCases) { status in
-                    Label(status.displayName, systemImage: status.systemImage)
-                        .tag(status)
-                }
-            }
-            .pickerStyle(.segmented)
-        }
-    }
-
-    // MARK: - Notes Section
-
-    private var notesSection: some View {
-        sectionCard(title: "Notes", subtitle: "Optional") {
-            TextField("Add notes about this book...", text: $notes, axis: .vertical)
-                .lineLimit(3...6)
-                .submitLabel(.done)
-                .focused($focusedField, equals: .notes)
-                .onSubmit { focusedField = nil }
-                .textFieldStyle(.plain)
-                .fieldChrome(minHeight: 88)
-        }
+        makeSaveDraft(includeCoverData: false).isAuthorBlank
     }
 
     // MARK: - Toolbar
@@ -442,40 +220,31 @@ struct BookEditView: View {
         guard !hasLoadedInitialValues else { return }
         hasLoadedInitialValues = true
 
+        applyDraft(BookEditDraft(source: editSource))
+    }
+
+    private var editSource: BookEditSource {
         switch mode {
-        case .create:
-            // Start with empty fields
-            break
+        case .create: return .create
+        case .edit(let book): return .edit(book)
+        case .createFromMetadata(let metadata): return .metadata(metadata)
+        }
+    }
 
-        case .edit(let book):
-            title = book.title
-            author = book.author
-            subtitle = book.subtitle ?? ""
-            isbn = book.isbn ?? ""
-            publisher = book.publisher ?? ""
-            publishYear = book.publishYear.map { String($0) } ?? ""
-            genre = book.genre ?? ""
-            pageCount = book.pageCount.map { String($0) } ?? ""
-            notes = book.notes ?? ""
-            status = book.status
+    private func applyDraft(_ draft: BookEditDraft) {
+        title = draft.title
+        author = draft.author
+        subtitle = draft.subtitle
+        isbn = draft.isbn
+        publisher = draft.publisher
+        publishYear = draft.publishYear
+        genre = draft.genre
+        pageCount = draft.pageCount
+        notes = draft.notes
+        status = draft.status
 
-            if let imageData = book.coverFullData ?? book.coverThumbnailData {
-                coverImage = UIImage(data: imageData)
-            }
-
-        case .createFromMetadata(let metadata):
-            title = metadata.title
-            author = metadata.authorsFormatted
-            subtitle = metadata.subtitle ?? ""
-            isbn = metadata.isbn ?? ""
-            publisher = metadata.publisher ?? ""
-            publishYear = metadata.publishYear.map { String($0) } ?? ""
-            genre = metadata.genre ?? ""
-            pageCount = metadata.pageCount.map { String($0) } ?? ""
-
-            if let imageData = metadata.coverImageData {
-                coverImage = UIImage(data: imageData)
-            }
+        if let imageData = draft.coverImageData {
+            coverImage = UIImage(data: imageData)
         }
     }
 
@@ -508,26 +277,7 @@ struct BookEditView: View {
     private func createBook() {
         // Check if this is the first book before adding
         let isFirstBook = existingBooks.isEmpty
-
-        let normalizedAuthor = author.trimmingCharacters(in: .whitespacesAndNewlines)
-        let book = Book(
-            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-            author: normalizedAuthor.isEmpty ? "Unknown" : normalizedAuthor,
-            subtitle: subtitle.isEmpty ? nil : subtitle,
-            publisher: publisher.isEmpty ? nil : publisher,
-            isbn: isbn.isEmpty ? nil : isbn
-        )
-
-        book.publishYear = Int(publishYear)
-        book.genre = genre.isEmpty ? nil : genre
-        book.pageCount = Int(pageCount)
-        book.notes = notes.isEmpty ? nil : notes
-        book.status = status
-
-        if let image = coverImage {
-            book.coverThumbnailData = image.jpegData(compressionQuality: 0.5)
-            book.coverFullData = image.jpegData(compressionQuality: 0.8)
-        }
+        let book = makeSaveDraft().makeBook()
 
         modelContext.insert(book)
 
@@ -556,26 +306,7 @@ struct BookEditView: View {
     }
 
     private func updateBook(_ book: Book) {
-        book.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let normalizedAuthor = author.trimmingCharacters(in: .whitespacesAndNewlines)
-        book.author = normalizedAuthor.isEmpty ? "Unknown" : normalizedAuthor
-        book.subtitle = subtitle.isEmpty ? nil : subtitle
-        book.publisher = publisher.isEmpty ? nil : publisher
-        book.isbn = isbn.isEmpty ? nil : isbn
-        book.publishYear = Int(publishYear)
-        book.genre = genre.isEmpty ? nil : genre
-        book.pageCount = Int(pageCount)
-        book.notes = notes.isEmpty ? nil : notes
-        book.status = status
-        book.dateModified = Date()
-
-        if let image = coverImage {
-            book.coverThumbnailData = image.jpegData(compressionQuality: 0.5)
-            book.coverFullData = image.jpegData(compressionQuality: 0.8)
-        } else {
-            book.coverThumbnailData = nil
-            book.coverFullData = nil
-        }
+        makeSaveDraft().apply(to: book)
 
         do {
             try modelContext.save()
@@ -585,6 +316,30 @@ struct BookEditView: View {
         } catch {
             HapticManager.error()
         }
+    }
+
+    private func makeSaveDraft(includeCoverData: Bool = true) -> BookEditSaveDraft {
+        BookEditSaveDraft(
+            title: title,
+            author: author,
+            subtitle: subtitle,
+            isbn: isbn,
+            publisher: publisher,
+            publishYear: publishYear,
+            genre: genre,
+            pageCount: pageCount,
+            notes: notes,
+            status: status,
+            coverImageData: includeCoverData ? coverImageData : nil
+        )
+    }
+
+    private var coverImageData: BookEditCoverImageData? {
+        guard let image = coverImage else { return nil }
+        return BookEditCoverImageData(
+            thumbnailData: image.jpegData(compressionQuality: 0.5),
+            fullData: image.jpegData(compressionQuality: 0.8)
+        )
     }
 }
 
@@ -630,49 +385,6 @@ private struct CameraImagePicker: UIViewControllerRepresentable {
                 parent.onImagePicked(image)
             }
             parent.dismiss()
-        }
-    }
-}
-
-// MARK: - BookGenre
-
-/// Common book genres for categorization.
-enum BookGenre: String, CaseIterable {
-    case fiction
-    case nonFiction = "non-fiction"
-    case sciFi = "science-fiction"
-    case fantasy
-    case mystery
-    case thriller
-    case romance
-    case biography
-    case selfHelp = "self-help"
-    case business
-    case history
-    case science
-    case philosophy
-    case psychology
-    case poetry
-    case other
-
-    var displayName: String {
-        switch self {
-        case .fiction: return "Fiction"
-        case .nonFiction: return "Non-Fiction"
-        case .sciFi: return "Science Fiction"
-        case .fantasy: return "Fantasy"
-        case .mystery: return "Mystery"
-        case .thriller: return "Thriller"
-        case .romance: return "Romance"
-        case .biography: return "Biography"
-        case .selfHelp: return "Self-Help"
-        case .business: return "Business"
-        case .history: return "History"
-        case .science: return "Science"
-        case .philosophy: return "Philosophy"
-        case .psychology: return "Psychology"
-        case .poetry: return "Poetry"
-        case .other: return "Other"
         }
     }
 }
