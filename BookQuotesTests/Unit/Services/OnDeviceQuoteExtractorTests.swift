@@ -47,6 +47,34 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertTrue(marks.isEmpty, "Expected plain printed text to have no marks, got: \(marks)")
     }
 
+    func testSelectorGroupsAdjacentUnderlineFragmentsIntoOneQuote() {
+        let lines = [
+            RecognizedTextLine(text: "breakneck pace of", confidence: 0.92, boundingBox: CGRect(x: 240, y: 220, width: 250, height: 24)),
+            RecognizedTextLine(text: "186,000 miles per", confidence: 0.90, boundingBox: CGRect(x: 240, y: 252, width: 250, height: 24)),
+            RecognizedTextLine(text: "second, or 669,600,000", confidence: 0.91, boundingBox: CGRect(x: 240, y: 284, width: 330, height: 24)),
+            RecognizedTextLine(text: "miles per hour, in a", confidence: 0.89, boundingBox: CGRect(x: 240, y: 316, width: 290, height: 24)),
+            RecognizedTextLine(text: "vacuum, does typically", confidence: 0.88, boundingBox: CGRect(x: 240, y: 348, width: 310, height: 24)),
+            RecognizedTextLine(text: "slow down", confidence: 0.88, boundingBox: CGRect(x: 240, y: 380, width: 160, height: 24))
+        ]
+        let marks = [
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 246, width: 120, height: 3), confidence: 0.75),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 365, y: 246, width: 120, height: 3), confidence: 0.75),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 278, width: 240, height: 3), confidence: 0.78),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 310, width: 320, height: 3), confidence: 0.78),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 342, width: 280, height: 3), confidence: 0.76),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 374, width: 300, height: 3), confidence: 0.76),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 406, width: 160, height: 3), confidence: 0.74)
+        ]
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(textLines: lines, marks: marks)
+
+        XCTAssertEqual(candidates.count, 1)
+        XCTAssertEqual(
+            candidates.first?.text,
+            "breakneck pace of 186,000 miles per second, or 669,600,000 miles per hour, in a vacuum, does typically slow down"
+        )
+    }
+
     func testRealBookFixtureExtractsUnderlinedPassageWhenProvided() async throws {
         guard let fixturePath = OnDeviceQuoteExtractorTestImage.realBookFixturePath() else {
             throw XCTSkip("Add the local real page fixture to run real book characterization.")

@@ -152,6 +152,13 @@ None - can start immediately.
 - Expanded `PageMarkDetector` with a separate neutral underline path for thin, long, low-saturation marks.
 - Added a local-only real book photo characterization test. The fixture image is stored under ignored `local-fixtures/` so copyrighted page photos stay out of the public repo.
 
+2026-06-07 build 26 review follow-up:
+
+- Build 26 extracted quote text, but fragmented the marked passage into many repeated quote cards.
+- The symptom showed `13 Quotes` for a page where the user expected the six underlined lines to be treated as one marked passage.
+- Added a selector-level regression where segmented underline marks across six adjacent OCR lines must produce one quote candidate.
+- Updated `QuoteMarkTextSelector` to deduplicate underline fragments and group adjacent underlined OCR lines before returning candidates.
+
 ## Verification Results
 
 Focused on-device extractor tracer:
@@ -211,10 +218,33 @@ Result:
 - Passed with `local-fixtures/real-pages/british-are-coming-underlined-page.jpg`.
 - The fixture is local-only and ignored by git.
 
+Underline grouping follow-up:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testSelectorGroupsAdjacentUnderlineFragmentsIntoOneQuote
+```
+
+Result:
+
+- Failed before the selector grouping fix.
+- Passed after `QuoteMarkTextSelector` grouped adjacent underline selections.
+
+Post-fix smoke:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes
+```
+
+Result:
+
+- Passed.
+
 ## Residual Risk
 
 - This is a first tracer bullet, not the full issue.
 - Real photographed pages with faint highlights, curved pages, mixed lighting, handwritten margin notes, and actual iPhone captures still need characterization fixtures.
 - The current graphite support has been validated against one real page photo, but more fixtures are needed before declaring broad real-world coverage.
+- The build 26 over-fragmentation screenshot is not yet backed by the original captured source page photo. The selector regression covers the observed shape, but the exact image should be added as another local fixture when available.
 - Batch capture and capture queue paths may still contain cloud/Gemini extraction placeholders and should be reviewed before declaring quote extraction fully on-device across the whole app.
 - A small local model has not been evaluated yet; the current slice is deterministic OCR plus geometry only.

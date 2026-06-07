@@ -6,28 +6,19 @@ struct QuoteMarkTextSelector: Sendable {
         textLines: [RecognizedTextLine],
         marks: [DetectedPageMark]
     ) -> [OnDeviceQuoteCandidate] {
-        marks.compactMap { mark in
+        let underlineMarks = marks.filter { $0.type == .underline || $0.type == .doubleUnderline }
+        let nonUnderlineMarks = marks.filter { !($0.type == .underline || $0.type == .doubleUnderline) }
+
+        let underlineCandidates = groupedUnderlineCandidates(
+            marks: underlineMarks,
+            textLines: textLines
+        )
+        let otherCandidates = nonUnderlineMarks.compactMap { mark in
             let selectedLines = lines(for: mark, from: textLines)
-            guard !selectedLines.isEmpty else { return nil }
-
-            let text = selectedLines
-                .sorted { $0.boundingBox.minY < $1.boundingBox.minY }
-                .map(\.text)
-                .joined(separator: " ")
-                .normalizingWhitespace()
-
-            guard !text.isEmpty else { return nil }
-
-            let averageOCRConfidence = selectedLines.map(\.confidence).reduce(0, +) / Double(selectedLines.count)
-            let confidence = min(0.98, max(0.45, (averageOCRConfidence + mark.confidence) / 2))
-
-            return OnDeviceQuoteCandidate(
-                text: text,
-                markingType: mark.type,
-                marginNote: nil,
-                confidence: confidence
-            )
+            return candidate(from: selectedLines, marks: [mark], markingType: mark.type)
         }
+
+        return deduplicatedCandidates(underlineCandidates + otherCandidates)
     }
 
     private func lines(
@@ -46,10 +37,73 @@ struct QuoteMarkTextSelector: Sendable {
         }
     }
 
+    private func groupedUnderlineCandidates(
+        marks: [DetectedPageMark],
+        textLines: [RecognizedTextLine]
+    ) -> [OnDeviceQuoteCandidate] {
+        let selections = marks.compactMap { mark -> UnderlineSelection? in
+            guard let line = closestLineAboveUnderline(mark, textLines: textLines) else {
+                return nil
+            }
+            return UnderlineSelection(line: line, mark: mark)
+        }
+        let uniqueSelections = deduplicatedUnderlineSelections(selections)
+            .sorted { $0.line.boundingBox.minY < $1.line.boundingBox.minY }
+
+        let groups = groupAdjacentUnderlineSelections(uniqueSelections)
+        return groups.compactMap { group in
+            candidate(
+                from: group.map(\.line),
+                marks: group.map(\.mark),
+                markingType: .underline
+            )
+        }
+    }
+
+    private func candidate(
+        from selectedLines: [RecognizedTextLine],
+        marks: [DetectedPageMark],
+        markingType: MarkingType
+    ) -> OnDeviceQuoteCandidate? {
+        guard !selectedLines.isEmpty else { return nil }
+
+        let text = selectedLines
+            .sorted { $0.boundingBox.minY < $1.boundingBox.minY }
+            .map(\.text)
+            .joined(separator: " ")
+            .normalizingWhitespace()
+
+        guard !text.isEmpty else { return nil }
+
+        let averageOCRConfidence = selectedLines.map(\.confidence).reduce(0, +) / Double(selectedLines.count)
+        let averageMarkConfidence = marks.isEmpty
+            ? 0.55
+            : marks.map(\.confidence).reduce(0, +) / Double(marks.count)
+        let confidence = min(0.98, max(0.45, (averageOCRConfidence + averageMarkConfidence) / 2))
+
+        return OnDeviceQuoteCandidate(
+            text: text,
+            markingType: markingType,
+            marginNote: nil,
+            confidence: confidence
+        )
+    }
+
     private func closestLinesAboveUnderline(
         _ mark: DetectedPageMark,
         textLines: [RecognizedTextLine]
     ) -> [RecognizedTextLine] {
+        guard let closest = closestLineAboveUnderline(mark, textLines: textLines) else {
+            return []
+        }
+
+        return [closest]
+    }
+
+    private func closestLineAboveUnderline(
+        _ mark: DetectedPageMark,
+        textLines: [RecognizedTextLine]
+    ) -> RecognizedTextLine? {
         let candidates = textLines.filter { line in
             let overlap = horizontalOverlapRatio(line.boundingBox, mark.boundingBox)
             let verticalGap = mark.boundingBox.minY - line.boundingBox.maxY
@@ -57,13 +111,9 @@ struct QuoteMarkTextSelector: Sendable {
             return overlap >= 0.25 && verticalGap >= -line.boundingBox.height && verticalGap <= allowedGap
         }
 
-        guard let closest = candidates.min(by: {
+        return candidates.min(by: {
             abs(mark.boundingBox.minY - $0.boundingBox.maxY) < abs(mark.boundingBox.minY - $1.boundingBox.maxY)
-        }) else {
-            return []
-        }
-
-        return [closest]
+        })
     }
 
     private func highlightedLines(
@@ -94,6 +144,61 @@ struct QuoteMarkTextSelector: Sendable {
         guard overlap > 0 else { return 0 }
         return overlap / max(min(lhs.width, rhs.width), 1)
     }
+
+    private func deduplicatedUnderlineSelections(_ selections: [UnderlineSelection]) -> [UnderlineSelection] {
+        selections.reduce(into: []) { unique, selection in
+            let alreadySelected = unique.contains { existing in
+                existing.line.text == selection.line.text
+                    && abs(existing.line.boundingBox.midY - selection.line.boundingBox.midY) <= 3
+            }
+            if !alreadySelected {
+                unique.append(selection)
+            }
+        }
+    }
+
+    private func groupAdjacentUnderlineSelections(_ selections: [UnderlineSelection]) -> [[UnderlineSelection]] {
+        selections.reduce(into: []) { groups, selection in
+            guard var currentGroup = groups.popLast(),
+                  let previous = currentGroup.last?.line else {
+                groups.append([selection])
+                return
+            }
+
+            let line = selection.line
+            let verticalGap = line.boundingBox.minY - previous.boundingBox.maxY
+            let allowedGap = max(34, previous.boundingBox.height * 1.6)
+            let sameTextColumn = horizontalOverlapRatio(previous.boundingBox, line.boundingBox) >= 0.25
+                || abs(previous.boundingBox.minX - line.boundingBox.minX) <= 80
+
+            if verticalGap >= -previous.boundingBox.height
+                && verticalGap <= allowedGap
+                && sameTextColumn {
+                currentGroup.append(selection)
+                groups.append(currentGroup)
+            } else {
+                groups.append(currentGroup)
+                groups.append([selection])
+            }
+        }
+    }
+
+    private func deduplicatedCandidates(_ candidates: [OnDeviceQuoteCandidate]) -> [OnDeviceQuoteCandidate] {
+        candidates.reduce(into: []) { unique, candidate in
+            let normalizedText = candidate.text.normalizingWhitespace().lowercased()
+            let alreadyIncluded = unique.contains {
+                $0.text.normalizingWhitespace().lowercased() == normalizedText
+            }
+            if !alreadyIncluded {
+                unique.append(candidate)
+            }
+        }
+    }
+}
+
+private struct UnderlineSelection {
+    let line: RecognizedTextLine
+    let mark: DetectedPageMark
 }
 
 private extension String {
