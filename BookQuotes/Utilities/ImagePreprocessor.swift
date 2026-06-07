@@ -113,7 +113,7 @@ enum ImagePreprocessor {
     // MARK: - Capture Helpers
 
     /// Crop to the aspect-fill region a camera preview would display for a given preview size.
-    /// This matches `CameraService.cropToPreviewVisibleArea` but is safe to run off the MainActor.
+    /// This is safe to run off the MainActor.
     static func cropToAspectFillPreview(_ image: UIImage, previewSize: CGSize) throws -> UIImage {
         guard previewSize.width > 0, previewSize.height > 0 else { return image }
 
@@ -124,21 +124,10 @@ enum ImagePreprocessor {
         let extent = oriented.extent.integral
         guard extent.width > 0, extent.height > 0 else { return image }
 
-        let targetRatio = previewSize.width / previewSize.height
-        let currentRatio = extent.width / extent.height
-
-        let cropRect: CGRect
-        if currentRatio > targetRatio {
-            let newWidth = extent.height * targetRatio
-            let x = extent.minX + (extent.width - newWidth) / 2.0
-            cropRect = CGRect(x: x, y: extent.minY, width: newWidth, height: extent.height)
-        } else if currentRatio < targetRatio {
-            let newHeight = extent.width / targetRatio
-            let y = extent.minY + (extent.height - newHeight) / 2.0
-            cropRect = CGRect(x: extent.minX, y: y, width: extent.width, height: newHeight)
-        } else {
-            cropRect = extent
-        }
+        let cropRect = CameraFramingGeometry.aspectFillVisibleRect(
+            imageSize: extent.size,
+            previewSize: previewSize
+        ).offsetBy(dx: extent.minX, dy: extent.minY)
 
         let cropped = oriented.cropped(to: cropRect.integral)
         let context = CIContext(options: [.useSoftwareRenderer: false])

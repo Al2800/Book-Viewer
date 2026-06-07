@@ -2,7 +2,7 @@
 
 # 014 - Camera Preview Framing and Capture Guidance
 
-Status: open
+Status: in_progress
 Area: Camera capture
 Priority: high
 
@@ -14,8 +14,10 @@ This matters because extraction quality now depends on the photographed page ima
 
 ## Current Characterization
 
-- `CameraService.swift` is 640 LOC and owns session configuration, preview/capture coordination, cropping, focus, camera switching, and capture lifecycle.
-- `CameraPreviewView.swift` is 130 LOC and `CameraPreview.swift` is 125 LOC; together they render the live preview.
+- `CameraService.swift` was 640 LOC before this slice and owned session configuration, preview/capture coordination, cropping, focus, camera switching, and capture lifecycle.
+- `CameraService.swift` is now 490 LOC. Image crop/document-detection work has moved out of the camera adapter path and remains in `ImagePreprocessor`.
+- `CameraPreviewView.swift` is now the only live preview wrapper. The unused duplicate `CameraPreview.swift` module was removed.
+- `CameraFraming.swift` defines the current preview/crop policy seam for quote-page and cover capture.
 - `ImageReviewView.swift` is 325 LOC, `QualityOverlayView.swift` is 339 LOC, and `CoverCaptureView.swift` is 479 LOC; these add guidance, review, and capture-specific affordances around the camera flow.
 - The current user symptom is from real device/TestFlight, not a simulator-only defect.
 - Simulator smoke is still useful for navigation and UI layout, but real device verification is required for focal length, preview gravity, and capture framing.
@@ -29,15 +31,15 @@ This matters because extraction quality now depends on the photographed page ima
 
 ## Acceptance Criteria
 
-- [ ] Characterize current preview framing before production edits, including screenshots or notes from simulator and at least one real-device/TestFlight observation.
-- [ ] Document the expected camera framing contract for quote capture: whole marked region visible, margin marks included, line endings included, and no hidden preview/capture crop mismatch.
+- [x] Characterize current preview framing before production edits, including screenshots or notes from simulator and at least one real-device/TestFlight observation.
+- [x] Document the expected camera framing contract for quote capture: whole marked region visible, margin marks included, line endings included, and no hidden preview/capture crop mismatch.
 - [ ] The camera opening state no longer feels artificially zoomed compared with the default iPhone camera for the same lens where possible.
-- [ ] Preview framing and captured-image crop align: what the user frames is what extraction receives.
+- [x] Preview framing and captured-image crop align: what the user frames is what extraction receives.
 - [ ] Quote capture guidance tells the user how to frame a full marked passage without relying on explanatory copy elsewhere in the app.
 - [ ] Guidance covers underlines, small brackets/ticks, and vertical margin lines.
 - [ ] Cover capture remains usable and does not regress while quote-capture framing is improved.
-- [ ] Camera changes are covered by characterization tests around any extracted framing/crop module before production behaviour changes.
-- [ ] Simulator smoke covers opening the camera, reviewing a captured page, and reaching extraction review.
+- [x] Camera changes are covered by characterization tests around any extracted framing/crop module before production behaviour changes.
+- [x] Simulator smoke covers opening the camera, reviewing a captured page, and reaching extraction review.
 - [ ] Real-device/TestFlight smoke confirms preview framing and capture quality before the next release candidate is treated as accepted.
 
 ## TDD / Refactor Plan
@@ -48,6 +50,52 @@ This matters because extraction quality now depends on the photographed page ima
 4. Move guidance state into a focused module or view model so the camera views do not own extraction policy.
 5. Keep `CameraService` as the adapter for AVFoundation session/capture operations, with UI-facing framing decisions kept outside raw capture plumbing where possible.
 6. Verify quote capture and cover capture through simulator smoke, then confirm real-device framing through TestFlight.
+
+## Progress
+
+2026-06-07:
+
+- Added `CameraFramingProfile` and `CameraFramingGeometry` as the first deep seam for capture preview/crop policy.
+- Quote-page capture and batch capture now use a full-frame preview profile (`resizeAspect`) and do not apply a hidden aspect-fill preview crop before extraction.
+- Cover capture keeps the prior aspect-fill crop behavior via the cover profile, but the crop now runs through `ImagePreprocessor` off the main actor.
+- Removed the unused duplicate `CameraPreview.swift` module.
+- Removed unused crop/document-detection helpers from `CameraService`, reducing it from 640 LOC to 490 LOC.
+- Updated `scripts/fix_project.py` so project repair does not re-add the deleted preview wrapper.
+
+## Verification Results
+
+Focused unit tests:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/CameraFramingProfileTests \
+  -only-testing:BookQuotesTests/ImagePreprocessorTests \
+  -only-testing:BookQuotesTests/CameraServiceTests
+```
+
+Result:
+
+- Passed.
+
+Simulator smoke:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testImageReview_ShowsQualityIndicator \
+  -only-testing:BookQuotesUITests/BatchCaptureFlowTests/testBatchCapture_CapturePhoto_IncrementsCounter \
+  -only-testing:BookQuotesUITests/CoverCaptureFlowTests/testCoverCapture_CropAccept_DismissesReviewBeforeProcessing
+
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes
+```
+
+Result:
+
+- Passed.
+
+Remaining verification:
+
+- Real-device/TestFlight preview-framing check is still required because simulator mock camera cannot validate actual lens/focal-length feel.
 
 ## Related Issues
 

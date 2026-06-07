@@ -21,6 +21,7 @@ struct BatchCaptureView: View {
     @State private var lifecycleState = BatchCaptureLifecycleState()
     @State private var selectedCapture: PageCapture?
     @StateObject private var milestoneManager = MilestoneManager()
+    private let cameraFramingProfile = CameraFramingProfile.quotePage
 
     // MARK: - Initialization
 
@@ -100,7 +101,7 @@ struct BatchCaptureView: View {
     @ViewBuilder
     private var cameraPreviewLayer: some View {
         ZStack {
-            CameraPreviewView(cameraService: cameraService)
+            CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
 
             if !cameraService.isSessionRunning {
@@ -252,6 +253,7 @@ struct BatchCaptureView: View {
         do {
             let image = try await cameraService.capturePhoto()
             let previewSize = cameraService.currentPreviewSizeForCropping()
+            let cropBehavior = cameraFramingProfile.captureCropBehavior
             let sessionID = session.id
             let qualityScore = currentQuality?.overallScore
 
@@ -259,7 +261,8 @@ struct BatchCaptureView: View {
             // Keep it off the main actor so the capture UI doesn't stall after shutter.
             let (imagePath, thumbnailData, finalQualityScore) = try await Task.detached(priority: .userInitiated) { () throws -> (String, Data, Double?) in
                 var working = image
-                if let previewSize {
+                if cropBehavior == .aspectFillVisibleArea,
+                   let previewSize {
                     working = (try? ImagePreprocessor.cropToAspectFillPreview(working, previewSize: previewSize)) ?? working
                 }
                 working = await ImagePreprocessor.autoCropDocument(working)

@@ -32,6 +32,7 @@ struct QuoteCaptureView: View {
     @State private var errorMessage = ""
     @State private var showExtractionReview = false
     @State private var capturedSession: CaptureSession?
+    private let cameraFramingProfile = CameraFramingProfile.quotePage
 
     // MARK: - Body
 
@@ -121,7 +122,7 @@ struct QuoteCaptureView: View {
     @ViewBuilder
     private var cameraContent: some View {
         if cameraService.isAuthorized {
-            CameraPreviewView(cameraService: cameraService)
+            CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
         } else {
@@ -255,7 +256,8 @@ struct QuoteCaptureView: View {
                 // Crop + document detection can be expensive. Do it off the MainActor so capture doesn't freeze.
                 let prepared = await Task.detached(priority: .userInitiated) { () -> UIImage in
                     var working = image
-                    if let previewSize {
+                    if cameraFramingProfile.captureCropBehavior == .aspectFillVisibleArea,
+                       let previewSize {
                         working = (try? ImagePreprocessor.cropToAspectFillPreview(working, previewSize: previewSize)) ?? working
                     }
                     return await ImagePreprocessor.autoCropDocument(working)

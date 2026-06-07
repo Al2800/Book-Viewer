@@ -23,7 +23,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `011-settings-legal-sheet-activation.md` - closed
 - `012-on-device-mark-aware-quote-extraction.md` - in_progress
 - `013-real-photo-mark-detection-and-quote-windowing.md` - open
-- `014-camera-preview-framing-and-guidance.md` - open
+- `014-camera-preview-framing-and-guidance.md` - in_progress
 
 ## Refactor Rules
 

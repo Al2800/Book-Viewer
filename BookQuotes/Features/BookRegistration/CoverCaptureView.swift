@@ -31,6 +31,7 @@ struct CoverCaptureView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var isProcessing = false
+    private let cameraFramingProfile = CameraFramingProfile.cover
 
     // MARK: - Body
 
@@ -101,7 +102,7 @@ struct CoverCaptureView: View {
     @ViewBuilder
     private var cameraContent: some View {
         if cameraService.isAuthorized {
-            CameraPreviewView(cameraService: cameraService)
+            CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
         } else {
             CameraPermissionView()
@@ -192,7 +193,13 @@ struct CoverCaptureView: View {
 
             do {
                 let image = try await cameraService.capturePhoto()
-                let previewCropped = cameraService.cropToPreviewVisibleArea(image)
+                let previewSize = cameraService.currentPreviewSizeForCropping()
+                let cropBehavior = cameraFramingProfile.captureCropBehavior
+                let previewCropped = await Task.detached(priority: .userInitiated) { () -> UIImage in
+                    guard cropBehavior == .aspectFillVisibleArea,
+                          let previewSize else { return image }
+                    return (try? ImagePreprocessor.cropToAspectFillPreview(image, previewSize: previewSize)) ?? image
+                }.value
                 await MainActor.run {
                     cropLifecycle.presentCapturedImage(normalizeOrientation(previewCropped))
                 }

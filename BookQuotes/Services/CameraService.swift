@@ -1,7 +1,5 @@
 import AVFoundation
-import CoreImage
 import SwiftUI
-import Vision
 
 /// Camera service for capturing book cover and page photos.
 /// Handles AVFoundation session management, permissions, and photo capture.
@@ -165,11 +163,11 @@ final class CameraService: NSObject {
     }
 
     /// Create a preview layer for the camera feed
-    func createPreviewLayer() -> AVCaptureVideoPreviewLayer? {
+    func createPreviewLayer(framingProfile: CameraFramingProfile = .quotePage) -> AVCaptureVideoPreviewLayer? {
         guard let session = captureSession else { return nil }
 
         let layer = AVCaptureVideoPreviewLayer(session: session)
-        layer.videoGravity = .resizeAspectFill
+        layer.videoGravity = framingProfile.previewVideoGravity
         if let connection = layer.connection, connection.isVideoOrientationSupported {
             connection.videoOrientation = .portrait
         }
@@ -293,138 +291,6 @@ final class CameraService: NSObject {
     /// Clear the last captured image
     func clearCapturedImage() {
         capturedImage = nil
-    }
-
-    /// Crop a captured image to match what is visible in the preview layer.
-    /// This keeps the saved photo aligned with the user's framing when the preview is aspect-filled.
-    func cropToPreviewVisibleArea(_ image: UIImage) -> UIImage {
-        guard let previewLayer else { return image }
-
-        let normalized = normalizeImage(image)
-        guard let cgImage = normalized.cgImage else { return image }
-
-        let width = CGFloat(cgImage.width)
-        let height = CGFloat(cgImage.height)
-
-        let previewSize = previewLayer.bounds.size.width > 0 && previewLayer.bounds.size.height > 0
-            ? previewLayer.bounds.size
-            : (lastPreviewSize ?? .zero)
-        guard previewSize.width > 0, previewSize.height > 0 else { return image }
-
-        let targetRatio = previewSize.width / previewSize.height
-        let currentRatio = width / height
-
-        let cropRect: CGRect
-        if currentRatio > targetRatio {
-            let newWidth = height * targetRatio
-            let x = (width - newWidth) / 2.0
-            cropRect = CGRect(x: x, y: 0, width: newWidth, height: height)
-        } else if currentRatio < targetRatio {
-            let newHeight = width / targetRatio
-            let y = (height - newHeight) / 2.0
-            cropRect = CGRect(x: 0, y: y, width: width, height: newHeight)
-        } else {
-            cropRect = CGRect(x: 0, y: 0, width: width, height: height)
-        }
-
-        let safeRect = cropRect.integral.intersection(CGRect(x: 0, y: 0, width: width, height: height))
-        guard let croppedImage = cgImage.cropping(to: safeRect) else { return image }
-
-        return UIImage(cgImage: croppedImage, scale: normalized.scale, orientation: .up)
-    }
-
-    /// Crop a captured image to a normalized rect (0-1) relative to the image bounds.
-    /// Useful for aligning a UI guide frame with the final captured image.
-    func cropToNormalizedRect(_ image: UIImage, normalizedRect: CGRect) -> UIImage {
-        let normalized = normalizeImage(image)
-        guard let cgImage = normalized.cgImage else { return image }
-
-        let width = CGFloat(cgImage.width)
-        let height = CGFloat(cgImage.height)
-
-        let clamped = clampNormalizedRect(normalizedRect)
-        guard clamped.width > 0, clamped.height > 0 else { return image }
-
-        let cropRect = CGRect(
-            x: clamped.minX * width,
-            y: clamped.minY * height,
-            width: clamped.width * width,
-            height: clamped.height * height
-        )
-
-        let safeRect = cropRect.integral.intersection(CGRect(x: 0, y: 0, width: width, height: height))
-        guard let croppedImage = cgImage.cropping(to: safeRect) else { return image }
-
-        return UIImage(cgImage: croppedImage, scale: normalized.scale, orientation: .up)
-    }
-
-    private func clampNormalizedRect(_ rect: CGRect) -> CGRect {
-        let normalized = rect.standardized
-        let minX = max(0, min(1, normalized.minX))
-        let minY = max(0, min(1, normalized.minY))
-        let maxX = max(minX, min(1, normalized.maxX))
-        let maxY = max(minY, min(1, normalized.maxY))
-        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
-    }
-
-    /// Attempt to auto-crop a document/page by detecting the largest rectangle.
-    /// Falls back to the original image if no rectangle is detected.
-    func autoCropDocument(_ image: UIImage) async -> UIImage {
-        guard !isMockCameraMode else { return image }
-
-        let normalized = normalizeImage(image)
-        guard let cgImage = normalized.cgImage else { return image }
-        let ciImage = CIImage(cgImage: cgImage)
-        let extent = ciImage.extent
-
-        return await withCheckedContinuation { continuation in
-            let request = VNDetectRectanglesRequest { request, _ in
-                guard let observation = (request.results as? [VNRectangleObservation])?.first else {
-                    continuation.resume(returning: image)
-                    return
-                }
-
-                let width = extent.width
-                let height = extent.height
-
-                let topLeft = CGPoint(x: observation.topLeft.x * width, y: observation.topLeft.y * height)
-                let topRight = CGPoint(x: observation.topRight.x * width, y: observation.topRight.y * height)
-                let bottomLeft = CGPoint(x: observation.bottomLeft.x * width, y: observation.bottomLeft.y * height)
-                let bottomRight = CGPoint(x: observation.bottomRight.x * width, y: observation.bottomRight.y * height)
-
-                let corrected = ciImage.applyingFilter(
-                    "CIPerspectiveCorrection",
-                    parameters: [
-                        "inputTopLeft": CIVector(cgPoint: topLeft),
-                        "inputTopRight": CIVector(cgPoint: topRight),
-                        "inputBottomLeft": CIVector(cgPoint: bottomLeft),
-                        "inputBottomRight": CIVector(cgPoint: bottomRight)
-                    ]
-                )
-
-                let context = CIContext(options: [.useSoftwareRenderer: false])
-                if let output = context.createCGImage(corrected, from: corrected.extent) {
-                    let result = UIImage(cgImage: output, scale: normalized.scale, orientation: .up)
-                    continuation.resume(returning: result)
-                } else {
-                    continuation.resume(returning: image)
-                }
-            }
-
-            request.maximumObservations = 1
-            request.minimumConfidence = 0.6
-            request.minimumAspectRatio = 0.5
-            request.minimumSize = 0.3
-
-            let handler = VNImageRequestHandler(cgImage: cgImage, orientation: .up, options: [:])
-            DispatchQueue.global(qos: .userInitiated).async {
-                do {
-                    try handler.perform([request])
-                } catch {
-                    continuation.resume(returning: image)
-                }
-            }
-        }
     }
 
     // MARK: - Camera Switching
@@ -620,21 +486,5 @@ extension CameraService {
 
         // Compress to JPEG
         return resizedImage.jpegData(compressionQuality: quality)
-    }
-}
-
-// MARK: - Image Normalization
-
-private extension CameraService {
-    func normalizeImage(_ image: UIImage) -> UIImage {
-        guard image.imageOrientation != .up else { return image }
-
-        let format = UIGraphicsImageRendererFormat.default()
-        format.scale = image.scale
-        format.opaque = true
-
-        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
-            image.draw(in: CGRect(origin: .zero, size: image.size))
-        }
     }
 }

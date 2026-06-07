@@ -28,7 +28,7 @@ MISSING_FILES = [
     "BookQuotes/Components/SkeletonView.swift",
     "BookQuotes/Components/CaptureButton.swift",
     "BookQuotes/Components/CameraPreviewView.swift",
-    "BookQuotes/Components/CameraPreview.swift",
+    "BookQuotes/Features/Capture/CameraFraming.swift",
     "BookQuotes/Components/HeartBurstButton.swift",
     "BookQuotes/Components/MilestoneCelebration.swift",
     "BookQuotes/Services/UITestDataSeeder.swift",

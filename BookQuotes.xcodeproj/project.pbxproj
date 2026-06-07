@@ -81,7 +81,9 @@
 		CF6400000000000000000001 /* BatchCaptureLifecycleState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6400000000000000000002 /* BatchCaptureLifecycleState.swift */; };
 		CF6500000000000000000001 /* BatchCaptureSupplementaryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6500000000000000000002 /* BatchCaptureSupplementaryViews.swift */; };
 		CF10A0000000000000000001 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF10A0000000000000000002 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift */; };
+		CF1400000000000000000001 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1400000000000000000002 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift */; };
 		CF10A0000000000000000003 /* CaptureFlowState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF10A0000000000000000004 /* CaptureFlowState.swift */; };
+		CF1410000000000000000001 /* CameraFraming.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1410000000000000000002 /* CameraFraming.swift */; };
 		CF5100000000000000000001 /* CaptureModeOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5100000000000000000002 /* CaptureModeOption.swift */; };
 		CF5100000000000000000003 /* CaptureModeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5100000000000000000004 /* CaptureModeSelectionView.swift */; };
 		CF5100000000000000000005 /* BookSelectionForCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5100000000000000000006 /* BookSelectionForCaptureView.swift */; };
@@ -124,7 +126,6 @@
 			A7B8C9D0E1F2A3B4C5D6E706 /* DesignSystemInteractionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C8D9E0F1A2B3C4D5E6F706 /* DesignSystemInteractionHelpers.swift */; };
 			A8ZVTSEGYQYANN8AGY4C3Q05 /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DF8XFHXKCIX98FLGKY7LGT /* SearchResultsView.swift */; };
 		AAB1C2D3E4F5A6B7C8D9E0F1 /* SearchDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC1D2E3F4A5B6C7D8E9F0A1 /* SearchDatabase.swift */; };
-		AB909C4AA477C9E76DEA97B8 /* BookQuotes/Components/CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7396E2803863BEE4A03E12A /* BookQuotes/Components/CameraPreview.swift */; };
 		ABB2C3D4E5F6A7B8C9D0E1F2 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC2D3E4F5A6B7C8D9E0F1A2 /* SearchService.swift */; };
 		ACB3C4D5E6F7A8B9C0D1E2F3 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC3D4E5F6A7B8C9D0E1F2A3 /* CameraService.swift */; };
 		ADB4C5D6E7F8A9B0C1D2E3F4 /* ISBNScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC4D5E6F7A8B9C0D1E2F3A4 /* ISBNScanner.swift */; };
@@ -321,7 +322,6 @@
 		9C03C30B949544460092A9E6 /* BookQuotesUITests/Infrastructure/UITestLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Infrastructure/UITestLogger.swift; sourceTree = SOURCE_ROOT; };
 		9EC024DFEF298BADEC2530C7 /* BookQuotes/Features/Subscription/SubscriptionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Subscription/SubscriptionStatusView.swift; sourceTree = SOURCE_ROOT; };
 		A1B3IHMQSW47HL2QQKUKIAV6 /* BookDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailView.swift; sourceTree = "<group>"; };
-		A7396E2803863BEE4A03E12A /* BookQuotes/Components/CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Components/CameraPreview.swift; sourceTree = SOURCE_ROOT; };
 		AA1BB2CC3DD4EE5FF6AA7BB8 /* BookQuotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesApp.swift; sourceTree = "<group>"; };
 		ADED206AA27CA2046239729B /* BookQuotesTests/Unit/Services/CaptureQueueManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Services/CaptureQueueManagerTests.swift; sourceTree = SOURCE_ROOT; };
 		AE10235106FF4BACE395DC24 /* BookQuotes/Features/Subscription/PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Subscription/PaywallView.swift; sourceTree = SOURCE_ROOT; };
@@ -443,9 +443,11 @@
 			CF6100000000000000000002 /* ExtractionReviewQuoteState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewQuoteState.swift; sourceTree = "<group>"; };
 			CF6200000000000000000002 /* ExtractionReviewSupplementaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewSupplementaryViews.swift; sourceTree = "<group>"; };
 			CF6400000000000000000002 /* BatchCaptureLifecycleState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchCaptureLifecycleState.swift; sourceTree = "<group>"; };
-			CF6500000000000000000002 /* BatchCaptureSupplementaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchCaptureSupplementaryViews.swift; sourceTree = "<group>"; };
-			CF10A0000000000000000002 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift; sourceTree = SOURCE_ROOT; };
-			CF10A0000000000000000004 /* CaptureFlowState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureFlowState.swift; sourceTree = "<group>"; };
+		CF6500000000000000000002 /* BatchCaptureSupplementaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchCaptureSupplementaryViews.swift; sourceTree = "<group>"; };
+		CF10A0000000000000000002 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift; sourceTree = SOURCE_ROOT; };
+		CF1400000000000000000002 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift; sourceTree = SOURCE_ROOT; };
+		CF10A0000000000000000004 /* CaptureFlowState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureFlowState.swift; sourceTree = "<group>"; };
+		CF1410000000000000000002 /* CameraFraming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraFraming.swift; sourceTree = "<group>"; };
 			CF5100000000000000000002 /* CaptureModeOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureModeOption.swift; sourceTree = "<group>"; };
 			CF5100000000000000000004 /* CaptureModeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureModeSelectionView.swift; sourceTree = "<group>"; };
 			CF5100000000000000000006 /* BookSelectionForCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSelectionForCaptureView.swift; sourceTree = "<group>"; };
@@ -717,7 +719,6 @@
 				D5898B9D75AE45FAD09257E1 /* BookQuotes/Components/SkeletonView.swift */,
 				51BC0C35E2D6D878FA276F97 /* BookQuotes/Components/CaptureButton.swift */,
 				4DBCAE300CFFAB311A81D400 /* BookQuotes/Components/CameraPreviewView.swift */,
-				A7396E2803863BEE4A03E12A /* BookQuotes/Components/CameraPreview.swift */,
 				923C6A3191AD1EAEA4B100D8 /* BookQuotes/Components/HeartBurstButton.swift */,
 				D0022F857272823B5DA1DEDB /* BookQuotes/Components/MilestoneCelebration.swift */,
 				312B2617EBBC91BFA3A951D0 /* BookQuotes/Services/UITestDataSeeder.swift */,
@@ -764,6 +765,7 @@
 					CF60A0000000000000000002 /* BookQuotesTests/Unit/QuoteCapture/ExtractionReviewQuoteStateTests.swift */,
 					CF6300000000000000000002 /* BookQuotesTests/Unit/QuoteCapture/BatchCaptureLifecycleStateTests.swift */,
 					CF10A0000000000000000002 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift */,
+					CF1400000000000000000002 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift */,
 					FDFEF052A0DB54034BD31DE3 /* BookQuotesTests/Unit/Models/BookModelTests.swift */,
 				47A264CFD91F668252A16707 /* BookQuotesTests/Unit/Models/CaptureQueueItemTests.swift */,
 				5030BDEBB0532D9E8BCE31FE /* BookQuotesTests/Unit/Models/CaptureSessionTests.swift */,
@@ -858,6 +860,7 @@
 			isa = PBXGroup;
 			children = (
 				CF10A0000000000000000004 /* CaptureFlowState.swift */,
+				CF1410000000000000000002 /* CameraFraming.swift */,
 				CF5100000000000000000002 /* CaptureModeOption.swift */,
 				CF5100000000000000000004 /* CaptureModeSelectionView.swift */,
 				CF5100000000000000000006 /* BookSelectionForCaptureView.swift */,
@@ -1088,6 +1091,7 @@
 				CF60A0000000000000000001 /* BookQuotesTests/Unit/QuoteCapture/ExtractionReviewQuoteStateTests.swift in Sources */,
 				CF6300000000000000000001 /* BookQuotesTests/Unit/QuoteCapture/BatchCaptureLifecycleStateTests.swift in Sources */,
 				CF10A0000000000000000001 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift in Sources */,
+				CF1400000000000000000001 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift in Sources */,
 				6F792B8AB8B9DA7862D12213 /* BookQuotesTests/Unit/Models/BookModelTests.swift in Sources */,
 				63A9F00B7A5102A6E7FF1575 /* BookQuotesTests/Unit/Models/CaptureQueueItemTests.swift in Sources */,
 				5125CED0ACEDECC0E3E81B7C /* BookQuotesTests/Unit/Models/CaptureSessionTests.swift in Sources */,
@@ -1198,6 +1202,7 @@
 				GV2RJMKHMTSE058BWJ9VVSN9 /* BatchCaptureView.swift in Sources */,
 				D1IXE1SHOXE3NFCG1IG2Q8UQ /* DuplicateWarningSheet.swift in Sources */,
 				CF10A0000000000000000003 /* CaptureFlowState.swift in Sources */,
+				CF1410000000000000000001 /* CameraFraming.swift in Sources */,
 				CF5100000000000000000001 /* CaptureModeOption.swift in Sources */,
 				CF5100000000000000000003 /* CaptureModeSelectionView.swift in Sources */,
 				CF5100000000000000000005 /* BookSelectionForCaptureView.swift in Sources */,
@@ -1262,7 +1267,6 @@
 				8ECB78B0B61F52C18E3A58D2 /* BookQuotes/Components/SkeletonView.swift in Sources */,
 				598ED41C555670E86BDDE523 /* BookQuotes/Components/CaptureButton.swift in Sources */,
 				75F09387E128D23B8A699370 /* BookQuotes/Components/CameraPreviewView.swift in Sources */,
-				AB909C4AA477C9E76DEA97B8 /* BookQuotes/Components/CameraPreview.swift in Sources */,
 				BCB0213A4B7FDA1D07889C6B /* BookQuotes/Components/HeartBurstButton.swift in Sources */,
 				DB4D57C138F34E2B48C30236 /* BookQuotes/Components/MilestoneCelebration.swift in Sources */,
 				EC850FCAF556FD3F8A1D7997 /* BookQuotes/Services/UITestDataSeeder.swift in Sources */,

@@ -7,6 +7,7 @@ import SwiftUI
 /// Displays the live camera feed from a CameraService.
 struct CameraPreviewView: UIViewRepresentable {
     let cameraService: CameraService
+    var framingProfile: CameraFramingProfile = .quotePage
 
     func makeUIView(context: Context) -> CameraPreviewUIView {
         let view = CameraPreviewUIView()
@@ -17,9 +18,11 @@ struct CameraPreviewView: UIViewRepresentable {
     func updateUIView(_ uiView: CameraPreviewUIView, context: Context) {
         // Configure preview layer from camera service
         if uiView.previewLayer == nil {
-            if let layer = cameraService.createPreviewLayer() {
+            if let layer = cameraService.createPreviewLayer(framingProfile: framingProfile) {
                 uiView.previewLayer = layer
             }
+        } else {
+            uiView.previewLayer?.videoGravity = framingProfile.previewVideoGravity
         }
     }
 
@@ -53,13 +56,14 @@ struct CameraPreviewView: UIViewRepresentable {
 /// Camera preview with tap-to-focus capability.
 struct CameraPreviewViewWithFocus: View {
     let cameraService: CameraService
+    var framingProfile: CameraFramingProfile = .quotePage
 
     @State private var focusPoint: CGPoint?
     @State private var showFocusIndicator = false
 
     var body: some View {
         GeometryReader { geometry in
-            CameraPreviewView(cameraService: cameraService)
+            CameraPreviewView(cameraService: cameraService, framingProfile: framingProfile)
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onEnded { value in
