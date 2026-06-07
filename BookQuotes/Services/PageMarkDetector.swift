@@ -8,20 +8,37 @@ struct PageMarkDetector: PageMarkDetecting {
         }
 
         let bitmap = try MarkBitmap(cgImage: cgImage)
-        let rowRuns = bitmap.markedRowRuns()
-        let regions = mergeRowRuns(rowRuns)
+        let coloredRegions = mergeRowRuns(bitmap.coloredMarkedRowRuns())
+            .compactMap(coloredMark)
+        let neutralUnderlineRegions = mergeRowRuns(bitmap.neutralUnderlineRowRuns())
+            .compactMap(neutralUnderlineMark)
 
-        return regions.compactMap { region in
-            let rect = region.rect
-            guard rect.width >= 40, rect.height >= 2 else { return nil }
+        return coloredRegions + neutralUnderlineRegions
+    }
 
-            let type = classify(rect)
-            return DetectedPageMark(
-                type: type,
-                boundingBox: rect,
-                confidence: region.confidence
-            )
-        }
+    private func coloredMark(_ region: MarkRegion) -> DetectedPageMark? {
+        let rect = region.rect
+        guard rect.width >= 40, rect.height >= 2 else { return nil }
+
+        return DetectedPageMark(
+            type: classify(rect),
+            boundingBox: rect,
+            confidence: region.confidence
+        )
+    }
+
+    private func neutralUnderlineMark(_ region: MarkRegion) -> DetectedPageMark? {
+        let rect = region.rect
+        guard rect.width >= 60 else { return nil }
+        guard rect.height >= 1 && rect.height <= 22 else { return nil }
+        guard rect.width / max(rect.height, 1) >= 8 else { return nil }
+        guard region.density >= 0.2 else { return nil }
+
+        return DetectedPageMark(
+            type: .underline,
+            boundingBox: rect,
+            confidence: min(0.8, max(0.5, region.density))
+        )
     }
 
     private func classify(_ rect: CGRect) -> MarkingType {
@@ -72,7 +89,11 @@ private struct MarkRegion {
     private var rowCount: Int
 
     var confidence: Double {
-        min(0.95, max(0.55, Double(markedPixelCount) / max(rect.width * rect.height, 1)))
+        min(0.95, max(0.55, density))
+    }
+
+    var density: Double {
+        Double(markedPixelCount) / max(rect.width * rect.height, 1)
     }
 
     init(run: MarkRowRun) {
@@ -121,7 +142,15 @@ private struct MarkBitmap {
         pixels = buffer
     }
 
-    func markedRowRuns() -> [MarkRowRun] {
+    func coloredMarkedRowRuns() -> [MarkRowRun] {
+        markedRowRuns(where: isColoredMarkPixel)
+    }
+
+    func neutralUnderlineRowRuns() -> [MarkRowRun] {
+        markedRowRuns(where: isNeutralDarkMarkPixel)
+    }
+
+    private func markedRowRuns(where isMarked: (Int, Int) -> Bool) -> [MarkRowRun] {
         var runs: [MarkRowRun] = []
         let minimumRunWidth = 24
 
@@ -130,7 +159,7 @@ private struct MarkBitmap {
             var markedCount = 0
 
             for x in 0..<width {
-                if isMarkPixel(x: x, y: y) {
+                if isMarked(x, y) {
                     if runStart == nil {
                         runStart = x
                     }
@@ -152,7 +181,7 @@ private struct MarkBitmap {
         return runs
     }
 
-    private func isMarkPixel(x: Int, y: Int) -> Bool {
+    private func isColoredMarkPixel(x: Int, y: Int) -> Bool {
         let index = (y * width + x) * 4
         let red = Int(pixels[index])
         let green = Int(pixels[index + 1])
@@ -166,5 +195,21 @@ private struct MarkBitmap {
         let blueOrGreenMargin = (blue > 150 || green > 150) && red < 160
 
         return redUnderline || yellowHighlight || blueOrGreenMargin
+    }
+
+    private func isNeutralDarkMarkPixel(x: Int, y: Int) -> Bool {
+        let index = (y * width + x) * 4
+        let red = Int(pixels[index])
+        let green = Int(pixels[index + 1])
+        let blue = Int(pixels[index + 2])
+        let alpha = Int(pixels[index + 3])
+
+        guard alpha > 80 else { return false }
+
+        let brightest = max(red, green, blue)
+        let darkest = min(red, green, blue)
+        let saturation = brightest - darkest
+
+        return brightest < 115 && saturation < 35
     }
 }

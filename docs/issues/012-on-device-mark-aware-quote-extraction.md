@@ -143,6 +143,14 @@ None - can start immediately.
 - Updated mock-camera single quote image to draw readable underlined text so simulator smoke exercises Vision OCR instead of a cloud/mock result.
 - Updated legal copy to distinguish on-device quote extraction from cloud-assisted cover/fallback extraction.
 
+2026-06-07 follow-up:
+
+- Build 25 TestFlight still failed on a real page with `No marked passages were found in the image`.
+- The message confirms the app reached the on-device path, but the local mark detector did not identify any mark regions.
+- Added graphite/dark underline characterization for low-saturation pencil-style marks.
+- Added a plain printed text negative characterization so widening graphite detection does not make unmarked pages extract quotes.
+- Expanded `PageMarkDetector` with a separate neutral underline path for thin, long, low-saturation marks.
+
 ## Verification Results
 
 Focused on-device extractor tracer:
@@ -181,9 +189,20 @@ Result:
 - Passed.
 - Runtime: `55.352` seconds.
 
+Graphite underline follow-up:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests
+```
+
+Result:
+
+- Passed.
+
 ## Residual Risk
 
 - This is a first tracer bullet, not the full issue.
-- Real photographed pages with pencil underlines, faint highlights, curved pages, mixed lighting, and handwritten margin notes still need characterization fixtures.
+- Real photographed pages with faint highlights, curved pages, mixed lighting, handwritten margin notes, and actual iPhone captures still need characterization fixtures.
+- The current graphite support is synthetic and should be validated against the failing real page photo before shipping as complete.
 - Batch capture and capture queue paths may still contain cloud/Gemini extraction placeholders and should be reviewed before declaring quote extraction fully on-device across the whole app.
 - A small local model has not been evaluated yet; the current slice is deterministic OCR plus geometry only.
