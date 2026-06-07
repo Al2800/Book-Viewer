@@ -14,7 +14,7 @@ preview_id = "4f58e38410a74e30abe248160c5994d6"
 # Secrets (set via `wrangler secret put`)
 # - GEMINI_API_KEY
 # - HF_API_TOKEN
-# - HF_MODEL_ID (optional variable; defaults to Qwen/Qwen2.5-VL-7B-Instruct:preferred)
+# - HF_MODEL_ID (optional variable; defaults to Qwen/Qwen2.5-VL-72B-Instruct:preferred)
 # - APPLE_TEAM_ID
 # - JWT_SECRET
 # - APPLE_BUNDLE_ID

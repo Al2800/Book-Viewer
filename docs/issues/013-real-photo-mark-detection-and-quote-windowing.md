@@ -85,8 +85,8 @@ Still not allowed:
 
 Hosted-model evaluation candidates:
 
-- Qwen2.5-VL 7B Instruct through Hugging Face. This is the preferred first candidate because the user already has Hugging Face Pro and the model is an open image-text-to-text model.
-- Qwen2.5-VL 7B AWQ through Hugging Face if the full 7B route is too slow or expensive.
+- Qwen2.5-VL 72B Instruct through Hugging Face. This is the current preferred candidate because it detected the vertical margin line in a non-verbatim probe of the failing real page, while the prior 7B default was unsupported by the enabled Hugging Face providers.
+- Qwen3-VL 30B/235B through Hugging Face were evaluated as candidates, but the same non-verbatim probe did not detect the vertical margin line on the failing real page.
 - Mistral OCR-style document endpoint for OCR/bounding-box comparison, not as the final quote selector unless it can identify marks reliably.
 - Cloudflare Workers AI vision-capable non-frontier/open models if the existing backend route is retained.
 
@@ -95,7 +95,7 @@ Preferred architecture:
 ```text
 iPhone capture
 -> BookQuotes proxy
--> proxy calls Hugging Face Qwen2.5-VL 7B Instruct
+-> proxy calls Hugging Face Qwen2.5-VL 72B Instruct
 -> proxy returns normalized quote-review JSON
 -> if the model fails or returns no usable quotes: fall back to on-device OCR and mark detector
 -> iPhone shows editable review cards
@@ -167,6 +167,8 @@ Hosted-model acceptance criteria:
 - Wired `ExtractionReviewView` to the model-assisted extraction seam without adding provider logic to the view.
 - Changed `ModelAssistedQuoteExtractor` to call the remote Hugging Face-backed model before local OCR. Local OCR is now fallback only when the model fails or returns no usable quotes.
 - Tightened the quote extraction prompt for bracketed or side-lined paragraphs: extract every readable line inside the bracket/side-line span, and do not collapse the result to only an underline inside that marked area.
+- Verified after build 29 that production had `HF_API_TOKEN` but did not have `HF_MODEL_ID`, so the Worker used the old default `Qwen/Qwen2.5-VL-7B-Instruct:preferred`. A direct Hugging Face router probe showed that model is unsupported by the enabled providers, causing build 29 to fall back to OCR.
+- Set Cloudflare production `HF_MODEL_ID` to `Qwen/Qwen2.5-VL-72B-Instruct:preferred`, which detected both underline and vertical margin-line markings in a non-verbatim probe of the failing page.
 
 ## Verification Results
 

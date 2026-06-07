@@ -1,7 +1,7 @@
 import type { GeminiRequest } from './types';
 
 const HUGGING_FACE_ROUTER_URL = 'https://router.huggingface.co/v1/chat/completions';
-const DEFAULT_MODEL_ID = 'Qwen/Qwen2.5-VL-7B-Instruct:preferred';
+const DEFAULT_MODEL_ID = 'Qwen/Qwen2.5-VL-72B-Instruct:preferred';
 
 const QUOTE_EXTRACTION_SYSTEM_PROMPT = [
   'You extract marked passages from photographed book pages.',

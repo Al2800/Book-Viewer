@@ -8,7 +8,7 @@ This runbook describes how BookQuotes uses Hugging Face model inference through 
 iPhone app
 -> api.bookquotes.uk Cloudflare Worker
 -> Hugging Face router
--> Qwen/Qwen2.5-VL-7B-Instruct
+-> Qwen/Qwen2.5-VL-72B-Instruct
 -> Cloudflare Worker
 -> iPhone quote review
 ```
@@ -62,10 +62,10 @@ HF_MODEL_ID
 If `HF_MODEL_ID` is not set, the backend defaults to:
 
 ```text
-Qwen/Qwen2.5-VL-7B-Instruct:preferred
+Qwen/Qwen2.5-VL-72B-Instruct:preferred
 ```
 
-The `:preferred` suffix tells Hugging Face's OpenAI-compatible router to select the first available provider based on the account's provider preference order.
+The `:preferred` suffix tells Hugging Face's OpenAI-compatible router to select the first available provider based on the account's provider preference order. Build 29 depends on `Qwen/Qwen2.5-VL-72B-Instruct:preferred` because the previous 7B default was not supported by the enabled Hugging Face providers and caused the app to fall back to local OCR.
 
 ## Billing
 
@@ -153,4 +153,5 @@ Last verified production Worker deploy:
 Version ID: 68c35e56-9836-42f4-aa0f-0a79439d6290
 Route: api.bookquotes.uk/*
 HF_API_TOKEN: configured as a Cloudflare production secret
+HF_MODEL_ID: configured as Qwen/Qwen2.5-VL-72B-Instruct:preferred
 ```

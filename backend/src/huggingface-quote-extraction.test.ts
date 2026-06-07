@@ -32,10 +32,10 @@ function makeGeminiRequest(): GeminiRequest {
 describe('buildHuggingFaceQuoteRequest', () => {
   it('builds a vision chat-completions payload from the quote extraction request', () => {
     const body = buildHuggingFaceQuoteRequest(makeGeminiRequest(), {
-      modelId: 'Qwen/Qwen2.5-VL-7B-Instruct:preferred',
+      modelId: 'Qwen/Qwen2.5-VL-72B-Instruct:preferred',
     });
 
-    expect(body.model).toBe('Qwen/Qwen2.5-VL-7B-Instruct:preferred');
+    expect(body.model).toBe('Qwen/Qwen2.5-VL-72B-Instruct:preferred');
     expect(body.temperature).toBe(0.1);
     expect(body.response_format).toEqual({ type: 'json_object' });
     expect(body.messages).toHaveLength(2);
@@ -117,7 +117,7 @@ describe('proxyToHuggingFaceQuoteExtractor', () => {
 
     const response = await proxyToHuggingFaceQuoteExtractor(makeGeminiRequest(), {
       token: 'hf-test-token',
-      modelId: 'Qwen/Qwen2.5-VL-7B-Instruct:preferred',
+      modelId: 'Qwen/Qwen2.5-VL-72B-Instruct:preferred',
     });
 
     expect(response.status).toBe(200);

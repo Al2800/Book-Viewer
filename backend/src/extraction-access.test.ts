@@ -174,7 +174,7 @@ describe('extraction access policy', () => {
       makeEnv({
         ALLOW_AUTHENTICATED_EXTRACTION: 'true',
         HF_API_TOKEN: 'hf-test-token',
-        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-7B-Instruct:preferred',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:preferred',
       })
     );
     const body = await response.json() as {
