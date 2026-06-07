@@ -52,6 +52,15 @@ final class QuoteExtractionPromptBuilderTests: XCTestCase {
         XCTAssertTrue(prompt.contains("do not return an empty quotes array"))
     }
 
+    func testBuildPromptTreatsBracketedParagraphsAsCompleteMarkedPassages() {
+        let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: [])
+            .lowercased()
+
+        XCTAssertTrue(prompt.contains("bracketed or side-lined paragraph"))
+        XCTAssertTrue(prompt.contains("every readable line"))
+        XCTAssertTrue(prompt.contains("do not limit extraction to the underlined sentence"))
+    }
+
     func testBuildCoverExtractionPromptRejectsPraiseAndMarketingCopyAsMetadata() {
         let prompt = QuoteExtractionPromptBuilder.buildCoverExtractionPrompt()
             .lowercased()

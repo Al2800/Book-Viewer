@@ -19,8 +19,8 @@ The iOS app never stores a Hugging Face token. It sends authenticated requests t
 
 1. The user captures a quote page in the iOS app.
 2. `ExtractionReviewView` processes pending page captures through `ModelAssistedQuoteExtractor`.
-3. `ModelAssistedQuoteExtractor` runs `OnDeviceQuoteExtractor` first.
-4. If the local result is empty or below the confidence threshold, it calls `RemoteModelQuoteExtractor`.
+3. `ModelAssistedQuoteExtractor` calls `RemoteModelQuoteExtractor` first. Model-assisted extraction is the primary path for quote capture because OCR-only selection misses real-page lines and margin/bracket spans.
+4. If the remote model fails or returns no usable quotes, `ModelAssistedQuoteExtractor` falls back to `OnDeviceQuoteExtractor` so the app can still offer local OCR/manual review when network/model extraction is unavailable.
 5. `RemoteModelQuoteExtractor` sends the same Gemini-shaped request body to:
 
 ```text

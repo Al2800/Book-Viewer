@@ -181,27 +181,27 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertNotNil(body["contents"])
     }
 
-    func testModelAssistedExtractorFallsBackWhenLocalConfidenceIsLow() async throws {
-        let local = StubQuoteExtractor(result: QuoteExtractionResult(
+    func testModelAssistedExtractorUsesRemoteModelBeforeLocalOCR() async throws {
+        let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
-                    text: "partial local fragment",
+                    text: "confident but incomplete local OCR fragment",
                     pageNumber: nil,
                     marginNote: nil,
                     markingType: "underline",
-                    confidence: 0.42
+                    confidence: 0.95
                 )
             ],
             pageNumber: nil,
-            processingNotes: "low confidence local"
+            processingNotes: "local OCR"
         ))
-        let remote = StubQuoteExtractor(result: QuoteExtractionResult(
+        let remote = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
-                    text: "complete model-assisted quote",
+                    text: "complete model-assisted quote across the bracketed paragraph",
                     pageNumber: nil,
                     marginNote: nil,
-                    markingType: "underline",
+                    markingType: "bracket",
                     confidence: 0.91
                 )
             ],
@@ -210,8 +210,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         ))
         let extractor = ModelAssistedQuoteExtractor(
             localExtractor: local,
-            remoteExtractor: remote,
-            minimumLocalConfidence: 0.78
+            remoteExtractor: remote
         )
 
         let result = try await extractor.extractQuotes(
@@ -219,8 +218,41 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             markings: []
         )
 
-        XCTAssertEqual(result.quotes.first?.text, "complete model-assisted quote")
+        XCTAssertEqual(result.quotes.first?.text, "complete model-assisted quote across the bracketed paragraph")
         XCTAssertEqual(result.processingNotes, "model-assisted")
+        XCTAssertEqual(remote.callCount, 1)
+        XCTAssertEqual(local.callCount, 0)
+    }
+
+    func testModelAssistedExtractorFallsBackToLocalOCRWhenRemoteModelFails() async throws {
+        let local = SpyQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "local OCR fallback quote",
+                    pageNumber: nil,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.72
+                )
+            ],
+            pageNumber: nil,
+            processingNotes: "local fallback"
+        ))
+        let remote = SpyQuoteExtractor(error: ExtractionError.networkError(URLError(.timedOut)))
+        let extractor = ModelAssistedQuoteExtractor(
+            localExtractor: local,
+            remoteExtractor: remote
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertEqual(result.quotes.first?.text, "local OCR fallback quote")
+        XCTAssertEqual(result.processingNotes, "local fallback")
+        XCTAssertEqual(remote.callCount, 1)
+        XCTAssertEqual(local.callCount, 1)
     }
 
     func testRealBookFixtureExtractsUnderlinedPassageWhenProvided() async throws {
@@ -247,14 +279,30 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
     }
 }
 
-private struct StubQuoteExtractor: QuoteExtracting {
-    let result: QuoteExtractionResult
+private final class SpyQuoteExtractor: QuoteExtracting {
+    private let result: QuoteExtractionResult?
+    private let error: Error?
+    private(set) var callCount = 0
+
+    init(result: QuoteExtractionResult) {
+        self.result = result
+        self.error = nil
+    }
+
+    init(error: Error) {
+        self.result = nil
+        self.error = error
+    }
 
     func extractQuotes(
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt]
     ) async throws -> QuoteExtractionResult {
-        result
+        callCount += 1
+        if let error {
+            throw error
+        }
+        return try XCTUnwrap(result)
     }
 }
 

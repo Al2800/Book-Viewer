@@ -93,19 +93,20 @@ enum QuoteExtractionPromptBuilder {
         Rules:
         1. Extract COMPLETE marked passages - include full sentences when the marking extends across partial text
         2. For **Margin Line** (vertical line in the margin): capture ALL text aligned with the line, starting where the line begins and stopping exactly where the line ends. If the line spans multiple sentences/paragraphs, include the full span.
-        3. Match marking type to the user's vocabulary above
-        4. If multiple marking types are present on the same passage, use the primary/most prominent one
-        5. Preserve original punctuation and formatting where meaningful
-        6. Transcribe handwritten margin notes accurately - include spelling as written
-        7. Page number: only read a page number if it appears as a standalone number in the page margin/footer/header (top-left, top-right, bottom-left, bottom-right). Never infer from body text (e.g., dates, references, "Falcon 9", chapter numbers). If you are not confident the number is a page number, set pageNumber to null (both at the page level and per-quote).
-        8. Each separate marked passage should be its own quote object
-        9. Set confidence (0.0-1.0) based on extraction accuracy:
+        3. For a bracketed or side-lined paragraph: extract every readable line inside the bracket or side line span, from the top hook/start to the bottom hook/end. If an underline appears inside that bracketed passage, do not limit extraction to the underlined sentence; return the whole bracketed passage.
+        4. Match marking type to the user's vocabulary above
+        5. If multiple marking types are present on the same passage, use the primary/most prominent one
+        6. Preserve original punctuation and formatting where meaningful
+        7. Transcribe handwritten margin notes accurately - include spelling as written
+        8. Page number: only read a page number if it appears as a standalone number in the page margin/footer/header (top-left, top-right, bottom-left, bottom-right). Never infer from body text (e.g., dates, references, "Falcon 9", chapter numbers). If you are not confident the number is a page number, set pageNumber to null (both at the page level and per-quote).
+        9. Each separate marked passage should be its own quote object
+        10. Set confidence (0.0-1.0) based on extraction accuracy:
            - 0.9+ : Clear text, unambiguous marking
            - 0.7-0.9 : Minor uncertainty about boundaries or exact text
            - 0.5-0.7 : Significant uncertainty, text may be partially obscured
            - <0.5 : Low confidence, marking unclear or text hard to read
-        10. If a passage appears intentionally marked but boundaries are uncertain, return best-effort marked text with lower confidence rather than dropping it.
-        11. Do not return an empty quotes array when readable marked text is visible. Only return an empty quotes array when no marked/readable text is visible at all.
+        11. If a passage appears intentionally marked but boundaries are uncertain, return best-effort marked text with lower confidence rather than dropping it.
+        12. Do not return an empty quotes array when readable marked text is visible. Only return an empty quotes array when no marked/readable text is visible at all.
 
         Respond with ONLY valid JSON. No markdown formatting, no code blocks, no explanatory text.
         """

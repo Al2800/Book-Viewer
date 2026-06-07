@@ -29,7 +29,7 @@ enum LegalDocument: String, Identifiable {
                     title: "What We Collect",
                     paragraphs: [
                         "When you sign in with Apple, we receive your Apple-provided identifier and, if Apple shares it, your email address. We use that information to authenticate requests to the BookQuotes service and maintain your subscription access state.",
-                        "When you capture a marked quote page, text extraction runs on-device using Apple Vision OCR and local mark detection. Cover extraction and any explicit cloud fallback may send the image to the BookQuotes proxy and then to Google Gemini for processing. Images are processed in-flight and are not retained after extraction completes.",
+                        "When you capture a marked quote page, the image may be sent to the BookQuotes proxy and then to Hugging Face for model-assisted quote extraction. If remote extraction is unavailable, the app can fall back to Apple Vision OCR and local mark detection on-device. Cover extraction may send the image to the BookQuotes proxy and then to Google Gemini for processing. Images are processed in-flight and are not retained after extraction completes.",
                         "Your books, quotes, tags, and collections are stored on-device. Cloud sync is not enabled in this v1 release."
                     ]
                 ),
@@ -46,8 +46,9 @@ enum LegalDocument: String, Identifiable {
                 LegalDocumentSection(
                     title: "Third-Party Services",
                     bullets: [
-                        "Apple Vision for on-device OCR of marked quote pages",
-                        "Google Gemini for cover extraction and any explicit cloud fallback",
+                        "Hugging Face for model-assisted quote extraction from marked quote pages",
+                        "Apple Vision for on-device OCR fallback of marked quote pages",
+                        "Google Gemini for cover extraction",
                         "Sign in with Apple for secure authentication",
                         "Apple StoreKit for subscription billing, trial eligibility, and purchase management"
                     ]

@@ -18,7 +18,7 @@ Observed user symptom on 2026-06-07:
 - The selected text then crossed awkward OCR fragments and hyphenation: `to the unbeliev- second... does typ- ically slow down`.
 - The app did not pick up a vertical margin line in the page margin.
 
-This means the current on-device path can reach the edit screen, but the mark-detection and mark-to-OCR selection seams are too brittle for real camera pages. OCR/local geometry should remain useful context and offline fallback, but it should not be treated as the primary quality ceiling for quote extraction.
+This means the current on-device path can reach the edit screen, but the mark-detection and mark-to-OCR selection seams are too brittle for real camera pages. OCR/local geometry should remain useful context and offline fallback, but it should not be treated as the primary quality ceiling for quote extraction. As of the 2026-06-07 TestFlight review after build 28, model-assisted extraction should run before OCR because OCR-first selection was still returning partial/missing lines.
 
 ## Current Characterization
 
@@ -40,7 +40,7 @@ This means the current on-device path can reach the edit screen, but the mark-de
 
 - [ ] A real photographed fixture reproduces the bad build 27 output or the missed vertical margin-line case.
 - [ ] A model-assisted extraction route exists for quote capture and is available from TestFlight behind backend configuration.
-- [ ] The model-assisted route is evaluated against real book-page fixtures before becoming the default.
+- [x] The model-assisted route is the default extraction path, with local OCR retained only as fallback when the model fails or returns no usable quotes.
 - [ ] The model-assisted route can identify underlined passages, vertical margin-line marked paragraphs, and multiple marked passages on one page.
 - [ ] The model-assisted route returns strict normalized quote-review JSON, not free-form prose.
 - [ ] The app records whether a quote result came from on-device extraction, model-assisted extraction, or manual entry.
@@ -94,11 +94,10 @@ Preferred architecture:
 
 ```text
 iPhone capture
--> on-device OCR and mark detector
--> if confidence is acceptable: review on-device candidates
--> if confidence is low, no margin mark is found, or user requests higher quality: call BookQuotes proxy
+-> BookQuotes proxy
 -> proxy calls Hugging Face Qwen2.5-VL 7B Instruct
 -> proxy returns normalized quote-review JSON
+-> if the model fails or returns no usable quotes: fall back to on-device OCR and mark detector
 -> iPhone shows editable review cards
 ```
 
@@ -137,7 +136,7 @@ Hosted-model acceptance criteria:
 - [ ] The model path is behind a feature flag or explicit fallback setting.
 - [ ] The model receives the smallest useful image crop, not automatically every full page.
 - [ ] The model returns strict JSON matching the existing review data shape: quote text, mark type, margin note, confidence, and reason.
-- [ ] The deterministic on-device path remains the default.
+- [x] The app prefers hosted-assist before on-device OCR for quote capture.
 - [ ] A/B fixture results compare on-device-only vs hosted-assist for the same real page photos.
 - [ ] The privacy/legal copy states when page images or crops are sent off-device.
 - [ ] The app still works without network access by falling back to editable low-confidence local candidates or manual quote entry.
@@ -164,8 +163,10 @@ Hosted-model acceptance criteria:
 - The Hugging Face token remains backend-only; the iOS app still authenticates only to the BookQuotes proxy.
 - Added `QuoteExtracting` as the quote extraction seam.
 - Added `RemoteModelQuoteExtractor` as the app adapter for `/api/extract-quotes-hf`.
-- Added `ModelAssistedQuoteExtractor` as the policy module: use on-device extraction first, fall back to the model-assisted route when local output is empty or below the confidence threshold.
+- Added `ModelAssistedQuoteExtractor` as the policy module: use remote model-assisted extraction first, fall back to on-device OCR only when remote extraction fails or returns no usable quotes.
 - Wired `ExtractionReviewView` to the model-assisted extraction seam without adding provider logic to the view.
+- Changed `ModelAssistedQuoteExtractor` to call the remote Hugging Face-backed model before local OCR. Local OCR is now fallback only when the model fails or returns no usable quotes.
+- Tightened the quote extraction prompt for bracketed or side-lined paragraphs: extract every readable line inside the bracket/side-line span, and do not collapse the result to only an underline inside that marked area.
 
 ## Verification Results
 
@@ -187,6 +188,20 @@ xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destina
   -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testRemoteModelQuoteExtractorCallsModelAssistedProxyRoute \
   -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testModelAssistedExtractorFallsBackWhenLocalConfidenceIsLow \
   -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes
+```
+
+Result:
+
+- Passed.
+
+Model-first extraction order and bracketed-passage prompt:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testModelAssistedExtractorUsesRemoteModelBeforeLocalOCR \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testModelAssistedExtractorFallsBackToLocalOCRWhenRemoteModelFails \
+  -only-testing:BookQuotesTests/QuoteExtractionPromptBuilderTests/testBuildPromptTreatsBracketedParagraphsAsCompleteMarkedPassages \
+  -only-testing:BookQuotesTests/QuoteExtractionPromptBuilderTests/testBuildPromptRequestsBestEffortMarkedTextWhenBoundariesAreUncertain
 ```
 
 Result:
