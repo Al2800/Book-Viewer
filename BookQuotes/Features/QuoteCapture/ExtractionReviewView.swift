@@ -8,11 +8,10 @@ import SwiftData
 struct ExtractionReviewView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(AuthService.self) private var authService
 
     let session: CaptureSession
     let book: Book
-
-    private let quoteExtractor = OnDeviceQuoteExtractor()
 
     @State private var quoteState = ExtractionReviewQuoteState()
     @State private var selectedPage: PageCapture?
@@ -44,6 +43,13 @@ struct ExtractionReviewView: View {
             isProcessing: isProcessing,
             totalQuoteCount: quoteState.totalQuoteCount,
             captures: session.captures.map(ExtractionReviewCaptureStatusSnapshot.init)
+        )
+    }
+
+    private var quoteExtractor: any QuoteExtracting {
+        ModelAssistedQuoteExtractor(
+            localExtractor: OnDeviceQuoteExtractor(),
+            remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
         )
     }
 

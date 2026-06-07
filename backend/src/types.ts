@@ -5,6 +5,7 @@ export interface Env {
 
   // Secrets
   GEMINI_API_KEY: string;
+  HF_API_TOKEN?: string;
   APPLE_TEAM_ID: string;
   JWT_SECRET: string;
   APPLE_BUNDLE_ID: string;
@@ -16,6 +17,7 @@ export interface Env {
   // Variables
   ENVIRONMENT: string;
   ALLOW_AUTHENTICATED_EXTRACTION?: string;
+  HF_MODEL_ID?: string;
 }
 
 export type SubscriptionStatus =

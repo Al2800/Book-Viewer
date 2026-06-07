@@ -96,6 +96,8 @@
 		ODQ000000000000000000005 /* VisionPageTextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000006 /* VisionPageTextRecognizer.swift */; };
 		ODQ000000000000000000007 /* PageMarkDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000008 /* PageMarkDetector.swift */; };
 		ODQ000000000000000000009 /* QuoteMarkTextSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000010 /* QuoteMarkTextSelector.swift */; };
+		ODQ000000000000000000011 /* RemoteModelQuoteExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000012 /* RemoteModelQuoteExtractor.swift */; };
+		ODQ000000000000000000013 /* ModelAssistedQuoteExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000014 /* ModelAssistedQuoteExtractor.swift */; };
 		8BC41687406BDDC8D6F31F03 /* BookQuotesTests/Performance/SearchPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4BAC1B9719D91D2D9C66B0 /* BookQuotesTests/Performance/SearchPerformanceTests.swift */; };
 		8ECB78B0B61F52C18E3A58D2 /* BookQuotes/Components/SkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5898B9D75AE45FAD09257E1 /* BookQuotes/Components/SkeletonView.swift */; };
 		8I679Y3GA95KE3KNWWRJVP8R /* LibraryTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = R1GTQ9EKSHL442EGP4YK0U49 /* LibraryTab.swift */; };
@@ -368,6 +370,8 @@
 		ODQ000000000000000000006 /* VisionPageTextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionPageTextRecognizer.swift; sourceTree = "<group>"; };
 		ODQ000000000000000000008 /* PageMarkDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageMarkDetector.swift; sourceTree = "<group>"; };
 		ODQ000000000000000000010 /* QuoteMarkTextSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteMarkTextSelector.swift; sourceTree = "<group>"; };
+		ODQ000000000000000000012 /* RemoteModelQuoteExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteModelQuoteExtractor.swift; sourceTree = "<group>"; };
+		ODQ000000000000000000014 /* ModelAssistedQuoteExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelAssistedQuoteExtractor.swift; sourceTree = "<group>"; };
 		C4A1B2C3D4E5F6A7B8C9D0E1 /* MarkingDefinitionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionRow.swift; sourceTree = "<group>"; };
 		C5A2B3C4D5E6F7A8B9C0D1E2 /* MarkingDefinitionEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionEditor.swift; sourceTree = "<group>"; };
 		C6B3C4D5E6F7A8B9C0D1E2F3 /* SearchFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFilters.swift; sourceTree = "<group>"; };
@@ -597,6 +601,8 @@
 				ODQ000000000000000000006 /* VisionPageTextRecognizer.swift */,
 				ODQ000000000000000000008 /* PageMarkDetector.swift */,
 				ODQ000000000000000000010 /* QuoteMarkTextSelector.swift */,
+				ODQ000000000000000000012 /* RemoteModelQuoteExtractor.swift */,
+				ODQ000000000000000000014 /* ModelAssistedQuoteExtractor.swift */,
 				CIN5F6A7B8C9D0E1F2A3B4C5 /* ExportService.swift */,
 				CJO6A7B8C9D0E1F2A3B4C5D6 /* ExportOptions.swift */,
 				H4M5N6O7P8Q9R0S1T2U3V4W5 /* Exporters */,
@@ -1267,6 +1273,8 @@
 				ODQ000000000000000000005 /* VisionPageTextRecognizer.swift in Sources */,
 				ODQ000000000000000000007 /* PageMarkDetector.swift in Sources */,
 				ODQ000000000000000000009 /* QuoteMarkTextSelector.swift in Sources */,
+				ODQ000000000000000000011 /* RemoteModelQuoteExtractor.swift in Sources */,
+				ODQ000000000000000000013 /* ModelAssistedQuoteExtractor.swift in Sources */,
 				54313069E98048215B2B6E27 /* BookQuotes/Services/GeminiService.swift in Sources */,
 				E7C31BB89DC81C12720F6CA7 /* BookQuotes/Services/CaptureQueueManager.swift in Sources */,
 				3B5D5A0B80D52331F014E33C /* BookQuotes/Services/QuoteExtractionPromptBuilder.swift in Sources */,

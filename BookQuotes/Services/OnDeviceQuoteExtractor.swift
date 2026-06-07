@@ -1,5 +1,12 @@
 import UIKit
 
+protocol QuoteExtracting {
+    func extractQuotes(
+        from image: UIImage,
+        markings: [QuoteExtractionPromptBuilder.MarkingPrompt]
+    ) async throws -> QuoteExtractionResult
+}
+
 protocol PageTextRecognizing: Sendable {
     func recognizeText(in image: UIImage) async throws -> [RecognizedTextLine]
 }
@@ -60,6 +67,8 @@ struct OnDeviceQuoteExtractor: Sendable {
         )
     }
 }
+
+extension OnDeviceQuoteExtractor: QuoteExtracting {}
 
 struct OnDeviceQuoteCandidate: Sendable, Equatable {
     let text: String

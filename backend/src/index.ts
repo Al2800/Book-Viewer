@@ -15,6 +15,7 @@ import {
   toClientSubscriptionStatus,
 } from './subscription';
 import { checkRateLimit, incrementUsage, getUsageStats } from './rate-limit';
+import { proxyToHuggingFaceQuoteExtractor } from './huggingface-quote-extraction';
 
 // Gemini API base URL
 const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
@@ -417,6 +418,54 @@ export default {
         }
         console.error('Quote extraction error:', error);
         return errorResponse('Extraction failed', 'EXTRACTION_ERROR', 500);
+      }
+    }
+
+    // Model-assisted quote extraction through Hugging Face.
+    if (path === '/api/extract-quotes-hf' && request.method === 'POST') {
+      const clientKey = getClientKey(request, userId);
+
+      const rateCheck = await checkRateLimit(userId, env, clientKey);
+      if (!rateCheck.allowed) {
+        return errorResponse(
+          rateCheck.reason || 'Rate limit exceeded',
+          'RATE_LIMIT',
+          429
+        );
+      }
+
+      if (!env.HF_API_TOKEN) {
+        return errorResponse(
+          'Hugging Face extraction is not configured',
+          'HF_NOT_CONFIGURED',
+          503
+        );
+      }
+
+      try {
+        const body = await parseGeminiRequest(request);
+        const response = await proxyToHuggingFaceQuoteExtractor(body, {
+          token: env.HF_API_TOKEN,
+          modelId: env.HF_MODEL_ID,
+        });
+
+        if (response.ok) {
+          await incrementUsage(userId, env);
+        }
+
+        return new Response(await response.text(), {
+          status: response.status,
+          headers: {
+            'Content-Type': 'application/json',
+            ...CORS_HEADERS,
+          },
+        });
+      } catch (error) {
+        if (error instanceof RequestValidationError) {
+          return errorResponse(error.message, 'INVALID_REQUEST', 400);
+        }
+        console.error('Hugging Face quote extraction error:', error);
+        return errorResponse('Model-assisted extraction failed', 'HF_EXTRACTION_ERROR', 500);
       }
     }
 

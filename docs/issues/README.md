@@ -22,6 +22,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `010-testing-note-intake-and-refactor-mapping.md` - open
 - `011-settings-legal-sheet-activation.md` - closed
 - `012-on-device-mark-aware-quote-extraction.md` - in_progress
+- `013-real-photo-mark-detection-and-quote-windowing.md` - open
 
 ## Refactor Rules
 
@@ -46,6 +47,7 @@ Every user testing note should be captured before or alongside implementation wo
 
 - Capture tab/root: `001`, `006`, quote-capture navigation notes.
 - Extraction review: `002`, `006`, `007`, `012`.
+- Real-photo quote extraction: `012`, `013`.
 - Batch capture: `003`, multi-page capture notes.
 - Book registration/cover capture/book edit: `008`, `009`, cover OCR patterns relevant to `012`.
 - Design system/settings: `004`, `005`, visual consistency notes, settings behaviour notes.

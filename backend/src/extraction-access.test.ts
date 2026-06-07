@@ -43,8 +43,8 @@ function makeEnv(overrides: Partial<Env> = {}): Env {
   };
 }
 
-function makeExtractionRequest(): Request {
-  return new Request('https://api.bookquotes.uk/api/extract-quotes', {
+function makeExtractionRequest(path = '/api/extract-quotes'): Request {
+  return new Request(`https://api.bookquotes.uk${path}`, {
     method: 'POST',
     headers: {
       Authorization: 'Bearer test-session-token',
@@ -126,5 +126,65 @@ describe('extraction access policy', () => {
     expect(response.status).toBe(402);
     expect(body.code).toBe('SUBSCRIPTION_REQUIRED');
     expect(geminiFetch).not.toHaveBeenCalled();
+  });
+
+  it('returns a clear error when Hugging Face extraction is not configured', async () => {
+    const { default: worker } = await import('./index');
+    const hfFetch = vi.fn();
+    vi.stubGlobal('fetch', hfFetch);
+
+    const response = await worker.fetch(
+      makeExtractionRequest('/api/extract-quotes-hf'),
+      makeEnv({ ALLOW_AUTHENTICATED_EXTRACTION: 'true' })
+    );
+    const body = await response.json() as { code: string };
+
+    expect(response.status).toBe(503);
+    expect(body.code).toBe('HF_NOT_CONFIGURED');
+    expect(hfFetch).not.toHaveBeenCalled();
+  });
+
+  it('allows configured Hugging Face extraction through the same authenticated beta gate', async () => {
+    const { default: worker } = await import('./index');
+    const hfFetch = vi.fn(async () => new Response(
+      JSON.stringify({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                quotes: [
+                  {
+                    text: 'The marked passage is here.',
+                    markingType: 'marginLine',
+                    confidence: 0.91,
+                  },
+                ],
+                processingNotes: 'Qwen model-assisted extraction',
+              }),
+            },
+          },
+        ],
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    ));
+    vi.stubGlobal('fetch', hfFetch);
+
+    const response = await worker.fetch(
+      makeExtractionRequest('/api/extract-quotes-hf'),
+      makeEnv({
+        ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+        HF_API_TOKEN: 'hf-test-token',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-7B-Instruct:preferred',
+      })
+    );
+    const body = await response.json() as {
+      candidates: Array<{ content: { parts: Array<{ text: string }> } }>;
+    };
+    const quoteResult = JSON.parse(body.candidates[0]?.content.parts[0]?.text ?? '{}');
+
+    expect(response.status).toBe(200);
+    expect(hfFetch).toHaveBeenCalledOnce();
+    expect(quoteResult.quotes[0].text).toBe('The marked passage is here.');
+    expect(quoteResult.quotes[0].markingType).toBe('marginLine');
   });
 });

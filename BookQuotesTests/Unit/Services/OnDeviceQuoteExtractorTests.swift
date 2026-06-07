@@ -139,6 +139,90 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         ])
     }
 
+    @MainActor
+    func testRemoteModelQuoteExtractorCallsModelAssistedProxyRoute() async throws {
+        let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
+        server.route(method: "POST", path: "/api/extract-quotes-hf") { _ in
+            let quoteJSONText =
+                #"{"quotes":[{"text":"A model selected marked quote.","markingType":"underline","confidence":0.91}],"processingNotes":"HF model-assisted extraction"}"#
+            let responseBody =
+                #"{"candidates":[{"content":{"parts":[{"text":\#(String(reflecting: quoteJSONText))}]}}]}"#
+
+            return .json(200, Data(responseBody.utf8))
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let keychain = KeychainService()
+        keychain.setSessionToken("test-session-token")
+        let authService = AuthService(keychainService: keychain)
+        defer { Task { await authService.signOut() } }
+
+        let extractor = RemoteModelQuoteExtractor(
+            authService: authService,
+            baseURL: server.baseURL
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertEqual(result.quotes.first?.text, "A model selected marked quote.")
+        XCTAssertEqual(result.quotes.first?.markingType, "underline")
+        XCTAssertEqual(result.processingNotes, "HF model-assisted extraction")
+
+        let request = try XCTUnwrap(server.allRequests().first)
+        XCTAssertEqual(request.path, "/api/extract-quotes-hf")
+        XCTAssertEqual(request.headers["Authorization"], "<redacted>")
+
+        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: request.body) as? [String: Any])
+        XCTAssertNotNil(body["contents"])
+    }
+
+    func testModelAssistedExtractorFallsBackWhenLocalConfidenceIsLow() async throws {
+        let local = StubQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "partial local fragment",
+                    pageNumber: nil,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.42
+                )
+            ],
+            pageNumber: nil,
+            processingNotes: "low confidence local"
+        ))
+        let remote = StubQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "complete model-assisted quote",
+                    pageNumber: nil,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.91
+                )
+            ],
+            pageNumber: nil,
+            processingNotes: "model-assisted"
+        ))
+        let extractor = ModelAssistedQuoteExtractor(
+            localExtractor: local,
+            remoteExtractor: remote,
+            minimumLocalConfidence: 0.78
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertEqual(result.quotes.first?.text, "complete model-assisted quote")
+        XCTAssertEqual(result.processingNotes, "model-assisted")
+    }
+
     func testRealBookFixtureExtractsUnderlinedPassageWhenProvided() async throws {
         guard let fixturePath = OnDeviceQuoteExtractorTestImage.realBookFixturePath() else {
             throw XCTSkip("Add the local real page fixture to run real book characterization.")
@@ -160,6 +244,17 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
                 || extractedText.localizedCaseInsensitiveContains("skinned over"),
             "Expected underlined Chatham quote, got: \(extractedText)"
         )
+    }
+}
+
+private struct StubQuoteExtractor: QuoteExtracting {
+    let result: QuoteExtractionResult
+
+    func extractQuotes(
+        from image: UIImage,
+        markings: [QuoteExtractionPromptBuilder.MarkingPrompt]
+    ) async throws -> QuoteExtractionResult {
+        result
     }
 }
 
