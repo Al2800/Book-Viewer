@@ -150,6 +150,7 @@ None - can start immediately.
 - Added graphite/dark underline characterization for low-saturation pencil-style marks.
 - Added a plain printed text negative characterization so widening graphite detection does not make unmarked pages extract quotes.
 - Expanded `PageMarkDetector` with a separate neutral underline path for thin, long, low-saturation marks.
+- Added a local-only real book photo characterization test. The fixture image is stored under ignored `local-fixtures/` so copyrighted page photos stay out of the public repo.
 
 ## Verification Results
 
@@ -199,10 +200,21 @@ Result:
 
 - Passed.
 
+Real uploaded page fixture:
+
+```bash
+xcodebuild test -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testRealBookFixtureExtractsUnderlinedPassageWhenProvided
+```
+
+Result:
+
+- Passed with `local-fixtures/real-pages/british-are-coming-underlined-page.jpg`.
+- The fixture is local-only and ignored by git.
+
 ## Residual Risk
 
 - This is a first tracer bullet, not the full issue.
 - Real photographed pages with faint highlights, curved pages, mixed lighting, handwritten margin notes, and actual iPhone captures still need characterization fixtures.
-- The current graphite support is synthetic and should be validated against the failing real page photo before shipping as complete.
+- The current graphite support has been validated against one real page photo, but more fixtures are needed before declaring broad real-world coverage.
 - Batch capture and capture queue paths may still contain cloud/Gemini extraction placeholders and should be reviewed before declaring quote extraction fully on-device across the whole app.
 - A small local model has not been evaluated yet; the current slice is deterministic OCR plus geometry only.

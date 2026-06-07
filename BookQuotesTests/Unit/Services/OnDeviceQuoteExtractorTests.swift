@@ -46,6 +46,29 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         XCTAssertTrue(marks.isEmpty, "Expected plain printed text to have no marks, got: \(marks)")
     }
+
+    func testRealBookFixtureExtractsUnderlinedPassageWhenProvided() async throws {
+        guard let fixturePath = OnDeviceQuoteExtractorTestImage.realBookFixturePath() else {
+            throw XCTSkip("Add the local real page fixture to run real book characterization.")
+        }
+        guard let image = UIImage(contentsOfFile: fixturePath) else {
+            XCTFail("Could not load real book fixture at \(fixturePath)")
+            return
+        }
+
+        let marks = try PageMarkDetector().detectMarks(in: image)
+        XCTAssertFalse(marks.isEmpty, "Expected real page fixture to contain detected marks")
+
+        let result = try await OnDeviceQuoteExtractor().extractQuotes(from: image, markings: [])
+        let extractedText = result.quotes.map(\.text).joined(separator: " ")
+
+        XCTAssertFalse(result.quotes.isEmpty, "Expected at least one quote, detected marks: \(marks)")
+        XCTAssertTrue(
+            extractedText.localizedCaseInsensitiveContains("drop of blood")
+                || extractedText.localizedCaseInsensitiveContains("skinned over"),
+            "Expected underlined Chatham quote, got: \(extractedText)"
+        )
+    }
 }
 
 private enum OnDeviceQuoteExtractorTestImage {
@@ -62,6 +85,24 @@ private enum OnDeviceQuoteExtractorTestImage {
 
     static func plainTextPage() -> UIImage {
         page(text: "The pleasure of finding things out.", underlineColor: nil)
+    }
+
+    static func realBookFixturePath() -> String? {
+        if let fixturePath = ProcessInfo.processInfo.environment["REAL_BOOK_QUOTE_FIXTURE_PATH"] {
+            return fixturePath
+        }
+
+        let sourceFile = URL(fileURLWithPath: #filePath)
+        let repoRoot = sourceFile
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let fixture = repoRoot
+            .appendingPathComponent("local-fixtures")
+            .appendingPathComponent("real-pages")
+            .appendingPathComponent("british-are-coming-underlined-page.jpg")
+        return FileManager.default.fileExists(atPath: fixture.path) ? fixture.path : nil
     }
 
     private static func page(text: String, underlineColor: UIColor?) -> UIImage {
