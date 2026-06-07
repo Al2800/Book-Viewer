@@ -158,6 +158,9 @@ None - can start immediately.
 - The symptom showed `13 Quotes` for a page where the user expected the six underlined lines to be treated as one marked passage.
 - Added a selector-level regression where segmented underline marks across six adjacent OCR lines must produce one quote candidate.
 - Updated `QuoteMarkTextSelector` to deduplicate underline fragments and group adjacent underlined OCR lines before returning candidates.
+- Added quote-grouping rules for separate underlined sections so a paragraph gap splits one marked page into multiple quote candidates.
+- Added vertical margin-line grouping so a broken margin stroke beside one paragraph produces one quote candidate.
+- Added vertical margin-line split coverage so two separated margin marks on one page produce two quote candidates.
 
 ## Verification Results
 
@@ -240,11 +243,42 @@ Result:
 
 - Passed.
 
+Quote grouping rules:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testSelectorGroupsAdjacentUnderlineFragmentsIntoOneQuote \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testSelectorSplitsSeparateUnderlineBlocksByParagraphGap \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testSelectorGroupsBrokenMarginLineBesideOneParagraph \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testSelectorSplitsSeparateMarginLinesByParagraphGap
+```
+
+Result:
+
+- Passed.
+
+Build 27 release gate:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests \
+  -only-testing:BookQuotesTests/PageCaptureTests \
+  -only-testing:BookQuotesTests/ExtractionReviewQuoteStateTests \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testQuoteEditor_CanEditText
+```
+
+Result:
+
+- Passed.
+- Runtime: `58.824` seconds.
+
 ## Residual Risk
 
 - This is a first tracer bullet, not the full issue.
 - Real photographed pages with faint highlights, curved pages, mixed lighting, handwritten margin notes, and actual iPhone captures still need characterization fixtures.
 - The current graphite support has been validated against one real page photo, but more fixtures are needed before declaring broad real-world coverage.
 - The build 26 over-fragmentation screenshot is not yet backed by the original captured source page photo. The selector regression covers the observed shape, but the exact image should be added as another local fixture when available.
+- Margin-line grouping is covered at the geometry selector seam, but still needs real photographed margin-line fixtures.
 - Batch capture and capture queue paths may still contain cloud/Gemini extraction placeholders and should be reviewed before declaring quote extraction fully on-device across the whole app.
 - A small local model has not been evaluated yet; the current slice is deterministic OCR plus geometry only.

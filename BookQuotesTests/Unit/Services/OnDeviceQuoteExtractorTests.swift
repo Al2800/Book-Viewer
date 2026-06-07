@@ -75,6 +75,70 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         )
     }
 
+    func testSelectorSplitsSeparateUnderlineBlocksByParagraphGap() {
+        let lines = [
+            RecognizedTextLine(text: "First marked idea starts here", confidence: 0.92, boundingBox: CGRect(x: 240, y: 220, width: 360, height: 24)),
+            RecognizedTextLine(text: "and continues on this line", confidence: 0.90, boundingBox: CGRect(x: 240, y: 252, width: 330, height: 24)),
+            RecognizedTextLine(text: "Second marked idea starts here", confidence: 0.91, boundingBox: CGRect(x: 240, y: 360, width: 380, height: 24)),
+            RecognizedTextLine(text: "and has its own underlining", confidence: 0.89, boundingBox: CGRect(x: 240, y: 392, width: 350, height: 24))
+        ]
+        let marks = [
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 246, width: 340, height: 3), confidence: 0.75),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 278, width: 320, height: 3), confidence: 0.75),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 386, width: 360, height: 3), confidence: 0.75),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 418, width: 340, height: 3), confidence: 0.75)
+        ]
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(textLines: lines, marks: marks)
+
+        XCTAssertEqual(candidates.map(\.text), [
+            "First marked idea starts here and continues on this line",
+            "Second marked idea starts here and has its own underlining"
+        ])
+    }
+
+    func testSelectorGroupsBrokenMarginLineBesideOneParagraph() {
+        let lines = [
+            RecognizedTextLine(text: "The marked paragraph begins here", confidence: 0.92, boundingBox: CGRect(x: 260, y: 220, width: 360, height: 24)),
+            RecognizedTextLine(text: "and continues with the same idea", confidence: 0.90, boundingBox: CGRect(x: 260, y: 252, width: 360, height: 24)),
+            RecognizedTextLine(text: "before ending on this final line", confidence: 0.91, boundingBox: CGRect(x: 260, y: 284, width: 350, height: 24)),
+            RecognizedTextLine(text: "Opposite column should not appear", confidence: 0.89, boundingBox: CGRect(x: 760, y: 252, width: 360, height: 24))
+        ]
+        let marks = [
+            DetectedPageMark(type: .marginLine, boundingBox: CGRect(x: 210, y: 218, width: 8, height: 46), confidence: 0.76),
+            DetectedPageMark(type: .marginLine, boundingBox: CGRect(x: 211, y: 270, width: 7, height: 42), confidence: 0.74)
+        ]
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(textLines: lines, marks: marks)
+
+        XCTAssertEqual(candidates.count, 1)
+        XCTAssertEqual(
+            candidates.first?.text,
+            "The marked paragraph begins here and continues with the same idea before ending on this final line"
+        )
+        XCTAssertEqual(candidates.first?.markingType, .marginLine)
+    }
+
+    func testSelectorSplitsSeparateMarginLinesByParagraphGap() {
+        let lines = [
+            RecognizedTextLine(text: "First margin quote starts", confidence: 0.92, boundingBox: CGRect(x: 260, y: 220, width: 300, height: 24)),
+            RecognizedTextLine(text: "and ends on line two", confidence: 0.90, boundingBox: CGRect(x: 260, y: 252, width: 260, height: 24)),
+            RecognizedTextLine(text: "Second margin quote starts", confidence: 0.91, boundingBox: CGRect(x: 260, y: 360, width: 320, height: 24)),
+            RecognizedTextLine(text: "and ends separately", confidence: 0.89, boundingBox: CGRect(x: 260, y: 392, width: 250, height: 24))
+        ]
+        let marks = [
+            DetectedPageMark(type: .marginLine, boundingBox: CGRect(x: 210, y: 218, width: 8, height: 62), confidence: 0.76),
+            DetectedPageMark(type: .marginLine, boundingBox: CGRect(x: 210, y: 358, width: 8, height: 62), confidence: 0.74)
+        ]
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(textLines: lines, marks: marks)
+
+        XCTAssertEqual(candidates.map(\.text), [
+            "First margin quote starts and ends on line two",
+            "Second margin quote starts and ends separately"
+        ])
+    }
+
     func testRealBookFixtureExtractsUnderlinedPassageWhenProvided() async throws {
         guard let fixturePath = OnDeviceQuoteExtractorTestImage.realBookFixturePath() else {
             throw XCTSkip("Add the local real page fixture to run real book characterization.")

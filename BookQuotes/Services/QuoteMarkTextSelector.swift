@@ -7,18 +7,24 @@ struct QuoteMarkTextSelector: Sendable {
         marks: [DetectedPageMark]
     ) -> [OnDeviceQuoteCandidate] {
         let underlineMarks = marks.filter { $0.type == .underline || $0.type == .doubleUnderline }
-        let nonUnderlineMarks = marks.filter { !($0.type == .underline || $0.type == .doubleUnderline) }
+        let marginLineMarks = marks.filter { $0.type == .marginLine }
+        let groupedMarkTypes: Set<MarkingType> = [.underline, .doubleUnderline, .marginLine]
+        let nonGroupedMarks = marks.filter { !groupedMarkTypes.contains($0.type) }
 
         let underlineCandidates = groupedUnderlineCandidates(
             marks: underlineMarks,
             textLines: textLines
         )
-        let otherCandidates = nonUnderlineMarks.compactMap { mark in
+        let marginLineCandidates = groupedMarginLineCandidates(
+            marks: marginLineMarks,
+            textLines: textLines
+        )
+        let otherCandidates = nonGroupedMarks.compactMap { mark in
             let selectedLines = lines(for: mark, from: textLines)
             return candidate(from: selectedLines, marks: [mark], markingType: mark.type)
         }
 
-        return deduplicatedCandidates(underlineCandidates + otherCandidates)
+        return deduplicatedCandidates(underlineCandidates + marginLineCandidates + otherCandidates)
     }
 
     private func lines(
@@ -41,11 +47,11 @@ struct QuoteMarkTextSelector: Sendable {
         marks: [DetectedPageMark],
         textLines: [RecognizedTextLine]
     ) -> [OnDeviceQuoteCandidate] {
-        let selections = marks.compactMap { mark -> UnderlineSelection? in
+        let selections = marks.compactMap { mark -> MarkedLineSelection? in
             guard let line = closestLineAboveUnderline(mark, textLines: textLines) else {
                 return nil
             }
-            return UnderlineSelection(line: line, mark: mark)
+            return MarkedLineSelection(line: line, mark: mark)
         }
         let uniqueSelections = deduplicatedUnderlineSelections(selections)
             .sorted { $0.line.boundingBox.minY < $1.line.boundingBox.minY }
@@ -56,6 +62,28 @@ struct QuoteMarkTextSelector: Sendable {
                 from: group.map(\.line),
                 marks: group.map(\.mark),
                 markingType: .underline
+            )
+        }
+    }
+
+    private func groupedMarginLineCandidates(
+        marks: [DetectedPageMark],
+        textLines: [RecognizedTextLine]
+    ) -> [OnDeviceQuoteCandidate] {
+        let selections = marks.flatMap { mark in
+            marginMarkedLines(mark, textLines: textLines).map { line in
+                MarkedLineSelection(line: line, mark: mark)
+            }
+        }
+        let uniqueSelections = deduplicatedMarkedLineSelections(selections)
+            .sorted { $0.line.boundingBox.minY < $1.line.boundingBox.minY }
+        let groups = groupAdjacentMarkedLineSelections(uniqueSelections)
+
+        return groups.compactMap { group in
+            candidate(
+                from: group.map(\.line),
+                marks: group.map(\.mark),
+                markingType: .marginLine
             )
         }
     }
@@ -145,7 +173,11 @@ struct QuoteMarkTextSelector: Sendable {
         return overlap / max(min(lhs.width, rhs.width), 1)
     }
 
-    private func deduplicatedUnderlineSelections(_ selections: [UnderlineSelection]) -> [UnderlineSelection] {
+    private func deduplicatedUnderlineSelections(_ selections: [MarkedLineSelection]) -> [MarkedLineSelection] {
+        deduplicatedMarkedLineSelections(selections)
+    }
+
+    private func deduplicatedMarkedLineSelections(_ selections: [MarkedLineSelection]) -> [MarkedLineSelection] {
         selections.reduce(into: []) { unique, selection in
             let alreadySelected = unique.contains { existing in
                 existing.line.text == selection.line.text
@@ -157,7 +189,11 @@ struct QuoteMarkTextSelector: Sendable {
         }
     }
 
-    private func groupAdjacentUnderlineSelections(_ selections: [UnderlineSelection]) -> [[UnderlineSelection]] {
+    private func groupAdjacentUnderlineSelections(_ selections: [MarkedLineSelection]) -> [[MarkedLineSelection]] {
+        groupAdjacentMarkedLineSelections(selections)
+    }
+
+    private func groupAdjacentMarkedLineSelections(_ selections: [MarkedLineSelection]) -> [[MarkedLineSelection]] {
         selections.reduce(into: []) { groups, selection in
             guard var currentGroup = groups.popLast(),
                   let previous = currentGroup.last?.line else {
@@ -196,7 +232,7 @@ struct QuoteMarkTextSelector: Sendable {
     }
 }
 
-private struct UnderlineSelection {
+private struct MarkedLineSelection {
     let line: RecognizedTextLine
     let mark: DetectedPageMark
 }
