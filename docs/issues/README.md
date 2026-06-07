@@ -21,7 +21,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `009-cover-capture-white-screen-after-use-photo.md` - closed
 - `010-testing-note-intake-and-refactor-mapping.md` - open
 - `011-settings-legal-sheet-activation.md` - closed
-- `012-on-device-mark-aware-quote-extraction.md` - open
+- `012-on-device-mark-aware-quote-extraction.md` - in_progress
 
 ## Refactor Rules
 

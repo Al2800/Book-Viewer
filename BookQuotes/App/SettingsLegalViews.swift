@@ -29,7 +29,7 @@ enum LegalDocument: String, Identifiable {
                     title: "What We Collect",
                     paragraphs: [
                         "When you sign in with Apple, we receive your Apple-provided identifier and, if Apple shares it, your email address. We use that information to authenticate requests to the BookQuotes service and maintain your subscription access state.",
-                        "When you capture a page or cover for extraction, the image is sent to the BookQuotes proxy and then to Google Gemini for processing. Images are processed in-flight and are not retained after extraction completes.",
+                        "When you capture a marked quote page, text extraction runs on-device using Apple Vision OCR and local mark detection. Cover extraction and any explicit cloud fallback may send the image to the BookQuotes proxy and then to Google Gemini for processing. Images are processed in-flight and are not retained after extraction completes.",
                         "Your books, quotes, tags, and collections are stored on-device. Cloud sync is not enabled in this v1 release."
                     ]
                 ),
@@ -46,7 +46,8 @@ enum LegalDocument: String, Identifiable {
                 LegalDocumentSection(
                     title: "Third-Party Services",
                     bullets: [
-                        "Google Gemini for AI-powered extraction from images",
+                        "Apple Vision for on-device OCR of marked quote pages",
+                        "Google Gemini for cover extraction and any explicit cloud fallback",
                         "Sign in with Apple for secure authentication",
                         "Apple StoreKit for subscription billing, trial eligibility, and purchase management"
                     ]
@@ -75,7 +76,7 @@ enum LegalDocument: String, Identifiable {
                 LegalDocumentSection(
                     title: "Service Description",
                     paragraphs: [
-                        "BookQuotes helps you capture and organize quotes from physical books using image capture and AI-assisted text extraction."
+                        "BookQuotes helps you capture and organize quotes from physical books using image capture, on-device OCR, and AI-assisted text extraction where enabled."
                     ],
                     bullets: [
                         "Image capture and review",
@@ -102,7 +103,7 @@ enum LegalDocument: String, Identifiable {
                 LegalDocumentSection(
                     title: "Availability",
                     paragraphs: [
-                        "AI extraction requires an internet connection and may occasionally be unavailable. Features may change over time as the app evolves."
+                        "On-device quote extraction does not require an internet connection. Cloud-assisted extraction, where enabled, requires network availability and may occasionally be unavailable. Features may change over time as the app evolves."
                     ]
                 ),
                 LegalDocumentSection(

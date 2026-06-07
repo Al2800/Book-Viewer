@@ -1,6 +1,6 @@
 # 012 - On-Device Mark-Aware Quote Extraction
 
-Status: open
+Status: in_progress
 Area: Quote capture
 Priority: high
 
@@ -129,3 +129,61 @@ None - can start immediately.
 - `002-extraction-review-view-modular-refactor.md`
 - `006-extraction-review-simulator-route-repair.md`
 - `008-cover-metadata-noisy-title-author-extraction.md`
+
+## Progress
+
+2026-06-07:
+
+- Added the first on-device quote extraction tracer bullet.
+- Introduced `OnDeviceQuoteExtractor` behind a small public interface returning the existing `QuoteExtractionResult` shape.
+- Added `VisionPageTextRecognizer` for Apple Vision OCR line recognition.
+- Added `PageMarkDetector` for local red underline, yellow highlight, and colored margin-mark region detection.
+- Added `QuoteMarkTextSelector` for geometry-based mark-to-OCR-line matching.
+- Wired `ExtractionReviewView` to the on-device extractor for quote pages and removed the network precondition from that review processing path.
+- Updated mock-camera single quote image to draw readable underlined text so simulator smoke exercises Vision OCR instead of a cloud/mock result.
+- Updated legal copy to distinguish on-device quote extraction from cloud-assisted cover/fallback extraction.
+
+## Verification Results
+
+Focused on-device extractor tracer:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests/testExtractsUnderlinedTextFromSyntheticPageWithoutNetwork
+```
+
+Result:
+
+- Passed.
+
+Quote-capture simulator smoke:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes
+```
+
+Result:
+
+- Passed.
+
+Focused release gate:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests \
+  -only-testing:BookQuotesTests/PageCaptureTests \
+  -only-testing:BookQuotesTests/ExtractionReviewQuoteStateTests \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testQuoteEditor_CanEditText
+```
+
+Result:
+
+- Passed.
+- Runtime: `55.352` seconds.
+
+## Residual Risk
+
+- This is a first tracer bullet, not the full issue.
+- Real photographed pages with pencil underlines, faint highlights, curved pages, mixed lighting, and handwritten margin notes still need characterization fixtures.
+- Batch capture and capture queue paths may still contain cloud/Gemini extraction placeholders and should be reviewed before declaring quote extraction fully on-device across the whole app.
+- A small local model has not been evaluated yet; the current slice is deterministic OCR plus geometry only.

@@ -183,10 +183,27 @@ enum MockCameraImages {
 
             // Add underlines for some marked passages (second marking style)
             if !multipleQuotes {
-                let underlineY = textArea.minY + lineHeight * 22 + lineSpacing * 22
+                let quoteText = "Every action you take is a vote for the type of person you wish to become."
+                let quoteTextRect = CGRect(
+                    x: textArea.minX,
+                    y: textArea.minY + lineHeight * 21 + lineSpacing * 21,
+                    width: textArea.width * 0.86,
+                    height: 64
+                )
+
+                backgroundColor.setFill()
+                ctx.fill(quoteTextRect.insetBy(dx: -8, dy: -6))
+
+                let quoteAttributes: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.systemFont(ofSize: 34, weight: .regular),
+                    .foregroundColor: textColor
+                ]
+                quoteText.draw(in: quoteTextRect, withAttributes: quoteAttributes)
+
+                let underlineY = quoteTextRect.maxY + 6
                 let underlineColor: UIColor = lowConfidence ? .systemGray : .red
                 underlineColor.setStroke()
-                ctx.setLineWidth(2)
+                ctx.setLineWidth(4)
                 ctx.move(to: CGPoint(x: textArea.minX, y: underlineY))
                 ctx.addLine(to: CGPoint(x: textArea.minX + textArea.width * 0.75, y: underlineY))
                 ctx.strokePath()

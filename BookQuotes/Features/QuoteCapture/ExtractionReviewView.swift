@@ -8,11 +8,11 @@ import SwiftData
 struct ExtractionReviewView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Environment(GeminiService.self) private var geminiService
-    @Environment(NetworkMonitor.self) private var networkMonitor
 
     let session: CaptureSession
     let book: Book
+
+    private let quoteExtractor = OnDeviceQuoteExtractor()
 
     @State private var quoteState = ExtractionReviewQuoteState()
     @State private var selectedPage: PageCapture?
@@ -384,19 +384,6 @@ struct ExtractionReviewView: View {
     }
 
     private func processPendingCaptures() async {
-        let isConnected = await MainActor.run { networkMonitor.isConnected }
-        guard isConnected else {
-            await MainActor.run {
-                let error = ExtractionError.networkError(
-                    NSError(domain: "ExtractionReview", code: -1009, userInfo: [
-                        NSLocalizedDescriptionKey: "No internet connection"
-                    ])
-                )
-                failPendingCaptures(with: error)
-            }
-            return
-        }
-
         // Fetch marking definitions on the main actor, then snapshot them into Sendable values.
         let markingPrompts: [QuoteExtractionPromptBuilder.MarkingPrompt] = await MainActor.run {
             let markingDescriptor = FetchDescriptor<MarkingDefinition>(
@@ -435,8 +422,8 @@ struct ExtractionReviewView: View {
                     return img
                 }.value
 
-                // Network + image encoding runs off main now that GeminiService is not @MainActor.
-                let result = try await geminiService.extractQuotes(from: image, markings: markingPrompts)
+                // OCR, mark detection, and geometry selection run on-device.
+                let result = try await quoteExtractor.extractQuotes(from: image, markings: markingPrompts)
 
                 try await MainActor.run {
                     if let capture = session.captures.first(where: { $0.id == item.id }) {
