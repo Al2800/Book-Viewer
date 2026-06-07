@@ -94,19 +94,21 @@ enum QuoteExtractionPromptBuilder {
         1. Extract COMPLETE marked passages - include full sentences when the marking extends across partial text
         2. For **Margin Line** (vertical line in the margin): capture ALL text aligned with the line, starting where the line begins and stopping exactly where the line ends. If the line spans multiple sentences/paragraphs, include the full span.
         3. For a bracketed or side-lined paragraph: extract every readable line inside the bracket or side line span, from the top hook/start to the bottom hook/end. If an underline appears inside that bracketed passage, do not limit extraction to the underlined sentence; return the whole bracketed passage.
-        4. Match marking type to the user's vocabulary above
-        5. If multiple marking types are present on the same passage, use the primary/most prominent one
-        6. Preserve original punctuation and formatting where meaningful
-        7. Transcribe handwritten margin notes accurately - include spelling as written
-        8. Page number: only read a page number if it appears as a standalone number in the page margin/footer/header (top-left, top-right, bottom-left, bottom-right). Never infer from body text (e.g., dates, references, "Falcon 9", chapter numbers). If you are not confident the number is a page number, set pageNumber to null (both at the page level and per-quote).
-        9. Each separate marked passage should be its own quote object
-        10. Set confidence (0.0-1.0) based on extraction accuracy:
+        4. Small brackets, short side ticks, braces, partial bracket hooks, and faint pencil marks count as intentional markings when they sit beside readable text. Return a quote object for each such marked region, even if the region is only a short phrase or one line.
+        5. Repair obvious line-wrap hyphenation only when the printed word is split across a line break (for example, join "un-" + "believable" as "unbelievable"). Preserve hard hyphens that are part of the printed word, and do not invent missing text.
+        6. Match marking type to the user's vocabulary above
+        7. If multiple marking types are present on the same passage, use the primary/most prominent one
+        8. Preserve original punctuation and formatting where meaningful
+        9. Transcribe handwritten margin notes accurately - include spelling as written
+        10. Page number: only read a page number if it appears as a standalone number in the page margin/footer/header (top-left, top-right, bottom-left, bottom-right). Never infer from body text (e.g., dates, references, "Falcon 9", chapter numbers). If you are not confident the number is a page number, set pageNumber to null (both at the page level and per-quote).
+        11. Each separate marked passage should be its own quote object
+        12. Set confidence (0.0-1.0) based on extraction accuracy:
            - 0.9+ : Clear text, unambiguous marking
            - 0.7-0.9 : Minor uncertainty about boundaries or exact text
            - 0.5-0.7 : Significant uncertainty, text may be partially obscured
            - <0.5 : Low confidence, marking unclear or text hard to read
-        11. If a passage appears intentionally marked but boundaries are uncertain, return best-effort marked text with lower confidence rather than dropping it.
-        12. Do not return an empty quotes array when readable marked text is visible. Only return an empty quotes array when no marked/readable text is visible at all.
+        13. If a passage appears intentionally marked but boundaries are uncertain, return best-effort marked text with lower confidence rather than dropping it.
+        14. Do not return an empty quotes array when readable marked text is visible. Only return an empty quotes array when no marked/readable text is visible at all.
 
         Respond with ONLY valid JSON. No markdown formatting, no code blocks, no explanatory text.
         """
@@ -131,6 +133,8 @@ enum QuoteExtractionPromptBuilder {
         {"quotes":[{"text":"marked text","markingType":"type","confidence":0.9}],"pageNumber":null}
 
         Page number rule: only set pageNumber if a standalone number appears in the page margin/header/footer (top-left, top-right, bottom-left, bottom-right). Never infer from body text.
+        Treat small brackets, short side ticks, braces, partial bracket hooks, underlines, highlights, and margin lines as intentional marks.
+        Repair only obvious line-wrap hyphenation; preserve real printed hyphens and do not invent missing text.
         If readable marked text is visible but the boundaries are uncertain, return best-effort text with lower confidence.
         Do not return an empty quotes array unless no marked/readable text is visible.
 
@@ -153,7 +157,7 @@ enum QuoteExtractionPromptBuilder {
         - **Underline**: Single line drawn under text - Important passage
         - **Highlight**: Text colored with highlighter - Key passage to remember
         - **Margin Line**: Vertical line in margin - Capture all text aligned with the line, from where it starts to where it ends
-        - **Bracket**: Brackets around text - Discrete section of interest
+        - **Bracket**: Brackets, braces, short side ticks, or partial bracket hooks around/beside text - Discrete section of interest
         - **Circle**: Circle around word/phrase - Key term or concept
         - **Margin Note**: Handwritten text in margin - Personal thought
         """

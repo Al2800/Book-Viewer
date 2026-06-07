@@ -61,6 +61,25 @@ final class QuoteExtractionPromptBuilderTests: XCTestCase {
         XCTAssertTrue(prompt.contains("do not limit extraction to the underlined sentence"))
     }
 
+    func testBuildPromptTreatsSmallBracketsAndTicksAsIntentionalMarks() {
+        let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: [])
+            .lowercased()
+
+        XCTAssertTrue(prompt.contains("small brackets"))
+        XCTAssertTrue(prompt.contains("short side ticks"))
+        XCTAssertTrue(prompt.contains("partial bracket hooks"))
+        XCTAssertTrue(prompt.contains("even if the region is only a short phrase or one line"))
+    }
+
+    func testBuildPromptRequestsLineWrapHyphenationRepairWithoutInventingText() {
+        let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: [])
+            .lowercased()
+
+        XCTAssertTrue(prompt.contains("line-wrap hyphenation"))
+        XCTAssertTrue(prompt.contains("preserve hard hyphens"))
+        XCTAssertTrue(prompt.contains("do not invent missing text"))
+    }
+
     func testBuildCoverExtractionPromptRejectsPraiseAndMarketingCopyAsMetadata() {
         let prompt = QuoteExtractionPromptBuilder.buildCoverExtractionPrompt()
             .lowercased()

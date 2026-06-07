@@ -17,6 +17,7 @@ Observed user symptom on 2026-06-07:
 - A marked page produced an editable quote containing a partial line start: `gle particle, which slowed that light beam`.
 - The selected text then crossed awkward OCR fragments and hyphenation: `to the unbeliev- second... does typ- ically slow down`.
 - The app did not pick up a vertical margin line in the page margin.
+- After build 29 moved to the 72B model path, line capture improved, but very small brackets/ticks can still be missed and line-wrap hyphenation still needs explicit handling.
 
 This means the current on-device path can reach the edit screen, but the mark-detection and mark-to-OCR selection seams are too brittle for real camera pages. OCR/local geometry should remain useful context and offline fallback, but it should not be treated as the primary quality ceiling for quote extraction. As of the 2026-06-07 TestFlight review after build 28, model-assisted extraction should run before OCR because OCR-first selection was still returning partial/missing lines.
 
@@ -42,6 +43,7 @@ This means the current on-device path can reach the edit screen, but the mark-de
 - [ ] A model-assisted extraction route exists for quote capture and is available from TestFlight behind backend configuration.
 - [x] The model-assisted route is the default extraction path, with local OCR retained only as fallback when the model fails or returns no usable quotes.
 - [ ] The model-assisted route can identify underlined passages, vertical margin-line marked paragraphs, and multiple marked passages on one page.
+- [ ] The model-assisted route treats small brackets, short side ticks, braces, partial bracket hooks, and faint pencil marks beside readable text as intentional quote marks.
 - [ ] The model-assisted route returns strict normalized quote-review JSON, not free-form prose.
 - [ ] The app records whether a quote result came from on-device extraction, model-assisted extraction, or manual entry.
 - [ ] `PageMarkDetector` has a deterministic vertical-mark path that scans column runs or otherwise detects thin, neutral margin strokes.
@@ -49,6 +51,7 @@ This means the current on-device path can reach the edit screen, but the mark-de
 - [ ] A margin-line fixture beside a paragraph produces one quote candidate containing the adjacent paragraph text.
 - [ ] Underline selection avoids returning partial orphan fragments at the start or end of a marked passage where neighbouring marked lines indicate the intended quote window.
 - [ ] OCR cleanup normalizes obvious line-wrap hyphenation only after candidate selection, without inventing text.
+- [ ] Model prompt and cleanup normalize obvious line-wrap hyphenation without removing hard printed hyphens or inventing missing words.
 - [ ] Low-confidence candidates still appear in review rather than being dropped.
 - [ ] The fix is covered by characterization tests before production logic changes.
 - [ ] The simulator release gate includes at least one real-photo fixture when present locally.
@@ -169,6 +172,7 @@ Hosted-model acceptance criteria:
 - Tightened the quote extraction prompt for bracketed or side-lined paragraphs: extract every readable line inside the bracket/side-line span, and do not collapse the result to only an underline inside that marked area.
 - Verified after build 29 that production had `HF_API_TOKEN` but did not have `HF_MODEL_ID`, so the Worker used the old default `Qwen/Qwen2.5-VL-7B-Instruct:preferred`. A direct Hugging Face router probe showed that model is unsupported by the enabled providers, causing build 29 to fall back to OCR.
 - Set Cloudflare production `HF_MODEL_ID` to `Qwen/Qwen2.5-VL-72B-Instruct:preferred`, which detected both underline and vertical margin-line markings in a non-verbatim probe of the failing page.
+- Tightened the iOS quote extraction prompt so small brackets, short side ticks, braces, partial bracket hooks, and faint pencil marks count as intentional marks. Also added bounded line-wrap hyphenation guidance for the model.
 
 ## Verification Results
 
