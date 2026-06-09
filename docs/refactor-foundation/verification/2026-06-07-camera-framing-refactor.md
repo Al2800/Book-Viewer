@@ -45,3 +45,27 @@ Notes:
 
 - Xcode still emits the repo's existing Swift concurrency, availability, and deprecation warnings.
 - Simulator mock camera cannot validate real iPhone lens/focal-length feel. TestFlight/device verification remains required before treating this issue as closed.
+
+## Minimal Guidance Update - 2026-06-09
+
+User decision:
+
+- Do not busy the image capture surface.
+- Most users only need to know that the page should be visible.
+
+Change:
+
+- `CameraFramingProfile.quotePage.guidanceText` is now `Keep the page visible.`
+- `QuoteCaptureView` uses the profile guidance text instead of a longer hardcoded instruction.
+
+Verification:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/CameraFramingProfileTests \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testImageReview_ShowsQualityIndicator
+```
+
+Result:
+
+- Passed.

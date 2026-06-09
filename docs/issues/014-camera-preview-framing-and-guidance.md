@@ -62,6 +62,7 @@ This matters because extraction quality now depends on the photographed page ima
 - Removed unused crop/document-detection helpers from `CameraService`, reducing it from 640 LOC to 490 LOC.
 - Updated `scripts/fix_project.py` so project repair does not re-add the deleted preview wrapper.
 - Product guidance decision: do not busy the capture image. Use a concise page-visible hint at most.
+- Implemented the minimal quote-page hint as `Keep the page visible.` and routed the quote capture empty-state pill through `CameraFramingProfile.guidanceText`.
 
 ## Verification Results
 
@@ -97,6 +98,18 @@ Result:
 Remaining verification:
 
 - Real-device/TestFlight preview-framing check is still required because simulator mock camera cannot validate actual lens/focal-length feel.
+
+Minimal guidance check:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/CameraFramingProfileTests \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testImageReview_ShowsQualityIndicator
+```
+
+Result:
+
+- Passed.
 
 ## Related Issues
 

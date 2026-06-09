@@ -31,7 +31,7 @@ enum CameraFramingProfile: Equatable {
     var guidanceText: String {
         switch self {
         case .quotePage:
-            return "Frame the full marked passage, including margin marks and line endings."
+            return "Keep the page visible."
         case .cover:
             return "Frame the full cover."
         }
@@ -72,4 +72,3 @@ enum CameraFramingGeometry {
         return cropRect.integral.intersection(CGRect(origin: .zero, size: imageSize))
     }
 }
-

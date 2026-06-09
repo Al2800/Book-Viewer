@@ -10,8 +10,9 @@ final class CameraFramingProfileTests: XCTestCase {
 
         XCTAssertEqual(profile.previewVideoGravity, .resizeAspect)
         XCTAssertEqual(profile.captureCropBehavior, .none)
-        XCTAssertTrue(profile.guidanceText.lowercased().contains("full marked passage"))
-        XCTAssertTrue(profile.guidanceText.lowercased().contains("margin marks"))
+        XCTAssertEqual(profile.guidanceText, "Keep the page visible.")
+        XCTAssertFalse(profile.guidanceText.lowercased().contains("margin"))
+        XCTAssertFalse(profile.guidanceText.lowercased().contains("line ending"))
     }
 
     func testCoverFramingKeepsAspectFillCropForCoverReview() {

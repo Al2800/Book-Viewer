@@ -206,7 +206,7 @@ struct QuoteCaptureView: View {
         guard let result = qualityResult else {
             return CaptureStatusPill(
                 systemImage: "text.viewfinder",
-                text: "Center one marked passage and capture the page"
+                text: cameraFramingProfile.guidanceText
             )
         }
 
