@@ -8,9 +8,9 @@ Priority: high
 
 ## Problem
 
-TestFlight review on 2026-06-07 showed that the camera can feel unexpectedly zoomed in when quote capture opens. The preview does not feel like the default iPhone camera experience and does not guide the user clearly enough to frame a book page, visible margin marks, or underlined/bracketed text.
+TestFlight review on 2026-06-07 showed that the camera can feel unexpectedly zoomed in when quote capture opens. The preview does not feel like the default iPhone camera experience and should give only minimal framing confidence that the page is visible.
 
-This matters because extraction quality now depends on the photographed page image reaching the model with enough context. If the preview feels cropped or zoomed, the user may accidentally exclude small brackets, vertical margin lines, or line endings before extraction starts.
+This matters because extraction quality now depends on the photographed page image reaching the model with enough context. If the preview feels cropped or zoomed, the user may accidentally exclude small brackets, vertical margin lines, or line endings before extraction starts. The UI should not become busy: most users know how to take a photo, so any guidance should be short and quiet.
 
 ## Current Characterization
 
@@ -35,8 +35,8 @@ This matters because extraction quality now depends on the photographed page ima
 - [x] Document the expected camera framing contract for quote capture: whole marked region visible, margin marks included, line endings included, and no hidden preview/capture crop mismatch.
 - [ ] The camera opening state no longer feels artificially zoomed compared with the default iPhone camera for the same lens where possible.
 - [x] Preview framing and captured-image crop align: what the user frames is what extraction receives.
-- [ ] Quote capture guidance tells the user how to frame a full marked passage without relying on explanatory copy elsewhere in the app.
-- [ ] Guidance covers underlines, small brackets/ticks, and vertical margin lines.
+- [ ] Quote capture guidance stays minimal: a short, quiet hint that the page should be visible is enough unless testing proves more is needed.
+- [ ] Guidance does not add a busy overlay or repeated instructions over the image capture surface.
 - [ ] Cover capture remains usable and does not regress while quote-capture framing is improved.
 - [x] Camera changes are covered by characterization tests around any extracted framing/crop module before production behaviour changes.
 - [x] Simulator smoke covers opening the camera, reviewing a captured page, and reaching extraction review.
@@ -47,7 +47,7 @@ This matters because extraction quality now depends on the photographed page ima
 1. Characterize current camera module responsibilities and capture-related LOC/complexity.
 2. Add characterization tests around the current preview/crop math or extract a small pure framing module first if the current code cannot be tested directly.
 3. Define a deep camera framing module with high locality for lens selection, zoom factor, preview gravity, and crop contract.
-4. Move guidance state into a focused module or view model so the camera views do not own extraction policy.
+4. Keep guidance minimal and profile-driven; avoid adding a separate guidance view model unless the UI grows beyond a short framing hint.
 5. Keep `CameraService` as the adapter for AVFoundation session/capture operations, with UI-facing framing decisions kept outside raw capture plumbing where possible.
 6. Verify quote capture and cover capture through simulator smoke, then confirm real-device framing through TestFlight.
 
@@ -61,6 +61,7 @@ This matters because extraction quality now depends on the photographed page ima
 - Removed the unused duplicate `CameraPreview.swift` module.
 - Removed unused crop/document-detection helpers from `CameraService`, reducing it from 640 LOC to 490 LOC.
 - Updated `scripts/fix_project.py` so project repair does not re-add the deleted preview wrapper.
+- Product guidance decision: do not busy the capture image. Use a concise page-visible hint at most.
 
 ## Verification Results
 
