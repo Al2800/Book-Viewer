@@ -30,22 +30,10 @@ struct BookCoverCard: View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             ZStack(alignment: .topTrailing) {
                 // Cover image
-                coverImage
+                BookCoverArtwork(book: book, style: .grid, reduceMotion: reduceMotion)
 
                 if book.hasQuotes {
-                    HStack(spacing: 4) {
-                        Image(systemName: "quote.opening")
-                            .font(.caption2)
-                        Text("\(book.quoteCount)")
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .contentTransition(.numericText())
-                    }
-                    .foregroundStyle(Color.textPrimary)
-                    .padding(.horizontal, Spacing.xs)
-                    .padding(.vertical, 4)
-                    .glassFloating(cornerRadius: CornerRadius.sm)
-                    .padding(Spacing.xs)
+                    BookCoverQuoteCountBadge(quoteCount: book.quoteCount)
                 }
             }
 
@@ -60,7 +48,7 @@ struct BookCoverCard: View {
                 .lineLimit(1)
 
             HStack(spacing: Spacing.xs) {
-                statusBadge
+                BookReadingStatusBadge(status: book.status, style: .grid)
 
                 if book.hasQuotes {
                     Text("\(book.quoteCount) quotes")
@@ -128,119 +116,16 @@ struct BookCoverCard: View {
     @ViewBuilder
     private var contextMenuItems: some View {
         if let onEdit = onEdit {
-            Button {
-                HapticManager.light()
-                onEdit()
-            } label: {
-                Label("Edit Book", systemImage: "pencil")
-            }
-        }
-
-        Button {
-            // Navigate to view quotes (handled by caller via onTap usually)
-            HapticManager.light()
-        } label: {
-            Label("View Quotes", systemImage: "text.quote")
-        }
-
-        if let onShare = onShare {
-            Button {
-                HapticManager.light()
-                onShare()
-            } label: {
-                Label("Share", systemImage: "square.and.arrow.up")
-            }
-        }
-
-        if onDelete != nil {
-            Divider()
-
-            Button(role: .destructive) {
-                HapticManager.warning()
-                onDelete?()
-            } label: {
-                Label("Delete Book", systemImage: "trash")
-            }
-        }
-    }
-
-    // MARK: - Private Views
-
-    @ViewBuilder
-    private var coverImage: some View {
-        if let coverData = book.coverThumbnailData,
-           let uiImage = UIImage(data: coverData) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .aspectRatio(2/3, contentMode: .fill)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-                .overlay(
-                    RoundedRectangle(cornerRadius: CornerRadius.md)
-                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                )
+            BookCardContextMenuItems(
+                onEdit: onEdit,
+                onShare: onShare,
+                onDelete: onDelete
+            )
         } else {
-            // Placeholder cover with subtle gradient
-            RoundedRectangle(cornerRadius: CornerRadius.sm)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .aspectRatio(2/3, contentMode: .fit)
-                .overlay {
-                    VStack(spacing: Spacing.xs) {
-                        Image(systemName: "book.closed")
-                            .font(.title)
-                            .symbolEffect(.pulse, options: .repeating.speed(0.3), isActive: !reduceMotion)
-                            .foregroundStyle(Color.textSecondary)
-
-                        Text(book.title)
-                            .font(.caption2)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
-                            .padding(.horizontal, Spacing.xs)
-                            .foregroundStyle(Color.textPrimary)
-                    }
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: CornerRadius.sm)
-                        .stroke(Color.quoteBorder.opacity(0.5), lineWidth: Stroke.hairline.width)
-                )
-        }
-    }
-
-    private var statusBadge: some View {
-        Text(statusBadgeLabel)
-            .font(.caption2)
-            .lineLimit(1)
-            .minimumScaleFactor(0.6)
-            .allowsTightening(true)
-            .layoutPriority(1)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(statusColor.opacity(0.15))
-            .foregroundStyle(statusColor)
-            .clipShape(Capsule())
-    }
-
-    private var statusBadgeLabel: String {
-        switch book.status {
-        case .wantToRead:
-            // Keep the grid badge compact; the full label reads awkwardly on narrow cards.
-            return "Want"
-        default:
-            return book.status.displayName
-        }
-    }
-
-    private var statusColor: Color {
-        switch book.status {
-        case .currentlyReading: return .accent
-        case .finished: return .success
-        case .wantToRead: return .textSecondary
-        case .abandoned: return .textTertiary
+            BookCardContextMenuItems(
+                onShare: onShare,
+                onDelete: onDelete
+            )
         }
     }
 }
@@ -274,7 +159,7 @@ struct BookListRow: View {
     var body: some View {
         HStack(spacing: Spacing.md) {
             // Small cover thumbnail
-            coverThumbnail
+            BookCoverArtwork(book: book, style: .list, reduceMotion: reduceMotion)
 
             // Book details
             VStack(alignment: .leading, spacing: Spacing.xs) {
@@ -289,7 +174,7 @@ struct BookListRow: View {
 
                 HStack(spacing: Spacing.sm) {
                     // Status badge with animation
-                    statusBadge
+                    BookReadingStatusBadge(status: book.status, style: .list)
 
                     // Quote count with numeric transition
                     if book.hasQuotes {
@@ -364,94 +249,11 @@ struct BookListRow: View {
     /// Context menu items
     @ViewBuilder
     private var contextMenuItems: some View {
-        if let onEdit = onEdit {
-            Button {
-                HapticManager.light()
-                onEdit()
-            } label: {
-                Label("Edit Book", systemImage: "pencil")
-            }
-        }
-
-        Button {
-            HapticManager.light()
-        } label: {
-            Label("View Quotes", systemImage: "text.quote")
-        }
-
-        if let onShare = onShare {
-            Button {
-                HapticManager.light()
-                onShare()
-            } label: {
-                Label("Share", systemImage: "square.and.arrow.up")
-            }
-        }
-
-        if onDelete != nil {
-            Divider()
-
-            Button(role: .destructive) {
-                HapticManager.warning()
-                onDelete?()
-            } label: {
-                Label("Delete Book", systemImage: "trash")
-            }
-        }
-    }
-
-    // MARK: - Private Views
-
-    @ViewBuilder
-    private var coverThumbnail: some View {
-        if let coverData = book.coverThumbnailData,
-           let uiImage = UIImage(data: coverData) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 50, height: 72)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-                .overlay(
-                    RoundedRectangle(cornerRadius: CornerRadius.sm)
-                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                )
-        } else {
-            RoundedRectangle(cornerRadius: CornerRadius.sm)
-                .fill(Color.backgroundSecondary)
-                .frame(width: 50, height: 72)
-                .overlay {
-                    Image(systemName: "book.closed")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: CornerRadius.sm)
-                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                )
-        }
-    }
-
-    @ViewBuilder
-    private var statusBadge: some View {
-        Text(book.status.displayName)
-            .font(.caption2)
-            .lineLimit(1)
-            .minimumScaleFactor(0.75)
-            .allowsTightening(true)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(statusColor.opacity(0.15))
-            .foregroundStyle(statusColor)
-            .clipShape(Capsule())
-    }
-
-    private var statusColor: Color {
-        switch book.status {
-        case .currentlyReading: return .accent
-        case .finished: return .success
-        case .wantToRead: return .textSecondary
-        case .abandoned: return .textTertiary
-        }
+        BookCardContextMenuItems(
+            onEdit: onEdit,
+            onShare: onShare,
+            onDelete: onDelete
+        )
     }
 }
 

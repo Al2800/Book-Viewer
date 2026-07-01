@@ -45,6 +45,14 @@ struct SearchResultsView: View {
         UITestConfiguration.isUITesting || reduceMotion
     }
 
+    private var presentation: SearchResultsPresentation {
+        SearchResultsPresentation(
+            scope: scope,
+            bookCount: searchService.results.books.count,
+            quoteCount: searchService.results.quotes.count
+        )
+    }
+
     // MARK: - Body
 
     var body: some View {
@@ -91,7 +99,7 @@ struct SearchResultsView: View {
         }
         .onChange(of: searchService.results.books.count + searchService.results.quotes.count) { oldCount, newCount in
             // Trigger re-animation when results change significantly
-            if oldCount == 0 && newCount > 0 {
+            if SearchResultsPresentation.shouldResetResultsAnimation(oldCount: oldCount, newCount: newCount) {
                 resultsKey = UUID()
                 hasAppeared = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -106,7 +114,11 @@ struct SearchResultsView: View {
             }
 
             // Fetch did-you-mean when results are empty and we have a query
-            if newCount == 0 && !searchText.isEmpty && !searchService.isSearching {
+            if SearchResultsPresentation.shouldFetchDidYouMean(
+                resultCount: newCount,
+                searchText: searchText,
+                isSearching: searchService.isSearching
+            ) {
                 fetchDidYouMean()
             }
         }
@@ -145,14 +157,12 @@ struct SearchResultsView: View {
     private var resultsList: some View {
         List {
             // Books section
-            if !searchService.results.books.isEmpty &&
-               (scope == .all || scope == .books) {
+            if presentation.showsBooks {
                 booksSection
             }
 
             // Quotes section
-            if !searchService.results.quotes.isEmpty &&
-               (scope == .all || scope == .quotes) {
+            if presentation.showsQuotes {
                 quotesSection
             }
         }
@@ -183,7 +193,9 @@ struct SearchResultsView: View {
                 .opacity(shouldDisableAnimations ? 1 : (hasAppeared ? 1 : 0))
                 .offset(x: shouldDisableAnimations ? 0 : (hasAppeared ? 0 : -15))
                 .animation(
-                    shouldDisableAnimations ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.04),
+                    shouldDisableAnimations ? .none : .smoothSpring.delay(
+                        presentation.bookAnimationDelay(index: index)
+                    ),
                     value: hasAppeared
                 )
             }
@@ -215,7 +227,7 @@ struct SearchResultsView: View {
                 .offset(x: shouldDisableAnimations ? 0 : (hasAppeared ? 0 : -15))
                 .animation(
                     shouldDisableAnimations ? .none : .smoothSpring.delay(
-                        Double(min(searchService.results.books.count + index, 12)) * 0.04
+                        presentation.quoteAnimationDelay(index: index)
                     ),
                     value: hasAppeared
                 )
@@ -242,190 +254,44 @@ struct SearchResultsView: View {
     // MARK: - Empty States
 
     private var emptySearchView: some View {
-        VStack(spacing: Spacing.lg) {
-            // Header section
-            VStack(spacing: Spacing.md) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 50))
-                    .foregroundStyle(.tertiary)
-                    .symbolEffect(.pulse, options: .repeating)
-
-                Text("Search your library")
-                    .font(.headline)
-
-                Text("Find quotes and books by title, author, or content")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+        SearchEmptyStateView(
+            recentSearches: suggestionsService?.getRecentSearches() ?? [],
+            hasAppeared: hasAppeared,
+            onSelectRecentSearch: { search in
+                HapticManager.light()
+                onAcceptSuggestion?(search)
             }
-
-            // Recent searches section
-            if let service = suggestionsService {
-                let recentSearches = service.getRecentSearches()
-                if !recentSearches.isEmpty {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        Text("Recent Searches")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, Spacing.xs)
-
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: Spacing.sm) {
-                                ForEach(recentSearches.prefix(5), id: \.self) { search in
-                                    Button {
-                                        HapticManager.light()
-                                        onAcceptSuggestion?(search)
-                                    } label: {
-                                        HStack(spacing: Spacing.xs) {
-                                            Image(systemName: "clock")
-                                                .font(.caption2)
-                                            Text(search)
-                                                .lineLimit(1)
-                                        }
-                                        .font(.subheadline)
-                                        .padding(.horizontal, Spacing.md)
-                                        .padding(.vertical, Spacing.sm)
-                                        .background(Color.backgroundSecondary)
-                                        .clipShape(Capsule())
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.top, Spacing.md)
-                }
-            }
-        }
-        .padding(.horizontal, Spacing.xl)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .opacity(hasAppeared ? 1 : 0)
-        .scaleEffect(hasAppeared ? 1 : 0.9)
+        )
     }
 
     private var noResultsView: some View {
-        VStack(spacing: Spacing.lg) {
-            // Header
-            VStack(spacing: Spacing.sm) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 44))
-                    .foregroundStyle(.secondary)
-
-                Text("No results for '\(searchText)'")
-                    .font(.headline)
+        SearchNoResultsView(
+            searchText: searchText,
+            scope: scope,
+            recentSearches: suggestionsService?.getRecentSearches() ?? [],
+            didYouMeanSuggestion: didYouMeanSuggestion,
+            isLoadingSuggestion: isLoadingSuggestion,
+            hasAppeared: hasAppeared,
+            reduceMotion: reduceMotion,
+            onAcceptDidYouMean: acceptSuggestion,
+            onSelectRecentSearch: { search in
+                HapticManager.light()
+                onAcceptSuggestion?(search)
+            },
+            onSearchAll: {
+                HapticManager.light()
+                onScopeChange?(.all)
             }
-
-            // Did-you-mean banner
-            if let suggestion = didYouMeanSuggestion {
-                DidYouMeanBanner(
-                    suggestion: suggestion,
-                    onAccept: {
-                        acceptSuggestion(suggestion)
-                    }
-                )
-                .transition(.opacity.combined(with: .move(edge: .top)))
-            } else if isLoadingSuggestion {
-                HStack(spacing: Spacing.xs) {
-                    ProgressView()
-                        .scaleEffect(0.8)
-                    Text("Looking for suggestions...")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            // Action suggestions
-            VStack(spacing: Spacing.sm) {
-                Text("Try these:")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-
-                // Suggestion buttons
-                suggestionButtons
-
-                // Recent searches as alternatives
-                if let service = suggestionsService {
-                    let recentSearches = service.getRecentSearches()
-                        .filter { !$0.lowercased().contains(searchText.lowercased()) }
-                    if !recentSearches.isEmpty {
-                        VStack(spacing: Spacing.sm) {
-                            Divider()
-                                .padding(.vertical, Spacing.xs)
-
-                            Text("Or try a recent search")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: Spacing.sm) {
-                                    ForEach(recentSearches.prefix(4), id: \.self) { search in
-                                        Button {
-                                            HapticManager.light()
-                                            onAcceptSuggestion?(search)
-                                        } label: {
-                                            Text(search)
-                                                .font(.subheadline)
-                                                .lineLimit(1)
-                                                .padding(.horizontal, Spacing.md)
-                                                .padding(.vertical, Spacing.sm)
-                                                .background(Color.backgroundSecondary)
-                                                .clipShape(Capsule())
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        .padding(.horizontal, Spacing.xl)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .opacity(hasAppeared ? 1 : 0)
-        .scaleEffect(hasAppeared ? 1 : 0.95)
-        .animation(reduceMotion ? .none : .smoothSpring, value: didYouMeanSuggestion)
-        .accessibilityIdentifier(AccessibilityIdentifiers.Search.noResultsView)
-    }
-
-    private var suggestionButtons: some View {
-        VStack(spacing: Spacing.sm) {
-            if scope != .all {
-                Button {
-                    HapticManager.light()
-                    onScopeChange?(.all)
-                } label: {
-                    Label("Search all", systemImage: "arrow.up.left.and.arrow.down.right")
-                }
-                .buttonStyle(.bordered)
-            }
-        }
+        )
     }
 
     // MARK: - Error View
 
     private func errorView(_ error: SearchError) -> some View {
-        VStack(spacing: Spacing.md) {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 50))
-                .foregroundStyle(Color.error)
-
-            Text("Search error")
-                .font(.headline)
-
-            Text(error.localizedDescription)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-
-            Button("Try again") {
-                searchService.search(searchText, scope: scope)
-            }
-            .buttonStyle(.bordered)
+        SearchErrorStateView(error: error) {
+            HapticManager.light()
+            searchService.search(searchText, scope: scope)
         }
-        .padding(.horizontal, Spacing.xl)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - Data Fetching

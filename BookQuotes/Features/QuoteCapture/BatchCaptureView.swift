@@ -252,39 +252,14 @@ struct BatchCaptureView: View {
 
         do {
             let image = try await cameraService.capturePhoto()
-            let previewSize = cameraService.currentPreviewSizeForCropping()
-            let cropBehavior = cameraFramingProfile.captureCropBehavior
-            let sessionID = session.id
-            let qualityScore = currentQuality?.overallScore
-
-            // Heavy work: crop, document detection, preprocess + thumbnail + disk IO.
-            // Keep it off the main actor so the capture UI doesn't stall after shutter.
-            let (imagePath, thumbnailData, finalQualityScore) = try await Task.detached(priority: .userInitiated) { () throws -> (String, Data, Double?) in
-                var working = image
-                if cropBehavior == .aspectFillVisibleArea,
-                   let previewSize {
-                    working = (try? ImagePreprocessor.cropToAspectFillPreview(working, previewSize: previewSize)) ?? working
-                }
-                working = await ImagePreprocessor.autoCropDocument(working)
-
-                let processed = try ImagePreprocessor.process(working, config: .highQuality)
-                let thumbnailData = try ImagePreprocessor.createThumbnail(working)
-
-                try PageCapture.ensureDirectory(for: sessionID)
-                let imagePath = PageCapture.generateImagePath(sessionId: sessionID)
-                try PageCapture.saveImage(processed.data, to: imagePath)
-
-                return (imagePath, thumbnailData, qualityScore)
-            }.value
-
-            // Create capture record
-            let capture = PageCapture(imagePath: imagePath, session: session)
-            capture.thumbnailData = thumbnailData
-            capture.qualityScore = finalQualityScore
-
-            // Add to session
-            session.addCapture(capture)
-            modelContext.insert(capture)
+            let pageStore = BatchCapturePageStore(modelContext: modelContext)
+            _ = try await pageStore.appendCapture(
+                to: session,
+                image: image,
+                previewSize: cameraService.currentPreviewSizeForCropping(),
+                cropBehavior: cameraFramingProfile.captureCropBehavior,
+                qualityScore: currentQuality?.overallScore
+            )
 
             HapticManager.captureSuccess()
 

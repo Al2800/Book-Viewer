@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import UIKit
 
 // MARK: - QuoteDetailView
 
@@ -15,6 +14,7 @@ struct QuoteDetailView: View {
     // MARK: - Properties
 
     @Bindable var quote: Quote
+    private let deletionPrompt = QuoteDeletionPrompt()
 
     // MARK: - State
 
@@ -166,22 +166,35 @@ struct QuoteDetailView: View {
             }
         }
         .confirmationDialog(
-            "Delete Quote?",
+            deletionPrompt.title,
             isPresented: $showDeleteConfirmation,
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) {
+            Button(deletionPrompt.destructiveActionTitle, role: .destructive) {
                 deleteQuote()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This action cannot be undone.")
+            Text(deletionPrompt.message)
         }
         .sheet(isPresented: $showSourceImage) {
-            sourceImageSheet
+            QuoteSourceImageSheet(
+                imageData: quote.sourceImageData,
+                onDone: {
+                    showSourceImage = false
+                }
+            )
         }
         .sheet(isPresented: $showMarkingPicker) {
-            markingPickerSheet
+            QuoteMarkingPickerSheet(
+                markingType: $quote.markingType,
+                onCancel: {
+                    showMarkingPicker = false
+                },
+                onSelect: {
+                    showMarkingPicker = false
+                }
+            )
         }
         .sheet(isPresented: $showShareSheet) {
             QuoteShareSheet(text: shareableQuoteText)
@@ -346,72 +359,14 @@ struct QuoteDetailView: View {
         .paperCard()
     }
 
-    // MARK: - Source Image Sheet
-
-    @ViewBuilder
-    private var sourceImageSheet: some View {
-        NavigationStack {
-            if let imageData = quote.sourceImageData,
-               let uiImage = UIImage(data: imageData) {
-                ScrollView {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding()
-                }
-                .navigationTitle("Source Image")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Done") {
-                            showSourceImage = false
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: - Marking Picker Sheet
-
-    private var markingPickerSheet: some View {
-        NavigationStack {
-            List {
-                ForEach(MarkingType.allCases, id: \.self) { type in
-                    Button {
-                        quote.markingType = type
-                        showMarkingPicker = false
-                    } label: {
-                        HStack {
-                            MarkingTypeBadge(markingType: type)
-                            Spacer()
-                            if quote.markingType == type {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Select Marking Type")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        showMarkingPicker = false
-                    }
-                }
-            }
-        }
-    }
-
     // MARK: - Actions
 
     private func startEditing() {
         HapticManager.light()
-        editedText = quote.text
-        editedMarginNote = quote.marginNote ?? ""
-        editedPageNumber = quote.pageNumber.map { "\($0)" } ?? ""
+        let editFields = QuoteDetailEditFields(quote: quote)
+        editedText = editFields.text
+        editedMarginNote = editFields.marginNote
+        editedPageNumber = editFields.pageNumberText
         withAnimation(reduceMotion ? .none : .smoothSpring) {
             isEditing = true
         }
@@ -425,10 +380,12 @@ struct QuoteDetailView: View {
     }
 
     private func saveEdits() {
-        quote.text = editedText
-        quote.marginNote = editedMarginNote.isEmpty ? nil : editedMarginNote
-        quote.pageNumber = Int(editedPageNumber)
-        quote.dateModified = Date()
+        QuoteDetailEditDraft(
+            text: editedText,
+            marginNote: editedMarginNote,
+            pageNumberText: editedPageNumber
+        )
+        .apply(to: quote)
 
         try? modelContext.save()
         HapticManager.success()
@@ -438,14 +395,7 @@ struct QuoteDetailView: View {
     }
 
     private func copyToClipboard() {
-        var text = "\"\(quote.text)\""
-        if let book = quote.book {
-            text += "\n\n— \(book.title) by \(book.author)"
-            if let page = quote.pageNumber {
-                text += ", p. \(page)"
-            }
-        }
-        UIPasteboard.general.string = text
+        UIPasteboard.general.string = QuoteDetailTextFormatter.shareText(for: quote)
         HapticManager.success()
     }
 
@@ -456,14 +406,7 @@ struct QuoteDetailView: View {
 
     /// Formatted quote text for sharing
     private var shareableQuoteText: String {
-        var text = "\"\(quote.text)\""
-        if let book = quote.book {
-            text += "\n\n— \(book.title) by \(book.author)"
-            if let page = quote.pageNumber {
-                text += ", p. \(page)"
-            }
-        }
-        return text
+        QuoteDetailTextFormatter.shareText(for: quote)
     }
 
     private func deleteQuote() {
@@ -472,23 +415,6 @@ struct QuoteDetailView: View {
         try? modelContext.save()
         dismiss()
     }
-}
-
-// MARK: - QuoteShareSheet
-
-/// Simple share sheet for quotes using UIActivityViewController.
-struct QuoteShareSheet: UIViewControllerRepresentable {
-    let text: String
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let activityVC = UIActivityViewController(
-            activityItems: [text],
-            applicationActivities: nil
-        )
-        return activityVC
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 // MARK: - Preview

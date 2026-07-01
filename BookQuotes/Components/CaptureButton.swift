@@ -180,27 +180,7 @@ struct CaptureControlsBar: View {
     let onFlash: (() -> Void)?
     let onFlip: (() -> Void)?
 
-    @State private var flashMode: FlashMode = .auto
-
-    enum FlashMode: CaseIterable {
-        case auto, on, off
-
-        var icon: String {
-            switch self {
-            case .auto: return "bolt.badge.automatic"
-            case .on: return "bolt.fill"
-            case .off: return "bolt.slash"
-            }
-        }
-
-        var next: FlashMode {
-            switch self {
-            case .auto: return .on
-            case .on: return .off
-            case .off: return .auto
-            }
-        }
-    }
+    @State private var flashMode: CaptureFlashMode = .auto
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 

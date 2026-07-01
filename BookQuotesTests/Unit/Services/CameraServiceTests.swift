@@ -24,4 +24,18 @@ final class CameraServiceTests: XCTestCase {
         XCTAssertNotNil(compressed)
         XCTAssertFalse(compressed?.isEmpty ?? true)
     }
+
+    @MainActor
+    func testPreviewSizeForCroppingPreservesLastValidLayoutSize() {
+        let service = CameraService()
+
+        service.updatePreviewSize(CGSize(width: 390, height: 844))
+        service.updatePreviewSize(.zero)
+        service.updatePreviewSize(CGSize(width: -1, height: 844))
+
+        XCTAssertEqual(
+            service.currentPreviewSizeForCropping(),
+            CGSize(width: 390, height: 844)
+        )
+    }
 }

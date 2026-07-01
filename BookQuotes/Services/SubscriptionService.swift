@@ -1,4 +1,3 @@
-import CryptoKit
 import Foundation
 import StoreKit
 
@@ -8,21 +7,6 @@ import StoreKit
 @MainActor
 @Observable
 final class SubscriptionService {
-
-    // MARK: - Product IDs
-
-    /// Available subscription product identifiers
-    enum ProductID: String, CaseIterable {
-        case monthly = "com.bookquotes.monthly"
-        case yearly = "com.bookquotes.yearly"
-
-        var displayName: String {
-            switch self {
-            case .monthly: return "Monthly"
-            case .yearly: return "Yearly"
-            }
-        }
-    }
 
     // MARK: - Properties
 
@@ -87,12 +71,12 @@ final class SubscriptionService {
 
     /// Monthly product if available
     var monthlyProduct: Product? {
-        products.first { $0.id == ProductID.monthly.rawValue }
+        products.first { $0.id == SubscriptionProductID.monthly.rawValue }
     }
 
     /// Yearly product if available
     var yearlyProduct: Product? {
-        products.first { $0.id == ProductID.yearly.rawValue }
+        products.first { $0.id == SubscriptionProductID.yearly.rawValue }
     }
 
     // MARK: - Initialization
@@ -122,8 +106,7 @@ final class SubscriptionService {
         defer { isLoading = false }
 
         do {
-            let productIds = ProductID.allCases.map(\.rawValue)
-            products = try await Product.products(for: Set(productIds))
+            products = try await Product.products(for: Set(SubscriptionProductID.allRawValues))
                 .sorted { $0.price < $1.price }
 
             // Also update subscription status
@@ -259,22 +242,7 @@ final class SubscriptionService {
             return []
         }
 
-        return [.appAccountToken(Self.appAccountToken(for: userID))]
-    }
-
-    private static func appAccountToken(for userID: String) -> UUID {
-        let digest = SHA256.hash(data: Data("bookquotes:subscription-account:\(userID)".utf8))
-        var bytes = Array(digest.prefix(16))
-        bytes[6] = (bytes[6] & 0x0F) | 0x50
-        bytes[8] = (bytes[8] & 0x3F) | 0x80
-
-        let uuid = uuid_t(
-            bytes[0], bytes[1], bytes[2], bytes[3],
-            bytes[4], bytes[5], bytes[6], bytes[7],
-            bytes[8], bytes[9], bytes[10], bytes[11],
-            bytes[12], bytes[13], bytes[14], bytes[15]
-        )
-        return UUID(uuid: uuid)
+        return [.appAccountToken(SubscriptionAccountToken.token(for: userID))]
     }
 
     /// Ask the backend to verify subscription status against the App Store Server API.
@@ -307,23 +275,14 @@ final class SubscriptionService {
                 return
             }
 
-            struct SyncResponse: Decodable {
-                let status: String
-                let rawStatus: String
-                let expiresAt: String?
-                let productId: String?
-            }
+            let syncResponse = try JSONDecoder().decode(SubscriptionSyncResponse.self, from: data)
+            let syncState = SubscriptionSyncState(response: syncResponse)
 
-            let syncResponse = try JSONDecoder().decode(SyncResponse.self, from: data)
-            let formatter = ISO8601DateFormatter()
-            let normalizedStatus = SubscriptionStatus(rawValue: syncResponse.status) ?? .none
-            let expiresAt = syncResponse.expiresAt.flatMap { formatter.date(from: $0) }
-
-            authService.updateSubscriptionState(status: normalizedStatus, expiresAt: expiresAt)
-            currentExpirationDate = expiresAt
+            authService.updateSubscriptionState(status: syncState.status, expiresAt: syncState.expiresAt)
+            currentExpirationDate = syncState.expiresAt
 
             if purchasedProductID == nil {
-                purchasedProductID = syncResponse.productId ?? transaction?.productID
+                purchasedProductID = syncState.productID ?? transaction?.productID
             }
         } catch {
             print("Backend verification error: \(error)")

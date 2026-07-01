@@ -22,7 +22,6 @@ struct QuoteCaptureView: View {
     // MARK: - State
 
     @State private var cameraService = CameraService()
-    @State private var qualityAnalyzer = ImageQualityAnalyzer(configuration: .lenient)
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureState: CaptureState = .previewing
     @State private var capturedImage: UIImage?
@@ -33,6 +32,7 @@ struct QuoteCaptureView: View {
     @State private var showExtractionReview = false
     @State private var capturedSession: CaptureSession?
     private let cameraFramingProfile = CameraFramingProfile.quotePage
+    private let imageProcessor = QuoteCaptureImageProcessor()
 
     // MARK: - Body
 
@@ -253,17 +253,7 @@ struct QuoteCaptureView: View {
                 let image = try await cameraService.capturePhoto()
                 let previewSize = cameraService.currentPreviewSizeForCropping()
 
-                // Crop + document detection can be expensive. Do it off the MainActor so capture doesn't freeze.
-                let prepared = await Task.detached(priority: .userInitiated) { () -> UIImage in
-                    var working = image
-                    if cameraFramingProfile.captureCropBehavior == .aspectFillVisibleArea,
-                       let previewSize {
-                        working = (try? ImagePreprocessor.cropToAspectFillPreview(working, previewSize: previewSize)) ?? working
-                    }
-                    return await ImagePreprocessor.autoCropDocument(working)
-                }.value
-
-                await handleCapturedImage(prepared)
+                await handleCapturedImage(image, previewSize: previewSize)
 
             } catch {
                 errorMessage = error.localizedDescription
@@ -284,31 +274,28 @@ struct QuoteCaptureView: View {
         }
     }
 
-    private func handleCapturedImage(_ image: UIImage) async {
+    private func handleCapturedImage(_ image: UIImage, previewSize: CGSize? = nil) async {
         await MainActor.run {
             capturedImage = image
             isAnalyzingQuality = true
             qualityResult = nil
         }
 
-        // Vision-based analysis can be expensive. Keep it off the MainActor to prevent the capture UI from freezing.
-        do {
-            let result = try await Task.detached(priority: .userInitiated) {
-                let analyzer = ImageQualityAnalyzer(configuration: .lenient)
-                return try await analyzer.analyze(image: image)
-            }.value
+        let result = await imageProcessor.process(
+            image,
+            previewSize: previewSize,
+            framingProfile: cameraFramingProfile
+        )
 
-            await MainActor.run {
-                qualityResult = result
-            }
-        } catch {
-            await MainActor.run {
+        await MainActor.run {
+            capturedImage = result.image
+            qualityResult = result.qualityResult
+
+            if let error = result.qualityError {
                 errorMessage = error.localizedDescription
                 showError = true
             }
-        }
 
-        await MainActor.run {
             isAnalyzingQuality = false
             // Show review sheet
             captureState = .reviewing
@@ -328,47 +315,12 @@ struct QuoteCaptureView: View {
 
         Task {
             do {
-                // Preprocessing + disk IO can be expensive and should not run on the main actor.
-                // Generate a stable session id up front so we can write files before inserting SwiftData models.
-                let sessionID = UUID()
-
-                let (imagePath, thumbnailData) = try await withCheckedThrowingContinuation { continuation in
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        do {
-                            let processed = try ImagePreprocessor.processForQuoteExtraction(image)
-
-                            try PageCapture.ensureDirectory(for: sessionID)
-                            let imagePath = PageCapture.generateImagePath(sessionId: sessionID)
-                            try PageCapture.saveImage(processed.data, to: imagePath)
-
-                            let thumbnailData = try? ImagePreprocessor.createThumbnail(image)
-                            continuation.resume(returning: (imagePath, thumbnailData))
-                        } catch {
-                            continuation.resume(throwing: error)
-                        }
-                    }
-                }
-
-                // SwiftData work must stay on the main actor.
-                let session = CaptureSession(book: book)
-                session.id = sessionID
-                modelContext.insert(session)
-
-                let pageCapture = PageCapture(imagePath: imagePath, session: session)
-                pageCapture.orderIndex = 0
-                pageCapture.thumbnailData = thumbnailData
-
-                modelContext.insert(pageCapture)
-                session.addCapture(pageCapture)
-
-                if UITestConfiguration.isUITesting {
-                    seedExtractionForUITest(pageCapture: pageCapture, session: session)
-                } else {
-                    // Mark session as ready for processing
-                    session.finishCapturing()
-                }
-
-                try modelContext.save()
+                let store = QuoteCaptureSessionStore(modelContext: modelContext)
+                let session = try await store.createSession(
+                    for: book,
+                    image: image,
+                    seedForUITest: UITestConfiguration.isUITesting
+                )
 
                 captureState = .completed(session: session)
                 capturedSession = session
@@ -396,28 +348,6 @@ struct QuoteCaptureView: View {
         } else {
             dismiss()
         }
-    }
-
-    private func seedExtractionForUITest(pageCapture: PageCapture, session: CaptureSession) {
-        let quotes = [
-            ExtractedQuoteData(
-                text: "Test quote extracted for UI testing.",
-                pageNumber: 12,
-                marginNote: nil,
-                markingType: "underline",
-                confidence: 0.92
-            )
-        ]
-
-        pageCapture.storeExtractedQuotes(quotes)
-        pageCapture.completeProcessing(
-            quoteCount: quotes.count,
-            avgConfidence: quotes.compactMap { $0.confidence }.first,
-            pageNumber: quotes.first?.pageNumber
-        )
-
-        session.status = .processing
-        session.recordSuccess()
     }
 }
 

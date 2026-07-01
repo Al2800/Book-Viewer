@@ -41,23 +41,12 @@ final class QuoteSaveService {
         to book: Book,
         sourceImage: Data? = nil
     ) throws -> Quote {
-        // Create Quote model from extracted data
-        let quote = Quote(
-            text: extractedQuote.text,
+        let quote = try QuoteSaveDraft(
+            extractedQuote: extractedQuote,
             book: book,
-            markingType: extractedQuote.markingType
+            sourceImage: sourceImage
         )
-
-        // Set optional properties
-        quote.pageNumber = extractedQuote.pageNumber
-        quote.chapter = extractedQuote.chapter
-        quote.marginNote = extractedQuote.marginNote
-        quote.confidence = extractedQuote.confidence
-        quote.sourceImageData = sourceImage
-        quote.customMarkingDefinition = extractedQuote.customMarkingDefinition
-
-        // Validate before saving
-        try quote.validate()
+        .makeQuote()
 
         // Insert and save
         modelContext.insert(quote)
@@ -189,151 +178,6 @@ final class QuoteSaveService {
             modelContext.delete(quote)
         }
         try modelContext.save()
-    }
-}
-
-// MARK: - Extracted Quote (Input Model)
-
-/// Represents quote data extracted by AI before persistence.
-/// This is the input format from the extraction service.
-struct ExtractedQuote: Sendable {
-    /// The extracted text content
-    let text: String
-
-    /// Type of marking detected
-    let markingType: MarkingType
-
-    /// AI confidence in the extraction (0.0-1.0)
-    let confidence: Double?
-
-    /// Detected page number
-    let pageNumber: Int?
-
-    /// Detected chapter
-    let chapter: String?
-
-    /// Transcribed margin note
-    let marginNote: String?
-
-    /// Custom marking definition if user has defined one
-    let customMarkingDefinition: MarkingDefinition?
-
-    /// Bounding box of the text in the source image (for future use)
-    let boundingBox: CGRect?
-
-    init(
-        text: String,
-        markingType: MarkingType = .underline,
-        confidence: Double? = nil,
-        pageNumber: Int? = nil,
-        chapter: String? = nil,
-        marginNote: String? = nil,
-        customMarkingDefinition: MarkingDefinition? = nil,
-        boundingBox: CGRect? = nil
-    ) {
-        self.text = text
-        self.markingType = markingType
-        self.confidence = confidence
-        self.pageNumber = pageNumber
-        self.chapter = chapter
-        self.marginNote = marginNote
-        self.customMarkingDefinition = customMarkingDefinition
-        self.boundingBox = boundingBox
-    }
-}
-
-// MARK: - Batch Save Result
-
-/// Result of a batch save operation
-struct BatchSaveResult: Sendable {
-    /// Successfully saved quotes
-    let savedQuotes: [Quote]
-
-    /// Quotes that failed to save
-    let failures: [SaveFailure]
-
-    /// The book quotes were saved to
-    let book: Book
-
-    /// Whether all quotes were saved successfully
-    var isFullSuccess: Bool {
-        failures.isEmpty
-    }
-
-    /// Whether any quotes were saved
-    var isPartialSuccess: Bool {
-        !savedQuotes.isEmpty && !failures.isEmpty
-    }
-
-    /// Whether all quotes failed
-    var isFullFailure: Bool {
-        savedQuotes.isEmpty && !failures.isEmpty
-    }
-
-    /// Total number of quotes attempted
-    var totalAttempted: Int {
-        savedQuotes.count + failures.count
-    }
-
-    /// Success rate as percentage
-    var successRate: Double {
-        guard totalAttempted > 0 else { return 0 }
-        return Double(savedQuotes.count) / Double(totalAttempted)
-    }
-
-    /// Human-readable summary
-    var summary: String {
-        if isFullSuccess {
-            return "Saved \(savedQuotes.count) quote\(savedQuotes.count == 1 ? "" : "s")"
-        } else if isFullFailure {
-            return "Failed to save \(failures.count) quote\(failures.count == 1 ? "" : "s")"
-        } else {
-            return "Saved \(savedQuotes.count) of \(totalAttempted) quotes"
-        }
-    }
-}
-
-// MARK: - Save Failure
-
-/// Details about a failed quote save
-struct SaveFailure: Sendable {
-    /// Index in the original array
-    let index: Int
-
-    /// The quote that failed to save
-    let extractedQuote: ExtractedQuote
-
-    /// The error that occurred
-    let error: Error
-
-    /// Human-readable error message
-    var errorMessage: String {
-        if let validationError = error as? ValidationError {
-            return validationError.localizedDescription
-        }
-        return error.localizedDescription
-    }
-}
-
-// MARK: - Save Errors
-
-enum QuoteSaveError: LocalizedError {
-    case bookNotFound
-    case invalidQuoteData(String)
-    case persistenceFailed(Error)
-    case duplicateQuote
-
-    var errorDescription: String? {
-        switch self {
-        case .bookNotFound:
-            return "The selected book could not be found"
-        case .invalidQuoteData(let reason):
-            return "Invalid quote data: \(reason)"
-        case .persistenceFailed(let error):
-            return "Failed to save: \(error.localizedDescription)"
-        case .duplicateQuote:
-            return "This quote already exists in your library"
-        }
     }
 }
 

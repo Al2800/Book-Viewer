@@ -111,6 +111,39 @@ final class GeminiServiceTests: SwiftDataTestCase {
         logger.success("Missing optional fields handled correctly")
     }
 
+    func testParseQuoteResponse_MissingExtractionSourceDefaultsToUnknown() async throws {
+        let json = """
+        {
+            "quotes": [
+                {"text": "Legacy stored quote", "markingType": "underline", "confidence": 0.7}
+            ]
+        }
+        """
+
+        let result = try QuoteExtractionResult.parse(from: json)
+
+        XCTAssertEqual(result.quotes.first?.extractionSource, .unknown)
+    }
+
+    func testParseQuoteResponse_ExplicitExtractionSourceIsPreserved() async throws {
+        let json = """
+        {
+            "quotes": [
+                {
+                    "text": "Model selected quote",
+                    "markingType": "bracket",
+                    "confidence": 0.86,
+                    "extractionSource": "model_assisted"
+                }
+            ]
+        }
+        """
+
+        let result = try QuoteExtractionResult.parse(from: json)
+
+        XCTAssertEqual(result.quotes.first?.extractionSource, .modelAssisted)
+    }
+
     func testParseQuoteResponse_EmptyQuotes_Succeeds() async throws {
         logger.step(1, "Preparing JSON with empty quotes array")
         let json = """

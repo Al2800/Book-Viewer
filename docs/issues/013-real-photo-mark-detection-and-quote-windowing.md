@@ -45,16 +45,16 @@ This means the current on-device path can reach the edit screen, but the mark-de
 - [ ] The model-assisted route can identify underlined passages, vertical margin-line marked paragraphs, and multiple marked passages on one page.
 - [ ] The model-assisted route treats small brackets, short side ticks, braces, partial bracket hooks, and faint pencil marks beside readable text as intentional quote marks.
 - [ ] The model-assisted route returns strict normalized quote-review JSON, not free-form prose.
-- [ ] The app records whether a quote result came from on-device extraction, model-assisted extraction, or manual entry.
-- [ ] `PageMarkDetector` has a deterministic vertical-mark path that scans column runs or otherwise detects thin, neutral margin strokes.
-- [ ] Vertical margin-line detection does not classify normal printed text stems as margin marks.
-- [ ] A margin-line fixture beside a paragraph produces one quote candidate containing the adjacent paragraph text.
-- [ ] Underline selection avoids returning partial orphan fragments at the start or end of a marked passage where neighbouring marked lines indicate the intended quote window.
-- [ ] OCR cleanup normalizes obvious line-wrap hyphenation only after candidate selection, without inventing text.
-- [ ] Model prompt and cleanup normalize obvious line-wrap hyphenation without removing hard printed hyphens or inventing missing words.
-- [ ] Low-confidence candidates still appear in review rather than being dropped.
-- [ ] The fix is covered by characterization tests before production logic changes.
-- [ ] The simulator release gate includes at least one real-photo fixture when present locally.
+- [x] The app records whether a quote result came from on-device extraction, model-assisted extraction, or manual entry.
+- [x] `PageMarkDetector` has a deterministic vertical-mark path that scans column runs or otherwise detects thin, neutral margin strokes.
+- [x] Vertical margin-line detection does not classify normal printed text stems as margin marks.
+- [x] A margin-line fixture beside a paragraph produces one quote candidate containing the adjacent paragraph text.
+- [x] Underline selection avoids returning partial orphan fragments at the start or end of a marked passage where neighbouring marked lines indicate the intended quote window.
+- [x] OCR cleanup normalizes obvious line-wrap hyphenation only after candidate selection, without inventing text.
+- [x] Model prompt and cleanup normalize obvious line-wrap hyphenation without removing hard printed hyphens or inventing missing words.
+- [x] Low-confidence candidates still appear in review rather than being dropped.
+- [x] The fix is covered by characterization tests before production logic changes.
+- [x] The simulator release gate includes at least one real-photo fixture when present locally.
 
 ## TDD Plan
 
@@ -67,6 +67,51 @@ This means the current on-device path can reach the edit screen, but the mark-de
 7. Write a failing selector/candidate test for the partial-line quote-window symptom.
 8. Add deterministic OCR cleanup for hyphenated line wraps after selection.
 9. Re-run the focused on-device extractor tests, backend tests, and quote-review UI smoke.
+
+## Progress
+
+2026-07-01:
+
+- Added a detector-level characterization test for a thin graphite vertical margin line beside text.
+- Preserved the existing plain printed text guard so normal glyph stems are not treated as margin marks.
+- Added column-run scanning to `PageMarkDetector` for sustained colored or neutral vertical strokes.
+- Kept row-run underline/highlight detection unchanged.
+- Tuned vertical mark classification to sustained thin marks near page-side bands, avoiding short printed text stems.
+- Verified the full `OnDeviceQuoteExtractorTests` file: 12 tests, 0 failures.
+- This improves the on-device/offline fallback for vertical margin-line marks. The issue remains open because real-photo vertical-line fixtures and model-assisted real-page quality checks are still outstanding.
+
+2026-07-01 later:
+
+- Added a selector-level characterization for the OCR line-wrap symptom seen in TestFlight: `unbeliev-` followed by `ably`.
+- Kept the cleanup after candidate selection so OCR repair only applies to text already selected by mark geometry/model fallback context.
+- Preserved hard printed hyphens inside a selected line, covered with `well-known physics`.
+- Verified the full `OnDeviceQuoteExtractorTests` file: 13 tests, 0 failures.
+- This closes the deterministic hyphenation cleanup criterion. The issue remains open for real-photo fixtures, partial orphan fragment selection, small bracket/tick recognition, and hosted-model quality checks.
+
+2026-07-01 low-confidence review characterization:
+
+- Added `OnDeviceQuoteExtractorTests.testOnDeviceExtractorReturnsLowConfidenceMarkedCandidatesForReview`.
+- Proved through the public extraction interface that low-confidence marked text still returns editable `ExtractedQuoteData` instead of being dropped.
+- Confirmed the ignored local real-photo fixture participates in the focused extractor gate when present.
+- Verified `OnDeviceQuoteExtractorTests` plus `QuoteExtractionPromptBuilderTests`: 22 tests, 0 failures.
+- The issue remains open for real-photo quality gaps: partial orphan fragments, small bracket/tick recognition, and hosted-model comparison against failing TestFlight pages.
+
+2026-07-01 orphan-fragment selector slice:
+
+- Added `OnDeviceQuoteExtractorTests.testSelectorPrefersFullerSameBaselineLineOverOrphanFragment`.
+- Reproduced the TestFlight-style clipped quote opening where the selector returned `gle particle...` when Vision also had a fuller same-baseline OCR line.
+- Updated underline tie-breaking so a fuller same-baseline OCR line containing the clipped fragment wins before horizontal-overlap tie-breaking.
+- Verified `OnDeviceQuoteExtractorTests` plus `QuoteExtractionPromptBuilderTests`: 23 tests, 0 failures.
+- This closes the deterministic orphan-fragment selector criterion. The issue remains open for real-photo fixture reproduction of the missed vertical-line case, hosted-model quality checks, strict model JSON guarantees, source tracking, and small bracket/tick recognition.
+
+2026-07-01 extraction-source tracking slice:
+
+- Added source tracking to `ExtractedQuoteData` with explicit values for `on_device`, `model_assisted`, `manual`, and `unknown`.
+- Preserved backwards compatibility by decoding older extraction JSON without a source as `unknown`.
+- Stamped on-device extractor results as `onDevice`, remote model-assisted results as `modelAssisted`, and manually-created editable review quotes as `manual`.
+- Added focused characterization across JSON parsing, on-device extraction, remote-model extraction, and extraction-review editable state.
+- Verified the focused source-tracking gate: 6 tests, 0 failures.
+- This closes the source-tracking criterion. The issue remains open for real-photo fixture reproduction, hosted-model quality checks, strict JSON guarantees, and small bracket/tick recognition.
 
 ## Model Option
 

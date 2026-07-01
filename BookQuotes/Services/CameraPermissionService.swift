@@ -21,18 +21,8 @@ final class CameraPermissionService {
             status = .authorized
             return
         }
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .notDetermined:
-            status = .notDetermined
-        case .authorized:
-            status = .authorized
-        case .denied:
-            status = .denied
-        case .restricted:
-            status = .restricted
-        @unknown default:
-            status = .denied
-        }
+        let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        status = CameraAuthorizationPolicy.permissionStatus(for: authorizationStatus)
     }
 
     // MARK: - Permission Request

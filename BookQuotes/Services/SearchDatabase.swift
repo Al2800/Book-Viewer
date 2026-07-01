@@ -52,32 +52,8 @@ actor SearchDatabase {
     }
 
     private func createFTSTables() throws {
-        // FTS5 virtual table for quotes
-        let createQuotesSQL = """
-            CREATE VIRTUAL TABLE IF NOT EXISTS quotes_fts USING fts5(
-                quote_id UNINDEXED,
-                book_id UNINDEXED,
-                text,
-                margin_note,
-                book_title,
-                book_author,
-                tokenize='porter unicode61'
-            );
-        """
-
-        // FTS5 virtual table for books
-        let createBooksSQL = """
-            CREATE VIRTUAL TABLE IF NOT EXISTS books_fts USING fts5(
-                book_id UNINDEXED,
-                title,
-                author,
-                subtitle,
-                tokenize='porter unicode61'
-            );
-        """
-
-        try execute(createQuotesSQL)
-        try execute(createBooksSQL)
+        try execute(SearchDatabaseSQL.createQuotesFTS)
+        try execute(SearchDatabaseSQL.createBooksFTS)
     }
 
     // MARK: - Search Operations
@@ -103,67 +79,25 @@ actor SearchDatabase {
         return SearchResults(quotes: quotes, books: books, query: query)
     }
 
-    /// Build FTS5 query with prefix matching for instant search
-    private func buildFTSQuery(_ input: String) -> String {
-        let terms = input
-            .lowercased()
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .filter { !$0.isEmpty }
-
-        guard !terms.isEmpty else { return "" }
-
-        // Add prefix operator to last term for instant-as-you-type search
-        // "swift program" → "swift program*"
-        guard let last = terms.last else { return "" }
-        if terms.count == 1 {
-            return "\(last)*"
-        }
-
-        let allButLast = terms.dropLast().joined(separator: " ")
-        return "\(allButLast) \(last)*"
-    }
-
     private func searchQuotes(_ ftsQuery: String) throws -> [SearchQuoteResult] {
-        let sql = """
-            SELECT
-                quote_id,
-                book_id,
-                snippet(quotes_fts, 2, '<mark>', '</mark>', '...', 32) as snippet,
-                bm25(quotes_fts, 0.0, 0.0, 1.0, 0.5, 0.5, 0.3) as rank
-            FROM quotes_fts
-            WHERE quotes_fts MATCH ?
-            ORDER BY rank
-            LIMIT 50
-        """
+        let statement = try SQLiteStatement(database: db, sql: SearchDatabaseSQL.searchQuotes, errorMessage: lastErrorMessage)
+        statement.bind(ftsQuery, at: 1)
 
         var results: [SearchQuoteResult] = []
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        sqlite3_bind_text(stmt, 1, ftsQuery, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            guard let quoteIdCStr = sqlite3_column_text(stmt, 0),
-                  let bookIdCStr = sqlite3_column_text(stmt, 1),
-                  let snippetCStr = sqlite3_column_text(stmt, 2),
-                  let quoteId = UUID(uuidString: String(cString: quoteIdCStr)),
-                  let bookId = UUID(uuidString: String(cString: bookIdCStr)) else {
+        while statement.step() == SQLITE_ROW {
+            guard let quoteIdText = statement.text(at: 0),
+                  let bookIdText = statement.text(at: 1),
+                  let snippet = statement.text(at: 2),
+                  let quoteId = UUID(uuidString: quoteIdText),
+                  let bookId = UUID(uuidString: bookIdText) else {
                 continue
             }
-
-            let snippet = String(cString: snippetCStr)
-            let rank = sqlite3_column_double(stmt, 3)
 
             results.append(SearchQuoteResult(
                 quoteId: quoteId,
                 bookId: bookId,
                 snippet: snippet,
-                rank: rank
+                rank: statement.double(at: 3)
             ))
         }
 
@@ -171,45 +105,23 @@ actor SearchDatabase {
     }
 
     private func searchBooks(_ ftsQuery: String) throws -> [SearchBookResult] {
-        let sql = """
-            SELECT
-                book_id,
-                snippet(books_fts, 1, '<mark>', '</mark>', '...', 32) as title_snippet,
-                snippet(books_fts, 2, '<mark>', '</mark>', '...', 32) as author_snippet,
-                bm25(books_fts, 0.0, 1.0, 0.5, 0.3) as rank
-            FROM books_fts
-            WHERE books_fts MATCH ?
-            ORDER BY rank
-            LIMIT 20
-        """
+        let statement = try SQLiteStatement(database: db, sql: SearchDatabaseSQL.searchBooks, errorMessage: lastErrorMessage)
+        statement.bind(ftsQuery, at: 1)
 
         var results: [SearchBookResult] = []
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        sqlite3_bind_text(stmt, 1, ftsQuery, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            guard let bookIdCStr = sqlite3_column_text(stmt, 0),
-                  let titleCStr = sqlite3_column_text(stmt, 1),
-                  let authorCStr = sqlite3_column_text(stmt, 2),
-                  let bookId = UUID(uuidString: String(cString: bookIdCStr)) else {
+        while statement.step() == SQLITE_ROW {
+            guard let bookIdText = statement.text(at: 0),
+                  let titleSnippet = statement.text(at: 1),
+                  let authorSnippet = statement.text(at: 2),
+                  let bookId = UUID(uuidString: bookIdText) else {
                 continue
             }
-
-            let titleSnippet = String(cString: titleCStr)
-            let authorSnippet = String(cString: authorCStr)
-            let rank = sqlite3_column_double(stmt, 3)
 
             results.append(SearchBookResult(
                 bookId: bookId,
                 titleSnippet: titleSnippet,
                 authorSnippet: authorSnippet,
-                rank: rank
+                rank: statement.double(at: 3)
             ))
         }
 
@@ -227,12 +139,7 @@ actor SearchDatabase {
         )
 
         // Insert new entry
-        let sql = """
-            INSERT INTO quotes_fts (quote_id, book_id, text, margin_note, book_title, book_author)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """
-
-        try execute(sql, params: [
+        try execute(SearchDatabaseSQL.insertQuote, params: [
             quote.id.uuidString,
             book.id.uuidString,
             quote.text,
@@ -251,12 +158,7 @@ actor SearchDatabase {
         )
 
         // Insert new entry
-        let sql = """
-            INSERT INTO books_fts (book_id, title, author, subtitle)
-            VALUES (?, ?, ?, ?)
-        """
-
-        try execute(sql, params: [
+        try execute(SearchDatabaseSQL.insertBook, params: [
             book.id.uuidString,
             book.title,
             book.author,
@@ -310,24 +212,13 @@ actor SearchDatabase {
     }
 
     private func execute(_ sql: String, params: [String]) throws {
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
+        let statement = try SQLiteStatement(database: db, sql: sql, errorMessage: lastErrorMessage)
 
         for (index, param) in params.enumerated() {
-            sqlite3_bind_text(
-                stmt,
-                Int32(index + 1),
-                param,
-                -1,
-                unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-            )
+            statement.bind(param, at: Int32(index + 1))
         }
 
-        guard sqlite3_step(stmt) == SQLITE_DONE else {
+        guard statement.step() == SQLITE_DONE else {
             throw SearchError.queryFailed(lastErrorMessage)
         }
     }
@@ -343,70 +234,43 @@ actor SearchDatabase {
 
     /// Get count of indexed quotes
     func quotesCount() throws -> Int {
-        var stmt: OpaquePointer?
         let sql = "SELECT COUNT(*) FROM quotes_fts"
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        guard sqlite3_step(stmt) == SQLITE_ROW else {
+        let statement = try SQLiteStatement(database: db, sql: sql, errorMessage: lastErrorMessage)
+        guard statement.step() == SQLITE_ROW else {
             return 0
         }
 
-        return Int(sqlite3_column_int(stmt, 0))
+        return statement.int(at: 0)
     }
 
     /// Get count of indexed books
     func booksCount() throws -> Int {
-        var stmt: OpaquePointer?
         let sql = "SELECT COUNT(*) FROM books_fts"
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        guard sqlite3_step(stmt) == SQLITE_ROW else {
+        let statement = try SQLiteStatement(database: db, sql: sql, errorMessage: lastErrorMessage)
+        guard statement.step() == SQLITE_ROW else {
             return 0
         }
 
-        return Int(sqlite3_column_int(stmt, 0))
+        return statement.int(at: 0)
     }
 
     // MARK: - Search Suggestions
 
     /// Find book titles matching a prefix
     func bookTitlesMatching(prefix: String, limit: Int) throws -> [SearchSuggestion] {
-        let sql = """
-            SELECT book_id, title, bm25(books_fts) as rank
-            FROM books_fts
-            WHERE title MATCH ?
-            ORDER BY rank
-            LIMIT ?
-        """
-
         let ftsPrefix = "\(prefix)*"
+        let statement = try SQLiteStatement(database: db, sql: SearchDatabaseSQL.bookTitleSuggestions, errorMessage: lastErrorMessage)
+        statement.bind(ftsPrefix, at: 1)
+        statement.bind(Int32(limit), at: 2)
+
         var results: [SearchSuggestion] = []
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        sqlite3_bind_text(stmt, 1, ftsPrefix, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-        sqlite3_bind_int(stmt, 2, Int32(limit))
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            guard let bookIdCStr = sqlite3_column_text(stmt, 0),
-                  let titleCStr = sqlite3_column_text(stmt, 1),
-                  let bookId = UUID(uuidString: String(cString: bookIdCStr)) else {
+        while statement.step() == SQLITE_ROW {
+            guard let bookIdText = statement.text(at: 0),
+                  let title = statement.text(at: 1),
+                  let bookId = UUID(uuidString: bookIdText) else {
                 continue
             }
 
-            let title = String(cString: titleCStr)
             results.append(.bookTitle(title, bookId))
         }
 
@@ -415,33 +279,17 @@ actor SearchDatabase {
 
     /// Find authors matching a prefix
     func authorsMatching(prefix: String, limit: Int) throws -> [SearchSuggestion] {
-        let sql = """
-            SELECT author, MIN(bm25(books_fts)) as rank
-            FROM books_fts
-            WHERE author MATCH ?
-            GROUP BY author
-            ORDER BY rank
-            LIMIT ?
-        """
-
         let ftsPrefix = "\(prefix)*"
+        let statement = try SQLiteStatement(database: db, sql: SearchDatabaseSQL.authorSuggestions, errorMessage: lastErrorMessage)
+        statement.bind(ftsPrefix, at: 1)
+        statement.bind(Int32(limit), at: 2)
+
         var results: [SearchSuggestion] = []
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        sqlite3_bind_text(stmt, 1, ftsPrefix, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-        sqlite3_bind_int(stmt, 2, Int32(limit))
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            guard let authorCStr = sqlite3_column_text(stmt, 0) else {
+        while statement.step() == SQLITE_ROW {
+            guard let author = statement.text(at: 0) else {
                 continue
             }
 
-            let author = String(cString: authorCStr)
             if !author.isEmpty {
                 results.append(.author(author))
             }
@@ -455,35 +303,18 @@ actor SearchDatabase {
         // FTS5 vocabulary table provides term frequencies
         try createVocabTableIfNeeded()
 
-        let sql = """
-            SELECT term, cnt
-            FROM quotes_fts_vocab
-            WHERE term LIKE ?
-            AND length(term) >= 3
-            ORDER BY cnt DESC
-            LIMIT ?
-        """
-
         let likePattern = "\(prefix.lowercased())%"
+        let statement = try SQLiteStatement(database: db, sql: SearchDatabaseSQL.popularTermSuggestions, errorMessage: lastErrorMessage)
+        statement.bind(likePattern, at: 1)
+        statement.bind(Int32(limit), at: 2)
+
         var results: [SearchSuggestion] = []
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        sqlite3_bind_text(stmt, 1, likePattern, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-        sqlite3_bind_int(stmt, 2, Int32(limit))
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            guard let termCStr = sqlite3_column_text(stmt, 0) else {
+        while statement.step() == SQLITE_ROW {
+            guard let term = statement.text(at: 0) else {
                 continue
             }
 
-            let term = String(cString: termCStr)
-            let count = Int(sqlite3_column_int(stmt, 1))
-            results.append(.popularTerm(term, count))
+            results.append(.popularTerm(term, statement.int(at: 1)))
         }
 
         return results
@@ -491,27 +322,17 @@ actor SearchDatabase {
 
     /// Create vocabulary table for term statistics
     private func createVocabTableIfNeeded() throws {
-        let sql = """
-            CREATE VIRTUAL TABLE IF NOT EXISTS quotes_fts_vocab USING fts5vocab(quotes_fts, row)
-        """
-        try execute(sql)
+        try execute(SearchDatabaseSQL.createQuotesVocab)
     }
 
     /// Check if a term exists in vocabulary
     func termExists(_ term: String) throws -> Bool {
         try createVocabTableIfNeeded()
 
-        let sql = "SELECT 1 FROM quotes_fts_vocab WHERE term = ? LIMIT 1"
-        var stmt: OpaquePointer?
+        let statement = try SQLiteStatement(database: db, sql: SearchDatabaseSQL.termExists, errorMessage: lastErrorMessage)
+        statement.bind(term.lowercased(), at: 1)
 
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        sqlite3_bind_text(stmt, 1, term.lowercased(), -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-
-        return sqlite3_step(stmt) == SQLITE_ROW
+        return statement.step() == SQLITE_ROW
     }
 
     /// Find closest matching term using edit distance approximation
@@ -521,38 +342,22 @@ actor SearchDatabase {
         let lowercasedTerm = term.lowercased()
         guard let firstChar = lowercasedTerm.first else { return nil }
 
-        // Find terms starting with same letter and similar length
-        let sql = """
-            SELECT term
-            FROM quotes_fts_vocab
-            WHERE term LIKE ?
-            AND length(term) BETWEEN ? AND ?
-            ORDER BY cnt DESC
-            LIMIT 10
-        """
-
         var candidates: [(String, Int)] = []
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            throw SearchError.queryFailed(lastErrorMessage)
-        }
-        defer { sqlite3_finalize(stmt) }
+        let statement = try SQLiteStatement(database: db, sql: SearchDatabaseSQL.closestTermCandidates, errorMessage: lastErrorMessage)
 
         let likePattern = "\(firstChar)%"
         let minLength = max(1, lowercasedTerm.count - 2)
         let maxLength = lowercasedTerm.count + 2
 
-        sqlite3_bind_text(stmt, 1, likePattern, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
-        sqlite3_bind_int(stmt, 2, Int32(minLength))
-        sqlite3_bind_int(stmt, 3, Int32(maxLength))
+        statement.bind(likePattern, at: 1)
+        statement.bind(Int32(minLength), at: 2)
+        statement.bind(Int32(maxLength), at: 3)
 
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            guard let termCStr = sqlite3_column_text(stmt, 0) else {
+        while statement.step() == SQLITE_ROW {
+            guard let candidate = statement.text(at: 0) else {
                 continue
             }
 
-            let candidate = String(cString: termCStr)
             // Use global levenshteinDistance function from LevenshteinDistance.swift
             let distance = BookQuotes.levenshteinDistance(lowercasedTerm, candidate)
             candidates.append((candidate, distance))

@@ -97,9 +97,7 @@ struct QuoteMarkTextSelector: Sendable {
 
         let text = selectedLines
             .sorted { $0.boundingBox.minY < $1.boundingBox.minY }
-            .map(\.text)
-            .joined(separator: " ")
-            .normalizingWhitespace()
+            .joinedOCRText()
 
         guard !text.isEmpty else { return nil }
 
@@ -139,9 +137,30 @@ struct QuoteMarkTextSelector: Sendable {
             return overlap >= 0.25 && verticalGap >= -line.boundingBox.height && verticalGap <= allowedGap
         }
 
-        return candidates.min(by: {
-            abs(mark.boundingBox.minY - $0.boundingBox.maxY) < abs(mark.boundingBox.minY - $1.boundingBox.maxY)
-        })
+        return candidates.min { lhs, rhs in
+            isBetterUnderlineMatch(lhs, than: rhs, for: mark)
+        }
+    }
+
+    private func isBetterUnderlineMatch(
+        _ lhs: RecognizedTextLine,
+        than rhs: RecognizedTextLine,
+        for mark: DetectedPageMark
+    ) -> Bool {
+        let lhsDistance = abs(mark.boundingBox.minY - lhs.boundingBox.maxY)
+        let rhsDistance = abs(mark.boundingBox.minY - rhs.boundingBox.maxY)
+        if abs(lhsDistance - rhsDistance) > 3 {
+            return lhsDistance < rhsDistance
+        }
+
+        if lhs.isFullerSameBaselineLine(than: rhs) {
+            return true
+        }
+        if rhs.isFullerSameBaselineLine(than: lhs) {
+            return false
+        }
+
+        return horizontalOverlapRatio(lhs.boundingBox, mark.boundingBox) > horizontalOverlapRatio(rhs.boundingBox, mark.boundingBox)
     }
 
     private func highlightedLines(
@@ -242,5 +261,49 @@ private extension String {
         components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
             .joined(separator: " ")
+    }
+}
+
+private extension Array where Element == RecognizedTextLine {
+    func joinedOCRText() -> String {
+        reduce(into: "") { text, line in
+            let next = line.text.normalizingWhitespace()
+            guard !next.isEmpty else { return }
+
+            if text.isEmpty {
+                text = next
+            } else if text.shouldJoinSoftHyphen(to: next) {
+                text.removeLast()
+                text += next
+            } else {
+                text += " " + next
+            }
+        }
+        .normalizingWhitespace()
+    }
+}
+
+private extension RecognizedTextLine {
+    func isFullerSameBaselineLine(than other: RecognizedTextLine) -> Bool {
+        guard abs(boundingBox.midY - other.boundingBox.midY) <= 3 else {
+            return false
+        }
+
+        let normalizedText = text.normalizingWhitespace().lowercased()
+        let otherText = other.text.normalizingWhitespace().lowercased()
+
+        return normalizedText.count > otherText.count && normalizedText.contains(otherText)
+    }
+}
+
+private extension String {
+    func shouldJoinSoftHyphen(to next: String) -> Bool {
+        guard hasSuffix("-"),
+              let characterBeforeHyphen = dropLast().last,
+              let firstNextCharacter = next.first else {
+            return false
+        }
+
+        return characterBeforeHyphen.isLowercase && firstNextCharacter.isLowercase
     }
 }

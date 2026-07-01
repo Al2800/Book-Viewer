@@ -40,7 +40,7 @@ final class CameraService: NSObject {
     private var photoOutput: AVCapturePhotoOutput?
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var previewLayer: AVCaptureVideoPreviewLayer?
-    private var lastPreviewSize: CGSize?
+    private var previewSizeStore = CameraPreviewSizeStore()
 
     // MARK: - Continuations for async capture
 
@@ -71,14 +71,8 @@ final class CameraService: NSObject {
             return
         }
 
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized:
-            isAuthorized = true
-        case .notDetermined, .denied, .restricted:
-            isAuthorized = false
-        @unknown default:
-            isAuthorized = false
-        }
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        isAuthorized = CameraAuthorizationPolicy.decision(for: status).isAuthorized
     }
 
     /// Request camera permission
@@ -91,21 +85,17 @@ final class CameraService: NSObject {
 
         let status = AVCaptureDevice.authorizationStatus(for: .video)
 
-        switch status {
+        switch CameraAuthorizationPolicy.decision(for: status) {
         case .authorized:
             isAuthorized = true
             return true
 
-        case .notDetermined:
+        case .needsRequest:
             let granted = await AVCaptureDevice.requestAccess(for: .video)
             isAuthorized = granted
             return granted
 
-        case .denied, .restricted:
-            isAuthorized = false
-            return false
-
-        @unknown default:
+        case .denied:
             isAuthorized = false
             return false
         }
@@ -177,16 +167,13 @@ final class CameraService: NSObject {
 
     /// Update the preview size from the hosting view's layout.
     func updatePreviewSize(_ size: CGSize) {
-        guard size.width > 0, size.height > 0 else { return }
-        lastPreviewSize = size
+        previewSizeStore.recordLayoutSize(size)
     }
 
     /// Best-effort preview size for aspect-fill cropping.
     /// Used to move heavy cropping work off the MainActor while still matching what the user framed.
     func currentPreviewSizeForCropping() -> CGSize? {
-        let size = previewLayer?.bounds.size ?? lastPreviewSize
-        guard let size, size.width > 0, size.height > 0 else { return nil }
-        return size
+        previewSizeStore.currentCroppingSize(previewLayerSize: previewLayer?.bounds.size)
     }
 
     /// Start the capture session
@@ -414,77 +401,5 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
                 }
             }
         }
-    }
-}
-
-// MARK: - Camera Errors
-
-enum CameraError: LocalizedError {
-    case notAuthorized
-    case cameraUnavailable
-    case cannotAddInput
-    case cannotAddOutput
-    case inputConfigurationFailed(Error)
-    case sessionNotConfigured
-    case captureFailed(Error)
-    case imageProcessingFailed
-    case captureTimedOut
-
-    var errorDescription: String? {
-        switch self {
-        case .notAuthorized:
-            return "Camera access not authorized"
-        case .cameraUnavailable:
-            return "Camera is not available"
-        case .cannotAddInput:
-            return "Cannot add camera input"
-        case .cannotAddOutput:
-            return "Cannot add photo output"
-        case .inputConfigurationFailed(let error):
-            return "Input configuration failed: \(error.localizedDescription)"
-        case .sessionNotConfigured:
-            return "Camera session not configured"
-        case .captureFailed(let error):
-            return "Photo capture failed: \(error.localizedDescription)"
-        case .imageProcessingFailed:
-            return "Failed to process captured image"
-        case .captureTimedOut:
-            return "Camera capture timed out. Please try again."
-        }
-    }
-}
-
-// MARK: - Image Compression
-
-extension CameraService {
-    /// Compress an image for API upload
-    /// - Parameters:
-    ///   - image: The image to compress
-    ///   - maxDimension: Maximum dimension (width or height)
-    ///   - quality: JPEG compression quality (0.0-1.0)
-    /// - Returns: Compressed JPEG data
-    static func compressForUpload(_ image: UIImage, maxDimension: CGFloat = 2048, quality: CGFloat = 0.8) -> Data? {
-        // Calculate new size maintaining aspect ratio
-        let size = image.size
-        var newSize = size
-
-        if size.width > maxDimension || size.height > maxDimension {
-            let ratio = min(maxDimension / size.width, maxDimension / size.height)
-            newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
-        }
-
-        // Resize if needed
-        let resizedImage: UIImage
-        if newSize != size {
-            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-            resizedImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
-            UIGraphicsEndImageContext()
-        } else {
-            resizedImage = image
-        }
-
-        // Compress to JPEG
-        return resizedImage.jpegData(compressionQuality: quality)
     }
 }

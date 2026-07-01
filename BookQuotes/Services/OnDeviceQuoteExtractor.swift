@@ -56,7 +56,8 @@ struct OnDeviceQuoteExtractor: Sendable {
                 pageNumber: nil,
                 marginNote: candidate.marginNote,
                 markingType: candidate.markingType.rawValue,
-                confidence: candidate.confidence
+                confidence: candidate.confidence,
+                extractionSource: .onDevice
             )
         }
 

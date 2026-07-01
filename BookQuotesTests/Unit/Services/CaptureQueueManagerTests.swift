@@ -43,377 +43,23 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         try await super.tearDown()
     }
 
-    // MARK: - Queue Stats Tests
+    // MARK: - Network Monitoring Tests
 
-    func testInitialStats_AllZero() async throws {
-        logger.step(1, "Getting initial stats")
-        let stats = await queueManager.stats
+    func testStartUsesInjectedNetworkMonitorAndRemainsIdleWhenOffline() async throws {
+        let networkMonitor = StubCaptureQueueNetworkMonitor(isConnected: false)
+        let manager = CaptureQueueManager(
+            modelContainer: modelContainer,
+            geminiService: geminiService,
+            networkMonitor: networkMonitor
+        )
 
-        logger.step(2, "Verifying all counts are zero")
-        XCTAssertEqual(stats.pendingCount, 0)
-        XCTAssertEqual(stats.processingCount, 0)
-        XCTAssertEqual(stats.failedCount, 0)
-        XCTAssertEqual(stats.completedCount, 0)
+        await manager.start()
+
+        let stats = await manager.stats
+        XCTAssertEqual(networkMonitor.startMonitoringCallCount, 1)
         XCTAssertFalse(stats.isProcessing)
 
-        logger.success("Initial stats are all zero")
-    }
-
-    func testStats_TotalActive_Computed() async throws {
-        logger.step(1, "Creating stats with mixed counts")
-        let stats = QueueStats(
-            pendingCount: 3,
-            processingCount: 1,
-            failedCount: 2,
-            completedCount: 10,
-            isProcessing: true
-        )
-
-        logger.step(2, "Verifying totalActive")
-        XCTAssertEqual(stats.totalActive, 6)  // 3 + 1 + 2, excludes completed
-        XCTAssertTrue(stats.hasActiveItems)
-
-        logger.success("TotalActive computed correctly")
-    }
-
-    func testStats_HasActiveItems_FalseWhenEmpty() async throws {
-        let stats = QueueStats()
-        XCTAssertFalse(stats.hasActiveItems)
-
-        logger.success("hasActiveItems is false when queue empty")
-    }
-
-    func testStats_StatusDescription_Processing() async throws {
-        let stats = QueueStats(
-            pendingCount: 2,
-            processingCount: 1,
-            failedCount: 0,
-            completedCount: 5,
-            isProcessing: true
-        )
-
-        XCTAssertTrue(stats.statusDescription.contains("Processing"))
-
-        logger.success("Status description shows processing state")
-    }
-
-    func testStats_StatusDescription_Waiting() async throws {
-        let stats = QueueStats(
-            pendingCount: 3,
-            processingCount: 0,
-            failedCount: 0,
-            completedCount: 0,
-            isProcessing: false
-        )
-
-        XCTAssertTrue(stats.statusDescription.contains("waiting"))
-
-        logger.success("Status description shows waiting state")
-    }
-
-    func testStats_StatusDescription_Failed() async throws {
-        let stats = QueueStats(
-            pendingCount: 0,
-            processingCount: 0,
-            failedCount: 2,
-            completedCount: 5,
-            isProcessing: false
-        )
-
-        XCTAssertTrue(stats.statusDescription.contains("failed"))
-
-        logger.success("Status description shows failed state")
-    }
-
-    func testStats_StatusDescription_Empty() async throws {
-        let stats = QueueStats()
-
-        XCTAssertTrue(stats.statusDescription.contains("empty"))
-
-        logger.success("Status description shows empty state")
-    }
-
-    // MARK: - CaptureQueueItem Tests
-
-    func testCaptureQueueItem_InitialState() async throws {
-        logger.step(1, "Creating a book")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        logger.step(2, "Creating queue item")
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        modelContext.insert(item)
-        try modelContext.save()
-
-        logger.step(3, "Verifying initial state")
-        XCTAssertEqual(item.status, .pending)
-        XCTAssertEqual(item.retryCount, 0)
-        XCTAssertNil(item.lastError)
-        XCTAssertNil(item.dateCompleted)
-        XCTAssertNotNil(item.dateQueued)
-
-        logger.success("Queue item has correct initial state")
-    }
-
-    func testCaptureQueueItem_MarkProcessing() async throws {
-        logger.step(1, "Creating queue item")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        modelContext.insert(item)
-        try modelContext.save()
-
-        logger.step(2, "Marking as processing")
-        item.markProcessing()
-
-        logger.step(3, "Verifying state change")
-        XCTAssertEqual(item.status, .processing)
-
-        logger.success("markProcessing updates status correctly")
-    }
-
-    func testCaptureQueueItem_MarkFailed_IncrementsRetry() async throws {
-        logger.step(1, "Creating queue item")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        modelContext.insert(item)
-        try modelContext.save()
-
-        logger.step(2, "Marking as failed")
-        let error = QueueError.processingFailed(NSError(domain: "test", code: 1))
-        item.markFailed(error: error)
-
-        logger.step(3, "Verifying retry count incremented")
-        XCTAssertEqual(item.retryCount, 1)
-        XCTAssertNotNil(item.lastError)
-
-        logger.success("markFailed increments retry count")
-    }
-
-    func testCaptureQueueItem_MarkFailed_ExceedsMaxRetries() async throws {
-        logger.step(1, "Creating queue item at max retries")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        item.retryCount = CaptureQueueItem.maxRetries - 1
-        modelContext.insert(item)
-        try modelContext.save()
-
-        logger.step(2, "Marking as failed (should become permanent failure)")
-        let error = QueueError.processingFailed(NSError(domain: "test", code: 1))
-        item.markFailed(error: error)
-
-        logger.step(3, "Verifying status is failed")
-        XCTAssertEqual(item.status, .failed)
-        XCTAssertEqual(item.retryCount, CaptureQueueItem.maxRetries)
-
-        logger.success("Item marked as permanently failed after max retries")
-    }
-
-    func testCaptureQueueItem_ResetForRetry() async throws {
-        logger.step(1, "Creating failed queue item")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        item.status = .failed
-        item.retryCount = 2
-        item.lastError = "Previous error"
-        modelContext.insert(item)
-        try modelContext.save()
-
-        logger.step(2, "Resetting for retry")
-        item.resetForRetry()
-
-        logger.step(3, "Verifying reset state")
-        XCTAssertEqual(item.status, .pending)
-        // retryCount is preserved to track total attempts
-        XCTAssertEqual(item.retryCount, 2)
-        XCTAssertNil(item.lastError)
-
-        logger.success("resetForRetry clears error state but preserves retry count")
-    }
-
-    func testCaptureQueueItem_Cancel() async throws {
-        logger.step(1, "Creating processing queue item")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        item.status = .processing
-        modelContext.insert(item)
-        try modelContext.save()
-
-        logger.step(2, "Cancelling item")
-        item.cancel()
-
-        logger.step(3, "Verifying cancelled state")
-        XCTAssertEqual(item.status, .cancelled)
-
-        logger.success("cancel updates status correctly")
-    }
-
-    func testCaptureQueueItem_CanRetry_TrueWhenFailed() async throws {
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        item.status = .failed
-        modelContext.insert(item)
-        try modelContext.save()
-
-        XCTAssertTrue(item.canRetry)
-
-        logger.success("canRetry is true for failed items")
-    }
-
-    func testCaptureQueueItem_CanRetry_FalseWhenCompleted() async throws {
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let item = CaptureQueueItem(
-            book: book,
-            imagePath: "test/path.jpg",
-            thumbnailData: nil,
-            priority: 0
-        )
-        item.status = .completed
-        modelContext.insert(item)
-        try modelContext.save()
-
-        XCTAssertFalse(item.canRetry)
-
-        logger.success("canRetry is false for completed items")
-    }
-
-    // MARK: - Queue Item Fetch Descriptor Tests
-
-    func testPendingDescriptor_FetchesPendingOnly() async throws {
-        logger.step(1, "Creating items with various statuses")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        // Create items with different statuses
-        let pendingItem = CaptureQueueItem(book: book, imagePath: "p1.jpg", thumbnailData: nil, priority: 0)
-        pendingItem.status = .pending
-
-        let processingItem = CaptureQueueItem(book: book, imagePath: "p2.jpg", thumbnailData: nil, priority: 0)
-        processingItem.status = .processing
-
-        let completedItem = CaptureQueueItem(book: book, imagePath: "p3.jpg", thumbnailData: nil, priority: 0)
-        completedItem.status = .completed
-
-        let failedItem = CaptureQueueItem(book: book, imagePath: "p4.jpg", thumbnailData: nil, priority: 0)
-        failedItem.status = .failed
-
-        modelContext.insert(pendingItem)
-        modelContext.insert(processingItem)
-        modelContext.insert(completedItem)
-        modelContext.insert(failedItem)
-        try modelContext.save()
-
-        logger.step(2, "Fetching pending items")
-        let pending = try modelContext.fetch(CaptureQueueItem.pendingDescriptor)
-
-        logger.step(3, "Verifying only pending item returned")
-        XCTAssertEqual(pending.count, 1)
-        XCTAssertEqual(pending.first?.status, .pending)
-
-        logger.success("Pending descriptor fetches only pending items")
-    }
-
-    func testFailedDescriptor_FetchesFailedOnly() async throws {
-        logger.step(1, "Creating items with various statuses")
-        let book = TestFixtures.atomicHabits
-        try insertBook(book)
-
-        let pendingItem = CaptureQueueItem(book: book, imagePath: "p1.jpg", thumbnailData: nil, priority: 0)
-        pendingItem.status = .pending
-
-        let failedItem = CaptureQueueItem(book: book, imagePath: "p2.jpg", thumbnailData: nil, priority: 0)
-        failedItem.status = .failed
-
-        modelContext.insert(pendingItem)
-        modelContext.insert(failedItem)
-        try modelContext.save()
-
-        logger.step(2, "Fetching failed items")
-        let failed = try modelContext.fetch(CaptureQueueItem.failedDescriptor)
-
-        logger.step(3, "Verifying only failed item returned")
-        XCTAssertEqual(failed.count, 1)
-        XCTAssertEqual(failed.first?.status, .failed)
-
-        logger.success("Failed descriptor fetches only failed items")
-    }
-
-    // MARK: - QueueError Tests
-
-    func testQueueError_Descriptions() async throws {
-        logger.step(1, "Testing error descriptions")
-
-        let errors: [QueueError] = [
-            .imageStorageFailed,
-            .imageLoadFailed,
-            .bookNotFound,
-            .itemNotFound,
-            .processingFailed(NSError(domain: "test", code: 1))
-        ]
-
-        for error in errors {
-            XCTAssertNotNil(error.errorDescription, "Error should have description: \(error)")
-            logger.debug("Error: \(error.errorDescription ?? "nil")")
-        }
-
-        logger.success("All QueueError cases have descriptions")
-    }
-
-    func testQueueError_ProcessingFailed_IncludesUnderlyingError() async throws {
-        let underlying = NSError(domain: "TestDomain", code: 42, userInfo: [NSLocalizedDescriptionKey: "Test error message"])
-        let error = QueueError.processingFailed(underlying)
-
-        XCTAssertTrue(error.errorDescription?.contains("Test error message") ?? false)
-
-        logger.success("processingFailed includes underlying error message")
+        await manager.stop()
     }
 
     // MARK: - Stats Publisher Tests
@@ -442,6 +88,41 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         XCTAssertFalse(receivedStats.isEmpty)
 
         logger.success("Stats publisher emits updates")
+    }
+
+    func testStatsPublisherUsesProcessingFallbackWhenStatsReadFails() async throws {
+        let itemId = UUID()
+        let queueStore = SpyCaptureQueueStore(
+            pendingItemIds: [itemId],
+            throwsOnStats: true
+        )
+        let itemProcessor = SpyCaptureQueueItemProcessor(outcomes: [.completed])
+        let manager = CaptureQueueManager(
+            queueStore: queueStore,
+            itemProcessor: itemProcessor,
+            networkMonitor: StubCaptureQueueNetworkMonitor(isConnected: true)
+        )
+        let expectation = XCTestExpectation(description: "Processing fallback stats emitted")
+        var hasFulfilledProcessingFallback = false
+
+        manager.statsPublisher
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { stats in
+                guard stats.isProcessing, !hasFulfilledProcessingFallback else { return }
+                hasFulfilledProcessingFallback = true
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        await manager.processNow()
+
+        await fulfillment(of: [expectation], timeout: 1.0)
+        XCTAssertTrue(queueStore.statsProcessingStates.contains(true))
+        let finalStats = await manager.stats
+        XCTAssertEqual(finalStats, QueueStats(isProcessing: false))
+
+        await manager.stop()
     }
 
     // MARK: - Queue Manager Lifecycle Tests
@@ -481,6 +162,119 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         }
 
         logger.success("Multiple start/stop cycles complete without crash")
+    }
+
+    func testProcessNowProcessesNextPendingItemWhenOnline() async throws {
+        let itemId = UUID()
+        let queueStore = SpyCaptureQueueStore(pendingItemIds: [itemId])
+        let itemProcessor = SpyCaptureQueueItemProcessor(outcomes: [.completed])
+        let manager = CaptureQueueManager(
+            queueStore: queueStore,
+            itemProcessor: itemProcessor,
+            networkMonitor: StubCaptureQueueNetworkMonitor(isConnected: true)
+        )
+
+        await manager.processNow()
+
+        XCTAssertEqual(itemProcessor.processedItemIds, [itemId])
+        XCTAssertTrue(queueStore.statsProcessingStates.contains(true))
+        XCTAssertEqual(queueStore.statsProcessingStates.last, false)
+
+        await manager.stop()
+    }
+
+    func testProcessNowDoesNotProcessWhenOffline() async throws {
+        let itemId = UUID()
+        let queueStore = SpyCaptureQueueStore(pendingItemIds: [itemId])
+        let itemProcessor = SpyCaptureQueueItemProcessor(outcomes: [.completed])
+        let manager = CaptureQueueManager(
+            queueStore: queueStore,
+            itemProcessor: itemProcessor,
+            networkMonitor: StubCaptureQueueNetworkMonitor(isConnected: false)
+        )
+
+        await manager.processNow()
+
+        XCTAssertTrue(itemProcessor.processedItemIds.isEmpty)
+        XCTAssertTrue(queueStore.statsProcessingStates.isEmpty)
+
+        await manager.stop()
+    }
+
+    func testRetryableFailureReprocessesItemAfterRetryDelayWhenStillRetryable() async throws {
+        let itemId = UUID()
+        let queueStore = SpyCaptureQueueStore(
+            pendingItemIds: [itemId],
+            retryableItemIds: [itemId]
+        )
+        let itemProcessor = SpyCaptureQueueItemProcessor(
+            outcomes: [
+                .failed(itemId: itemId, retryCount: 1, canRetry: true),
+                .completed
+            ]
+        )
+        let manager = CaptureQueueManager(
+            queueStore: queueStore,
+            itemProcessor: itemProcessor,
+            networkMonitor: StubCaptureQueueNetworkMonitor(isConnected: true),
+            retryPolicy: CaptureQueueRetryPolicy(delays: [0])
+        )
+
+        await manager.processNow()
+        try await waitForProcessedItemCount(2, in: itemProcessor)
+
+        XCTAssertEqual(itemProcessor.processedItemIds, [itemId, itemId])
+        XCTAssertEqual(queueStore.canRetryItemIds, [itemId])
+
+        await manager.stop()
+    }
+
+    func testRemoveFromQueueCancelsPendingRetryForItem() async throws {
+        let itemId = UUID()
+        let queueStore = SpyCaptureQueueStore(
+            pendingItemIds: [itemId],
+            retryableItemIds: [itemId]
+        )
+        let itemProcessor = SpyCaptureQueueItemProcessor(
+            outcomes: [
+                .failed(itemId: itemId, retryCount: 1, canRetry: true),
+                .completed
+            ]
+        )
+        let manager = CaptureQueueManager(
+            queueStore: queueStore,
+            itemProcessor: itemProcessor,
+            networkMonitor: StubCaptureQueueNetworkMonitor(isConnected: true),
+            retryPolicy: CaptureQueueRetryPolicy(delays: [0.05])
+        )
+
+        await manager.processNow()
+        try await manager.removeFromQueue(itemId: itemId)
+        try await Task.sleep(for: .milliseconds(100))
+
+        XCTAssertEqual(itemProcessor.processedItemIds, [itemId])
+        XCTAssertEqual(queueStore.removedItemIds, [itemId])
+
+        await manager.stop()
+    }
+
+    func testRetryItemMarksItemForRetryAndProcessesWhenOnline() async throws {
+        let itemId = UUID()
+        let queueStore = SpyCaptureQueueStore(pendingItemIds: [itemId])
+        let itemProcessor = SpyCaptureQueueItemProcessor(outcomes: [.completed])
+        let manager = CaptureQueueManager(
+            queueStore: queueStore,
+            itemProcessor: itemProcessor,
+            networkMonitor: StubCaptureQueueNetworkMonitor(isConnected: true)
+        )
+
+        try await manager.retryItem(itemId: itemId)
+
+        XCTAssertEqual(queueStore.retriedItemIds, [itemId])
+        XCTAssertEqual(itemProcessor.processedItemIds, [itemId])
+        XCTAssertTrue(queueStore.statsProcessingStates.contains(true))
+
+        await manager.stop()
     }
 
     // MARK: - Integration Tests

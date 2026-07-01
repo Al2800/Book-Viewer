@@ -235,6 +235,9 @@ struct EditableQuote: Identifiable, Equatable {
     /// Whether this quote was added manually by the user
     var isManual: Bool
 
+    /// Where this quote candidate came from before review.
+    var extractionSource: QuoteExtractionSource
+
     /// Whether the user has edited this quote
     var isModified: Bool
 
@@ -246,7 +249,8 @@ struct EditableQuote: Identifiable, Equatable {
         confidence: Double? = nil,
         pageNumber: Int? = nil,
         marginNote: String? = nil,
-        isManual: Bool = false
+        isManual: Bool = false,
+        extractionSource: QuoteExtractionSource? = nil
     ) {
         self.id = id
         self.pageId = pageId
@@ -256,6 +260,7 @@ struct EditableQuote: Identifiable, Equatable {
         self.pageNumber = pageNumber
         self.marginNote = marginNote
         self.isManual = isManual
+        self.extractionSource = extractionSource ?? (isManual ? .manual : .unknown)
         self.isModified = false
     }
 
@@ -269,6 +274,7 @@ struct EditableQuote: Identifiable, Equatable {
         self.pageNumber = data.pageNumber
         self.marginNote = data.marginNote
         self.isManual = false
+        self.extractionSource = data.extractionSource
         self.isModified = false
     }
 

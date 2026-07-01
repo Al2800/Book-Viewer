@@ -64,6 +64,25 @@ This matters because extraction quality now depends on the photographed page ima
 - Product guidance decision: do not busy the capture image. Use a concise page-visible hint at most.
 - Implemented the minimal quote-page hint as `Keep the page visible.` and routed the quote capture empty-state pill through `CameraFramingProfile.guidanceText`.
 
+2026-06-30:
+
+- Added `QuoteCaptureImageProcessor` as the seam for captured-image preparation and quality analysis.
+- Characterized quote-page full-frame processing, aspect-fill visible-area crop ordering, missing-preview-size fallback, and non-fatal quality-analysis failure handling in `QuoteCaptureImageProcessorTests`.
+- Updated `QuoteCaptureView` to keep camera/UI/review orchestration while delegating crop-policy application, document preparation, and quality-analysis sequencing.
+- Reduced `QuoteCaptureView.swift` from 412 LOC to 399 LOC.
+- Simulator build passed.
+- Quote capture UI smoke was attempted but failed before app assertions with the known local XCTest AX runner error: `Timed out waiting for AX loaded notification`.
+
+2026-06-30 later:
+
+- Added `CameraPreviewSizeStore` as the seam for preview-size validation and fallback used by camera cropping.
+- Added `CameraPreviewSizeStoreTests`.
+- Added public `CameraService` characterization for preserving the last valid preview layout size after invalid layout updates.
+- Replaced `CameraService.lastPreviewSize` with `CameraPreviewSizeStore`.
+- Reduced `CameraService.swift` from 418 LOC to 415 LOC.
+- Focused camera/capture tests and simulator build passed.
+- Quote capture UI smoke was attempted but failed before app assertions with the known local XCTest AX runner error: `Timed out waiting for AX loaded notification`.
+
 ## Verification Results
 
 Focused unit tests:

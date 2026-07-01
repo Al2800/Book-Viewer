@@ -18,7 +18,7 @@ struct BookDetailView: View {
 
     // MARK: - State
 
-    @State private var sortOrder: SortOrder = .dateAdded
+    @State private var sortOrder: BookDetailQuoteSortOrder = .dateAdded
     @State private var filterMarking: MarkingType?
     @State private var showSortMenu = false
     @State private var showFilterMenu = false
@@ -30,46 +30,29 @@ struct BookDetailView: View {
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    // MARK: - Sort Order
-
-    enum SortOrder: String, CaseIterable {
-        case dateAdded = "Date Added"
-        case pageNumber = "Page Number"
-        case markingType = "Marking Type"
-        case favorite = "Favorites First"
-    }
-
     // MARK: - Computed
 
+    private var quotePresentation: BookDetailQuotePresentation {
+        BookDetailQuotePresentation(quotes: book.quotes)
+    }
+
     private var sortedQuotes: [Quote] {
-        var quotes = book.quotes
-
-        // Apply filter
-        if let filter = filterMarking {
-            quotes = quotes.filter { $0.markingType == filter }
-        }
-
-        // Apply sort
-        switch sortOrder {
-        case .dateAdded:
-            quotes.sort { $0.captureDate > $1.captureDate }
-        case .pageNumber:
-            quotes.sort { ($0.pageNumber ?? 0) < ($1.pageNumber ?? 0) }
-        case .markingType:
-            quotes.sort { $0.markingType.rawValue < $1.markingType.rawValue }
-        case .favorite:
-            quotes.sort { ($0.isFavorite ? 0 : 1) < ($1.isFavorite ? 0 : 1) }
-        }
-
-        return quotes
+        quotePresentation.visibleQuotes(filter: filterMarking, sortOrder: sortOrder)
     }
 
     private var uniquePages: Int {
-        Set(book.quotes.compactMap { $0.pageNumber }).count
+        quotePresentation.uniquePageCount
     }
 
     private var markingTypes: [MarkingType] {
-        Array(Set(book.quotes.map { $0.markingType })).sorted { $0.rawValue < $1.rawValue }
+        quotePresentation.markingTypes
+    }
+
+    private var deletionPrompt: BookDeletionPrompt {
+        BookDeletionPrompt(
+            bookTitle: book.title,
+            quoteCount: book.quoteCount
+        )
     }
 
     // MARK: - Body
@@ -193,16 +176,16 @@ struct BookDetailView: View {
             .id(quoteCaptureSheetID)
         }
         .confirmationDialog(
-            "Delete \"\(book.title)\"?",
+            deletionPrompt.title,
             isPresented: $showDeleteConfirmation,
             titleVisibility: .visible
         ) {
-            Button("Delete Book and All Quotes", role: .destructive) {
+            Button(deletionPrompt.destructiveButtonTitle, role: .destructive) {
                 deleteBook()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This will permanently delete the book and all \(book.quoteCount) quote\(book.quoteCount == 1 ? "" : "s"). This cannot be undone.")
+            Text(deletionPrompt.message)
         }
     }
 
@@ -243,7 +226,7 @@ struct BookDetailView: View {
         HStack {
             // Sort menu
             Menu {
-                ForEach(SortOrder.allCases, id: \.self) { order in
+                ForEach(BookDetailQuoteSortOrder.allCases, id: \.self) { order in
                     Button {
                         sortOrder = order
                     } label: {

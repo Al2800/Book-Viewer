@@ -107,7 +107,8 @@ struct ExtractionReviewQuoteState {
                     confidence: data.confidence,
                     pageNumber: data.pageNumber ?? snapshot.detectedPageNumber,
                     marginNote: data.marginNote,
-                    isManual: false
+                    isManual: false,
+                    extractionSource: data.extractionSource
                 )
             }
         }

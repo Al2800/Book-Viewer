@@ -19,6 +19,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         )
         XCTAssertEqual(quote.markingType, "underline")
         XCTAssertGreaterThanOrEqual(quote.confidence ?? 0, 0.5)
+        XCTAssertEqual(quote.extractionSource, .onDevice)
     }
 
     func testExtractsGraphiteUnderlinedTextFromSyntheticPageWithoutNetwork() async throws {
@@ -47,6 +48,17 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertTrue(marks.isEmpty, "Expected plain printed text to have no marks, got: \(marks)")
     }
 
+    func testDetectsGraphiteVerticalMarginLineBesideText() throws {
+        let image = OnDeviceQuoteExtractorTestImage.graphiteMarginLinePage()
+        let marks = try PageMarkDetector().detectMarks(in: image)
+
+        let marginMarks = marks.filter { $0.type == .marginLine }
+
+        XCTAssertEqual(marginMarks.count, 1, "Expected one vertical margin mark, got: \(marks)")
+        XCTAssertLessThanOrEqual(marginMarks[0].boundingBox.width, 24)
+        XCTAssertGreaterThanOrEqual(marginMarks[0].boundingBox.height, 120)
+    }
+
     func testSelectorGroupsAdjacentUnderlineFragmentsIntoOneQuote() {
         let lines = [
             RecognizedTextLine(text: "breakneck pace of", confidence: 0.92, boundingBox: CGRect(x: 240, y: 220, width: 250, height: 24)),
@@ -72,6 +84,42 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(
             candidates.first?.text,
             "breakneck pace of 186,000 miles per second, or 669,600,000 miles per hour, in a vacuum, does typically slow down"
+        )
+    }
+
+    func testSelectorRepairsObviousLineWrapHyphenationAfterSelection() {
+        let lines = [
+            RecognizedTextLine(text: "to the unbeliev-", confidence: 0.92, boundingBox: CGRect(x: 240, y: 220, width: 250, height: 24)),
+            RecognizedTextLine(text: "ably leisurely pace of", confidence: 0.90, boundingBox: CGRect(x: 240, y: 252, width: 330, height: 24)),
+            RecognizedTextLine(text: "well-known physics", confidence: 0.91, boundingBox: CGRect(x: 240, y: 284, width: 270, height: 24))
+        ]
+        let marks = [
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 246, width: 230, height: 3), confidence: 0.75),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 278, width: 310, height: 3), confidence: 0.75),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 310, width: 260, height: 3), confidence: 0.75)
+        ]
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(textLines: lines, marks: marks)
+
+        XCTAssertEqual(candidates.first?.text, "to the unbelievably leisurely pace of well-known physics")
+    }
+
+    func testSelectorPrefersFullerSameBaselineLineOverOrphanFragment() {
+        let lines = [
+            RecognizedTextLine(text: "gle particle, which slowed that light beam", confidence: 0.72, boundingBox: CGRect(x: 318, y: 220, width: 450, height: 24)),
+            RecognizedTextLine(text: "single particle, which slowed that light beam", confidence: 0.88, boundingBox: CGRect(x: 270, y: 220, width: 500, height: 24)),
+            RecognizedTextLine(text: "to the unbelievably leisurely pace", confidence: 0.90, boundingBox: CGRect(x: 270, y: 252, width: 390, height: 24))
+        ]
+        let marks = [
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 330, y: 246, width: 420, height: 3), confidence: 0.74),
+            DetectedPageMark(type: .underline, boundingBox: CGRect(x: 270, y: 278, width: 380, height: 3), confidence: 0.76)
+        ]
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(textLines: lines, marks: marks)
+
+        XCTAssertEqual(
+            candidates.first?.text,
+            "single particle, which slowed that light beam to the unbelievably leisurely pace"
         )
     }
 
@@ -171,6 +219,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         XCTAssertEqual(result.quotes.first?.text, "A model selected marked quote.")
         XCTAssertEqual(result.quotes.first?.markingType, "underline")
+        XCTAssertEqual(result.quotes.first?.extractionSource, .modelAssisted)
         XCTAssertEqual(result.processingNotes, "HF model-assisted extraction")
 
         let request = try XCTUnwrap(server.allRequests().first)
@@ -255,6 +304,34 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(local.callCount, 1)
     }
 
+    func testOnDeviceExtractorReturnsLowConfidenceMarkedCandidatesForReview() async throws {
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "low confidence marked quote",
+                    confidence: 0.22,
+                    boundingBox: CGRect(x: 240, y: 220, width: 360, height: 24)
+                )
+            ]),
+            markDetector: StubPageMarkDetector(marks: [
+                DetectedPageMark(
+                    type: .underline,
+                    boundingBox: CGRect(x: 240, y: 246, width: 330, height: 3),
+                    confidence: 0.20
+                )
+            ])
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertEqual(result.quotes.count, 1)
+        XCTAssertEqual(result.quotes.first?.text, "low confidence marked quote")
+        XCTAssertLessThanOrEqual(try XCTUnwrap(result.quotes.first?.confidence), 0.5)
+    }
+
     func testRealBookFixtureExtractsUnderlinedPassageWhenProvided() async throws {
         guard let fixturePath = OnDeviceQuoteExtractorTestImage.realBookFixturePath() else {
             throw XCTSkip("Add the local real page fixture to run real book characterization.")
@@ -276,6 +353,22 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
                 || extractedText.localizedCaseInsensitiveContains("skinned over"),
             "Expected underlined Chatham quote, got: \(extractedText)"
         )
+    }
+}
+
+private struct StubPageTextRecognizer: PageTextRecognizing {
+    let lines: [RecognizedTextLine]
+
+    func recognizeText(in image: UIImage) async throws -> [RecognizedTextLine] {
+        lines
+    }
+}
+
+private struct StubPageMarkDetector: PageMarkDetecting {
+    let marks: [DetectedPageMark]
+
+    func detectMarks(in image: UIImage) throws -> [DetectedPageMark] {
+        marks
     }
 }
 
@@ -320,6 +413,39 @@ private enum OnDeviceQuoteExtractorTestImage {
 
     static func plainTextPage() -> UIImage {
         page(text: "The pleasure of finding things out.", underlineColor: nil)
+    }
+
+    static func graphiteMarginLinePage() -> UIImage {
+        let size = CGSize(width: 1200, height: 1600)
+        let renderer = UIGraphicsImageRenderer(size: size)
+
+        return renderer.image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+
+            let paragraphAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 42, weight: .regular),
+                .foregroundColor: UIColor.black
+            ]
+            let lines = [
+                "The marked paragraph begins here",
+                "and continues with the same idea",
+                "before ending on this final line"
+            ]
+            for (index, line) in lines.enumerated() {
+                line.draw(
+                    in: CGRect(x: 300, y: 560 + index * 58, width: 760, height: 54),
+                    withAttributes: paragraphAttributes
+                )
+            }
+
+            let path = UIBezierPath()
+            path.move(to: CGPoint(x: 250, y: 552))
+            path.addLine(to: CGPoint(x: 250, y: 732))
+            UIColor(white: 0.22, alpha: 1).setStroke()
+            path.lineWidth = 7
+            path.stroke()
+        }
     }
 
     static func realBookFixturePath() -> String? {

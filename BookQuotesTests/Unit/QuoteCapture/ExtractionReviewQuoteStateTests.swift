@@ -19,7 +19,8 @@ final class ExtractionReviewQuoteStateTests: XCTestCase {
                         pageNumber: nil,
                         marginNote: "starred",
                         markingType: "underline",
-                        confidence: 0.91
+                        confidence: 0.91,
+                        extractionSource: .modelAssisted
                     )
                 ]
             ),
@@ -50,9 +51,21 @@ final class ExtractionReviewQuoteStateTests: XCTestCase {
         XCTAssertEqual(firstQuote?.markingType, "underline")
         XCTAssertEqual(firstQuote?.confidence, 0.91)
         XCTAssertEqual(firstQuote?.isManual, false)
+        XCTAssertEqual(firstQuote?.extractionSource, .modelAssisted)
 
         let secondQuote = state.quotes(for: secondPageId).first
         XCTAssertEqual(secondQuote?.pageNumber, 12)
+    }
+
+    func testManualEditableQuoteRecordsManualExtractionSource() {
+        let quote = EditableQuote(
+            pageId: UUID(),
+            text: "Manually added quote",
+            markingType: "underline",
+            isManual: true
+        )
+
+        XCTAssertEqual(quote.extractionSource, .manual)
     }
 
     func testReplacingQuotesForPagePreservesOtherPagesAndCurrentAppendOrder() {

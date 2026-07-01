@@ -38,14 +38,14 @@ struct TagsView: View {
                     TagEditorSheet(mode: .edit(tag))
                 }
                 .confirmationDialog(
-                    "Delete Tag?",
+                    deletePrompt.title,
                     isPresented: $showDeleteConfirmation,
                     titleVisibility: .visible
                 ) {
                     deleteConfirmationActions
                 } message: {
                     if let tag = tagToDelete {
-                        Text("This will remove the tag from all \(tag.quoteCount) quote\(tag.quoteCount == 1 ? "" : "s"). This cannot be undone.")
+                        Text(TagDeletionPrompt(quoteCount: tag.quoteCount).message)
                     }
                 }
         }
@@ -107,7 +107,7 @@ struct TagsView: View {
     }
 
     private var totalUses: Int {
-        tags.reduce(0) { $0 + $1.quoteCount }
+        tagsPresentation.totalUses
     }
 
     // MARK: - Empty State
@@ -141,7 +141,7 @@ struct TagsView: View {
 
     @ViewBuilder
     private var deleteConfirmationActions: some View {
-        Button("Delete Tag", role: .destructive) {
+        Button(deletePrompt.destructiveActionTitle, role: .destructive) {
             if let tag = tagToDelete {
                 deleteTag(tag)
             }
@@ -154,10 +154,15 @@ struct TagsView: View {
     // MARK: - Computed
 
     private var filteredTags: [Tag] {
-        if searchText.isEmpty {
-            return tags
-        }
-        return tags.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        tagsPresentation.filteredTags(searchText: searchText)
+    }
+
+    private var tagsPresentation: TagsPresentation {
+        TagsPresentation(tags: tags)
+    }
+
+    private var deletePrompt: TagDeletionPrompt {
+        TagDeletionPrompt(quoteCount: tagToDelete?.quoteCount ?? 0)
     }
 
     // MARK: - Actions
@@ -166,154 +171,6 @@ struct TagsView: View {
         modelContext.delete(tag)
         try? modelContext.save()
         tagToDelete = nil
-    }
-}
-
-// MARK: - TagRow
-
-/// Row displaying a tag with edit and delete actions.
-private struct TagRow: View {
-
-    let tag: Tag
-    let onEdit: () -> Void
-    let onDelete: () -> Void
-
-    var body: some View {
-        Menu {
-            Button {
-                onEdit()
-            } label: {
-                Label("Edit", systemImage: "pencil")
-            }
-
-            Button(role: .destructive) {
-                onDelete()
-            } label: {
-                Label("Delete", systemImage: "trash")
-            }
-        } label: {
-            HStack(spacing: Spacing.xs) {
-                Text(tag.name)
-                    .font(.subheadline)
-
-                Text("\(tag.quoteCount)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal, Spacing.md)
-            .padding(.vertical, Spacing.sm)
-            .background(tagColor.opacity(0.15))
-            .foregroundStyle(tagColor)
-            .clipShape(Capsule())
-        }
-        .accessibilityIdentifier(AccessibilityIdentifiers.Tags.tagChip)
-    }
-
-    private var tagColor: Color {
-        CollectionColor(rawValue: tag.colorName)?.color ?? .blue
-    }
-}
-
-// MARK: - TagEditorSheet
-
-/// Sheet for creating or editing a tag.
-struct TagEditorSheet: View {
-
-    enum Mode {
-        case create
-        case edit(Tag)
-    }
-
-    let mode: Mode
-
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-
-    @State private var name = ""
-    @State private var colorName = "blue"
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Tag Name") {
-                    TextField("Enter tag name", text: $name)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Tags.nameField)
-                }
-
-                Section("Color") {
-                    colorPicker
-                }
-            }
-            .navigationTitle(isCreateMode ? "New Tag" : "Edit Tag")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(isCreateMode ? "Create" : "Save") {
-                        save()
-                    }
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-            }
-            .onAppear {
-                if case .edit(let tag) = mode {
-                    name = tag.name
-                    colorName = tag.colorName
-                }
-            }
-        }
-    }
-
-    // MARK: - Color Picker
-
-    private var colorPicker: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: Spacing.sm) {
-            ForEach(CollectionColor.allCases) { color in
-                Circle()
-                    .fill(color.color)
-                    .frame(width: 36, height: 36)
-                    .overlay {
-                        if colorName == color.rawValue {
-                            Image(systemName: "checkmark")
-                                .font(.caption)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.white)
-                        }
-                    }
-                    .onTapGesture {
-                        colorName = color.rawValue
-                    }
-            }
-        }
-    }
-
-    // MARK: - Helpers
-
-    private var isCreateMode: Bool {
-        if case .create = mode { return true }
-        return false
-    }
-
-    private func save() {
-        let trimmedName = name.trimmingCharacters(in: .whitespaces).lowercased()
-
-        switch mode {
-        case .create:
-            let tag = Tag(name: trimmedName, colorName: colorName)
-            modelContext.insert(tag)
-        case .edit(let tag):
-            tag.name = trimmedName
-            tag.colorName = colorName
-        }
-
-        try? modelContext.save()
-        dismiss()
     }
 }
 
@@ -405,27 +262,21 @@ struct AddTagToQuoteSheet: View {
     // MARK: - Computed
 
     private var availableTags: [Tag] {
-        let currentTagIds = Set(quote.tags.map { $0.id })
-        return allTags.filter { !currentTagIds.contains($0.id) }
+        AddTagToQuotePresentation(
+            allTags: allTags,
+            currentTags: quote.tags
+        ).availableTags
     }
 
     // MARK: - Actions
 
     private func addTag(_ tag: Tag) {
-        quote.tags.append(tag)
-        tag.quotes.append(quote)
-        quote.dateModified = Date()
+        QuoteTagMutation().add(tag, to: quote)
         try? modelContext.save()
     }
 
     private func removeTag(_ tag: Tag) {
-        if let index = quote.tags.firstIndex(where: { $0.id == tag.id }) {
-            quote.tags.remove(at: index)
-        }
-        if let index = tag.quotes.firstIndex(where: { $0.id == quote.id }) {
-            tag.quotes.remove(at: index)
-        }
-        quote.dateModified = Date()
+        QuoteTagMutation().remove(tag, from: quote)
         try? modelContext.save()
     }
 }

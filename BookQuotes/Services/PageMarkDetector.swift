@@ -12,8 +12,12 @@ struct PageMarkDetector: PageMarkDetecting {
             .compactMap(coloredMark)
         let neutralUnderlineRegions = mergeRowRuns(bitmap.neutralUnderlineRowRuns())
             .compactMap(neutralUnderlineMark)
+        let verticalMarginRegions = mergeColumnRuns(
+            bitmap.coloredMarkedColumnRuns() + bitmap.neutralMarkedColumnRuns(),
+            imageWidth: bitmap.width
+        )
 
-        return coloredRegions + neutralUnderlineRegions
+        return coloredRegions + neutralUnderlineRegions + verticalMarginRegions
     }
 
     private func coloredMark(_ region: MarkRegion) -> DetectedPageMark? {
@@ -38,6 +42,23 @@ struct PageMarkDetector: PageMarkDetecting {
             type: .underline,
             boundingBox: rect,
             confidence: min(0.8, max(0.5, region.density))
+        )
+    }
+
+    private func verticalMarginMark(_ region: MarkRegion, imageWidth: Int) -> DetectedPageMark? {
+        let rect = region.rect
+        guard rect.height >= 140 else { return nil }
+        guard rect.width >= 1 && rect.width <= 24 else { return nil }
+        guard rect.height / max(rect.width, 1) >= 5 else { return nil }
+        guard region.density >= 0.2 else { return nil }
+
+        let horizontalPosition = rect.midX / CGFloat(max(imageWidth, 1))
+        guard horizontalPosition <= 0.35 || horizontalPosition >= 0.65 else { return nil }
+
+        return DetectedPageMark(
+            type: .marginLine,
+            boundingBox: rect,
+            confidence: min(0.82, max(0.55, region.density))
         )
     }
 
@@ -70,6 +91,22 @@ struct PageMarkDetector: PageMarkDetecting {
 
         return regions.filter { $0.rect.width >= 40 }
     }
+
+    private func mergeColumnRuns(_ runs: [MarkColumnRun], imageWidth: Int) -> [DetectedPageMark] {
+        var regions: [MarkRegion] = []
+
+        for run in runs.sorted(by: { lhs, rhs in
+            lhs.x == rhs.x ? lhs.minY < rhs.minY : lhs.x < rhs.x
+        }) {
+            if let index = regions.lastIndex(where: { $0.canAbsorb(run) }) {
+                regions[index].absorb(run)
+            } else {
+                regions.append(MarkRegion(run: run))
+            }
+        }
+
+        return regions.compactMap { verticalMarginMark($0, imageWidth: imageWidth) }
+    }
 }
 
 private struct MarkRowRun {
@@ -80,6 +117,17 @@ private struct MarkRowRun {
 
     var rect: CGRect {
         CGRect(x: minX, y: y, width: maxX - minX + 1, height: 1)
+    }
+}
+
+private struct MarkColumnRun {
+    let x: Int
+    let minY: Int
+    let maxY: Int
+    let markedPixelCount: Int
+
+    var rect: CGRect {
+        CGRect(x: x, y: minY, width: 1, height: maxY - minY + 1)
     }
 }
 
@@ -102,6 +150,12 @@ private struct MarkRegion {
         rowCount = 1
     }
 
+    init(run: MarkColumnRun) {
+        rect = run.rect
+        markedPixelCount = run.markedPixelCount
+        rowCount = 1
+    }
+
     func canAbsorb(_ run: MarkRowRun) -> Bool {
         let closeVertically = CGFloat(run.y) <= rect.maxY + 4
         let overlapsHorizontally = CGFloat(run.maxX) >= rect.minX - 12
@@ -109,7 +163,20 @@ private struct MarkRegion {
         return closeVertically && overlapsHorizontally
     }
 
+    func canAbsorb(_ run: MarkColumnRun) -> Bool {
+        let closeHorizontally = CGFloat(run.x) <= rect.maxX + 4
+        let overlapsVertically = CGFloat(run.maxY) >= rect.minY - 12
+            && CGFloat(run.minY) <= rect.maxY + 12
+        return closeHorizontally && overlapsVertically
+    }
+
     mutating func absorb(_ run: MarkRowRun) {
+        rect = rect.union(run.rect)
+        markedPixelCount += run.markedPixelCount
+        rowCount += 1
+    }
+
+    mutating func absorb(_ run: MarkColumnRun) {
         rect = rect.union(run.rect)
         markedPixelCount += run.markedPixelCount
         rowCount += 1
@@ -150,6 +217,14 @@ private struct MarkBitmap {
         markedRowRuns(where: isNeutralDarkMarkPixel)
     }
 
+    func coloredMarkedColumnRuns() -> [MarkColumnRun] {
+        markedColumnRuns(where: isColoredMarkPixel)
+    }
+
+    func neutralMarkedColumnRuns() -> [MarkColumnRun] {
+        markedColumnRuns(where: isNeutralDarkMarkPixel)
+    }
+
     private func markedRowRuns(where isMarked: (Int, Int) -> Bool) -> [MarkRowRun] {
         var runs: [MarkRowRun] = []
         let minimumRunWidth = 24
@@ -175,6 +250,37 @@ private struct MarkBitmap {
 
             if let start = runStart, width - start >= minimumRunWidth {
                 runs.append(MarkRowRun(y: y, minX: start, maxX: width - 1, markedPixelCount: markedCount))
+            }
+        }
+
+        return runs
+    }
+
+    private func markedColumnRuns(where isMarked: (Int, Int) -> Bool) -> [MarkColumnRun] {
+        var runs: [MarkColumnRun] = []
+        let minimumRunHeight = 48
+
+        for x in 0..<width {
+            var runStart: Int?
+            var markedCount = 0
+
+            for y in 0..<height {
+                if isMarked(x, y) {
+                    if runStart == nil {
+                        runStart = y
+                    }
+                    markedCount += 1
+                } else if let start = runStart {
+                    if y - start >= minimumRunHeight {
+                        runs.append(MarkColumnRun(x: x, minY: start, maxY: y - 1, markedPixelCount: markedCount))
+                    }
+                    runStart = nil
+                    markedCount = 0
+                }
+            }
+
+            if let start = runStart, height - start >= minimumRunHeight {
+                runs.append(MarkColumnRun(x: x, minY: start, maxY: height - 1, markedPixelCount: markedCount))
             }
         }
 

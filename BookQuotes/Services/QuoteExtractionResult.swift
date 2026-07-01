@@ -39,6 +39,13 @@ struct QuoteExtractionResult: Codable, Sendable {
 
 // MARK: - Extracted Quote Data
 
+enum QuoteExtractionSource: String, Codable, Sendable {
+    case onDevice = "on_device"
+    case modelAssisted = "model_assisted"
+    case manual
+    case unknown
+}
+
 /// Individual quote data from extraction response
 struct ExtractedQuoteData: Codable, Sendable, Identifiable {
     let id: UUID = UUID()
@@ -57,6 +64,25 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
 
     /// AI confidence in this extraction (0.0-1.0)
     let confidence: Double?
+
+    /// Where this quote candidate came from before review.
+    let extractionSource: QuoteExtractionSource
+
+    init(
+        text: String,
+        pageNumber: Int?,
+        marginNote: String?,
+        markingType: String,
+        confidence: Double?,
+        extractionSource: QuoteExtractionSource = .unknown
+    ) {
+        self.text = text
+        self.pageNumber = pageNumber
+        self.marginNote = marginNote
+        self.markingType = markingType
+        self.confidence = confidence
+        self.extractionSource = extractionSource
+    }
 
     /// Convert to ExtractedQuote for saving
     func toExtractedQuote(customMarkingDefinition: MarkingDefinition? = nil) -> ExtractedQuote {
@@ -112,6 +138,27 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         case marginNote
         case markingType
         case confidence
+        case extractionSource
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        text = try container.decode(String.self, forKey: .text)
+        pageNumber = try container.decodeIfPresent(Int.self, forKey: .pageNumber)
+        marginNote = try container.decodeIfPresent(String.self, forKey: .marginNote)
+        markingType = try container.decode(String.self, forKey: .markingType)
+        confidence = try container.decodeIfPresent(Double.self, forKey: .confidence)
+        extractionSource = try container.decodeIfPresent(QuoteExtractionSource.self, forKey: .extractionSource) ?? .unknown
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(text, forKey: .text)
+        try container.encodeIfPresent(pageNumber, forKey: .pageNumber)
+        try container.encodeIfPresent(marginNote, forKey: .marginNote)
+        try container.encode(markingType, forKey: .markingType)
+        try container.encodeIfPresent(confidence, forKey: .confidence)
+        try container.encode(extractionSource, forKey: .extractionSource)
     }
 }
 
@@ -209,6 +256,23 @@ enum ExtractionError: LocalizedError {
 // MARK: - JSON Parsing Extensions
 
 extension QuoteExtractionResult {
+    func withExtractionSource(_ source: QuoteExtractionSource) -> QuoteExtractionResult {
+        QuoteExtractionResult(
+            quotes: quotes.map { quote in
+                ExtractedQuoteData(
+                    text: quote.text,
+                    pageNumber: quote.pageNumber,
+                    marginNote: quote.marginNote,
+                    markingType: quote.markingType,
+                    confidence: quote.confidence,
+                    extractionSource: source
+                )
+            },
+            pageNumber: pageNumber,
+            processingNotes: processingNotes
+        )
+    }
+
     /// Parse from JSON string response
     static func parse(from jsonString: String) throws -> QuoteExtractionResult {
         // Clean up common JSON issues

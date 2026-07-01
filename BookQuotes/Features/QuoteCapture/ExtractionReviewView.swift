@@ -194,113 +194,33 @@ struct ExtractionReviewView: View {
 
     /// Processing state view with progress
     private var processingView: some View {
-        VStack {
-            VStack(spacing: Spacing.lg) {
-                ProgressView()
-                    .scaleEffect(1.5)
-
-                VStack(spacing: Spacing.sm) {
-                    Text("Processing Pages")
-                        .font(.headline)
-
-                    Text("Extracting quotes from your captured pages...")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-
-                    // Progress bar
-                    ProgressView(value: processingProgress)
-                        .progressViewStyle(.linear)
-                        .frame(width: 200)
-                        .padding(.top, Spacing.md)
-
-                    let completedCount = session.captures.filter { $0.status == .completed }.count
-                    let totalCount = session.captures.count
-                    Text("\(completedCount) of \(totalCount) pages complete")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-            .padding(Spacing.xl)
-            .paperCard()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .task {
-            // Poll for updates while processing
-            while isProcessing {
-                try? await Task.sleep(for: .milliseconds(500))
-                loadExtractedQuotes()
-            }
-        }
+        ExtractionReviewProcessingView(
+            progress: processingProgress,
+            completedCount: session.captures.filter { $0.status == .completed }.count,
+            totalCount: session.captures.count,
+            isProcessing: isProcessing,
+            onPoll: loadExtractedQuotes
+        )
     }
 
     /// Empty state when no quotes found
     private var noQuotesView: some View {
-        ContentUnavailableView {
-            Label("No Quotes Found", systemImage: "text.quote")
-        } description: {
-            Text("No marked passages were detected in the captured pages. You can add quotes manually or try recapturing with clearer markings.")
-        } actions: {
-            HStack(spacing: Spacing.md) {
-                Button {
-                    HapticManager.light()
-                    showingAddQuoteSheet = true
-                } label: {
-                    Label("Add Quote Manually", systemImage: "plus")
-                }
-                .buttonStyle(.borderedProminent)
-
-                Button {
-                    onComplete?()
-                    dismiss()
-                } label: {
-                    Text("Close")
-                }
-                .buttonStyle(.bordered)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        ExtractionReviewNoQuotesView(
+            onAddManualQuote: addManualQuote,
+            onClose: closeReview
+        )
     }
 
     private var extractionFailureView: some View {
-        ContentUnavailableView {
-            Label("Extraction Failed", systemImage: "exclamationmark.triangle")
-        } description: {
-            VStack(spacing: Spacing.sm) {
-                Text(processingSummary.primaryFailureMessage ?? "The captured page could not be processed.")
-                Text("Try again with a clear photo, or add the quote manually if the marked text is readable.")
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-            }
-        } actions: {
-            HStack(spacing: Spacing.md) {
-                Button {
-                    HapticManager.light()
-                    showingAddQuoteSheet = true
-                } label: {
-                    Label("Add Quote Manually", systemImage: "plus")
-                }
-                .buttonStyle(.borderedProminent)
-
-                Button {
-                    onComplete?()
-                    dismiss()
-                } label: {
-                    Text("Close")
-                }
-                .buttonStyle(.bordered)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        ExtractionReviewFailureView(
+            primaryFailureMessage: processingSummary.primaryFailureMessage,
+            onAddManualQuote: addManualQuote,
+            onClose: closeReview
+        )
     }
 
     private var noSelectionView: some View {
-        ContentUnavailableView {
-            Label("Select a Page", systemImage: "doc.text.viewfinder")
-        } description: {
-            Text("Choose a page from the left to review its extracted quotes")
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        ExtractionReviewNoSelectionView()
     }
 
     @ToolbarContentBuilder
@@ -362,6 +282,16 @@ struct ExtractionReviewView: View {
 
     // MARK: - Actions
 
+    private func addManualQuote() {
+        HapticManager.light()
+        showingAddQuoteSheet = true
+    }
+
+    private func closeReview() {
+        onComplete?()
+        dismiss()
+    }
+
     private func loadExtractedQuotes() {
         let snapshots = session.captures
             .filter { $0.status == .completed }
@@ -390,83 +320,12 @@ struct ExtractionReviewView: View {
     }
 
     private func processPendingCaptures() async {
-        // Fetch marking definitions on the main actor, then snapshot them into Sendable values.
-        let markingPrompts: [QuoteExtractionPromptBuilder.MarkingPrompt] = await MainActor.run {
-            let markingDescriptor = FetchDescriptor<MarkingDefinition>(
-                predicate: #Predicate<MarkingDefinition> { $0.isEnabled }
-            )
-            let markings = (try? modelContext.fetch(markingDescriptor)) ?? []
-            return markings.map { QuoteExtractionPromptBuilder.MarkingPrompt($0) }
-        }
-
-        // Mark session as processing on the main actor (SwiftData objects are not concurrency-safe).
-        await MainActor.run {
-            session.beginProcessing()
-            try? modelContext.save()
-        }
-
-        // Snapshot pending captures into plain values for background work.
-        let pending: [(id: UUID, imageURL: URL?)] = await MainActor.run {
-            session.captures
-                .filter { $0.status == .pending }
-                .map { (id: $0.id, imageURL: $0.imageURL) }
-        }
-
-        for item in pending {
-            await MainActor.run {
-                if let capture = session.captures.first(where: { $0.id == item.id }) {
-                    capture.beginProcessing()
-                    try? modelContext.save()
-                }
-            }
-
-            do {
-                // Disk IO + image decode off the main actor.
-                let image = try await Task.detached(priority: .userInitiated) { () throws -> UIImage in
-                    guard let url = item.imageURL else { throw ExtractionError.invalidImage }
-                    guard let img = UIImage(contentsOfFile: url.path) else { throw ExtractionError.invalidImage }
-                    return img
-                }.value
-
-                // OCR, mark detection, and geometry selection run on-device.
-                let result = try await quoteExtractor.extractQuotes(from: image, markings: markingPrompts)
-
-                try await MainActor.run {
-                    if let capture = session.captures.first(where: { $0.id == item.id }) {
-                        try capture.completeExtraction(with: result)
-                        session.recordSuccess()
-                        try? modelContext.save()
-                        loadExtractedQuotes()
-                    }
-                }
-            } catch {
-                await MainActor.run {
-                    if let capture = session.captures.first(where: { $0.id == item.id }) {
-                        capture.failProcessing(error: error.localizedDescription)
-                        session.recordFailure()
-                        try? modelContext.save()
-                        loadExtractedQuotes()
-                    }
-                }
-            }
-        }
-    }
-
-    private func failPendingCaptures(with error: Error) {
-        let pendingCaptures = session.captures.filter { $0.status == .pending || $0.status == .processing }
-        guard !pendingCaptures.isEmpty else { return }
-
-        if session.status == .readyToProcess {
-            session.beginProcessing()
-        }
-
-        for capture in pendingCaptures {
-            capture.failProcessing(error: error.localizedDescription)
-            session.recordFailure()
-        }
-
-        try? modelContext.save()
-        loadExtractedQuotes()
+        let processor = ExtractionReviewProcessor(
+            modelContext: modelContext,
+            session: session,
+            quoteExtractor: quoteExtractor
+        )
+        await processor.processPendingCaptures(onCaptureChanged: loadExtractedQuotes)
     }
 
     private func saveAllQuotes() {

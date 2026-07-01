@@ -206,11 +206,11 @@ struct BookISBNConfirmationSheet: View {
     }
 
     private var isTitleValid: Bool {
-        !title.trimmingCharacters(in: .whitespaces).isEmpty
+        validation.isTitleValid
     }
 
     private var isAuthorValid: Bool {
-        !author.trimmingCharacters(in: .whitespaces).isEmpty
+        validation.isAuthorValid
     }
 
     private func validateAndSave() {
@@ -232,6 +232,10 @@ struct BookISBNConfirmationSheet: View {
         }
 
         confirmAndSave()
+    }
+
+    private var validation: BookISBNConfirmationValidation {
+        BookISBNConfirmationValidation(title: title, author: author)
     }
 
     @ViewBuilder
@@ -296,30 +300,20 @@ struct BookISBNConfirmationSheet: View {
     // MARK: - Actions
 
     private func confirmAndSave() {
-        // Create book from edited metadata
-        let book = Book(
-            title: title.trimmingCharacters(in: .whitespaces),
-            author: author.trimmingCharacters(in: .whitespaces),
-            subtitle: subtitle.isEmpty ? nil : subtitle.trimmingCharacters(in: .whitespaces),
-            publisher: publisher.isEmpty ? nil : publisher.trimmingCharacters(in: .whitespaces),
-            isbn: metadata.bestISBN
+        let book = BookISBNConfirmationDraft(
+            title: title,
+            author: author,
+            subtitle: subtitle,
+            publisher: publisher,
+            pageCount: pageCount,
+            status: status,
+            metadata: metadata,
+            coverImageData: coverImageData
         )
+        .makeBook()
 
-        // Set additional properties
-        book.status = status
-        book.pageCount = Int(pageCount)
-        book.publishYear = metadata.publishedYear
-
-        // Set cover image if loaded
-        if let coverData = coverImageData {
-            book.coverThumbnailData = coverData
-            book.coverFullData = coverData
-        }
-
-        // Insert into context
         modelContext.insert(book)
 
-        // Call completion handler
         onConfirm(book)
         dismiss()
     }
@@ -366,99 +360,4 @@ struct BookISBNConfirmationSheet: View {
             print("Cancelled")
         }
     )
-}
-
-// MARK: - Convenience Extension for Displaying from Scanner
-
-extension BookISBNConfirmationSheet {
-    /// Create a confirmation sheet directly from an ISBN scan result.
-    /// Performs the lookup automatically and shows loading state.
-    struct FromScanResult: View {
-        let isbn: String
-        let onConfirm: (Book) -> Void
-        let onCancel: () -> Void
-
-        @State private var metadata: BookMetadata?
-        @State private var isLoading = true
-        @State private var error: Error?
-
-        var body: some View {
-            Group {
-                if isLoading {
-                    loadingView
-                } else if let metadata = metadata {
-                    BookISBNConfirmationSheet(
-                        metadata: metadata,
-                        onConfirm: onConfirm,
-                        onCancel: onCancel
-                    )
-                } else {
-                    errorView
-                }
-            }
-            .task {
-                await lookupISBN()
-            }
-        }
-
-        private var loadingView: some View {
-            VStack(spacing: 16) {
-                ProgressView()
-                    .scaleEffect(1.5)
-                Text("Looking up book...")
-                    .font(.headline)
-                Text(ISBNValidator.format(isbn))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-
-        private var errorView: some View {
-            VStack(spacing: 16) {
-                Image(systemName: "exclamationmark.triangle")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.orange)
-
-                Text("Book Not Found")
-                    .font(.headline)
-
-                Text(error?.localizedDescription ?? "Unable to find book information for this ISBN.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-
-                HStack(spacing: 16) {
-                    Button("Cancel") {
-                        onCancel()
-                    }
-                    .buttonStyle(.bordered)
-
-                    Button("Try Again") {
-                        Task {
-                            await lookupISBN()
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .padding(.top)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-
-        private func lookupISBN() async {
-            isLoading = true
-            error = nil
-
-            do {
-                let service = ISBNLookupService()
-                metadata = try await service.lookup(isbn: isbn)
-            } catch {
-                self.error = error
-            }
-
-            isLoading = false
-        }
-    }
 }
