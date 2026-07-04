@@ -31,17 +31,21 @@ struct PressableButtonStyle: ButtonStyle {
 /// Use for main CTAs: "Save", "Continue", "Add Book"
 struct PrimaryButtonStyle: ButtonStyle {
 
+    /// Compact buttons hug their content for inline placement;
+    /// non-compact buttons fill the available width for full-width CTAs.
+    var compact: Bool = false
+
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline)
+            .font(compact ? .subheadline.weight(.semibold) : .headline)
             .foregroundStyle(.white)
-            .padding(.horizontal, Spacing.lg)
-            .padding(.vertical, Spacing.md)
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, compact ? Spacing.md : Spacing.lg)
+            .padding(.vertical, compact ? Spacing.sm : Spacing.md)
+            .frame(maxWidth: compact ? nil : .infinity)
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
                     .fill(isEnabled ? Color.brand : Color.brand.opacity(0.5))
@@ -62,16 +66,20 @@ struct PrimaryButtonStyle: ButtonStyle {
 /// Use for secondary actions: "Cancel", "Skip", "Edit"
 struct SecondaryButtonStyle: ButtonStyle {
 
+    /// Compact buttons hug their content for inline placement;
+    /// non-compact buttons fill the available width.
+    var compact: Bool = false
+
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline)
+            .font(compact ? .subheadline.weight(.semibold) : .headline)
             .foregroundStyle(isEnabled ? Color.brand : Color.brand.opacity(0.5))
-            .padding(.horizontal, Spacing.lg)
-            .padding(.vertical, Spacing.md)
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, compact ? Spacing.md : Spacing.lg)
+            .padding(.vertical, compact ? Spacing.sm : Spacing.md)
+            .frame(maxWidth: compact ? nil : .infinity)
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
                     .stroke(isEnabled ? Color.brand : Color.brand.opacity(0.5), lineWidth: 1.5)
@@ -192,13 +200,19 @@ extension ButtonStyle where Self == PressableButtonStyle {
 }
 
 extension ButtonStyle where Self == PrimaryButtonStyle {
-    /// Primary CTA button - filled brand color
+    /// Primary CTA button - filled brand color, full width
     static var primary: PrimaryButtonStyle { PrimaryButtonStyle() }
+
+    /// Inline primary button that hugs its content
+    static var primaryCompact: PrimaryButtonStyle { PrimaryButtonStyle(compact: true) }
 }
 
 extension ButtonStyle where Self == SecondaryButtonStyle {
-    /// Secondary button - bordered outline
+    /// Secondary button - bordered outline, full width
     static var secondary: SecondaryButtonStyle { SecondaryButtonStyle() }
+
+    /// Inline secondary button that hugs its content
+    static var secondaryCompact: SecondaryButtonStyle { SecondaryButtonStyle(compact: true) }
 }
 
 extension ButtonStyle where Self == DestructiveButtonStyle {

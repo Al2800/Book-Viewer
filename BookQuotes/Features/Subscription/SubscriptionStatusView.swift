@@ -194,7 +194,7 @@ struct UpgradePrompt: View {
                 Spacer()
 
                 Button("Upgrade", action: onUpgrade)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primaryCompact)
                     .controlSize(.small)
             }
         }

@@ -123,10 +123,8 @@ struct CaptureDetailSheet: View {
                     dismiss()
                 } label: {
                     Label("Remove Page", systemImage: "trash")
-                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
-                .tint(.error)
+                .buttonStyle(.destructive)
             }
             .padding(Spacing.lg)
             .navigationTitle("Page \(capture.orderIndex + 1)")
@@ -212,12 +210,8 @@ struct OfflineQueueConfirmationSheet: View {
                 onDismiss()
             } label: {
                 Text("Got it")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Spacing.md)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.brand)
+            .buttonStyle(.primary)
             .opacity(hasAppeared ? 1 : 0)
         }
         .padding(Spacing.xl)

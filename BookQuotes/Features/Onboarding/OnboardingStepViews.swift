@@ -48,12 +48,8 @@ struct OnboardingWelcomeCarouselView: View {
                 }
             } label: {
                 Text(carouselState.primaryButtonTitle)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Spacing.md)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.brand)
+            .buttonStyle(.primary)
             .padding(.horizontal, Spacing.lg)
             .padding(.bottom, Spacing.xl)
         }
@@ -175,12 +171,8 @@ struct OnboardingMarkingSetupStepView: View {
 
             Button(action: onContinue) {
                 Text("Continue")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Spacing.md)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.brand)
+            .buttonStyle(.primary)
             .padding(.horizontal, Spacing.lg)
 
             Button("Use defaults", action: onContinue)
@@ -222,12 +214,8 @@ struct OnboardingCompletionStepView: View {
                     Text("Start Capturing")
                     Image(systemName: "camera.fill")
                 }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Spacing.md)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.brand)
+            .buttonStyle(.primary)
             .padding(.horizontal, Spacing.lg)
             .padding(.bottom, Spacing.xl)
             .disabled(isCompleting)

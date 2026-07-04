@@ -332,7 +332,7 @@ struct BookDetailView: View {
             Button("Clear Filter") {
                 filterMarking = nil
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.secondaryCompact)
         }
     }
 

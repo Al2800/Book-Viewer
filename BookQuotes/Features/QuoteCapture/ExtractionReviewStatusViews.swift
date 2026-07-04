@@ -111,14 +111,14 @@ private struct ExtractionReviewFallbackActions: View {
             } label: {
                 Label("Add Quote Manually", systemImage: "plus")
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.primaryCompact)
 
             Button {
                 onClose()
             } label: {
                 Text("Close")
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.secondaryCompact)
         }
     }
 }

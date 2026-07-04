@@ -178,9 +178,8 @@ struct AccountView: View {
                         showPaywall = true
                     } label: {
                         Text("View Plans")
-                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primary)
                 }
                 .padding(.vertical, Spacing.xs)
             }

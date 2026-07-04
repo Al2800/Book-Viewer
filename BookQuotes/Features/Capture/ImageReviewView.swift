@@ -182,11 +182,8 @@ struct ImageReviewView: View {
                     Image(systemName: "arrow.counterclockwise")
                     Text("Retake")
                 }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.bordered)
-            .tint(Color.textSecondary)
+            .buttonStyle(.secondary)
             .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.retakeButton)
 
             // Use photo button
@@ -277,18 +274,15 @@ struct CompactImageReview: View {
                     onRetake()
                 } label: {
                     Label("Retake", systemImage: "arrow.counterclockwise")
-                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.secondary)
 
                 Button {
                     onUse()
                 } label: {
                     Label("Use Photo", systemImage: "checkmark")
-                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.brand)
+                .buttonStyle(.primary)
             }
         }
         .padding(Spacing.lg)

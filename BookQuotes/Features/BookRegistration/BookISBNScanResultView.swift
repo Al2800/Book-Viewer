@@ -76,14 +76,14 @@ extension BookISBNConfirmationSheet {
                     Button("Cancel") {
                         onCancel()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.secondaryCompact)
 
                     Button("Try Again") {
                         Task {
                             await lookupISBN()
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primaryCompact)
                 }
                 .padding(.top)
             }

@@ -39,11 +39,8 @@ struct CoverCropReviewView: View {
                         dismiss()
                     } label: {
                         Label("Retake", systemImage: "arrow.counterclockwise")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
-                    .tint(Color.textSecondary)
+                    .buttonStyle(.secondary)
                     .accessibilityIdentifier(AccessibilityIdentifiers.CoverCrop.retakeButton)
 
                     Button {

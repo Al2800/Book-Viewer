@@ -137,7 +137,7 @@ struct StorageBackupView: View {
                     }
                 }
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.secondary)
             .disabled(isClearingCache)
 
             if cacheCleared {

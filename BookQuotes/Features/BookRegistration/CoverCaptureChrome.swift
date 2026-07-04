@@ -95,7 +95,7 @@ struct CoverCaptureBottomControls: View {
                     Button("Use Test Cover") {
                         onUseTestCover()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primaryCompact)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
                 }
             }

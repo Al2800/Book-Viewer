@@ -80,9 +80,8 @@ struct ExportView: View {
                                     Task { await prepareShareSheet() }
                                 } label: {
                                     Label("Share \(filename)", systemImage: "square.and.arrow.up")
-                                        .frame(maxWidth: .infinity)
                                 }
-                                .buttonStyle(.bordered)
+                                .buttonStyle(.secondary)
                             }
 
                             Text("Saved temporarily at:")

@@ -185,7 +185,7 @@ struct BatchCaptureView: View {
                         await captureCurrentFrame()
                     }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.primaryCompact)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
                 .disabled(lifecycleState.isCapturing)
             }

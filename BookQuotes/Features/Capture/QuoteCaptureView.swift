@@ -167,7 +167,7 @@ struct QuoteCaptureView: View {
                 Button("Use Test Image") {
                     captureTestImage()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.primaryCompact)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
             }
         }

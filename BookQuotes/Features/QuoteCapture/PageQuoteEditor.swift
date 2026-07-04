@@ -121,8 +121,7 @@ struct PageQuoteEditor: View {
                     Label("Add", systemImage: "plus")
                         .font(.caption)
                 }
-                .buttonStyle(.bordered)
-                .tint(.brand)
+                .buttonStyle(.secondaryCompact)
             }
             .padding(Spacing.md)
             .background(Color.backgroundSecondary)

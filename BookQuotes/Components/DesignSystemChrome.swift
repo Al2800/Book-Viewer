@@ -128,17 +128,15 @@ extension View {
     }
 
     /// Apply glass button style with iOS 26 Liquid Glass.
-    /// Falls back to borderedProminent with accent tint on earlier iOS.
+    /// Falls back to the design-system compact primary style on earlier iOS.
     @ViewBuilder
     func glassButton() -> some View {
         if #available(iOS 26, *) {
             // iOS 26: Use native glass button style if available
             self.buttonStyle(.glass)
         } else {
-            // Pre-iOS 26: Bordered prominent with accent tint
-            self
-                .buttonStyle(.borderedProminent)
-                .tint(Color.accent.opacity(0.9))
+            // Pre-iOS 26: Design-system primary style, hugging content
+            self.buttonStyle(.primaryCompact)
         }
     }
 

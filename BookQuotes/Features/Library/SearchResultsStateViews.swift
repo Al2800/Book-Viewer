@@ -119,7 +119,7 @@ struct SearchNoResultsView: View {
                 } label: {
                     Label("Search all", systemImage: "arrow.up.left.and.arrow.down.right")
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.secondaryCompact)
             }
 
             recentSearchAlternatives
@@ -167,7 +167,7 @@ struct SearchErrorStateView: View {
             Button("Try again") {
                 onRetry()
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.secondaryCompact)
         }
         .padding(.horizontal, Spacing.xl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
