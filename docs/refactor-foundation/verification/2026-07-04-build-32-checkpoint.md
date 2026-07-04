@@ -27,6 +27,9 @@ Date: 2026-07-04
 ## Remaining Release Check
 
 - Archive and export build 32.
+  - Done 2026-07-04 22:18 BST.
 - Upload build 32 to App Store Connect.
+  - Done 2026-07-04 22:19 BST; upload succeeded and Apple reported the package is processing.
 - Confirm App Store Connect processing reaches `VALID`.
+  - Pending; build 32 was not visible in the App Store Connect builds API immediately after upload.
 - Confirm TestFlight device smoke against the uploaded build.
