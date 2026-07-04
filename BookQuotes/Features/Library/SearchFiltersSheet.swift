@@ -34,6 +34,8 @@ struct SearchFiltersSheet: View {
                 dateRangeSection
                 otherFiltersSection
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Filters")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -225,10 +227,10 @@ private struct BookFilterRow: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(book.title)
-                        .font(.subheadline)
+                        .font(.bookTitleSmall)
                         .lineLimit(1)
                     Text(book.author)
-                        .font(.caption)
+                        .font(.authorNameSmall)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
@@ -236,7 +238,7 @@ private struct BookFilterRow: View {
                 Spacer()
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                    .foregroundStyle(isSelected ? Color.brand : .secondary)
             }
         }
         .buttonStyle(.plain)
@@ -262,7 +264,7 @@ private struct MarkingFilterRow: View {
                 Spacer()
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                    .foregroundStyle(isSelected ? Color.brand : .secondary)
             }
         }
         .buttonStyle(.plain)
@@ -297,6 +299,8 @@ private struct CustomDateRangePicker: View {
                     displayedComponents: .date
                 )
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Custom Date Range")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

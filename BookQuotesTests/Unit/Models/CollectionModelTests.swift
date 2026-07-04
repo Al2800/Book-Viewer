@@ -16,7 +16,7 @@ final class CollectionModelTests: SwiftDataTestCase {
         XCTAssertNotNil(collection.id)
         XCTAssertEqual(collection.name, "Highlights")
         XCTAssertEqual(collection.icon, "folder")
-        XCTAssertEqual(collection.colorName, "blue")
+        XCTAssertEqual(collection.colorName, "ink")
         XCTAssertEqual(collection.sortOrder, 0)
         XCTAssertTrue(collection.books.isEmpty)
         XCTAssertTrue(collection.quotes.isEmpty)

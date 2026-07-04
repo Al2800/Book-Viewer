@@ -44,7 +44,7 @@ struct BookCoverArtwork: View {
             .resizable()
             .aspectRatio(style == .grid ? 2/3 : nil, contentMode: .fill)
             .frame(width: style == .list ? 50 : nil, height: style == .list ? 72 : nil)
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .spineDetail(cornerRadius: cornerRadius)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
@@ -75,17 +75,17 @@ struct BookCoverArtwork: View {
                 VStack(spacing: Spacing.xs) {
                     Image(systemName: "book.closed")
                         .font(.title)
-                        .symbolEffect(.pulse, options: .repeating.speed(0.3), isActive: !reduceMotion)
                         .foregroundStyle(Color.textSecondary)
 
                     Text(book.title)
-                        .font(.caption2)
+                        .font(.system(.caption2, design: .serif))
                         .multilineTextAlignment(.center)
                         .lineLimit(2)
                         .padding(.horizontal, Spacing.xs)
                         .foregroundStyle(Color.textPrimary)
                 }
             }
+            .spineDetail(cornerRadius: CornerRadius.sm)
             .overlay(
                 RoundedRectangle(cornerRadius: CornerRadius.sm)
                     .stroke(Color.quoteBorder.opacity(0.5), lineWidth: Stroke.hairline.width)
@@ -101,6 +101,7 @@ struct BookCoverArtwork: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .spineDetail(cornerRadius: CornerRadius.sm)
             .overlay(
                 RoundedRectangle(cornerRadius: CornerRadius.sm)
                     .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)

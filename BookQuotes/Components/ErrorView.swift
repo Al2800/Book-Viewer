@@ -170,10 +170,8 @@ struct ErrorBanner: View {
 
     var body: some View {
         HStack(spacing: Spacing.sm) {
-            // Icon with pulse for errors
             Image(systemName: iconName)
                 .foregroundStyle(.white)
-                .symbolEffect(.pulse, options: .repeating.speed(0.5), isActive: style == .error && !reduceMotion)
 
             // Message
             Text(message)

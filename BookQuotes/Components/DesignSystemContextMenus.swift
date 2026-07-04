@@ -125,10 +125,9 @@ struct QuoteContextMenuPreview: View {
                 Divider()
                 HStack {
                     Text(book.title)
-                        .font(.caption)
-                        .fontWeight(.medium)
+                        .font(.authorNameSmall.weight(.medium))
                     Text("by \(book.author)")
-                        .font(.caption)
+                        .font(.attributionSmall)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -136,7 +135,7 @@ struct QuoteContextMenuPreview: View {
             if quote.isFavorite {
                 HStack {
                     Image(systemName: "heart.fill")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Color.accent)
                     Text("Favorite")
                         .foregroundStyle(.secondary)
                 }
@@ -183,11 +182,11 @@ struct BookContextMenuPreview: View {
 
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(book.title)
-                    .font(.headline)
+                    .font(.bookTitle)
                     .lineLimit(2)
 
                 Text(book.author)
-                    .font(.subheadline)
+                    .font(.authorName)
                     .foregroundStyle(.secondary)
 
                 if book.hasQuotes {

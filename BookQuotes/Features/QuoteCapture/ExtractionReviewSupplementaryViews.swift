@@ -64,6 +64,8 @@ struct AddManualQuoteSheet: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Add Quote")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -155,9 +157,9 @@ struct ReviewSummaryView: View {
                     .foregroundStyle(Color.brand)
                 VStack(alignment: .leading) {
                     Text(book.title)
-                        .font(.headline)
+                        .font(.bookTitle)
                     Text(book.author)
-                        .font(.subheadline)
+                        .font(.authorName)
                         .foregroundStyle(Color.textSecondary)
                 }
             }

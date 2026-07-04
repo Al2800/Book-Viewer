@@ -48,12 +48,8 @@ struct OnboardingWelcomeCarouselView: View {
                 }
             } label: {
                 Text(carouselState.primaryButtonTitle)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Spacing.md)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.brand)
+            .buttonStyle(.primary)
             .padding(.horizontal, Spacing.lg)
             .padding(.bottom, Spacing.xl)
         }
@@ -109,8 +105,7 @@ struct OnboardingSignInStepView: View {
                 .foregroundStyle(Color.brand)
 
             Text("Create Your Account")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(.title, design: .serif).weight(.semibold))
 
             Text(copyPolicy.description)
                 .font(.subheadline)
@@ -145,8 +140,7 @@ struct OnboardingSubscriptionStepView: View {
         VStack(spacing: Spacing.xl) {
             HStack {
                 Text("Choose Your Plan")
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    .font(.system(.title2, design: .serif).weight(.semibold))
                 Spacer()
             }
             .padding(.horizontal, Spacing.lg)
@@ -175,12 +169,8 @@ struct OnboardingMarkingSetupStepView: View {
 
             Button(action: onContinue) {
                 Text("Continue")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Spacing.md)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.brand)
+            .buttonStyle(.primary)
             .padding(.horizontal, Spacing.lg)
 
             Button("Use defaults", action: onContinue)
@@ -196,8 +186,7 @@ struct OnboardingMarkingSetupStepView: View {
                 .foregroundStyle(Color.brand)
 
             Text("How Do You Mark Books?")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(.title, design: .serif).weight(.semibold))
 
             Text("Select the marking styles you use most often")
                 .font(.subheadline)
@@ -222,12 +211,8 @@ struct OnboardingCompletionStepView: View {
                     Text("Start Capturing")
                     Image(systemName: "camera.fill")
                 }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Spacing.md)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.brand)
+            .buttonStyle(.primary)
             .padding(.horizontal, Spacing.lg)
             .padding(.bottom, Spacing.xl)
             .disabled(isCompleting)
@@ -242,8 +227,7 @@ struct OnboardingCompletionStepView: View {
                 .transition(.scale.combined(with: .opacity))
 
             Text("You're All Set!")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(.title, design: .serif).weight(.semibold))
 
             Text("Start capturing quotes from your favorite books")
                 .font(.subheadline)

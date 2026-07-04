@@ -45,12 +45,14 @@ struct QuoteMarkingPickerSheet: View {
                             Spacer()
                             if markingType == type {
                                 Image(systemName: "checkmark")
-                                    .foregroundStyle(Color.accentColor)
+                                    .foregroundStyle(Color.brand)
                             }
                         }
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Select Marking Type")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

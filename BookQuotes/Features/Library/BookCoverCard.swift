@@ -38,12 +38,12 @@ struct BookCoverCard: View {
             }
 
             Text(book.title)
-                .font(.subheadline.weight(.semibold))
+                .font(.bookTitleSmall)
                 .foregroundStyle(Color.textPrimary)
                 .lineLimit(2)
 
             Text(book.author)
-                .font(.caption)
+                .font(.authorNameSmall)
                 .foregroundStyle(Color.textSecondary)
                 .lineLimit(1)
 

@@ -61,7 +61,7 @@ extension BookISBNConfirmationSheet {
             VStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.system(size: 48))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Color.warning)
 
                 Text("Book Not Found")
                     .font(.headline)
@@ -76,14 +76,14 @@ extension BookISBNConfirmationSheet {
                     Button("Cancel") {
                         onCancel()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.secondaryCompact)
 
                     Button("Try Again") {
                         Task {
                             await lookupISBN()
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primaryCompact)
                 }
                 .padding(.top)
             }

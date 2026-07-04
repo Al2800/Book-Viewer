@@ -17,22 +17,26 @@ struct AccountView: View {
     }
 
     var body: some View {
-        List {
-            if authService.isAuthenticated {
-                accountSection
-            } else {
-                signInPromptSection
-            }
+        ScrollView {
+            VStack(spacing: Spacing.lg) {
+                if authService.isAuthenticated {
+                    accountSection
+                } else {
+                    signInPromptSection
+                }
 
-            if subscriptionsEnabled {
-                subscriptionSection
-            }
+                if subscriptionsEnabled {
+                    subscriptionSection
+                }
 
-            actionsSection
+                actionsSection
+            }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
+            .padding(.bottom, Spacing.xxxl)
         }
         .navigationTitle("Account")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
         .background(Color.backgroundPrimary)
         .sheet(isPresented: $showSignIn) {
             SignInView(authService: authService)
@@ -60,7 +64,7 @@ struct AccountView: View {
     }
 
     private var accountSection: some View {
-        Section {
+        SettingsSectionCard(title: "Account") {
             HStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.fill")
                     .font(.system(size: 50))
@@ -100,7 +104,7 @@ struct AccountView: View {
     }
 
     private var signInPromptSection: some View {
-        Section {
+        SettingsSectionCard(title: "Account") {
             VStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.badge.questionmark")
                     .font(.system(size: 50))
@@ -133,7 +137,7 @@ struct AccountView: View {
     }
 
     private var subscriptionSection: some View {
-        Section("Subscription") {
+        SettingsSectionCard(title: "Subscription") {
             if subscriptionService.hasActiveSubscription {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     HStack {
@@ -143,7 +147,7 @@ struct AccountView: View {
                         Spacer()
 
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
+                            .foregroundStyle(Color.success)
                     }
 
                     if subscriptionService.isInTrial {
@@ -156,15 +160,23 @@ struct AccountView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, Spacing.xs)
+
+                Divider()
 
                 Button {
                     Task {
                         await subscriptionService.manageSubscription()
                     }
                 } label: {
-                    Label("Manage Subscription", systemImage: "creditcard")
+                    HStack {
+                        Label("Manage Subscription", systemImage: "creditcard")
+                            .foregroundStyle(Color.brand)
+                        Spacer()
+                    }
                 }
+                .buttonStyle(.plain)
             } else {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Unlock Premium")
@@ -178,10 +190,10 @@ struct AccountView: View {
                         showPaywall = true
                     } label: {
                         Text("View Plans")
-                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primary)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, Spacing.xs)
             }
         }
@@ -209,34 +221,49 @@ struct AccountView: View {
         return fallback
     }
 
+    @ViewBuilder
     private var actionsSection: some View {
-        Section {
-            if subscriptionsEnabled {
-                Button {
-                    Task {
-                        await restorePurchases()
-                    }
-                } label: {
-                    HStack {
-                        Label("Restore Purchases", systemImage: "arrow.clockwise")
+        if subscriptionsEnabled || authService.isAuthenticated {
+            SettingsSectionCard(title: "Manage") {
+                if subscriptionsEnabled {
+                    Button {
+                        Task {
+                            await restorePurchases()
+                        }
+                    } label: {
+                        HStack {
+                            Label("Restore Purchases", systemImage: "arrow.clockwise")
+                                .foregroundStyle(Color.brand)
 
-                        if isRestoring {
                             Spacer()
-                            ProgressView()
+
+                            if isRestoring {
+                                ProgressView()
+                            }
                         }
                     }
+                    .buttonStyle(.plain)
+                    .disabled(isRestoring)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.restorePurchasesButton)
                 }
-                .disabled(isRestoring)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Settings.restorePurchasesButton)
-            }
 
-            if authService.isAuthenticated {
-                Button(role: .destructive) {
-                    showSignOutConfirmation = true
-                } label: {
-                    Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                if subscriptionsEnabled && authService.isAuthenticated {
+                    Divider()
                 }
-                .accessibilityIdentifier(AccessibilityIdentifiers.Settings.signOutButton)
+
+                if authService.isAuthenticated {
+                    Button {
+                        showSignOutConfirmation = true
+                    } label: {
+                        HStack {
+                            Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                                .foregroundStyle(Color.error)
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.signOutButton)
+                }
             }
         }
     }

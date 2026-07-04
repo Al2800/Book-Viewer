@@ -84,7 +84,7 @@ enum SwipeActionStyle {
         } label: {
             Label("Edit", systemImage: "pencil")
         }
-        .tint(.blue)
+        .tint(.brand)
     }
 
     /// Creates a share swipe action button with haptic feedback
@@ -106,7 +106,7 @@ enum SwipeActionStyle {
         } label: {
             Label("Archive", systemImage: "archivebox")
         }
-        .tint(.orange)
+        .tint(.warning)
     }
 
     /// Creates a copy swipe action button with haptic feedback

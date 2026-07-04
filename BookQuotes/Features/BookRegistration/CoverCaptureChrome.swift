@@ -95,7 +95,7 @@ struct CoverCaptureBottomControls: View {
                     Button("Use Test Cover") {
                         onUseTestCover()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primaryCompact)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
                 }
             }
@@ -112,8 +112,6 @@ struct CoverCaptureBottomControls: View {
                 .glassButton()
             }
         }
-        .padding(.horizontal, Spacing.lg)
-        .padding(.bottom, Spacing.md)
     }
 
     private var statusPill: CaptureStatusPill? {

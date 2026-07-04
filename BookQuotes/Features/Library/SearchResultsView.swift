@@ -240,8 +240,7 @@ struct SearchResultsView: View {
     private func sectionHeader(_ title: String, count: Int) -> some View {
         HStack {
             Text(title)
-                .font(.sectionHeader)
-                .foregroundStyle(Color.textSecondary)
+                .sectionHeaderStyle()
             Spacer()
             Text("\(count)")
                 .font(.caption)

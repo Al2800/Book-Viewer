@@ -9,18 +9,22 @@ struct CaptureModeSelectionView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                CaptureSummaryCard()
-
                 CaptureSectionCard(title: "Choose Capture Mode") {
                     ForEach(CaptureModeOption.all) { option in
                         CaptureModeRow(option: option, action: action(for: option.kind))
+
+                        if option.id != CaptureModeOption.all.last?.id {
+                            Divider()
+                                .overlay(Color.quoteBorder)
+                        }
                     }
                 }
 
                 Label("Even light, page filling the frame.", systemImage: "lightbulb")
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundStyle(Color.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, Spacing.sm)
             }
             .padding(.horizontal, Spacing.lg)
             .padding(.top, Spacing.lg)
@@ -55,8 +59,7 @@ struct CaptureSectionCard<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text(title)
-                .font(.sectionHeader)
-                .foregroundStyle(Color.textSecondary)
+                .sectionHeaderStyle()
 
             VStack(spacing: Spacing.sm) {
                 content
@@ -67,82 +70,40 @@ struct CaptureSectionCard<Content: View>: View {
     }
 }
 
-private struct CaptureSummaryCard: View {
-    var body: some View {
-        HStack(spacing: Spacing.sm) {
-            CaptureSummaryPill(systemImage: "camera", text: "Camera Ready")
-            CaptureSummaryPill(systemImage: "text.viewfinder", text: "Review Before Save")
-
-            Spacer(minLength: 0)
-        }
-        .padding(Spacing.lg)
-        .paperCard()
-    }
-}
-
-private struct CaptureSummaryPill: View {
-    let systemImage: String
-    let text: String
-
-    var body: some View {
-        HStack(spacing: Spacing.xs) {
-            Image(systemName: systemImage)
-                .font(.caption.weight(.semibold))
-
-            Text(text)
-                .font(.caption.weight(.medium))
-        }
-        .foregroundStyle(Color.textPrimary)
-        .padding(.vertical, Spacing.xs)
-        .padding(.horizontal, Spacing.sm)
-        .background(
-            Capsule()
-                .fill(Color.backgroundSecondary)
-        )
-        .overlay {
-            Capsule()
-                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-        }
-    }
-}
-
 private struct CaptureModeRow: View {
     let option: CaptureModeOption
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: Spacing.md) {
+            HStack(spacing: Spacing.lg) {
                 ZStack {
                     Circle()
-                        .fill(Color.backgroundSecondary)
-                        .frame(width: 40, height: 40)
-                        .overlay {
-                            Circle()
-                                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                        }
+                        .fill(option.accent.color.opacity(0.12))
+                        .frame(width: 52, height: 52)
 
                     Image(systemName: option.systemImage)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.title3.weight(.medium))
                         .foregroundStyle(option.accent.color)
                 }
 
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
                     Text(option.title)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.headline)
                         .foregroundStyle(Color.textPrimary)
 
                     Text(option.subtitle)
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundStyle(Color.textSecondary)
                 }
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundStyle(Color.textTertiary)
             }
+            .padding(.vertical, Spacing.sm)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

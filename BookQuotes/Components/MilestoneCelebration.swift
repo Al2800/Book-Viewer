@@ -25,7 +25,7 @@ enum MilestoneType {
     var systemImage: String {
         switch self {
         case .pageCapture:
-            return "party.popper.fill"
+            return "books.vertical.fill"
         case .firstBook:
             return "book.fill"
         case .quoteCount:
@@ -34,35 +34,19 @@ enum MilestoneType {
             return icon
         }
     }
-
-    var gradientColors: [Color] {
-        switch self {
-        case .pageCapture:
-            return [.yellow, .orange]
-        case .firstBook:
-            return [.green, .mint]
-        case .quoteCount:
-            return [.purple, .pink]
-        case .custom:
-            return [.blue, .cyan]
-        }
-    }
 }
 
 // MARK: - Milestone Celebration
 
-/// Full-screen celebration overlay for milestones
-/// Displays an animated icon with a celebratory message
+/// Quiet milestone acknowledgment.
+/// A small paper card with an accent icon and serif message,
+/// in keeping with the calm book aesthetic.
 struct MilestoneCelebration: View {
     let type: MilestoneType
 
-    @State private var iconScale: CGFloat = 0.5
-    @State private var textOpacity: Double = 0
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    /// Convenience initializer for simple message-only celebrations
+    /// Convenience initializer for simple message-only acknowledgments
     init(message: String) {
-        self.type = .custom(message: message, icon: "party.popper.fill")
+        self.type = .custom(message: message, icon: "bookmark.fill")
     }
 
     /// Full initializer with milestone type
@@ -71,49 +55,25 @@ struct MilestoneCelebration: View {
     }
 
     var body: some View {
-        ZStack {
-            // Scrim
-            Color.black.opacity(0.4)
-                .ignoresSafeArea()
+        VStack(spacing: Spacing.sm) {
+            Image(systemName: type.systemImage)
+                .font(.system(size: 32))
+                .foregroundStyle(Color.accent)
 
-            VStack(spacing: Spacing.md) {
-                // Celebration icon
-                Image(systemName: type.systemImage)
-                    .font(.system(size: 50))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: type.gradientColors,
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .scaleEffect(iconScale)
-                    .symbolEffect(.bounce, options: .speed(0.5), isActive: !reduceMotion)
-
-                // Message
-                Text(type.message)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.white)
-                    .opacity(textOpacity)
-            }
-            .padding(Spacing.xxl)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
+            Text(type.message)
+                .font(.system(.title3, design: .serif).weight(.semibold))
+                .foregroundStyle(Color.textPrimary)
+                .multilineTextAlignment(.center)
         }
-        .onAppear {
-            guard !reduceMotion else {
-                iconScale = 1.0
-                textOpacity = 1.0
-                return
-            }
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.5)) {
-                iconScale = 1.0
-            }
-            withAnimation(.easeOut(duration: 0.3).delay(0.2)) {
-                textOpacity = 1.0
-            }
-        }
+        .padding(.horizontal, Spacing.xl)
+        .padding(.vertical, Spacing.lg)
+        .background(Color.backgroundCard)
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
+        .overlay(
+            RoundedRectangle(cornerRadius: CornerRadius.lg)
+                .stroke(Color.quoteBorder, lineWidth: 1)
+        )
+        .elevation(.lg)
     }
 }
 
@@ -155,7 +115,7 @@ final class MilestoneManager: ObservableObject {
         HapticManager.success()
         currentMilestone = type
 
-        withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+        withAnimation(.easeOut(duration: 0.25)) {
             showMilestone = true
         }
 
@@ -182,18 +142,18 @@ final class MilestoneManager: ObservableObject {
 // MARK: - View Extension
 
 extension View {
-    /// Adds milestone celebration overlay capability to a view
+    /// Adds milestone acknowledgment overlay capability to a view
     func milestoneCelebration(manager: MilestoneManager) -> some View {
         self.overlay {
             if manager.showMilestone, let milestone = manager.currentMilestone {
                 MilestoneCelebration(type: milestone)
-                    .transition(.scale(scale: 0.8).combined(with: .opacity))
+                    .transition(.opacity)
                     .onTapGesture {
                         manager.dismiss()
                     }
             }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: manager.showMilestone)
+        .animation(.easeOut(duration: 0.25), value: manager.showMilestone)
     }
 }
 

@@ -20,7 +20,7 @@ struct CollectionCard: View {
             // Name and count
             VStack(spacing: Spacing.xs) {
                 Text(collection.name)
-                    .font(.headline)
+                    .font(.bookTitle)
                     .foregroundStyle(.primary)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
@@ -54,7 +54,7 @@ struct CollectionCard: View {
     // MARK: - Helpers
 
     private var collectionColor: Color {
-        CollectionColor(rawValue: collection.colorName)?.color ?? .blue
+        CollectionColor.named(collection.colorName).color
     }
 
     private var quoteCountText: String {
@@ -96,8 +96,7 @@ struct CollectionRow: View {
             // Name and description
             VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(collection.name)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    .font(.bookTitleSmall)
                     .foregroundStyle(.primary)
 
                 if let description = collection.collectionDescription, !description.isEmpty {
@@ -130,7 +129,7 @@ struct CollectionRow: View {
     // MARK: - Helpers
 
     private var collectionColor: Color {
-        CollectionColor(rawValue: collection.colorName)?.color ?? .blue
+        CollectionColor.named(collection.colorName).color
     }
 
     private var quoteCountText: String {
@@ -188,7 +187,7 @@ struct CollectionChip: View {
     // MARK: - Helpers
 
     private var collectionColor: Color {
-        CollectionColor(rawValue: collection.colorName)?.color ?? .blue
+        CollectionColor.named(collection.colorName).color
     }
 }
 
@@ -197,19 +196,19 @@ struct CollectionChip: View {
 #Preview("Collection Card") {
     LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 16) {
         ForEach(0..<4) { index in
-            let colors = ["blue", "green", "purple", "orange"]
+            let colors = ["ink", "forest", "plum", "mustard"]
             let icons = ["star.fill", "heart.fill", "bookmark.fill", "lightbulb"]
             let names = ["Favorites", "Inspiration", "To Read", "Ideas"]
 
             VStack(spacing: Spacing.md) {
                 ZStack {
                     Circle()
-                        .fill(CollectionColor(rawValue: colors[index])?.color.opacity(0.15) ?? .blue.opacity(0.15))
+                        .fill(CollectionColor.named(colors[index]).color.opacity(0.15))
                         .frame(width: 60, height: 60)
 
                     Image(systemName: icons[index])
                         .font(.title2)
-                        .foregroundStyle(CollectionColor(rawValue: colors[index])?.color ?? .blue)
+                        .foregroundStyle(CollectionColor.named(colors[index]).color)
                 }
 
                 VStack(spacing: Spacing.xs) {
@@ -235,19 +234,19 @@ struct CollectionChip: View {
 #Preview("Collection Row") {
     List {
         ForEach(0..<3) { index in
-            let colors = ["blue", "green", "purple"]
+            let colors = ["ink", "forest", "plum"]
             let icons = ["star.fill", "heart.fill", "bookmark.fill"]
             let names = ["Favorites", "Inspiration", "To Read"]
 
             HStack(spacing: Spacing.md) {
                 ZStack {
                     Circle()
-                        .fill(CollectionColor(rawValue: colors[index])?.color.opacity(0.15) ?? .blue.opacity(0.15))
+                        .fill(CollectionColor.named(colors[index]).color.opacity(0.15))
                         .frame(width: 40, height: 40)
 
                     Image(systemName: icons[index])
                         .font(.body)
-                        .foregroundStyle(CollectionColor(rawValue: colors[index])?.color ?? .blue)
+                        .foregroundStyle(CollectionColor.named(colors[index]).color)
                 }
 
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
@@ -279,7 +278,7 @@ struct CollectionChip: View {
 #Preview("Collection Chips") {
     HStack(spacing: 8) {
         ForEach(0..<3) { index in
-            let colors = ["blue", "green", "purple"]
+            let colors = ["ink", "forest", "plum"]
             let icons = ["star.fill", "heart.fill", "bookmark.fill"]
             let names = ["Favorites", "Inspiration", "Reading"]
 
@@ -290,10 +289,10 @@ struct CollectionChip: View {
                 Text(names[index])
                     .font(.caption)
             }
-            .foregroundStyle(CollectionColor(rawValue: colors[index])?.color ?? .blue)
+            .foregroundStyle(CollectionColor.named(colors[index]).color)
             .padding(.horizontal, Spacing.sm)
             .padding(.vertical, Spacing.xs)
-            .background(CollectionColor(rawValue: colors[index])?.color.opacity(0.1) ?? .blue.opacity(0.1))
+            .background(CollectionColor.named(colors[index]).color.opacity(0.1))
             .clipShape(Capsule())
         }
     }

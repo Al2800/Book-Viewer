@@ -31,7 +31,7 @@ final class Tag {
 
     // MARK: - Initialization
 
-    init(name: String, colorName: String = "blue") {
+    init(name: String, colorName: String = "ink") {
         self.id = UUID()
         self.name = name.lowercased().trimmingCharacters(in: .whitespaces)
         self.colorName = colorName

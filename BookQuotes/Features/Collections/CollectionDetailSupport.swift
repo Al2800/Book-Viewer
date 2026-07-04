@@ -43,6 +43,8 @@ struct CollectionDetailQuoteList: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
     }
 }
 
@@ -51,7 +53,7 @@ struct CollectionDetailHeaderSection: View {
     @Binding var sortOrder: CollectionQuoteSortOrder
 
     private var collectionColor: Color {
-        CollectionColor(rawValue: collection.colorName)?.color ?? .blue
+        CollectionColor.named(collection.colorName).color
     }
 
     var body: some View {
@@ -268,18 +270,18 @@ private struct QuoteSelectionRow: View {
     var body: some View {
         HStack(spacing: Spacing.md) {
             Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                .foregroundStyle(isSelected ? Color.brand : .secondary)
                 .font(.title3)
 
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(quote.text)
-                    .font(.subheadline)
+                    .font(.quoteCompact)
                     .lineLimit(2)
                     .foregroundStyle(.primary)
 
                 if let book = quote.book {
                     Text(book.title)
-                        .font(.caption)
+                        .font(.authorNameSmall)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -301,7 +303,7 @@ private struct FilterChip: View {
                 .padding(.horizontal, Spacing.sm)
                 .padding(.vertical, Spacing.xs)
                 .background(isSelected ? Color.accent.opacity(0.2) : Color.backgroundSecondary)
-                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                .foregroundStyle(isSelected ? Color.brand : .secondary)
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)

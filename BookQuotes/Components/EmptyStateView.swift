@@ -87,8 +87,7 @@ struct EmptyStateView: View {
 
             // Title with slide up
             Text(title)
-                .font(.title3)
-                .fontWeight(.semibold)
+                .font(.system(.title3, design: .serif).weight(.semibold))
                 .multilineTextAlignment(.center)
                 .opacity(titleAppeared ? 1 : 0)
                 .offset(y: titleAppeared ? 0 : 15)
@@ -133,8 +132,7 @@ struct EmptyStateView: View {
 
             VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .font(.bookTitleSmall)
 
                 Text(message)
                     .font(.caption)
@@ -171,12 +169,11 @@ struct EmptyStateView: View {
             Image(systemName: icon)
                 .font(.system(size: 40))
                 .foregroundStyle(Color.accent.opacity(0.7))
-                .symbolEffect(.pulse, options: .repeating.speed(0.3), isActive: iconAppeared && !reduceMotion)
                 .opacity(iconAppeared ? 1 : 0)
                 .scaleEffect(iconAppeared ? 1 : 0.6)
 
             Text(title)
-                .font(.headline)
+                .font(.bookTitle)
                 .multilineTextAlignment(.center)
                 .opacity(titleAppeared ? 1 : 0)
                 .offset(y: titleAppeared ? 0 : 10)

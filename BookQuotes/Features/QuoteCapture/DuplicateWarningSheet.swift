@@ -84,7 +84,7 @@ struct DuplicateWarningSheet: View {
         VStack(spacing: Spacing.md) {
             Image(systemName: isExactDuplicate ? "exclamationmark.triangle.fill" : "doc.on.doc.fill")
                 .font(.system(size: 48))
-                .foregroundStyle(isExactDuplicate ? Color.warning : Color.accentColor)
+                .foregroundStyle(isExactDuplicate ? Color.warning : Color.brand)
 
             Text(isExactDuplicate ? "Exact Duplicate Found" : "Similar Quote Found")
                 .font(.title2)
@@ -152,7 +152,7 @@ struct DuplicateWarningSheet: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(BorderedProminentButtonStyle())
-                .tint(Color.accentColor)
+                .tint(Color.brand)
             }
 
             // Save anyway button
@@ -175,7 +175,7 @@ struct DuplicateWarningSheet: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(BorderedProminentButtonStyle())
-                .tint(Color.accentColor)
+                .tint(Color.brand)
             }
 
             // Cancel button (less prominent for similar quotes)
@@ -252,8 +252,8 @@ private struct SimilarityBadge: View {
         }
         .padding(.horizontal, Spacing.sm)
         .padding(.vertical, Spacing.xs)
-        .background(isExact ? Color.warning.opacity(0.2) : Color.accentColor.opacity(0.2))
-        .foregroundStyle(isExact ? Color.warning : Color.accentColor)
+        .background(isExact ? Color.warning.opacity(0.2) : Color.brand.opacity(0.2))
+        .foregroundStyle(isExact ? Color.warning : Color.brand)
         .clipShape(Capsule())
     }
 }
@@ -294,7 +294,7 @@ private struct ExistingQuoteDetailSheet: View {
                                     Image(systemName: "book.closed")
                                         .foregroundStyle(.secondary)
                                     Text(book.title)
-                                        .font(.subheadline)
+                                        .font(.authorName)
                                     if let pageNumber = quote.pageNumber {
                                         Text("p. \(pageNumber)")
                                             .font(.caption)

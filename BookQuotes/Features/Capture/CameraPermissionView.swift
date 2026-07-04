@@ -109,11 +109,8 @@ struct CameraPermissionView: View {
                     }
                 } label: {
                     Label("Enable Camera Access", systemImage: "camera")
-                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.brand)
-                .controlSize(.large)
+                .buttonStyle(.primary)
 
             case .authorized:
                 // Show nothing - view should dismiss
@@ -125,12 +122,9 @@ struct CameraPermissionView: View {
                     permissionService.openSettings()
                 } label: {
                     Label("Open Settings", systemImage: "gear")
-                        .frame(maxWidth: .infinity)
                 }
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.openSettingsButton)
-                .buttonStyle(.borderedProminent)
-                .tint(.brand)
-                .controlSize(.large)
+                .buttonStyle(.primary)
 
                 // Secondary: Instructions
                 instructionsCard

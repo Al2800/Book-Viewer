@@ -221,7 +221,7 @@ struct QuoteDetailView: View {
                 if quote.isFavorite {
                     HStack {
                         Image(systemName: "heart.fill")
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Color.accent)
                         Text("Favorite")
                             .foregroundStyle(.secondary)
                     }
@@ -248,8 +248,7 @@ struct QuoteDetailView: View {
                     .fieldChrome(minHeight: 56)
             } else if let note = quote.marginNote {
                 Text(note)
-                    .font(.body)
-                    .italic()
+                    .font(.attribution)
                     .foregroundStyle(.secondary)
                     .textSelection(.enabled)
             }
@@ -263,9 +262,7 @@ struct QuoteDetailView: View {
     private var metadataSection: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("Details")
-                .font(.sectionHeader)
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
+                .sectionHeaderStyle()
 
             // Page number
             HStack {
@@ -346,9 +343,7 @@ struct QuoteDetailView: View {
     private func bookSection(_ book: Book) -> some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             Text("From")
-                .font(.sectionHeader)
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
+                .sectionHeaderStyle()
 
             NavigationLink(value: book) {
                 BookHeaderView(book: book, style: .compact)

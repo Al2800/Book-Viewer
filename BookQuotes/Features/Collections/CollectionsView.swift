@@ -17,32 +17,29 @@ struct CollectionsView: View {
     // MARK: - State
 
     @State private var showCreateSheet = false
-    @State private var selectedCollection: Collection?
 
     // MARK: - Body
 
+    /// Pushed onto the Library tab's navigation stack; `Collection` values
+    /// resolve to `CollectionDetailView` via the destination registered there.
     var body: some View {
-        NavigationStack {
-            content
-                .navigationTitle("Collections")
-                .navigationDestination(for: Collection.self) { collection in
-                    CollectionDetailView(collection: collection)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            showCreateSheet = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                        .accessibilityLabel("Create Collection")
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Collections.createButton)
+        content
+            .background(Color.backgroundPrimary)
+            .navigationTitle("Collections")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showCreateSheet = true
+                    } label: {
+                        Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Create Collection")
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Collections.createButton)
                 }
-                .sheet(isPresented: $showCreateSheet) {
-                    CollectionEditorSheet(mode: .create)
-                }
-        }
+            }
+            .sheet(isPresented: $showCreateSheet) {
+                CollectionEditorSheet(mode: .create)
+            }
     }
 
     // MARK: - Content
@@ -108,30 +105,31 @@ struct CollectionEditorSheet: View {
 
     @State private var name = ""
     @State private var icon = "folder"
-    @State private var colorName = "blue"
+    @State private var colorName = "ink"
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Collection Details") {
-                    TextField("Name", text: $name)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Collections.nameField)
-
-                    Picker("Color", selection: $colorName) {
-                        ForEach(CollectionColor.allCases) { color in
-                            HStack {
-                                Circle()
-                                    .fill(color.color)
-                                    .frame(width: 20, height: 20)
-                                Text(color.rawValue.capitalized)
-                            }
-                            .tag(color.rawValue)
-                        }
+            ScrollView {
+                VStack(spacing: Spacing.lg) {
+                    SettingsSectionCard(title: "Name") {
+                        TextField("Name", text: $name)
+                            .fieldChrome()
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Collections.nameField)
                     }
 
-                    IconPicker(selectedIcon: $icon, colorName: colorName)
+                    SettingsSectionCard(title: "Color") {
+                        ColorSwatchGrid(selectedColorName: $colorName)
+                    }
+
+                    SettingsSectionCard(title: "Icon") {
+                        IconPicker(selectedIcon: $icon, colorName: colorName)
+                    }
                 }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
+                .padding(.bottom, Spacing.xxxl)
             }
+            .background(Color.backgroundPrimary)
             .navigationTitle(isCreateMode ? "New Collection" : "Edit Collection")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -201,34 +199,32 @@ private struct IconPicker: View {
         "checkmark.circle", "exclamationmark.circle"
     ]
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            Text("Icon")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+    private var selectionColor: Color {
+        CollectionColor.named(colorName).color
+    }
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: Spacing.sm) {
-                ForEach(icons, id: \.self) { icon in
-                    Button {
-                        selectedIcon = icon
-                    } label: {
-                        Image(systemName: icon)
-                            .font(.title3)
-                            .frame(width: 44, height: 44)
-                            .background(
-                                selectedIcon == icon
-                                    ? Color(colorName).opacity(0.2)
-                                    : Color.clear
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-                            .foregroundStyle(
-                                selectedIcon == icon
-                                    ? Color(colorName)
-                                    : .secondary
-                            )
-                    }
-                    .buttonStyle(.plain)
+    var body: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: Spacing.sm) {
+            ForEach(icons, id: \.self) { icon in
+                Button {
+                    selectedIcon = icon
+                } label: {
+                    Image(systemName: icon)
+                        .font(.title3)
+                        .frame(width: 44, height: 44)
+                        .background(
+                            selectedIcon == icon
+                                ? selectionColor.opacity(0.2)
+                                : Color.clear
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                        .foregroundStyle(
+                            selectedIcon == icon
+                                ? selectionColor
+                                : .secondary
+                        )
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -237,13 +233,17 @@ private struct IconPicker: View {
 // MARK: - Preview
 
 #Preview("Collections Grid") {
-    CollectionsView()
-        .modelContainer(for: Collection.self, inMemory: true)
+    NavigationStack {
+        CollectionsView()
+    }
+    .modelContainer(for: Collection.self, inMemory: true)
 }
 
 #Preview("Empty State") {
-    CollectionsView()
-        .modelContainer(for: Collection.self, inMemory: true)
+    NavigationStack {
+        CollectionsView()
+    }
+    .modelContainer(for: Collection.self, inMemory: true)
 }
 
 #Preview("Create Sheet") {

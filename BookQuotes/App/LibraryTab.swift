@@ -17,10 +17,27 @@ struct LibraryTab: View {
                     .navigationDestination(for: Quote.self) { quote in
                         QuoteDetailView(quote: quote)
                     }
+                    .navigationDestination(for: LibraryOrganizeDestination.self) { destination in
+                        switch destination {
+                        case .collections:
+                            CollectionsView()
+                        case .tags:
+                            TagsView()
+                        }
+                    }
+                    .navigationDestination(for: Collection.self) { collection in
+                        CollectionDetailView(collection: collection)
+                    }
             }
         }
         .environment(router)
     }
+}
+
+/// Organization destinations reachable from the Library tab
+enum LibraryOrganizeDestination: Hashable {
+    case collections
+    case tags
 }
 
 // MARK: - Placeholder Views
@@ -48,9 +65,11 @@ struct LibraryView: View {
     @State private var bookToEdit: Book?
     @State private var showDeleteConfirmation = false
     @State private var showEditSheet = false
-    @State private var showAddBookSheet = false
+    @State private var showAddBookCapture = false
     @State private var hasAppeared = false
     @State private var isRefreshing = false
+    @State private var selectedCollectionIds: Set<UUID> = []
+    @State private var selectedTagIds: Set<UUID> = []
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Body
@@ -67,6 +86,7 @@ struct LibraryView: View {
             }
         }
         .navigationTitle("Library")
+        .navigationBarTitleDisplayMode(.large)
         .searchable(
             text: $searchText,
             isPresented: $isSearchActive,
@@ -149,11 +169,18 @@ struct LibraryView: View {
                 Text(deletePrompt.message)
             }
         }
-        .sheet(isPresented: $showAddBookSheet) {
-            BookEditView(mode: .create) { newBook in
-                // Navigate to the newly created book
-                router.navigate(to: newBook)
-            }
+        .fullScreenCover(isPresented: $showAddBookCapture) {
+            // Camera-first book registration: scan the cover (or ISBN barcode),
+            // with manual entry available as a fallback inside the flow.
+            CoverCaptureFlowView(
+                onComplete: { newBook in
+                    showAddBookCapture = false
+                    router.navigate(to: newBook)
+                },
+                onCancel: {
+                    showAddBookCapture = false
+                }
+            )
         }
         .sheet(isPresented: $showEditSheet) {
             if let book = bookToEdit {
@@ -170,7 +197,7 @@ struct LibraryView: View {
         case .searchResults:
             searchResults
         case .emptyLibrary:
-            EmptyLibraryView(onAddBook: { showAddBookSheet = true })
+            EmptyLibraryView(onAddBook: { showAddBookCapture = true })
         case .library:
             libraryContent
         }
@@ -212,6 +239,20 @@ struct LibraryView: View {
     }
 
     private var libraryContent: some View {
+        // ScrollView must be the navigation stack root's primary content for the
+        // large title to expand/collapse correctly; the filter bar rides above it
+        // as a safe-area inset instead of wrapping it in a VStack.
+        libraryScrollContent
+            .safeAreaInset(edge: .top, spacing: 0) {
+                OrganizationFilterBar(
+                    selectedCollectionIds: $selectedCollectionIds,
+                    selectedTagIds: $selectedTagIds
+                )
+            }
+            .background(Color.backgroundPrimary)
+    }
+
+    private var libraryScrollContent: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
                 LibrarySummaryCard(
@@ -232,40 +273,73 @@ struct LibraryView: View {
 
                         Button {
                             HapticManager.light()
-                            showAddBookSheet = true
+                            showAddBookCapture = true
                         } label: {
                             LibraryActionRow(
-                                icon: "plus",
-                                title: "Add New Book"
+                                icon: "camera.viewfinder",
+                                title: "Add New Book",
+                                subtitle: "Scan a cover or ISBN barcode"
                             )
                         }
                         .buttonStyle(.plain)
                     }
                 }
 
-                LibraryBooksSection(
-                    books: books,
-                    viewMode: $viewMode,
-                    hasAppeared: hasAppeared,
-                    reduceMotion: reduceMotion,
-                    onTap: { book in
-                        router.navigate(to: book)
-                    },
-                    onEdit: { book in
-                        bookToEdit = book
-                        showEditSheet = true
-                    },
-                    onDelete: { book in
-                        bookToDelete = book
-                        showDeleteConfirmation = true
+                LibrarySectionCard(title: "Organize") {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        NavigationLink(value: LibraryOrganizeDestination.collections) {
+                            LibraryActionRow(
+                                icon: "folder",
+                                title: "Collections",
+                                subtitle: "Group quotes by theme or project"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.collectionsRow)
+
+                        NavigationLink(value: LibraryOrganizeDestination.tags) {
+                            LibraryActionRow(
+                                icon: "tag",
+                                title: "Tags",
+                                subtitle: "Label quotes across your library"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.tagsRow)
                     }
-                )
+                }
+
+                if hasOrganizationFilters && organizationFilteredBooks.isEmpty {
+                    LibrarySectionCard(title: "Books") {
+                        Text("No books match the selected filters.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.textSecondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    LibraryBooksSection(
+                        books: organizationFilteredBooks,
+                        viewMode: $viewMode,
+                        hasAppeared: hasAppeared,
+                        reduceMotion: reduceMotion,
+                        onTap: { book in
+                            router.navigate(to: book)
+                        },
+                        onEdit: { book in
+                            bookToEdit = book
+                            showEditSheet = true
+                        },
+                        onDelete: { book in
+                            bookToDelete = book
+                            showDeleteConfirmation = true
+                        }
+                    )
+                }
             }
             .padding(.horizontal, Spacing.lg)
             .padding(.top, Spacing.lg)
             .padding(.bottom, Spacing.xxxl)
         }
-        .background(Color.backgroundPrimary)
         .refreshable {
             await refreshLibrary()
         }
@@ -284,11 +358,21 @@ struct LibraryView: View {
     private var addBookButton: some View {
         Button {
             HapticManager.light()
-            showAddBookSheet = true
+            showAddBookCapture = true
         } label: {
             Image(systemName: "plus")
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.addBookButton)
+    }
+
+    // MARK: - Organization Filters
+
+    private var hasOrganizationFilters: Bool {
+        !selectedCollectionIds.isEmpty || !selectedTagIds.isEmpty
+    }
+
+    private var organizationFilteredBooks: [Book] {
+        books.filtered(byCollectionIds: selectedCollectionIds, tagIds: selectedTagIds)
     }
 
     private var deletePrompt: BookDeletionPrompt? {

@@ -147,10 +147,9 @@ struct PaywallView: View {
                     Text(buttonTitle)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: 50)
+            .frame(height: 26)
         }
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(.primary)
         .disabled(selectedProduct == nil || isPurchasing)
     }
 

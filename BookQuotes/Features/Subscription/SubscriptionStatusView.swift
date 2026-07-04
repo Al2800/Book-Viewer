@@ -66,6 +66,8 @@ struct SubscriptionStatusView: View {
                 Text("Manage your subscription, update payment method, or cancel in your Apple ID settings.")
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
         .navigationTitle("Subscription")
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -84,7 +86,7 @@ struct SubscriptionStatusView: View {
 
                     Text("Active")
                         .font(.caption)
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Color.success)
                 } else {
                     Text("No Active Subscription")
                         .font(.headline)
@@ -99,7 +101,7 @@ struct SubscriptionStatusView: View {
 
             if subscriptionService.hasActiveSubscription {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(Color.success)
                     .font(.title2)
             }
         }
@@ -150,7 +152,7 @@ struct SubscriptionBadge: View {
         HStack(spacing: Spacing.xs) {
             if subscriptionService.hasActiveSubscription {
                 Image(systemName: "crown.fill")
-                    .foregroundStyle(.yellow)
+                    .foregroundStyle(Color.accent)
                 Text(subscriptionService.isInTrial ? "Trial" : "Premium")
             } else {
                 Image(systemName: "sparkles")
@@ -163,7 +165,7 @@ struct SubscriptionBadge: View {
         .padding(.vertical, Spacing.xxs)
         .background(
             Capsule()
-                .fill(subscriptionService.hasActiveSubscription ? Color.yellow.opacity(0.2) : Color.secondary.opacity(0.1))
+                .fill(subscriptionService.hasActiveSubscription ? Color.accent.opacity(0.2) : Color.secondary.opacity(0.1))
         )
     }
 }
@@ -194,7 +196,7 @@ struct UpgradePrompt: View {
                 Spacer()
 
                 Button("Upgrade", action: onUpgrade)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primaryCompact)
                     .controlSize(.small)
             }
         }

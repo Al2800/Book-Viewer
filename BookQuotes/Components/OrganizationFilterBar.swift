@@ -154,7 +154,7 @@ struct CollectionFilterChip: View {
     }
 
     private var collectionColor: Color {
-        CollectionColor(rawValue: collection.colorName)?.color ?? .blue
+        CollectionColor.named(collection.colorName).color
     }
 }
 
@@ -187,7 +187,7 @@ struct TagFilterChip: View {
     }
 
     private var tagColor: Color {
-        CollectionColor(rawValue: tag.colorName)?.color ?? .blue
+        CollectionColor.named(tag.colorName).color
     }
 }
 
@@ -218,7 +218,7 @@ struct ActiveOrganizationFiltersBar: View {
                             FilterPill(
                                 label: collection.name,
                                 icon: collection.icon,
-                                color: CollectionColor(rawValue: collection.colorName)?.color ?? .blue
+                                color: CollectionColor.named(collection.colorName).color
                             ) {
                                 withAnimation {
                                     _ = selectedCollectionIds.remove(id)
@@ -233,7 +233,7 @@ struct ActiveOrganizationFiltersBar: View {
                             FilterPill(
                                 label: tag.name,
                                 icon: "tag",
-                                color: CollectionColor(rawValue: tag.colorName)?.color ?? .blue
+                                color: CollectionColor.named(tag.colorName).color
                             ) {
                                 withAnimation {
                                     _ = selectedTagIds.remove(id)

@@ -46,7 +46,7 @@ final class Collection {
 
     // MARK: - Initialization
 
-    init(name: String, icon: String = "folder", colorName: String = "blue") {
+    init(name: String, icon: String = "folder", colorName: String = "ink") {
         self.id = UUID()
         self.name = name
         self.icon = icon
@@ -61,26 +61,41 @@ final class Collection {
 
 // MARK: - Collection Colors
 
+/// Muted "bookbinding" palette for collections and tags.
+/// Each color lives in the asset catalog with a dark-mode variant,
+/// tuned to sit beside the warm paper backgrounds.
 enum CollectionColor: String, CaseIterable, Identifiable {
-    case red, orange, yellow, green, mint, teal, cyan, blue, indigo, purple, pink, brown, gray
+    case oxblood, forest, ink, mustard, plum, slate
 
     var id: String { rawValue }
 
     var color: Color {
         switch self {
-        case .red: return .red
-        case .orange: return .orange
-        case .yellow: return .yellow
-        case .green: return .green
-        case .mint: return .mint
-        case .teal: return .teal
-        case .cyan: return .cyan
-        case .blue: return .blue
-        case .indigo: return .indigo
-        case .purple: return .purple
-        case .pink: return .pink
-        case .brown: return .brown
-        case .gray: return .gray
+        case .oxblood: return Color("Oxblood")
+        case .forest: return Color("Forest")
+        case .ink: return Color("Ink")
+        case .mustard: return Color("Mustard")
+        case .plum: return Color("Plum")
+        case .slate: return Color("Slate")
+        }
+    }
+
+    var displayName: String { rawValue.capitalized }
+
+    /// Resolve a stored color name, mapping legacy system-color names
+    /// (from the pre-bookbinding rainbow palette) onto the muted palette
+    /// so existing user data keeps a stable, sensible color.
+    static func named(_ name: String) -> CollectionColor {
+        if let color = CollectionColor(rawValue: name) {
+            return color
+        }
+        switch name {
+        case "red", "pink": return .oxblood
+        case "green", "mint": return .forest
+        case "teal", "cyan", "blue": return .ink
+        case "orange", "yellow", "brown": return .mustard
+        case "indigo", "purple": return .plum
+        default: return .slate
         }
     }
 }

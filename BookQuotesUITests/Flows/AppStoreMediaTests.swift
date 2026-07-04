@@ -408,8 +408,13 @@ fileprivate extension BaseUITestCase {
             app.navigationBars.buttons.element(boundBy: app.navigationBars.buttons.count - 1).tap()
         }
 
-        let nav = app.navigationBars["Add Book"]
-        assertExists(nav, timeout: 5, "Add Book screen not shown")
+        // The library add button opens the camera-first cover capture flow.
+        let captureHeader = app.staticTexts["Add Book"]
+        let manualEntryButton = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS 'manually'")
+        ).firstMatch
+        let shown = captureHeader.waitForExistence(timeout: 5) || manualEntryButton.exists
+        XCTAssertTrue(shown, "Add Book capture flow not shown")
     }
 
     func showSettingsForMedia() {

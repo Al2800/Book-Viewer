@@ -23,7 +23,7 @@ struct FilterPill: View {
     init(
         label: String,
         icon: String,
-        color: Color = .accentColor,
+        color: Color = .brand,
         onRemove: @escaping () -> Void
     ) {
         self.label = label
@@ -122,11 +122,11 @@ enum FilterPillStyle {
 
     var color: Color {
         switch self {
-        case .book: return .blue
-        case .markingType: return .purple
-        case .date: return .orange
-        case .favorite: return .yellow
-        case .confidence: return .green
+        case .book: return .brand
+        case .markingType: return CollectionColor.plum.color
+        case .date: return CollectionColor.slate.color
+        case .favorite: return .accent
+        case .confidence: return .success
         }
     }
 }

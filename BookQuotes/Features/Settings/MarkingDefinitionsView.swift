@@ -101,8 +101,7 @@ struct MarkingDefinitionsView: View {
         } header: {
             HStack {
                 Text("Your Marking Vocabulary")
-                    .font(.sectionHeader)
-                    .foregroundStyle(Color.textSecondary)
+                    .sectionHeaderStyle()
                 Spacer()
                 Text("\(enabledCount) active")
                     .font(.caption)
@@ -143,7 +142,7 @@ struct MarkingDefinitionsView: View {
                         .fontWeight(.medium)
                 } icon: {
                     Image(systemName: "lightbulb.fill")
-                        .foregroundStyle(.yellow)
+                        .foregroundStyle(Color.accent)
                 }
 
                 Text("The visual description helps the AI recognize your annotation style. Be specific about colors, shapes, and placement.")

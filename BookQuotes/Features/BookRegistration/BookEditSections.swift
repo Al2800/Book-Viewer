@@ -20,8 +20,7 @@ struct BookEditSectionCard<Content: View>: View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack(alignment: .firstTextBaseline) {
                 Text(title)
-                    .font(.sectionHeader)
-                    .foregroundStyle(Color.textSecondary)
+                    .sectionHeaderStyle()
 
                 Spacer()
 
@@ -63,8 +62,7 @@ struct BookEditCoverSection: View {
                         } label: {
                             Label("Camera", systemImage: "camera")
                         }
-                        .buttonStyle(.bordered)
-                        .tint(.brand)
+                        .buttonStyle(.secondaryCompact)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                         .allowsTightening(true)
@@ -74,7 +72,7 @@ struct BookEditCoverSection: View {
                     PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
                         Label("Library", systemImage: "photo.on.rectangle")
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.secondaryCompact)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .allowsTightening(true)
@@ -86,7 +84,7 @@ struct BookEditCoverSection: View {
                         } label: {
                             Label("Remove", systemImage: "trash")
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.secondaryCompact)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                         .allowsTightening(true)

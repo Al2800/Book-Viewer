@@ -14,7 +14,7 @@ final class TagModelTests: SwiftDataTestCase {
 
         logger.step(2, "Verifying normalization")
         XCTAssertEqual(tag.name, "productivity")
-        XCTAssertEqual(tag.colorName, "blue")
+        XCTAssertEqual(tag.colorName, "ink")
         XCTAssertEqual(tag.quoteCount, 0)
         XCTAssertNotNil(tag.dateCreated)
 

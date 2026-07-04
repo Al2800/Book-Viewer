@@ -20,8 +20,9 @@ struct EmptyLibraryView: View {
                         onAddBook?()
                     } label: {
                         LibraryActionRow(
-                            icon: "plus",
-                            title: "Add Your First Book"
+                            icon: "camera.viewfinder",
+                            title: "Add Your First Book",
+                            subtitle: "Scan a cover or ISBN barcode"
                         )
                     }
                     .buttonStyle(.plain)
@@ -76,8 +77,7 @@ struct LibrarySectionCard<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text(title)
-                .font(.sectionHeader)
-                .foregroundStyle(Color.textSecondary)
+                .sectionHeaderStyle()
 
             VStack(spacing: Spacing.sm) {
                 content

@@ -39,17 +39,20 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             addButton.tap()
         }
 
-        logger.step(2, "Verifying add options appear")
-        // Should see options for manual entry or camera capture
-        let addSheet = app.sheets.firstMatch
-        if addSheet.waitForExistence(timeout: 3) {
-            logger.success("Add book options sheet displayed")
-        } else {
-            // May go directly to add form
-            let addFormTitle = app.navigationBars["Add Book"]
-            XCTAssertTrue(addFormTitle.waitForExistence(timeout: 3), "Add book form should appear")
-            logger.success("Add book form displayed directly")
-        }
+        logger.step(2, "Verifying camera-first add flow appears")
+        // The library add button opens the cover capture flow (camera-first),
+        // which offers manual entry as a fallback.
+        let manualEntryButton = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS 'manually'")
+        ).firstMatch
+        let captureHeader = app.staticTexts["Add Book"]
+        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
+
+        let hasCaptureFlow = manualEntryButton.waitForExistence(timeout: 3) ||
+                             captureHeader.exists ||
+                             permissionPrompt.exists
+        XCTAssertTrue(hasCaptureFlow, "Cover capture flow should appear")
+        logger.success("Cover capture flow displayed")
     }
 
     // MARK: - Manual Entry Tests
@@ -365,9 +368,11 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             }
         }
 
-        // If sheet appears with options, select manual entry
-        let manualEntry = app.buttons["Enter Manually"]
-        if manualEntry.waitForExistence(timeout: 2) {
+        // The add flow is camera-first; use its manual entry fallback to reach the form.
+        let manualEntry = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS 'manually'")
+        ).firstMatch
+        if manualEntry.waitForExistence(timeout: 3) {
             manualEntry.tap()
         }
 

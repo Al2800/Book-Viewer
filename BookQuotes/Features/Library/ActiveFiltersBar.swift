@@ -203,7 +203,7 @@ struct FilterButton: View {
                             .fontWeight(.bold)
                             .foregroundStyle(.white)
                             .frame(minWidth: 16, minHeight: 16)
-                            .background(Color.accentColor, in: Circle())
+                            .background(Color.brand, in: Circle())
                             .offset(x: 6, y: -6)
                     }
                 }

@@ -304,6 +304,9 @@ extension CaptureHeaderBar where Trailing == EmptyView {
     }
 }
 
+/// Floating camera controls anchored to the bottom of the preview.
+/// Controls sit directly on the live preview (Apple Camera-style) with a
+/// soft gradient scrim for legibility instead of a boxed container.
 struct CaptureControlTray<Content: View>: View {
     let content: Content
 
@@ -315,12 +318,17 @@ struct CaptureControlTray<Content: View>: View {
         VStack(spacing: Spacing.md) {
             content
         }
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, Spacing.lg)
-        .padding(.vertical, Spacing.md)
-        .cameraChrome(cornerRadius: CornerRadius.xl)
-        .overlay {
-            RoundedRectangle(cornerRadius: CornerRadius.xl)
-                .stroke(Color.white.opacity(0.10), lineWidth: 1)
+        .padding(.top, Spacing.xl)
+        .padding(.bottom, Spacing.md)
+        .background {
+            LinearGradient(
+                colors: [.clear, Color.black.opacity(0.45)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea(edges: .bottom)
         }
     }
 }

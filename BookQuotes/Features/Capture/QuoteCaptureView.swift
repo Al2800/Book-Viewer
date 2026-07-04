@@ -167,12 +167,10 @@ struct QuoteCaptureView: View {
                 Button("Use Test Image") {
                     captureTestImage()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.primaryCompact)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
             }
         }
-        .padding(.horizontal, Spacing.lg)
-        .padding(.bottom, Spacing.lg)
     }
 
     // MARK: - Processing View
