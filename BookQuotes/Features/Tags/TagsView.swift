@@ -27,6 +27,7 @@ struct TagsView: View {
     var body: some View {
         NavigationStack {
             content
+                .background(Color.backgroundPrimary)
                 .navigationTitle("Tags")
                 .searchable(text: $searchText, prompt: "Search tags")
                 .accessibilityIdentifier(AccessibilityIdentifiers.Tags.listView)
@@ -244,6 +245,8 @@ struct AddTagToQuoteSheet: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Manage Tags")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

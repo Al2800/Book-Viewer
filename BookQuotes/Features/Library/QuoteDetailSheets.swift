@@ -51,6 +51,8 @@ struct QuoteMarkingPickerSheet: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Select Marking Type")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -34,6 +34,8 @@ struct SearchFiltersSheet: View {
                 dateRangeSection
                 otherFiltersSection
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Filters")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -297,6 +299,8 @@ private struct CustomDateRangePicker: View {
                     displayedComponents: .date
                 )
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Custom Date Range")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

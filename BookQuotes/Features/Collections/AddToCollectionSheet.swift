@@ -37,6 +37,8 @@ struct AddToCollectionSheet: View {
                 // Create new collection
                 createCollectionSection
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Add to Collection")
             .navigationBarTitleDisplayMode(.inline)
             .accessibilityIdentifier(AccessibilityIdentifiers.Collections.addButton)
@@ -253,6 +255,8 @@ struct BatchAddToCollectionSheet: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Add to Collection")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

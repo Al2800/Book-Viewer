@@ -13,18 +13,25 @@ struct TagEditorSheet: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Tag Name") {
-                    TextField("Enter tag name", text: $name)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Tags.nameField)
-                }
+            ScrollView {
+                VStack(spacing: Spacing.lg) {
+                    SettingsSectionCard(title: "Tag Name") {
+                        TextField("Enter tag name", text: $name)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .fieldChrome()
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Tags.nameField)
+                    }
 
-                Section("Color") {
-                    colorPicker
+                    SettingsSectionCard(title: "Color") {
+                        ColorSwatchGrid(selectedColorName: $colorName)
+                    }
                 }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
+                .padding(.bottom, Spacing.xxxl)
             }
+            .background(Color.backgroundPrimary)
             .navigationTitle(modePresentation.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -49,27 +56,6 @@ struct TagEditorSheet: View {
         }
     }
 
-    private var colorPicker: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: Spacing.sm) {
-            ForEach(CollectionColor.allCases) { color in
-                Circle()
-                    .fill(color.color)
-                    .frame(width: 36, height: 36)
-                    .overlay {
-                        if colorName == color.rawValue {
-                            Image(systemName: "checkmark")
-                                .font(.caption)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.white)
-                        }
-                    }
-                    .onTapGesture {
-                        colorName = color.rawValue
-                    }
-            }
-        }
-    }
-
     private var modePresentation: TagEditorModePresentation {
         TagEditorModePresentation(mode: mode)
     }
@@ -88,5 +74,36 @@ struct TagEditorSheet: View {
 
     private var tagEditorDraft: TagEditorDraft {
         TagEditorDraft(name: name, colorName: colorName)
+    }
+}
+
+// MARK: - ColorSwatchGrid
+
+/// Swatch grid for choosing a `CollectionColor` by its stored name.
+/// Shared by the tag and collection editors.
+struct ColorSwatchGrid: View {
+    @Binding var selectedColorName: String
+
+    var body: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 44))], spacing: Spacing.sm) {
+            ForEach(CollectionColor.allCases) { color in
+                Circle()
+                    .fill(color.color)
+                    .frame(width: 36, height: 36)
+                    .overlay {
+                        if selectedColorName == color.rawValue {
+                            Image(systemName: "checkmark")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    .onTapGesture {
+                        selectedColorName = color.rawValue
+                    }
+                    .accessibilityLabel(color.displayName)
+                    .accessibilityAddTraits(selectedColorName == color.rawValue ? [.isSelected] : [])
+            }
+        }
     }
 }

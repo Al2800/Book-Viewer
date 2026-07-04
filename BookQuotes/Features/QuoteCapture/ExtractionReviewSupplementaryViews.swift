@@ -64,6 +64,8 @@ struct AddManualQuoteSheet: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Add Quote")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -43,6 +43,8 @@ struct CollectionDetailQuoteList: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
     }
 }
 

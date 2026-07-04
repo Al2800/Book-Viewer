@@ -66,6 +66,8 @@ struct SubscriptionStatusView: View {
                 Text("Manage your subscription, update payment method, or cancel in your Apple ID settings.")
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
         .navigationTitle("Subscription")
         .navigationBarTitleDisplayMode(.inline)
         .task {
