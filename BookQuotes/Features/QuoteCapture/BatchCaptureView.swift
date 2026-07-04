@@ -253,13 +253,13 @@ struct BatchCaptureView: View {
         do {
             let image = try await cameraService.capturePhoto()
             let pageStore = BatchCapturePageStore(modelContext: modelContext)
-            _ = try await pageStore.appendCapture(
+            let result = try await pageStore.appendCapture(
                 to: session,
                 image: image,
                 previewSize: cameraService.currentPreviewSizeForCropping(),
-                cropBehavior: cameraFramingProfile.captureCropBehavior,
-                qualityScore: currentQuality?.overallScore
+                cropBehavior: cameraFramingProfile.captureCropBehavior
             )
+            currentQuality = result.quality
 
             HapticManager.captureSuccess()
 

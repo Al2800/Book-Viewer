@@ -4,42 +4,56 @@ import UIKit
 
 @MainActor
 struct BatchCapturePageStore {
+    struct AppendResult {
+        let capture: PageCapture
+        let quality: ImageQualityAnalyzer.QualityResult?
+    }
+
     let modelContext: ModelContext
+    private let analyzeQuality: @Sendable (UIImage) async -> ImageQualityAnalyzer.QualityResult?
+
+    init(
+        modelContext: ModelContext,
+        analyzeQuality: @escaping @Sendable (UIImage) async -> ImageQualityAnalyzer.QualityResult? = { image in
+            try? await ImageQualityAnalyzer(configuration: .lenient).analyze(image: image)
+        }
+    ) {
+        self.modelContext = modelContext
+        self.analyzeQuality = analyzeQuality
+    }
 
     func appendCapture(
         to session: CaptureSession,
         image: UIImage,
         previewSize: CGSize?,
-        cropBehavior: CameraCaptureCropBehavior,
-        qualityScore: Double?
-    ) async throws -> PageCapture {
+        cropBehavior: CameraCaptureCropBehavior
+    ) async throws -> AppendResult {
         let sessionID = session.id
         let prepared = try await prepareImageFiles(
             image: image,
             sessionID: sessionID,
             previewSize: previewSize,
-            cropBehavior: cropBehavior,
-            qualityScore: qualityScore
+            cropBehavior: cropBehavior
         )
 
         let capture = PageCapture(imagePath: prepared.imagePath, session: session)
         capture.thumbnailData = prepared.thumbnailData
-        capture.qualityScore = prepared.qualityScore
+        capture.qualityScore = prepared.quality?.overallScore
 
         session.addCapture(capture)
         modelContext.insert(capture)
 
-        return capture
+        return AppendResult(capture: capture, quality: prepared.quality)
     }
 
     private nonisolated func prepareImageFiles(
         image: UIImage,
         sessionID: UUID,
         previewSize: CGSize?,
-        cropBehavior: CameraCaptureCropBehavior,
-        qualityScore: Double?
+        cropBehavior: CameraCaptureCropBehavior
     ) async throws -> PreparedBatchCapture {
-        try await Task.detached(priority: .userInitiated) {
+        let analyzeQuality = self.analyzeQuality
+        return try await Task.detached(priority: .userInitiated) {
             var working = image
             if cropBehavior == .aspectFillVisibleArea,
                let previewSize {
@@ -51,6 +65,9 @@ struct BatchCapturePageStore {
 
             working = await ImagePreprocessor.autoCropDocument(working)
 
+            // Analyze the document-cropped image, mirroring the single-capture flow.
+            let quality = await analyzeQuality(working)
+
             let processed = try ImagePreprocessor.process(working, config: .highQuality)
             let thumbnailData = try ImagePreprocessor.createThumbnail(working)
 
@@ -61,7 +78,7 @@ struct BatchCapturePageStore {
             return PreparedBatchCapture(
                 imagePath: imagePath,
                 thumbnailData: thumbnailData,
-                qualityScore: qualityScore
+                quality: quality
             )
         }.value
     }
@@ -70,5 +87,5 @@ struct BatchCapturePageStore {
 private struct PreparedBatchCapture: Sendable {
     let imagePath: String
     let thumbnailData: Data
-    let qualityScore: Double?
+    let quality: ImageQualityAnalyzer.QualityResult?
 }

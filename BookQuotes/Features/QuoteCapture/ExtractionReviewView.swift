@@ -20,6 +20,9 @@ struct ExtractionReviewView: View {
     @State private var showingDiscardAlert = false
     @State private var isSaving = false
     @State private var saveError: Error?
+    @State private var pendingDuplicateChecks: [QuoteSaveService.PreSaveCheckResult] = []
+    @State private var approvedQuotes: [ExtractedQuote] = []
+    @State private var currentDuplicateCheck: DuplicateCheckItem?
     @State private var hasAppeared = false
     @State private var hasStartedProcessing = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -140,6 +143,17 @@ struct ExtractionReviewView: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("These quotes will be added to your library.")
+            }
+            .sheet(item: $currentDuplicateCheck, onDismiss: advanceDuplicateReview) { item in
+                DuplicateWarningSheet(
+                    duplicates: item.check.duplicates,
+                    newQuoteText: item.check.extractedQuote.text,
+                    book: book,
+                    onSaveAnyway: {
+                        approvedQuotes.append(item.check.extractedQuote)
+                    },
+                    onCancel: {}
+                )
             }
         }
         // Prevent swipe-to-dismiss. If the user dismisses this early (for example while processing),
@@ -331,18 +345,49 @@ struct ExtractionReviewView: View {
     private func saveAllQuotes() {
         guard !quoteState.editingQuotes.isEmpty else { return }
 
+        let saveService = QuoteSaveService(modelContext: modelContext)
+        let extractedQuotes = quoteState.editingQuotes.map { $0.toExtractedQuote() }
+        let checks = saveService.checkBatchForDuplicates(extractedQuotes, to: book)
+
+        approvedQuotes = checks.filter { !$0.hasDuplicates }.map(\.extractedQuote)
+        pendingDuplicateChecks = checks.filter(\.hasDuplicates)
+
+        if pendingDuplicateChecks.isEmpty {
+            persistApprovedQuotes()
+        } else {
+            currentDuplicateCheck = DuplicateCheckItem(check: pendingDuplicateChecks.removeFirst())
+        }
+    }
+
+    /// Presents the next duplicate warning, or persists once all duplicates are reviewed.
+    private func advanceDuplicateReview() {
+        if !pendingDuplicateChecks.isEmpty {
+            currentDuplicateCheck = DuplicateCheckItem(check: pendingDuplicateChecks.removeFirst())
+        } else {
+            persistApprovedQuotes()
+        }
+    }
+
+    private func persistApprovedQuotes() {
+        let quotesToSave = approvedQuotes
+        approvedQuotes = []
+
+        guard !quotesToSave.isEmpty else {
+            // User skipped every flagged duplicate; leave the editor untouched.
+            HapticManager.warning()
+            return
+        }
+
         // Capture quote count before saving for milestone check
         let previousCount = existingQuotes.count
-        let savedCount = quoteState.editingQuotes.count
+        let savedCount = quotesToSave.count
 
         isSaving = true
 
         Task {
             do {
                 let saveService = QuoteSaveService(modelContext: modelContext)
-
-                let extractedQuotes = quoteState.editingQuotes.map { $0.toExtractedQuote() }
-                let result = saveService.saveMultiple(extractedQuotes, to: book)
+                let result = saveService.saveMultiple(quotesToSave, to: book)
 
                 await MainActor.run {
                     isSaving = false
@@ -393,4 +438,12 @@ struct ExtractionReviewView: View {
             }
         }
     }
+}
+
+// MARK: - Duplicate Check Item
+
+/// Identifiable wrapper so duplicate checks can drive a `sheet(item:)` one at a time.
+private struct DuplicateCheckItem: Identifiable {
+    let id = UUID()
+    let check: QuoteSaveService.PreSaveCheckResult
 }
