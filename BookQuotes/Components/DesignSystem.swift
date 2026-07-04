@@ -112,6 +112,16 @@ extension View {
             .lineSpacing(6)
             .foregroundStyle(Color.textPrimary)
     }
+
+    /// Chapter-style section header: small, uppercased, letterspaced.
+    /// Use for section titles inside paper cards and detail screens.
+    func sectionHeaderStyle() -> some View {
+        self
+            .font(.sectionHeader)
+            .textCase(.uppercase)
+            .tracking(1.1)
+            .foregroundStyle(Color.textSecondary)
+    }
 }
 
 // MARK: - Spacing

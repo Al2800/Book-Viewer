@@ -105,8 +105,7 @@ struct OnboardingSignInStepView: View {
                 .foregroundStyle(Color.brand)
 
             Text("Create Your Account")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(.title, design: .serif).weight(.semibold))
 
             Text(copyPolicy.description)
                 .font(.subheadline)
@@ -141,8 +140,7 @@ struct OnboardingSubscriptionStepView: View {
         VStack(spacing: Spacing.xl) {
             HStack {
                 Text("Choose Your Plan")
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    .font(.system(.title2, design: .serif).weight(.semibold))
                 Spacer()
             }
             .padding(.horizontal, Spacing.lg)
@@ -188,8 +186,7 @@ struct OnboardingMarkingSetupStepView: View {
                 .foregroundStyle(Color.brand)
 
             Text("How Do You Mark Books?")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(.title, design: .serif).weight(.semibold))
 
             Text("Select the marking styles you use most often")
                 .font(.subheadline)
@@ -230,8 +227,7 @@ struct OnboardingCompletionStepView: View {
                 .transition(.scale.combined(with: .opacity))
 
             Text("You're All Set!")
-                .font(.title)
-                .fontWeight(.bold)
+                .font(.system(.title, design: .serif).weight(.semibold))
 
             Text("Start capturing quotes from your favorite books")
                 .font(.subheadline)

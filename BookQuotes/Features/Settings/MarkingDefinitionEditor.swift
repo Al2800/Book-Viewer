@@ -264,8 +264,7 @@ struct MarkingDefinitionEditor: View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack(spacing: Spacing.xs) {
                 Text(title)
-                    .font(.sectionHeader)
-                    .foregroundStyle(Color.textSecondary)
+                    .sectionHeaderStyle()
                 if required {
                     Text("*")
                         .foregroundStyle(Color.error)

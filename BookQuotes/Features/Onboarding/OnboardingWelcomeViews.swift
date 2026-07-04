@@ -33,6 +33,26 @@ enum WelcomePage: Int, CaseIterable, Identifiable {
             return "Search your entire library instantly. Surface forgotten insights and share your favorite passages."
         }
     }
+
+    /// Frontispiece epigraph shown above each welcome page.
+    var epigraph: String {
+        switch self {
+        case .capture:
+            return "Some books are to be tasted, others to be swallowed, and some few to be chewed and digested."
+        case .organize:
+            return "A room without books is like a body without a soul."
+        case .discover:
+            return "The real voyage of discovery consists not in seeking new landscapes, but in having new eyes."
+        }
+    }
+
+    var epigraphAttribution: String {
+        switch self {
+        case .capture: return "Francis Bacon"
+        case .organize: return "Cicero"
+        case .discover: return "Marcel Proust"
+        }
+    }
 }
 
 struct WelcomePageView: View {
@@ -42,13 +62,29 @@ struct WelcomePageView: View {
         VStack(spacing: Spacing.xl) {
             Spacer()
 
-            Image(systemName: page.icon)
-                .font(.system(size: 100))
-                .foregroundStyle(Color.brand)
+            // Frontispiece epigraph
+            VStack(spacing: Spacing.md) {
+                Text("\u{201C}\(page.epigraph)\u{201D}")
+                    .font(.system(.title3, design: .serif).italic())
+                    .foregroundStyle(Color.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
+
+                Text("— \(page.epigraphAttribution)")
+                    .font(.attribution)
+                    .foregroundStyle(Color.textSecondary)
+            }
+            .padding(.horizontal, Spacing.xl)
+
+            Spacer()
 
             VStack(spacing: Spacing.md) {
+                Image(systemName: page.icon)
+                    .font(.system(size: 44))
+                    .foregroundStyle(Color.brand)
+
                 Text(page.title)
-                    .font(.system(.title, design: .serif).weight(.semibold))
+                    .font(.system(.title2, design: .serif).weight(.semibold))
                     .multilineTextAlignment(.center)
 
                 Text(page.description)
@@ -58,7 +94,6 @@ struct WelcomePageView: View {
                     .padding(.horizontal, Spacing.xl)
             }
 
-            Spacer()
             Spacer()
         }
         .padding(.horizontal, Spacing.lg)

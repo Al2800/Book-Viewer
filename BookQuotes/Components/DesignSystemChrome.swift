@@ -196,6 +196,21 @@ extension View {
             .elevation(.xs)
     }
 
+    /// Overlay a subtle book-spine shadow along the leading edge of a cover.
+    /// Gives covers and placeholders a gentle physical-book feel.
+    func spineDetail(cornerRadius: CGFloat = CornerRadius.sm) -> some View {
+        self
+            .overlay(alignment: .leading) {
+                LinearGradient(
+                    colors: [Color.black.opacity(0.16), Color.black.opacity(0.04), .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .frame(width: 6)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+    }
+
     /// Apply consistent field styling for inputs.
     func fieldChrome(minHeight: CGFloat? = nil) -> some View {
         self

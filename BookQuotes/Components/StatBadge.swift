@@ -145,7 +145,7 @@ struct BookHeaderView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 100, height: 150)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                .spineDetail(cornerRadius: CornerRadius.sm)
                 .overlay(
                     RoundedRectangle(cornerRadius: CornerRadius.sm)
                         .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
@@ -164,7 +164,7 @@ struct BookHeaderView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 44, height: 66)
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                .spineDetail(cornerRadius: CornerRadius.sm)
                 .overlay(
                     RoundedRectangle(cornerRadius: CornerRadius.sm)
                         .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
@@ -183,6 +183,7 @@ struct BookHeaderView: View {
                     .font(width > 60 ? .title : .caption)
                     .foregroundStyle(.secondary)
             }
+            .spineDetail(cornerRadius: CornerRadius.sm)
             .overlay(
                 RoundedRectangle(cornerRadius: CornerRadius.sm)
                     .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)

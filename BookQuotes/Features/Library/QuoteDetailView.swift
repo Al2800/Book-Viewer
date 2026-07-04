@@ -262,9 +262,7 @@ struct QuoteDetailView: View {
     private var metadataSection: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("Details")
-                .font(.sectionHeader)
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
+                .sectionHeaderStyle()
 
             // Page number
             HStack {
@@ -345,9 +343,7 @@ struct QuoteDetailView: View {
     private func bookSection(_ book: Book) -> some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             Text("From")
-                .font(.sectionHeader)
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
+                .sectionHeaderStyle()
 
             NavigationLink(value: book) {
                 BookHeaderView(book: book, style: .compact)

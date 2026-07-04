@@ -58,8 +58,7 @@ struct AboutView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text(title)
-                .font(.sectionHeader)
-                .foregroundStyle(Color.textSecondary)
+                .sectionHeaderStyle()
 
             content()
         }

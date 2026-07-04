@@ -101,8 +101,7 @@ struct MarkingDefinitionsView: View {
         } header: {
             HStack {
                 Text("Your Marking Vocabulary")
-                    .font(.sectionHeader)
-                    .foregroundStyle(Color.textSecondary)
+                    .sectionHeaderStyle()
                 Spacer()
                 Text("\(enabledCount) active")
                     .font(.caption)

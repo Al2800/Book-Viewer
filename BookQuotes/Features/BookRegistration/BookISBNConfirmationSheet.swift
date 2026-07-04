@@ -103,8 +103,7 @@ struct BookISBNConfirmationSheet: View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack(alignment: .firstTextBaseline) {
                 Text(title)
-                    .font(.sectionHeader)
-                    .foregroundStyle(Color.textSecondary)
+                    .sectionHeaderStyle()
 
                 Spacer()
 

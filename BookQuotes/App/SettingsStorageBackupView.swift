@@ -87,8 +87,7 @@ struct StorageBackupView: View {
     private var storageCard: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("Storage Usage")
-                .font(.sectionHeader)
-                .foregroundStyle(Color.textSecondary)
+                .sectionHeaderStyle()
 
             SettingsInfoRow(label: "Books", value: "\(books.count)")
             SettingsInfoRow(label: "Quotes", value: "\(quotes.count)")
@@ -101,8 +100,7 @@ struct StorageBackupView: View {
     private var backupCard: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("Backup")
-                .font(.sectionHeader)
-                .foregroundStyle(Color.textSecondary)
+                .sectionHeaderStyle()
 
             Button {
                 showExportOptions = true
@@ -123,8 +121,7 @@ struct StorageBackupView: View {
     private var cacheCard: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("Data Management")
-                .font(.sectionHeader)
-                .foregroundStyle(Color.textSecondary)
+                .sectionHeaderStyle()
 
             Button(role: .destructive) {
                 showClearCacheConfirmation = true
