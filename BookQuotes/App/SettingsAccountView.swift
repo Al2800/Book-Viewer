@@ -143,7 +143,7 @@ struct AccountView: View {
                         Spacer()
 
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
+                            .foregroundStyle(Color.success)
                     }
 
                     if subscriptionService.isInTrial {

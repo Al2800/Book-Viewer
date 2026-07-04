@@ -108,7 +108,7 @@ struct CollectionEditorSheet: View {
 
     @State private var name = ""
     @State private var icon = "folder"
-    @State private var colorName = "blue"
+    @State private var colorName = "ink"
 
     var body: some View {
         NavigationStack {

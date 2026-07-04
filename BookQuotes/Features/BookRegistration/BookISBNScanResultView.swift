@@ -61,7 +61,7 @@ extension BookISBNConfirmationSheet {
             VStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.system(size: 48))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Color.warning)
 
                 Text("Book Not Found")
                     .font(.headline)

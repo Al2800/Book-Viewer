@@ -146,7 +146,7 @@ struct StorageBackupView: View {
                     systemImage: "checkmark.circle.fill"
                 )
                 .font(.caption)
-                .foregroundStyle(.green)
+                .foregroundStyle(Color.success)
             } else {
                 Text("Clear cached images to free up storage space. Original images in your library will not be affected.")
                     .font(.caption)

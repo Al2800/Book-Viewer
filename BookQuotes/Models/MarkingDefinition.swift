@@ -54,7 +54,7 @@ final class MarkingDefinition {
         visualDescription: String,
         meaning: String,
         icon: String = "pencil.line",
-        colorName: String = "blue"
+        colorName: String = "ink"
     ) {
         self.id = UUID()
         self.name = name
@@ -80,63 +80,63 @@ extension MarkingDefinition {
             visualDescription: "Single straight line drawn under text",
             meaning: "Important or memorable passage",
             icon: "underline",
-            colorName: "blue"
+            colorName: "ink"
         ),
         MarkingDefinition(
             name: "Double Underline",
             visualDescription: "Two parallel lines drawn under text",
             meaning: "Very important or critical passage",
             icon: "underline",
-            colorName: "purple"
+            colorName: "plum"
         ),
         MarkingDefinition(
             name: "Margin Line",
             visualDescription: "Vertical line drawn in the margin next to a paragraph",
             meaning: "Entire paragraph is noteworthy",
             icon: "sidebar.leading",
-            colorName: "green"
+            colorName: "forest"
         ),
         MarkingDefinition(
             name: "Highlight",
             visualDescription: "Text colored with highlighter or marker pen",
             meaning: "Key passage to remember",
             icon: "highlighter",
-            colorName: "yellow"
+            colorName: "mustard"
         ),
         MarkingDefinition(
             name: "Bracket",
             visualDescription: "Square or curly brackets around text",
             meaning: "Discrete section of interest",
             icon: "chevron.left.forwardslash.chevron.right",
-            colorName: "orange"
+            colorName: "oxblood"
         ),
         MarkingDefinition(
             name: "Margin Note",
             visualDescription: "Handwritten text in the margin",
             meaning: "Personal thought or reaction",
             icon: "note.text",
-            colorName: "gray"
+            colorName: "slate"
         ),
         MarkingDefinition(
             name: "Circle",
             visualDescription: "Circle drawn around a word or phrase",
             meaning: "Key term or concept",
             icon: "circle",
-            colorName: "red"
+            colorName: "oxblood"
         ),
         MarkingDefinition(
             name: "Asterisk",
             visualDescription: "Star or asterisk symbol in margin",
             meaning: "Action item or follow-up needed",
             icon: "asterisk",
-            colorName: "pink"
+            colorName: "plum"
         ),
         MarkingDefinition(
             name: "Question Mark",
             visualDescription: "Question mark in margin next to text",
             meaning: "Confusion or need to research further",
             icon: "questionmark",
-            colorName: "teal"
+            colorName: "forest"
         )
     ]
 

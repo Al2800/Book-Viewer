@@ -17,18 +17,26 @@ final class TagRowPresentationTests: XCTestCase {
     }
 
     func testUsesConfiguredCollectionColor() {
-        let tag = Tag(name: "craft", colorName: "purple")
+        let tag = Tag(name: "craft", colorName: "plum")
 
         let presentation = TagRowPresentation(tag: tag)
 
-        XCTAssertEqual(presentation.collectionColor, .purple)
+        XCTAssertEqual(presentation.collectionColor, .plum)
     }
 
-    func testFallsBackToBlueForUnknownColorName() {
+    func testMapsLegacySystemColorNameOntoPalette() {
+        let tag = Tag(name: "strategy", colorName: "purple")
+
+        let presentation = TagRowPresentation(tag: tag)
+
+        XCTAssertEqual(presentation.collectionColor, .plum)
+    }
+
+    func testFallsBackToSlateForUnknownColorName() {
         let tag = Tag(name: "ideas", colorName: "unknown")
 
         let presentation = TagRowPresentation(tag: tag)
 
-        XCTAssertEqual(presentation.collectionColor, .blue)
+        XCTAssertEqual(presentation.collectionColor, .slate)
     }
 }

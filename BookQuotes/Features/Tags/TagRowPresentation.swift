@@ -10,6 +10,6 @@ struct TagRowPresentation {
     }
 
     var collectionColor: CollectionColor {
-        CollectionColor(rawValue: tag.colorName) ?? .blue
+        CollectionColor.named(tag.colorName)
     }
 }

@@ -25,7 +25,7 @@ struct MarkingDefinitionEditor: View {
     @State private var visualDescription: String = ""
     @State private var meaning: String = ""
     @State private var selectedIcon: String = "pencil.line"
-    @State private var selectedColor: String = "blue"
+    @State private var selectedColor: String = "ink"
 
     @State private var showIconPicker = false
     @State private var showValidationError = false
@@ -47,10 +47,7 @@ struct MarkingDefinitionEditor: View {
         "arrow.right", "note.text", "square.and.pencil", "hand.draw"
     ]
 
-    private let colorOptions = [
-        "red", "orange", "yellow", "green", "mint", "teal",
-        "cyan", "blue", "indigo", "purple", "pink", "brown", "gray"
-    ]
+    private let colorOptions = CollectionColor.allCases.map(\.rawValue)
 
     // MARK: - Initialization
 
@@ -271,7 +268,7 @@ struct MarkingDefinitionEditor: View {
                     .foregroundStyle(Color.textSecondary)
                 if required {
                     Text("*")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Color.error)
                         .font(.caption)
                 }
             }
@@ -341,22 +338,7 @@ struct MarkingDefinitionEditor: View {
     }
 
     private func colorFor(_ name: String) -> Color {
-        switch name {
-        case "red": return .red
-        case "orange": return .orange
-        case "yellow": return .yellow
-        case "green": return .green
-        case "mint": return .mint
-        case "teal": return .teal
-        case "cyan": return .cyan
-        case "blue": return .blue
-        case "indigo": return .indigo
-        case "purple": return .purple
-        case "pink": return .pink
-        case "brown": return .brown
-        case "gray": return .gray
-        default: return .blue
-        }
+        CollectionColor.named(name).color
     }
 }
 

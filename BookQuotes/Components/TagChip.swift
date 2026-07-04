@@ -77,7 +77,7 @@ struct TagChip: View {
     // MARK: - Styling
 
     private var tagColor: Color {
-        CollectionColor(rawValue: tag.colorName)?.color ?? .blue
+        CollectionColor.named(tag.colorName).color
     }
 
     private var backgroundColor: Color {

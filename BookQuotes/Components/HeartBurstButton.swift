@@ -64,7 +64,7 @@ struct HeartBurstButton: View {
     private var heartIcon: some View {
         Image(systemName: isFavorite ? "heart.fill" : "heart")
             .font(.system(size: size))
-            .foregroundStyle(isFavorite ? .red : .secondary)
+            .foregroundStyle(isFavorite ? Color.accent : Color.textSecondary)
             .scaleEffect(scale)
             .animation(reduceMotion ? nil : .microBounce, value: scale)
     }
@@ -83,8 +83,8 @@ struct HeartBurstButton: View {
     }
 
     private func particleColor(for index: Int) -> Color {
-        // Alternate between red and pink for variety
-        index % 2 == 0 ? .red : .pink
+        // Alternate between accent gold and brand for variety
+        index % 2 == 0 ? .accent : .brand
     }
 
     private func particleOffset(for index: Int) -> CGSize {

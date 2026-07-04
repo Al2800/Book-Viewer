@@ -44,9 +44,9 @@ extension Color {
     static let quoteBorder = Color("QuoteBorder")
 
     // MARK: - Confidence Indicators
-    static let confidenceHigh = Color.green
-    static let confidenceMedium = Color.yellow
-    static let confidenceLow = Color.red
+    static let confidenceHigh = Color.success
+    static let confidenceMedium = Color.warning
+    static let confidenceLow = Color.error
 }
 
 // MARK: - Dark Mode Support

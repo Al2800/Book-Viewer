@@ -140,38 +140,23 @@ struct MarkingTypeBadge: View {
     // MARK: - Color Mapping
 
     private func colorFor(name: String) -> Color {
-        switch name.lowercased() {
-        case "red": return .red
-        case "orange": return .orange
-        case "yellow": return .yellow
-        case "green": return .green
-        case "mint": return .mint
-        case "teal": return .teal
-        case "cyan": return .cyan
-        case "blue": return .blue
-        case "indigo": return .indigo
-        case "purple": return .purple
-        case "pink": return .pink
-        case "brown": return .brown
-        case "gray", "grey": return .gray
-        default: return .blue
-        }
+        CollectionColor.named(name.lowercased()).color
     }
 }
 
 // MARK: - MarkingType Extension
 
 extension MarkingType {
-    /// Color associated with the marking type
+    /// Color associated with the marking type, drawn from the muted bookbinding palette
     var color: Color {
         switch self {
-        case .underline: return .blue
-        case .doubleUnderline: return .purple
-        case .marginLine: return .green
-        case .highlight: return .yellow
-        case .bracket: return .orange
-        case .marginNote: return .gray
-        case .mixed: return .teal
+        case .underline: return CollectionColor.ink.color
+        case .doubleUnderline: return CollectionColor.plum.color
+        case .marginLine: return CollectionColor.forest.color
+        case .highlight: return CollectionColor.mustard.color
+        case .bracket: return CollectionColor.oxblood.color
+        case .marginNote: return CollectionColor.slate.color
+        case .mixed: return .brand
         }
     }
 }

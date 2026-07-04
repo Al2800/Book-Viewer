@@ -221,7 +221,7 @@ struct QuoteDetailView: View {
                 if quote.isFavorite {
                     HStack {
                         Image(systemName: "heart.fill")
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Color.accent)
                         Text("Favorite")
                             .foregroundStyle(.secondary)
                     }

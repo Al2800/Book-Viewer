@@ -45,7 +45,7 @@ struct QuoteMarkingPickerSheet: View {
                             Spacer()
                             if markingType == type {
                                 Image(systemName: "checkmark")
-                                    .foregroundStyle(Color.accentColor)
+                                    .foregroundStyle(Color.brand)
                             }
                         }
                     }

@@ -9,7 +9,7 @@ struct TagEditorSheet: View {
     @Environment(\.modelContext) private var modelContext
 
     @State private var name = ""
-    @State private var colorName = "blue"
+    @State private var colorName = "ink"
 
     var body: some View {
         NavigationStack {
