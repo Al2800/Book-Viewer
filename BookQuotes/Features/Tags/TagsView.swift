@@ -24,32 +24,31 @@ struct TagsView: View {
 
     // MARK: - Body
 
+    /// Pushed onto the Library tab's navigation stack.
     var body: some View {
-        NavigationStack {
-            content
-                .background(Color.backgroundPrimary)
-                .navigationTitle("Tags")
-                .searchable(text: $searchText, prompt: "Search tags")
-                .accessibilityIdentifier(AccessibilityIdentifiers.Tags.listView)
-                .toolbar { toolbarContent }
-                .sheet(isPresented: $showCreateSheet) {
-                    TagEditorSheet(mode: .create)
+        content
+            .background(Color.backgroundPrimary)
+            .navigationTitle("Tags")
+            .searchable(text: $searchText, prompt: "Search tags")
+            .accessibilityIdentifier(AccessibilityIdentifiers.Tags.listView)
+            .toolbar { toolbarContent }
+            .sheet(isPresented: $showCreateSheet) {
+                TagEditorSheet(mode: .create)
+            }
+            .sheet(item: $tagToEdit) { tag in
+                TagEditorSheet(mode: .edit(tag))
+            }
+            .confirmationDialog(
+                deletePrompt.title,
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                deleteConfirmationActions
+            } message: {
+                if let tag = tagToDelete {
+                    Text(TagDeletionPrompt(quoteCount: tag.quoteCount).message)
                 }
-                .sheet(item: $tagToEdit) { tag in
-                    TagEditorSheet(mode: .edit(tag))
-                }
-                .confirmationDialog(
-                    deletePrompt.title,
-                    isPresented: $showDeleteConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    deleteConfirmationActions
-                } message: {
-                    if let tag = tagToDelete {
-                        Text(TagDeletionPrompt(quoteCount: tag.quoteCount).message)
-                    }
-                }
-        }
+            }
     }
 
     // MARK: - Content
@@ -287,8 +286,10 @@ struct AddTagToQuoteSheet: View {
 // MARK: - Preview
 
 #Preview("Tags View") {
-    TagsView()
-        .modelContainer(for: Tag.self, inMemory: true)
+    NavigationStack {
+        TagsView()
+    }
+    .modelContainer(for: Tag.self, inMemory: true)
 }
 
 #Preview("Tag Editor") {

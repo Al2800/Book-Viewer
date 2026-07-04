@@ -39,6 +39,12 @@ enum AccessibilityIdentifiers {
 
         /// View mode toggle (grid/list)
         static let viewModeToggle = "library_view_mode_toggle"
+
+        /// Organize section row linking to Collections
+        static let collectionsRow = "library_collections_row"
+
+        /// Organize section row linking to Tags
+        static let tagsRow = "library_tags_row"
     }
 
     // MARK: - Search

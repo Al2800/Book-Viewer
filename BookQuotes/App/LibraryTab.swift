@@ -17,10 +17,27 @@ struct LibraryTab: View {
                     .navigationDestination(for: Quote.self) { quote in
                         QuoteDetailView(quote: quote)
                     }
+                    .navigationDestination(for: LibraryOrganizeDestination.self) { destination in
+                        switch destination {
+                        case .collections:
+                            CollectionsView()
+                        case .tags:
+                            TagsView()
+                        }
+                    }
+                    .navigationDestination(for: Collection.self) { collection in
+                        CollectionDetailView(collection: collection)
+                    }
             }
         }
         .environment(router)
     }
+}
+
+/// Organization destinations reachable from the Library tab
+enum LibraryOrganizeDestination: Hashable {
+    case collections
+    case tags
 }
 
 // MARK: - Placeholder Views
@@ -51,6 +68,8 @@ struct LibraryView: View {
     @State private var showAddBookSheet = false
     @State private var hasAppeared = false
     @State private var isRefreshing = false
+    @State private var selectedCollectionIds: Set<UUID> = []
+    @State private var selectedTagIds: Set<UUID> = []
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Body
@@ -212,6 +231,18 @@ struct LibraryView: View {
     }
 
     private var libraryContent: some View {
+        VStack(spacing: 0) {
+            OrganizationFilterBar(
+                selectedCollectionIds: $selectedCollectionIds,
+                selectedTagIds: $selectedTagIds
+            )
+
+            libraryScrollContent
+        }
+        .background(Color.backgroundPrimary)
+    }
+
+    private var libraryScrollContent: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
                 LibrarySummaryCard(
@@ -243,29 +274,61 @@ struct LibraryView: View {
                     }
                 }
 
-                LibraryBooksSection(
-                    books: books,
-                    viewMode: $viewMode,
-                    hasAppeared: hasAppeared,
-                    reduceMotion: reduceMotion,
-                    onTap: { book in
-                        router.navigate(to: book)
-                    },
-                    onEdit: { book in
-                        bookToEdit = book
-                        showEditSheet = true
-                    },
-                    onDelete: { book in
-                        bookToDelete = book
-                        showDeleteConfirmation = true
+                LibrarySectionCard(title: "Organize") {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        NavigationLink(value: LibraryOrganizeDestination.collections) {
+                            LibraryActionRow(
+                                icon: "folder",
+                                title: "Collections",
+                                subtitle: "Group quotes by theme or project"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.collectionsRow)
+
+                        NavigationLink(value: LibraryOrganizeDestination.tags) {
+                            LibraryActionRow(
+                                icon: "tag",
+                                title: "Tags",
+                                subtitle: "Label quotes across your library"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.tagsRow)
                     }
-                )
+                }
+
+                if hasOrganizationFilters && organizationFilteredBooks.isEmpty {
+                    LibrarySectionCard(title: "Books") {
+                        Text("No books match the selected filters.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.textSecondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    LibraryBooksSection(
+                        books: organizationFilteredBooks,
+                        viewMode: $viewMode,
+                        hasAppeared: hasAppeared,
+                        reduceMotion: reduceMotion,
+                        onTap: { book in
+                            router.navigate(to: book)
+                        },
+                        onEdit: { book in
+                            bookToEdit = book
+                            showEditSheet = true
+                        },
+                        onDelete: { book in
+                            bookToDelete = book
+                            showDeleteConfirmation = true
+                        }
+                    )
+                }
             }
             .padding(.horizontal, Spacing.lg)
             .padding(.top, Spacing.lg)
             .padding(.bottom, Spacing.xxxl)
         }
-        .background(Color.backgroundPrimary)
         .refreshable {
             await refreshLibrary()
         }
@@ -289,6 +352,16 @@ struct LibraryView: View {
             Image(systemName: "plus")
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.addBookButton)
+    }
+
+    // MARK: - Organization Filters
+
+    private var hasOrganizationFilters: Bool {
+        !selectedCollectionIds.isEmpty || !selectedTagIds.isEmpty
+    }
+
+    private var organizationFilteredBooks: [Book] {
+        books.filtered(byCollectionIds: selectedCollectionIds, tagIds: selectedTagIds)
     }
 
     private var deletePrompt: BookDeletionPrompt? {

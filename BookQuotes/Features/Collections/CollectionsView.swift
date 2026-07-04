@@ -17,33 +17,29 @@ struct CollectionsView: View {
     // MARK: - State
 
     @State private var showCreateSheet = false
-    @State private var selectedCollection: Collection?
 
     // MARK: - Body
 
+    /// Pushed onto the Library tab's navigation stack; `Collection` values
+    /// resolve to `CollectionDetailView` via the destination registered there.
     var body: some View {
-        NavigationStack {
-            content
-                .background(Color.backgroundPrimary)
-                .navigationTitle("Collections")
-                .navigationDestination(for: Collection.self) { collection in
-                    CollectionDetailView(collection: collection)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            showCreateSheet = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                        .accessibilityLabel("Create Collection")
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Collections.createButton)
+        content
+            .background(Color.backgroundPrimary)
+            .navigationTitle("Collections")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showCreateSheet = true
+                    } label: {
+                        Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Create Collection")
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Collections.createButton)
                 }
-                .sheet(isPresented: $showCreateSheet) {
-                    CollectionEditorSheet(mode: .create)
-                }
-        }
+            }
+            .sheet(isPresented: $showCreateSheet) {
+                CollectionEditorSheet(mode: .create)
+            }
     }
 
     // MARK: - Content
@@ -237,13 +233,17 @@ private struct IconPicker: View {
 // MARK: - Preview
 
 #Preview("Collections Grid") {
-    CollectionsView()
-        .modelContainer(for: Collection.self, inMemory: true)
+    NavigationStack {
+        CollectionsView()
+    }
+    .modelContainer(for: Collection.self, inMemory: true)
 }
 
 #Preview("Empty State") {
-    CollectionsView()
-        .modelContainer(for: Collection.self, inMemory: true)
+    NavigationStack {
+        CollectionsView()
+    }
+    .modelContainer(for: Collection.self, inMemory: true)
 }
 
 #Preview("Create Sheet") {
