@@ -65,7 +65,7 @@ struct LibraryView: View {
     @State private var bookToEdit: Book?
     @State private var showDeleteConfirmation = false
     @State private var showEditSheet = false
-    @State private var showAddBookSheet = false
+    @State private var showAddBookCapture = false
     @State private var hasAppeared = false
     @State private var isRefreshing = false
     @State private var selectedCollectionIds: Set<UUID> = []
@@ -86,6 +86,7 @@ struct LibraryView: View {
             }
         }
         .navigationTitle("Library")
+        .navigationBarTitleDisplayMode(.large)
         .searchable(
             text: $searchText,
             isPresented: $isSearchActive,
@@ -168,11 +169,18 @@ struct LibraryView: View {
                 Text(deletePrompt.message)
             }
         }
-        .sheet(isPresented: $showAddBookSheet) {
-            BookEditView(mode: .create) { newBook in
-                // Navigate to the newly created book
-                router.navigate(to: newBook)
-            }
+        .fullScreenCover(isPresented: $showAddBookCapture) {
+            // Camera-first book registration: scan the cover (or ISBN barcode),
+            // with manual entry available as a fallback inside the flow.
+            CoverCaptureFlowView(
+                onComplete: { newBook in
+                    showAddBookCapture = false
+                    router.navigate(to: newBook)
+                },
+                onCancel: {
+                    showAddBookCapture = false
+                }
+            )
         }
         .sheet(isPresented: $showEditSheet) {
             if let book = bookToEdit {
@@ -189,7 +197,7 @@ struct LibraryView: View {
         case .searchResults:
             searchResults
         case .emptyLibrary:
-            EmptyLibraryView(onAddBook: { showAddBookSheet = true })
+            EmptyLibraryView(onAddBook: { showAddBookCapture = true })
         case .library:
             libraryContent
         }
@@ -231,15 +239,17 @@ struct LibraryView: View {
     }
 
     private var libraryContent: some View {
-        VStack(spacing: 0) {
-            OrganizationFilterBar(
-                selectedCollectionIds: $selectedCollectionIds,
-                selectedTagIds: $selectedTagIds
-            )
-
-            libraryScrollContent
-        }
-        .background(Color.backgroundPrimary)
+        // ScrollView must be the navigation stack root's primary content for the
+        // large title to expand/collapse correctly; the filter bar rides above it
+        // as a safe-area inset instead of wrapping it in a VStack.
+        libraryScrollContent
+            .safeAreaInset(edge: .top, spacing: 0) {
+                OrganizationFilterBar(
+                    selectedCollectionIds: $selectedCollectionIds,
+                    selectedTagIds: $selectedTagIds
+                )
+            }
+            .background(Color.backgroundPrimary)
     }
 
     private var libraryScrollContent: some View {
@@ -263,11 +273,12 @@ struct LibraryView: View {
 
                         Button {
                             HapticManager.light()
-                            showAddBookSheet = true
+                            showAddBookCapture = true
                         } label: {
                             LibraryActionRow(
-                                icon: "plus",
-                                title: "Add New Book"
+                                icon: "camera.viewfinder",
+                                title: "Add New Book",
+                                subtitle: "Scan a cover or ISBN barcode"
                             )
                         }
                         .buttonStyle(.plain)
@@ -347,7 +358,7 @@ struct LibraryView: View {
     private var addBookButton: some View {
         Button {
             HapticManager.light()
-            showAddBookSheet = true
+            showAddBookCapture = true
         } label: {
             Image(systemName: "plus")
         }

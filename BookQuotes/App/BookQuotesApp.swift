@@ -193,12 +193,25 @@ struct BookQuotesApp: App {
         UITabBar.appearance().standardAppearance = tabAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabAppearance
 
-        // Navigation Bar appearance - warm paper background
+        // Navigation Bar appearance - warm paper background with serif titles
+        // for the book-style aesthetic.
+        func serifFont(size: CGFloat, weight: UIFont.Weight) -> UIFont {
+            let base = UIFont.systemFont(ofSize: size, weight: weight)
+            guard let descriptor = base.fontDescriptor.withDesign(.serif) else { return base }
+            return UIFont(descriptor: descriptor, size: size)
+        }
+
         let navAppearance = UINavigationBarAppearance()
         navAppearance.configureWithOpaqueBackground()
         navAppearance.backgroundColor = backgroundColor
-        navAppearance.titleTextAttributes = [.foregroundColor: titleColor]
-        navAppearance.largeTitleTextAttributes = [.foregroundColor: titleColor]
+        navAppearance.titleTextAttributes = [
+            .foregroundColor: titleColor,
+            .font: serifFont(size: 17, weight: .semibold)
+        ]
+        navAppearance.largeTitleTextAttributes = [
+            .foregroundColor: titleColor,
+            .font: serifFont(size: 34, weight: .semibold)
+        ]
 
         UINavigationBar.appearance().standardAppearance = navAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navAppearance

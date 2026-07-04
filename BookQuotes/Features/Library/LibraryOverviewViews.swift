@@ -20,8 +20,9 @@ struct EmptyLibraryView: View {
                         onAddBook?()
                     } label: {
                         LibraryActionRow(
-                            icon: "plus",
-                            title: "Add Your First Book"
+                            icon: "camera.viewfinder",
+                            title: "Add Your First Book",
+                            subtitle: "Scan a cover or ISBN barcode"
                         )
                     }
                     .buttonStyle(.plain)

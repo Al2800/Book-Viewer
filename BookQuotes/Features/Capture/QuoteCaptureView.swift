@@ -171,8 +171,6 @@ struct QuoteCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testImageButton)
             }
         }
-        .padding(.horizontal, Spacing.lg)
-        .padding(.bottom, Spacing.lg)
     }
 
     // MARK: - Processing View

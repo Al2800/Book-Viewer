@@ -112,8 +112,6 @@ struct CoverCaptureBottomControls: View {
                 .glassButton()
             }
         }
-        .padding(.horizontal, Spacing.lg)
-        .padding(.bottom, Spacing.md)
     }
 
     private var statusPill: CaptureStatusPill? {

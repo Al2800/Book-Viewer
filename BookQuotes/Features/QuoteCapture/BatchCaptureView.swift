@@ -190,8 +190,6 @@ struct BatchCaptureView: View {
                 .disabled(lifecycleState.isCapturing)
             }
         }
-        .padding(.horizontal, Spacing.lg)
-        .padding(.bottom, Spacing.lg)
     }
 
     // MARK: - Thumbnail Strip
