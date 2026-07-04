@@ -17,25 +17,10 @@ struct CaptureModeSelectionView: View {
                     }
                 }
 
-                CaptureSectionCard(title: "Before You Start") {
-                    CaptureHintRow(
-                        systemImage: "sun.max",
-                        title: "Use even light",
-                        subtitle: "Avoid shadows across the page and keep the full passage visible."
-                    )
-
-                    CaptureHintRow(
-                        systemImage: "viewfinder",
-                        title: "Fill the frame",
-                        subtitle: "Keep the page square in view so extraction needs less correction."
-                    )
-
-                    CaptureHintRow(
-                        systemImage: "highlighter",
-                        title: "Pick the right flow",
-                        subtitle: "Single capture works best for one page. Batch mode is better for a run of notes."
-                    )
-                }
+                Label("Even light, page filling the frame.", systemImage: "lightbulb")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding(.horizontal, Spacing.lg)
             .padding(.top, Spacing.lg)
@@ -84,21 +69,12 @@ struct CaptureSectionCard<Content: View>: View {
 
 private struct CaptureSummaryCard: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("Capture")
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(Color.textPrimary)
+        HStack(spacing: Spacing.sm) {
+            CaptureSummaryPill(systemImage: "camera", text: "Camera Ready")
+            CaptureSummaryPill(systemImage: "text.viewfinder", text: "Review Before Save")
 
-            Text("Choose a flow, keep the page clear in frame, and save quotes into the right book without leaving the tab.")
-                .font(.subheadline)
-                .foregroundStyle(Color.textSecondary)
-
-            HStack(spacing: Spacing.sm) {
-                CaptureSummaryPill(systemImage: "camera", text: "Camera Ready")
-                CaptureSummaryPill(systemImage: "text.viewfinder", text: "Review Before Save")
-            }
+            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.lg)
         .paperCard()
     }
@@ -151,7 +127,7 @@ private struct CaptureModeRow: View {
                         .foregroundStyle(option.accent.color)
                 }
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
                     Text(option.title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Color.textPrimary)
@@ -171,42 +147,6 @@ private struct CaptureModeRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier(option.accessibilityId)
-    }
-}
-
-struct CaptureHintRow: View {
-    let systemImage: String
-    let title: String
-    let subtitle: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: Spacing.md) {
-            ZStack {
-                Circle()
-                    .fill(Color.backgroundSecondary)
-                    .frame(width: 36, height: 36)
-                    .overlay {
-                        Circle()
-                            .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                    }
-
-                Image(systemName: systemImage)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color.textPrimary)
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.textPrimary)
-
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-            }
-
-            Spacer(minLength: 0)
-        }
     }
 }
 

@@ -75,10 +75,7 @@ struct SettingsView: View {
                     NavigationLink(value: SettingsDestination.account) {
                         SettingsRow(
                             icon: "person.crop.circle",
-                            title: AppReleaseConfiguration.subscriptionsEnabled ? "Account & Subscription" : "Account",
-                            subtitle: AppReleaseConfiguration.subscriptionsEnabled
-                                ? "Manage plan, billing, and sign-in"
-                                : "Manage sign-in and account access"
+                            title: AppReleaseConfiguration.subscriptionsEnabled ? "Account & Subscription" : "Account"
                         )
                     }
                 }
@@ -105,8 +102,7 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: Spacing.sm) {
                         SettingsRow(
                             icon: "square.grid.2x2",
-                            title: "Library View",
-                            subtitle: "Grid or list layout"
+                            title: "Library View"
                         )
 
                         Picker(selection: $libraryViewMode) {
@@ -121,7 +117,6 @@ struct SettingsView: View {
                     SettingsToggleRow(
                         icon: "hand.tap",
                         title: "Haptic Feedback",
-                        subtitle: "Subtle taps for actions",
                         isOn: $hapticFeedbackEnabled
                     )
                 }
@@ -142,10 +137,7 @@ struct SettingsView: View {
                     NavigationLink(value: SettingsDestination.storage) {
                         SettingsRow(
                             icon: "externaldrive",
-                            title: "Storage & Backup",
-                            subtitle: AppReleaseConfiguration.cloudSyncEnabled
-                                ? "Cloud sync and local storage"
-                                : "Local storage and exports"
+                            title: "Storage & Backup"
                         )
                     }
                 }
@@ -154,8 +146,7 @@ struct SettingsView: View {
                     NavigationLink(value: SettingsDestination.about) {
                         SettingsRow(
                             icon: "info.circle",
-                            title: "About BookQuotes",
-                            subtitle: "Version, credits, and support"
+                            title: "About BookQuotes"
                         )
                     }
 
@@ -165,7 +156,6 @@ struct SettingsView: View {
                         SettingsRow(
                             icon: "hand.raised",
                             title: "Privacy Policy",
-                            subtitle: "How your data is handled",
                             trailingIcon: "doc.text.magnifyingglass"
                         )
                     }
@@ -178,7 +168,6 @@ struct SettingsView: View {
                         SettingsRow(
                             icon: "doc.text",
                             title: "Terms of Service",
-                            subtitle: "Usage terms and policies",
                             trailingIcon: "doc.text.magnifyingglass"
                         )
                     }

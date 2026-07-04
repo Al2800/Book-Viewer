@@ -53,7 +53,7 @@ struct SettingsRow: View {
                     .foregroundStyle(Color.textPrimary)
             }
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.textPrimary)
@@ -107,7 +107,7 @@ struct SettingsToggleRow: View {
                         .foregroundStyle(Color.textPrimary)
                 }
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
                     Text(title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Color.textPrimary)

@@ -225,7 +225,6 @@ struct LibraryView: View {
                         LibraryControlRow(
                             icon: viewMode.systemImageName,
                             title: "Library View",
-                            subtitle: "Switch between cover cards and a compact reading list",
                             trailing: {
                                 LibraryViewModeControl(viewMode: $viewMode)
                             }
@@ -237,8 +236,7 @@ struct LibraryView: View {
                         } label: {
                             LibraryActionRow(
                                 icon: "plus",
-                                title: "Add New Book",
-                                subtitle: "Create a library entry before capturing quotes"
+                                title: "Add New Book"
                             )
                         }
                         .buttonStyle(.plain)

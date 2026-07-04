@@ -37,29 +37,13 @@ struct BookSelectionForCaptureView: View {
 
     @ViewBuilder
     private var librarySection: some View {
-        VStack(spacing: Spacing.lg) {
-            CaptureSectionCard(title: "Library") {
-                AddBookLibraryRow(action: onAddNewBook)
+        CaptureSectionCard(title: "Library") {
+            AddBookLibraryRow(action: onAddNewBook)
 
-                ForEach(books) { book in
-                    CaptureBookRow(book: book) {
-                        onSelectBook(book)
-                    }
+            ForEach(books) { book in
+                CaptureBookRow(book: book) {
+                    onSelectBook(book)
                 }
-            }
-
-            CaptureSectionCard(title: "Capture Notes") {
-                CaptureHintRow(
-                    systemImage: "text.quote",
-                    title: "Single capture",
-                    subtitle: "Best when you want to review and save one marked page immediately."
-                )
-
-                CaptureHintRow(
-                    systemImage: "square.stack.3d.up.fill",
-                    title: "Batch capture",
-                    subtitle: "Best when you are moving through several pages from the same book."
-                )
             }
         }
     }
@@ -86,7 +70,7 @@ struct BookSelectionForCaptureView: View {
                             .foregroundStyle(Color.textPrimary)
                     }
 
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: Spacing.xxs) {
                         Text("No Books Yet")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Color.textPrimary)
@@ -116,15 +100,9 @@ struct BookSelectionForCaptureView: View {
                                 .foregroundStyle(Color.accent)
                         }
 
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Add Your First Book")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(Color.textPrimary)
-
-                            Text("Scan the cover or ISBN to start a capture session.")
-                                .font(.caption)
-                                .foregroundStyle(Color.textSecondary)
-                        }
+                        Text("Add Your First Book")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.textPrimary)
 
                         Spacer()
 
@@ -233,15 +211,9 @@ private struct AddBookLibraryRow: View {
                         .foregroundStyle(Color.accent)
                 }
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Add New Book")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.textPrimary)
-
-                    Text("Scan a cover or ISBN before capturing quotes.")
-                        .font(.caption)
-                        .foregroundStyle(Color.textSecondary)
-                }
+                Text("Add New Book")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.textPrimary)
 
                 Spacer()
 

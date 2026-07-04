@@ -21,31 +21,10 @@ struct EmptyLibraryView: View {
                     } label: {
                         LibraryActionRow(
                             icon: "plus",
-                            title: "Add Your First Book",
-                            subtitle: "Create a book entry before capturing or importing quotes"
+                            title: "Add Your First Book"
                         )
                     }
                     .buttonStyle(.plain)
-                }
-
-                LibrarySectionCard(title: "What You Can Do") {
-                    LibraryInfoRow(
-                        icon: "books.vertical",
-                        title: "Organize by book",
-                        subtitle: "Keep quotes grouped by title, author, and reading status."
-                    )
-
-                    LibraryInfoRow(
-                        icon: "magnifyingglass",
-                        title: "Search everything",
-                        subtitle: "Find books and saved quotes from one place."
-                    )
-
-                    LibraryInfoRow(
-                        icon: "square.and.arrow.up",
-                        title: "Export later",
-                        subtitle: "Share your library when you are ready."
-                    )
                 }
             }
             .padding(.horizontal, Spacing.lg)
@@ -70,7 +49,7 @@ struct EmptyLibraryView: View {
         HStack(spacing: Spacing.md) {
             LibraryIconCircle(systemImage: "books.vertical", size: 44, font: .headline.weight(.semibold))
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text("No Books Yet")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.textPrimary)
@@ -115,23 +94,13 @@ struct LibrarySummaryCard: View {
     let viewMode: LibraryViewMode
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("Library")
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(Color.textPrimary)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: Spacing.sm) {
+                summaryPills
+            }
 
-            Text("Browse your books, reopen saved quotes, and switch between a cover wall and a reading list without leaving the tab.")
-                .font(.subheadline)
-                .foregroundStyle(Color.textSecondary)
-
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: Spacing.sm) {
-                    summaryPills
-                }
-
-                VStack(alignment: .leading, spacing: Spacing.sm) {
-                    summaryPills
-                }
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                summaryPills
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -159,13 +128,13 @@ struct LibrarySummaryCard: View {
 struct LibraryControlRow<Trailing: View>: View {
     let icon: String
     let title: String
-    let subtitle: String
+    let subtitle: String?
     let trailing: Trailing
 
     init(
         icon: String,
         title: String,
-        subtitle: String,
+        subtitle: String? = nil,
         @ViewBuilder trailing: () -> Trailing
     ) {
         self.icon = icon
@@ -178,14 +147,16 @@ struct LibraryControlRow<Trailing: View>: View {
         HStack(spacing: Spacing.md) {
             LibraryIconCircle(systemImage: icon)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.textPrimary)
 
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
             }
 
             Spacer(minLength: 0)
@@ -198,20 +169,22 @@ struct LibraryControlRow<Trailing: View>: View {
 struct LibraryActionRow: View {
     let icon: String
     let title: String
-    let subtitle: String
+    var subtitle: String?
 
     var body: some View {
         HStack(spacing: Spacing.md) {
             LibraryIconCircle(systemImage: icon, foreground: Color.accent)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.textPrimary)
 
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
             }
 
             Spacer()
@@ -221,30 +194,6 @@ struct LibraryActionRow: View {
                 .foregroundStyle(Color.textTertiary)
         }
         .contentShape(Rectangle())
-    }
-}
-
-struct LibraryInfoRow: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: Spacing.md) {
-            LibraryIconCircle(systemImage: icon, font: .caption.weight(.semibold))
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.textPrimary)
-
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-            }
-
-            Spacer(minLength: 0)
-        }
     }
 }
 

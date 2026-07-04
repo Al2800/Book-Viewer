@@ -37,7 +37,7 @@ struct CaptureModeOption: Identifiable, Equatable {
         CaptureModeOption(
             kind: .cover,
             title: "Add New Book",
-            subtitle: "Photograph a cover and create a library entry",
+            subtitle: "Scan a cover or ISBN",
             systemImage: "book.closed.fill",
             accent: .brand,
             accessibilityId: AccessibilityIdentifiers.Capture.modeSelectCover
@@ -45,7 +45,7 @@ struct CaptureModeOption: Identifiable, Equatable {
         CaptureModeOption(
             kind: .quote,
             title: "Capture Quotes",
-            subtitle: "Scan a marked page and review one passage at a time",
+            subtitle: "One page at a time",
             systemImage: "text.quote",
             accent: .accent,
             accessibilityId: AccessibilityIdentifiers.Capture.modeSelectQuote
@@ -53,7 +53,7 @@ struct CaptureModeOption: Identifiable, Equatable {
         CaptureModeOption(
             kind: .batch,
             title: "Batch Mode",
-            subtitle: "Capture several pages first and process the session together",
+            subtitle: "Several pages, one session",
             systemImage: "square.stack.3d.up.fill",
             accent: .success,
             accessibilityId: AccessibilityIdentifiers.Capture.modeSelectBatch
