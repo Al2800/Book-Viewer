@@ -75,7 +75,6 @@ struct BookCoverArtwork: View {
                 VStack(spacing: Spacing.xs) {
                     Image(systemName: "book.closed")
                         .font(.title)
-                        .symbolEffect(.pulse, options: .repeating.speed(0.3), isActive: !reduceMotion)
                         .foregroundStyle(Color.textSecondary)
 
                     Text(book.title)

@@ -21,7 +21,6 @@ struct SearchEmptyStateView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 50))
                 .foregroundStyle(.tertiary)
-                .symbolEffect(.pulse, options: .repeating)
 
             Text("Search your library")
                 .font(.headline)

@@ -244,7 +244,6 @@ struct QuoteCardView: View {
                 Image(systemName: "heart.fill")
                     .font(.caption)
                     .foregroundStyle(Color.accent)
-                    .symbolEffect(.pulse, options: .repeating.speed(0.5), isActive: !reduceMotion)
                     .transition(.scale.combined(with: .opacity))
                     .accessibilityIdentifier(AccessibilityIdentifiers.QuoteCard.favoriteIndicator)
             }

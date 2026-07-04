@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A delightful heart button with burst particle animation for favoriting.
+/// A quiet heart button for favoriting with a gentle scale acknowledgment.
 /// Provides visual and haptic feedback when toggling favorite state.
 ///
 /// Usage:
@@ -24,18 +24,10 @@ struct HeartBurstButton: View {
     // MARK: - State
 
     @State private var scale: CGFloat = 1.0
-    @State private var showParticles = false
-    @State private var particleScale: CGFloat = 0
 
     // MARK: - Environment
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    // MARK: - Constants
-
-    private let particleCount = 6
-    private let particleSize: CGFloat = 6
-    private let burstDistance: CGFloat = 20
 
     // MARK: - Body
 
@@ -43,75 +35,31 @@ struct HeartBurstButton: View {
         Button {
             toggleFavorite()
         } label: {
-            ZStack {
-                // Particle burst layer (behind heart)
-                if showParticles && !reduceMotion {
-                    particleBurst
-                }
-
-                // Heart icon
-                heartIcon
-            }
-            .frame(width: size + burstDistance, height: size + burstDistance)
+            Image(systemName: isFavorite ? "heart.fill" : "heart")
+                .font(.system(size: size))
+                .foregroundStyle(isFavorite ? Color.accent : Color.textSecondary)
+                .scaleEffect(scale)
+                .animation(reduceMotion ? nil : .microBounce, value: scale)
+                .frame(width: size + 12, height: size + 12)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
         .accessibilityAddTraits(.isButton)
     }
 
-    // MARK: - Heart Icon
-
-    private var heartIcon: some View {
-        Image(systemName: isFavorite ? "heart.fill" : "heart")
-            .font(.system(size: size))
-            .foregroundStyle(isFavorite ? Color.accent : Color.textSecondary)
-            .scaleEffect(scale)
-            .animation(reduceMotion ? nil : .microBounce, value: scale)
-    }
-
-    // MARK: - Particle Burst
-
-    private var particleBurst: some View {
-        ForEach(0..<particleCount, id: \.self) { index in
-            Circle()
-                .fill(particleColor(for: index))
-                .frame(width: particleSize, height: particleSize)
-                .offset(particleOffset(for: index))
-                .opacity(particleOpacity)
-                .scaleEffect(particleScale)
-        }
-    }
-
-    private func particleColor(for index: Int) -> Color {
-        // Alternate between accent gold and brand for variety
-        index % 2 == 0 ? .accent : .brand
-    }
-
-    private func particleOffset(for index: Int) -> CGSize {
-        let angle = (CGFloat(index) / CGFloat(particleCount)) * .pi * 2
-        let distance = showParticles ? burstDistance : 0
-        return CGSize(
-            width: cos(angle) * distance,
-            height: sin(angle) * distance
-        )
-    }
-
-    private var particleOpacity: Double {
-        showParticles ? 0 : 1
-    }
-
     // MARK: - Actions
 
     private func toggleFavorite() {
-        let wasFavorite = isFavorite
         isFavorite.toggle()
 
-        if isFavorite && !wasFavorite {
-            // Favoriting: show celebration
-            animateFavorite()
-        } else {
-            // Unfavoriting: subtle feedback only
-            animateUnfavorite()
+        if !reduceMotion {
+            // Gentle press acknowledgment
+            withAnimation(.quickSpring) {
+                scale = isFavorite ? 1.15 : 0.9
+            }
+            withAnimation(.quickSpring.delay(0.1)) {
+                scale = 1.0
+            }
         }
 
         // Trigger haptic
@@ -119,48 +67,6 @@ struct HeartBurstButton: View {
 
         // Call completion handler
         onToggle?()
-    }
-
-    private func animateFavorite() {
-        if reduceMotion {
-            // Reduce Motion: instant state change, no particles
-            return
-        }
-
-        // Scale up with bounce
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
-            scale = 1.3
-            showParticles = true
-            particleScale = 1
-        }
-
-        // Animate particles outward and fade
-        withAnimation(.easeOut(duration: 0.4)) {
-            particleScale = 0.5
-        }
-
-        // Reset scale
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8).delay(0.1)) {
-            scale = 1.0
-        }
-
-        // Clean up particles
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            showParticles = false
-            particleScale = 0
-        }
-    }
-
-    private func animateUnfavorite() {
-        if reduceMotion { return }
-
-        // Subtle shrink and return
-        withAnimation(.quickSpring) {
-            scale = 0.8
-        }
-        withAnimation(.quickSpring.delay(0.05)) {
-            scale = 1.0
-        }
     }
 }
 

@@ -280,7 +280,6 @@ struct OfflineQueueToast: View {
             Image(systemName: "clock.arrow.circlepath")
                 .font(.title3)
                 .foregroundStyle(Color.brand)
-                .symbolEffect(.pulse, options: .repeating.speed(0.5), isActive: !reduceMotion)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Saved Offline")

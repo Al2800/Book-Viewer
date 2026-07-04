@@ -171,7 +171,6 @@ struct EmptyStateView: View {
             Image(systemName: icon)
                 .font(.system(size: 40))
                 .foregroundStyle(Color.accent.opacity(0.7))
-                .symbolEffect(.pulse, options: .repeating.speed(0.3), isActive: iconAppeared && !reduceMotion)
                 .opacity(iconAppeared ? 1 : 0)
                 .scaleEffect(iconAppeared ? 1 : 0.6)
 
