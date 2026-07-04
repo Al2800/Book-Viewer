@@ -31,5 +31,8 @@ Date: 2026-07-04
 - Upload build 32 to App Store Connect.
   - Done 2026-07-04 22:19 BST; upload succeeded and Apple reported the package is processing.
 - Confirm App Store Connect processing reaches `VALID`.
-  - Pending; build 32 was not visible in the App Store Connect builds API immediately after upload.
+  - Confirmed `VALID` 2026-07-04 22:21 BST.
+  - App Store Connect build id: `1aa12f51-e073-4bda-a20b-92328e3e92dc`.
+  - `usesNonExemptEncryption: false`.
 - Confirm TestFlight device smoke against the uploaded build.
+  - Pending on a physical device.
