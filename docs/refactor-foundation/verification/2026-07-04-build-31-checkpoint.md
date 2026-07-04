@@ -30,5 +30,8 @@ Date: 2026-07-04
 ## Remaining Release Check
 
 - Upload build 31 to App Store Connect.
+  - Done 2026-07-04 12:38 BST; see `2026-07-04-testflight-build-31.md`.
 - Confirm App Store Connect processing reaches `VALID`.
+  - Confirmed `VALID` with `usesNonExemptEncryption: false`; see `2026-07-04-testflight-build-31.md`.
 - Confirm TestFlight device smoke against the uploaded build.
+  - Still pending on a physical device.
