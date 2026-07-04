@@ -294,7 +294,7 @@ private struct ExistingQuoteDetailSheet: View {
                                     Image(systemName: "book.closed")
                                         .foregroundStyle(.secondary)
                                     Text(book.title)
-                                        .font(.subheadline)
+                                        .font(.authorName)
                                     if let pageNumber = quote.pageNumber {
                                         Text("p. \(pageNumber)")
                                             .font(.caption)

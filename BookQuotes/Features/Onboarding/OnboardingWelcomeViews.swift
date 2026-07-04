@@ -48,8 +48,7 @@ struct WelcomePageView: View {
 
             VStack(spacing: Spacing.md) {
                 Text(page.title)
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(.system(.title, design: .serif).weight(.semibold))
                     .multilineTextAlignment(.center)
 
                 Text(page.description)

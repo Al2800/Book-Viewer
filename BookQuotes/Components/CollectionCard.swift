@@ -20,7 +20,7 @@ struct CollectionCard: View {
             // Name and count
             VStack(spacing: Spacing.xs) {
                 Text(collection.name)
-                    .font(.headline)
+                    .font(.bookTitle)
                     .foregroundStyle(.primary)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
@@ -96,8 +96,7 @@ struct CollectionRow: View {
             // Name and description
             VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(collection.name)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    .font(.bookTitleSmall)
                     .foregroundStyle(.primary)
 
                 if let description = collection.collectionDescription, !description.isEmpty {

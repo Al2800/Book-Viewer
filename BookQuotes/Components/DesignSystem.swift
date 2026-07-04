@@ -82,10 +82,18 @@ extension Font {
     static let attributionSmall = Font.system(.caption, design: .serif).italic()
 
     // MARK: - UI Text
+    /// Large serif title for book detail headers
+    static let bookTitleLarge = Font.system(.title2, design: .serif).weight(.semibold)
     /// Semibold serif for book titles
     static let bookTitle = Font.system(.headline, design: .serif).weight(.semibold)
+    /// Compact serif title for grid cards and dense rows
+    static let bookTitleSmall = Font.system(.subheadline, design: .serif).weight(.semibold)
     /// Standard serif for author names
     static let authorName = Font.system(.subheadline, design: .serif)
+    /// Small serif for author names in compact contexts
+    static let authorNameSmall = Font.system(.caption, design: .serif)
+    /// Serif footnote for compact quote text
+    static let quoteCompact = Font.system(.footnote, design: .serif)
     /// Semibold footnote for section headers
     static let sectionHeader = Font.system(.footnote).weight(.semibold)
     /// Standard body text

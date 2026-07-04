@@ -30,7 +30,7 @@ struct QuoteSearchResultRow: View {
 
                 if let quote = quote, let book = quote.book {
                     Text(book.title)
-                        .font(.caption)
+                        .font(.authorNameSmall)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
 

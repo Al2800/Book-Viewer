@@ -256,7 +256,7 @@ struct ExtractionReviewView: View {
                     .font(.headline)
                     .contentTransition(.numericText())
                 Text(book.title)
-                    .font(.caption)
+                    .font(.authorNameSmall)
                     .foregroundStyle(Color.textSecondary)
             }
             .opacity(hasAppeared ? 1 : 0)

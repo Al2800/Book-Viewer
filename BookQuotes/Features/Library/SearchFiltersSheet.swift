@@ -225,10 +225,10 @@ private struct BookFilterRow: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(book.title)
-                        .font(.subheadline)
+                        .font(.bookTitleSmall)
                         .lineLimit(1)
                     Text(book.author)
-                        .font(.caption)
+                        .font(.authorNameSmall)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }

@@ -273,13 +273,13 @@ private struct QuoteSelectionRow: View {
 
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(quote.text)
-                    .font(.subheadline)
+                    .font(.quoteCompact)
                     .lineLimit(2)
                     .foregroundStyle(.primary)
 
                 if let book = quote.book {
                     Text(book.title)
-                        .font(.caption)
+                        .font(.authorNameSmall)
                         .foregroundStyle(.secondary)
                 }
             }

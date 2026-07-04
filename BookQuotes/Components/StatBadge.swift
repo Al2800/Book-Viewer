@@ -85,13 +85,12 @@ struct BookHeaderView: View {
             // Book info
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 Text(book.title)
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    .font(.bookTitleLarge)
                     .lineLimit(3)
                     .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookTitle)
 
                 Text(book.author)
-                    .font(.subheadline)
+                    .font(.authorName)
                     .foregroundStyle(.secondary)
                     .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookAuthor)
 
@@ -119,12 +118,12 @@ struct BookHeaderView: View {
 
             VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(book.title)
-                    .font(.headline)
+                    .font(.bookTitle)
                     .lineLimit(1)
                     .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookTitle)
 
                 Text(book.author)
-                    .font(.subheadline)
+                    .font(.authorName)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.bookAuthor)

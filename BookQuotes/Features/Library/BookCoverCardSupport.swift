@@ -79,7 +79,7 @@ struct BookCoverArtwork: View {
                         .foregroundStyle(Color.textSecondary)
 
                     Text(book.title)
-                        .font(.caption2)
+                        .font(.system(.caption2, design: .serif))
                         .multilineTextAlignment(.center)
                         .lineLimit(2)
                         .padding(.horizontal, Spacing.xs)

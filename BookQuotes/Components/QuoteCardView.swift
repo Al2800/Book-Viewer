@@ -196,7 +196,7 @@ struct QuoteCardView: View {
 
         case .compact:
             Text(quote.text)
-                .font(.caption)
+                .font(.quoteCompact)
                 .foregroundStyle(Color.textPrimary)
                 .lineLimit(3)
 
@@ -215,8 +215,7 @@ struct QuoteCardView: View {
             Image(systemName: "note.text")
                 .font(.caption)
             Text(note)
-                .font(.caption)
-                .italic()
+                .font(.attributionSmall)
         }
         .foregroundStyle(.secondary)
     }
@@ -262,12 +261,11 @@ struct QuoteCardView: View {
     private func bookInfoRow(_ book: Book) -> some View {
         HStack(spacing: Spacing.xs) {
             Text(book.title)
-                .font(.caption)
-                .fontWeight(.medium)
+                .font(.authorNameSmall.weight(.medium))
                 .lineLimit(1)
 
             Text("by \(book.author)")
-                .font(.caption)
+                .font(.attributionSmall)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
         }

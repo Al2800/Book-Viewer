@@ -248,8 +248,7 @@ struct QuoteDetailView: View {
                     .fieldChrome(minHeight: 56)
             } else if let note = quote.marginNote {
                 Text(note)
-                    .font(.body)
-                    .italic()
+                    .font(.attribution)
                     .foregroundStyle(.secondary)
                     .textSelection(.enabled)
             }
