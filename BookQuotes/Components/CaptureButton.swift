@@ -324,7 +324,7 @@ struct CaptureControlTray<Content: View>: View {
         .padding(.bottom, Spacing.md)
         .background {
             LinearGradient(
-                colors: [.clear, Color.black.opacity(0.45)],
+                colors: [.clear, Color.black.opacity(0.62)],
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -350,8 +350,9 @@ struct CaptureStatusPill: View {
         .foregroundStyle(tint)
         .padding(.horizontal, Spacing.md)
         .padding(.vertical, Spacing.xs)
-        .background(.ultraThinMaterial)
-        .clipShape(Capsule())
+        // Deterministic dark fill: adaptive materials go light over bright
+        // scenes and wash out the white text.
+        .background(Color.black.opacity(0.55), in: Capsule())
     }
 }
 

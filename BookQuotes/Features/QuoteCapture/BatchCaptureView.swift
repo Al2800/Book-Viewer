@@ -128,7 +128,7 @@ struct BatchCaptureView: View {
             } label: {
                 Text("Done")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(lifecycleState.canFinish(pageCount: session.totalPages) ? Color.brand : Color.white.opacity(0.45))
+                    .foregroundStyle(lifecycleState.canFinish(pageCount: session.totalPages) ? Color.accent : Color.white.opacity(0.45))
             }
             .buttonStyle(.plain)
             .disabled(!lifecycleState.canFinish(pageCount: session.totalPages))
@@ -160,6 +160,7 @@ struct BatchCaptureView: View {
                         .font(.title2)
                         .foregroundStyle(.white)
                         .frame(width: 50, height: 50)
+                        .background(Color.black.opacity(0.35), in: Circle())
                 }
 
                 // Main capture button
@@ -175,6 +176,7 @@ struct BatchCaptureView: View {
                         .font(.title2)
                         .foregroundStyle(.white)
                         .frame(width: 50, height: 50)
+                        .background(Color.black.opacity(0.35), in: Circle())
                 }
             }
             .padding(.bottom, Spacing.xl)
