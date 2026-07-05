@@ -20,9 +20,19 @@ struct BookDetailQuotePresentation {
 
     func visibleQuotes(
         filter: MarkingType?,
-        sortOrder: BookDetailQuoteSortOrder
+        sortOrder: BookDetailQuoteSortOrder,
+        searchText: String = ""
     ) -> [Quote] {
         var visibleQuotes = quotes
+
+        let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedSearch.isEmpty {
+            visibleQuotes = visibleQuotes.filter { quote in
+                Self.matches(quote.text, trimmedSearch)
+                    || Self.matches(quote.marginNote, trimmedSearch)
+                    || Self.matches(quote.personalNote, trimmedSearch)
+            }
+        }
 
         if let filter {
             visibleQuotes = visibleQuotes.filter { $0.markingType == filter }
@@ -40,5 +50,16 @@ struct BookDetailQuotePresentation {
         }
 
         return visibleQuotes
+    }
+
+    /// Case- and diacritic-insensitive substring match, mirroring the
+    /// diacritic folding of the FTS5-backed library search.
+    private static func matches(_ text: String?, _ search: String) -> Bool {
+        guard let text else { return false }
+        return text.range(
+            of: search,
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        ) != nil
     }
 }

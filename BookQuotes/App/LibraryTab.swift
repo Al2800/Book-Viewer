@@ -117,6 +117,7 @@ struct LibraryView: View {
         .toolbar { toolbarContent }
         .onAppear {
             initializeSearchServices()
+            syncSearchIndex()
             if UITestConfiguration.isUITesting {
                 print("UITest library books count: \(books.count)")
             }
@@ -130,9 +131,13 @@ struct LibraryView: View {
             }
         }
         .onChange(of: books.count) { _, newValue in
+            syncSearchIndex()
             if UITestConfiguration.isUITesting {
                 print("UITest library books count updated: \(newValue)")
             }
+        }
+        .onChange(of: books.reduce(0) { $0 + $1.quoteCount }) { _, _ in
+            syncSearchIndex()
         }
         .onChange(of: viewMode) { _, _ in
             HapticManager.selection()
@@ -440,6 +445,16 @@ struct LibraryView: View {
         }
     }
 
+    /// Resync the FTS index with the current library so search results
+    /// always reflect the latest books and quotes.
+    private func syncSearchIndex() {
+        guard let searchServices else { return }
+        let currentBooks = books
+        Task {
+            await searchServices.syncIndex(books: currentBooks)
+        }
+    }
+
     /// Refresh library data with pull-to-refresh
     private func refreshLibrary() async {
         isRefreshing = true
@@ -448,12 +463,9 @@ struct LibraryView: View {
         // Small delay for visual feedback
         try? await Task.sleep(for: .milliseconds(300))
 
-        // Rebuild search index if needed
+        // Rebuild search index from the current library contents
         if let searchServices {
-            await MainActor.run {
-                // Trigger re-indexing (SearchService handles this internally)
-                searchServices.refreshSearchIndex()
-            }
+            await searchServices.syncIndex(books: books)
         }
 
         // Reset entrance animation for refreshed content

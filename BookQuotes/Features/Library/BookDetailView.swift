@@ -20,6 +20,7 @@ struct BookDetailView: View {
 
     @State private var sortOrder: BookDetailQuoteSortOrder = .dateAdded
     @State private var filterMarking: MarkingType?
+    @State private var quoteSearchText = ""
     @State private var showSortMenu = false
     @State private var showFilterMenu = false
     @State private var showExportSheet = false
@@ -37,7 +38,15 @@ struct BookDetailView: View {
     }
 
     private var sortedQuotes: [Quote] {
-        quotePresentation.visibleQuotes(filter: filterMarking, sortOrder: sortOrder)
+        quotePresentation.visibleQuotes(
+            filter: filterMarking,
+            sortOrder: sortOrder,
+            searchText: quoteSearchText
+        )
+    }
+
+    private var isSearchingQuotes: Bool {
+        !quoteSearchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     private var uniquePages: Int {
@@ -95,6 +104,7 @@ struct BookDetailView: View {
         // Sort/filter change animations
         .animation(reduceMotion ? .none : .smoothSpring, value: sortOrder)
         .animation(reduceMotion ? .none : .smoothSpring, value: filterMarking)
+        .animation(reduceMotion ? .none : .smoothSpring, value: quoteSearchText)
         .onAppear {
             guard !reduceMotion else {
                 hasAppeared = true
@@ -112,6 +122,11 @@ struct BookDetailView: View {
         }
         .navigationTitle(book.title)
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(
+            text: $quoteSearchText,
+            placement: .navigationBarDrawer(displayMode: .automatic),
+            prompt: "Search quotes in this book"
+        )
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
@@ -327,12 +342,25 @@ struct BookDetailView: View {
         ContentUnavailableView {
             Label("No Matching Quotes", systemImage: "magnifyingglass")
         } description: {
-            Text("No quotes match the current filter.")
-        } actions: {
-            Button("Clear Filter") {
-                filterMarking = nil
+            if isSearchingQuotes {
+                Text("No quotes in this book match \u{201C}\(quoteSearchText)\u{201D}.")
+            } else {
+                Text("No quotes match the current filter.")
             }
-            .buttonStyle(.secondaryCompact)
+        } actions: {
+            if isSearchingQuotes {
+                Button("Clear Search") {
+                    quoteSearchText = ""
+                }
+                .buttonStyle(.secondaryCompact)
+            }
+
+            if filterMarking != nil {
+                Button("Clear Filter") {
+                    filterMarking = nil
+                }
+                .buttonStyle(.secondaryCompact)
+            }
         }
     }
 

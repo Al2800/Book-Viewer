@@ -34,7 +34,10 @@ struct LibrarySearchServices {
         suggestionsService.addToHistory(suggestion)
     }
 
-    func refreshSearchIndex() {
-        searchService.search("", scope: .all)
+    /// Rebuild the FTS index from the current library contents.
+    /// SwiftData has no change feed we can subscribe to, so the library
+    /// resyncs the index on appearance and when book/quote counts change.
+    func syncIndex(books: [Book]) async {
+        await searchService.rebuildIndex(books: books)
     }
 }
