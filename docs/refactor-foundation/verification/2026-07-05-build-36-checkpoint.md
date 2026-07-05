@@ -39,12 +39,13 @@ Date: 2026-07-05
 ## Remaining Release Check
 
 - Archive and export build 36.
-  - Pending.
+  - Done 2026-07-05 12:33 BST.
 - Upload build 36 to App Store Connect.
-  - Pending.
+  - Done 2026-07-05 12:33 BST; upload succeeded and Apple reported the package is processing.
 - Confirm App Store Connect processing reaches `VALID`.
-  - Pending.
+  - Confirmed `VALID` 2026-07-05 12:35 BST.
+  - App Store Connect build id: `0e647c84-66ed-4a06-955e-7ee0e90c68fe`.
 - Confirm `usesNonExemptEncryption: false`.
-  - Pending.
+  - Confirmed.
 - Confirm TestFlight device smoke against the uploaded build.
   - Pending on a physical device.
