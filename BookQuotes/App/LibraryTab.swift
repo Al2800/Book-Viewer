@@ -57,6 +57,7 @@ struct LibraryView: View {
     // MARK: - State
 
     @AppStorage("libraryViewMode") private var viewMode: LibraryViewMode = .grid
+    @AppStorage("librarySortOrder") private var sortOrder: LibrarySortOrder = .recent
     @State private var searchText = ""
     @State private var searchScope: SearchScope = .all
     @State private var isSearchActive = false
@@ -255,6 +256,16 @@ struct LibraryView: View {
     private var libraryScrollContent: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
+                if let passage = DailyPassage.passage(from: books.flatMap(\.quotes)) {
+                    Button {
+                        HapticManager.light()
+                        router.navigate(to: passage)
+                    } label: {
+                        DailyPassageCard(quote: passage)
+                    }
+                    .buttonStyle(.plain)
+                }
+
                 LibrarySummaryCard(
                     bookCount: books.count,
                     quoteCount: books.reduce(0) { $0 + $1.quoteCount },
@@ -268,6 +279,14 @@ struct LibraryView: View {
                             title: "Library View",
                             trailing: {
                                 LibraryViewModeControl(viewMode: $viewMode)
+                            }
+                        )
+
+                        LibraryControlRow(
+                            icon: "arrow.up.arrow.down",
+                            title: "Sort Books",
+                            trailing: {
+                                sortMenu
                             }
                         )
 
@@ -318,7 +337,7 @@ struct LibraryView: View {
                     }
                 } else {
                     LibraryBooksSection(
-                        books: organizationFilteredBooks,
+                        books: sortOrder.sorted(organizationFilteredBooks),
                         viewMode: $viewMode,
                         hasAppeared: hasAppeared,
                         reduceMotion: reduceMotion,
@@ -353,6 +372,32 @@ struct LibraryView: View {
         ToolbarItem(placement: .topBarTrailing) {
             addBookButton
         }
+    }
+
+    private var sortMenu: some View {
+        Menu {
+            ForEach(LibrarySortOrder.allCases) { order in
+                Button {
+                    HapticManager.selection()
+                    sortOrder = order
+                } label: {
+                    if sortOrder == order {
+                        Label(order.displayName, systemImage: "checkmark")
+                    } else {
+                        Text(order.displayName)
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: Spacing.xxs) {
+                Text(sortOrder.displayName)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption2)
+            }
+            .font(.subheadline)
+            .foregroundStyle(Color.brand)
+        }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.sortMenu)
     }
 
     private var addBookButton: some View {

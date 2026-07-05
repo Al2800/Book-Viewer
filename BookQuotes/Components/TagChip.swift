@@ -106,7 +106,7 @@ struct TagChipText: View {
     // MARK: - Properties
 
     let text: String
-    var color: Color = .blue
+    var color: Color = .brand
     var isSelected: Bool = false
     var onTap: (() -> Void)?
 
