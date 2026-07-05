@@ -45,9 +45,10 @@ Date: 2026-07-05
 ## Remaining Release Check
 
 - Archive and export build 37.
-  - Pending.
+  - Blocked locally.
+  - `xcodebuild archive` aborts because macOS cannot resolve the current uid: `opendirectoryd not available`, `No user exists for uid 598`, and `Failed to get length of DARWIN_USER_CACHE_DIR`.
 - Upload build 37 to App Store Connect.
-  - Pending.
+  - Pending until the local macOS user/directory service issue is resolved.
 - Confirm App Store Connect processing reaches `VALID`.
   - Pending.
 - Confirm `usesNonExemptEncryption: false`.
