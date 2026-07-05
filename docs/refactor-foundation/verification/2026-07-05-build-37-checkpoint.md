@@ -22,7 +22,8 @@ Date: 2026-07-05
 
 - Simulator compile:
   - `xcodebuild build -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,id=AF90E17A-F07E-40FB-B32E-C52FFCA09DE7'`
-  - Result: passed.
+  - Result: passed before the macOS user/directory service failure.
+  - A later rerun was blocked by the same `DARWIN_USER_CACHE_DIR` / uid resolution failure affecting archive.
 - Focused tests:
   - `BookQuotesTests/BookDetailQuotePresentationTests`
   - `BookQuotesTests/LibraryContentModeTests`
