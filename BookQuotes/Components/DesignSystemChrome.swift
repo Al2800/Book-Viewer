@@ -94,37 +94,17 @@ extension View {
     }
 
     /// Chrome specifically tuned for camera controls layered on top of a live preview.
-    /// Material + elevation can read as a dark slab; keep it light and avoid double-layered shapes.
-    @ViewBuilder
+    /// Uses a deterministic dark fill rather than an adaptive material: the camera
+    /// content (and any letterboxed background) can be arbitrarily bright, and a
+    /// light material leaves the white control text unreadable. Dark chrome with
+    /// white text stays legible over any scene, matching the system Camera app.
     func cameraChrome(cornerRadius: CGFloat = CornerRadius.xl) -> some View {
-        if #available(iOS 26, *) {
-            self
-                .background {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(.thinMaterial)
-                        .overlay {
-                            // Subtle highlight to keep controls readable over dark previews.
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.10),
-                                    Color.clear
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                        }
-                        .mask(RoundedRectangle(cornerRadius: cornerRadius))
-                }
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        } else {
-            self
-                .background {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(.thinMaterial)
-                }
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        }
+        self
+            .background {
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(Color.black.opacity(0.55))
+            }
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     /// Apply glass button style with iOS 26 Liquid Glass.

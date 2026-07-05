@@ -118,7 +118,7 @@ struct ImageReviewView: View {
                     Text(qualityLabel(for: result.overallScore))
                         .font(.subheadline)
                         .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.textPrimary)
                 }
 
                 Spacer()
@@ -131,8 +131,7 @@ struct ImageReviewView: View {
                 }
             }
             .padding(Spacing.md)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+            .background(Color.backgroundSecondary, in: RoundedRectangle(cornerRadius: CornerRadius.md))
 
             // Warnings if any
             if !result.issues.isEmpty {
@@ -145,7 +144,7 @@ struct ImageReviewView: View {
 
                             Text(issue.description)
                                 .font(.caption)
-                                .foregroundStyle(.white.opacity(0.8))
+                                .foregroundStyle(Color.textSecondary)
                         }
                     }
                 }
@@ -161,7 +160,7 @@ struct ImageReviewView: View {
         VStack(spacing: 2) {
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.white.opacity(0.6))
+                .foregroundStyle(Color.textSecondary)
 
             Circle()
                 .fill(qualityColor(for: score))
