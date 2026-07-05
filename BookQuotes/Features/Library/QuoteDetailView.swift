@@ -23,6 +23,8 @@ struct QuoteDetailView: View {
     @State private var showSourceImage = false
     @State private var showMarkingPicker = false
     @State private var showShareSheet = false
+    @State private var showCollectionsSheet = false
+    @State private var showTagsSheet = false
 
     // MARK: - Editing State
 
@@ -58,6 +60,11 @@ struct QuoteDetailView: View {
 
                 // Metadata section
                 metadataSection
+                    .opacity(hasAppeared ? 1 : 0)
+                    .offset(y: hasAppeared ? 0 : 15)
+
+                // Collections and tags
+                organizeSection
                     .opacity(hasAppeared ? 1 : 0)
                     .offset(y: hasAppeared ? 0 : 15)
 
@@ -134,6 +141,20 @@ struct QuoteDetailView: View {
 
                         Divider()
 
+                        Button {
+                            showCollectionsSheet = true
+                        } label: {
+                            Label("Add to Collection", systemImage: "folder.badge.plus")
+                        }
+
+                        Button {
+                            showTagsSheet = true
+                        } label: {
+                            Label("Manage Tags", systemImage: "tag")
+                        }
+
+                        Divider()
+
                         Button(role: .destructive) {
                             showDeleteConfirmation = true
                         } label: {
@@ -197,7 +218,13 @@ struct QuoteDetailView: View {
             )
         }
         .sheet(isPresented: $showShareSheet) {
-            QuoteShareSheet(text: shareableQuoteText)
+            QuoteShareSheet(items: shareItems)
+        }
+        .sheet(isPresented: $showCollectionsSheet) {
+            AddToCollectionSheet(quote: quote)
+        }
+        .sheet(isPresented: $showTagsSheet) {
+            AddTagToQuoteSheet(quote: quote)
         }
     }
 
@@ -318,6 +345,58 @@ struct QuoteDetailView: View {
         .paperCard()
     }
 
+    // MARK: - Organize Section
+
+    private var organizeSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Collections & Tags")
+                .sectionHeaderStyle()
+
+            if quote.collections.isEmpty && quote.tags.isEmpty {
+                Text("Group this quote into collections or label it with tags.")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+            }
+
+            if !quote.collections.isEmpty {
+                FlowLayout(spacing: Spacing.sm) {
+                    ForEach(quote.collections) { collection in
+                        QuoteCollectionChip(collection: collection)
+                    }
+                }
+            }
+
+            if !quote.tags.isEmpty {
+                FlowLayout(spacing: Spacing.sm) {
+                    ForEach(quote.tags) { tag in
+                        TagChip(tag: tag)
+                    }
+                }
+            }
+
+            HStack(spacing: Spacing.sm) {
+                Button {
+                    HapticManager.light()
+                    showCollectionsSheet = true
+                } label: {
+                    Label("Collections", systemImage: "folder.badge.plus")
+                }
+                .buttonStyle(.secondaryCompact)
+
+                Button {
+                    HapticManager.light()
+                    showTagsSheet = true
+                } label: {
+                    Label("Tags", systemImage: "tag")
+                }
+                .buttonStyle(.secondaryCompact)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+
     // MARK: - Source Image Button
 
     private var sourceImageButton: some View {
@@ -404,11 +483,48 @@ struct QuoteDetailView: View {
         QuoteDetailTextFormatter.shareText(for: quote)
     }
 
+    /// Share a typographic image card alongside the plain text.
+    private var shareItems: [Any] {
+        var items: [Any] = []
+        if let image = QuoteShareImageRenderer.render(quote: quote) {
+            items.append(image)
+        }
+        items.append(shareableQuoteText)
+        return items
+    }
+
     private func deleteQuote() {
         HapticManager.warning()
         modelContext.delete(quote)
         try? modelContext.save()
         dismiss()
+    }
+}
+
+// MARK: - Quote Collection Chip
+
+/// Small capsule showing a collection the quote belongs to.
+private struct QuoteCollectionChip: View {
+    let collection: Collection
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            Image(systemName: collection.icon)
+                .font(.caption2)
+
+            Text(collection.name)
+                .font(.caption)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xs)
+        .background(chipColor.opacity(0.15))
+        .foregroundStyle(chipColor)
+        .clipShape(Capsule())
+    }
+
+    private var chipColor: Color {
+        CollectionColor.named(collection.colorName).color
     }
 }
 

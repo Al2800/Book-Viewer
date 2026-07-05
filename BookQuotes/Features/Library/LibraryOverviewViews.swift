@@ -1,5 +1,60 @@
 import SwiftUI
 
+// MARK: - Daily Passage
+
+/// Deterministic daily quote pick for the Library home.
+/// The same passage shows all day and changes at midnight, favoring
+/// favorites so rediscovery surfaces the lines the reader loved most.
+struct DailyPassage {
+    static func passage(
+        from quotes: [Quote],
+        on date: Date = Date(),
+        calendar: Calendar = .current
+    ) -> Quote? {
+        guard !quotes.isEmpty else { return nil }
+
+        let favorites = quotes.filter(\.isFavorite)
+        let pool = favorites.isEmpty ? quotes : favorites
+
+        // Stable ordering so the daily index resolves to the same quote
+        // regardless of fetch order.
+        let ordered = pool.sorted { $0.id.uuidString < $1.id.uuidString }
+        let day = calendar.ordinality(of: .day, in: .era, for: date) ?? 0
+        return ordered[day % ordered.count]
+    }
+}
+
+/// Epigraph-style card resurfacing one passage per day.
+struct DailyPassageCard: View {
+    let quote: Quote
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Today's Passage")
+                .sectionHeaderStyle()
+
+            Text("\u{201C}\(quote.text)\u{201D}")
+                .font(.quoteLarge)
+                .foregroundStyle(Color.textPrimary)
+                .lineSpacing(5)
+                .lineLimit(6)
+                .multilineTextAlignment(.leading)
+
+            if let book = quote.book {
+                Text("— \(book.title), \(book.author)")
+                    .font(.attribution)
+                    .foregroundStyle(Color.textSecondary)
+                    .lineLimit(1)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Spacing.lg)
+        .paperCard()
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Open quote")
+    }
+}
+
 /// Empty state for library with entrance animation.
 struct EmptyLibraryView: View {
     var onAddBook: (() -> Void)?
