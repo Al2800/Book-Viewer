@@ -151,6 +151,219 @@ final class CoverMetadataNormalizerTests: XCTestCase {
         XCTAssertEqual(fallback.source, .manual)
     }
 
+    // MARK: - Catalog Matching
+
+    func testBestCatalogMatchAcceptsSameTitleAndAuthorIgnoringCaseAndPunctuation() {
+        let extracted = BookMetadata(
+            title: "ATOMIC HABITS",
+            authors: ["JAMES CLEAR"],
+            source: .coverPhoto
+        )
+        let candidate = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        let match = CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: [candidate])
+
+        XCTAssertEqual(match?.title, "Atomic Habits")
+    }
+
+    func testBestCatalogMatchAcceptsSubtitledCatalogTitleByPrefix() {
+        let extracted = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            source: .coverPhoto
+        )
+        let candidate = BookMetadata(
+            title: "Atomic Habits: An Easy & Proven Way to Build Good Habits",
+            authors: ["James Clear"],
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        XCTAssertNotNil(CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: [candidate]))
+    }
+
+    func testBestCatalogMatchMatchesAuthorsBySurname() {
+        let extracted = BookMetadata(
+            title: "The Left Hand of Darkness",
+            authors: ["Ursula Le Guin"],
+            source: .coverPhoto
+        )
+        let candidate = BookMetadata(
+            title: "The Left Hand of Darkness",
+            authors: ["Ursula K. Le Guin"],
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        XCTAssertNotNil(CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: [candidate]))
+    }
+
+    func testBestCatalogMatchRejectsDifferentAuthor() {
+        let extracted = BookMetadata(
+            title: "Meditations",
+            authors: ["Marcus Aurelius"],
+            source: .coverPhoto
+        )
+        let candidate = BookMetadata(
+            title: "Meditations",
+            authors: ["Someone Else"],
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        XCTAssertNil(CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: [candidate]))
+    }
+
+    func testBestCatalogMatchRejectsCandidateWithoutCoverImage() {
+        let extracted = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            source: .coverPhoto
+        )
+        let candidate = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            source: .googleBooks
+        )
+
+        XCTAssertNil(CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: [candidate]))
+    }
+
+    func testBestCatalogMatchAcceptsTitleOnlyWhenExtractionHasNoAuthor() {
+        let extracted = BookMetadata(
+            title: "Atomic Habits",
+            authors: [],
+            source: .coverPhoto
+        )
+        let candidate = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        XCTAssertNotNil(CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: [candidate]))
+    }
+
+    func testBestCatalogMatchRejectsUnrelatedTitle() {
+        let extracted = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            source: .coverPhoto
+        )
+        let candidate = BookMetadata(
+            title: "Deep Work",
+            authors: ["James Clear"],
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        XCTAssertNil(CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: [candidate]))
+    }
+
+    // MARK: - Catalog Enrichment
+
+    func testEnrichedPrefersCatalogFieldsAndStockCoverButKeepsExtractedFallbacks() {
+        let photoData = Data([1, 2, 3])
+        let stockData = Data([9, 9, 9])
+        let extracted = BookMetadata(
+            title: "ATOMIC HABITS",
+            authors: ["JAMES CLEAR"],
+            publisher: "Photo Publisher",
+            coverImageData: photoData,
+            source: .coverPhoto
+        )
+        let catalog = BookMetadata(
+            title: "Atomic Habits",
+            subtitle: "An Easy & Proven Way to Build Good Habits",
+            authors: ["James Clear"],
+            publishedYear: 2018,
+            isbn13: "9780735211292",
+            pageCount: 320,
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks,
+            googleBooksId: "abc123"
+        )
+
+        let enriched = CoverMetadataNormalizer.enriched(
+            extracted,
+            withCatalog: catalog,
+            stockCoverData: stockData
+        )
+
+        XCTAssertEqual(enriched.title, "Atomic Habits")
+        XCTAssertEqual(enriched.authors, ["James Clear"])
+        XCTAssertEqual(enriched.subtitle, "An Easy & Proven Way to Build Good Habits")
+        XCTAssertEqual(enriched.publisher, "Photo Publisher")
+        XCTAssertEqual(enriched.publishedYear, 2018)
+        XCTAssertEqual(enriched.isbn13, "9780735211292")
+        XCTAssertEqual(enriched.pageCount, 320)
+        XCTAssertEqual(enriched.coverImageData, stockData)
+        XCTAssertEqual(enriched.source, .coverPhoto)
+        XCTAssertEqual(enriched.googleBooksId, "abc123")
+    }
+
+    func testEnrichedKeepsPhotoCoverWhenStockDownloadFailed() {
+        let photoData = Data([1, 2, 3])
+        let extracted = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            coverImageData: photoData,
+            source: .coverPhoto
+        )
+        let catalog = BookMetadata(
+            title: "Atomic Habits",
+            authors: ["James Clear"],
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        let enriched = CoverMetadataNormalizer.enriched(
+            extracted,
+            withCatalog: catalog,
+            stockCoverData: nil
+        )
+
+        XCTAssertEqual(enriched.coverImageData, photoData)
+    }
+
+    // MARK: - Stock Cover URLs
+
+    func testStockCoverURLCandidatesPreferOpenLibraryISBNThenGoogleCovers() {
+        let catalog = BookMetadata(
+            title: "Atomic Habits",
+            isbn13: "9780735211292",
+            thumbnailURL: "https://books.google.com/thumb.jpg&edge=curl",
+            coverURL: "https://books.google.com/large.jpg",
+            source: .googleBooks
+        )
+
+        let urls = CoverMetadataNormalizer.stockCoverURLCandidates(for: catalog)
+
+        XCTAssertEqual(urls, [
+            "https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg?default=false",
+            "https://books.google.com/large.jpg",
+            "https://books.google.com/thumb.jpg"
+        ])
+    }
+
+    func testStockCoverURLCandidatesWithoutISBNFallBackToGoogleOnly() {
+        let catalog = BookMetadata(
+            title: "Atomic Habits",
+            thumbnailURL: "https://books.google.com/thumb.jpg",
+            source: .googleBooks
+        )
+
+        let urls = CoverMetadataNormalizer.stockCoverURLCandidates(for: catalog)
+
+        XCTAssertEqual(urls, ["https://books.google.com/thumb.jpg"])
+    }
+
     func testOCRTitleGuessIgnoresCommonPraiseAndBestsellerLines() {
         let sourceLines: [(text: String, box: CGRect)] = [
             ("\"A masterpiece\"", CGRect(x: 0.1, y: 0.88, width: 0.8, height: 0.04)),
