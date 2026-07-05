@@ -20,9 +20,19 @@ struct BookDetailQuotePresentation {
 
     func visibleQuotes(
         filter: MarkingType?,
-        sortOrder: BookDetailQuoteSortOrder
+        sortOrder: BookDetailQuoteSortOrder,
+        searchText: String = ""
     ) -> [Quote] {
         var visibleQuotes = quotes
+
+        let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedSearch.isEmpty {
+            visibleQuotes = visibleQuotes.filter { quote in
+                quote.text.localizedCaseInsensitiveContains(trimmedSearch)
+                    || (quote.marginNote?.localizedCaseInsensitiveContains(trimmedSearch) ?? false)
+                    || (quote.personalNote?.localizedCaseInsensitiveContains(trimmedSearch) ?? false)
+            }
+        }
 
         if let filter {
             visibleQuotes = visibleQuotes.filter { $0.markingType == filter }

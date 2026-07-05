@@ -72,6 +72,72 @@ final class BookDetailQuotePresentationTests: XCTestCase {
         XCTAssertFalse(visible.last?.isFavorite ?? true)
     }
 
+    func testVisibleQuotesSearchMatchesTextCaseInsensitively() {
+        let matching = quote(text: "The pleasure of finding things out")
+        let other = quote(text: "Something else entirely")
+
+        let presentation = BookDetailQuotePresentation(quotes: [matching, other])
+
+        let visible = presentation.visibleQuotes(
+            filter: nil,
+            sortOrder: .dateAdded,
+            searchText: "PLEASURE"
+        )
+
+        XCTAssertEqual(visible.map(\.text), ["The pleasure of finding things out"])
+    }
+
+    func testVisibleQuotesSearchMatchesMarginAndPersonalNotes() {
+        let marginMatch = quote(text: "Quote A")
+        marginMatch.marginNote = "Remember this for the essay"
+        let personalMatch = quote(text: "Quote B")
+        personalMatch.personalNote = "Great essay material"
+        let noMatch = quote(text: "Quote C")
+
+        let presentation = BookDetailQuotePresentation(
+            quotes: [marginMatch, personalMatch, noMatch]
+        )
+
+        let visible = presentation.visibleQuotes(
+            filter: nil,
+            sortOrder: .dateAdded,
+            searchText: "essay"
+        )
+
+        XCTAssertEqual(Set(visible.map(\.text)), ["Quote A", "Quote B"])
+    }
+
+    func testVisibleQuotesSearchComposesWithMarkingFilter() {
+        let underlineMatch = quote(markingType: .underline, text: "habit stacking")
+        let highlightMatch = quote(markingType: .highlight, text: "habit loops")
+
+        let presentation = BookDetailQuotePresentation(
+            quotes: [underlineMatch, highlightMatch]
+        )
+
+        let visible = presentation.visibleQuotes(
+            filter: .underline,
+            sortOrder: .dateAdded,
+            searchText: "habit"
+        )
+
+        XCTAssertEqual(visible.map(\.text), ["habit stacking"])
+    }
+
+    func testVisibleQuotesBlankSearchTextIsIgnored() {
+        let presentation = BookDetailQuotePresentation(
+            quotes: [quote(text: "anything")]
+        )
+
+        let visible = presentation.visibleQuotes(
+            filter: nil,
+            sortOrder: .dateAdded,
+            searchText: "   "
+        )
+
+        XCTAssertEqual(visible.count, 1)
+    }
+
     func testUniquePageCountAndMarkingTypesIgnoreDuplicates() {
         let presentation = BookDetailQuotePresentation(
             quotes: [
