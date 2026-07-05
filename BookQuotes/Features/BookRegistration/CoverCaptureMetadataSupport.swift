@@ -18,7 +18,73 @@ struct CoverCaptureMetadataSupport {
             }
         )
 
-        return await orchestrator.extract(from: image, coverImageData: coverData)
+        let extracted = await orchestrator.extract(from: image, coverImageData: coverData)
+        return await enrichWithCatalog(extracted)
+    }
+
+    /// Once the photo has been identified (title/author), look the book up in
+    /// the catalog and swap the skewed photo for a canonical stock cover,
+    /// filling metadata gaps along the way. Falls back to the photo when no
+    /// confident match or cover download is available (e.g. offline).
+    func enrichWithCatalog(_ extracted: BookMetadata) async -> BookMetadata {
+        // Keep UI tests hermetic: no live catalog lookups.
+        guard !UITestConfiguration.isUITesting else { return extracted }
+
+        let title = extracted.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty else { return extracted }
+
+        let service = ISBNLookupService()
+        var candidates: [BookMetadata] = []
+
+        // An ISBN read off the cover gives the most precise match.
+        if let isbn = extracted.bestISBN,
+           let isbnResult = try? await service.lookup(isbn: isbn) {
+            candidates.append(isbnResult)
+        }
+
+        if let searchResults = try? await service.searchGoogleBooks(
+            title: title,
+            author: extracted.primaryAuthor
+        ) {
+            candidates.append(contentsOf: searchResults)
+        }
+
+        var match = CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: candidates)
+
+        // A misread author can starve the constrained search; retry on title
+        // alone. The matcher still rejects results whose author disagrees.
+        if match == nil, extracted.primaryAuthor != nil,
+           let titleOnlyResults = try? await service.searchGoogleBooks(title: title, author: nil) {
+            match = CoverMetadataNormalizer.bestCatalogMatch(for: extracted, in: titleOnlyResults)
+        }
+
+        guard let catalog = match else {
+            return extracted
+        }
+
+        let stockCoverData = await downloadStockCover(for: catalog, using: service)
+        return CoverMetadataNormalizer.enriched(
+            extracted,
+            withCatalog: catalog,
+            stockCoverData: stockCoverData
+        )
+    }
+
+    private func downloadStockCover(
+        for catalog: BookMetadata,
+        using service: ISBNLookupService
+    ) async -> Data? {
+        for urlString in CoverMetadataNormalizer.stockCoverURLCandidates(for: catalog) {
+            guard let data = try? await service.fetchCoverImage(from: urlString) else {
+                continue
+            }
+            // Reject placeholder/error payloads that aren't a usable cover.
+            guard data.count > 2048, UIImage(data: data) != nil else {
+                continue
+            }
+            return data
+        }
+        return nil
     }
 
     func extractCoverMetadataViaOCR(from image: UIImage, coverImageData: Data?) async -> BookMetadata {
@@ -81,7 +147,14 @@ struct CoverCaptureMetadataSupport {
 
     func lookupISBN(_ isbn: String) async throws -> BookMetadata {
         let service = ISBNLookupService()
-        return try await service.lookup(isbn: isbn)
+        var metadata = try await service.lookup(isbn: isbn)
+
+        // Attach the stock cover so the confirm screen (and saved book)
+        // gets an image, not just a URL that would otherwise be dropped.
+        if metadata.coverImageData == nil {
+            metadata.coverImageData = await downloadStockCover(for: metadata, using: service)
+        }
+        return metadata
     }
 
     /// Attempts to detect and crop the book cover from the captured image.

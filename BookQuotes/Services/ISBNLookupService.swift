@@ -257,6 +257,55 @@ actor ISBNLookupService {
         return metadata
     }
 
+    /// Search Google Books by title (and optionally author).
+    /// Used to find catalog metadata and a canonical cover image after
+    /// AI cover recognition, where no ISBN is available.
+    /// - Returns: Up to `maxResults` candidate matches, best-ranked first.
+    func searchGoogleBooks(title: String, author: String?, maxResults: Int = 5) async throws -> [BookMetadata] {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedTitle.isEmpty else { return [] }
+
+        var query = "intitle:\"\(trimmedTitle)\""
+        if let author = author?.trimmingCharacters(in: .whitespacesAndNewlines), !author.isEmpty {
+            query += " inauthor:\"\(author)\""
+        }
+
+        guard var components = URLComponents(url: googleBooksBaseURL, resolvingAgainstBaseURL: false) else {
+            throw LookupError.invalidURL
+        }
+        components.queryItems = [
+            URLQueryItem(name: "q", value: query),
+            URLQueryItem(name: "maxResults", value: String(maxResults)),
+            URLQueryItem(name: "printType", value: "books")
+        ]
+        guard let url = components.url else {
+            throw LookupError.invalidURL
+        }
+
+        let (data, response) = try await session.data(from: url)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw LookupError.invalidResponse
+        }
+
+        switch httpResponse.statusCode {
+        case 200:
+            break
+        case 429:
+            throw LookupError.rateLimited
+        case 400..<500:
+            throw LookupError.clientError(httpResponse.statusCode)
+        case 500..<600:
+            throw LookupError.serverError(httpResponse.statusCode)
+        default:
+            throw LookupError.unexpectedStatusCode(httpResponse.statusCode)
+        }
+
+        let decoder = JSONDecoder()
+        let booksResponse = try decoder.decode(GoogleBooksResponse.self, from: data)
+        return (booksResponse.items ?? []).map { $0.toBookMetadata() }
+    }
+
     /// Look up using OpenLibrary only
     func lookupOpenLibrary(isbn: String) async throws -> BookMetadata {
         let normalizedISBN = normalizeISBN(isbn)
