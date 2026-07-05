@@ -124,6 +124,21 @@ final class BookDetailQuotePresentationTests: XCTestCase {
         XCTAssertEqual(visible.map(\.text), ["habit stacking"])
     }
 
+    func testVisibleQuotesSearchIgnoresDiacritics() {
+        let accented = quote(text: "A quiet café on the corner")
+        let other = quote(text: "Nothing to see here")
+
+        let presentation = BookDetailQuotePresentation(quotes: [accented, other])
+
+        let visible = presentation.visibleQuotes(
+            filter: nil,
+            sortOrder: .dateAdded,
+            searchText: "cafe"
+        )
+
+        XCTAssertEqual(visible.map(\.text), ["A quiet café on the corner"])
+    }
+
     func testVisibleQuotesBlankSearchTextIsIgnored() {
         let presentation = BookDetailQuotePresentation(
             quotes: [quote(text: "anything")]

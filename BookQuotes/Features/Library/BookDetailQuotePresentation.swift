@@ -28,9 +28,9 @@ struct BookDetailQuotePresentation {
         let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedSearch.isEmpty {
             visibleQuotes = visibleQuotes.filter { quote in
-                quote.text.localizedCaseInsensitiveContains(trimmedSearch)
-                    || (quote.marginNote?.localizedCaseInsensitiveContains(trimmedSearch) ?? false)
-                    || (quote.personalNote?.localizedCaseInsensitiveContains(trimmedSearch) ?? false)
+                Self.matches(quote.text, trimmedSearch)
+                    || Self.matches(quote.marginNote, trimmedSearch)
+                    || Self.matches(quote.personalNote, trimmedSearch)
             }
         }
 
@@ -50,5 +50,16 @@ struct BookDetailQuotePresentation {
         }
 
         return visibleQuotes
+    }
+
+    /// Case- and diacritic-insensitive substring match, mirroring the
+    /// diacritic folding of the FTS5-backed library search.
+    private static func matches(_ text: String?, _ search: String) -> Bool {
+        guard let text else { return false }
+        return text.range(
+            of: search,
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        ) != nil
     }
 }
