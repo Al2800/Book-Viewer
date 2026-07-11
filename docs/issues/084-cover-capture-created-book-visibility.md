@@ -1,6 +1,6 @@
 # Issue 084: Cover Capture Created Book Visibility
 
-Status: `open`
+Status: `closed`
 
 ## Context
 
@@ -29,11 +29,44 @@ CoverCaptureFlowTests.swift:258: XCTAssertTrue failed - Created book title shoul
 
 ## Acceptance Criteria
 
-- The cover-capture save completion route is explicit and documented.
-- A focused UI test verifies the chosen route with stable accessibility identifiers.
-- If the saved book is expected to appear in Library, the test should assert both successful dismissal and persisted book visibility.
-- The test must not be loosened to pass without confirming the intended product route.
-- Record verification in `docs/refactor-foundation/verification/`.
+- [x] The cover-capture save completion route is explicit and documented.
+- [x] A focused UI test verifies the chosen route.
+- [x] The saved book appears after dismissal by routing to Library and opening the created book.
+- [x] The test was not loosened.
+- [x] Verification recorded in `docs/refactor-foundation/verification/`.
+
+## Resolution
+
+Resolved on 2026-07-11.
+
+Cover capture completion now passes the created book to the app shell. The app switches to Library and `LibraryTab` consumes the pending book navigation request by opening `BookDetailView` for that book.
+
+The route is now:
+
+```text
+CoverCaptureFlowView completion -> CaptureTabRootView completion -> ContentView.openBookInLibrary -> LibraryTab opens BookDetailView
+```
+
+The original failure was reproduced before the fix:
+
+```text
+/Users/user298279/Library/Developer/Xcode/DerivedData/BookQuotes-chdblwnjsdsclucdtkuelvsnfrxn/Logs/Test/Test-BookQuotes-2026.07.11_22-55-21-+0100.xcresult
+```
+
+Green verification:
+
+```text
+/Users/user298279/Library/Developer/Xcode/DerivedData/BookQuotes-chdblwnjsdsclucdtkuelvsnfrxn/Logs/Test/Test-BookQuotes-2026.07.11_23-01-21-+0100.xcresult
+```
+
+Command:
+
+```sh
+xcodebuild test -project BookQuotes.xcodeproj -scheme BookQuotes \
+  -destination 'platform=iOS Simulator,id=AF90E17A-F07E-40FB-B32E-C52FFCA09DE7' \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testSaveQuotes_NavigatesToLibrary \
+  -only-testing:BookQuotesUITests/CoverCaptureFlowTests/testCoverCapture_TestCoverButton_CanSaveBook
+```
 
 ## Refactor Impact
 

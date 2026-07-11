@@ -10,6 +10,7 @@ struct CaptureTabRootView: View {
     @State private var captureFlow = CaptureFlowState()
     @State private var selectedBook: Book?
     var onBookCreated: ((Book) -> Void)?
+    var onQuotesSaved: ((Book) -> Void)?
     @State private var showCoaching = false
     @AppStorage("hasCompletedCaptureCoaching") private var hasCompletedCoaching = false
     @Environment(\.scenePhase) private var scenePhase
@@ -129,7 +130,11 @@ struct CaptureTabRootView: View {
             QuoteCaptureFlowView(
                 book: selectedBook,
                 onComplete: {
+                    let completedBook = selectedBook
                     handleCaptureFlowEvent(.completeQuoteCapture)
+                    if let completedBook {
+                        onQuotesSaved?(completedBook)
+                    }
                 },
                 onCancel: {
                     handleCaptureFlowEvent(.cancelQuoteCapture)
@@ -141,7 +146,11 @@ struct CaptureTabRootView: View {
             BatchCaptureFlowView(
                 book: selectedBook,
                 onComplete: { _ in
+                    let completedBook = selectedBook
                     handleCaptureFlowEvent(.completeBatchCapture)
+                    if let completedBook {
+                        onQuotesSaved?(completedBook)
+                    }
                 },
                 onCancel: {
                     handleCaptureFlowEvent(.cancelBatchCapture)

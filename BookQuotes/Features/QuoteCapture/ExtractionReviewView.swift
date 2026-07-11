@@ -15,7 +15,6 @@ struct ExtractionReviewView: View {
 
     @State private var quoteState = ExtractionReviewQuoteState()
     @State private var selectedPage: PageCapture?
-    @State private var showingSaveConfirmation = false
     @State private var showingAddQuoteSheet = false
     @State private var showingDiscardAlert = false
     @State private var isSaving = false
@@ -131,18 +130,6 @@ struct ExtractionReviewView: View {
                         }
                     )
                 }
-            }
-            .confirmationDialog(
-                "Save \(totalQuoteCount) Quotes",
-                isPresented: $showingSaveConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button("Save to \"\(book.title)\"") {
-                    saveAllQuotes()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("These quotes will be added to your library.")
             }
             .sheet(item: $currentDuplicateCheck, onDismiss: advanceDuplicateReview) { item in
                 DuplicateWarningSheet(
@@ -266,7 +253,7 @@ struct ExtractionReviewView: View {
             let canSave = !quoteState.editingQuotes.isEmpty && !isSaving
             Button {
                 HapticManager.medium()
-                showingSaveConfirmation = true
+                saveAllQuotes()
             } label: {
                 if isSaving {
                     ProgressView()

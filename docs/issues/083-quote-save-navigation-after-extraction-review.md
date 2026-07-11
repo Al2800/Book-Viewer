@@ -1,6 +1,6 @@
 # Issue 083: Quote Save Navigation After Extraction Review
 
-Status: `open`
+Status: `closed`
 
 ## Context
 
@@ -33,11 +33,44 @@ QuoteCaptureFlowTests.swift:257: XCTAssertTrue failed - Should navigate after sa
 
 ## Acceptance Criteria
 
-- The post-save route is explicit and documented for quote capture.
-- A focused UI test verifies the chosen route using stable accessibility identifiers rather than only generic text like `Quotes`.
-- The test must only be changed after the intended product behaviour is confirmed.
-- Focused unit coverage should cover the save result path if a suitable non-UI seam exists.
-- Record verification in `docs/refactor-foundation/verification/`.
+- [x] The post-save route is explicit and documented for quote capture.
+- [x] A focused UI test verifies the chosen route.
+- [x] The test was not weakened; production behavior was changed to satisfy the existing behavior expectation.
+- [x] Focused adjacent unit coverage was run for capture/save state seams.
+- [x] Verification recorded in `docs/refactor-foundation/verification/`.
+
+## Resolution
+
+Resolved on 2026-07-11.
+
+`Save All` now starts the existing quote persistence flow directly instead of opening an additional confirmation dialog. After a successful save, the capture tab reports the selected book to the app shell, which switches to Library and opens that book detail.
+
+The route is now:
+
+```text
+ExtractionReviewView Save All -> persist quotes -> QuoteCaptureView completion -> CaptureTabRootView completion -> ContentView.openBookInLibrary -> LibraryTab opens BookDetailView
+```
+
+The original failure was reproduced before the fix:
+
+```text
+/Users/user298279/Library/Developer/Xcode/DerivedData/BookQuotes-chdblwnjsdsclucdtkuelvsnfrxn/Logs/Test/Test-BookQuotes-2026.07.11_22-54-23-+0100.xcresult
+```
+
+Green verification:
+
+```text
+/Users/user298279/Library/Developer/Xcode/DerivedData/BookQuotes-chdblwnjsdsclucdtkuelvsnfrxn/Logs/Test/Test-BookQuotes-2026.07.11_23-01-21-+0100.xcresult
+```
+
+Command:
+
+```sh
+xcodebuild test -project BookQuotes.xcodeproj -scheme BookQuotes \
+  -destination 'platform=iOS Simulator,id=AF90E17A-F07E-40FB-B32E-C52FFCA09DE7' \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testSaveQuotes_NavigatesToLibrary \
+  -only-testing:BookQuotesUITests/CoverCaptureFlowTests/testCoverCapture_TestCoverButton_CanSaveBook
+```
 
 ## Refactor Impact
 

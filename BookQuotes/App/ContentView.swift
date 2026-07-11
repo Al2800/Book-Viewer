@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var isSeedingTestData = false
 
     @State private var showPersistenceBanner = false
+    @State private var pendingLibraryBookToOpen: Book?
 
     /// Queue stats for badge display
     @State private var queueStats = QueueStats()
@@ -33,7 +34,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                LibraryTab()
+                LibraryTab(bookToOpen: $pendingLibraryBookToOpen)
                     .tabItem {
                         Label(Tab.library.title, systemImage: Tab.library.systemImage)
                             .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
@@ -41,9 +42,10 @@ struct ContentView: View {
                     .tag(Tab.library)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
 
-                CaptureTab(onBookCreated: { _ in
-                    selectedTab = .library
-                })
+                CaptureTab(
+                    onBookCreated: openBookInLibrary,
+                    onQuotesSaved: openBookInLibrary
+                )
                     .tabItem {
                         Label(Tab.capture.title, systemImage: Tab.capture.systemImage)
                             .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.captureTab)
@@ -145,6 +147,11 @@ struct ContentView: View {
             hasCompletedOnboarding = true
             selectedTab = .library
         }
+    }
+
+    private func openBookInLibrary(_ book: Book) {
+        pendingLibraryBookToOpen = book
+        selectedTab = .library
     }
 
     /// Badge count for the capture tab (pending + failed items)

@@ -92,8 +92,8 @@ This folder tracks local markdown issues for the refactor programme.
 - `080-tags-casing-contract-conflict.md` - closed
 - `081-xcuitest-ax-runner-initialization.md` - closed
 - `082-test-fixtures-modular-refactor.md` - closed
-- `083-quote-save-navigation-after-extraction-review.md` - open
-- `084-cover-capture-created-book-visibility.md` - open
+- `083-quote-save-navigation-after-extraction-review.md` - closed
+- `084-cover-capture-created-book-visibility.md` - closed
 
 ## Refactor Rules
 

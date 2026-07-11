@@ -4,6 +4,11 @@ import SwiftData
 /// Library tab - displays book grid/list with inline search
 struct LibraryTab: View {
     @State private var router = RouterPath()
+    @Binding private var bookToOpen: Book?
+
+    init(bookToOpen: Binding<Book?> = .constant(nil)) {
+        self._bookToOpen = bookToOpen
+    }
 
     var body: some View {
         ZStack {
@@ -31,6 +36,19 @@ struct LibraryTab: View {
             }
         }
         .environment(router)
+        .onAppear {
+            openPendingBookIfNeeded()
+        }
+        .onChange(of: bookToOpen?.id) { _, _ in
+            openPendingBookIfNeeded()
+        }
+    }
+
+    private func openPendingBookIfNeeded() {
+        guard let book = bookToOpen else { return }
+        bookToOpen = nil
+        router.popToRoot()
+        router.navigate(to: book)
     }
 }
 

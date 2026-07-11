@@ -4,9 +4,13 @@ import SwiftData
 /// Capture tab - camera interface for book covers and pages
 struct CaptureTab: View {
     var onBookCreated: ((Book) -> Void)?
+    var onQuotesSaved: ((Book) -> Void)?
 
     var body: some View {
-        CaptureTabRootView(onBookCreated: onBookCreated)
+        CaptureTabRootView(
+            onBookCreated: onBookCreated,
+            onQuotesSaved: onQuotesSaved
+        )
     }
 }
 
