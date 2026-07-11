@@ -1,6 +1,7 @@
 # Build 37 Checkpoint
 
 Date: 2026-07-05
+Release completed: 2026-07-11
 
 ## Included Changes
 
@@ -24,6 +25,9 @@ Date: 2026-07-05
   - `xcodebuild build -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,id=AF90E17A-F07E-40FB-B32E-C52FFCA09DE7'`
   - Result: passed before the macOS user/directory service failure.
   - A later rerun was blocked by the same `DARWIN_USER_CACHE_DIR` / uid resolution failure affecting archive.
+- Recovery simulator compile:
+  - `xcodebuild -project BookQuotes.xcodeproj -scheme BookQuotes -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath /tmp/BookQuotes-health3-DD build`
+  - Result: passed after MacinCloud restored the `user298279` uid/session record.
 - Focused tests:
   - `BookQuotesTests/BookDetailQuotePresentationTests`
   - `BookQuotesTests/LibraryContentModeTests`
@@ -43,16 +47,25 @@ Date: 2026-07-05
 - Existing Swift 6 sendability warnings remain in search/capture services.
 - AppIntents metadata extraction reports no AppIntents dependency; this is informational for the current app.
 
-## Remaining Release Check
+## Release Check
 
 - Archive and export build 37.
-  - Blocked locally.
-  - `xcodebuild archive` aborts because macOS cannot resolve the current uid: `opendirectoryd not available`, `No user exists for uid 598`, and `Failed to get length of DARWIN_USER_CACHE_DIR`.
+  - Result: passed on 2026-07-11.
+  - Archive path: `artifacts/release/BookQuotes-37.xcarchive`.
+  - Export path: `artifacts/release/BookQuotes-37-export`.
 - Upload build 37 to App Store Connect.
-  - Pending until the local macOS user/directory service issue is resolved.
+  - Result: passed.
 - Confirm App Store Connect processing reaches `VALID`.
-  - Pending.
+  - Result: `VALID`.
+  - Build id: `8b8d09a5-01d3-460c-9da2-c4c30ee27255`.
+  - Uploaded date: `2026-07-11T12:17:21-07:00`.
 - Confirm `usesNonExemptEncryption: false`.
-  - Pending.
+  - Result: `false`.
 - Confirm TestFlight device smoke against the uploaded build.
   - Pending on a physical device.
+
+## Resolved Local Environment Blocker
+
+- Earlier archive/export attempts were blocked because the MacinCloud session could not resolve uid `598` to `user298279`.
+- Symptoms included `opendirectoryd not available`, `No user exists for uid 598`, no DNS configuration, and `Failed to get length of DARWIN_USER_CACHE_DIR`.
+- MacinCloud restored the session record before the successful 2026-07-11 archive/upload.
