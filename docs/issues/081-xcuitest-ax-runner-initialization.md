@@ -1,6 +1,6 @@
 # Issue 081: XCUITest AX Runner Initialization
 
-Status: `open`
+Status: `closed`
 
 ## Context
 
@@ -52,9 +52,39 @@ xcodebuild test -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'p
 
 ## Implementation
 
-Not started.
+No production code changes. This was an environment/infrastructure verification issue.
+
+After MacinCloud restored the `user298279` uid/session record, the same focused UI smoke reached app assertions on the booted iOS 26.5 iPhone 17 simulator. That clears the AX bootstrap failure as the active blocker.
 
 ## Verification
+
+Recovered focused UI smoke:
+
+```text
+xcodebuild test -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,id=AF90E17A-F07E-40FB-B32E-C52FFCA09DE7' \
+  -only-testing:BookQuotesUITests/LibraryManagementTests/testLibrary_ShowsSeededBooks \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testSaveQuotes_NavigatesToLibrary \
+  -only-testing:BookQuotesUITests/CoverCaptureFlowTests/testCoverCapture_TestCoverButton_CanSaveBook
+```
+
+Result: runner initialized and reached app assertions.
+
+Result bundle:
+
+```text
+/Users/user298279/Library/Developer/Xcode/DerivedData/BookQuotes-chdblwnjsdsclucdtkuelvsnfrxn/Logs/Test/Test-BookQuotes-2026.07.11_22-45-29-+0100.xcresult
+```
+
+Passed:
+
+- `LibraryManagementTests.testLibrary_ShowsSeededBooks`
+- `QuoteCaptureFlowTests.testExtractionReview_DisplaysExtractedQuotes`
+
+Failed at app assertions, tracked separately:
+
+- `083-quote-save-navigation-after-extraction-review.md`
+- `084-cover-capture-created-book-visibility.md`
 
 Failed focused UI smoke result bundle:
 
@@ -91,5 +121,5 @@ Result: app launched and screenshot showed seeded Library data with 3 books and 
 
 ## Follow-Up
 
-- Retry focused UI smoke on a fresh simulator before TestFlight/submission readiness.
-- If this persists across devices, diagnose Xcode/iOS simulator AX services separately from app code.
+- Use issues `083` and `084` for the product/test-contract failures surfaced by the recovered runner.
+- Keep using the focused UI smoke as the pre-submission simulator confidence gate.

@@ -90,8 +90,10 @@ This folder tracks local markdown issues for the refactor programme.
 - `078-subscription-product-id-refactor.md` - closed
 - `079-memory-performance-gate-recalibration.md` - closed
 - `080-tags-casing-contract-conflict.md` - closed
-- `081-xcuitest-ax-runner-initialization.md` - open
+- `081-xcuitest-ax-runner-initialization.md` - closed
 - `082-test-fixtures-modular-refactor.md` - closed
+- `083-quote-save-navigation-after-extraction-review.md` - open
+- `084-cover-capture-created-book-visibility.md` - open
 
 ## Refactor Rules
 
@@ -131,3 +133,5 @@ Every user testing note should be captured before or alongside implementation wo
 - Tags contract: `080`, tag casing, duplicate-prevention identity, display casing, and case-insensitive search behaviour.
 - Simulator/UI verification: `081`, XCUITest AX runner initialization, focused UI smoke, seeded/mock-camera launch, and pre-TestFlight simulator confidence.
 - Test infrastructure: `082`, fixture builders, generated image fixtures, search datasets, and broad unit gate support.
+- Quote capture save route: `083`, post-extraction save completion, duplicate review save path, and capture completion routing.
+- Cover capture save route: `084`, created-book visibility, cover capture completion, and book edit save dismissal routing.
