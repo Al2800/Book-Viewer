@@ -55,6 +55,122 @@ struct DailyPassageCard: View {
     }
 }
 
+// MARK: - Browse Section
+
+/// Browse controls card: grid/list view mode, book sort order, and the
+/// camera-first add-book action.
+struct LibraryBrowseSection: View {
+    @Binding var viewMode: LibraryViewMode
+    @Binding var sortOrder: LibrarySortOrder
+    let onAddBook: () -> Void
+
+    var body: some View {
+        LibrarySectionCard(title: "Browse") {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                LibraryControlRow(
+                    icon: viewMode.systemImageName,
+                    title: "Library View",
+                    trailing: {
+                        LibraryViewModeControl(viewMode: $viewMode)
+                    }
+                )
+
+                LibraryControlRow(
+                    icon: "arrow.up.arrow.down",
+                    title: "Sort Books",
+                    trailing: {
+                        sortMenu
+                    }
+                )
+
+                Button {
+                    HapticManager.light()
+                    onAddBook()
+                } label: {
+                    LibraryActionRow(
+                        icon: "camera.viewfinder",
+                        title: "Add New Book",
+                        subtitle: "Scan a cover or ISBN barcode"
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var sortMenu: some View {
+        Menu {
+            ForEach(LibrarySortOrder.allCases) { order in
+                Button {
+                    HapticManager.selection()
+                    sortOrder = order
+                } label: {
+                    if sortOrder == order {
+                        Label(order.displayName, systemImage: "checkmark")
+                    } else {
+                        Text(order.displayName)
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: Spacing.xxs) {
+                Text(sortOrder.displayName)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption2)
+            }
+            .font(.subheadline)
+            .foregroundStyle(Color.brand)
+        }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.sortMenu)
+    }
+}
+
+// MARK: - Organize Section
+
+/// Organize card linking to the Collections and Tags screens.
+struct LibraryOrganizeSection: View {
+    var body: some View {
+        LibrarySectionCard(title: "Organize") {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                NavigationLink(value: LibraryOrganizeDestination.collections) {
+                    LibraryActionRow(
+                        icon: "folder",
+                        title: "Collections",
+                        subtitle: "Group quotes by theme or project"
+                    )
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.collectionsRow)
+
+                NavigationLink(value: LibraryOrganizeDestination.tags) {
+                    LibraryActionRow(
+                        icon: "tag",
+                        title: "Tags",
+                        subtitle: "Label quotes across your library"
+                    )
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.tagsRow)
+            }
+        }
+    }
+}
+
+// MARK: - Filtered Books Empty Card
+
+/// Shown in place of the Books section when the active collection/tag
+/// filters exclude every book.
+struct LibraryFilteredBooksEmptyCard: View {
+    var body: some View {
+        LibrarySectionCard(title: "Books") {
+            Text("No books match the selected filters.")
+                .font(.subheadline)
+                .foregroundStyle(Color.textSecondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+
 /// Empty state for library with entrance animation.
 struct EmptyLibraryView: View {
     var onAddBook: (() -> Void)?

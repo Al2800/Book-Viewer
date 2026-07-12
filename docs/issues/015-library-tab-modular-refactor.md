@@ -164,6 +164,16 @@ Move Library overview presentation out of `LibraryTab.swift` while keeping navig
 - Manual seeded/mock-camera simulator launch passed and showed seeded Library data with 3 books and 6 quotes.
 - XCUITest UI automation still fails before app assertions and remains tracked by issue 081.
 
+2026-07-12 home sections slice:
+
+- Moved the Browse card (view-mode control, sort menu, camera-first add-book row), the Organize card (Collections/Tags navigation links), and the filtered-books empty card out of `LibraryTab.swift` into `LibraryOverviewViews.swift` as `LibraryBrowseSection`, `LibraryOrganizeSection`, and `LibraryFilteredBooksEmptyCard`.
+- These sections had accreted in `LibraryView` during the July feature passes (library sorting, organize entry points, camera-first add book) and pushed the file back over target.
+- Reduced `LibraryTab.swift` from 535 LOC to 456 LOC.
+- Kept `LibraryView` as the orchestration shell for SwiftData queries, search lifecycle and index sync, navigation, add/edit/delete sheets, and refresh.
+- Accessibility identifiers for the sort menu, collections row, tags row, and add-book button are unchanged.
+- Also deduplicated the HTTP status-validation block repeated in three `ISBNLookupService` methods into a private `fetchLookupData(from:)` helper (489 -> 463 LOC); error mapping is byte-identical, so the hermetic playback tests characterize it unchanged.
+- Verification pending on the Mac session: focused Library unit gate plus the now-recovered XCUITest Library/Search smoke (issue 081 closed).
+
 ## Residual Risk / Next Slice
 
 - `LibraryContentMode` now owns deterministic selection between search results, empty library, and normal library browsing.

@@ -295,69 +295,16 @@ struct LibraryView: View {
                     viewMode: viewMode
                 )
 
-                LibrarySectionCard(title: "Browse") {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        LibraryControlRow(
-                            icon: viewMode.systemImageName,
-                            title: "Library View",
-                            trailing: {
-                                LibraryViewModeControl(viewMode: $viewMode)
-                            }
-                        )
+                LibraryBrowseSection(
+                    viewMode: $viewMode,
+                    sortOrder: $sortOrder,
+                    onAddBook: { showAddBookCapture = true }
+                )
 
-                        LibraryControlRow(
-                            icon: "arrow.up.arrow.down",
-                            title: "Sort Books",
-                            trailing: {
-                                sortMenu
-                            }
-                        )
-
-                        Button {
-                            HapticManager.light()
-                            showAddBookCapture = true
-                        } label: {
-                            LibraryActionRow(
-                                icon: "camera.viewfinder",
-                                title: "Add New Book",
-                                subtitle: "Scan a cover or ISBN barcode"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                LibrarySectionCard(title: "Organize") {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        NavigationLink(value: LibraryOrganizeDestination.collections) {
-                            LibraryActionRow(
-                                icon: "folder",
-                                title: "Collections",
-                                subtitle: "Group quotes by theme or project"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.collectionsRow)
-
-                        NavigationLink(value: LibraryOrganizeDestination.tags) {
-                            LibraryActionRow(
-                                icon: "tag",
-                                title: "Tags",
-                                subtitle: "Label quotes across your library"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.tagsRow)
-                    }
-                }
+                LibraryOrganizeSection()
 
                 if hasOrganizationFilters && organizationFilteredBooks.isEmpty {
-                    LibrarySectionCard(title: "Books") {
-                        Text("No books match the selected filters.")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.textSecondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    LibraryFilteredBooksEmptyCard()
                 } else {
                     LibraryBooksSection(
                         books: sortOrder.sorted(organizationFilteredBooks),
@@ -395,32 +342,6 @@ struct LibraryView: View {
         ToolbarItem(placement: .topBarTrailing) {
             addBookButton
         }
-    }
-
-    private var sortMenu: some View {
-        Menu {
-            ForEach(LibrarySortOrder.allCases) { order in
-                Button {
-                    HapticManager.selection()
-                    sortOrder = order
-                } label: {
-                    if sortOrder == order {
-                        Label(order.displayName, systemImage: "checkmark")
-                    } else {
-                        Text(order.displayName)
-                    }
-                }
-            }
-        } label: {
-            HStack(spacing: Spacing.xxs) {
-                Text(sortOrder.displayName)
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.caption2)
-            }
-            .font(.subheadline)
-            .foregroundStyle(Color.brand)
-        }
-        .accessibilityIdentifier(AccessibilityIdentifiers.Library.sortMenu)
     }
 
     private var addBookButton: some View {
