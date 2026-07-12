@@ -94,7 +94,12 @@ struct LibraryView: View {
     // MARK: - Body
 
     var body: some View {
-        mainContent
+        // One pass over the library's quotes per render; every consumer
+        // below (summary count, daily passage, index-sync trigger) reads
+        // from this snapshot instead of walking the quote graph again.
+        let snapshot = LibraryHomeSnapshot(books: books)
+
+        mainContent(snapshot: snapshot)
         .background(Color.backgroundPrimary)
         .overlay(alignment: .topLeading) {
             if UITestConfiguration.isUITesting {
@@ -154,7 +159,7 @@ struct LibraryView: View {
                 print("UITest library books count updated: \(newValue)")
             }
         }
-        .onChange(of: books.reduce(0) { $0 + $1.quoteCount }) { _, _ in
+        .onChange(of: snapshot.totalQuoteCount) { _, _ in
             syncSearchIndex()
         }
         .onChange(of: viewMode) { _, _ in
@@ -216,14 +221,14 @@ struct LibraryView: View {
     // MARK: - Main Content
 
     @ViewBuilder
-    private var mainContent: some View {
+    private func mainContent(snapshot: LibraryHomeSnapshot) -> some View {
         switch LibraryContentMode.resolve(isSearchActive: isSearchActive, searchText: searchText, bookCount: books.count) {
         case .searchResults:
             searchResults
         case .emptyLibrary:
             EmptyLibraryView(onAddBook: { showAddBookCapture = true })
         case .library:
-            libraryContent
+            libraryContent(snapshot: snapshot)
         }
     }
 
@@ -241,11 +246,15 @@ struct LibraryView: View {
                     onQuoteTap: { quoteId in
                         if let quote = navigationLookup.quote(id: quoteId) {
                             router.navigate(to: quote)
+                        } else {
+                            refreshStaleSearchResults()
                         }
                     },
                     onBookTap: { bookId in
                         if let book = navigationLookup.book(id: bookId) {
                             router.navigate(to: book)
+                        } else {
+                            refreshStaleSearchResults()
                         }
                     },
                     onAcceptSuggestion: { suggestion in
@@ -262,11 +271,11 @@ struct LibraryView: View {
         }
     }
 
-    private var libraryContent: some View {
+    private func libraryContent(snapshot: LibraryHomeSnapshot) -> some View {
         // ScrollView must be the navigation stack root's primary content for the
         // large title to expand/collapse correctly; the filter bar rides above it
         // as a safe-area inset instead of wrapping it in a VStack.
-        libraryScrollContent
+        libraryScrollContent(snapshot: snapshot)
             .safeAreaInset(edge: .top, spacing: 0) {
                 OrganizationFilterBar(
                     selectedCollectionIds: $selectedCollectionIds,
@@ -276,10 +285,10 @@ struct LibraryView: View {
             .background(Color.backgroundPrimary)
     }
 
-    private var libraryScrollContent: some View {
+    private func libraryScrollContent(snapshot: LibraryHomeSnapshot) -> some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                if let passage = DailyPassage.passage(from: books.flatMap(\.quotes)) {
+                if let passage = snapshot.dailyPassage {
                     Button {
                         HapticManager.light()
                         router.navigate(to: passage)
@@ -291,73 +300,20 @@ struct LibraryView: View {
 
                 LibrarySummaryCard(
                     bookCount: books.count,
-                    quoteCount: books.reduce(0) { $0 + $1.quoteCount },
+                    quoteCount: snapshot.totalQuoteCount,
                     viewMode: viewMode
                 )
 
-                LibrarySectionCard(title: "Browse") {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        LibraryControlRow(
-                            icon: viewMode.systemImageName,
-                            title: "Library View",
-                            trailing: {
-                                LibraryViewModeControl(viewMode: $viewMode)
-                            }
-                        )
+                LibraryBrowseSection(
+                    viewMode: $viewMode,
+                    sortOrder: $sortOrder,
+                    onAddBook: { showAddBookCapture = true }
+                )
 
-                        LibraryControlRow(
-                            icon: "arrow.up.arrow.down",
-                            title: "Sort Books",
-                            trailing: {
-                                sortMenu
-                            }
-                        )
-
-                        Button {
-                            HapticManager.light()
-                            showAddBookCapture = true
-                        } label: {
-                            LibraryActionRow(
-                                icon: "camera.viewfinder",
-                                title: "Add New Book",
-                                subtitle: "Scan a cover or ISBN barcode"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                LibrarySectionCard(title: "Organize") {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        NavigationLink(value: LibraryOrganizeDestination.collections) {
-                            LibraryActionRow(
-                                icon: "folder",
-                                title: "Collections",
-                                subtitle: "Group quotes by theme or project"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.collectionsRow)
-
-                        NavigationLink(value: LibraryOrganizeDestination.tags) {
-                            LibraryActionRow(
-                                icon: "tag",
-                                title: "Tags",
-                                subtitle: "Label quotes across your library"
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Library.tagsRow)
-                    }
-                }
+                LibraryOrganizeSection()
 
                 if hasOrganizationFilters && organizationFilteredBooks.isEmpty {
-                    LibrarySectionCard(title: "Books") {
-                        Text("No books match the selected filters.")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.textSecondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    LibraryFilteredBooksEmptyCard()
                 } else {
                     LibraryBooksSection(
                         books: sortOrder.sorted(organizationFilteredBooks),
@@ -395,32 +351,6 @@ struct LibraryView: View {
         ToolbarItem(placement: .topBarTrailing) {
             addBookButton
         }
-    }
-
-    private var sortMenu: some View {
-        Menu {
-            ForEach(LibrarySortOrder.allCases) { order in
-                Button {
-                    HapticManager.selection()
-                    sortOrder = order
-                } label: {
-                    if sortOrder == order {
-                        Label(order.displayName, systemImage: "checkmark")
-                    } else {
-                        Text(order.displayName)
-                    }
-                }
-            }
-        } label: {
-            HStack(spacing: Spacing.xxs) {
-                Text(sortOrder.displayName)
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.caption2)
-            }
-            .font(.subheadline)
-            .foregroundStyle(Color.brand)
-        }
-        .accessibilityIdentifier(AccessibilityIdentifiers.Library.sortMenu)
     }
 
     private var addBookButton: some View {
@@ -470,6 +400,21 @@ struct LibraryView: View {
         let currentBooks = books
         Task {
             await searchServices.syncIndex(books: currentBooks)
+        }
+    }
+
+    /// A tapped search result no longer exists (deleted since the results
+    /// were fetched): resync the index and re-run the search so the stale
+    /// row disappears instead of silently doing nothing.
+    private func refreshStaleSearchResults() {
+        guard let searchServices else { return }
+        HapticManager.warning()
+        let currentBooks = books
+        let query = searchText
+        let scope = searchScope
+        Task {
+            await searchServices.syncIndex(books: currentBooks)
+            await searchServices.searchService.searchImmediate(query, scope: scope)
         }
     }
 

@@ -23,6 +23,7 @@ struct QuoteDetailView: View {
     @State private var showSourceImage = false
     @State private var showMarkingPicker = false
     @State private var showShareSheet = false
+    @State private var shareItems: [Any] = []
     @State private var showCollectionsSheet = false
     @State private var showTagsSheet = false
 
@@ -473,24 +474,24 @@ struct QuoteDetailView: View {
         HapticManager.success()
     }
 
+    /// Render the typographic share card once, then present the sheet
+    /// with the image alongside the plain text.
     private func shareQuote() {
         HapticManager.light()
+
+        var items: [Any] = []
+        if let image = QuoteShareImageRenderer.render(quote: quote) {
+            items.append(image)
+        }
+        items.append(shareableQuoteText)
+        shareItems = items
+
         showShareSheet = true
     }
 
     /// Formatted quote text for sharing
     private var shareableQuoteText: String {
         QuoteDetailTextFormatter.shareText(for: quote)
-    }
-
-    /// Share a typographic image card alongside the plain text.
-    private var shareItems: [Any] {
-        var items: [Any] = []
-        if let image = QuoteShareImageRenderer.render(quote: quote) {
-            items.append(image)
-        }
-        items.append(shareableQuoteText)
-        return items
     }
 
     private func deleteQuote() {

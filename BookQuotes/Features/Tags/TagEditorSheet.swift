@@ -15,7 +15,7 @@ struct TagEditorSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.lg) {
-                    SettingsSectionCard(title: "Tag Name") {
+                    SectionCard(title: "Tag Name") {
                         TextField("Enter tag name", text: $name)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
@@ -23,7 +23,7 @@ struct TagEditorSheet: View {
                             .accessibilityIdentifier(AccessibilityIdentifiers.Tags.nameField)
                     }
 
-                    SettingsSectionCard(title: "Color") {
+                    SectionCard(title: "Color") {
                         ColorSwatchGrid(selectedColorName: $colorName)
                     }
                 }

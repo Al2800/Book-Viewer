@@ -228,24 +228,7 @@ actor ISBNLookupService {
             throw LookupError.invalidURL
         }
 
-        let (data, response) = try await session.data(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw LookupError.invalidResponse
-        }
-
-        switch httpResponse.statusCode {
-        case 200:
-            break
-        case 429:
-            throw LookupError.rateLimited
-        case 400..<500:
-            throw LookupError.clientError(httpResponse.statusCode)
-        case 500..<600:
-            throw LookupError.serverError(httpResponse.statusCode)
-        default:
-            throw LookupError.unexpectedStatusCode(httpResponse.statusCode)
-        }
+        let data = try await fetchLookupData(from: url)
 
         let decoder = JSONDecoder()
         let booksResponse = try decoder.decode(GoogleBooksResponse.self, from: data)
@@ -282,24 +265,7 @@ actor ISBNLookupService {
             throw LookupError.invalidURL
         }
 
-        let (data, response) = try await session.data(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw LookupError.invalidResponse
-        }
-
-        switch httpResponse.statusCode {
-        case 200:
-            break
-        case 429:
-            throw LookupError.rateLimited
-        case 400..<500:
-            throw LookupError.clientError(httpResponse.statusCode)
-        case 500..<600:
-            throw LookupError.serverError(httpResponse.statusCode)
-        default:
-            throw LookupError.unexpectedStatusCode(httpResponse.statusCode)
-        }
+        let data = try await fetchLookupData(from: url)
 
         let decoder = JSONDecoder()
         let booksResponse = try decoder.decode(GoogleBooksResponse.self, from: data)
@@ -322,24 +288,7 @@ actor ISBNLookupService {
             throw LookupError.invalidURL
         }
 
-        let (data, response) = try await session.data(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw LookupError.invalidResponse
-        }
-
-        switch httpResponse.statusCode {
-        case 200:
-            break
-        case 429:
-            throw LookupError.rateLimited
-        case 400..<500:
-            throw LookupError.clientError(httpResponse.statusCode)
-        case 500..<600:
-            throw LookupError.serverError(httpResponse.statusCode)
-        default:
-            throw LookupError.unexpectedStatusCode(httpResponse.statusCode)
-        }
+        let data = try await fetchLookupData(from: url)
 
         let decoder = JSONDecoder()
         let booksResponse = try decoder.decode(OpenLibraryBooksResponse.self, from: data)
@@ -351,6 +300,31 @@ actor ISBNLookupService {
         }
 
         return bookData.toBookMetadata()
+    }
+
+    // MARK: - Shared Transport
+
+    /// Fetch data from a lookup endpoint, translating HTTP status codes
+    /// into the LookupErrors shared by every lookup/search call.
+    private func fetchLookupData(from url: URL) async throws -> Data {
+        let (data, response) = try await session.data(from: url)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw LookupError.invalidResponse
+        }
+
+        switch httpResponse.statusCode {
+        case 200:
+            return data
+        case 429:
+            throw LookupError.rateLimited
+        case 400..<500:
+            throw LookupError.clientError(httpResponse.statusCode)
+        case 500..<600:
+            throw LookupError.serverError(httpResponse.statusCode)
+        default:
+            throw LookupError.unexpectedStatusCode(httpResponse.statusCode)
+        }
     }
 
     // MARK: - Cover Image Fetching

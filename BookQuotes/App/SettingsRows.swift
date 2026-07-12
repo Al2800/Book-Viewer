@@ -1,23 +1,5 @@
 import SwiftUI
 
-struct SettingsSectionCard<Content: View>: View {
-    let title: String
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text(title)
-                .sectionHeaderStyle()
-
-            VStack(spacing: Spacing.sm) {
-                content()
-            }
-        }
-        .padding(Spacing.lg)
-        .paperCard()
-    }
-}
-
 struct SettingsRow: View {
     let icon: String
     let title: String

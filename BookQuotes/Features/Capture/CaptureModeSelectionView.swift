@@ -9,7 +9,7 @@ struct CaptureModeSelectionView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                CaptureSectionCard(title: "Choose Capture Mode") {
+                SectionCard(title: "Choose Capture Mode") {
                     ForEach(CaptureModeOption.all) { option in
                         CaptureModeRow(option: option, action: action(for: option.kind))
 
@@ -44,29 +44,6 @@ struct CaptureModeSelectionView: View {
         case .batch:
             return onSelectBatchCapture
         }
-    }
-}
-
-struct CaptureSectionCard<Content: View>: View {
-    let title: String
-    let content: Content
-
-    init(title: String, @ViewBuilder content: () -> Content) {
-        self.title = title
-        self.content = content()
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text(title)
-                .sectionHeaderStyle()
-
-            VStack(spacing: Spacing.sm) {
-                content
-            }
-        }
-        .padding(Spacing.lg)
-        .paperCard()
     }
 }
 

@@ -64,7 +64,7 @@ struct AccountView: View {
     }
 
     private var accountSection: some View {
-        SettingsSectionCard(title: "Account") {
+        SectionCard(title: "Account") {
             HStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.fill")
                     .font(.system(size: 50))
@@ -104,7 +104,7 @@ struct AccountView: View {
     }
 
     private var signInPromptSection: some View {
-        SettingsSectionCard(title: "Account") {
+        SectionCard(title: "Account") {
             VStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.badge.questionmark")
                     .font(.system(size: 50))
@@ -137,7 +137,7 @@ struct AccountView: View {
     }
 
     private var subscriptionSection: some View {
-        SettingsSectionCard(title: "Subscription") {
+        SectionCard(title: "Subscription") {
             if subscriptionService.hasActiveSubscription {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     HStack {
@@ -224,7 +224,7 @@ struct AccountView: View {
     @ViewBuilder
     private var actionsSection: some View {
         if subscriptionsEnabled || authService.isAuthenticated {
-            SettingsSectionCard(title: "Manage") {
+            SectionCard(title: "Manage") {
                 if subscriptionsEnabled {
                     Button {
                         Task {

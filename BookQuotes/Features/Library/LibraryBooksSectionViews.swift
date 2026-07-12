@@ -10,7 +10,7 @@ struct LibraryBooksSection: View {
     let onDelete: (Book) -> Void
 
     var body: some View {
-        LibrarySectionCard(title: "Books") {
+        SectionCard(title: "Books") {
             switch viewMode {
             case .grid:
                 bookGridContent

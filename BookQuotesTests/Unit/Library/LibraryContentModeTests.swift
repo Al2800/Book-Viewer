@@ -44,6 +44,41 @@ final class LibraryContentModeTests: XCTestCase {
     }
 }
 
+@MainActor
+final class LibraryHomeSnapshotTests: SwiftDataTestCase {
+
+    func testSnapshotCountsQuotesAcrossBooksAndPicksDailyPassage() throws {
+        let bookA = TestFixtures.book { $0.title = "Book A" }
+        let bookB = TestFixtures.book { $0.title = "Book B" }
+        modelContext.insert(bookA)
+        modelContext.insert(bookB)
+
+        let quoteA1 = TestFixtures.quote { $0.book = bookA }
+        let quoteA2 = TestFixtures.quote { $0.book = bookA }
+        let quoteB1 = TestFixtures.quote { $0.book = bookB }
+        modelContext.insert(quoteA1)
+        modelContext.insert(quoteA2)
+        modelContext.insert(quoteB1)
+        try modelContext.save()
+
+        let snapshot = LibraryHomeSnapshot(books: [bookA, bookB])
+
+        XCTAssertEqual(snapshot.totalQuoteCount, 3)
+        XCTAssertNotNil(snapshot.dailyPassage)
+    }
+
+    func testSnapshotIsEmptyForBooksWithoutQuotes() throws {
+        let book = TestFixtures.book()
+        modelContext.insert(book)
+        try modelContext.save()
+
+        let snapshot = LibraryHomeSnapshot(books: [book])
+
+        XCTAssertEqual(snapshot.totalQuoteCount, 0)
+        XCTAssertNil(snapshot.dailyPassage)
+    }
+}
+
 final class DailyPassageTests: XCTestCase {
 
     func testReturnsNilWhenThereAreNoQuotes() {
