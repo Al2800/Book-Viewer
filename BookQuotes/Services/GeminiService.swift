@@ -213,6 +213,9 @@ final class GeminiService {
 
             // Handle HTTP errors
             if let httpResponse = response as? HTTPURLResponse {
+                await MainActor.run {
+                    authService.applyRefreshedSessionToken(from: httpResponse)
+                }
                 try handleHTTPResponse(httpResponse, data: data)
             }
 

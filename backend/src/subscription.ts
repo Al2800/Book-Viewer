@@ -1,4 +1,5 @@
 import * as jose from 'jose';
+import { verifyAndDecodeSignedPayload } from './app-store-jws';
 import type {
   AppStoreEnvironment,
   ClientSubscriptionStatus,
@@ -225,8 +226,8 @@ function shouldTryOtherEnvironment(error: unknown): boolean {
   return error instanceof AppStoreAPIError && (error.status === 400 || error.status === 404);
 }
 
-function decodeSignedPayload<T>(signedPayload: string): T {
-  return jose.decodeJwt(signedPayload) as T;
+async function decodeSignedPayload<T>(signedPayload: string): Promise<T> {
+  return verifyAndDecodeSignedPayload<T>(signedPayload);
 }
 
 function requireAllowedProductId(productId: string | undefined): string {
@@ -473,7 +474,7 @@ async function resolveEnvironmentTransaction(
         env
       );
 
-      const transaction = decodeSignedPayload<AppStoreTransactionPayload>(
+      const transaction = await decodeSignedPayload<AppStoreTransactionPayload>(
         response.signedTransactionInfo
       );
 
@@ -516,7 +517,7 @@ async function fetchLatestSubscriptionState(
       break;
     }
 
-    const decodedCandidate = decodeSignedPayload<AppStoreTransactionPayload>(
+    const decodedCandidate = await decodeSignedPayload<AppStoreTransactionPayload>(
       candidate.signedTransactionInfo
     );
     if (decodedCandidate.originalTransactionId === originalTransactionId) {
@@ -526,11 +527,11 @@ async function fetchLatestSubscriptionState(
   }
 
   const selected = matchingTransaction ?? candidates[0];
-  const transaction = decodeSignedPayload<AppStoreTransactionPayload>(
+  const transaction = await decodeSignedPayload<AppStoreTransactionPayload>(
     selected.signedTransactionInfo
   );
   const renewalInfo = selected.signedRenewalInfo
-    ? decodeSignedPayload<AppStoreRenewalInfoPayload>(selected.signedRenewalInfo)
+    ? await decodeSignedPayload<AppStoreRenewalInfoPayload>(selected.signedRenewalInfo)
     : undefined;
 
   return {
@@ -881,7 +882,7 @@ export async function handleAppStoreNotification(
 ): Promise<{ success: boolean; message: string }> {
   try {
     const signedPayload = extractSignedNotificationPayload(body);
-    const notification = decodeSignedPayload<AppStoreNotificationPayload>(signedPayload);
+    const notification = await decodeSignedPayload<AppStoreNotificationPayload>(signedPayload);
     const notificationUUID = notification.notificationUUID;
 
     if (notificationUUID && await hasProcessedNotification(notificationUUID, env)) {
@@ -900,7 +901,7 @@ export async function handleAppStoreNotification(
       return { success: true, message: 'Notification contained no subscription transaction info' };
     }
 
-    const hintedTransaction = decodeSignedPayload<AppStoreTransactionPayload>(signedTransactionInfo);
+    const hintedTransaction = await decodeSignedPayload<AppStoreTransactionPayload>(signedTransactionInfo);
     const userId = await resolveNotificationUserId(hintedTransaction, env);
 
     if (!userId) {

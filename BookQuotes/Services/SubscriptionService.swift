@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import StoreKit
 
 // MARK: - SubscriptionService
@@ -7,6 +8,8 @@ import StoreKit
 @MainActor
 @Observable
 final class SubscriptionService {
+
+    private static let logger = Logger(subsystem: "com.acampbell.bookquotes", category: "Subscription")
 
     // MARK: - Properties
 
@@ -113,7 +116,7 @@ final class SubscriptionService {
             await updateSubscriptionStatus()
         } catch {
             lastError = .productLoadFailed(error)
-            print("Failed to load products: \(error)")
+            Self.logger.error("Failed to load products: \(String(describing: error), privacy: .public)")
         }
     }
 
@@ -269,10 +272,12 @@ final class SubscriptionService {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
             let (data, response) = try await URLSession.shared.data(for: request)
 
-            if let httpResponse = response as? HTTPURLResponse,
-               httpResponse.statusCode != 200 {
-                print("Backend verification failed: \(httpResponse.statusCode)")
-                return
+            if let httpResponse = response as? HTTPURLResponse {
+                authService.applyRefreshedSessionToken(from: httpResponse)
+                if httpResponse.statusCode != 200 {
+                    Self.logger.error("Backend verification failed: \(httpResponse.statusCode)")
+                    return
+                }
             }
 
             let syncResponse = try JSONDecoder().decode(SubscriptionSyncResponse.self, from: data)
@@ -285,7 +290,7 @@ final class SubscriptionService {
                 purchasedProductID = syncState.productID ?? transaction?.productID
             }
         } catch {
-            print("Backend verification error: \(error)")
+            Self.logger.error("Backend verification error: \(String(describing: error), privacy: .public)")
         }
     }
 
@@ -297,7 +302,7 @@ final class SubscriptionService {
             do {
                 try await AppStore.showManageSubscriptions(in: windowScene)
             } catch {
-                print("Failed to show subscription management: \(error)")
+                Self.logger.error("Failed to show subscription management: \(String(describing: error), privacy: .public)")
             }
         }
     }
@@ -308,7 +313,7 @@ final class SubscriptionService {
             do {
                 _ = try await Transaction.beginRefundRequest(for: transactionId, in: windowScene)
             } catch {
-                print("Failed to begin refund request: \(error)")
+                Self.logger.error("Failed to begin refund request: \(String(describing: error), privacy: .public)")
             }
         }
     }

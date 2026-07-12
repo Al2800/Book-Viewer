@@ -4,7 +4,8 @@ import type { Env } from './types';
 vi.mock('./auth', () => ({
   validateAppleToken: vi.fn(),
   validateSessionToken: vi.fn(async () => 'test-user'),
-  createSessionToken: vi.fn(),
+  createSessionToken: vi.fn(async () => 'refreshed-session-token'),
+  SESSION_TOKEN_HEADER: 'X-Session-Token',
 }));
 
 vi.mock('./subscription', () => ({

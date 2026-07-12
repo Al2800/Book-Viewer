@@ -47,6 +47,9 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
 
         let (data, response) = try await session.data(for: request)
         if let httpResponse = response as? HTTPURLResponse {
+            await MainActor.run {
+                authService.applyRefreshedSessionToken(from: httpResponse)
+            }
             try handleHTTPResponse(httpResponse, data: data)
         }
 

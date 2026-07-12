@@ -51,16 +51,17 @@ npm install
    ```
 
 3. **Configure Apple Sign-In:**
-   - In Apple Developer Portal, create a Services ID for Sign in with Apple
-   - Configure your app's bundle ID as the audience
-   - Set `APPLE_TEAM_ID` to your app's bundle ID or team ID
+   - In Apple Developer Portal, enable Sign in with Apple for the app
+   - Apple identity tokens use the **bundle ID** as `aud`
+   - Set `APPLE_BUNDLE_ID` to `com.acampbell.bookquotes` (Sign in with Apple JWT audience + IAP bundle checks)
+   - Set `APPLE_TEAM_ID` to your Apple Developer Team ID (kept for Apple portal alignment; Sign in with Apple verification uses `APPLE_BUNDLE_ID`)
 
 4. **Configure App Store Server API:**
    - In App Store Connect, create an In-App Purchase key under `Users and Access > Integrations > In-App Purchase`
    - Set `APPLE_BUNDLE_ID` to `com.acampbell.bookquotes`
    - Set `APPLE_IAP_KEY_ID` and `APPLE_IAP_ISSUER_ID` from that key
    - Paste the `.p8` contents into `APPLE_IAP_PRIVATE_KEY`
-   - Optional: set `APPLE_APP_ID` if you later add full notification JWS certificate-chain verification
+   - App Store Server Notification / API JWS payloads are signature-verified against Apple Root CA - G3 (`nodejs_compat` required)
 
 ### Development
 

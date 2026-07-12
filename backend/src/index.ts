@@ -5,7 +5,12 @@ import type {
   UsageResponse,
   SubscriptionSyncRequest,
 } from './types';
-import { validateSessionToken, validateAppleToken, createSessionToken } from './auth';
+import {
+  validateSessionToken,
+  validateAppleToken,
+  createSessionToken,
+  SESSION_TOKEN_HEADER,
+} from './auth';
 import {
   getSubscription,
   handleAppStoreNotification,
@@ -25,6 +30,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Expose-Headers': SESSION_TOKEN_HEADER,
 };
 
 const MAX_REQUEST_BYTES = 7_000_000;
@@ -54,6 +60,30 @@ function jsonResponse(data: unknown, status = 200): Response {
       ...CORS_HEADERS,
     },
   });
+}
+
+/**
+ * Attach a freshly minted session JWT so active clients slide their 7-day expiry.
+ */
+async function withSessionRefresh(
+  response: Response,
+  userId: string,
+  env: Env
+): Promise<Response> {
+  try {
+    const token = await createSessionToken(userId, env);
+    const headers = new Headers(response.headers);
+    headers.set(SESSION_TOKEN_HEADER, token);
+    headers.set('Access-Control-Expose-Headers', SESSION_TOKEN_HEADER);
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  } catch (error) {
+    console.error('Failed to mint refreshed session token:', error);
+    return response;
+  }
 }
 
 /**
@@ -302,6 +332,8 @@ export default {
       return errorResponse('Authentication required', 'AUTH_REQUIRED', 401);
     }
 
+    const respond = (response: Response) => withSessionRefresh(response, userId, env);
+
     // Usage stats endpoint
     if (path === '/api/usage' && request.method === 'GET') {
       const stats = await getUsageStats(userId, env);
@@ -314,33 +346,33 @@ export default {
         expiresAt: subscription?.gracePeriodExpiresAt ?? subscription?.expiresAt,
       };
 
-      return jsonResponse(response);
+      return respond(jsonResponse(response));
     }
 
     if (path === '/api/subscription/sync' && request.method === 'POST') {
       try {
         const body = (await request.json()) as SubscriptionSyncRequest;
         const syncResponse = await reconcileSubscription(userId, body, env);
-        return jsonResponse(syncResponse);
+        return respond(jsonResponse(syncResponse));
       } catch (error) {
         console.error('Subscription sync error:', error);
-        return errorResponse(
+        return respond(errorResponse(
           'Failed to verify subscription with App Store',
           'SUBSCRIPTION_SYNC_FAILED',
           500
-        );
+        ));
       }
     }
 
     // Check subscription status
     const hasSubscription = await hasActiveSubscription(userId, env);
     if (!hasSubscription && !allowsAuthenticatedExtraction(env)) {
-      return errorResponse(
+      return respond(errorResponse(
         'Active subscription required',
         'SUBSCRIPTION_REQUIRED',
         402,
         'Please subscribe to use this feature'
-      );
+      ));
     }
 
     // Book cover metadata extraction
@@ -350,11 +382,11 @@ export default {
       // Check rate limit
       const rateCheck = await checkRateLimit(userId, env, clientKey);
       if (!rateCheck.allowed) {
-        return errorResponse(
+        return respond(errorResponse(
           rateCheck.reason || 'Rate limit exceeded',
           'RATE_LIMIT',
           429
-        );
+        ));
       }
 
       try {
@@ -372,13 +404,13 @@ export default {
           await incrementUsage(userId, env);
         }
 
-        return response;
+        return respond(response);
       } catch (error) {
         if (error instanceof RequestValidationError) {
-          return errorResponse(error.message, 'INVALID_REQUEST', 400);
+          return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
         }
         console.error('Cover extraction error:', error);
-        return errorResponse('Extraction failed', 'EXTRACTION_ERROR', 500);
+        return respond(errorResponse('Extraction failed', 'EXTRACTION_ERROR', 500));
       }
     }
 
@@ -389,11 +421,11 @@ export default {
       // Check rate limit
       const rateCheck = await checkRateLimit(userId, env, clientKey);
       if (!rateCheck.allowed) {
-        return errorResponse(
+        return respond(errorResponse(
           rateCheck.reason || 'Rate limit exceeded',
           'RATE_LIMIT',
           429
-        );
+        ));
       }
 
       try {
@@ -411,13 +443,13 @@ export default {
           await incrementUsage(userId, env);
         }
 
-        return response;
+        return respond(response);
       } catch (error) {
         if (error instanceof RequestValidationError) {
-          return errorResponse(error.message, 'INVALID_REQUEST', 400);
+          return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
         }
         console.error('Quote extraction error:', error);
-        return errorResponse('Extraction failed', 'EXTRACTION_ERROR', 500);
+        return respond(errorResponse('Extraction failed', 'EXTRACTION_ERROR', 500));
       }
     }
 
@@ -427,19 +459,19 @@ export default {
 
       const rateCheck = await checkRateLimit(userId, env, clientKey);
       if (!rateCheck.allowed) {
-        return errorResponse(
+        return respond(errorResponse(
           rateCheck.reason || 'Rate limit exceeded',
           'RATE_LIMIT',
           429
-        );
+        ));
       }
 
       if (!env.HF_API_TOKEN) {
-        return errorResponse(
+        return respond(errorResponse(
           'Hugging Face extraction is not configured',
           'HF_NOT_CONFIGURED',
           503
-        );
+        ));
       }
 
       try {
@@ -453,23 +485,23 @@ export default {
           await incrementUsage(userId, env);
         }
 
-        return new Response(await response.text(), {
+        return respond(new Response(await response.text(), {
           status: response.status,
           headers: {
             'Content-Type': 'application/json',
             ...CORS_HEADERS,
           },
-        });
+        }));
       } catch (error) {
         if (error instanceof RequestValidationError) {
-          return errorResponse(error.message, 'INVALID_REQUEST', 400);
+          return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
         }
         console.error('Hugging Face quote extraction error:', error);
-        return errorResponse('Model-assisted extraction failed', 'HF_EXTRACTION_ERROR', 500);
+        return respond(errorResponse('Model-assisted extraction failed', 'HF_EXTRACTION_ERROR', 500));
       }
     }
 
     // 404 for unknown routes
-    return errorResponse('Not found', 'NOT_FOUND', 404);
+    return respond(errorResponse('Not found', 'NOT_FOUND', 404));
   },
 };

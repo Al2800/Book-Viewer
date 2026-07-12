@@ -1,6 +1,12 @@
 # bv (beads viewer) local config and caches
 .bv/
 
+# MCP Agent Mail local SQLite (agents/messages/reservations) — never commit
+storage.sqlite3
+storage.sqlite3-shm
+storage.sqlite3-wal
+storage.sqlite3-*
+
 # XcodeBuildMCP local config
 .xcodebuildmcp/
 

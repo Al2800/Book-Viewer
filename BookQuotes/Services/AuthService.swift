@@ -260,6 +260,9 @@ final class AuthService: NSObject {
             throw AuthError.serverValidationFailed("Failed to refresh session")
         }
 
+        applyRefreshedSessionToken(from: httpResponse)
+        let refreshedToken = keychainService.getSessionToken() ?? sessionToken
+
         // Parse usage response to get subscription status
         struct UsageResponse: Codable {
             let subscriptionStatus: String
@@ -285,7 +288,7 @@ final class AuthService: NSObject {
             displayName: displayName,
             subscriptionStatus: status,
             subscriptionExpiresAt: expiresAt,
-            sessionToken: sessionToken
+            sessionToken: refreshedToken
         )
     }
 
@@ -317,6 +320,20 @@ final class AuthService: NSObject {
     /// Get the current session token for API requests
     func getSessionToken() -> String? {
         currentUser?.sessionToken ?? keychainService.getSessionToken()
+    }
+
+    /// Persist a sliding-session token returned by the proxy (`X-Session-Token`).
+    func applyRefreshedSessionToken(from response: HTTPURLResponse) {
+        guard let token = response.value(forHTTPHeaderField: "X-Session-Token")?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+              token.isEmpty == false else {
+            return
+        }
+
+        keychainService.setSessionToken(token)
+        guard var user = currentUser else { return }
+        user.sessionToken = token
+        currentUser = user
     }
 
     /// Keep the in-memory user model aligned with StoreKit/backend subscription changes.

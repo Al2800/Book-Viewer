@@ -55,10 +55,10 @@ export async function validateAppleToken(
     const keys = await getApplePublicKeys();
     const JWKS = jose.createLocalJWKSet(keys);
 
-    // Verify the token
+    // Apple identity tokens use the app's bundle ID as `aud` (not the Team ID).
     const { payload } = await jose.jwtVerify(token, JWKS, {
       issuer: 'https://appleid.apple.com',
-      audience: env.APPLE_TEAM_ID, // Your app's bundle ID or team ID
+      audience: env.APPLE_BUNDLE_ID,
     });
 
     const applePayload = payload as unknown as AppleJWTPayload;
@@ -77,6 +77,12 @@ export async function validateAppleToken(
   }
 }
 
+/** Response header used for sliding session refresh on authenticated API calls. */
+export const SESSION_TOKEN_HEADER = 'X-Session-Token';
+
+/** Sliding session lifetime. Clients must persist refreshed tokens from responses. */
+export const SESSION_TOKEN_TTL = '7d';
+
 /**
  * Create a session token for the user
  * This is a simpler JWT we issue after Apple Sign-In verification
@@ -90,7 +96,7 @@ export async function createSessionToken(
   const token = await new jose.SignJWT({ sub: userId })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('7d')
+    .setExpirationTime(SESSION_TOKEN_TTL)
     .setIssuer('bookquotes-proxy')
     .sign(secret);
 
