@@ -246,11 +246,15 @@ struct LibraryView: View {
                     onQuoteTap: { quoteId in
                         if let quote = navigationLookup.quote(id: quoteId) {
                             router.navigate(to: quote)
+                        } else {
+                            refreshStaleSearchResults()
                         }
                     },
                     onBookTap: { bookId in
                         if let book = navigationLookup.book(id: bookId) {
                             router.navigate(to: book)
+                        } else {
+                            refreshStaleSearchResults()
                         }
                     },
                     onAcceptSuggestion: { suggestion in
@@ -396,6 +400,21 @@ struct LibraryView: View {
         let currentBooks = books
         Task {
             await searchServices.syncIndex(books: currentBooks)
+        }
+    }
+
+    /// A tapped search result no longer exists (deleted since the results
+    /// were fetched): resync the index and re-run the search so the stale
+    /// row disappears instead of silently doing nothing.
+    private func refreshStaleSearchResults() {
+        guard let searchServices else { return }
+        HapticManager.warning()
+        let currentBooks = books
+        let query = searchText
+        let scope = searchScope
+        Task {
+            await searchServices.syncIndex(books: currentBooks)
+            await searchServices.searchService.searchImmediate(query, scope: scope)
         }
     }
 
