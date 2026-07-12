@@ -183,6 +183,27 @@ Move Library overview presentation out of `LibraryTab.swift` while keeping navig
 - Quote share card is now rendered once when the share action is invoked rather than on every share-sheet body evaluation.
 - Device follow-ups for the Mac session: two `.searchable` modifiers in one navigation stack (Library root + pushed Book Detail), dark-mode pass over camera chrome, batch-capture tray spacing.
 
+2026-07-12 Mac verification reconciliation:
+
+- Merged the PR branch containing `830a802` into local `main`.
+- Restored the Library/Search UI runner path after the section-card migration by exposing grid/list book entries as single accessible button-like elements with the existing `library_book_cover_card` and `library_book_list_row` identifiers.
+- Updated App Store media and collections/tags UI helpers to recognize the current accessible control types and to dismiss the correct sheet/full-screen cover flow explicitly.
+- Focused Library unit gate passed:
+  - `LibraryContentModeTests`
+  - `LibraryHomeSnapshotTests`
+  - `LibrarySearchServicesTests`
+  - `LibraryViewModeTests`
+  - `LibrarySortOrderTests`
+  - `LibraryNavigationLookupTests`
+- Library/Search simulator smoke passed:
+  - `SearchFlowTests/testSearch_Query_ShowsResults`
+  - `SearchFlowTests/testSearchResult_TapFirstCell_NavigatesToDetail`
+  - `LibraryManagementTests/testBookDetail_ExportSheet_Available`
+- SectionCard/App Store screenshot sweep paths passed for:
+  - `AppStoreScreenshotsTests/testAppStoreScreenshots`
+  - `CollectionsTagsFlowTests/testCollectionSheet_CreateNew_ShowsNameField`
+- Final simulator debug build passed. Existing Swift 6/concurrency/deprecation warnings remain unchanged.
+
 ## Residual Risk / Next Slice
 
 - `LibraryContentMode` now owns deterministic selection between search results, empty library, and normal library browsing.

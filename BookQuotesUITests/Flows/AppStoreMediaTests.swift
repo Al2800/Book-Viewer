@@ -370,7 +370,14 @@ fileprivate extension BaseUITestCase {
         coverMode.tap()
 
         let nav = app.navigationBars["Add Book"]
-        assertExists(nav, timeout: 5, "Add Book flow not shown")
+        let header = app.staticTexts["Add Book"]
+        let manualEntryButton = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS 'manually'")
+        ).firstMatch
+        let shown = nav.waitForExistence(timeout: 2) ||
+            header.waitForExistence(timeout: 3) ||
+            manualEntryButton.exists
+        XCTAssertTrue(shown, "Add Book flow not shown")
     }
 
     func openAddBookFlowForMedia() {
@@ -418,6 +425,14 @@ fileprivate extension BaseUITestCase {
     }
 
     func showSettingsForMedia() {
+        let closeButton = app.buttons["Close"]
+        let cancelButton = app.buttons["Cancel"]
+        if closeButton.exists && closeButton.isHittable {
+            closeButton.tap()
+        } else if cancelButton.exists && cancelButton.isHittable {
+            cancelButton.tap()
+        }
+
         _ = tapTab(.settings, timeout: 3)
 
         // We don't have a single stable identifier for settings root; accept either nav title or a known toggle.

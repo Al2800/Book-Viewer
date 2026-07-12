@@ -127,10 +127,13 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
                     logger.success("Collection name field displayed")
                 }
 
-                // Cancel
-                let cancelButton = app.buttons["Cancel"]
-                if cancelButton.exists {
-                    cancelButton.tap()
+                // Cancel the top sheet explicitly; both Add to Collection and New Collection expose Cancel.
+                let newCollectionCancel = app.navigationBars["New Collection"].buttons["Cancel"]
+                let addToCollectionCancel = app.navigationBars["Add to Collection"].buttons["Cancel"]
+                if newCollectionCancel.exists {
+                    newCollectionCancel.tap()
+                } else if addToCollectionCancel.exists {
+                    addToCollectionCancel.tap()
                 }
             }
         }
@@ -429,10 +432,13 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
 
         // Find and tap first quote
         let quoteCard = app.otherElements[AccessibilityIdentifiers.QuoteCard.container].firstMatch
+        let quoteButton = app.buttons[AccessibilityIdentifiers.QuoteCard.container].firstMatch
         let quoteCells = app.cells.firstMatch
 
         if quoteCard.waitForExistence(timeout: 3) {
             quoteCard.tap()
+        } else if quoteButton.waitForExistence(timeout: 3) {
+            quoteButton.tap()
         } else if quoteCells.exists {
             quoteCells.tap()
         }
@@ -454,10 +460,13 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
         let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         let bookLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         let bookOther = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        let bookButton = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         if bookRow.waitForExistence(timeout: 3) {
             bookRow.tap()
         } else if bookLink.waitForExistence(timeout: 3) {
             bookLink.tap()
+        } else if bookButton.waitForExistence(timeout: 3) {
+            bookButton.tap()
         } else if bookOther.waitForExistence(timeout: 3) {
             bookOther.tap()
         } else if app.cells.firstMatch.exists {

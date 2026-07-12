@@ -46,9 +46,11 @@ struct LibraryBooksSection: View {
                         onDelete(book)
                     }
                 )
+                .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)
                 .accessibilityLabel("\(book.title) by \(book.author)")
                 .accessibilityHint("Open book details")
+                .accessibilityAddTraits(.isButton)
                 .opacity(hasAppeared ? 1 : 0)
                 .offset(y: hasAppeared ? 0 : 20)
                 .animation(
@@ -76,7 +78,9 @@ struct LibraryBooksSection: View {
                 )
                 .accessibilityLabel("\(book.title) by \(book.author)")
                 .accessibilityHint("Open book details")
+                .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookListRow)
+                .accessibilityAddTraits(.isButton)
                 .opacity(hasAppeared ? 1 : 0)
                 .offset(x: hasAppeared ? 0 : -20)
                 .animation(
