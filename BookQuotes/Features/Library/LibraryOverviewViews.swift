@@ -24,6 +24,21 @@ struct DailyPassage {
     }
 }
 
+/// Single-pass snapshot of the Library home's derived quote data.
+/// The library body previously walked every quote in the library up to
+/// three times per render (daily passage, summary count, index-sync
+/// change detection); this computes all of it in one pass per render.
+struct LibraryHomeSnapshot {
+    let totalQuoteCount: Int
+    let dailyPassage: Quote?
+
+    init(books: [Book], on date: Date = Date(), calendar: Calendar = .current) {
+        let quotes = books.flatMap(\.quotes)
+        totalQuoteCount = quotes.count
+        dailyPassage = DailyPassage.passage(from: quotes, on: date, calendar: calendar)
+    }
+}
+
 /// Epigraph-style card resurfacing one passage per day.
 struct DailyPassageCard: View {
     let quote: Quote

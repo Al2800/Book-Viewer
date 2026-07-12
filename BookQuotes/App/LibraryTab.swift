@@ -94,7 +94,12 @@ struct LibraryView: View {
     // MARK: - Body
 
     var body: some View {
-        mainContent
+        // One pass over the library's quotes per render; every consumer
+        // below (summary count, daily passage, index-sync trigger) reads
+        // from this snapshot instead of walking the quote graph again.
+        let snapshot = LibraryHomeSnapshot(books: books)
+
+        mainContent(snapshot: snapshot)
         .background(Color.backgroundPrimary)
         .overlay(alignment: .topLeading) {
             if UITestConfiguration.isUITesting {
@@ -154,7 +159,7 @@ struct LibraryView: View {
                 print("UITest library books count updated: \(newValue)")
             }
         }
-        .onChange(of: books.reduce(0) { $0 + $1.quoteCount }) { _, _ in
+        .onChange(of: snapshot.totalQuoteCount) { _, _ in
             syncSearchIndex()
         }
         .onChange(of: viewMode) { _, _ in
@@ -216,14 +221,14 @@ struct LibraryView: View {
     // MARK: - Main Content
 
     @ViewBuilder
-    private var mainContent: some View {
+    private func mainContent(snapshot: LibraryHomeSnapshot) -> some View {
         switch LibraryContentMode.resolve(isSearchActive: isSearchActive, searchText: searchText, bookCount: books.count) {
         case .searchResults:
             searchResults
         case .emptyLibrary:
             EmptyLibraryView(onAddBook: { showAddBookCapture = true })
         case .library:
-            libraryContent
+            libraryContent(snapshot: snapshot)
         }
     }
 
@@ -262,11 +267,11 @@ struct LibraryView: View {
         }
     }
 
-    private var libraryContent: some View {
+    private func libraryContent(snapshot: LibraryHomeSnapshot) -> some View {
         // ScrollView must be the navigation stack root's primary content for the
         // large title to expand/collapse correctly; the filter bar rides above it
         // as a safe-area inset instead of wrapping it in a VStack.
-        libraryScrollContent
+        libraryScrollContent(snapshot: snapshot)
             .safeAreaInset(edge: .top, spacing: 0) {
                 OrganizationFilterBar(
                     selectedCollectionIds: $selectedCollectionIds,
@@ -276,10 +281,10 @@ struct LibraryView: View {
             .background(Color.backgroundPrimary)
     }
 
-    private var libraryScrollContent: some View {
+    private func libraryScrollContent(snapshot: LibraryHomeSnapshot) -> some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                if let passage = DailyPassage.passage(from: books.flatMap(\.quotes)) {
+                if let passage = snapshot.dailyPassage {
                     Button {
                         HapticManager.light()
                         router.navigate(to: passage)
@@ -291,7 +296,7 @@ struct LibraryView: View {
 
                 LibrarySummaryCard(
                     bookCount: books.count,
-                    quoteCount: books.reduce(0) { $0 + $1.quoteCount },
+                    quoteCount: snapshot.totalQuoteCount,
                     viewMode: viewMode
                 )
 
