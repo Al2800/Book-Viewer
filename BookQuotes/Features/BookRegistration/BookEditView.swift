@@ -55,6 +55,11 @@ struct BookEditView: View {
     @State private var titleShakeTrigger = 0
     @State private var authorShakeTrigger = 0
 
+    /// Guards against double-saving: the first-book milestone delays
+    /// dismissal by ~2 seconds, during which another Save tap would
+    /// otherwise insert a duplicate book.
+    @State private var isSaving = false
+
     // MARK: - Focus State
 
     @FocusState private var focusedField: Field?
@@ -172,7 +177,7 @@ struct BookEditView: View {
                 validateAndSave()
             }
             .fontWeight(.semibold)
-            .disabled(!isValidForSave)
+            .disabled(!isValidForSave || isSaving)
             .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.saveButton)
         }
     }
@@ -194,6 +199,8 @@ struct BookEditView: View {
 
     /// Validate fields and either save or shake invalid fields
     private func validateAndSave() {
+        guard !isSaving else { return }
+
         var hasError = false
 
         if !isTitleValid {
@@ -279,6 +286,7 @@ struct BookEditView: View {
         let isFirstBook = existingBooks.isEmpty
         let book = makeSaveDraft().makeBook()
 
+        isSaving = true
         modelContext.insert(book)
 
         do {
@@ -301,6 +309,7 @@ struct BookEditView: View {
                 dismiss()
             }
         } catch {
+            isSaving = false
             HapticManager.error()
         }
     }
