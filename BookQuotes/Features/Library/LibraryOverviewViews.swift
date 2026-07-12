@@ -65,7 +65,7 @@ struct LibraryBrowseSection: View {
     let onAddBook: () -> Void
 
     var body: some View {
-        LibrarySectionCard(title: "Browse") {
+        SectionCard(title: "Browse") {
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 LibraryControlRow(
                     icon: viewMode.systemImageName,
@@ -130,7 +130,7 @@ struct LibraryBrowseSection: View {
 /// Organize card linking to the Collections and Tags screens.
 struct LibraryOrganizeSection: View {
     var body: some View {
-        LibrarySectionCard(title: "Organize") {
+        SectionCard(title: "Organize") {
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 NavigationLink(value: LibraryOrganizeDestination.collections) {
                     LibraryActionRow(
@@ -162,7 +162,7 @@ struct LibraryOrganizeSection: View {
 /// filters exclude every book.
 struct LibraryFilteredBooksEmptyCard: View {
     var body: some View {
-        LibrarySectionCard(title: "Books") {
+        SectionCard(title: "Books") {
             Text("No books match the selected filters.")
                 .font(.subheadline)
                 .foregroundStyle(Color.textSecondary)
@@ -183,7 +183,7 @@ struct EmptyLibraryView: View {
             VStack(spacing: Spacing.lg) {
                 LibrarySummaryCard(bookCount: 0, quoteCount: 0, viewMode: .grid)
 
-                LibrarySectionCard(title: "Library") {
+                SectionCard(title: "Library") {
                     emptyIntroRow
 
                     Button {
@@ -233,29 +233,6 @@ struct EmptyLibraryView: View {
 
             Spacer(minLength: 0)
         }
-    }
-}
-
-struct LibrarySectionCard<Content: View>: View {
-    let title: String
-    let content: Content
-
-    init(title: String, @ViewBuilder content: () -> Content) {
-        self.title = title
-        self.content = content()
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text(title)
-                .sectionHeaderStyle()
-
-            VStack(spacing: Spacing.sm) {
-                content
-            }
-        }
-        .padding(Spacing.lg)
-        .paperCard()
     }
 }
 

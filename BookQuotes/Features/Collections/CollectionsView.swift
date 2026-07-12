@@ -111,17 +111,17 @@ struct CollectionEditorSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.lg) {
-                    SettingsSectionCard(title: "Name") {
+                    SectionCard(title: "Name") {
                         TextField("Name", text: $name)
                             .fieldChrome()
                             .accessibilityIdentifier(AccessibilityIdentifiers.Collections.nameField)
                     }
 
-                    SettingsSectionCard(title: "Color") {
+                    SectionCard(title: "Color") {
                         ColorSwatchGrid(selectedColorName: $colorName)
                     }
 
-                    SettingsSectionCard(title: "Icon") {
+                    SectionCard(title: "Icon") {
                         IconPicker(selectedIcon: $icon, colorName: colorName)
                     }
                 }

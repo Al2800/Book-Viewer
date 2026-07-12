@@ -207,3 +207,45 @@ extension View {
             )
     }
 }
+
+// MARK: - Section Card
+
+/// The app-wide paper section card: a chapter-style header (with optional
+/// trailing subtitle) above content on a warm paper card.
+///
+/// This is the single building block for sectioned screens (Library home,
+/// Settings, capture landing, book editing, export). Prefer it over
+/// bespoke per-feature card wrappers.
+struct SectionCard<Content: View>: View {
+    let title: String
+    var subtitle: String?
+    /// Spacing between content children. Defaults to the tight row spacing
+    /// used by list-style cards; form-style cards pass `Spacing.md`.
+    var contentSpacing: CGFloat = Spacing.sm
+
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .sectionHeaderStyle()
+
+                Spacer()
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(Color.textTertiary)
+                }
+            }
+
+            VStack(spacing: contentSpacing) {
+                content()
+            }
+        }
+        .padding(Spacing.lg)
+        .paperCard()
+    }
+}
+

@@ -1,50 +1,13 @@
 import SwiftUI
 import PhotosUI
 
-struct BookEditSectionCard<Content: View>: View {
-    let title: String
-    let subtitle: String?
-    @ViewBuilder let content: () -> Content
-
-    init(
-        title: String,
-        subtitle: String? = nil,
-        @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.title = title
-        self.subtitle = subtitle
-        self.content = content
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(title)
-                    .sectionHeaderStyle()
-
-                Spacer()
-
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(Color.textTertiary)
-                }
-            }
-
-            content()
-        }
-        .padding(Spacing.lg)
-        .paperCard()
-    }
-}
-
 struct BookEditCoverSection: View {
     @Binding var coverImage: UIImage?
     @Binding var selectedPhotoItem: PhotosPickerItem?
     @Binding var showCameraPicker: Bool
 
     var body: some View {
-        BookEditSectionCard(title: "Cover", subtitle: "Optional") {
+        SectionCard(title: "Cover", subtitle: "Optional") {
             VStack(spacing: Spacing.md) {
                 PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
                     coverImageView
@@ -144,7 +107,7 @@ struct BookEditDetailsSection: View {
     let authorShakeTrigger: Int
 
     var body: some View {
-        BookEditSectionCard(title: "Book Details") {
+        SectionCard(title: "Book Details") {
             VStack(spacing: Spacing.md) {
                 TextField("Title", text: $title)
                     .textContentType(.none)
@@ -188,7 +151,7 @@ struct BookEditMetadataSection: View {
     @FocusState.Binding var focusedField: BookEditView.Field?
 
     var body: some View {
-        BookEditSectionCard(title: "Additional Info", subtitle: "Optional") {
+        SectionCard(title: "Additional Info", subtitle: "Optional") {
             VStack(spacing: Spacing.md) {
                 TextField("ISBN", text: $isbn)
                     .keyboardType(.numberPad)
@@ -240,7 +203,7 @@ struct BookEditReadingStatusSection: View {
     @Binding var status: ReadingStatus
 
     var body: some View {
-        BookEditSectionCard(title: "Reading Status") {
+        SectionCard(title: "Reading Status") {
             Picker("Status", selection: $status) {
                 ForEach(ReadingStatus.allCases) { status in
                     Label(status.displayName, systemImage: status.systemImage)
@@ -257,7 +220,7 @@ struct BookEditNotesSection: View {
     @FocusState.Binding var focusedField: BookEditView.Field?
 
     var body: some View {
-        BookEditSectionCard(title: "Notes", subtitle: "Optional") {
+        SectionCard(title: "Notes", subtitle: "Optional") {
             TextField("Add notes about this book...", text: $notes, axis: .vertical)
                 .lineLimit(3...6)
                 .submitLabel(.done)

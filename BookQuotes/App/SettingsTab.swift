@@ -71,7 +71,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                SettingsSectionCard(title: "Account") {
+                SectionCard(title: "Account") {
                     NavigationLink(value: SettingsDestination.account) {
                         SettingsRow(
                             icon: "person.crop.circle",
@@ -80,7 +80,7 @@ struct SettingsView: View {
                     }
                 }
 
-                SettingsSectionCard(title: "Capture") {
+                SectionCard(title: "Capture") {
                     NavigationLink(value: SettingsDestination.markings) {
                         SettingsRow(
                             icon: "highlighter",
@@ -98,7 +98,7 @@ struct SettingsView: View {
                     )
                 }
 
-                SettingsSectionCard(title: "Display") {
+                SectionCard(title: "Display") {
                     VStack(alignment: .leading, spacing: Spacing.sm) {
                         SettingsRow(
                             icon: "square.grid.2x2",
@@ -121,7 +121,7 @@ struct SettingsView: View {
                     )
                 }
 
-                SettingsSectionCard(title: "Data") {
+                SectionCard(title: "Data") {
                     Button {
                         presentedSheet = .export
                     } label: {
@@ -142,7 +142,7 @@ struct SettingsView: View {
                     }
                 }
 
-                SettingsSectionCard(title: "About") {
+                SectionCard(title: "About") {
                     NavigationLink(value: SettingsDestination.about) {
                         SettingsRow(
                             icon: "info.circle",

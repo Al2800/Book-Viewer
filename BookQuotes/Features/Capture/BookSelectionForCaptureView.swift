@@ -37,7 +37,7 @@ struct BookSelectionForCaptureView: View {
 
     @ViewBuilder
     private var librarySection: some View {
-        CaptureSectionCard(title: "Library") {
+        SectionCard(title: "Library") {
             AddBookLibraryRow(action: onAddNewBook)
 
             ForEach(books) { book in
@@ -50,7 +50,7 @@ struct BookSelectionForCaptureView: View {
 
     @ViewBuilder
     private var emptyState: some View {
-        CaptureSectionCard(title: "Library") {
+        SectionCard(title: "Library") {
             VStack(alignment: .leading, spacing: Spacing.lg) {
                 HStack(spacing: Spacing.md) {
                     ZStack {

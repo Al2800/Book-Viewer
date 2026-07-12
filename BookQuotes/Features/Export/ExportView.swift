@@ -28,26 +28,28 @@ struct ExportView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.lg) {
-                    exportSectionCard(title: "Format") {
-                        Picker("Export Format", selection: $selectedFormat) {
-                            ForEach(ExportFormat.allCases) { format in
-                                Text(format.rawValue).tag(format)
+                    SectionCard(title: "Format") {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
+                            Picker("Export Format", selection: $selectedFormat) {
+                                ForEach(ExportFormat.allCases) { format in
+                                    Text(format.rawValue).tag(format)
+                                }
                             }
-                        }
-                        .pickerStyle(.menu)
-                        .fieldChrome()
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Export.formatPicker)
+                            .pickerStyle(.menu)
+                            .fieldChrome()
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Export.formatPicker)
 
-                        Text(formatDescription)
-                            .font(.caption)
-                            .foregroundStyle(Color.textSecondary)
+                            Text(formatDescription)
+                                .font(.caption)
+                                .foregroundStyle(Color.textSecondary)
+                        }
                     }
 
-                    exportSectionCard(title: "Options") {
+                    SectionCard(title: "Options") {
                         ExportOptionsView(options: $options)
                     }
 
-                    exportSectionCard(title: "Preview") {
+                    SectionCard(title: "Preview") {
                         ExportPreviewView(
                             quotes: exportQuotes,
                             format: selectedFormat,
@@ -56,41 +58,43 @@ struct ExportView: View {
                     }
 
                     if let fileURL = resultFileURL, let filename = resultFilename {
-                        exportSectionCard(title: "Result") {
-                            Text("Your export is ready. Use Save to Files to choose a destination or share it with another app.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-
-                            if let resultMessage {
-                                Text(resultMessage)
+                        SectionCard(title: "Result") {
+                            VStack(alignment: .leading, spacing: Spacing.md) {
+                                Text("Your export is ready. Use Save to Files to choose a destination or share it with another app.")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
-                            }
 
-                            VStack(spacing: Spacing.sm) {
-                                Button {
-                                    Task { await prepareFileExporter() }
-                                } label: {
-                                    Label("Save to Files", systemImage: "folder")
-                                        .frame(maxWidth: .infinity)
+                                if let resultMessage {
+                                    Text(resultMessage)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
                                 }
-                                .glassButton()
 
-                                Button {
-                                    Task { await prepareShareSheet() }
-                                } label: {
-                                    Label("Share \(filename)", systemImage: "square.and.arrow.up")
+                                VStack(spacing: Spacing.sm) {
+                                    Button {
+                                        Task { await prepareFileExporter() }
+                                    } label: {
+                                        Label("Save to Files", systemImage: "folder")
+                                            .frame(maxWidth: .infinity)
+                                    }
+                                    .glassButton()
+
+                                    Button {
+                                        Task { await prepareShareSheet() }
+                                    } label: {
+                                        Label("Share \(filename)", systemImage: "square.and.arrow.up")
+                                    }
+                                    .buttonStyle(.secondary)
                                 }
-                                .buttonStyle(.secondary)
-                            }
 
-                            Text("Saved temporarily at:")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text(fileURL.path)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(2)
+                                Text("Saved temporarily at:")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(fileURL.path)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(2)
+                            }
                         }
                     }
                 }
@@ -162,20 +166,6 @@ struct ExportView: View {
         case .obsidian:
             return "Markdown bundle optimized for Obsidian vaults."
         }
-    }
-
-    private func exportSectionCard<Content: View>(
-        title: String,
-        @ViewBuilder content: () -> Content
-    ) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text(title)
-                .sectionHeaderStyle()
-
-            content()
-        }
-        .padding(Spacing.lg)
-        .paperCard()
     }
 
     private var exportQuotes: [Quote] {
