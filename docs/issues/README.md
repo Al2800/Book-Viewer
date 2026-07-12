@@ -94,6 +94,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `082-test-fixtures-modular-refactor.md` - closed
 - `083-quote-save-navigation-after-extraction-review.md` - closed
 - `084-cover-capture-created-book-visibility.md` - closed
+- `085-library-list-row-delete-smoke-accessibility.md` - open
 
 ## Refactor Rules
 
@@ -135,3 +136,4 @@ Every user testing note should be captured before or alongside implementation wo
 - Test infrastructure: `082`, fixture builders, generated image fixtures, search datasets, and broad unit gate support.
 - Quote capture save route: `083`, post-extraction save completion, duplicate review save path, and capture completion routing.
 - Cover capture save route: `084`, created-book visibility, cover capture completion, and book edit save dismissal routing.
+- Library delete smoke: `085`, list-row accessibility shape, swipe-to-delete target, and delete confirmation UI smoke.
