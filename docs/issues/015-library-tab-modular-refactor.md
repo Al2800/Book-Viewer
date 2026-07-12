@@ -174,6 +174,15 @@ Move Library overview presentation out of `LibraryTab.swift` while keeping navig
 - Also deduplicated the HTTP status-validation block repeated in three `ISBNLookupService` methods into a private `fetchLookupData(from:)` helper (489 -> 463 LOC); error mapping is byte-identical, so the hermetic playback tests characterize it unchanged.
 - Verification pending on the Mac session: focused Library unit gate plus the now-recovered XCUITest Library/Search smoke (issue 081 closed).
 
+2026-07-12 foundation and bug-fix slice (same branch):
+
+- Unified the five parallel section-card implementations (`LibrarySectionCard`, `SettingsSectionCard`, `CaptureSectionCard`, `BookEditSectionCard`, `ExportView.exportSectionCard`) into one `SectionCard` in `DesignSystemChrome.swift`; 37 call sites migrated, old structs removed, no intended visual changes. Future design-system section work should target `SectionCard` only.
+- Added `LibraryHomeSnapshot` (single pass over the library's quotes per render) to replace the three separate quote-graph walks in `LibraryView` (daily passage, summary count, index-sync change detection); container-backed unit tests added.
+- Fixed a double-save window in `BookEditView`: the first-book milestone delays dismissal 2.2s while Save stayed enabled, allowing duplicate inserts.
+- Fixed silently-dead taps on stale search results after deletions: the tap now resyncs the FTS index and re-runs the search.
+- Quote share card is now rendered once when the share action is invoked rather than on every share-sheet body evaluation.
+- Device follow-ups for the Mac session: two `.searchable` modifiers in one navigation stack (Library root + pushed Book Detail), dark-mode pass over camera chrome, batch-capture tray spacing.
+
 ## Residual Risk / Next Slice
 
 - `LibraryContentMode` now owns deterministic selection between search results, empty library, and normal library browsing.
