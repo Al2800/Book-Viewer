@@ -104,13 +104,13 @@ Exchange Apple Sign-In token for session token.
 
 ### Extractions
 
-By default, extraction endpoints require a signed-in user with an active subscription/trial record. During beta/TestFlight validation, the backend can explicitly allow signed-in users through the extraction gate with:
+By default, extraction endpoints require a signed-in user with an active subscription/trial record. For temporary beta/TestFlight validation only, the backend can allow signed-in users through the extraction gate with:
 
 ```text
 ALLOW_AUTHENTICATED_EXTRACTION=true
 ```
 
-This does not remove authentication or rate limits.
+Production ships with this flag **unset/false** so extraction requires an active subscription. This does not remove authentication or rate limits.
 
 #### `POST /api/extract-cover`
 Extract book metadata from cover image.
@@ -192,7 +192,7 @@ If the device currently has no active entitlement, the app may send `{}` and the
 - Session tokens are signed with HS256 and expire after 7 days
 - Gemini API key is never exposed to clients
 - Subscription access is granted from App Store Server API state, not client-declared status
-- `ALLOW_AUTHENTICATED_EXTRACTION=true` is an explicit beta policy for validating extraction before subscription purchase is available
+- `ALLOW_AUTHENTICATED_EXTRACTION=true` is a temporary beta-only policy; production leaves it unset so subscription gating stays enforced
 - Subscription ownership is bound to a deterministic `appAccountToken`
 - App Store notifications trigger server-side reconciliation before entitlements are mutated
 - The worker stores the normalized entitlement cache in Cloudflare KV

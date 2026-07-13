@@ -3,7 +3,7 @@ import SwiftData
 
 struct CaptureQueueItemProcessor {
     let modelContainer: ModelContainer
-    let geminiService: GeminiService
+    let quoteExtractor: any QuoteExtracting
 
     func process(
         itemId: UUID,
@@ -48,7 +48,7 @@ struct CaptureQueueItemProcessor {
         }
 
         let markings = try fetchEnabledMarkingPrompts(in: context)
-        let result = try await geminiService.extractQuotes(from: image, markings: markings)
+        let result = try await quoteExtractor.extractQuotes(from: image, markings: markings)
 
         guard let book = item.book else {
             throw QueueError.bookNotFound

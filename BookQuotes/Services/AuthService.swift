@@ -298,6 +298,42 @@ final class AuthService: NSObject {
         keychainService.clearAllCredentials()
     }
 
+    /// Delete the user's server-side account data, then clear the local session.
+    /// Local library data remains on device. App Store subscriptions must be
+    /// cancelled separately through Apple subscription management.
+    func deleteAccount() async throws {
+        guard let token = getSessionToken() else {
+            throw AuthError.sessionExpired
+        }
+
+        let url = serverBaseURL.appendingPathComponent("api/auth/account")
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw AuthError.networkError(URLError(.badServerResponse))
+        }
+
+        applyRefreshedSessionToken(from: httpResponse)
+
+        if httpResponse.statusCode == 401 {
+            await signOut()
+            throw AuthError.sessionExpired
+        }
+
+        guard httpResponse.statusCode == 200 else {
+            let message = String(data: data, encoding: .utf8) ?? "Unknown server error"
+            throw AuthError.accountDeletionFailed(
+                trimServerError(message, url: url, statusCode: httpResponse.statusCode)
+            )
+        }
+
+        await signOut()
+    }
+
     // MARK: - Credential Storage
 
     /// Store user credentials in keychain

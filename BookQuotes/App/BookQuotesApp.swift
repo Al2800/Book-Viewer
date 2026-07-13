@@ -149,7 +149,7 @@ struct BookQuotesApp: App {
         if let containerResult {
             CaptureQueueManager.initialize(
                 modelContainer: containerResult,
-                geminiService: gemini,
+                authService: auth,
                 networkMonitor: NetworkMonitor.shared
             )
         }

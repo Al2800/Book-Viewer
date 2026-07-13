@@ -17,6 +17,7 @@ import {
   hasActiveSubscription,
   reconcileSubscription,
   rememberUserAppAccountToken,
+  deleteUserAccountData,
   toClientSubscriptionStatus,
 } from './subscription';
 import { checkRateLimit, incrementUsage, getUsageStats } from './rate-limit';
@@ -28,7 +29,7 @@ const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 // CORS headers for iOS app
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Expose-Headers': SESSION_TOKEN_HEADER,
 };
@@ -333,6 +334,17 @@ export default {
     }
 
     const respond = (response: Response) => withSessionRefresh(response, userId, env);
+
+    // Account deletion (Guideline 5.1.1) — removes server-side account/subscription cache.
+    if (path === '/api/auth/account' && request.method === 'DELETE') {
+      try {
+        await deleteUserAccountData(userId, env);
+        return jsonResponse({ success: true, message: 'Account data deleted' });
+      } catch (error) {
+        console.error('Account deletion error:', error);
+        return errorResponse('Failed to delete account data', 'ACCOUNT_DELETE_FAILED', 500);
+      }
+    }
 
     // Usage stats endpoint
     if (path === '/api/usage' && request.method === 'GET') {

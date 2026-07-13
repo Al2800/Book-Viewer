@@ -26,7 +26,7 @@ preview_id = "4f58e38410a74e30abe248160c5994d6"
 # - APPLE_APP_ID (optional)
 
 [env.production]
-vars = { ENVIRONMENT = "production", ALLOW_AUTHENTICATED_EXTRACTION = "true" }
+vars = { ENVIRONMENT = "production" }
 routes = ["api.bookquotes.uk/*"]
 
 [[env.production.kv_namespaces]]

@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  deleteUserAccountData,
   deriveAppAccountToken,
   subscriptionHasAccess,
   toClientSubscriptionStatus,
 } from './subscription';
-import type { SubscriptionRecord } from './types';
+import type { Env, SubscriptionRecord } from './types';
 
 function makeRecord(overrides: Partial<SubscriptionRecord> = {}): SubscriptionRecord {
   return {
@@ -20,6 +21,29 @@ function makeRecord(overrides: Partial<SubscriptionRecord> = {}): SubscriptionRe
     source: 'app_store_server_api',
     ...overrides,
   };
+}
+
+class MockKV {
+  store = new Map<string, string>();
+
+  async get(key: string): Promise<string | null> {
+    return this.store.get(key) ?? null;
+  }
+
+  async put(key: string, value: string): Promise<void> {
+    this.store.set(key, value);
+  }
+
+  async delete(key: string): Promise<void> {
+    this.store.delete(key);
+  }
+
+  async list(options: { prefix: string; cursor?: string }) {
+    const keys = [...this.store.keys()]
+      .filter((key) => key.startsWith(options.prefix))
+      .map((name) => ({ name }));
+    return { keys, list_complete: true as const, cursor: undefined };
+  }
 }
 
 describe('deriveAppAccountToken', () => {
@@ -73,5 +97,39 @@ describe('subscription access mapping', () => {
 
     expect(subscriptionHasAccess(revoked)).toBe(false);
     expect(toClientSubscriptionStatus(revoked)).toBe('canceled');
+  });
+});
+
+describe('deleteUserAccountData', () => {
+  it('removes subscription, ownership, token, and usage keys for the user', async () => {
+    const kv = new MockKV();
+    const userId = 'user-delete-1';
+    const token = await deriveAppAccountToken(userId);
+    const record = makeRecord({
+      userId,
+      appAccountToken: token,
+      originalTransactionId: 'orig-delete-1',
+    });
+
+    await kv.put(`sub:user:${userId}`, JSON.stringify(record));
+    await kv.put(
+      `sub:owner:orig-delete-1`,
+      JSON.stringify({
+        userId,
+        originalTransactionId: 'orig-delete-1',
+        linkedAt: new Date().toISOString(),
+        source: 'verified_app_account_token',
+      })
+    );
+    await kv.put(`sub:token:${token}`, userId);
+    await kv.put(`usage:${userId}:2026-07`, JSON.stringify({ extractionCount: 3 }));
+
+    const env = { KV: kv as unknown as KVNamespace } as Env;
+    await deleteUserAccountData(userId, env);
+
+    expect(await kv.get(`sub:user:${userId}`)).toBeNull();
+    expect(await kv.get(`sub:owner:orig-delete-1`)).toBeNull();
+    expect(await kv.get(`sub:token:${token}`)).toBeNull();
+    expect(await kv.get(`usage:${userId}:2026-07`)).toBeNull();
   });
 });

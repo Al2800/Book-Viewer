@@ -8,7 +8,9 @@ struct AccountView: View {
     @State private var showSignIn = false
     @State private var showPaywall = false
     @State private var showSignOutConfirmation = false
+    @State private var showDeleteAccountConfirmation = false
     @State private var isRestoring = false
+    @State private var isDeletingAccount = false
     @State private var showError = false
     @State private var errorMessage: String?
 
@@ -51,6 +53,14 @@ struct AccountView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Are you sure you want to sign out? Your data will remain on this device.")
+        }
+        .confirmationDialog("Delete Account", isPresented: $showDeleteAccountConfirmation) {
+            Button("Delete Account", role: .destructive) {
+                deleteAccount()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes your BookQuotes account data from our servers. Your local library stays on this device. Cancel any App Store subscription separately in Subscription settings if needed.")
         }
         .alert("Error", isPresented: $showError) {
             Button("OK") {}
@@ -263,6 +273,26 @@ struct AccountView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Settings.signOutButton)
+
+                    Divider()
+
+                    Button {
+                        showDeleteAccountConfirmation = true
+                    } label: {
+                        HStack {
+                            Label("Delete Account", systemImage: "trash")
+                                .foregroundStyle(Color.error)
+
+                            Spacer()
+
+                            if isDeletingAccount {
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(isDeletingAccount)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.deleteAccountButton)
                 }
             }
         }
@@ -283,6 +313,20 @@ struct AccountView: View {
     private func signOut() {
         Task {
             await authService.signOut()
+        }
+    }
+
+    private func deleteAccount() {
+        Task {
+            isDeletingAccount = true
+            defer { isDeletingAccount = false }
+
+            do {
+                try await authService.deleteAccount()
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
+            }
         }
     }
 }

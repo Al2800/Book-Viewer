@@ -14,7 +14,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
 
     var queueManager: CaptureQueueManager!
     var authService: AuthService!
-    var geminiService: GeminiService!
+    var quoteExtractor: any QuoteExtracting!
     var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
@@ -23,11 +23,14 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         try await super.setUp()
 
         authService = AuthService()
-        geminiService = GeminiService(authService: authService)
+        quoteExtractor = ModelAssistedQuoteExtractor(
+            localExtractor: OnDeviceQuoteExtractor(),
+            remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
+        )
 
         queueManager = CaptureQueueManager(
             modelContainer: modelContainer,
-            geminiService: geminiService,
+            quoteExtractor: quoteExtractor,
             networkMonitor: NetworkMonitor()
         )
 
@@ -37,7 +40,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
     override func tearDown() async throws {
         await queueManager.stop()
         queueManager = nil
-        geminiService = nil
+        quoteExtractor = nil
         authService = nil
         cancellables.removeAll()
         try await super.tearDown()
@@ -49,7 +52,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         let networkMonitor = StubCaptureQueueNetworkMonitor(isConnected: false)
         let manager = CaptureQueueManager(
             modelContainer: modelContainer,
-            geminiService: geminiService,
+            quoteExtractor: quoteExtractor,
             networkMonitor: networkMonitor
         )
 

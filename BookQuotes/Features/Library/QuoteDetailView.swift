@@ -460,7 +460,7 @@ struct QuoteDetailView: View {
             marginNote: editedMarginNote,
             pageNumberText: editedPageNumber
         )
-        .apply(to: quote)
+        .apply(to: quote, in: modelContext)
 
         try? modelContext.save()
         HapticManager.success()

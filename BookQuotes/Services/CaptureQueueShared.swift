@@ -7,16 +7,21 @@ extension CaptureQueueManager {
     static var shared: CaptureQueueManager?
 
     /// Initialize the shared instance.
-    /// Call this early in app lifecycle.
+    /// Uses the same model-assisted extractor seam as interactive quote review.
     @MainActor
     static func initialize(
         modelContainer: ModelContainer,
-        geminiService: GeminiService,
+        authService: AuthService,
         networkMonitor: any CaptureQueueNetworkMonitoring
     ) {
+        let quoteExtractor = ModelAssistedQuoteExtractor(
+            localExtractor: OnDeviceQuoteExtractor(),
+            remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
+        )
+
         shared = CaptureQueueManager(
             modelContainer: modelContainer,
-            geminiService: geminiService,
+            quoteExtractor: quoteExtractor,
             networkMonitor: networkMonitor
         )
     }

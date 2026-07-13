@@ -38,7 +38,7 @@ actor CaptureQueueManager {
 
     init(
         modelContainer: ModelContainer,
-        geminiService: GeminiService,
+        quoteExtractor: any QuoteExtracting,
         networkMonitor: any CaptureQueueNetworkMonitoring,
         processingPreferences: CaptureQueueProcessingPreferences = CaptureQueueProcessingPreferences(),
         networkPoller: any CaptureQueueNetworkPolling = CaptureQueueNetworkPoller(),
@@ -50,7 +50,7 @@ actor CaptureQueueManager {
         self.retryCoordinator = CaptureQueueRetryCoordinator(retryPolicy: retryPolicy)
         self.itemProcessor = CaptureQueueItemProcessor(
             modelContainer: modelContainer,
-            geminiService: geminiService
+            quoteExtractor: quoteExtractor
         )
         self.queueStore = CaptureQueueStore(modelContainer: modelContainer)
     }

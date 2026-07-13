@@ -95,6 +95,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `083-quote-save-navigation-after-extraction-review.md` - closed
 - `084-cover-capture-created-book-visibility.md` - closed
 - `085-library-list-row-delete-smoke-accessibility.md` - open
+- `086-capture-ship-readiness.md` - in_progress
 
 ## Refactor Rules
 

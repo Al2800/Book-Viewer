@@ -60,6 +60,12 @@ enum LegalDocument: String, Identifiable {
                     ]
                 ),
                 LegalDocumentSection(
+                    title: "Account Deletion",
+                    paragraphs: [
+                        "You can delete your BookQuotes account from Settings → Account → Delete Account. This removes your authentication and subscription access records from BookQuotes servers. Your on-device library remains unless you delete it yourself. App Store subscriptions are billed by Apple and must be cancelled in Apple subscription management."
+                    ]
+                ),
+                LegalDocumentSection(
                     title: "Contact",
                     paragraphs: [
                         "Questions about privacy can be sent to \(AppReleaseConfiguration.supportEmail)."

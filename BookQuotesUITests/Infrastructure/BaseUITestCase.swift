@@ -793,6 +793,7 @@ enum AccessibilityIdentifiers {
     enum Settings {
         static let accountSection = "settings_account_section"
         static let signOutButton = "settings_sign_out_button"
+        static let deleteAccountButton = "settings_delete_account_button"
         static let signInButton = "settings_sign_in_button"
         static let subscriptionStatus = "settings_subscription_status"
         static let restorePurchasesButton = "settings_restore_purchases"

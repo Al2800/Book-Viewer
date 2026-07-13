@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <main className="pt-24 pb-16">
         <article className="container-narrow prose prose-ink max-w-none">
           <h1 className="font-display">Privacy Policy</h1>
-          <p className="text-ink-medium text-lg">Last updated: March 2026</p>
+          <p className="text-ink-medium text-lg">Last updated: July 2026</p>
 
           <section className="mt-12">
             <h2>Our Commitment</h2>
@@ -36,10 +36,13 @@ export default function PrivacyPage() {
 
             <h3>Image Processing</h3>
             <p>
-              When you capture a book page, the image is sent to our proxy server and then
-              to Google Gemini for AI processing. <strong>Images are not stored</strong>{' '}
-              after processing is complete. They exist only in memory during the extraction
-              process.
+              When you capture a marked quote page, the image may be sent to the BookQuotes
+              proxy and then to Hugging Face for model-assisted quote extraction. If remote
+              extraction is unavailable, the app can fall back to Apple Vision OCR and local
+              mark detection on-device. Cover extraction may send the image to the BookQuotes
+              proxy and then to Google Gemini for processing.{' '}
+              <strong>Images are not stored</strong> after processing is complete. They exist
+              only in memory during extraction.
             </p>
 
             <h3>Your Quotes and Books</h3>
@@ -68,9 +71,18 @@ export default function PrivacyPage() {
             </p>
             <ul>
               <li>
-                <strong>Google Gemini API</strong> &mdash; For AI-powered text extraction
-                from images. Images are processed according to Google&apos;s privacy policy
-                and are not retained after processing.
+                <strong>Hugging Face</strong> &mdash; For model-assisted quote extraction from
+                marked quote pages. Images are processed in-flight and are not retained after
+                extraction completes.
+              </li>
+              <li>
+                <strong>Apple Vision</strong> &mdash; For on-device OCR fallback of marked quote
+                pages.
+              </li>
+              <li>
+                <strong>Google Gemini API</strong> &mdash; For cover metadata extraction from
+                images. Images are processed according to Google&apos;s privacy policy and are
+                not retained after processing.
               </li>
               <li>
                 <strong>Apple Sign-In</strong> &mdash; For secure authentication without
@@ -94,9 +106,11 @@ export default function PrivacyPage() {
           <section className="mt-8">
             <h2>Your Rights</h2>
             <p>
-              You can delete all your data at any time by removing the app from your device.
-              Since we do not store your quotes or books on our servers, deletion is
-              immediate and complete.
+              You can delete your BookQuotes account from Settings → Account → Delete Account.
+              That removes authentication and subscription access records from BookQuotes
+              servers. Your on-device library remains unless you delete it yourself. App Store
+              subscriptions are billed by Apple and must be cancelled in Apple subscription
+              management. Removing the app from your device also deletes local library data.
             </p>
           </section>
 

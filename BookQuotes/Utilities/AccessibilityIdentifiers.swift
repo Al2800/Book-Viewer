@@ -373,6 +373,9 @@ enum AccessibilityIdentifiers {
         /// Sign out button
         static let signOutButton = "settings_sign_out_button"
 
+        /// Delete account button
+        static let deleteAccountButton = "settings_delete_account_button"
+
         /// Sign in button
         static let signInButton = "settings_sign_in_button"
 

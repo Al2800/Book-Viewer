@@ -113,6 +113,7 @@ enum AuthError: LocalizedError {
     case serverValidationFailed(String)
     case noIdentityToken
     case sessionExpired
+    case accountDeletionFailed(String)
     case networkError(Error)
 
     var errorDescription: String? {
@@ -129,6 +130,8 @@ enum AuthError: LocalizedError {
             return "No identity token received from Apple"
         case .sessionExpired:
             return "Your session has expired. Please sign in again."
+        case .accountDeletionFailed(let message):
+            return "Account deletion failed: \(message)"
         case .networkError(let error):
             return "Network error: \(error.localizedDescription)"
         }
