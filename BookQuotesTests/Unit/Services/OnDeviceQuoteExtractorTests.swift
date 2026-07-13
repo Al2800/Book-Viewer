@@ -230,7 +230,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertNotNil(body["contents"])
     }
 
-    func testModelAssistedExtractorUsesRemoteModelBeforeLocalOCR() async throws {
+    func testQuoteExtractionPipelineUsesRemoteModelBeforeLocalOCR() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
@@ -257,7 +257,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             pageNumber: nil,
             processingNotes: "model-assisted"
         ))
-        let extractor = ModelAssistedQuoteExtractor(
+        let extractor = QuoteExtractionPipeline(
             localExtractor: local,
             remoteExtractor: remote
         )
@@ -273,7 +273,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(local.callCount, 0)
     }
 
-    func testModelAssistedExtractorFallsBackToLocalOCRWhenRemoteModelFails() async throws {
+    func testQuoteExtractionPipelineFallsBackToLocalOCRWhenRemoteModelFails() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
@@ -288,7 +288,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             processingNotes: "local fallback"
         ))
         let remote = SpyQuoteExtractor(error: ExtractionError.networkError(URLError(.timedOut)))
-        let extractor = ModelAssistedQuoteExtractor(
+        let extractor = QuoteExtractionPipeline(
             localExtractor: local,
             remoteExtractor: remote
         )

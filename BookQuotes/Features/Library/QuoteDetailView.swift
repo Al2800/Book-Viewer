@@ -65,20 +65,32 @@ struct QuoteDetailView: View {
                     .offset(y: hasAppeared ? 0 : 15)
 
                 // Collections and tags
-                organizeSection
+                QuoteDetailOrganizeSection(
+                    quote: quote,
+                    onCollections: {
+                        HapticManager.light()
+                        showCollectionsSheet = true
+                    },
+                    onTags: {
+                        HapticManager.light()
+                        showTagsSheet = true
+                    }
+                )
                     .opacity(hasAppeared ? 1 : 0)
                     .offset(y: hasAppeared ? 0 : 15)
 
                 // Source image button
                 if quote.sourceImageData != nil {
-                    sourceImageButton
+                    QuoteDetailSourceImageButton {
+                        showSourceImage = true
+                    }
                         .opacity(hasAppeared ? 1 : 0)
                         .offset(y: hasAppeared ? 0 : 15)
                 }
 
                 // Book info
                 if let book = quote.book {
-                    bookSection(book)
+                    QuoteDetailBookSection(book: book)
                         .opacity(hasAppeared ? 1 : 0)
                         .offset(y: hasAppeared ? 0 : 15)
                 }
@@ -346,94 +358,6 @@ struct QuoteDetailView: View {
         .paperCard()
     }
 
-    // MARK: - Organize Section
-
-    private var organizeSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("Collections & Tags")
-                .sectionHeaderStyle()
-
-            if quote.collections.isEmpty && quote.tags.isEmpty {
-                Text("Group this quote into collections or label it with tags.")
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-            }
-
-            if !quote.collections.isEmpty {
-                FlowLayout(spacing: Spacing.sm) {
-                    ForEach(quote.collections) { collection in
-                        QuoteCollectionChip(collection: collection)
-                    }
-                }
-            }
-
-            if !quote.tags.isEmpty {
-                FlowLayout(spacing: Spacing.sm) {
-                    ForEach(quote.tags) { tag in
-                        TagChip(tag: tag)
-                    }
-                }
-            }
-
-            HStack(spacing: Spacing.sm) {
-                Button {
-                    HapticManager.light()
-                    showCollectionsSheet = true
-                } label: {
-                    Label("Collections", systemImage: "folder.badge.plus")
-                }
-                .buttonStyle(.secondaryCompact)
-
-                Button {
-                    HapticManager.light()
-                    showTagsSheet = true
-                } label: {
-                    Label("Tags", systemImage: "tag")
-                }
-                .buttonStyle(.secondaryCompact)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Spacing.lg)
-        .paperCard()
-    }
-
-    // MARK: - Source Image Button
-
-    private var sourceImageButton: some View {
-        Button {
-            showSourceImage = true
-        } label: {
-            HStack {
-                Label("View Source Image", systemImage: "photo")
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-            }
-            .padding()
-            .paperCard(cornerRadius: CornerRadius.md)
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.sourceImageButton)
-    }
-
-    // MARK: - Book Section
-
-    private func bookSection(_ book: Book) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            Text("From")
-                .sectionHeaderStyle()
-
-            NavigationLink(value: book) {
-                BookHeaderView(book: book, style: .compact)
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(Spacing.lg)
-        .paperCard()
-    }
-
     // MARK: - Actions
 
     private func startEditing() {
@@ -499,33 +423,6 @@ struct QuoteDetailView: View {
         modelContext.delete(quote)
         try? modelContext.save()
         dismiss()
-    }
-}
-
-// MARK: - Quote Collection Chip
-
-/// Small capsule showing a collection the quote belongs to.
-private struct QuoteCollectionChip: View {
-    let collection: Collection
-
-    var body: some View {
-        HStack(spacing: Spacing.xs) {
-            Image(systemName: collection.icon)
-                .font(.caption2)
-
-            Text(collection.name)
-                .font(.caption)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, Spacing.sm)
-        .padding(.vertical, Spacing.xs)
-        .background(chipColor.opacity(0.15))
-        .foregroundStyle(chipColor)
-        .clipShape(Capsule())
-    }
-
-    private var chipColor: Color {
-        CollectionColor.named(collection.colorName).color
     }
 }
 

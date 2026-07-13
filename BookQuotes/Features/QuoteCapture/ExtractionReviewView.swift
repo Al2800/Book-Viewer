@@ -49,10 +49,7 @@ struct ExtractionReviewView: View {
     }
 
     private var quoteExtractor: any QuoteExtracting {
-        ModelAssistedQuoteExtractor(
-            localExtractor: OnDeviceQuoteExtractor(),
-            remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
-        )
+        QuoteExtractionPipeline.live(authService: authService)
     }
 
     // MARK: - Milestone State

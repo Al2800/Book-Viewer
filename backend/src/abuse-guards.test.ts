@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeGeminiRequestPayload } from './index';
+import { sanitizeGeminiRequestPayload } from './gemini-proxy';
 import { checkRateLimit } from './rate-limit';
 import type { Env } from './types';
 

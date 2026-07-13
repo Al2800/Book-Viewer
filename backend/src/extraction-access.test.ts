@@ -17,6 +17,10 @@ vi.mock('./subscription', () => ({
   toClientSubscriptionStatus: vi.fn(() => 'none'),
 }));
 
+vi.mock('./account-data', () => ({
+  deleteUserAccountData: vi.fn(),
+}));
+
 class MockKVNamespace {
   private store = new Map<string, string>();
 

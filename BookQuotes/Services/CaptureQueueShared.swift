@@ -14,14 +14,9 @@ extension CaptureQueueManager {
         authService: AuthService,
         networkMonitor: any CaptureQueueNetworkMonitoring
     ) {
-        let quoteExtractor = ModelAssistedQuoteExtractor(
-            localExtractor: OnDeviceQuoteExtractor(),
-            remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
-        )
-
         shared = CaptureQueueManager(
             modelContainer: modelContainer,
-            quoteExtractor: quoteExtractor,
+            quoteExtractor: QuoteExtractionPipeline.live(authService: authService),
             networkMonitor: networkMonitor
         )
     }

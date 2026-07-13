@@ -14,7 +14,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
 
     var queueManager: CaptureQueueManager!
     var authService: AuthService!
-    var quoteExtractor: ModelAssistedQuoteExtractor!
+    var quoteExtractor: QuoteExtractionPipeline!
     var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
@@ -23,7 +23,7 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         try await super.setUp()
 
         authService = AuthService()
-        quoteExtractor = ModelAssistedQuoteExtractor(
+        quoteExtractor = QuoteExtractionPipeline(
             localExtractor: OnDeviceQuoteExtractor(),
             remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
         )

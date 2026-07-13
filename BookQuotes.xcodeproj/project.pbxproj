@@ -330,6 +330,7 @@
 		FF6AA7BB8CC9DD0EE1FF2AA3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2CC3DD4EE5FF6AA7BB8CC9 /* ContentView.swift */; };
 		FUVB1XFQWQSP0BTNSLJL92FP /* QuoteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLMKR1JBMB9YU74LJ9VJIECN /* QuoteDetailView.swift */; };
 		CF7700000000000000000001 /* QuoteDetailSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7700000000000000000002 /* QuoteDetailSheets.swift */; };
+		BEEF00000000000000000001 /* QuoteDetailSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEF00000000000000000002 /* QuoteDetailSections.swift */; };
 		G3GBJLDJCE9RSNY952RVBJ56 /* CameraPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3VSFZMO6B9ZRDB6LTHUPOZLF /* CameraPermissionView.swift */; };
 		GV2RJMKHMTSE058BWJ9VVSN9 /* BatchCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TJE86PZM025ZK9V5AQYGJXPV /* BatchCaptureView.swift */; };
 		GXBN8BH5Z6OVZBX6N4L2RPGG /* OrganizationFilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8JVRZK2QO7FMONHNKD0D9VQ3 /* OrganizationFilterBar.swift */; };
@@ -605,6 +606,7 @@
 		DF368723046999B19C71BF7C /* BookQuotesTests/Unit/Services/KeychainServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Services/KeychainServiceTests.swift; sourceTree = SOURCE_ROOT; };
 		DLMKR1JBMB9YU74LJ9VJIECN /* QuoteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteDetailView.swift; sourceTree = "<group>"; };
 		CF7700000000000000000002 /* QuoteDetailSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteDetailSheets.swift; sourceTree = "<group>"; };
+		BEEF00000000000000000002 /* QuoteDetailSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteDetailSections.swift; sourceTree = "<group>"; };
 		DS0SYTFD30JHU0TCZ4231CIR /* QuoteSearchResultRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteSearchResultRow.swift; sourceTree = "<group>"; };
 		CF8000000000000000000002 /* BookCoverCardSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCoverCardSupport.swift; sourceTree = "<group>"; };
 		E3A5FFDFE17CFD1F0FE1AE85 /* BookQuotesTests/Unit/Services/SearchDatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Services/SearchDatabaseTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1195,6 +1197,7 @@
 				WWWJWBWEUTW8ZAI5ER0WBFL8 /* BookSearchResultRow.swift */,
 				DLMKR1JBMB9YU74LJ9VJIECN /* QuoteDetailView.swift */,
 				CF7700000000000000000002 /* QuoteDetailSheets.swift */,
+				BEEF00000000000000000002 /* QuoteDetailSections.swift */,
 				55DF8XFHXKCIX98FLGKY7LGT /* SearchResultsView.swift */,
 				CF7200000000000000000002 /* SearchResultsStateViews.swift */,
 			);
@@ -1685,6 +1688,7 @@
 				R3YX5JU0SD8LNWYXMFR3RW9D /* BookSearchResultRow.swift in Sources */,
 				FUVB1XFQWQSP0BTNSLJL92FP /* QuoteDetailView.swift in Sources */,
 				CF7700000000000000000001 /* QuoteDetailSheets.swift in Sources */,
+				BEEF00000000000000000001 /* QuoteDetailSections.swift in Sources */,
 				A8ZVTSEGYQYANN8AGY4C3Q05 /* SearchResultsView.swift in Sources */,
 				CF7200000000000000000001 /* SearchResultsStateViews.swift in Sources */,
 				BWXMV3XSG873GW646RSP3I0A /* BookEditView.swift in Sources */,

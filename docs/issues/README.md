@@ -96,6 +96,11 @@ This folder tracks local markdown issues for the refactor programme.
 - `084-cover-capture-created-book-visibility.md` - closed
 - `085-library-list-row-delete-smoke-accessibility.md` - open
 - `086-capture-ship-readiness.md` - in_progress
+- `087-quote-extraction-pipeline-deepening.md` - closed
+- `088-backend-entitlement-account-complexity-refactor.md` - in_progress
+- `089-website-dependency-privacy-readiness.md` - closed
+- `090-quote-detail-view-final-slice.md` - closed
+- `091-release-evidence-pack-and-device-smoke.md` - in_progress
 
 ## Refactor Rules
 
@@ -138,3 +143,4 @@ Every user testing note should be captured before or alongside implementation wo
 - Quote capture save route: `083`, post-extraction save completion, duplicate review save path, and capture completion routing.
 - Cover capture save route: `084`, created-book visibility, cover capture completion, and book edit save dismissal routing.
 - Library delete smoke: `085`, list-row accessibility shape, swipe-to-delete target, and delete confirmation UI smoke.
+- Submission checkpoint: `086`, `087`, `088`, `089`, `090`, `091`, quote-extraction pipeline depth, backend entitlement/account complexity, website dependency/privacy readiness, Quote Detail final slice, and release evidence/device smoke.

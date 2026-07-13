@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { deleteUserAccountData } from './account-data';
 import {
-  deleteUserAccountData,
   deriveAppAccountToken,
   subscriptionHasAccess,
   toClientSubscriptionStatus,
@@ -131,5 +131,29 @@ describe('deleteUserAccountData', () => {
     expect(await kv.get(`sub:owner:orig-delete-1`)).toBeNull();
     expect(await kv.get(`sub:token:${token}`)).toBeNull();
     expect(await kv.get(`usage:${userId}:2026-07`)).toBeNull();
+  });
+
+  it('keeps ownership keys that belong to another user', async () => {
+    const kv = new MockKV();
+    const userId = 'user-delete-2';
+    const record = makeRecord({
+      userId,
+      originalTransactionId: 'orig-shared-1',
+    });
+    const ownerRecord = {
+      userId: 'other-user',
+      originalTransactionId: 'orig-shared-1',
+      linkedAt: new Date().toISOString(),
+      source: 'verified_app_account_token',
+    };
+
+    await kv.put(`sub:user:${userId}`, JSON.stringify(record));
+    await kv.put(`sub:owner:orig-shared-1`, JSON.stringify(ownerRecord));
+
+    const env = { KV: kv as unknown as KVNamespace } as Env;
+    await deleteUserAccountData(userId, env);
+
+    expect(await kv.get(`sub:user:${userId}`)).toBeNull();
+    expect(await kv.get(`sub:owner:orig-shared-1`)).toBe(JSON.stringify(ownerRecord));
   });
 });

@@ -1,5 +1,33 @@
 import UIKit
 
+struct QuoteExtractionPipeline: QuoteExtracting {
+    private let extractor: any QuoteExtracting
+
+    init(
+        localExtractor: any QuoteExtracting,
+        remoteExtractor: any QuoteExtracting
+    ) {
+        self.extractor = ModelAssistedQuoteExtractor(
+            localExtractor: localExtractor,
+            remoteExtractor: remoteExtractor
+        )
+    }
+
+    static func live(authService: AuthService) -> QuoteExtractionPipeline {
+        QuoteExtractionPipeline(
+            localExtractor: OnDeviceQuoteExtractor(),
+            remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
+        )
+    }
+
+    func extractQuotes(
+        from image: UIImage,
+        markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
+    ) async throws -> QuoteExtractionResult {
+        try await extractor.extractQuotes(from: image, markings: markings)
+    }
+}
+
 struct ModelAssistedQuoteExtractor: QuoteExtracting {
     private let localExtractor: any QuoteExtracting
     private let remoteExtractor: any QuoteExtracting

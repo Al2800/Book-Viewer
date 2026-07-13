@@ -13,7 +13,7 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
 
     var queueManager: CaptureQueueManager!
     var authService: AuthService!
-    var quoteExtractor: ModelAssistedQuoteExtractor!
+    var quoteExtractor: QuoteExtractionPipeline!
     var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
@@ -22,7 +22,7 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
         try await super.setUp()
 
         authService = AuthService()
-        quoteExtractor = ModelAssistedQuoteExtractor(
+        quoteExtractor = QuoteExtractionPipeline(
             localExtractor: OnDeviceQuoteExtractor(),
             remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
         )

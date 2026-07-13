@@ -10,6 +10,13 @@ import type {
   SubscriptionSyncRequest,
   SubscriptionSyncResponse,
 } from './types';
+import {
+  appAccountTokenKey,
+  appAccountTokenSeed,
+  notificationKey,
+  originalTransactionOwnerKey,
+  subscriptionKey,
+} from './subscription-keys';
 
 const APP_STORE_API_BASE: Record<AppStoreEnvironment, string> = {
   Production: 'https://api.storekit.itunes.apple.com',
@@ -32,7 +39,6 @@ const INTRODUCTORY_OFFER_TYPE = 1;
 const AUTO_RENEW_STATUS_ON = 1;
 const BILLING_RETRY_STATUS = 3;
 const GRACE_PERIOD_STATUS = 4;
-const APP_ACCOUNT_NAMESPACE = 'bookquotes:subscription-account';
 
 let cachedAppStoreSigningKey: jose.KeyLike | Uint8Array | null = null;
 let cachedSigningKeyPem: string | null = null;
@@ -115,22 +121,6 @@ class AppStoreAPIError extends Error {
     super(message);
     this.name = 'AppStoreAPIError';
   }
-}
-
-function subscriptionKey(userId: string): string {
-  return `sub:user:${userId}`;
-}
-
-function originalTransactionOwnerKey(originalTransactionId: string): string {
-  return `sub:owner:${originalTransactionId}`;
-}
-
-function appAccountTokenKey(token: string): string {
-  return `sub:token:${token.toLowerCase()}`;
-}
-
-function notificationKey(notificationUUID: string): string {
-  return `sub:notification:${notificationUUID}`;
 }
 
 function normalizePrivateKey(rawKey: string): string {
@@ -748,7 +738,7 @@ async function resolveNotificationUserId(
 export async function deriveAppAccountToken(userId: string): Promise<string> {
   const digest = await crypto.subtle.digest(
     'SHA-256',
-    new TextEncoder().encode(`${APP_ACCOUNT_NAMESPACE}:${userId}`)
+    new TextEncoder().encode(appAccountTokenSeed(userId))
   );
 
   const bytes = new Uint8Array(digest).slice(0, 16);
@@ -772,51 +762,6 @@ export async function rememberUserAppAccountToken(
   const appAccountToken = await deriveAppAccountToken(userId);
   await env.KV.put(appAccountTokenKey(appAccountToken), userId);
   return appAccountToken;
-}
-
-/**
- * Delete server-side account data for a user (subscription cache, ownership links, usage).
- * Does not cancel App Store billing — the user must manage subscriptions in Apple settings.
- */
-export async function deleteUserAccountData(
-  userId: string,
-  env: Env
-): Promise<void> {
-  const subscription = await getSubscription(userId, env);
-  const deletes: Promise<void>[] = [env.KV.delete(subscriptionKey(userId))];
-
-  const derivedToken = await deriveAppAccountToken(userId);
-  deletes.push(env.KV.delete(appAccountTokenKey(derivedToken)));
-
-  if (subscription?.appAccountToken) {
-    deletes.push(env.KV.delete(appAccountTokenKey(subscription.appAccountToken)));
-  }
-
-  if (subscription?.originalTransactionId) {
-    const owner = await getOriginalTransactionOwner(
-      subscription.originalTransactionId,
-      env
-    );
-    if (owner?.userId === userId) {
-      deletes.push(
-        env.KV.delete(originalTransactionOwnerKey(subscription.originalTransactionId))
-      );
-    }
-  }
-
-  let cursor: string | undefined;
-  do {
-    const listed = await env.KV.list({
-      prefix: `usage:${userId}:`,
-      cursor,
-    });
-    for (const key of listed.keys) {
-      deletes.push(env.KV.delete(key.name));
-    }
-    cursor = listed.list_complete ? undefined : listed.cursor;
-  } while (cursor);
-
-  await Promise.all(deletes);
 }
 
 /**
