@@ -26,9 +26,10 @@ final class QuoteDetailEditDraftTests: SwiftDataTestCase {
         XCTAssertEqual(quote.dateModified, modifiedDate)
 
         let corrections = try modelContext.fetch(QuoteCorrection.all)
-        XCTAssertEqual(corrections.count, 2)
+        XCTAssertEqual(corrections.count, 3)
         XCTAssertTrue(corrections.contains { $0.correctionType == .textEdit })
         XCTAssertTrue(corrections.contains { $0.correctionType == .marginNote })
+        XCTAssertTrue(corrections.contains { $0.correctionType == .pageNumber })
     }
 
     func testEmptyMarginNoteAndInvalidPageNumberClearExistingValues() throws {

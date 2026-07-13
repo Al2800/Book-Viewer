@@ -13,7 +13,7 @@ final class OfflineQueueFlowTests: SwiftDataTestCase {
 
     var queueManager: CaptureQueueManager!
     var authService: AuthService!
-    var quoteExtractor: any QuoteExtracting!
+    var quoteExtractor: ModelAssistedQuoteExtractor!
     var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
