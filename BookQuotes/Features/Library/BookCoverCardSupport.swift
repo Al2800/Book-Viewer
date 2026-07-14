@@ -129,8 +129,6 @@ struct BookReadingStatusBadge: View {
         Text(label)
             .font(.caption2)
             .lineLimit(1)
-            .minimumScaleFactor(style == .grid ? 0.6 : 0.75)
-            .allowsTightening(true)
             .layoutPriority(style == .grid ? 1 : 0)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)

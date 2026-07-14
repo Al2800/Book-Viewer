@@ -289,6 +289,8 @@ struct LibrarySummaryCard: View {
 }
 
 struct LibraryControlRow<Trailing: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let icon: String
     let title: String
     let subtitle: String?
@@ -307,48 +309,73 @@ struct LibraryControlRow<Trailing: View>: View {
     }
 
     var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            accessibilityLayout
+        } else {
+            standardLayout
+        }
+    }
+
+    private var standardLayout: some View {
         HStack(spacing: Spacing.md) {
             LibraryIconCircle(systemImage: icon)
 
-            VStack(alignment: .leading, spacing: Spacing.xxs) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.textPrimary)
-
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(Color.textSecondary)
-                }
-            }
+            rowLabels
 
             Spacer(minLength: 0)
 
             trailing
         }
     }
+
+    private var accessibilityLayout: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(alignment: .top, spacing: Spacing.md) {
+                LibraryIconCircle(systemImage: icon)
+                rowLabels
+            }
+
+            trailing
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var rowLabels: some View {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.textPrimary)
+
+            if let subtitle {
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 }
 
 struct LibraryActionRow: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let icon: String
     let title: String
     var subtitle: String?
 
     var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            accessibilityLayout
+        } else {
+            standardLayout
+        }
+    }
+
+    private var standardLayout: some View {
         HStack(spacing: Spacing.md) {
             LibraryIconCircle(systemImage: icon, foreground: Color.accent)
 
-            VStack(alignment: .leading, spacing: Spacing.xxs) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.textPrimary)
-
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(Color.textSecondary)
-                }
-            }
+            rowLabels
 
             Spacer()
 
@@ -357,6 +384,38 @@ struct LibraryActionRow: View {
                 .foregroundStyle(Color.textTertiary)
         }
         .contentShape(Rectangle())
+    }
+
+    private var accessibilityLayout: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack {
+                LibraryIconCircle(systemImage: icon, foreground: Color.accent)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(Color.textTertiary)
+            }
+
+            rowLabels
+        }
+        .contentShape(Rectangle())
+    }
+
+    private var rowLabels: some View {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let subtitle {
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

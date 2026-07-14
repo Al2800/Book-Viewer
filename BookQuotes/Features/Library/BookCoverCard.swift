@@ -23,6 +23,7 @@ struct BookCoverCard: View {
     @State private var isPressed = false
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     // MARK: - Body
 
@@ -40,23 +41,14 @@ struct BookCoverCard: View {
             Text(book.title)
                 .font(.bookTitleSmall)
                 .foregroundStyle(Color.textPrimary)
-                .lineLimit(2)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
 
             Text(book.author)
                 .font(.authorNameSmall)
                 .foregroundStyle(Color.textSecondary)
-                .lineLimit(1)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
 
-            HStack(spacing: Spacing.xs) {
-                BookReadingStatusBadge(status: book.status, style: .grid)
-
-                if book.hasQuotes {
-                    Text("\(book.quoteCount) quotes")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .contentTransition(.numericText())
-                }
-            }
+            cardMetadata
         }
         .padding(Spacing.md)
         .paperCard(cornerRadius: CornerRadius.lg)
@@ -98,6 +90,43 @@ struct BookCoverCard: View {
         }
         .contentShape(Rectangle())
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)
+    }
+
+    @ViewBuilder
+    private var cardMetadata: some View {
+        if dynamicTypeSize >= .xxxLarge {
+            metadataStack
+        } else {
+            ViewThatFits(in: .horizontal) {
+                metadataRow
+                metadataStack
+            }
+        }
+    }
+
+    private var metadataRow: some View {
+        HStack(spacing: Spacing.xs) {
+            BookReadingStatusBadge(status: book.status, style: .grid)
+            quoteCountLabel
+        }
+    }
+
+    private var metadataStack: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            BookReadingStatusBadge(status: book.status, style: .grid)
+            quoteCountLabel
+        }
+    }
+
+    @ViewBuilder
+    private var quoteCountLabel: some View {
+        if book.hasQuotes {
+            Text("\(book.quoteCount) quotes")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .contentTransition(.numericText())
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     /// Staggered entrance delay for list animations
@@ -153,6 +182,7 @@ struct BookListRow: View {
     @State private var isPressed = false
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     // MARK: - Body
 
@@ -165,25 +195,14 @@ struct BookListRow: View {
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(book.title)
                     .font(.bookTitle)
-                    .lineLimit(2)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
 
                 Text(book.author)
                     .font(.authorName)
                     .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
 
-                HStack(spacing: Spacing.sm) {
-                    // Status badge with animation
-                    BookReadingStatusBadge(status: book.status, style: .list)
-
-                    // Quote count with numeric transition
-                    if book.hasQuotes {
-                        Text("\(book.quoteCount) quotes")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .contentTransition(.numericText())
-                    }
-                }
+                listMetadata
             }
 
             Spacer()
@@ -232,6 +251,43 @@ struct BookListRow: View {
             )
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookListRow)
+    }
+
+    @ViewBuilder
+    private var listMetadata: some View {
+        if dynamicTypeSize >= .xxxLarge {
+            listMetadataStack
+        } else {
+            ViewThatFits(in: .horizontal) {
+                listMetadataRow
+                listMetadataStack
+            }
+        }
+    }
+
+    private var listMetadataRow: some View {
+        HStack(spacing: Spacing.sm) {
+            BookReadingStatusBadge(status: book.status, style: .list)
+            listQuoteCountLabel
+        }
+    }
+
+    private var listMetadataStack: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            BookReadingStatusBadge(status: book.status, style: .list)
+            listQuoteCountLabel
+        }
+    }
+
+    @ViewBuilder
+    private var listQuoteCountLabel: some View {
+        if book.hasQuotes {
+            Text("\(book.quoteCount) quotes")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .contentTransition(.numericText())
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     /// Staggered entrance delay

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct LibraryBooksSection: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let books: [Book]
     @Binding var viewMode: LibraryViewMode
     let hasAppeared: Bool
@@ -30,7 +32,7 @@ struct LibraryBooksSection: View {
 
     private var bookGridContent: some View {
         LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: 100, maximum: 140), spacing: Spacing.md)],
+            columns: gridColumns,
             spacing: Spacing.lg
         ) {
             ForEach(Array(books.enumerated()), id: \.element.id) { index, book in
@@ -59,6 +61,14 @@ struct LibraryBooksSection: View {
                 )
             }
         }
+    }
+
+    private var gridColumns: [GridItem] {
+        if dynamicTypeSize >= .xxxLarge {
+            return [GridItem(.flexible(), spacing: Spacing.md)]
+        }
+
+        return [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: Spacing.md)]
     }
 
     private var bookListContent: some View {

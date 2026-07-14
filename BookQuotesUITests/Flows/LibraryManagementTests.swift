@@ -329,3 +329,74 @@ final class LibraryManagementTests: BaseUITestCase {
         return navButtons.firstMatch
     }
 }
+
+/// Regression coverage for the Library at the largest supported text size.
+final class AdaptiveLibraryLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    override func waitForAppReady() {
+        super.waitForAppReady()
+        XCTAssertTrue(tapTab(.library), "Library tab should be available")
+    }
+
+    func testLibraryBookCardsRemainLegibleWithAccessibilityText() {
+        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
+        XCTAssertTrue(viewModeToggle.waitForExistence(timeout: 5), "Library should provide a view mode control")
+        XCTAssertGreaterThan(viewModeToggle.buttons.count, 1, "Library view mode control should include grid and list")
+        viewModeToggle.buttons.element(boundBy: 0).tap()
+        captureScreenshot(named: "accessibility_text_grid", description: "Library grid at accessibility text size")
+
+        let card = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+            .firstMatch
+
+        for _ in 0..<5 where !card.isHittable {
+            app.swipeUp()
+        }
+
+        XCTAssertTrue(card.waitForExistence(timeout: 5), "Seeded library should show a book card")
+        XCTAssertTrue(card.isHittable, "The first book card should remain reachable")
+        XCTAssertGreaterThan(
+            card.frame.width,
+            app.frame.width * 0.7,
+            "Accessibility text should give each book card enough width for its status and quote count"
+        )
+
+        card.tap()
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 5),
+            "A book card should remain usable at accessibility text sizes"
+        )
+    }
+
+    func testLibraryListRowsRemainLegibleWithAccessibilityText() {
+        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
+        XCTAssertTrue(viewModeToggle.waitForExistence(timeout: 5), "Library should provide a view mode control")
+        XCTAssertGreaterThan(viewModeToggle.buttons.count, 1, "Library view mode control should include grid and list")
+        viewModeToggle.buttons.element(boundBy: 1).tap()
+        captureScreenshot(named: "accessibility_text_list", description: "Library list at accessibility text size")
+
+        let row = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
+            .firstMatch
+
+        for _ in 0..<5 where !row.isHittable {
+            app.swipeUp()
+        }
+
+        XCTAssertTrue(row.waitForExistence(timeout: 5), "Seeded library should show a book list row")
+        XCTAssertTrue(row.isHittable, "The first book list row should remain reachable")
+        XCTAssertGreaterThan(
+            row.frame.width,
+            app.frame.width * 0.7,
+            "Accessibility text should give each book list row enough width for its status and quote count"
+        )
+    }
+}

@@ -755,6 +755,8 @@ enum AccessibilityIdentifiers {
         static let extractionQuoteSourceLabel = "capture_extraction_quote_source_label"
 
         static let extractionFallbackNotice = "capture_extraction_fallback_notice"
+        static let extractionPageSelector = "capture_extraction_page_selector"
+        static let extractionPageImage = "capture_extraction_page_image"
     }
 
     enum Collections {

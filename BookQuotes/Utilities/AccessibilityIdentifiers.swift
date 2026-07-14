@@ -259,6 +259,12 @@ enum AccessibilityIdentifiers {
 
         /// On-device fallback status shown for a processed page.
         static let extractionFallbackNotice = "capture_extraction_fallback_notice"
+
+        /// Page selector shown during extraction review.
+        static let extractionPageSelector = "capture_extraction_page_selector"
+
+        /// Source page image shown during extraction review.
+        static let extractionPageImage = "capture_extraction_page_image"
     }
 
     // MARK: - Collections

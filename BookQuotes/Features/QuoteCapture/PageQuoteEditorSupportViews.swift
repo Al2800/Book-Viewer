@@ -112,32 +112,69 @@ struct FullImageViewer: View {
 
 // MARK: - Page List View
 
-/// Vertical list of page thumbnails for navigation.
+enum PageListLayout {
+    case horizontal
+    case vertical
+}
+
+/// A compact page selector that changes direction with the available review layout.
 struct PageListView: View {
     let session: CaptureSession
     @Binding var selection: PageCapture?
     let quoteCounts: [UUID: Int]
+    let layout: PageListLayout
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: Spacing.sm) {
-                ForEach(session.captures.sorted(by: { $0.orderIndex < $1.orderIndex })) { page in
-                    PageThumbnailCell(
-                        page: page,
-                        quoteCount: quoteCounts[page.id] ?? 0,
-                        isSelected: selection?.id == page.id
-                    )
-                    .onTapGesture {
-                        withAnimation(.snappy) {
-                            selection = page
-                        }
+        Group {
+            switch layout {
+            case .horizontal:
+                ScrollView(.horizontal) {
+                    LazyHStack(spacing: Spacing.sm) {
+                        pageButtons
                     }
+                    .padding(Spacing.sm)
                 }
+                .frame(height: 154)
+            case .vertical:
+                ScrollView {
+                    LazyVStack(spacing: Spacing.sm) {
+                        pageButtons
+                    }
+                    .padding(Spacing.sm)
+                }
+                .frame(width: 118)
             }
-            .padding(Spacing.sm)
         }
-        .frame(width: 118)
         .paperCard(cornerRadius: CornerRadius.lg)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionPageSelector)
+    }
+
+    @ViewBuilder
+    private var pageButtons: some View {
+        ForEach(session.captures.sorted(by: { $0.orderIndex < $1.orderIndex })) { page in
+            Button {
+                withAnimation(.snappy) {
+                    selection = page
+                }
+            } label: {
+                PageThumbnailCell(
+                    page: page,
+                    quoteCount: quoteCounts[page.id] ?? 0,
+                    isSelected: selection?.id == page.id
+                )
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(pageAccessibilityLabel(for: page))
+            .accessibilityValue(selection?.id == page.id ? "Selected" : "Not selected")
+            .accessibilityHint("Select this page for quote review")
+        }
+    }
+
+    private func pageAccessibilityLabel(for page: PageCapture) -> String {
+        let pageLabel = page.detectedPageNumber.map { "Page \($0)" } ?? "Captured page"
+        let quoteCount = quoteCounts[page.id] ?? 0
+        return "\(pageLabel), \(quoteCount) quote\(quoteCount == 1 ? "" : "s")"
     }
 }
 
@@ -145,6 +182,8 @@ struct PageListView: View {
 
 /// Individual thumbnail cell showing page preview and quote count.
 struct PageThumbnailCell: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let page: PageCapture
     let quoteCount: Int
     let isSelected: Bool
@@ -191,15 +230,17 @@ struct PageThumbnailCell: View {
             )
             .shadow(color: Color.black.opacity(isSelected ? 0.15 : 0), radius: 6, y: 2)
 
-            Text("\(quoteCount)")
-                .font(.caption2)
-                .fontWeight(.medium)
-                .foregroundStyle(quoteCount > 0 ? Color.textPrimary : Color.textTertiary)
-
-            if let pageNum = page.detectedPageNumber {
-                Text("p.\(pageNum)")
+            if !dynamicTypeSize.isAccessibilitySize {
+                Text("\(quoteCount)")
                     .font(.caption2)
-                    .foregroundStyle(Color.textTertiary)
+                    .fontWeight(.medium)
+                    .foregroundStyle(quoteCount > 0 ? Color.textPrimary : Color.textTertiary)
+
+                if let pageNum = page.detectedPageNumber {
+                    Text("p.\(pageNum)")
+                        .font(.caption2)
+                        .foregroundStyle(Color.textTertiary)
+                }
             }
         }
         .opacity(isSelected ? 1.0 : 0.8)

@@ -26,6 +26,8 @@ struct ExtractionReviewView: View {
     @State private var hasStartedProcessing = false
     @State private var showingAIConsent = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     // MARK: - Processing State
 
@@ -180,30 +182,51 @@ struct ExtractionReviewView: View {
     // MARK: - Subviews
 
     /// Main content view with page list and quote editor
+    @ViewBuilder
     private var mainContentView: some View {
-        HStack(spacing: Spacing.md) {
-            // Left: Page thumbnails
-            PageListView(
-                session: session,
-                selection: $selectedPage,
-                quoteCounts: quoteCounts
-            )
-            .frame(maxHeight: .infinity)
-            // Right: Quote editor for selected page
-            if let page = selectedPage {
-                PageQuoteEditor(
-                    page: page,
-                    quotes: bindingForPage(page),
-                    onAddManualQuote: {
-                        showingAddQuoteSheet = true
-                    }
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                noSelectionView
+        if usesSideBySideReviewLayout {
+            HStack(spacing: Spacing.md) {
+                pageList(layout: .vertical)
+                editorContent(imageHeight: 260)
             }
+            .padding(Spacing.md)
+        } else {
+            VStack(spacing: Spacing.sm) {
+                pageList(layout: .horizontal)
+                editorContent(imageHeight: dynamicTypeSize.isAccessibilitySize ? 150 : 180)
+            }
+            .padding(Spacing.sm)
         }
-        .padding(Spacing.md)
+    }
+
+    private var usesSideBySideReviewLayout: Bool {
+        horizontalSizeClass == .regular && !dynamicTypeSize.isAccessibilitySize
+    }
+
+    private func pageList(layout: PageListLayout) -> some View {
+        PageListView(
+            session: session,
+            selection: $selectedPage,
+            quoteCounts: quoteCounts,
+            layout: layout
+        )
+    }
+
+    @ViewBuilder
+    private func editorContent(imageHeight: CGFloat) -> some View {
+        if let page = selectedPage {
+            PageQuoteEditor(
+                page: page,
+                quotes: bindingForPage(page),
+                onAddManualQuote: {
+                    showingAddQuoteSheet = true
+                },
+                imageHeight: imageHeight
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            noSelectionView
+        }
     }
 
     /// Processing state view with progress

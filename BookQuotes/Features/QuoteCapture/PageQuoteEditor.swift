@@ -8,9 +8,11 @@ struct PageQuoteEditor: View {
     let page: PageCapture
     @Binding var quotes: [EditableQuote]
     let onAddManualQuote: () -> Void
+    let imageHeight: CGFloat
 
     @State private var showingFullImage = false
     @State private var imageScale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(spacing: 0) {
@@ -86,7 +88,7 @@ struct PageQuoteEditor: View {
                 .padding(Spacing.sm)
             }
         }
-        .frame(height: 260)
+        .frame(height: imageHeight)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
         .overlay(
             RoundedRectangle(cornerRadius: CornerRadius.md)
@@ -97,6 +99,14 @@ struct PageQuoteEditor: View {
         .onTapGesture {
             showingFullImage = true
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Source page image")
+        .accessibilityHint("Double tap to view the full page image")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction {
+            showingFullImage = true
+        }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionPageImage)
         .fullScreenCover(isPresented: $showingFullImage) {
             FullImageViewer(page: page)
         }
@@ -107,31 +117,7 @@ struct PageQuoteEditor: View {
     private var quotesSection: some View {
         VStack(spacing: 0) {
             // Header
-            VStack(alignment: .leading, spacing: Spacing.xs) {
-                HStack {
-                    Label(PageQuoteEditorList(quotes: quotes).countTitle, systemImage: "text.quote")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundStyle(Color.textPrimary)
-
-                    Spacer()
-
-                    Button {
-                        onAddManualQuote()
-                    } label: {
-                        Label("Add", systemImage: "plus")
-                            .font(.caption)
-                    }
-                    .buttonStyle(.secondaryCompact)
-                }
-
-                if let fallbackReason = page.extractionFallbackReason {
-                    Label(fallbackReason.reviewMessage, systemImage: "iphone")
-                        .font(.caption)
-                        .foregroundStyle(Color.textSecondary)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionFallbackNotice)
-                }
-            }
+            quoteListHeader
             .padding(Spacing.md)
             .background(Color.backgroundSecondary)
 
@@ -155,6 +141,46 @@ struct PageQuoteEditor: View {
             }
         }
         .paperCard(cornerRadius: CornerRadius.lg)
+    }
+
+    private var quoteListHeader: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            if dynamicTypeSize.isAccessibilitySize {
+                quoteCountLabel
+                addQuoteButton
+            } else {
+                HStack {
+                    quoteCountLabel
+                    Spacer()
+                    addQuoteButton
+                }
+            }
+
+            if let fallbackReason = page.extractionFallbackReason {
+                Label(fallbackReason.reviewMessage, systemImage: "iphone")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionFallbackNotice)
+            }
+        }
+    }
+
+    private var quoteCountLabel: some View {
+        Label(PageQuoteEditorList(quotes: quotes).countTitle, systemImage: "text.quote")
+            .font(.subheadline)
+            .fontWeight(.medium)
+            .foregroundStyle(Color.textPrimary)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var addQuoteButton: some View {
+        Button {
+            onAddManualQuote()
+        } label: {
+            Label("Add", systemImage: "plus")
+                .font(.caption)
+        }
+        .buttonStyle(.secondaryCompact)
     }
 
     private var emptyState: some View {
@@ -221,6 +247,7 @@ struct PageQuoteEditor: View {
                 marginNote: "Churchill?"
             )
         ]),
-        onAddManualQuote: {}
+        onAddManualQuote: {},
+        imageHeight: 260
     )
 }

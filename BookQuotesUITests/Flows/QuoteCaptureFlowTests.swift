@@ -420,3 +420,120 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTFail("Book detail should provide a Capture Quotes action")
     }
 }
+
+/// Regression coverage for extraction review on compact layouts with accessibility text.
+final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "--mock-camera",
+            "--mock-extraction-scenario", "mixed",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    func testExtractionReviewStacksControlsWithAccessibilityText() {
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
+
+        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        if !testImageButton.waitForExistence(timeout: 2) {
+            let quoteModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
+            XCTAssertTrue(quoteModeCard.waitForExistence(timeout: 3), "Quote capture mode should be available")
+            quoteModeCard.tap()
+
+            let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
+            XCTAssertTrue(bookCard.waitForExistence(timeout: 5), "Seeded library should provide a book for quote capture")
+            bookCard.tap()
+        }
+
+        XCTAssertTrue(testImageButton.waitForExistence(timeout: 5), "Quote capture should show Use Test Image")
+        testImageButton.tap()
+
+        let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
+        if usePhotoButton.waitForExistence(timeout: 3) {
+            usePhotoButton.tap()
+        }
+
+        XCTAssertTrue(
+            app.navigationBars["Review Extractions"].waitForExistence(timeout: 15),
+            "Mock capture should open extraction review"
+        )
+
+        let pageSelector = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
+            .firstMatch
+        let sourceImage = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
+            .firstMatch
+        let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].firstMatch
+
+        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Extraction review should expose its page selector")
+        XCTAssertGreaterThan(
+            pageSelector.frame.width,
+            app.frame.width * 0.7,
+            "Compact accessibility layouts should place the page selector above the editor"
+        )
+        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose the source image")
+        XCTAssertTrue(sourceImage.isHittable, "The source image should be reachable by assistive technologies")
+        XCTAssertTrue(editButton.waitForExistence(timeout: 5), "Extracted quotes should remain editable")
+        captureScreenshot(named: "accessibility_text_stacked_review", description: "Compact extraction review at accessibility text size")
+    }
+}
+
+/// Regression coverage for the regular-width iPad extraction review layout.
+final class IPadExtractionReviewLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "--mock-camera",
+            "--mock-extraction-scenario", "mixed"
+        ]
+    }
+
+    func testExtractionReviewUsesSideBySideLayoutOnIPad() {
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
+
+        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        if !testImageButton.waitForExistence(timeout: 2) {
+            let quoteModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
+            XCTAssertTrue(quoteModeCard.waitForExistence(timeout: 3), "Quote capture mode should be available")
+            quoteModeCard.tap()
+
+            let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
+            XCTAssertTrue(bookCard.waitForExistence(timeout: 5), "Seeded library should provide a book for quote capture")
+            bookCard.tap()
+        }
+
+        XCTAssertTrue(testImageButton.waitForExistence(timeout: 5), "Quote capture should show Use Test Image")
+        testImageButton.tap()
+
+        let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
+        if usePhotoButton.waitForExistence(timeout: 3) {
+            usePhotoButton.tap()
+        }
+
+        XCTAssertTrue(
+            app.navigationBars["Review Extractions"].waitForExistence(timeout: 15),
+            "Mock capture should open extraction review"
+        )
+
+        let pageSelector = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
+            .firstMatch
+        let sourceImage = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
+            .firstMatch
+
+        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Extraction review should expose its page selector")
+        XCTAssertLessThan(
+            pageSelector.frame.width,
+            app.frame.width * 0.25,
+            "Regular-width iPad layouts should keep the page selector beside the editor"
+        )
+        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose the source image")
+        captureScreenshot(named: "ipad_side_by_side_review", description: "iPad extraction review at normal text size")
+    }
+}
