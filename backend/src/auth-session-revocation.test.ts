@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   createSessionToken,
+  isSessionCurrent,
   revokeAllSessions,
+  validateSession,
   validateSessionToken,
 } from './auth';
 import type { Env } from './types';
@@ -45,5 +47,19 @@ describe('server-side session revocation', () => {
 
     const newToken = await createSessionToken('reader-1', env);
     await expect(validateSessionToken(`Bearer ${newToken}`, env)).resolves.toBe('reader-1');
+  });
+
+  it('cannot refresh a request session after account deletion wins the race', async () => {
+    const env = makeEnv();
+    const oldToken = await createSessionToken('reader-1', env);
+    const session = await validateSession(`Bearer ${oldToken}`, env);
+
+    expect(session).toEqual({ userId: 'reader-1', version: 1 });
+
+    await revokeAllSessions('reader-1', env);
+    await expect(isSessionCurrent(session!, env)).resolves.toBe(false);
+
+    const staleRefresh = await createSessionToken('reader-1', env, session!.version);
+    await expect(validateSessionToken(`Bearer ${staleRefresh}`, env)).resolves.toBeNull();
   });
 });

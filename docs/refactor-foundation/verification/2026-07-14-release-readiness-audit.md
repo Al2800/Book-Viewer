@@ -24,7 +24,7 @@
 - The full app-unit command returned success, but Xcode wrote an incomplete result bundle without
   `Info.plist`; do not use that rerun as countable release evidence. Re-run the full app-unit gate
   and retain a readable `.xcresult` before archiving.
-- Backend tests and typecheck passed: 33 tests, 0 failures.
+- Backend tests and typecheck passed: 36 tests, 0 failures.
 - Production Worker dependency audit reported no known vulnerabilities.
 - A tracked-file secret-pattern scan found no credential material. The only match is the expected
   private-key format validation in `backend/src/subscription.ts`.
@@ -33,8 +33,8 @@
 
 1. Confirm the deployed Worker uses the approved Hugging Face provider route and record the
    Hugging Face and Gemini retention/zero-data-retention evidence. See issue `095`.
-2. Run the staging load test for Durable Object extraction limits and the concurrent
-   deletion/request race against a deployed Worker. See issues `102` and `099`.
+2. Run the staging load test for Durable Object extraction limits and the deployed-Worker
+   account-deletion check. See issues `102` and `099`.
 3. Test the next TestFlight build on physical hardware:
    - Sandbox purchase, intentionally interrupted reconciliation, Restore Purchases, then remote
      extraction as the restored customer.

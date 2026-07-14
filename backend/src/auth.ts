@@ -84,6 +84,12 @@ export const SESSION_TOKEN_HEADER = 'X-Session-Token';
 export const SESSION_TOKEN_TTL = '7d';
 const SESSION_VERSION_TTL_SECONDS = 8 * 24 * 60 * 60;
 
+/** A JWT that has passed signature validation and is tied to one account revision. */
+export interface ValidatedSession {
+  userId: string;
+  version: number;
+}
+
 function sessionVersionKey(userId: string): string {
   return `auth:session-version:${userId}`;
 }
@@ -111,10 +117,11 @@ export async function revokeAllSessions(userId: string, env: Env): Promise<void>
  */
 export async function createSessionToken(
   userId: string,
-  env: Env
+  env: Env,
+  version?: number
 ): Promise<string> {
   const secret = new TextEncoder().encode(env.JWT_SECRET);
-  const sessionVersion = await currentSessionVersion(userId, env);
+  const sessionVersion = version ?? await currentSessionVersion(userId, env);
 
   const token = await new jose.SignJWT({ sub: userId, sv: sessionVersion })
     .setProtectedHeader({ alg: 'HS256' })
@@ -130,10 +137,10 @@ export async function createSessionToken(
  * Validate a session token
  * Returns user ID if valid, null otherwise
  */
-export async function validateSessionToken(
+export async function validateSession(
   authHeader: string | null,
   env: Env
-): Promise<string | null> {
+): Promise<ValidatedSession | null> {
   if (!authHeader) {
     return null;
   }
@@ -155,13 +162,38 @@ export async function validateSessionToken(
 
     const userId = payload.sub;
     const tokenVersion = payload.sv;
-    if (typeof userId !== 'string' || !Number.isInteger(tokenVersion)) {
+    if (
+      typeof userId !== 'string'
+      || typeof tokenVersion !== 'number'
+      || !Number.isInteger(tokenVersion)
+    ) {
       return null;
     }
 
-    return tokenVersion === await currentSessionVersion(userId, env) ? userId : null;
+    const session: ValidatedSession = { userId, version: tokenVersion };
+    return await isSessionCurrent(session, env) ? session : null;
   } catch (error) {
     console.error('Session token validation failed:', error);
     return null;
   }
+}
+
+/**
+ * Recheck a request's original session revision before a sensitive operation or
+ * response refresh. A token minted with that same revision stays invalid if a
+ * concurrent account deletion wins immediately after this check.
+ */
+export async function isSessionCurrent(
+  session: ValidatedSession,
+  env: Env
+): Promise<boolean> {
+  return session.version === await currentSessionVersion(session.userId, env);
+}
+
+/** Backwards-compatible user ID helper for callers that do not need the revision. */
+export async function validateSessionToken(
+  authHeader: string | null,
+  env: Env
+): Promise<string | null> {
+  return (await validateSession(authHeader, env))?.userId ?? null;
 }

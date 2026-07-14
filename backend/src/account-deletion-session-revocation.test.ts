@@ -4,11 +4,14 @@ import type { Env } from './types';
 const mocks = vi.hoisted(() => ({
   revokeAllSessions: vi.fn(async () => undefined),
   deleteUserAccountData: vi.fn(async () => undefined),
+  validateSession: vi.fn(async () => ({ userId: 'reader-1', version: 1 })),
+  isSessionCurrent: vi.fn(async () => true),
 }));
 
 vi.mock('./auth', () => ({
   validateAppleToken: vi.fn(),
-  validateSessionToken: vi.fn(async () => 'reader-1'),
+  validateSession: mocks.validateSession,
+  isSessionCurrent: mocks.isSessionCurrent,
   createSessionToken: vi.fn(),
   revokeAllSessions: mocks.revokeAllSessions,
   SESSION_TOKEN_HEADER: 'X-Session-Token',
@@ -36,6 +39,8 @@ function makeEnv(): Env {
 describe('account deletion session revocation', () => {
   afterEach(() => {
     vi.clearAllMocks();
+    mocks.validateSession.mockResolvedValue({ userId: 'reader-1', version: 1 });
+    mocks.isSessionCurrent.mockResolvedValue(true);
   });
 
   it('revokes every session before deleting account records', async () => {

@@ -5,11 +5,13 @@ import type {
   SubscriptionSyncRequest,
 } from './types';
 import {
-  validateSessionToken,
+  validateSession,
   validateAppleToken,
   createSessionToken,
+  isSessionCurrent,
   revokeAllSessions,
   SESSION_TOKEN_HEADER,
+  type ValidatedSession,
 } from './auth';
 import {
   getSubscription,
@@ -65,11 +67,13 @@ function jsonResponse(data: unknown, status = 200): Response {
  */
 async function withSessionRefresh(
   response: Response,
-  userId: string,
+  session: ValidatedSession,
   env: Env
 ): Promise<Response> {
   try {
-    const token = await createSessionToken(userId, env);
+    // Use the request's verified revision, rather than the latest revision in
+    // storage, so a concurrent account deletion can never mint a new session.
+    const token = await createSessionToken(session.userId, env, session.version);
     const headers = new Headers(response.headers);
     headers.set(SESSION_TOKEN_HEADER, token);
     headers.set('Access-Control-Expose-Headers', SESSION_TOKEN_HEADER);
@@ -243,13 +247,37 @@ export default {
 
     // All other API routes require authentication
     const authHeader = request.headers.get('Authorization');
-    const userId = await validateSessionToken(authHeader, env);
+    const session = await validateSession(authHeader, env);
 
-    if (!userId) {
+    if (!session) {
       return errorResponse('Authentication required', 'AUTH_REQUIRED', 401);
     }
 
-    const respond = (response: Response) => withSessionRefresh(response, userId, env);
+    const userId = session.userId;
+
+    const revokedSessionResponse = async (): Promise<Response | null> => {
+      try {
+        if (await isSessionCurrent(session, env)) {
+          return null;
+        }
+        return errorResponse('Session is no longer active', 'AUTH_SESSION_REVOKED', 401);
+      } catch (error) {
+        console.error('Session revision check failed:', error);
+        return errorResponse('Session verification is temporarily unavailable', 'AUTH_SESSION_CHECK_FAILED', 503);
+      }
+    };
+
+    const respond = async (response: Response): Promise<Response> => {
+      const revoked = await revokedSessionResponse();
+      if (revoked) {
+        return revoked;
+      }
+
+      const refreshed = await withSessionRefresh(response, session, env);
+      // Deletion can happen while the refresh token is being minted. The token
+      // is still tied to the old revision, but do not return stale response data.
+      return (await revokedSessionResponse()) ?? refreshed;
+    };
 
     // Account deletion (Guideline 5.1.1) — removes server-side account/subscription cache.
     if (path === '/api/auth/account' && request.method === 'DELETE') {
@@ -265,6 +293,10 @@ export default {
 
     // Usage stats endpoint
     if (path === '/api/usage' && request.method === 'GET') {
+      const revoked = await revokedSessionResponse();
+      if (revoked) {
+        return revoked;
+      }
       const stats = await getUsageStats(userId, env);
       const subscription = await getSubscription(userId, env);
 
@@ -280,7 +312,15 @@ export default {
 
     if (path === '/api/subscription/sync' && request.method === 'POST') {
       try {
+        const revoked = await revokedSessionResponse();
+        if (revoked) {
+          return revoked;
+        }
         const body = (await request.json()) as SubscriptionSyncRequest;
+        const currentSession = await revokedSessionResponse();
+        if (currentSession) {
+          return currentSession;
+        }
         const syncResponse = await reconcileSubscription(userId, body, env);
         return respond(jsonResponse(syncResponse));
       } catch (error) {
@@ -294,6 +334,10 @@ export default {
     }
 
     // Check subscription status
+    const revoked = await revokedSessionResponse();
+    if (revoked) {
+      return revoked;
+    }
     const hasSubscription = await hasActiveSubscription(userId, env);
     if (!hasSubscription && !allowsAuthenticatedExtraction(env)) {
       return respond(errorResponse(
@@ -326,6 +370,11 @@ export default {
 
       try {
         const body = await parseGeminiRequest(request);
+        const revoked = await revokedSessionResponse();
+        if (revoked) {
+          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
+          return revoked;
+        }
 
         // Proxy to Gemini
         const response = await proxyToGemini(
@@ -380,6 +429,11 @@ export default {
 
       try {
         const body = await parseGeminiRequest(request);
+        const revoked = await revokedSessionResponse();
+        if (revoked) {
+          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
+          return revoked;
+        }
 
         // Proxy to Gemini
         const response = await proxyToGemini(
@@ -451,6 +505,11 @@ export default {
 
       try {
         const body = await parseGeminiRequest(request);
+        const revoked = await revokedSessionResponse();
+        if (revoked) {
+          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
+          return revoked;
+        }
         const response = await proxyToHuggingFaceQuoteExtractor(body, {
           token: env.HF_API_TOKEN,
           modelId,

@@ -19,7 +19,7 @@ Account deletion removes KV records but does not invalidate existing seven-day J
 ## Verification
 
 - [x] Backend tests using a pre-deletion token after account deletion.
-- [ ] Concurrent deletion/request race tests.
+- [x] Concurrent deletion/request race tests.
 - [ ] Device end-to-end test against a deployed Worker.
 
 ## Implementation Notes
@@ -28,3 +28,17 @@ Every session JWT now carries a server-side session version. Account deletion in
 stored version before deleting account records, invalidating all existing tokens. The version
 record expires after eight days, longer than the maximum seven-day token lifetime, and a new Apple
 sign-in receives a session at the current version.
+
+Request handling retains that validated version through the full request. The Worker rechecks it
+immediately before subscription reconciliation and external extraction calls, then refreshes only
+the original version. If deletion wins a race, the request is rejected, extraction reservations are
+released, and no replacement session can become valid.
+
+## Progress
+
+2026-07-14:
+
+- Added race tests that pause a pre-authorized extraction and subscription sync, delete the
+  account, then prove neither provider forwarding nor entitlement reconciliation occurs.
+- Added a refresh-token race test proving a session from the revoked revision remains invalid.
+- Backend suite passed: 36 tests, 0 failures; TypeScript typecheck passed.
