@@ -180,10 +180,9 @@ struct LibraryView: View {
         .onSubmit(of: .search) {
             searchServices?.submitSearch(searchText)
         }
-        .confirmationDialog(
+        .alert(
             deletePrompt?.title ?? "Delete Book?",
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
+            isPresented: $showDeleteConfirmation
         ) {
             Button(deletePrompt?.destructiveButtonTitle ?? "Delete Book", role: .destructive) {
                 if let book = bookToDelete {

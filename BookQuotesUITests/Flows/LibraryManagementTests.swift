@@ -187,7 +187,7 @@ final class LibraryManagementTests: BaseUITestCase {
 
     // MARK: - Deletion Tests
 
-    func testLibrary_DeleteBook_ShowsConfirmation() throws {
+    func testLibrary_DeleteBook_ShowsConfirmation() {
         logger.step(1, "Switching to list view")
         switchToListViewIfPossible()
 
@@ -195,24 +195,28 @@ final class LibraryManagementTests: BaseUITestCase {
         let firstCell = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         let firstLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         let firstElement = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        guard firstCell.waitForExistence(timeout: 3) ||
-              firstLink.waitForExistence(timeout: 3) ||
-              firstElement.waitForExistence(timeout: 3) else {
-            throw XCTSkip("List rows unavailable for delete swipe")
-        }
-        let swipeTarget = firstCell.exists ? firstCell : (firstLink.exists ? firstLink : firstElement)
+        let firstButton = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        XCTAssertTrue(
+            firstCell.waitForExistence(timeout: 3) ||
+                firstLink.exists ||
+                firstElement.exists ||
+                firstButton.exists,
+            "List view should expose a book row for deletion"
+        )
+        let bookRow = firstCell.exists ? firstCell :
+            (firstLink.exists ? firstLink : (firstElement.exists ? firstElement : firstButton))
 
-        logger.step(3, "Swiping to delete")
-        swipeTarget.swipeLeft()
-        let deleteButton = app.buttons["Delete"]
-        XCTAssertTrue(deleteButton.waitForExistence(timeout: 2), "Delete action should appear")
+        logger.step(3, "Opening the book actions menu")
+        bookRow.press(forDuration: 1)
+        let deleteButton = app.buttons["Delete Book"]
+        XCTAssertTrue(deleteButton.waitForExistence(timeout: 2), "Book actions should offer Delete Book")
         deleteButton.tap()
 
         logger.step(4, "Verifying confirmation dialog")
         let confirm = app.buttons["Delete Book and All Quotes"]
         XCTAssertTrue(confirm.waitForExistence(timeout: 3), "Confirmation dialog should appear")
         let cancel = app.buttons["Cancel"]
-        XCTAssertTrue(cancel.exists)
+        XCTAssertTrue(cancel.waitForExistence(timeout: 3), "Confirmation dialog should provide Cancel")
         cancel.tap()
 
         logger.success("Delete confirmation shown and cancelled")

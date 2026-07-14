@@ -21,7 +21,7 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - `BatchCaptureFlowTests`: 14 skip sites (resolved; 0 remaining).
 - `CoverCaptureFlowTests`: 5 skip sites (resolved; 0 remaining).
 - `QuoteCaptureFlowTests`: 11 skip sites (resolved; 0 remaining).
-- `LibraryManagementTests`: 1 skip site.
+- `LibraryManagementTests`: 1 skip site (resolved; 0 remaining).
 - `OnboardingFlowTests`: 2 skip sites.
 
 ## Verification
@@ -42,6 +42,8 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - [x] Cover capture now presents crop review from the captured image itself, preventing the review from being lost when capture and presentation state update together.
 - [x] Cover barcode framing, instructions, and manual-entry actions have stable accessibility identifiers and reader-facing labels.
 - [x] The explicit UI-test cover fixture supplies deterministic local metadata only while mocked camera testing is enabled; production cover analysis remains unchanged.
+- [x] `LibraryManagementTests`: replaced the false-green delete skip with strict list-row, action-menu, destructive-confirmation, and cancellation assertions.
+- [x] Book deletion now uses a native alert rather than a popover-style confirmation, preserving an explicit visible Cancel action for an irreversible operation on every size class.
 
 ## Evidence
 
@@ -51,3 +53,4 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - Full batch workflow: 12 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/Users/skyhub/Library/Developer/Xcode/DerivedData/BookQuotes-avxqmbzwmqonovbvenamjvakwlyv/Logs/Test/Test-BookQuotes-2026.07.14_17-30-28-+0100.xcresult`.
 - Targeted cover regressions: test-cover capture, shutter capture-to-crop, and saving a captured cover each passed on iPhone 17 (iOS 26.5).
 - Full cover workflow: 11 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-CoverCapture-full.xcresult`.
+- Full Library management workflow: 7 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-LibraryManagement-full.xcresult`.
