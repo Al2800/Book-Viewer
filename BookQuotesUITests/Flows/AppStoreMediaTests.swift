@@ -110,39 +110,32 @@ final class AppStoreSubscriptionReviewTests: BaseUITestCase {
     override var additionalLaunchArguments: [String] {
         [
             "--reset-onboarding",
-            "--skip-auth",
             "--app-store-media",
+            "--media-screen",
+            "subscription",
             "--disable-animations"
         ]
     }
 
     override func waitForAppReady() {
-        let welcomeTitle = app.staticTexts["Capture Quotes Instantly"]
-        let signInTitle = app.staticTexts["Create Your Account"]
         let paywallTitle = app.staticTexts["Choose Your Plan"]
-
-        let isReady = welcomeTitle.waitForExistence(timeout: 5)
-            || signInTitle.waitForExistence(timeout: 2)
-            || paywallTitle.waitForExistence(timeout: 2)
-
-        XCTAssertTrue(isReady, "Expected onboarding flow to launch for subscription review capture")
+        XCTAssertTrue(
+            paywallTitle.waitForExistence(timeout: 8),
+            "Subscription media route should open the onboarding paywall"
+        )
     }
 
     func testSubscriptionReviewScreenshot() {
-        let skipButton = app.buttons["Skip"]
-        if skipButton.waitForExistence(timeout: 3) {
-            skipButton.tap()
-        }
-
-        let signInTitle = app.staticTexts["Create Your Account"]
-        assertExists(signInTitle, timeout: 5, "Sign-in screen not shown")
-
-        let maybeLater = app.buttons["Maybe later"]
-        assertExists(maybeLater, timeout: 3, "Expected auth skip control for media capture")
-        maybeLater.tap()
-
         let paywallTitle = app.staticTexts["Choose Your Plan"]
         assertExists(paywallTitle, timeout: 5, "Subscription screen not shown")
+
+        let yearlyPlan = app.buttons.matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Yearly")
+        ).firstMatch
+        XCTAssertTrue(yearlyPlan.waitForExistence(timeout: 5), "Subscription screen should show the yearly plan")
+
+        let startTrial = app.buttons["Start Free Trial"]
+        XCTAssertTrue(startTrial.exists && startTrial.isEnabled, "Subscription screen should offer a start-trial action")
 
         let freeTrialBadge = app.staticTexts.matching(
             NSPredicate(format: "label CONTAINS 'free trial'")
