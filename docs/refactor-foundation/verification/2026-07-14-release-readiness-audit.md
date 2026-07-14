@@ -2,7 +2,7 @@
 
 ## Revision Assessed
 
-- Git revision: `5b94aee` (`fix(subscription): surface entitlement reconciliation`).
+- Git revision: `b52c907` (`fix(ui): adapt library and extraction review layouts`).
 - The project build number is still `38`; the latest TestFlight build 38 predates this revision.
   A new signed archive and upload, with the build number incremented, are required after the
   remaining release gates pass.
@@ -21,6 +21,10 @@
 - The complete UI release target previously passed on this mainline work: 90 tests, 0 failures,
   0 skips on iPhone 17 and on iPad Air 11-inch. The subscription change above is separately
   compiled and covered by its focused tests.
+- Adaptive-layout follow-up passed its focused simulator matrix: Library grid, Library list, and
+  compact Extraction Review at Accessibility XXXL on iPhone 17; plus the normal-text,
+  side-by-side Extraction Review on iPad Pro 13-inch. The corresponding screenshots were
+  visually inspected. This resolves the automated portion of issue `105`.
 - The full app-unit command returned success, but Xcode wrote an incomplete result bundle without
   `Info.plist`; do not use that rerun as countable release evidence. Re-run the full app-unit gate
   and retain a readable `.xcresult` before archiving.
@@ -47,7 +51,9 @@
    These runs close the remaining evidence for issues `007`, `086`, `096`, `097`, `099`, and `101`.
 4. Enter and review the App Privacy questionnaire and App Review Notes in App Store Connect using
    `docs/APP_STORE_CONNECT.md`. See issues `093`, `094`, and `086`.
-5. Complete the Accessibility/Dynamic Type/VoiceOver device audit in issue `105`.
+5. Complete the remaining physical-device Accessibility/Dynamic Type/VoiceOver audit in issue
+   `105`: VoiceOver order and source-image activation, Reduce Motion, rotation, and iPad
+   split-view behavior.
 
 ## Residual Risks
 
