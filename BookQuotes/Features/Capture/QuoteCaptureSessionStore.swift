@@ -63,6 +63,8 @@ struct QuoteCaptureSessionStore {
         pageCapture: PageCapture,
         session: CaptureSession
     ) {
+        let primaryConfidence = UITestConfiguration.shouldMockLowConfidence ? 0.48 : 0.94
+        let primaryMarginNote = UITestConfiguration.shouldMockLowConfidence ? "hard to read" : nil
         let quotes: [ExtractedQuoteData]
         switch UITestConfiguration.mockExtractionScenario {
         case "remote":
@@ -70,9 +72,9 @@ struct QuoteCaptureSessionStore {
                 ExtractedQuoteData(
                     text: "A model-assisted quote used for review testing.",
                     pageNumber: 38,
-                    marginNote: nil,
+                    marginNote: primaryMarginNote,
                     markingType: "underline",
-                    confidence: 0.94,
+                    confidence: primaryConfidence,
                     extractionSource: .modelAssisted
                 )
             ]
@@ -93,9 +95,9 @@ struct QuoteCaptureSessionStore {
                 ExtractedQuoteData(
                     text: "A model-assisted quote used for review testing.",
                     pageNumber: 38,
-                    marginNote: nil,
+                    marginNote: primaryMarginNote,
                     markingType: "underline",
-                    confidence: 0.94,
+                    confidence: primaryConfidence,
                     extractionSource: .modelAssisted
                 ),
                 ExtractedQuoteData(
@@ -112,9 +114,9 @@ struct QuoteCaptureSessionStore {
                 ExtractedQuoteData(
                     text: "Test quote extracted for UI testing.",
                     pageNumber: 12,
-                    marginNote: nil,
+                    marginNote: primaryMarginNote,
                     markingType: "underline",
-                    confidence: 0.92
+                    confidence: UITestConfiguration.shouldMockLowConfidence ? 0.48 : 0.92
                 )
             ]
         }

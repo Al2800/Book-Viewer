@@ -9,6 +9,7 @@ struct ImageReviewView: View {
 
     let image: UIImage
     let qualityResult: ImageQualityAnalyzer.QualityResult?
+    let isQualityFeedbackUnavailable: Bool
     let book: Book
     let onRetake: () -> Void
     let onConfirm: () -> Void
@@ -30,6 +31,8 @@ struct ImageReviewView: View {
                 // Quality feedback
                 if let result = qualityResult {
                     qualitySection(result)
+                } else if isQualityFeedbackUnavailable {
+                    qualityUnavailableSection
                 }
 
                 // Action buttons
@@ -154,6 +157,25 @@ struct ImageReviewView: View {
         }
         .padding(.horizontal, Spacing.lg)
         .padding(.vertical, Spacing.sm)
+        .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.qualityBar)
+    }
+
+    private var qualityUnavailableSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Label("Quality check unavailable", systemImage: "exclamationmark.triangle.fill")
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(Color.warning)
+
+            Text("You can still review the image before continuing.")
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Spacing.md)
+        .background(Color.backgroundSecondary, in: RoundedRectangle(cornerRadius: CornerRadius.md))
+        .padding(.horizontal, Spacing.lg)
+        .padding(.vertical, Spacing.sm)
+        .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.qualityBar)
     }
 
     private func metricIndicator(label: String, score: Double) -> some View {
@@ -302,6 +324,7 @@ struct CompactImageReview: View {
             issues: [.tooBlurry(advice: "Hold steady")],
             isAcceptable: true
         ),
+        isQualityFeedbackUnavailable: false,
         book: Book(title: "Test Book", author: "Test Author"),
         onRetake: {},
         onConfirm: {}

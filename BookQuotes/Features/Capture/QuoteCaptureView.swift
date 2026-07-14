@@ -26,6 +26,7 @@ struct QuoteCaptureView: View {
     @State private var captureState: CaptureState = .previewing
     @State private var capturedImage: UIImage?
     @State private var qualityResult: ImageQualityAnalyzer.QualityResult?
+    @State private var isQualityFeedbackUnavailable = false
     @State private var isAnalyzingQuality = false
     @State private var showError = false
     @State private var errorMessage = ""
@@ -72,6 +73,7 @@ struct QuoteCaptureView: View {
                 ImageReviewView(
                     image: image,
                     qualityResult: qualityResult,
+                    isQualityFeedbackUnavailable: isQualityFeedbackUnavailable,
                     book: book,
                     onRetake: {
                         retakePhoto()
@@ -264,7 +266,7 @@ struct QuoteCaptureView: View {
     private func captureTestImage() {
         let image = MockCameraImages.getTestImage(
             multipleQuotes: false,
-            lowConfidence: false,
+            lowConfidence: UITestConfiguration.shouldMockLowConfidence,
             index: 0
         )
         Task {
@@ -277,6 +279,7 @@ struct QuoteCaptureView: View {
             capturedImage = image
             isAnalyzingQuality = true
             qualityResult = nil
+            isQualityFeedbackUnavailable = false
         }
 
         let result = await imageProcessor.process(
@@ -288,11 +291,7 @@ struct QuoteCaptureView: View {
         await MainActor.run {
             capturedImage = result.image
             qualityResult = result.qualityResult
-
-            if let error = result.qualityError {
-                errorMessage = error.localizedDescription
-                showError = true
-            }
+            isQualityFeedbackUnavailable = result.qualityError != nil
 
             isAnalyzingQuality = false
             // Show review sheet
@@ -303,6 +302,7 @@ struct QuoteCaptureView: View {
     private func retakePhoto() {
         capturedImage = nil
         qualityResult = nil
+        isQualityFeedbackUnavailable = false
         captureState = .previewing
         cameraService.clearCapturedImage()
     }

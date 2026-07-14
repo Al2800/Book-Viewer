@@ -7,7 +7,11 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        ["--preload-library-test-data", "--mock-camera", "--mock-extraction-scenario", extractionScenario]
+        var arguments = ["--preload-library-test-data", "--mock-camera", "--mock-extraction-scenario", extractionScenario]
+        if name.contains("LowConfidence") {
+            arguments.append("--mock-low-confidence")
+        }
+        return arguments
     }
 
     private var extractionScenario: String {
@@ -29,28 +33,16 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     func testCaptureTab_DisplaysCameraOrPermission() {
         logger.step(1, "Navigating to Capture tab")
-        let captureTab = tabButton(.capture)
-        XCTAssertTrue(captureTab.waitForExistence(timeout: 5), "Capture tab should exist")
-        captureTab.tap()
+        XCTAssertTrue(tapTab(.capture, timeout: 5), "Capture tab should exist")
 
         logger.step(2, "Verifying capture view content")
-        // Should see mode selection, camera preview, or permission request
         let modeSelectCover = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
         let modeSelectQuote = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
         let modeSelectBatch = app.buttons[AccessibilityIdentifiers.Capture.modeSelectBatch]
-        let cameraPreview = app.otherElements[AccessibilityIdentifiers.Capture.cameraPreview]
-        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
 
-        let hasModeSelection = modeSelectCover.waitForExistence(timeout: 5) ||
-                              modeSelectQuote.exists ||
-                              modeSelectBatch.exists
-        let hasCaptureUI = hasModeSelection ||
-                          cameraPreview.exists ||
-                          permissionPrompt.exists ||
-                          captureButton.exists
-
-        XCTAssertTrue(hasCaptureUI, "Should show camera preview, permission request, or capture button")
+        XCTAssertTrue(modeSelectCover.waitForExistence(timeout: 5), "Cover capture mode should be available")
+        XCTAssertTrue(modeSelectQuote.exists, "Quote capture mode should be available")
+        XCTAssertTrue(modeSelectBatch.exists, "Batch capture mode should be available")
 
         logger.success("Capture tab displays correctly")
     }
@@ -61,22 +53,9 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
         logger.step(2, "Finding capture button")
         let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-
-        if testButton.waitForExistence(timeout: 3) {
-            XCTAssertTrue(testButton.isEnabled, "Test image button should be enabled")
-            logger.success("Test image button found and enabled")
-        } else if captureButton.waitForExistence(timeout: 5) {
-            XCTAssertTrue(captureButton.isEnabled, "Capture button should be enabled")
-            logger.success("Capture button found and enabled")
-        } else {
-            // May show permission UI instead
-            let permissionPrompt = app.staticTexts.matching(
-                NSPredicate(format: "label CONTAINS 'Camera'")
-            ).firstMatch
-            XCTAssertTrue(permissionPrompt.exists, "Should show camera permission request if no capture button")
-            logger.info("Camera permission required")
-        }
+        XCTAssertTrue(testButton.waitForExistence(timeout: 5), "Mocked quote capture should provide Use Test Image")
+        XCTAssertTrue(testButton.isEnabled, "Test image button should be enabled")
+        logger.success("Test image button found and enabled")
     }
 
     // MARK: - Book Context Capture Tests
@@ -90,57 +69,45 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         openCaptureFromBookDetail()
 
         logger.step(3, "Verifying capture view opened")
-        // Should see camera or capture UI
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        let cameraView = app.otherElements[AccessibilityIdentifiers.Capture.cameraPreview]
-
-        let captureUIVisible = captureButton.waitForExistence(timeout: 5) || cameraView.exists
-
-        if captureUIVisible {
-            logger.success("Capture view opened from book")
-        } else {
-            logger.info("Capture UI not visible (may require camera permissions)")
-        }
+        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        XCTAssertTrue(testImageButton.waitForExistence(timeout: 5), "Book capture should open mocked quote capture")
+        XCTAssertTrue(testImageButton.isEnabled, "Book capture test image control should be enabled")
+        logger.success("Capture view opened from book")
     }
 
     // MARK: - Image Review Tests
 
-    func testImageReview_ShowsQualityIndicator() throws {
+    func testImageReview_ShowsQualityIndicator() {
         logger.step(1, "Navigating to capture")
-        try navigateToCaptureWithBook()
+        navigateToCaptureWithBook()
 
         logger.step(2, "Triggering capture")
-        try triggerCapture()
+        triggerCapture()
 
         logger.step(3, "Checking for image review")
         // With test image capture, should transition to image review
         let retakeButton = app.buttons[AccessibilityIdentifiers.ImageReview.retakeButton]
         let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        let qualityBar = app.otherElements[AccessibilityIdentifiers.ImageReview.qualityBar]
+        let qualityBar = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.ImageReview.qualityBar)
+            .firstMatch
 
-        let hasReviewUI = retakeButton.waitForExistence(timeout: 5) ||
-                         usePhotoButton.exists ||
-                         qualityBar.exists
-
-        if hasReviewUI {
-            logger.success("Image review displayed with quality indicator")
-        } else {
-            logger.info("Image review may be skipped depending on capture flow")
-        }
+        XCTAssertTrue(retakeButton.waitForExistence(timeout: 5), "Image review should provide Retake")
+        XCTAssertTrue(usePhotoButton.exists, "Image review should provide Use Photo")
+        XCTAssertTrue(qualityBar.exists, "Image review should expose quality feedback")
+        logger.success("Image review displayed with quality indicator")
     }
 
-    func testImageReview_RetakeButton_ReturnsToCamera() throws {
+    func testImageReview_RetakeButton_ReturnsToCamera() {
         logger.step(1, "Navigating to capture")
-        try navigateToCaptureWithBook()
+        navigateToCaptureWithBook()
 
         logger.step(2, "Taking photo")
-        try triggerCapture()
+        triggerCapture()
 
         logger.step(3, "Finding retake button")
         let retakeButton = app.buttons[AccessibilityIdentifiers.ImageReview.retakeButton]
-        guard retakeButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Retake button not found (review may have been skipped)")
-        }
+        XCTAssertTrue(retakeButton.waitForExistence(timeout: 5), "Image review should provide Retake")
 
         logger.step(4, "Tapping retake")
         retakeButton.tap()
@@ -156,12 +123,12 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     // MARK: - Extraction Review Tests
 
-    func testExtractionReview_DisplaysExtractedQuotes() throws {
+    func testExtractionReview_DisplaysExtractedQuotes() {
         logger.step(1, "Navigating to capture")
-        try navigateToCaptureWithBook()
+        navigateToCaptureWithBook()
 
         logger.step(2, "Capturing and processing")
-        try triggerCapture()
+        triggerCapture()
 
         // Use photo if review appears
         let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
@@ -196,8 +163,8 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.success("Extraction review displayed extracted quotes")
     }
 
-    func testExtractionReview_ShowsRemoteSource() throws {
-        try navigateToExtractionReview()
+    func testExtractionReview_ShowsRemoteSource() {
+        navigateToExtractionReview()
 
         let modelSource = app.descendants(matching: .any)
             .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_model_assisted")
@@ -206,8 +173,8 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(modelSource.waitForExistence(timeout: 5))
     }
 
-    func testExtractionReview_ShowsLocalFallback() throws {
-        try navigateToExtractionReview()
+    func testExtractionReview_ShowsLocalFallback() {
+        navigateToExtractionReview()
 
         let onDeviceSource = app.descendants(matching: .any)
             .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_on_device")
@@ -222,21 +189,17 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     // MARK: - Quote Editing Tests
 
-    func testQuoteEditor_CanEditText() throws {
-        try navigateToExtractionReview()
+    func testQuoteEditor_CanEditText() {
+        navigateToExtractionReview()
 
         logger.step(1, "Opening quote editor sheet")
-        let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton]
-        guard editButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Quote edit button not found")
-        }
+        let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].firstMatch
+        XCTAssertTrue(editButton.waitForExistence(timeout: 5), "Extraction review should provide quote editing")
         editButton.tap()
 
         logger.step(2, "Finding quote text editor")
         let textEditor = app.textViews[AccessibilityIdentifiers.Capture.extractionQuoteTextEditor]
-        guard textEditor.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Quote text editor not found in edit sheet")
-        }
+        XCTAssertTrue(textEditor.waitForExistence(timeout: 5), "Quote editor sheet should expose editable text")
 
         logger.step(3, "Editing quote text")
         textEditor.tap()
@@ -254,116 +217,77 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.success("Quote text edited successfully")
     }
 
-    func testQuoteEditor_PageNumberField() throws {
-        try navigateToExtractionReview()
+    func testExtractionReview_DisplaysDetectedPageNumber() {
+        navigateToExtractionReview()
 
-        logger.step(1, "Finding page number field")
-        let pageField = app.textFields[AccessibilityIdentifiers.QuoteDetail.pageField]
-        let pageNumberField = app.textFields["Page"]
-
-        if pageField.waitForExistence(timeout: 3) || pageNumberField.exists {
-            logger.success("Page number field available")
-        } else {
-            logger.info("Page number field may have different identifier")
-        }
+        logger.step(1, "Finding detected page number")
+        XCTAssertTrue(
+            app.staticTexts["p. 38"].waitForExistence(timeout: 5),
+            "Mock extraction should display the candidate's detected page number"
+        )
+        logger.success("Detected page number is displayed")
     }
 
     // MARK: - Save Flow Tests
 
-    func testSaveQuotes_NavigatesToLibrary() throws {
-        try navigateToExtractionReview()
+    func testSaveQuotes_NavigatesToBookDetail() {
+        navigateToExtractionReview()
 
         logger.step(1, "Finding save button")
-        let saveButton = app.buttons["Save Quotes"]
         let saveAllButton = app.buttons["Save All"]
-        let doneButton = app.buttons["Done"]
-
-        if saveButton.waitForExistence(timeout: 3) {
-            saveButton.tap()
-        } else if saveAllButton.exists {
-            saveAllButton.tap()
-        } else if doneButton.exists {
-            doneButton.tap()
-        } else {
-            throw XCTSkip("No save button found")
-        }
+        XCTAssertTrue(saveAllButton.waitForExistence(timeout: 5), "Extraction review should provide Save All")
+        XCTAssertTrue(saveAllButton.isEnabled, "Save All should be enabled for extracted quotes")
+        saveAllButton.tap()
 
         logger.step(2, "Verifying navigation after save")
-        // Should return to book detail or library
-        let quotesLabel = app.staticTexts["Quotes"]
-        let tabBar = app.tabBars.firstMatch
-
-        let savedSuccessfully = quotesLabel.waitForExistence(timeout: 5) ||
-                               tabBar.waitForExistence(timeout: 5)
-
-        XCTAssertTrue(savedSuccessfully, "Should navigate after save")
+        let bookDetailTitle = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        XCTAssertTrue(bookDetailTitle.waitForExistence(timeout: 8), "Saving quotes should return to the captured book")
 
         logger.success("Quotes saved and navigated successfully")
     }
 
     // MARK: - Cancel Flow Tests
 
-    func testCancelCapture_ShowsConfirmation() throws {
-        try navigateToExtractionReview()
+    func testCancelCapture_ShowsConfirmation() {
+        navigateToExtractionReview()
 
         logger.step(1, "Finding cancel button")
-        // There can be multiple "Cancel" buttons on-screen (e.g. capture flow + nav bars).
-        // Prefer the explicit capture cancel identifier for determinism.
         let cancelButton = app.buttons[AccessibilityIdentifiers.Capture.cancelButton]
-        let backButton = app.navigationBars.buttons.element(boundBy: 0)
-
-        if cancelButton.waitForExistence(timeout: 3) {
-            cancelButton.tap()
-        } else if backButton.exists {
-            backButton.tap()
-        } else {
-            throw XCTSkip("No cancel/back button found")
-        }
+        XCTAssertTrue(cancelButton.waitForExistence(timeout: 5), "Extraction review should provide Cancel")
+        cancelButton.tap()
 
         logger.step(2, "Checking for discard confirmation")
         // Should show alert asking to discard changes
         let discardButton = app.buttons["Discard"]
         let discardAlert = app.alerts.firstMatch
 
-        if discardAlert.waitForExistence(timeout: 3) {
-            XCTAssertTrue(discardButton.exists, "Discard option should exist")
-            logger.success("Discard confirmation shown")
+        XCTAssertTrue(discardAlert.waitForExistence(timeout: 3), "Cancel with unsaved quotes should request confirmation")
+        XCTAssertTrue(discardButton.exists, "Discard option should exist")
+        logger.success("Discard confirmation shown")
 
-            // Cancel to stay in review
-            let stayButton = discardAlert.buttons["Cancel"]
-            if stayButton.exists {
-                stayButton.tap()
-            }
-        } else {
-            logger.info("May navigate directly without confirmation")
-        }
+        let keepEditingButton = discardAlert.buttons["Keep Editing"]
+        XCTAssertTrue(keepEditingButton.exists, "Keep Editing should preserve the review")
+        keepEditingButton.tap()
     }
 
     // MARK: - Quality Warning Tests
 
-    func testLowQualityCapture_ShowsWarning() throws {
-        // This test would need a specific low-quality test image
-        // For now, test that the quality UI elements exist
-        logger.step(1, "Navigating to capture")
-        try navigateToCaptureWithBook()
+    func testLowConfidenceExtraction_ShowsReducedConfidence() {
+        logger.step(1, "Opening low-confidence extraction review")
+        navigateToExtractionReview()
 
-        logger.step(2, "Looking for quality toggle")
-        let qualityToggle = app.buttons[AccessibilityIdentifiers.Capture.qualityToggle]
-
-        if qualityToggle.waitForExistence(timeout: 3) {
-            logger.success("Quality toggle available")
-        } else {
-            logger.info("Quality toggle may be hidden or have different identifier")
-        }
+        logger.step(2, "Verifying reduced confidence")
+        XCTAssertTrue(
+            app.staticTexts["48%"].waitForExistence(timeout: 5),
+            "Low-confidence mock extraction should display its reduced confidence"
+        )
+        logger.success("Low-confidence extraction is visible to the reader")
     }
 
     // MARK: - Helpers
 
     private func navigateToLibrary() {
-        let libraryTab = tabButton(.library)
-        if libraryTab.waitForExistence(timeout: 3) {
-            libraryTab.tap()
-        }
+        XCTAssertTrue(tapTab(.library), "Library tab should be available")
     }
 
     private func openFirstBook() {
@@ -375,32 +299,29 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             }
         }
 
-        // Tap first book
-        let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookOther = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        if bookRow.waitForExistence(timeout: 3) {
-            bookRow.tap()
-        } else if bookLink.waitForExistence(timeout: 3) {
-            bookLink.tap()
-        } else if bookOther.waitForExistence(timeout: 3) {
-            bookOther.tap()
-        } else if app.cells.firstMatch.exists {
-            app.cells.firstMatch.tap()
+        let bookRow = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
+            .firstMatch
+        guard bookRow.waitForExistence(timeout: 5) else {
+            XCTFail("Seeded library should expose an openable book")
+            return
         }
+        bookRow.tap()
 
-        // Wait for detail view
-        _ = app.staticTexts["Quotes"].waitForExistence(timeout: 3)
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 5),
+            "Opening a seeded book should show its detail screen"
+        )
     }
 
-    private func navigateToCaptureWithBook() throws {
-        try openQuoteCaptureFromTabSelectingBook()
+    private func navigateToCaptureWithBook() {
+        openQuoteCaptureFromTabSelectingBook()
     }
 
-    private func navigateToExtractionReview() throws {
-        try navigateToCaptureWithBook()
+    private func navigateToExtractionReview() {
+        navigateToCaptureWithBook()
 
-        try triggerCapture()
+        triggerCapture()
 
         // Use photo if review appears
         let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
@@ -410,9 +331,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
         // Wait for extraction review
         let reviewTitle = app.navigationBars["Review Extractions"]
-        guard reviewTitle.waitForExistence(timeout: 15) else {
-            throw XCTSkip("Extraction review did not appear")
-        }
+        XCTAssertTrue(reviewTitle.waitForExistence(timeout: 15), "Mock capture should open extraction review")
     }
 
     private func findMoreMenuButton() -> XCUIElement {
@@ -429,47 +348,21 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         return navButtons.element(boundBy: navButtons.count > 0 ? navButtons.count - 1 : 0)
     }
 
-    private func triggerCapture() throws {
+    private func triggerCapture() {
         let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        if testButton.waitForExistence(timeout: 3) {
-            testButton.tap()
-            return
-        }
-
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        if captureButton.waitForExistence(timeout: 5) {
-            captureButton.tap()
-            return
-        }
-
-        try openQuoteCaptureFromTabSelectingBook()
-
-        if testButton.waitForExistence(timeout: 3) {
-            testButton.tap()
-            return
-        }
-
-        guard captureButton.waitForExistence(timeout: 3) else {
-            throw XCTSkip("Capture button not available")
-        }
-        captureButton.tap()
+        XCTAssertTrue(testButton.waitForExistence(timeout: 5), "Mocked quote capture should provide Use Test Image")
+        testButton.tap()
     }
 
     private func openQuoteCaptureFromTab() {
-        try? openQuoteCaptureFromTabSelectingBook()
+        openQuoteCaptureFromTabSelectingBook()
     }
 
-    private func openQuoteCaptureFromTabSelectingBook() throws {
-        let captureTab = tabButton(.capture)
-        guard captureTab.waitForExistence(timeout: 3) else {
-            throw XCTSkip("Capture tab not available")
-        }
-        captureTab.tap()
+    private func openQuoteCaptureFromTabSelectingBook() {
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
 
         let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
-        if permissionPrompt.waitForExistence(timeout: 2) {
-            throw XCTSkip("Camera permission required")
-        }
+        XCTAssertFalse(permissionPrompt.waitForExistence(timeout: 2), "Mock camera should not request permission")
 
         let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
         if testButton.exists {
@@ -482,16 +375,10 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         }
 
         let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-        guard bookCard.waitForExistence(timeout: 5) else {
-            throw XCTSkip("No book available for quote capture")
-        }
+        XCTAssertTrue(bookCard.waitForExistence(timeout: 5), "Seeded library should provide a book for quote capture")
         bookCard.tap()
 
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        let hasCaptureUI = testButton.waitForExistence(timeout: 5) || captureButton.exists
-        guard hasCaptureUI else {
-            throw XCTSkip("Quote capture UI not available")
-        }
+        XCTAssertTrue(testButton.waitForExistence(timeout: 5), "Quote capture should show Use Test Image")
     }
 
     private func openCaptureFromBookDetail() {
@@ -530,6 +417,6 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             }
         }
 
-        openQuoteCaptureFromTab()
+        XCTFail("Book detail should provide a Capture Quotes action")
     }
 }

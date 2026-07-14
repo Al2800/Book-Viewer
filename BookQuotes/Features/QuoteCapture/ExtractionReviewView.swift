@@ -248,6 +248,7 @@ struct ExtractionReviewView: View {
                     dismiss()
                 }
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
         }
 
         ToolbarItem(placement: .principal) {
