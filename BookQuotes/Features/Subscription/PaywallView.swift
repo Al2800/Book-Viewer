@@ -19,6 +19,7 @@ struct PaywallView: View {
     @State private var selectedProduct: Product?
     @State private var isPurchasing = false
     @State private var showError = false
+    @State private var errorTitle = "Purchase Error"
     @State private var errorMessage: String?
     @State private var presentedLegalDocument: LegalDocument?
 
@@ -41,6 +42,8 @@ struct PaywallView: View {
 
                         // Subscribe button
                         subscribeButton
+
+                        reconciliationNotice
 
                         // Restore purchases
                         restoreButton
@@ -75,7 +78,7 @@ struct PaywallView: View {
                 // Default to yearly if available
                 selectedProduct = subscriptionService.yearlyProduct ?? subscriptionService.monthlyProduct
             }
-            .alert("Purchase Error", isPresented: $showError) {
+            .alert(errorTitle, isPresented: $showError) {
                 Button("OK") {
                     showError = false
                 }
@@ -179,6 +182,23 @@ struct PaywallView: View {
         .disabled(isPurchasing)
     }
 
+    @ViewBuilder
+    private var reconciliationNotice: some View {
+        switch subscriptionService.entitlementReconciliationStatus {
+        case .notStarted, .confirmed:
+            EmptyView()
+        case .synchronizing:
+            Label("Verifying your subscription", systemImage: "arrow.triangle.2.circlepath")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        case .retryRequired:
+            Text(subscriptionService.entitlementReconciliationStatus.retryMessage)
+                .font(.footnote)
+                .foregroundStyle(Color.warning)
+                .multilineTextAlignment(.center)
+        }
+    }
+
     // MARK: - Legal Section
 
     private var legalSection: some View {
@@ -270,6 +290,9 @@ struct PaywallView: View {
                 dismiss()
             }
         } catch {
+            errorTitle = error is SubscriptionError && subscriptionService.entitlementReconciliationStatus.requiresUserAction
+                ? "Subscription Verification Needed"
+                : "Purchase Error"
             errorMessage = error.localizedDescription
             showError = true
         }
@@ -285,6 +308,9 @@ struct PaywallView: View {
                 dismiss()
             }
         } catch {
+            errorTitle = error is SubscriptionError && subscriptionService.entitlementReconciliationStatus.requiresUserAction
+                ? "Subscription Verification Needed"
+                : "Restore Error"
             errorMessage = error.localizedDescription
             showError = true
         }

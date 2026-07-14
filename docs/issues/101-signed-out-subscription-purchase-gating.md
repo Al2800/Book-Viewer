@@ -12,9 +12,27 @@ Settings exposes plan purchase while signed out. A customer can complete StoreKi
 
 - [x] Purchase initiation requires a valid account session and app-account token linkage.
 - [x] The reason for sign-in is explained before StoreKit UI appears.
-- [ ] Purchase completion waits for or clearly reports backend entitlement reconciliation.
-- [ ] Interrupted reconciliation is recoverable through Restore Purchases.
-- [ ] No paid user is shown as unsubscribed solely because linkage is delayed.
+- [x] Purchase completion waits for or clearly reports backend entitlement reconciliation.
+- [x] Interrupted reconciliation is recoverable through Restore Purchases.
+- [x] No paid user is shown as unsubscribed solely because linkage is delayed.
+
+## Resolution
+
+- A verified StoreKit purchase is retained as an active local entitlement while the
+  backend sync runs, so a temporary linkage delay does not turn a paid customer
+  into a free customer in the app UI.
+- The paywall now distinguishes successful App Store payment from delayed backend
+  verification, keeps the purchase screen open, and directs the customer to
+  Restore Purchases to retry reconciliation.
+- Restore Purchases performs a fresh StoreKit sync and backend reconciliation;
+  it only dismisses the paywall after an active entitlement is available.
+
+## Remaining Release Verification
+
+- Run a signed-in Sandbox purchase on a physical device, temporarily interrupt
+  the network during reconciliation, then use Restore Purchases after restoring
+  connectivity. Confirm the account is enabled server-side and remote extraction
+  succeeds.
 
 ## Verification
 

@@ -3,6 +3,28 @@ import XCTest
 @testable import BookQuotes
 
 final class SubscriptionSyncStateTests: XCTestCase {
+
+    func testReconciliationStatusRequiresUserActionOnlyAfterSyncFailure() {
+        XCTAssertFalse(SubscriptionEntitlementReconciliationStatus.notStarted.requiresUserAction)
+        XCTAssertFalse(SubscriptionEntitlementReconciliationStatus.synchronizing.requiresUserAction)
+        XCTAssertFalse(SubscriptionEntitlementReconciliationStatus.confirmed.requiresUserAction)
+        XCTAssertTrue(SubscriptionEntitlementReconciliationStatus.retryRequired.requiresUserAction)
+    }
+
+    func testReconciliationRetryMessageExplainsThePurchaseIsStillOwned() {
+        let message = SubscriptionEntitlementReconciliationStatus.retryRequired.retryMessage
+
+        XCTAssertTrue(message.contains("purchase is confirmed by the App Store"))
+        XCTAssertTrue(message.contains("Restore Purchases"))
+    }
+
+    func testReconciliationPendingErrorPreservesTheRecoveryGuidance() {
+        XCTAssertEqual(
+            SubscriptionError.entitlementReconciliationPending.errorDescription,
+            SubscriptionEntitlementReconciliationStatus.retryRequired.retryMessage
+        )
+    }
+
     func testMapsActiveResponseWithExpirationAndProductID() throws {
         let data = Data(
             """

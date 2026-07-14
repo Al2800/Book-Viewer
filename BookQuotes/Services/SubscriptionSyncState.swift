@@ -1,5 +1,20 @@
 import Foundation
 
+enum SubscriptionEntitlementReconciliationStatus: Equatable {
+    case notStarted
+    case synchronizing
+    case confirmed
+    case retryRequired
+
+    var requiresUserAction: Bool {
+        self == .retryRequired
+    }
+
+    var retryMessage: String {
+        "Your purchase is confirmed by the App Store, but account verification is taking longer than expected. Keep this screen open and try Restore Purchases again."
+    }
+}
+
 struct SubscriptionSyncResponse: Decodable, Equatable {
     let status: String
     let rawStatus: String

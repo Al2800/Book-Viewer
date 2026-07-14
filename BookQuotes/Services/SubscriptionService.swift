@@ -34,6 +34,9 @@ final class SubscriptionService {
     /// Last error encountered
     private(set) var lastError: SubscriptionError?
 
+    /// Whether the App Store entitlement has been reconciled to the signed-in account.
+    private(set) var entitlementReconciliationStatus: SubscriptionEntitlementReconciliationStatus = .notStarted
+
     /// Auth service for syncing with backend
     private let authService: AuthService
 
@@ -142,7 +145,13 @@ final class SubscriptionService {
         case .success(let verification):
             let transaction = try checkVerified(verification)
             await transaction.finish()
-            await updateSubscriptionStatus()
+            await updateSubscriptionStatus(transactionForServerSync: transaction)
+
+            if entitlementReconciliationStatus.requiresUserAction {
+                let error = SubscriptionError.entitlementReconciliationPending
+                lastError = error
+                throw error
+            }
 
             return transaction
 
@@ -171,8 +180,17 @@ final class SubscriptionService {
         do {
             try await AppStore.sync()
             await updateSubscriptionStatus()
+            if entitlementReconciliationStatus.requiresUserAction {
+                let error = SubscriptionError.entitlementReconciliationPending
+                lastError = error
+                throw error
+            }
         } catch {
-            lastError = .restoreFailed(error)
+            if let subscriptionError = error as? SubscriptionError {
+                lastError = subscriptionError
+            } else {
+                lastError = .restoreFailed(error)
+            }
             throw error
         }
     }
@@ -180,7 +198,7 @@ final class SubscriptionService {
     // MARK: - Status Updates
 
     /// Update subscription status from App Store
-    func updateSubscriptionStatus() async {
+    func updateSubscriptionStatus(transactionForServerSync: Transaction? = nil) async {
         purchasedSubscription = nil
         purchasedProductID = nil
         subscriptionStatus = nil
@@ -209,9 +227,15 @@ final class SubscriptionService {
                 subscriptionStatus = statuses?.first { $0.state != .expired && $0.state != .revoked }
             }
 
-            await refreshSubscriptionWithServer(transaction: latestTransaction)
+            await refreshSubscriptionWithServer(
+                transaction: transactionForServerSync ?? latestTransaction,
+                shouldReportReconciliation: true
+            )
         } else {
-            await refreshSubscriptionWithServer(transaction: nil)
+            await refreshSubscriptionWithServer(
+                transaction: transactionForServerSync,
+                shouldReportReconciliation: transactionForServerSync != nil
+            )
         }
     }
 
@@ -261,8 +285,18 @@ final class SubscriptionService {
     }
 
     /// Ask the backend to verify subscription status against the App Store Server API.
-    private func refreshSubscriptionWithServer(transaction: Transaction?) async {
-        guard let token = authService.getSessionToken() else { return }
+    private func refreshSubscriptionWithServer(
+        transaction: Transaction?,
+        shouldReportReconciliation: Bool
+    ) async {
+        guard let token = authService.getSessionToken() else {
+            entitlementReconciliationStatus = .notStarted
+            return
+        }
+
+        if shouldReportReconciliation {
+            entitlementReconciliationStatus = .synchronizing
+        }
 
         let serverURL = AuthService.proxyBaseURL.appendingPathComponent("api/subscription/sync")
         var request = URLRequest(url: serverURL)
@@ -288,6 +322,7 @@ final class SubscriptionService {
                 authService.applyRefreshedSessionToken(from: httpResponse)
                 if httpResponse.statusCode != 200 {
                     Self.logger.error("Backend verification failed: \(httpResponse.statusCode)")
+                    entitlementReconciliationStatus = shouldReportReconciliation ? .retryRequired : .notStarted
                     return
                 }
             }
@@ -301,8 +336,10 @@ final class SubscriptionService {
             if purchasedProductID == nil {
                 purchasedProductID = syncState.productID ?? transaction?.productID
             }
+            entitlementReconciliationStatus = shouldReportReconciliation ? .confirmed : .notStarted
         } catch {
             Self.logger.error("Backend verification error: \(String(describing: error), privacy: .public)")
+            entitlementReconciliationStatus = shouldReportReconciliation ? .retryRequired : .notStarted
         }
     }
 
@@ -336,6 +373,7 @@ final class SubscriptionService {
 /// Errors that can occur during subscription operations
 enum SubscriptionError: LocalizedError {
     case authenticationRequired
+    case entitlementReconciliationPending
     case productLoadFailed(Error)
     case verificationFailed(Error)
     case purchaseFailed(Error)
@@ -345,6 +383,8 @@ enum SubscriptionError: LocalizedError {
         switch self {
         case .authenticationRequired:
             return "Sign in with Apple before purchasing or restoring so your subscription can be linked to your account."
+        case .entitlementReconciliationPending:
+            return SubscriptionEntitlementReconciliationStatus.retryRequired.retryMessage
         case .productLoadFailed(let error):
             return "Failed to load products: \(error.localizedDescription)"
         case .verificationFailed(let error):
