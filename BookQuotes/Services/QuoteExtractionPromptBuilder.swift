@@ -17,29 +17,48 @@ enum QuoteExtractionPromptBuilder {
     ///
     /// Avoid passing SwiftData model objects (e.g. `MarkingDefinition`) across concurrency domains.
     struct MarkingPrompt: Sendable {
+        let definitionID: UUID?
         let name: String
         let visualDescription: String
         let meaning: String
         let isEnabled: Bool
+        let isSystemDefault: Bool
 
         init(
+            definitionID: UUID? = nil,
             name: String,
             visualDescription: String,
             meaning: String,
-            isEnabled: Bool = true
+            isEnabled: Bool = true,
+            isSystemDefault: Bool = false
         ) {
+            self.definitionID = definitionID
             self.name = QuoteExtractionPromptBuilder.sanitizedName(name)
             self.visualDescription = QuoteExtractionPromptBuilder.sanitizedVisualDescription(visualDescription)
             self.meaning = QuoteExtractionPromptBuilder.sanitizedMeaning(meaning)
             self.isEnabled = isEnabled
+            self.isSystemDefault = isSystemDefault
         }
 
         init(_ definition: MarkingDefinition) {
             self.init(
+                definitionID: definition.id,
                 name: definition.name,
                 visualDescription: definition.visualDescription,
                 meaning: definition.meaning,
-                isEnabled: definition.isEnabled
+                isEnabled: definition.isEnabled,
+                isSystemDefault: definition.isSystemDefault
+            )
+        }
+
+        var typeIdentifier: String {
+            QuoteExtractionPromptBuilder.normalizeMarkingType(name)
+        }
+
+        var localMarkingFamily: MarkingType? {
+            QuoteExtractionPromptBuilder.localMarkingFamily(
+                name: name,
+                visualDescription: visualDescription
             )
         }
     }
@@ -197,7 +216,7 @@ enum QuoteExtractionPromptBuilder {
     }
 
     /// Normalize a reader-facing marking name into a bounded, schema-safe identifier.
-    private static func normalizeMarkingType(_ name: String) -> String {
+    static func normalizeMarkingType(_ name: String) -> String {
         var result = ""
         var needsSeparator = false
 
@@ -218,6 +237,33 @@ enum QuoteExtractionPromptBuilder {
         return normalized.isEmpty ? "custom_marking" : normalized
     }
 
+    private static func localMarkingFamily(
+        name: String,
+        visualDescription: String
+    ) -> MarkingType? {
+        let reference = "\(name) \(visualDescription)".lowercased()
+
+        if reference.contains("double") && reference.contains("underline") {
+            return .doubleUnderline
+        }
+        if reference.contains("margin") && (reference.contains("note") || reference.contains("annotation")) {
+            return .marginNote
+        }
+        if reference.contains("margin") && (reference.contains("line") || reference.contains("vertical") || reference.contains("side")) {
+            return .marginLine
+        }
+        if reference.contains("highlight") || reference.contains("highlighter") {
+            return .highlight
+        }
+        if reference.contains("bracket") || reference.contains("brace") {
+            return .bracket
+        }
+        if reference.contains("underline") || reference.contains("under line") {
+            return .underline
+        }
+        return nil
+    }
+
     private struct PromptMarkingReference: Encodable {
         let id: String
         let name: String
@@ -236,6 +282,31 @@ enum QuoteExtractionPromptBuilder {
         - **Circle**: Circle around word/phrase - Key term or concept
         - **Margin Note**: Handwritten text in margin - Personal thought
         """
+    }
+}
+
+extension Array where Element == QuoteExtractionPromptBuilder.MarkingPrompt {
+    /// Uses a custom definition only when its visible mark family is unambiguous.
+    func customMarking(forLocalMarkingFamily family: MarkingType) -> Element? {
+        let matches = filter {
+            $0.isEnabled
+                && !$0.isSystemDefault
+                && $0.definitionID != nil
+                && $0.localMarkingFamily == family
+        }
+        return matches.count == 1 ? matches[0] : nil
+    }
+
+    /// Resolves a model-returned schema value back to the reader's local definition.
+    func customMarking(forModelMarkingType markingType: String) -> Element? {
+        let identifier = QuoteExtractionPromptBuilder.normalizeMarkingType(markingType)
+        let matches = filter {
+            $0.isEnabled
+                && !$0.isSystemDefault
+                && $0.definitionID != nil
+                && $0.typeIdentifier == identifier
+        }
+        return matches.count == 1 ? matches[0] : nil
     }
 }
 

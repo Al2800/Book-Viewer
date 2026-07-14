@@ -22,6 +22,45 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(quote.extractionSource, .onDevice)
     }
 
+    func testOnDeviceExtractorRetainsUnambiguousCustomMarkingIdentity() async throws {
+        let customDefinitionID = UUID()
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "A reader-defined local marking remains attached.",
+                    confidence: 0.96,
+                    boundingBox: CGRect(x: 120, y: 220, width: 620, height: 32)
+                )
+            ]),
+            markDetector: StubPageMarkDetector(marks: [
+                DetectedPageMark(
+                    type: .underline,
+                    boundingBox: CGRect(x: 120, y: 260, width: 620, height: 4),
+                    confidence: 0.84
+                )
+            ])
+        )
+        let markings = [
+            QuoteExtractionPromptBuilder.MarkingPrompt(
+                definitionID: customDefinitionID,
+                name: "Follow Up",
+                visualDescription: "Single underline under text",
+                meaning: "Revisit this passage",
+                isSystemDefault: false
+            )
+        ]
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: markings
+        )
+
+        let quote = try XCTUnwrap(result.quotes.first)
+        XCTAssertEqual(quote.markingType, "underline")
+        XCTAssertEqual(quote.customMarkingDefinitionID, customDefinitionID)
+        XCTAssertEqual(quote.customMarkingDisplayName, "Follow Up")
+    }
+
     func testAIProcessingConsentStoreRequiresCurrentVersionAndSupportsRevocation() {
         let suiteName = "AIProcessingConsentStoreTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!

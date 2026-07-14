@@ -108,7 +108,9 @@ struct ExtractionReviewQuoteState {
                     pageNumber: data.pageNumber ?? snapshot.detectedPageNumber,
                     marginNote: data.marginNote,
                     isManual: false,
-                    extractionSource: data.extractionSource
+                    extractionSource: data.extractionSource,
+                    customMarkingDefinitionID: data.customMarkingDefinitionID,
+                    customMarkingDisplayName: data.customMarkingDisplayName
                 )
             }
         }

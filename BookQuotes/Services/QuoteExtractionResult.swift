@@ -156,13 +156,21 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
     /// Where this quote candidate came from before review.
     let extractionSource: QuoteExtractionSource
 
+    /// Local marking-definition identity resolved by the app, never supplied by a model response.
+    let customMarkingDefinitionID: UUID?
+
+    /// Reader-facing custom marking name captured with the result for review display.
+    let customMarkingDisplayName: String?
+
     init(
         text: String,
         pageNumber: Int?,
         marginNote: String?,
         markingType: String,
         confidence: Double?,
-        extractionSource: QuoteExtractionSource = .unknown
+        extractionSource: QuoteExtractionSource = .unknown,
+        customMarkingDefinitionID: UUID? = nil,
+        customMarkingDisplayName: String? = nil
     ) {
         self.text = text
         self.pageNumber = pageNumber
@@ -170,6 +178,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         self.markingType = markingType
         self.confidence = confidence
         self.extractionSource = extractionSource
+        self.customMarkingDefinitionID = customMarkingDefinitionID
+        self.customMarkingDisplayName = customMarkingDisplayName
     }
 
     /// Convert to ExtractedQuote for saving
@@ -227,6 +237,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         case markingType
         case confidence
         case extractionSource
+        case customMarkingDefinitionID
+        case customMarkingDisplayName
     }
 
     init(from decoder: Decoder) throws {
@@ -237,6 +249,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         markingType = try container.decode(String.self, forKey: .markingType)
         confidence = try container.decodeIfPresent(Double.self, forKey: .confidence)
         extractionSource = try container.decodeIfPresent(QuoteExtractionSource.self, forKey: .extractionSource) ?? .unknown
+        customMarkingDefinitionID = try container.decodeIfPresent(UUID.self, forKey: .customMarkingDefinitionID)
+        customMarkingDisplayName = try container.decodeIfPresent(String.self, forKey: .customMarkingDisplayName)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -247,6 +261,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         try container.encode(markingType, forKey: .markingType)
         try container.encodeIfPresent(confidence, forKey: .confidence)
         try container.encode(extractionSource, forKey: .extractionSource)
+        try container.encodeIfPresent(customMarkingDefinitionID, forKey: .customMarkingDefinitionID)
+        try container.encodeIfPresent(customMarkingDisplayName, forKey: .customMarkingDisplayName)
     }
 }
 
@@ -358,7 +374,9 @@ extension QuoteExtractionResult {
                     marginNote: quote.marginNote,
                     markingType: quote.markingType,
                     confidence: quote.confidence,
-                    extractionSource: source
+                    extractionSource: source,
+                    customMarkingDefinitionID: quote.customMarkingDefinitionID,
+                    customMarkingDisplayName: quote.customMarkingDisplayName
                 )
             },
             pageNumber: pageNumber,
@@ -373,6 +391,34 @@ extension QuoteExtractionResult {
             pageNumber: pageNumber,
             processingNotes: processingNotes,
             fallbackReason: reason
+        )
+    }
+
+    /// Associates model output with an enabled local definition after validation.
+    func resolvingCustomMarkings(
+        from markings: [QuoteExtractionPromptBuilder.MarkingPrompt]
+    ) -> QuoteExtractionResult {
+        QuoteExtractionResult(
+            quotes: quotes.map { quote in
+                guard let marking = markings.customMarking(forModelMarkingType: quote.markingType),
+                      let definitionID = marking.definitionID else {
+                    return quote
+                }
+
+                return ExtractedQuoteData(
+                    text: quote.text,
+                    pageNumber: quote.pageNumber,
+                    marginNote: quote.marginNote,
+                    markingType: quote.markingType,
+                    confidence: quote.confidence,
+                    extractionSource: quote.extractionSource,
+                    customMarkingDefinitionID: definitionID,
+                    customMarkingDisplayName: marking.name
+                )
+            },
+            pageNumber: pageNumber,
+            processingNotes: processingNotes,
+            fallbackReason: fallbackReason
         )
     }
 

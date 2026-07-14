@@ -145,7 +145,10 @@ struct ReviewSummaryView: View {
     }
 
     private var markingTypeCounts: [(type: String, count: Int)] {
-        Dictionary(grouping: quotes, by: \.markingType)
+        Dictionary(grouping: quotes) { quote in
+            quote.customMarkingDisplayName
+                ?? quote.markingType.replacingOccurrences(of: "_", with: " ").capitalized
+        }
             .map { (type: $0.key, count: $0.value.count) }
             .sorted { $0.count > $1.count }
     }
@@ -202,7 +205,7 @@ struct ReviewSummaryView: View {
 
                     ForEach(markingTypeCounts, id: \.type) { item in
                         HStack {
-                            Text(item.type.replacingOccurrences(of: "_", with: " ").capitalized)
+                            Text(item.type)
                             Spacer()
                             Text("\(item.count)")
                                 .foregroundStyle(Color.textSecondary)

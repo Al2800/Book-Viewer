@@ -40,8 +40,17 @@ final class PageCaptureTests: SwiftDataTestCase {
 
     func testStoreAndLoadExtractedQuotes() {
         let capture = PageCapture(imagePath: "captures/test.jpg")
+        let customDefinitionID = UUID()
         let quotes = [
-            ExtractedQuoteData(text: "Quote A", pageNumber: 1, marginNote: nil, markingType: "underline", confidence: 0.9),
+            ExtractedQuoteData(
+                text: "Quote A",
+                pageNumber: 1,
+                marginNote: nil,
+                markingType: "underline",
+                confidence: 0.9,
+                customMarkingDefinitionID: customDefinitionID,
+                customMarkingDisplayName: "Follow Up"
+            ),
             ExtractedQuoteData(text: "Quote B", pageNumber: 2, marginNote: "Note", markingType: "highlight", confidence: 0.8)
         ]
 
@@ -49,6 +58,8 @@ final class PageCaptureTests: SwiftDataTestCase {
         let loaded = capture.loadExtractedQuotes()
 
         XCTAssertEqual(loaded.count, 2)
+        XCTAssertEqual(loaded.first?.customMarkingDefinitionID, customDefinitionID)
+        XCTAssertEqual(loaded.first?.customMarkingDisplayName, "Follow Up")
         XCTAssertEqual(capture.extractedQuoteCount, 2)
         XCTAssertNotNil(capture.averageConfidence)
     }

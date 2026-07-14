@@ -18,7 +18,10 @@ struct QuoteEditRow: View {
             HStack {
                 ConfidenceBadge(confidence: quote.confidence)
 
-                MarkingTypeStringBadge(type: quote.markingType)
+                MarkingTypeStringBadge(
+                    type: quote.markingType,
+                    displayName: quote.customMarkingDisplayName
+                )
 
                 ExtractionSourceBadge(source: quote.extractionSource)
 
@@ -135,8 +138,9 @@ private struct QuoteEditorSheet: View {
                 TextEditor(text: $text)
                     .font(.quoteBody)
                     .scrollContentBackground(.hidden)
-                    .frame(minHeight: 180)
-                    .fieldChrome(minHeight: 180)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 260)
+                    .fieldChrome()
                     .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteTextEditor)
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
@@ -221,9 +225,14 @@ struct ConfidenceBadge: View {
 /// Simple badge showing marking type from string (for review screen).
 struct MarkingTypeStringBadge: View {
     let type: String
+    let displayName: String?
+
+    private var label: String {
+        displayName ?? type.replacingOccurrences(of: "_", with: " ").capitalized
+    }
 
     var body: some View {
-        Text(type.replacingOccurrences(of: "_", with: " ").capitalized)
+        Text(label)
             .font(.caption2)
             .fontWeight(.medium)
             .foregroundStyle(Color.textSecondary)
@@ -245,6 +254,8 @@ struct EditableQuote: Identifiable, Equatable {
     var confidence: Double?
     var pageNumber: Int?
     var marginNote: String?
+    var customMarkingDefinitionID: UUID?
+    var customMarkingDisplayName: String?
 
     /// Whether this quote was added manually by the user
     var isManual: Bool
@@ -264,7 +275,9 @@ struct EditableQuote: Identifiable, Equatable {
         pageNumber: Int? = nil,
         marginNote: String? = nil,
         isManual: Bool = false,
-        extractionSource: QuoteExtractionSource? = nil
+        extractionSource: QuoteExtractionSource? = nil,
+        customMarkingDefinitionID: UUID? = nil,
+        customMarkingDisplayName: String? = nil
     ) {
         self.id = id
         self.pageId = pageId
@@ -273,6 +286,8 @@ struct EditableQuote: Identifiable, Equatable {
         self.confidence = confidence
         self.pageNumber = pageNumber
         self.marginNote = marginNote
+        self.customMarkingDefinitionID = customMarkingDefinitionID
+        self.customMarkingDisplayName = customMarkingDisplayName
         self.isManual = isManual
         self.extractionSource = extractionSource ?? (isManual ? .manual : .unknown)
         self.isModified = false
@@ -287,19 +302,22 @@ struct EditableQuote: Identifiable, Equatable {
         self.confidence = data.confidence
         self.pageNumber = data.pageNumber
         self.marginNote = data.marginNote
+        self.customMarkingDefinitionID = data.customMarkingDefinitionID
+        self.customMarkingDisplayName = data.customMarkingDisplayName
         self.isManual = false
         self.extractionSource = data.extractionSource
         self.isModified = false
     }
 
     /// Convert to ExtractedQuote for saving
-    func toExtractedQuote() -> ExtractedQuote {
+    func toExtractedQuote(customMarkingDefinition: MarkingDefinition? = nil) -> ExtractedQuote {
         ExtractedQuote(
             text: text,
             markingType: parseMarkingType(),
             confidence: isManual ? nil : confidence,
             pageNumber: pageNumber,
-            marginNote: marginNote
+            marginNote: marginNote,
+            customMarkingDefinition: customMarkingDefinition
         )
     }
 

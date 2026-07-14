@@ -51,13 +51,18 @@ struct OnDeviceQuoteExtractor: Sendable {
         let candidates = selector.selectCandidates(textLines: textLines, marks: marks)
 
         let quotes = candidates.map { candidate in
-            ExtractedQuoteData(
+            let customMarking = markings.customMarking(
+                forLocalMarkingFamily: candidate.markingType
+            )
+            return ExtractedQuoteData(
                 text: candidate.text,
                 pageNumber: nil,
                 marginNote: candidate.marginNote,
                 markingType: candidate.markingType.rawValue,
                 confidence: candidate.confidence,
-                extractionSource: .onDevice
+                extractionSource: .onDevice,
+                customMarkingDefinitionID: customMarking?.definitionID,
+                customMarkingDisplayName: customMarking?.name
             )
         }
 

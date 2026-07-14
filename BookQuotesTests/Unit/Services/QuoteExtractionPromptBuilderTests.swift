@@ -78,6 +78,72 @@ final class QuoteExtractionPromptBuilderTests: XCTestCase {
         XCTAssertFalse(prompt.contains("Marking 10"))
     }
 
+    func testResolvedModelMarkingRetainsCustomDefinitionIdentity() {
+        let definitionID = UUID()
+        let markings = [
+            QuoteExtractionPromptBuilder.MarkingPrompt(
+                definitionID: definitionID,
+                name: "Follow Up",
+                visualDescription: "Single underline under text",
+                meaning: "Revisit this passage",
+                isSystemDefault: false
+            )
+        ]
+        let result = QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "A model-selected quote.",
+                    pageNumber: nil,
+                    marginNote: nil,
+                    markingType: "follow_up",
+                    confidence: 0.9
+                )
+            ],
+            pageNumber: nil,
+            processingNotes: nil
+        )
+
+        let resolvedQuote = result.resolvingCustomMarkings(from: markings).quotes.first
+
+        XCTAssertEqual(resolvedQuote?.customMarkingDefinitionID, definitionID)
+        XCTAssertEqual(resolvedQuote?.customMarkingDisplayName, "Follow Up")
+    }
+
+    func testAmbiguousCustomMarkingsAreNotAssigned() {
+        let markings = [
+            QuoteExtractionPromptBuilder.MarkingPrompt(
+                definitionID: UUID(),
+                name: "Follow Up",
+                visualDescription: "Single underline under text",
+                meaning: "Revisit this passage",
+                isSystemDefault: false
+            ),
+            QuoteExtractionPromptBuilder.MarkingPrompt(
+                definitionID: UUID(),
+                name: "Follow-Up",
+                visualDescription: "Single underline under text",
+                meaning: "Keep this passage",
+                isSystemDefault: false
+            )
+        ]
+        let result = QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "An ambiguously marked quote.",
+                    pageNumber: nil,
+                    marginNote: nil,
+                    markingType: "follow_up",
+                    confidence: 0.9
+                )
+            ],
+            pageNumber: nil,
+            processingNotes: nil
+        )
+
+        XCTAssertNil(markings.customMarking(forLocalMarkingFamily: .underline))
+        XCTAssertNil(result.resolvingCustomMarkings(from: markings).quotes.first?.customMarkingDefinitionID)
+    }
+
     func testBuildPromptRequestsBestEffortMarkedTextWhenBoundariesAreUncertain() {
         let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: [])
             .lowercased()

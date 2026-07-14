@@ -77,8 +77,12 @@ struct CaptureQueueItemProcessor {
             throw QueueError.imageLoadFailed
         }
 
-        let markings = try fetchEnabledMarkingPrompts(in: context)
+        let markings = try fetchEnabledMarkingDefinitions(in: context)
+            .map(QuoteExtractionPromptBuilder.MarkingPrompt.init)
         let result = try await quoteExtractor.extractQuotes(from: image, markings: markings)
+        let definitionsByID = Dictionary(
+            uniqueKeysWithValues: try fetchEnabledMarkingDefinitions(in: context).map { ($0.id, $0) }
+        )
 
         guard let book = item.book else {
             throw QueueError.bookNotFound
@@ -105,7 +109,11 @@ struct CaptureQueueItemProcessor {
                 return existingQuote
             }
 
-            let extractedData = extractedQuote.toExtractedQuote()
+            let customMarkingDefinition = extractedQuote.customMarkingDefinitionID
+                .flatMap { definitionsByID[$0] }
+            let extractedData = extractedQuote.toExtractedQuote(
+                customMarkingDefinition: customMarkingDefinition
+            )
             let quote = Quote(
                 text: extractedQuote.text,
                 book: book,
@@ -114,6 +122,7 @@ struct CaptureQueueItemProcessor {
             quote.pageNumber = extractedQuote.pageNumber
             quote.marginNote = extractedQuote.marginNote
             quote.confidence = extractedQuote.confidence
+            quote.customMarkingDefinition = extractedData.customMarkingDefinition
             context.insert(quote)
             resolvedQuotes.append(quote)
             quotesByNormalizedText[normalizedQuote] = quote
@@ -154,15 +163,13 @@ struct CaptureQueueItemProcessor {
         }
     }
 
-    private func fetchEnabledMarkingPrompts(
+    private func fetchEnabledMarkingDefinitions(
         in context: ModelContext
-    ) throws -> [QuoteExtractionPromptBuilder.MarkingPrompt] {
+    ) throws -> [MarkingDefinition] {
         let descriptor = FetchDescriptor<MarkingDefinition>(
             predicate: #Predicate<MarkingDefinition> { $0.isEnabled }
         )
-        return try context.fetch(descriptor).map {
-            QuoteExtractionPromptBuilder.MarkingPrompt($0)
-        }
+        return try context.fetch(descriptor)
     }
 }
 

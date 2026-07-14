@@ -52,7 +52,7 @@ The pipeline should return the same quote-review data shape the app already expe
   - underline selects the OCR line immediately above or intersecting the underline;
   - margin line selects adjacent paragraph lines in the text column;
   - margin note text is captured separately from the quote body where possible.
-- [ ] User-defined `MarkingDefinition` records influence classification and display naming without requiring a prompt to a cloud model.
+- [x] User-defined `MarkingDefinition` records influence classification and display naming without requiring a prompt to a cloud model.
 - [ ] Unmarked page text is excluded from extracted quote candidates.
 - [ ] Multi-line marked passages are grouped into one quote candidate when line spacing and mark continuity indicate the same passage.
 - [ ] Candidate confidence is derived from OCR confidence, mark/text geometry quality, and grouping certainty.
@@ -161,6 +161,14 @@ None - can start immediately.
 - Added quote-grouping rules for separate underlined sections so a paragraph gap splits one marked page into multiple quote candidates.
 - Added vertical margin-line grouping so a broken margin stroke beside one paragraph produces one quote candidate.
 - Added vertical margin-line split coverage so two separated margin marks on one page produce two quote candidates.
+
+2026-07-15 custom-marking identity follow-up:
+
+- Added a safe marking-definition snapshot containing the local definition ID and whether it is a system default.
+- The deterministic on-device extractor now applies an enabled custom definition only when its visible mark family is unambiguous, retaining the reader-facing display name for review.
+- Model-assisted output is resolved only against validated, enabled local definitions after parsing; no model response can supply or select a SwiftData definition ID.
+- Cached capture results, extraction review, queued capture processing, and quote saving now preserve the resolved custom marking relationship.
+- The review editor now uses a fixed-height native text editor so its margin-note field remains visible on compact screens.
 
 ## Verification Results
 
@@ -272,6 +280,25 @@ Result:
 
 - Passed.
 - Runtime: `58.824` seconds.
+
+Custom-marking identity regression:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests \
+  -only-testing:BookQuotesTests/QuoteExtractionPromptBuilderTests \
+  -only-testing:BookQuotesTests/QuoteSaveDraftTests \
+  -only-testing:BookQuotesTests/ExtractionReviewQuoteStateTests \
+  -only-testing:BookQuotesTests/PageCaptureTests \
+  -only-testing:BookQuotesTests/CaptureQueueStoreTests \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests/testExtractionReview_DisplaysExtractedQuotes
+```
+
+Result:
+
+- Passed on 2026-07-15.
+- Runtime: `49.802` seconds.
+- The separate quote-editor typing UI test remains an iOS 26 simulator automation gap: the rendered `TextEditor` does not receive keyboard focus from a synthesized XCTest tap. It requires a physical-device/manual test before release.
 
 ## Residual Risk
 

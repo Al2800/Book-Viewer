@@ -94,7 +94,9 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
             throw ExtractionError.parsingError("No model-assisted extraction content")
         }
 
-        return try QuoteExtractionResult.parse(from: text).withExtractionSource(.modelAssisted)
+        return try QuoteExtractionResult.parse(from: text)
+            .resolvingCustomMarkings(from: markings)
+            .withExtractionSource(.modelAssisted)
     }
 
     private func handleHTTPResponse(_ response: HTTPURLResponse) throws {

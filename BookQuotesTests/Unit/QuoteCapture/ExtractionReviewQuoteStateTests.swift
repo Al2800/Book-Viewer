@@ -18,9 +18,11 @@ final class ExtractionReviewQuoteStateTests: XCTestCase {
                         text: "The obstacle is the way.",
                         pageNumber: nil,
                         marginNote: "starred",
-                        markingType: "underline",
-                        confidence: 0.91,
-                        extractionSource: .modelAssisted
+                    markingType: "underline",
+                    confidence: 0.91,
+                    extractionSource: .modelAssisted,
+                    customMarkingDefinitionID: UUID(uuidString: "D8FD4363-3572-4B46-8A7B-47680D4B3D76"),
+                    customMarkingDisplayName: "Follow Up"
                     )
                 ]
             ),
@@ -52,6 +54,7 @@ final class ExtractionReviewQuoteStateTests: XCTestCase {
         XCTAssertEqual(firstQuote?.confidence, 0.91)
         XCTAssertEqual(firstQuote?.isManual, false)
         XCTAssertEqual(firstQuote?.extractionSource, .modelAssisted)
+        XCTAssertEqual(firstQuote?.customMarkingDisplayName, "Follow Up")
 
         let secondQuote = state.quotes(for: secondPageId).first
         XCTAssertEqual(secondQuote?.pageNumber, 12)

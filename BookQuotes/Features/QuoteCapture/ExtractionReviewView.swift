@@ -59,6 +59,7 @@ struct ExtractionReviewView: View {
 
     @StateObject private var milestoneManager = MilestoneManager()
     @Query private var existingQuotes: [Quote]
+    @Query private var markingDefinitions: [MarkingDefinition]
 
     /// Completion handler called after successful save
     var onComplete: (() -> Void)?
@@ -370,7 +371,11 @@ struct ExtractionReviewView: View {
         guard !quoteState.editingQuotes.isEmpty else { return }
 
         let saveService = QuoteSaveService(modelContext: modelContext)
-        let extractedQuotes = quoteState.editingQuotes.map { $0.toExtractedQuote() }
+        let extractedQuotes = quoteState.editingQuotes.map { quote in
+            quote.toExtractedQuote(
+                customMarkingDefinition: customMarkingDefinition(for: quote)
+            )
+        }
         let checks = saveService.checkBatchForDuplicates(extractedQuotes, to: book)
 
         approvedQuotes = checks.filter { !$0.hasDuplicates }.map(\.extractedQuote)
@@ -464,6 +469,11 @@ struct ExtractionReviewView: View {
                 }
             }
         }
+    }
+
+    private func customMarkingDefinition(for quote: EditableQuote) -> MarkingDefinition? {
+        guard let definitionID = quote.customMarkingDefinitionID else { return nil }
+        return markingDefinitions.first { $0.id == definitionID }
     }
 }
 

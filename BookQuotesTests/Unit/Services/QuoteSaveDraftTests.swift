@@ -31,4 +31,33 @@ final class QuoteSaveDraftTests: XCTestCase {
         XCTAssertEqual(quote.marginNote, "Important idea")
         XCTAssertEqual(quote.sourceImageData, sourceImage)
     }
+
+    func testCustomMarkingDefinitionSurvivesReviewAndSave() throws {
+        let book = Book(title: "The Book", author: "The Author")
+        let customMarking = MarkingDefinition(
+            name: "Follow Up",
+            visualDescription: "Single underline under text",
+            meaning: "Revisit this passage"
+        )
+        let editableQuote = EditableQuote(
+            pageId: UUID(),
+            text: "A sufficiently long extracted quote with a custom marking.",
+            markingType: "underline",
+            customMarkingDefinitionID: customMarking.id,
+            customMarkingDisplayName: customMarking.name
+        )
+
+        let extractedQuote = editableQuote.toExtractedQuote(
+            customMarkingDefinition: customMarking
+        )
+        let quote = try QuoteSaveDraft(
+            extractedQuote: extractedQuote,
+            book: book,
+            sourceImage: nil
+        )
+        .makeQuote()
+
+        XCTAssertEqual(quote.customMarkingDefinition?.id, customMarking.id)
+        XCTAssertEqual(quote.markingDisplayName, "Follow Up")
+    }
 }
