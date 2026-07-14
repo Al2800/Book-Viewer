@@ -2,14 +2,15 @@
 
 ## Revision Assessed
 
-- Git revision: `b52c907` (`fix(ui): adapt library and extraction review layouts`).
+- Baseline Git revision: `b52c907` (`fix(ui): adapt library and extraction review layouts`).
+- Latest locally verified code revision: `147a198` (`fix(capture): stabilize quote editor focus`).
 - The project build number is still `38`; the latest TestFlight build 38 predates this revision.
   A new signed archive and upload, with the build number incremented, are required after the
   remaining release gates pass.
 
 ## Local Evidence
 
-- Release iOS build completed successfully with:
+- Release iOS build completed successfully after `147a198` with:
 
   ```bash
   xcodebuild build -project BookQuotes.xcodeproj -scheme BookQuotes \
@@ -36,9 +37,10 @@
 - The direct quote-editor typing test also passed on iPad Air 11-inch (M4), iOS 26.5: 1 test,
   0 failures, 0 skips in 90.072 seconds. Result bundle:
   `/tmp/bookquotes-quote-editor-ipad-2026-07-15.xcresult`.
-- The full app-unit command returned success, but Xcode wrote an incomplete result bundle without
-  `Info.plist`; do not use that rerun as countable release evidence. Re-run the full app-unit gate
-  and retain a readable `.xcresult` before archiving.
+- The full app-unit gate passed on 2026-07-15 with a complete, readable result bundle:
+  615 tests passed, 0 failed, and 1 skipped in 242.649 seconds on iPhone 17. The skip is the
+  documented local-only real-book-photo fixture (`testRealBookFixtureExtractsUnderlinedPassageWhenProvided`).
+  Result bundle: `/tmp/BookQuotes-app-unit-2026-07-15.xcresult` (`Info.plist` verified present).
 - Backend tests and typecheck passed: 36 tests, 0 failures.
 - Production Worker dependency audit reported no known vulnerabilities.
 - A tracked-file secret-pattern scan found no credential material. The only match is the expected
