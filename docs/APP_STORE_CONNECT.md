@@ -72,6 +72,17 @@ the requested ISBN or title/author lookup query, never the BookQuotes account id
 library. The configured remote providers are Hugging Face Inference for quote pages and Google
 Gemini for covers; Remote AI Processing is optional and can be revoked in Settings.
 
+## App Review Notes
+
+No account is required to use the app's core on-device features. Reviewers can choose
+**Continue Without an Account** during onboarding, then add and manage books, capture marked
+pages with on-device OCR, search the local library, export quotes, and change Settings.
+
+Apple Sign In is requested only when the reviewer chooses an account-only feature: remote AI
+processing or subscription purchase/restoration. Remote AI processing also requires a separate,
+revocable image-sharing consent. Books, quotes, and captured images remain local to the device;
+signing out or deleting a server account does not delete the local library.
+
 ## Latest TestFlight Verification
 
 Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect API:

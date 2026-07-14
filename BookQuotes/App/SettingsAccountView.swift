@@ -120,13 +120,13 @@ struct AccountView: View {
                     .font(.system(size: 50))
                     .foregroundStyle(.secondary)
 
-                Text("Sign In Required")
+                Text("Optional Account")
                     .font(.headline)
 
                 Text(
                     subscriptionsEnabled
-                        ? "Sign in with Apple to start your 7-day free trial and manage your subscription. Your library stays stored on this device."
-                        : "Sign in with Apple to enable AI extraction. Your library stays stored on this device."
+                        ? "Your library, search, exports, and on-device quote extraction work without an account. Sign in with Apple only to use remote AI processing or manage a subscription."
+                        : "Your library, search, exports, and on-device quote extraction work without an account. Sign in with Apple only to use remote AI processing."
                 )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

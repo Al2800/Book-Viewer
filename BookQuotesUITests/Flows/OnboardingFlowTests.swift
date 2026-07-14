@@ -7,7 +7,7 @@ final class OnboardingFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        ["--reset-onboarding", "--skip-auth"]
+        ["--reset-onboarding", "--reset-auth", "--skip-auth"]
     }
 
     override func waitForAppReady() {
@@ -230,6 +230,54 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.success("Start Capturing dismisses onboarding")
     }
 
+    func testOnboarding_LocalOnlyPathKeepsSettingsAndExportAvailable() {
+        logger.step(1, "Completing onboarding without an account")
+        completeLocalOnlyOnboarding()
+
+        logger.step(2, "Checking account messaging is only shown when requested")
+        XCTAssertTrue(tapTab(.settings), "Settings should be available without an account")
+        let accountRow = app.buttons[AccessibilityIdentifiers.Settings.accountRow]
+        XCTAssertTrue(accountRow.waitForExistence(timeout: 5))
+        accountRow.tap()
+        XCTAssertTrue(waitForText("Optional Account", timeout: 5))
+        XCTAssertTrue(
+            waitForText("library, search, exports, and on-device quote extraction work without an account", timeout: 3),
+            "The account screen should explain that local features do not require sign-in"
+        )
+        tapBackButton()
+
+        logger.step(3, "Opening export without an account")
+        let exportButton = app.buttons[AccessibilityIdentifiers.Settings.exportQuotesButton]
+        for _ in 0..<6 where !exportButton.exists {
+            app.swipeUp()
+        }
+        XCTAssertTrue(exportButton.exists, "Export should remain available without an account")
+        exportButton.tap()
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Export.formatPicker].waitForExistence(timeout: 5)
+                || app.staticTexts["No Quotes"].waitForExistence(timeout: 1)
+        )
+
+        logger.success("Local-only onboarding keeps Settings and export available")
+    }
+
+    func testOnboarding_LocalOnlyPathOpensManualBookEntry() {
+        logger.step(1, "Completing onboarding without an account")
+        completeLocalOnlyOnboarding()
+
+        logger.step(2, "Opening manual book entry without an account")
+        XCTAssertTrue(tapTab(.capture), "Capture should be available without an account")
+        let coverOption = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
+        XCTAssertTrue(coverOption.waitForExistence(timeout: 5))
+        coverOption.tap()
+        let manualEntry = app.buttons[AccessibilityIdentifiers.Capture.manualEntryButton]
+        XCTAssertTrue(manualEntry.waitForExistence(timeout: 5))
+        manualEntry.tap()
+        XCTAssertTrue(app.textFields[AccessibilityIdentifiers.BookEdit.titleField].waitForExistence(timeout: 5))
+
+        logger.success("Local-only onboarding opens manual book entry")
+    }
+
     func testOnboarding_RemoteAIConsentCanBeEnabledAndRevokedInSettings() {
         navigateToCompletionStep()
         app.buttons["Start Capturing"].tap()
@@ -287,6 +335,14 @@ final class OnboardingFlowTests: BaseUITestCase {
 
         let signInHeader = app.staticTexts["Sign In or Continue Locally"]
         XCTAssertTrue(signInHeader.waitForExistence(timeout: 5), "Skip should open the sign-in step")
+    }
+
+    private func completeLocalOnlyOnboarding() {
+        navigateToCompletionStep()
+        let startButton = app.buttons["Start Capturing"]
+        XCTAssertTrue(startButton.waitForExistence(timeout: 5))
+        startButton.tap()
+        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
     }
 
     private func navigateToMarkingSetup() {

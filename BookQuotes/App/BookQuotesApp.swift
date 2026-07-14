@@ -51,6 +51,9 @@ struct BookQuotesApp: App {
         // Use in-memory storage for UI tests to avoid mutating real user data
         let isUITesting = UITestConfiguration.isUITesting
         if isUITesting {
+            if UITestConfiguration.shouldResetAuthentication {
+                KeychainService.shared.clearAllCredentials()
+            }
             if UITestConfiguration.shouldResetOnboarding {
                 UserDefaults.standard.set(false, forKey: "hasCompletedOnboarding")
                 AIProcessingConsentStore.shared.revoke()

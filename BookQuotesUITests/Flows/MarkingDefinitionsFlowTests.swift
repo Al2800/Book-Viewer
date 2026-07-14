@@ -33,7 +33,7 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.accountRow))
         assertNavigationTitle("Account", timeout: 5)
         XCTAssertTrue(
-            waitForText("Sign In Required", timeout: 3) ||
+            waitForText("Optional Account", timeout: 3) ||
             waitForText("Sign Out", timeout: 1) ||
             waitForText("Unlock Premium", timeout: 1),
             "Account destination should show account or subscription content"

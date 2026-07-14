@@ -67,6 +67,12 @@ enum UITestConfiguration {
         hasArgument("--reset-onboarding")
     }
 
+    /// Whether to clear any persisted authentication credentials before a UI test.
+    /// Set via `--reset-auth` launch argument.
+    static var shouldResetAuthentication: Bool {
+        hasArgument("--reset-auth")
+    }
+
     /// Whether to allow skipping authentication during onboarding.
     /// Set via `--skip-auth` launch argument.
     static var shouldSkipAuth: Bool {
@@ -174,6 +180,7 @@ enum UITestConfiguration {
         if shouldPreloadTestBook { flags.append("Test book: preloaded") }
         if shouldStartWithEmptyLibrary { flags.append("Library: empty") }
         if shouldResetOnboarding { flags.append("Onboarding: reset") }
+        if shouldResetAuthentication { flags.append("Authentication: reset") }
         if shouldSkipAuth { flags.append("Auth: skipped") }
         if shouldMockCamera { flags.append("Camera: mocked") }
         if shouldMockMultipleQuotes { flags.append("Gemini: multiple quotes") }

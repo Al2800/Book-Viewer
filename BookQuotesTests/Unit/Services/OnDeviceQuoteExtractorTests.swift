@@ -361,6 +361,36 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(local.callCount, 1)
     }
 
+    func testQuoteExtractionPipelineFallsBackToLocalOCRWhenRemoteRequiresSignIn() async throws {
+        let local = SpyQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "local quote while signed out",
+                    pageNumber: nil,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.72,
+                    extractionSource: .onDevice
+                )
+            ],
+            pageNumber: nil,
+            processingNotes: "local OCR"
+        ))
+        let remote = SpyQuoteExtractor(error: ExtractionError.authenticationRequired)
+        let extractor = QuoteExtractionPipeline(localExtractor: local, remoteExtractor: remote)
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertEqual(result.quotes.first?.text, "local quote while signed out")
+        XCTAssertEqual(result.quotes.first?.extractionSource, .onDevice)
+        XCTAssertEqual(result.fallbackReason, .remoteAuthenticationRequired)
+        XCTAssertEqual(remote.callCount, 1)
+        XCTAssertEqual(local.callCount, 1)
+    }
+
     func testQuoteExtractionPipelineShowsFallbackWhenRemoteReturnsNoQuotes() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [

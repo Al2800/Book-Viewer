@@ -109,7 +109,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `097-offline-capture-queue-and-draft-integrity.md` - in_progress
 - `098-real-library-backup-and-restore.md` - closed
 - `099-account-deletion-session-revocation.md` - open
-- `100-optional-sign-in-and-local-mode.md` - open
+- `100-optional-sign-in-and-local-mode.md` - closed
 - `101-signed-out-subscription-purchase-gating.md` - open
 - `102-atomic-extraction-rate-limits.md` - in_progress
 - `103-ai-prompt-output-and-provenance-validation.md` - closed
