@@ -81,6 +81,7 @@ struct SettingsView: View {
                             title: AppReleaseConfiguration.subscriptionsEnabled ? "Account & Subscription" : "Account"
                         )
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.accountRow)
                 }
 
                 SectionCard(title: "Capture") {
@@ -152,6 +153,7 @@ struct SettingsView: View {
                             title: "Storage & Export"
                         )
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.storageAndExportRow)
                 }
 
                 SectionCard(title: "About") {
@@ -161,6 +163,7 @@ struct SettingsView: View {
                             title: "About BookQuotes"
                         )
                     }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.aboutRow)
 
                     Button {
                         presentedSheet = .legalDocument(.privacyPolicy)

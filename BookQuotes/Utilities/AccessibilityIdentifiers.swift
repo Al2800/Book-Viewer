@@ -350,7 +350,7 @@ enum AccessibilityIdentifiers {
         /// Delete book button
         static let deleteButton = "book_detail_delete_button"
 
-        /// Status picker
+        /// Reading status picker in the book editor.
         static let statusPicker = "book_detail_status_picker"
     }
 
@@ -397,6 +397,15 @@ enum AccessibilityIdentifiers {
         /// Marking definitions navigation row
         static let markingDefinitionsRow = "settings_marking_definitions_row"
 
+        /// Account navigation row
+        static let accountRow = "settings_account_row"
+
+        /// Storage and export navigation row
+        static let storageAndExportRow = "settings_storage_and_export_row"
+
+        /// About navigation row
+        static let aboutRow = "settings_about_row"
+
         /// Remote AI processing settings destination.
         static let remoteAIProcessingRow = "settings_remote_ai_processing_row"
 
@@ -434,6 +443,7 @@ enum AccessibilityIdentifiers {
         static let meaningField = "marking_editor_meaning_field"
         static let saveButton = "marking_editor_save_button"
         static let cancelButton = "marking_editor_cancel_button"
+        static let keyboardActionButton = "marking_editor_keyboard_action_button"
     }
 
     // MARK: - Tabs

@@ -211,6 +211,7 @@ struct BookEditReadingStatusSection: View {
                 }
             }
             .pickerStyle(.segmented)
+            .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.statusPicker)
         }
     }
 }

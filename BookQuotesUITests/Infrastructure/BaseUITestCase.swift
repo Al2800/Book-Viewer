@@ -97,7 +97,6 @@ class BaseUITestCase: XCTestCase {
         if !app.launchArguments.contains("--app-store-media") {
             sweepSpringboardAlerts()
         }
-        app.tap()
 
         // Wait for app to be ready
         waitForAppReady()
@@ -429,13 +428,13 @@ class BaseUITestCase: XCTestCase {
     }
 
     func tabButton(_ tab: UITestTab) -> XCUIElement {
-        let byIdentifier = app.tabBars.buttons[tab.identifier]
+        let byIdentifier = app.tabBars.buttons.matching(identifier: tab.identifier).firstMatch
         // Prefer the visible, tappable element. Some tab bar items expose an accessibilityIdentifier
         // on a non-hittable subview, which can yield a valid query with an invalid hit point.
         if byIdentifier.exists && byIdentifier.isHittable {
             return byIdentifier
         }
-        return app.tabBars.buttons[tab.label]
+        return app.tabBars.buttons.matching(NSPredicate(format: "label == %@", tab.label)).firstMatch
     }
 
     @discardableResult
@@ -445,10 +444,10 @@ class BaseUITestCase: XCTestCase {
         // than `.tap()` when isHittable is false on SwiftUI elements.
 
         let candidates: [XCUIElement] = [
-            app.tabBars.buttons[tab.identifier],
-            app.buttons[tab.identifier],
-            app.tabBars.buttons[tab.label],
-            app.buttons[tab.label]
+            app.tabBars.buttons.matching(identifier: tab.identifier).firstMatch,
+            app.buttons.matching(identifier: tab.identifier).firstMatch,
+            app.tabBars.buttons.matching(NSPredicate(format: "label == %@", tab.label)).firstMatch,
+            app.buttons.matching(NSPredicate(format: "label == %@", tab.label)).firstMatch
         ]
 
         for element in candidates {
@@ -482,8 +481,8 @@ class BaseUITestCase: XCTestCase {
 	    /// Dismiss keyboard if visible.
 	    func dismissKeyboard() {
 	        if app.keyboards.firstMatch.exists {
-	            // Try tapping outside
-	            app.tap()
+	            // Tap the navigation bar rather than the screen centre, which can be an active field.
+	            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
 
             // If still visible, try Done/Return
             if app.keyboards.firstMatch.exists {
@@ -502,10 +501,14 @@ class BaseUITestCase: XCTestCase {
 	    /// Tap the keyboard "Next" button if available.
 	    @discardableResult
 	    func tapKeyboardNextIfPresent() -> Bool {
-	        let next = app.keyboards.buttons["Next"]
-	        guard next.exists, next.isHittable else { return false }
-	        next.tap()
-	        return true
+	        for label in ["Next", "next", "Next:"] {
+	            let next = app.keyboards.buttons[label]
+	            if next.exists, next.isHittable {
+	                next.tap()
+	                return true
+	            }
+	        }
+        return false
 	    }
 
 	    /// Type into whichever control currently owns keyboard focus (no element tapping).
@@ -803,6 +806,9 @@ enum AccessibilityIdentifiers {
         static let restorePurchasesButton = "settings_restore_purchases"
         static let manageSubscriptionButton = "settings_manage_subscription"
         static let markingDefinitionsRow = "settings_marking_definitions_row"
+        static let accountRow = "settings_account_row"
+        static let storageAndExportRow = "settings_storage_and_export_row"
+        static let aboutRow = "settings_about_row"
         static let remoteAIProcessingRow = "settings_remote_ai_processing_row"
         static let remoteAIProcessingToggle = "settings_remote_ai_processing_toggle"
         static let exportQuotesButton = "settings_export_quotes_button"
@@ -822,6 +828,7 @@ enum AccessibilityIdentifiers {
         static let meaningField = "marking_editor_meaning_field"
         static let saveButton = "marking_editor_save_button"
         static let cancelButton = "marking_editor_cancel_button"
+        static let keyboardActionButton = "marking_editor_keyboard_action_button"
     }
 
     enum Tabs {

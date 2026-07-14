@@ -30,7 +30,7 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
 
     func testSettingsRoot_NavigatesToExtractedDestinationsAndLegalSheets() {
         logger.step(1, "Opening Account destination")
-        XCTAssertTrue(tapTextByScrolling(["Account & Subscription", "Manage sign-in and account access"]))
+        XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.accountRow))
         assertNavigationTitle("Account", timeout: 5)
         XCTAssertTrue(
             waitForText("Sign In Required", timeout: 3) ||
@@ -41,15 +41,18 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         tapBackButton()
         assertNavigationTitle("Settings", timeout: 5)
 
-        logger.step(2, "Opening Storage & Backup destination")
-        XCTAssertTrue(tapTextByScrolling(["Storage & Backup"]))
-        assertNavigationTitle("Storage & Backup", timeout: 5)
-        XCTAssertTrue(waitForText("Storage Usage", timeout: 3), "Storage screen should show storage usage")
+        logger.step(2, "Opening Storage & Export destination")
+        XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.storageAndExportRow))
+        assertNavigationTitle("Storage & Export", timeout: 5)
+        XCTAssertTrue(
+            app.buttons["Clear Image Cache"].waitForExistence(timeout: 3),
+            "Storage screen should expose cache management"
+        )
         tapBackButton()
         assertNavigationTitle("Settings", timeout: 5)
 
         logger.step(3, "Opening About destination")
-        XCTAssertTrue(tapTextByScrolling(["About BookQuotes"]))
+        XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.aboutRow))
         assertNavigationTitle("About", timeout: 5)
         XCTAssertTrue(waitForText("BookQuotes", timeout: 3), "About screen should show app name")
         tapBackButton()
@@ -108,26 +111,29 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         addButton.tap()
 
         logger.step(3, "Filling required fields")
-        let name = "UITest Wavy \(Int(Date().timeIntervalSince1970))"
+        let name = "UITest Marking \(Int(Date().timeIntervalSince1970))"
         let visual = "Wavy or squiggly line under the text"
         let meaning = "I disagree with this statement"
 
         typeIntoField(identifier: AccessibilityIdentifiers.MarkingEditor.nameField, text: name, dismissKeyboardAfter: false)
-        XCTAssertTrue(tapKeyboardAdvanceIfPresent(), "Keyboard should advance from name to visual description")
+        advanceMarkingEditorField()
+        XCTAssertTrue(
+            app.textFields[AccessibilityIdentifiers.MarkingEditor.visualDescriptionField].waitForExistence(timeout: 2),
+            "Next should focus the visual description field"
+        )
         typeTextIntoFocusedField(visual, timeout: 2, dismissKeyboardAfter: false)
-        XCTAssertTrue(tapKeyboardAdvanceIfPresent(), "Keyboard should advance from visual description to meaning")
+        advanceMarkingEditorField()
+        XCTAssertTrue(
+            app.textFields[AccessibilityIdentifiers.MarkingEditor.meaningField].waitForExistence(timeout: 2),
+            "Next should focus the meaning field"
+        )
         typeTextIntoFocusedField(meaning, timeout: 2)
 
         logger.step(4, "Saving new marking")
         let saveButton = app.buttons[AccessibilityIdentifiers.MarkingEditor.saveButton]
         XCTAssertTrue(saveButton.waitForExistence(timeout: 3), "Save button should exist")
-        // If it's not hittable due to disabled state, the taps below will fail; the field typing above
-        // should enable it.
-        if saveButton.isHittable {
-            saveButton.tap()
-        } else {
-            saveButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        }
+        XCTAssertTrue(saveButton.isEnabled, "Save should enable after all required fields are completed")
+        saveButton.tap()
 
         logger.step(5, "Verifying new marking appears in list")
         assertNavigationTitle("Marking Styles", timeout: 3)
@@ -158,6 +164,17 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         // Verify the destination loaded.
         let list = app.descendants(matching: .any).matching(identifier: AccessibilityIdentifiers.MarkingDefinitions.listView).firstMatch
         XCTAssertTrue(list.waitForExistence(timeout: 5), "Marking Definitions list should be visible")
+    }
+
+    private func tapSettingsRow(_ identifier: String) -> Bool {
+        let row = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+        return tapElementByScrolling(row)
+    }
+
+    private func advanceMarkingEditorField() {
+        let keyboardAction = app.buttons[AccessibilityIdentifiers.MarkingEditor.keyboardActionButton]
+        XCTAssertTrue(keyboardAction.waitForExistence(timeout: 2), "Keyboard action should be available")
+        keyboardAction.tap()
     }
 
     private func typeIntoField(identifier: String, text: String, dismissKeyboardAfter: Bool = true) {

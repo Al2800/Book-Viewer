@@ -296,20 +296,33 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         logger.step(1, "Opening existing book")
         openFirstBook()
 
-        logger.step(2, "Finding reading status picker")
-        let statusPicker = app.buttons[AccessibilityIdentifiers.BookDetail.statusPicker]
-        if statusPicker.waitForExistence(timeout: 3) {
-            statusPicker.tap()
+        logger.step(2, "Opening the book editor")
+        openBookEditor()
 
-            logger.step(3, "Selecting new status")
-            let finishedOption = app.buttons["Finished"]
-            if finishedOption.waitForExistence(timeout: 2) {
-                finishedOption.tap()
-                logger.success("Reading status changed")
-            }
-        } else {
-            logger.info("Status picker not found on book detail")
-        }
+        logger.step(3, "Selecting Finished status")
+        let statusPicker = findReadingStatusPicker()
+        XCTAssertTrue(statusPicker.exists, "Reading status picker should be visible in the book editor")
+
+        let finishedOption = statusPicker.buttons["Finished"]
+        XCTAssertTrue(finishedOption.waitForExistence(timeout: 3), "Finished status should be available")
+        finishedOption.tap()
+        XCTAssertTrue(finishedOption.isSelected, "Finished status should be selected")
+
+        logger.step(4, "Saving the status change")
+        tapConfirmationButton()
+        XCTAssertTrue(
+            app.staticTexts["Quotes"].waitForExistence(timeout: 5),
+            "Saving should return to the book detail screen"
+        )
+
+        logger.step(5, "Reopening the editor to verify persistence")
+        openBookEditor()
+        let persistedStatusPicker = findReadingStatusPicker()
+        let persistedFinishedOption = persistedStatusPicker.buttons["Finished"]
+        XCTAssertTrue(persistedFinishedOption.waitForExistence(timeout: 3), "Finished status should remain available")
+        XCTAssertTrue(persistedFinishedOption.isSelected, "Finished status should persist after saving")
+
+        logger.success("Reading status changed and persisted")
     }
 
     // MARK: - Cover Image Tests
@@ -438,6 +451,27 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             return navButtons.element(boundBy: navButtons.count - 1)
         }
         return navButtons.firstMatch
+    }
+
+    private func openBookEditor() {
+        let menuButton = findMoreMenuButton()
+        XCTAssertTrue(menuButton.waitForExistence(timeout: 3), "Menu button should exist")
+        menuButton.tap()
+
+        let editOption = app.buttons["Edit"]
+        XCTAssertTrue(editOption.waitForExistence(timeout: 3), "Edit option should be available")
+        editOption.tap()
+
+        XCTAssertTrue(app.navigationBars["Edit Book"].waitForExistence(timeout: 3), "Edit form should open")
+    }
+
+    private func findReadingStatusPicker() -> XCUIElement {
+        let picker = app.segmentedControls[AccessibilityIdentifiers.BookDetail.statusPicker]
+        for _ in 0..<6 {
+            if picker.exists { return picker }
+            app.swipeUp()
+        }
+        return picker
     }
 
     private func findConfirmationButton(timeout: TimeInterval = 2) -> XCUIElement? {

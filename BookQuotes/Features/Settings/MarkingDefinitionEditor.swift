@@ -91,6 +91,14 @@ struct MarkingDefinitionEditor: View {
                     .disabled(!isValid)
                     .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.saveButton)
                 }
+
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button(keyboardActionTitle) {
+                        advanceFocusedField()
+                    }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.keyboardActionButton)
+                }
             }
             .onAppear {
                 loadExistingData()
@@ -146,9 +154,6 @@ struct MarkingDefinitionEditor: View {
                 .onSubmit {
                     focusedField = .visualDescription
                 }
-                .onChange(of: name) { _, newValue in
-                    name = QuoteExtractionPromptBuilder.sanitizedName(newValue)
-                }
                 .fieldChrome()
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.nameField)
         }
@@ -164,9 +169,6 @@ struct MarkingDefinitionEditor: View {
                 .focused($focusedField, equals: .visualDescription)
                 .onSubmit {
                     focusedField = .meaning
-                }
-                .onChange(of: visualDescription) { _, newValue in
-                    visualDescription = QuoteExtractionPromptBuilder.sanitizedVisualDescription(newValue)
                 }
                 .fieldChrome(minHeight: 72)
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.visualDescriptionField)
@@ -187,9 +189,6 @@ struct MarkingDefinitionEditor: View {
                 .focused($focusedField, equals: .meaning)
                 .onSubmit {
                     focusedField = nil
-                }
-                .onChange(of: meaning) { _, newValue in
-                    meaning = QuoteExtractionPromptBuilder.sanitizedMeaning(newValue)
                 }
                 .fieldChrome(minHeight: 72)
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.meaningField)
@@ -293,6 +292,21 @@ struct MarkingDefinitionEditor: View {
         !QuoteExtractionPromptBuilder.sanitizedName(name).isEmpty &&
         !QuoteExtractionPromptBuilder.sanitizedVisualDescription(visualDescription).isEmpty &&
         !QuoteExtractionPromptBuilder.sanitizedMeaning(meaning).isEmpty
+    }
+
+    private var keyboardActionTitle: String {
+        focusedField == .meaning ? "Done" : "Next"
+    }
+
+    private func advanceFocusedField() {
+        switch focusedField {
+        case .name:
+            focusedField = .visualDescription
+        case .visualDescription:
+            focusedField = .meaning
+        case .meaning, nil:
+            focusedField = nil
+        }
     }
 
     // MARK: - Actions
