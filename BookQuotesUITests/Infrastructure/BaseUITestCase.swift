@@ -480,6 +480,12 @@ class BaseUITestCase: XCTestCase {
 
 	    /// Dismiss keyboard if visible.
 	    func dismissKeyboard() {
+	        let bookEditDone = app.buttons[AccessibilityIdentifiers.BookEdit.keyboardDoneButton]
+	        if bookEditDone.exists && bookEditDone.isHittable {
+	            bookEditDone.tap()
+	            return
+	        }
+
 	        if app.keyboards.firstMatch.exists {
 	            // Tap the navigation bar rather than the screen centre, which can be an active field.
 	            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
@@ -534,17 +540,19 @@ class BaseUITestCase: XCTestCase {
 		            logger.warning("Typing failed. element missing label=\(element.label)")
 		            return false
 		        }
-		        for _ in 0..<2 where !element.isHittable {
+
+		        for _ in 0..<6 where !element.isHittable {
 		            app.swipeUp()
+		        }
+
+		        guard element.isHittable else {
+		            logger.warning("Typing failed. element not hittable label=\(element.label)")
+		            return false
 		        }
 
 		        let attempts = 4
 		        for _ in 0..<attempts {
-		            if element.isHittable {
-		                element.tap()
-		            } else {
-		                element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-		            }
+		            element.tap()
 
 		            if !app.keyboards.firstMatch.waitForExistence(timeout: 1) {
 		                element.doubleTap()
@@ -664,6 +672,7 @@ enum AccessibilityIdentifiers {
         static let filterButton = "library_filter_button"
         static let sortMenu = "library_sort_menu"
         static let viewModeToggle = "library_view_mode_toggle"
+        static let dismissSearchButton = "library_dismiss_search_button"
     }
 
     enum Search {
@@ -709,6 +718,8 @@ enum AccessibilityIdentifiers {
         static let publisherField = "book_edit_publisher_field"
         static let cancelButton = "book_edit_cancel_button"
         static let saveButton = "book_edit_save_button"
+        static let formScrollView = "book_edit_form_scroll_view"
+        static let keyboardDoneButton = "book_edit_keyboard_done_button"
     }
 
     enum Capture {

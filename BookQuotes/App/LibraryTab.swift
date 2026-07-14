@@ -261,6 +261,10 @@ struct LibraryView: View {
                     },
                     onScopeChange: { newScope in
                         searchScope = newScope
+                    },
+                    onDismiss: {
+                        searchText = ""
+                        isSearchActive = false
                     }
                 )
             } else {

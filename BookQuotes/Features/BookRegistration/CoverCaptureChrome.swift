@@ -114,9 +114,10 @@ struct CoverCaptureBottomControls: View {
                     Text(captureMode == .photo ? "Enter details manually" : "Enter ISBN manually")
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .glassButton()
+                .contentShape(Rectangle())
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.manualEntryButton)
             }
         }

@@ -78,10 +78,10 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         logger.success("Manual book entry completed successfully")
     }
 
-	    func testManualEntry_CreateBook_WithAllFields() {
-	        executionTimeAllowance = 120
-	        logger.step(1, "Opening add book form")
-	        openAddBookForm()
+    func testManualEntry_CreateBook_WithAllFields() {
+        executionTimeAllowance = 120
+        logger.step(1, "Opening add book form")
+        openAddBookForm()
 
         logger.step(2, "Filling required fields")
         let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField].exists
@@ -89,37 +89,31 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             : app.textFields["Title"]
         typeText("Complete Test Book", into: titleField, dismissKeyboardAfter: false)
 
-	        logger.step(3, "Filling optional fields")
-	
-	        let subtitleField = app.textFields[AccessibilityIdentifiers.BookEdit.subtitleField].exists
-	            ? app.textFields[AccessibilityIdentifiers.BookEdit.subtitleField]
-	            : app.textFields["Subtitle"]
-	        if subtitleField.exists {
-	            if !tryTypeText("A Subtitle for Testing", into: subtitleField) {
-	                logger.warning("Optional field typing failed: subtitle")
-	            }
-	        }
+        logger.step(3, "Filling optional fields")
 
-        // Scroll to see more fields
-        app.swipeUp()
+        let subtitleField = app.textFields[AccessibilityIdentifiers.BookEdit.subtitleField].exists
+            ? app.textFields[AccessibilityIdentifiers.BookEdit.subtitleField]
+            : app.textFields["Subtitle"]
+        XCTAssertTrue(
+            typeTextByScrolling("A Subtitle for Testing", into: subtitleField),
+            "Subtitle field should accept text"
+        )
 
-	        let isbnField = app.textFields[AccessibilityIdentifiers.BookEdit.isbnField].exists
-	            ? app.textFields[AccessibilityIdentifiers.BookEdit.isbnField]
-	            : app.textFields["ISBN"]
-	        if isbnField.exists {
-	            if !tryTypeText("9780123456789", into: isbnField) {
-	                logger.warning("Optional field typing failed: ISBN")
-	            }
-	        }
+        let isbnField = app.textFields[AccessibilityIdentifiers.BookEdit.isbnField].exists
+            ? app.textFields[AccessibilityIdentifiers.BookEdit.isbnField]
+            : app.textFields["ISBN"]
+        XCTAssertTrue(
+            typeTextByScrolling("9780123456789", into: isbnField),
+            "ISBN field should accept text"
+        )
 
-	        let publisherField = app.textFields[AccessibilityIdentifiers.BookEdit.publisherField].exists
-	            ? app.textFields[AccessibilityIdentifiers.BookEdit.publisherField]
-	            : app.textFields["Publisher"]
-	        if publisherField.exists {
-	            if !tryTypeText("Test Publisher", into: publisherField) {
-	                logger.warning("Optional field typing failed: publisher")
-	            }
-	        }
+        let publisherField = app.textFields[AccessibilityIdentifiers.BookEdit.publisherField].exists
+            ? app.textFields[AccessibilityIdentifiers.BookEdit.publisherField]
+            : app.textFields["Publisher"]
+        XCTAssertTrue(
+            typeTextByScrolling("Test Publisher", into: publisherField),
+            "Publisher field should accept text"
+        )
 
         logger.step(4, "Saving book")
         tapConfirmationButton()
@@ -394,6 +388,18 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             return
         }
         _ = app.textFields["Title"].waitForExistence(timeout: 3)
+    }
+
+    private func typeTextByScrolling(_ text: String, into field: XCUIElement) -> Bool {
+        guard field.waitForExistence(timeout: 3) else { return false }
+
+        let form = app.scrollViews[AccessibilityIdentifiers.BookEdit.formScrollView]
+        for _ in 0..<6 where !field.isHittable {
+            guard form.exists else { return false }
+            form.swipeUp()
+        }
+
+        return tryTypeText(text, into: field)
     }
 
     private func openFirstBook() {

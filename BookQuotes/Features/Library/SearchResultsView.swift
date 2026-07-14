@@ -32,6 +32,9 @@ struct SearchResultsView: View {
     /// Action when user wants to change search scope
     var onScopeChange: ((SearchScope) -> Void)?
 
+    /// Action when the user closes the active search presentation
+    var onDismiss: (() -> Void)?
+
     // MARK: - Animation State
 
     @State private var hasAppeared = false
@@ -77,6 +80,9 @@ struct SearchResultsView: View {
         }
         .animation(shouldDisableAnimations ? .none : .smoothSpring, value: searchService.isSearching)
         .animation(shouldDisableAnimations ? .none : .smoothSpring, value: searchService.results.isEmpty)
+        .safeAreaInset(edge: .top, alignment: .trailing, spacing: 0) {
+            dismissSearchButton
+        }
         .onChange(of: searchText) { _, newValue in
             // Clear any existing suggestion when query changes
             didYouMeanSuggestion = nil
@@ -134,6 +140,21 @@ struct SearchResultsView: View {
                 hasAppeared = true
             }
         }
+    }
+
+    private var dismissSearchButton: some View {
+        Button {
+            HapticManager.light()
+            onDismiss?()
+        } label: {
+            Image(systemName: "xmark.circle.fill")
+                .font(.title3)
+                .foregroundStyle(Color.textSecondary)
+                .frame(width: 44, height: 44)
+        }
+        .accessibilityLabel("Close search")
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.dismissSearchButton)
+        .padding(.trailing, Spacing.md)
     }
 
     // MARK: - Loading View

@@ -45,6 +45,7 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
         captureScreenshot(named: "05_search_results", description: "Search results for seeded quotes")
 
         logger.step(6, "Capture")
+        returnToLibraryRootForMedia()
         showQuoteCaptureCameraForMedia()
         captureScreenshot(named: "06_capture", description: "Quote capture camera")
 
@@ -156,6 +157,9 @@ final class AppStoreSubscriptionReviewTests: BaseUITestCase {
 
 fileprivate extension BaseUITestCase {
     func navigateToLibraryTabIfNeeded() {
+        if app.navigationBars["Library"].exists {
+            return
+        }
         _ = tapTab(.library, timeout: 3)
     }
 
@@ -317,19 +321,33 @@ fileprivate extension BaseUITestCase {
     func returnToLibraryRootForMedia() {
         dismissKeyboard()
 
-        // Exit search focus if it is active (focused search can hide toolbar buttons like "+").
+        // Active search on iPad replaces the tab navigation, so close it before changing tabs.
+        let dismissSearch = app.buttons[AccessibilityIdentifiers.Library.dismissSearchButton]
+        if dismissSearch.exists && dismissSearch.isHittable {
+            dismissSearch.tap()
+        }
+
+        // Keep the system Cancel fallbacks for platforms that present one.
         let cancelA = app.buttons["Cancel"]
         let cancelB = app.navigationBars.buttons["Cancel"]
         if cancelA.exists && cancelA.isHittable { cancelA.tap() }
         if cancelB.exists && cancelB.isHittable { cancelB.tap() }
 
-        // Try to pop navigation stack if we're in detail views
+        // Only pop while we're away from the library root. On iPad, the first
+        // navigation button at the root is Add, not a back button.
         for _ in 0..<2 {
+            if app.navigationBars["Library"].exists {
+                break
+            }
             if app.navigationBars.buttons.element(boundBy: 0).exists {
                 tapBackButton()
             }
         }
         navigateToLibraryTabIfNeeded()
+        XCTAssertTrue(
+            app.navigationBars["Library"].waitForExistence(timeout: 3),
+            "Library root should be restored after dismissing active search"
+        )
     }
 
     func showSearchResultsForMedia(query: String) {

@@ -9,8 +9,9 @@ struct CoverCropGeometry {
         reservedHeight: CGFloat = 140,
         minimumHeight: CGFloat = 220
     ) -> CGSize {
-        let maxWidth = min(availableSize.width - horizontalInset, maxWidth)
-        let height = maxWidth * 1.5
+        let availableWidth = max(0, availableSize.width - horizontalInset)
+        let maximumViewportWidth = max(0, min(availableWidth, maxWidth))
+        let height = maximumViewportWidth * 1.5
         let constrainedHeight = min(height, max(minimumHeight, availableSize.height - reservedHeight))
         let width = constrainedHeight / 1.5
         return CGSize(width: width, height: constrainedHeight)

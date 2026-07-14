@@ -121,13 +121,17 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
             app.textFields[AccessibilityIdentifiers.MarkingEditor.visualDescriptionField].waitForExistence(timeout: 2),
             "Next should focus the visual description field"
         )
-        typeTextIntoFocusedField(visual, timeout: 2, dismissKeyboardAfter: false)
+        typeIntoField(
+            identifier: AccessibilityIdentifiers.MarkingEditor.visualDescriptionField,
+            text: visual,
+            dismissKeyboardAfter: false
+        )
         advanceMarkingEditorField()
         XCTAssertTrue(
             app.textFields[AccessibilityIdentifiers.MarkingEditor.meaningField].waitForExistence(timeout: 2),
             "Next should focus the meaning field"
         )
-        typeTextIntoFocusedField(meaning, timeout: 2)
+        typeIntoField(identifier: AccessibilityIdentifiers.MarkingEditor.meaningField, text: meaning)
 
         logger.step(4, "Saving new marking")
         let saveButton = app.buttons[AccessibilityIdentifiers.MarkingEditor.saveButton]

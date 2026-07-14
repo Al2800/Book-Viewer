@@ -40,6 +40,9 @@ enum AccessibilityIdentifiers {
         /// View mode toggle (grid/list)
         static let viewModeToggle = "library_view_mode_toggle"
 
+        /// Dismisses an active library search and returns to the library root
+        static let dismissSearchButton = "library_dismiss_search_button"
+
         /// Organize section row linking to Collections
         static let collectionsRow = "library_collections_row"
 
@@ -160,6 +163,12 @@ enum AccessibilityIdentifiers {
 
         /// Save/Add button on the add/edit book form
         static let saveButton = "book_edit_save_button"
+
+        /// Scrollable content in the add/edit book form
+        static let formScrollView = "book_edit_form_scroll_view"
+
+        /// Keyboard toolbar action that removes focus from the active book field
+        static let keyboardDoneButton = "book_edit_keyboard_done_button"
     }
 
     // MARK: - Capture

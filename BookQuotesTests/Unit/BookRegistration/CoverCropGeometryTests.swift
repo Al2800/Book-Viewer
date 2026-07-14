@@ -15,6 +15,15 @@ final class CoverCropGeometryTests: XCTestCase {
         XCTAssertEqual(viewport.height, 510, accuracy: 0.001)
     }
 
+    func testViewportSizeDoesNotProduceNegativeDimensionsDuringInitialLayout() {
+        let viewport = CoverCropGeometry.viewportSize(
+            for: .zero,
+            horizontalInset: 48
+        )
+
+        XCTAssertEqual(viewport, .zero)
+    }
+
     func testDisplayedImageSizeFillsPortraitViewport() {
         let displayed = CoverCropGeometry.displayedImageSize(
             imageSize: CGSize(width: 300, height: 200),

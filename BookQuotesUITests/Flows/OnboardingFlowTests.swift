@@ -224,9 +224,8 @@ final class OnboardingFlowTests: BaseUITestCase {
         startButton.tap()
 
         logger.step(3, "Verifying onboarding dismissed")
-        // Should see the main app (tab bar)
-        let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(tabBar.waitForExistence(timeout: 5), "Tab bar should be visible after onboarding")
+        let libraryRoot = app.navigationBars["Library"]
+        XCTAssertTrue(libraryRoot.waitForExistence(timeout: 5), "Library should be visible after onboarding")
 
         logger.success("Start Capturing dismisses onboarding")
     }
@@ -234,9 +233,9 @@ final class OnboardingFlowTests: BaseUITestCase {
     func testOnboarding_RemoteAIConsentCanBeEnabledAndRevokedInSettings() {
         navigateToCompletionStep()
         app.buttons["Start Capturing"].tap()
-        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
 
-        app.tabBars.buttons[AccessibilityIdentifiers.Tabs.settingsTab].tap()
+        XCTAssertTrue(tapTab(.settings), "Settings should be available after onboarding")
         let remoteAISettings = app.buttons[AccessibilityIdentifiers.Settings.remoteAIProcessingRow]
         XCTAssertTrue(remoteAISettings.waitForExistence(timeout: 5))
         remoteAISettings.tap()

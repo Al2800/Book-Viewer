@@ -1,6 +1,6 @@
 # 106 - Eliminate false-green UI test skips
 
-Status: in progress
+Status: resolved
 Area: XCUITest / Release Gate
 Priority: high (release blocker 15)
 
@@ -13,8 +13,8 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - [x] Replace skips caused by missing application UI, fixtures, navigation, or save actions with failing assertions.
 - [x] Make mocked camera and seeded-data dependencies deterministic so workflow tests do not skip because setup did not arrive.
 - [x] Retain skips only for verified simulator or device limitations, with a clear reason and separate reporting.
-- [ ] Run the full UI target with zero false-green skips and investigate every remaining failure.
-- [ ] Record the final pass, failure, and genuine-environment skip counts in release evidence.
+- [x] Run the full UI target with zero false-green skips and investigate every remaining failure.
+- [x] Record the final pass, failure, and genuine-environment skip counts in release evidence.
 
 ## Initial Inventory
 
@@ -47,7 +47,7 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - [x] `OnboardingFlowTests`: replaced both false-green skip branches with strict welcome, local-only sign-in, marking-defaults, AI-consent, and completion assertions.
 - [x] The local-only first-run path is verified not to require a subscription choice, and the required on-device-only AI decision is exercised before completion.
 - [x] Subscription-review media capture now explicitly launches the subscription screen and verifies the annual plan, trial copy, and start-trial action.
-- [x] The complete UI target has no remaining `XCTSkip` branches; the iPhone release gate completed with all 90 tests passing.
+- [x] The complete UI target has no remaining `XCTSkip` branches; the iPhone and iPad release gates each completed with all 90 tests passing.
 
 ## Evidence
 
@@ -60,3 +60,4 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - Full Library management workflow: 7 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-LibraryManagement-full.xcresult`.
 - Full onboarding workflow: 11 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-Onboarding-full.xcresult`.
 - Full UI target (iPhone): 90 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-UITests-full-iPhone17-final.xcresult`.
+- Full UI target (iPad): 90 passed, 0 failed, 0 skipped on iPad Air 11-inch (M4) (iOS 26.5). Result bundle: `/tmp/BookQuotes-UITests-full-iPadAir11-final.xcresult`.

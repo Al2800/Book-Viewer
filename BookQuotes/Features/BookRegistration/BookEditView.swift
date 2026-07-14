@@ -111,6 +111,7 @@ struct BookEditView: View {
                 .padding(.top, Spacing.lg)
                 .padding(.bottom, Spacing.xxxl)
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.formScrollView)
             .background(Color.backgroundPrimary)
             .scrollDismissesKeyboard(.interactively)
             .tint(.brand)
@@ -135,6 +136,7 @@ struct BookEditView: View {
                         focusedField = nil
                     }
                     .fontWeight(.semibold)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.BookEdit.keyboardDoneButton)
                 }
             }
         }
