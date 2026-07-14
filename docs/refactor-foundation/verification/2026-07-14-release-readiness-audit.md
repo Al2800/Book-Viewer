@@ -25,6 +25,12 @@
   compact Extraction Review at Accessibility XXXL on iPhone 17; plus the normal-text,
   side-by-side Extraction Review on iPad Pro 13-inch. The corresponding screenshots were
   visually inspected. This resolves the automated portion of issue `105`.
+- Custom marking identities now survive on-device or model-assisted extraction, cached review,
+  queued processing, and quote saving. The focused regression gate passed on 2026-07-15 in
+  49.802 seconds, and the unsigned Release build completed successfully after the change.
+- The quote-editor typing UI test remains unverified on the iOS 26 simulator: its rendered native
+  `TextEditor` does not receive keyboard focus from a synthesized XCTest tap. This is a simulator
+  automation gap, not a passing release result.
 - The full app-unit command returned success, but Xcode wrote an incomplete result bundle without
   `Info.plist`; do not use that rerun as countable release evidence. Re-run the full app-unit gate
   and retain a readable `.xcresult` before archiving.
@@ -48,6 +54,7 @@
    - Delete Account, then verify the old session cannot access refresh, subscription sync, or
      extraction endpoints.
    - Captured-image storage/backup behavior and real camera framing.
+   - Quote-edit typing and saving on both iPhone and iPad.
    These runs close the remaining evidence for issues `007`, `086`, `096`, `097`, `099`, and `101`.
 4. Enter and review the App Privacy questionnaire and App Review Notes in App Store Connect using
    `docs/APP_STORE_CONNECT.md`. See issues `093`, `094`, and `086`.
