@@ -111,7 +111,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `099-account-deletion-session-revocation.md` - open
 - `100-optional-sign-in-and-local-mode.md` - open
 - `101-signed-out-subscription-purchase-gating.md` - open
-- `102-atomic-extraction-rate-limits.md` - open
+- `102-atomic-extraction-rate-limits.md` - in_progress
 - `103-ai-prompt-output-and-provenance-validation.md` - open
 - `104-ui-test-isolation-and-assertion-reliability.md` - open
 - `105-adaptive-ui-and-accessibility-layout.md` - open

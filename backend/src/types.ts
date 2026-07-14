@@ -2,6 +2,7 @@
 export interface Env {
   // KV Namespace for subscriptions and usage
   KV: KVNamespace;
+  EXTRACTION_LIMITER: DurableObjectNamespace;
 
   // Secrets
   GEMINI_API_KEY: string;

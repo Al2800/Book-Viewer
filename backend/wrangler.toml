@@ -7,11 +7,20 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 ENVIRONMENT = "development"
 
-# KV Namespace for subscriptions and usage tracking
+# KV Namespace for subscriptions, session revocations, and legacy usage migration.
 [[kv_namespaces]]
 binding = "KV"
 id = "95463b49b0b040a98a411104d2eaf9dd"
 preview_id = "4f58e38410a74e30abe248160c5994d6"
+
+# Durable Object coordinator for atomic extraction-rate and usage decisions.
+[[durable_objects.bindings]]
+name = "EXTRACTION_LIMITER"
+class_name = "ExtractionRateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ExtractionRateLimiter"]
 
 # Secrets (set via `wrangler secret put`)
 # - GEMINI_API_KEY
@@ -32,3 +41,7 @@ routes = ["api.bookquotes.uk/*"]
 [[env.production.kv_namespaces]]
 binding = "KV"
 id = "11fab092c77043889c0c58967729df99"
+
+[[env.production.durable_objects.bindings]]
+name = "EXTRACTION_LIMITER"
+class_name = "ExtractionRateLimiter"

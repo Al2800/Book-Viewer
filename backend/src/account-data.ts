@@ -4,6 +4,7 @@ import {
   originalTransactionOwnerKey,
   subscriptionKey,
 } from './subscription-keys';
+import { deleteExtractionUsage } from './rate-limit';
 import type { Env, SubscriptionOwnerRecord } from './types';
 
 async function getOriginalTransactionOwner(
@@ -64,5 +65,6 @@ export async function deleteUserAccountData(
     cursor = listed.list_complete ? undefined : listed.cursor;
   } while (cursor);
 
+  deletes.push(deleteExtractionUsage(userId, env));
   await Promise.all(deletes);
 }

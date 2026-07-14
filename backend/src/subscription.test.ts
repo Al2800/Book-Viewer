@@ -46,6 +46,16 @@ class MockKV {
   }
 }
 
+function makeAccountDeletionEnv(kv: MockKV): Env {
+  return {
+    KV: kv as unknown as KVNamespace,
+    EXTRACTION_LIMITER: {
+      idFromName: (name: string) => ({ toString: () => name, equals: () => false } as DurableObjectId),
+      get: () => ({ fetch: async () => Response.json({ allowed: true }) } as unknown as DurableObjectStub),
+    } as unknown as DurableObjectNamespace,
+  } as Env;
+}
+
 describe('deriveAppAccountToken', () => {
   it('is deterministic and UUID-shaped', async () => {
     const first = await deriveAppAccountToken('apple-user-123');
@@ -124,7 +134,7 @@ describe('deleteUserAccountData', () => {
     await kv.put(`sub:token:${token}`, userId);
     await kv.put(`usage:${userId}:2026-07`, JSON.stringify({ extractionCount: 3 }));
 
-    const env = { KV: kv as unknown as KVNamespace } as Env;
+    const env = makeAccountDeletionEnv(kv);
     await deleteUserAccountData(userId, env);
 
     expect(await kv.get(`sub:user:${userId}`)).toBeNull();
@@ -150,7 +160,7 @@ describe('deleteUserAccountData', () => {
     await kv.put(`sub:user:${userId}`, JSON.stringify(record));
     await kv.put(`sub:owner:orig-shared-1`, JSON.stringify(ownerRecord));
 
-    const env = { KV: kv as unknown as KVNamespace } as Env;
+    const env = makeAccountDeletionEnv(kv);
     await deleteUserAccountData(userId, env);
 
     expect(await kv.get(`sub:user:${userId}`)).toBeNull();

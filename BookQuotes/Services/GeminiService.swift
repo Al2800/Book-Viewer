@@ -208,6 +208,7 @@ final class GeminiService {
         request.httpMethod = "POST"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(UUID().uuidString, forHTTPHeaderField: "Idempotency-Key")
 
         do {
             request.httpBody = try JSONEncoder().encode(requestBody)

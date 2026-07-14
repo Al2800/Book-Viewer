@@ -21,6 +21,7 @@ vi.mock('./account-data', () => ({
 function makeEnv(): Env {
   return {
     KV: {} as KVNamespace,
+    EXTRACTION_LIMITER: {} as DurableObjectNamespace,
     GEMINI_API_KEY: 'test',
     APPLE_TEAM_ID: 'test',
     JWT_SECRET: 'test',

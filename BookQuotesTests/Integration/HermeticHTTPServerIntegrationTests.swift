@@ -152,6 +152,7 @@ final class HermeticHTTPServerIntegrationTests: XCTestCase {
         XCTAssertEqual(requests.count, 1)
         XCTAssertEqual(requests[0].path, "/api/extract-cover")
         XCTAssertEqual(requests[0].headers["Authorization"], "<redacted>")
+        XCTAssertNotNil(UUID(uuidString: requests[0].headers["Idempotency-Key"] ?? ""))
 
         // Sanity check key pieces of the JSON request body without asserting the full prompt.
         let bodyObj = try JSONSerialization.jsonObject(with: requests[0].body) as? [String: Any]

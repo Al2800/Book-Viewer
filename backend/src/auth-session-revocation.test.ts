@@ -21,6 +21,7 @@ class MemoryKV {
 function makeEnv(): Env {
   return {
     KV: new MemoryKV() as unknown as KVNamespace,
+    EXTRACTION_LIMITER: {} as DurableObjectNamespace,
     GEMINI_API_KEY: 'test',
     APPLE_TEAM_ID: 'test',
     JWT_SECRET: 'test-session-secret',

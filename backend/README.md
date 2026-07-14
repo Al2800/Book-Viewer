@@ -10,7 +10,7 @@ iOS App → Cloudflare Workers Proxy → Gemini API
          Validates:
          - Apple Sign-In JWT
          - App Store-verified subscription status
-         - Rate limits (KV)
+         - Atomic rate limits (Durable Objects)
 ```
 
 ## Setup
@@ -37,7 +37,9 @@ npm install
    wrangler kv:namespace create KV
    wrangler kv:namespace create KV --preview
    ```
-   Update `wrangler.toml` with the returned namespace IDs.
+   Update `wrangler.toml` with the returned namespace IDs. The checked-in
+   Durable Object binding and `v1` SQLite migration create the atomic rate-limit
+   coordinator on the first deploy; do not remove that migration from later deployments.
 
 2. **Set Secrets:**
    ```bash
@@ -128,6 +130,7 @@ Extract book metadata from cover image.
 
 **Headers:**
 - `Authorization: Bearer <session_token>`
+- `Idempotency-Key: <new UUID for one extraction attempt>`
 
 **Body:** Gemini API request format with image data.
 
@@ -136,6 +139,7 @@ Extract quotes from book page image.
 
 **Headers:**
 - `Authorization: Bearer <session_token>`
+- `Idempotency-Key: <new UUID for one extraction attempt>`
 
 **Body:** Gemini API request format with image data.
 
@@ -183,8 +187,23 @@ If the device currently has no active entitlement, the app may send `{}` and the
 
 ## Rate Limits
 
-- **Per minute:** 30 requests
-- **Per month:** 1000 extractions
+- **Per user:** 30 requests per minute and 1000 successful extractions per month.
+- **Per network:** 120 extraction requests per minute across accounts.
+- Limits are coordinated by named SQLite-backed Durable Objects, not Cloudflare KV
+  read-modify-write operations. Existing monthly KV counts are read once when a user
+  first reaches the coordinator, then all new state is stored atomically in that object.
+- An extraction reserves monthly capacity before the image is forwarded. A provider
+  success finalizes that reservation exactly once for its `Idempotency-Key`; provider
+  failures, invalid requests, and Worker-side errors release it. Every attempt still
+  consumes its short per-minute abuse-prevention slot.
+- A client disconnect does not change this policy: the Worker charges only when the
+  provider call returns success, and releases the reservation for a failed provider call.
+  In-progress reservations expire after five minutes to recover from an interrupted Worker.
+- Operations logs record only route, decision, and outcome. They do not record prompts,
+  images, account identifiers, IP addresses, or idempotency keys.
+
+Before production deployment, run a concurrent staging load test that exceeds each
+configured limit and confirm no provider calls occur after a rejected reservation.
 
 ## Error Responses
 
@@ -194,6 +213,10 @@ If the device currently has no active entitlement, the app may send `{}` and the
 | `AUTH_INVALID` | 401 | Invalid Apple Sign-In token |
 | `SUBSCRIPTION_REQUIRED` | 402 | No active subscription |
 | `RATE_LIMIT` | 429 | Rate limit exceeded |
+| `IDEMPOTENCY_INVALID` | 400 | Missing or malformed extraction idempotency key |
+| `IDEMPOTENCY_IN_PROGRESS` | 409 | The same extraction attempt is still running |
+| `IDEMPOTENCY_REPLAY` | 409 | The same extraction attempt was already charged |
+| `RATE_LIMIT_UNAVAILABLE` | 503 | Atomic usage coordinator temporarily unavailable |
 | `EXTRACTION_ERROR` | 500 | Gemini API error |
 | `NOT_FOUND` | 404 | Unknown endpoint |
 

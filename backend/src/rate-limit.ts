@@ -1,151 +1,160 @@
-import type { Env, UsageRecord, RateLimitConfig } from './types';
+import type { Env, RateLimitConfig } from './types';
 
-// Default rate limits
 const DEFAULT_LIMITS: RateLimitConfig = {
   maxRequestsPerMinute: 30,
   maxRequestsPerIPPerMinute: 120,
   maxExtractionsPerMonth: 1000,
 };
 
-/**
- * Get the current month period string (YYYY-MM)
- */
-function getCurrentPeriod(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-}
-
-/**
- * Get usage record for a user
- */
-export async function getUsage(
-  userId: string,
-  env: Env
-): Promise<UsageRecord> {
-  const period = getCurrentPeriod();
-  const key = `usage:${userId}:${period}`;
-  const data = await env.KV.get(key);
-
-  if (!data) {
-    return {
-      userId,
-      period,
-      extractionCount: 0,
-      lastUpdated: new Date().toISOString(),
-    };
-  }
-
-  try {
-    return JSON.parse(data) as UsageRecord;
-  } catch {
-    return {
-      userId,
-      period,
-      extractionCount: 0,
-      lastUpdated: new Date().toISOString(),
-    };
-  }
-}
-
-/**
- * Increment extraction count for a user
- */
-export async function incrementUsage(
-  userId: string,
-  env: Env
-): Promise<UsageRecord> {
-  const usage = await getUsage(userId, env);
-  usage.extractionCount += 1;
-  usage.lastUpdated = new Date().toISOString();
-
-  const key = `usage:${userId}:${usage.period}`;
-
-  // Set TTL to end of next month (cleanup old records)
-  const now = new Date();
-  const endOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 2, 1);
-  const ttl = Math.ceil((endOfNextMonth.getTime() - now.getTime()) / 1000);
-
-  await env.KV.put(key, JSON.stringify(usage), {
-    expirationTtl: ttl,
-  });
-
-  return usage;
-}
-
-/**
- * Check if user has exceeded rate limits
- */
-export async function checkRateLimit(
-  userId: string,
-  env: Env,
-  clientKey?: string,
-  limits: RateLimitConfig = DEFAULT_LIMITS
-): Promise<{
+export interface RateLimitDecision {
   allowed: boolean;
+  code?: 'RATE_LIMIT' | 'IDEMPOTENCY_INVALID' | 'IDEMPOTENCY_REPLAY' | 'IDEMPOTENCY_IN_PROGRESS';
   reason?: string;
   currentUsage: number;
   limit: number;
-}> {
-  // Check monthly extraction limit
-  const usage = await getUsage(userId, env);
+}
 
-  if (usage.extractionCount >= limits.maxExtractionsPerMonth) {
-    return {
-      allowed: false,
-      reason: 'Monthly extraction limit exceeded',
-      currentUsage: usage.extractionCount,
-      limit: limits.maxExtractionsPerMonth,
-    };
-  }
+interface LimiterRequest {
+  action: 'reserve-user' | 'reserve-ip' | 'complete' | 'release' | 'usage' | 'delete-user';
+  userId?: string;
+  idempotencyKey?: string;
+  limits?: RateLimitConfig;
+}
 
-  // Check per-minute rate limit using a sliding window
-  const minuteKey = `ratelimit:${userId}:${Math.floor(Date.now() / 60000)}`;
-  const minuteCountStr = await env.KV.get(minuteKey);
-  const minuteCount = minuteCountStr ? parseInt(minuteCountStr, 10) : 0;
+interface LimiterResponse {
+  allowed?: boolean;
+  code?: RateLimitDecision['code'];
+  reason?: string;
+  currentUsage?: number;
+  limit?: number;
+  extractionsThisMonth?: number;
+  extractionsLimit?: number;
+  resetDate?: string;
+}
 
-  if (minuteCount >= limits.maxRequestsPerMinute) {
-    return {
-      allowed: false,
-      reason: 'Too many requests per minute',
-      currentUsage: minuteCount,
-      limit: limits.maxRequestsPerMinute,
-    };
-  }
+function getResetDate(): string {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)).toISOString();
+}
 
-  if (clientKey) {
-    const ipMinuteKey = `ratelimit:ip:${clientKey}:${Math.floor(Date.now() / 60000)}`;
-    const ipMinuteCountStr = await env.KV.get(ipMinuteKey);
-    const ipMinuteCount = ipMinuteCountStr ? parseInt(ipMinuteCountStr, 10) : 0;
+function isValidIdempotencyKey(value: string | null): value is string {
+  return value !== null
+    && value.length >= 16
+    && value.length <= 128
+    && /^[A-Za-z0-9_-]+$/.test(value);
+}
 
-    if (ipMinuteCount >= limits.maxRequestsPerIPPerMinute) {
-      return {
-        allowed: false,
-        reason: 'Too many requests from this network',
-        currentUsage: ipMinuteCount,
-        limit: limits.maxRequestsPerIPPerMinute,
-      };
-    }
+function limiterStub(env: Env, scope: string): DurableObjectStub {
+  return env.EXTRACTION_LIMITER.get(env.EXTRACTION_LIMITER.idFromName(scope));
+}
 
-    await env.KV.put(ipMinuteKey, String(ipMinuteCount + 1), {
-      expirationTtl: 120,
-    });
-  }
-
-  // Increment per-minute counter
-  await env.KV.put(minuteKey, String(minuteCount + 1), {
-    expirationTtl: 120, // 2 minutes TTL
+async function limiterRequest(
+  env: Env,
+  scope: string,
+  body: LimiterRequest
+): Promise<LimiterResponse> {
+  const response = await limiterStub(env, scope).fetch('https://rate-limiter.internal/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   });
 
+  if (!response.ok) {
+    throw new Error(`Rate limiter returned ${response.status}`);
+  }
+
+  return response.json() as Promise<LimiterResponse>;
+}
+
+function decisionFrom(response: LimiterResponse): RateLimitDecision {
   return {
-    allowed: true,
-    currentUsage: usage.extractionCount,
-    limit: limits.maxExtractionsPerMonth,
+    allowed: response.allowed === true,
+    code: response.code,
+    reason: response.reason,
+    currentUsage: response.currentUsage ?? 0,
+    limit: response.limit ?? DEFAULT_LIMITS.maxExtractionsPerMonth,
   };
 }
 
 /**
- * Get usage statistics for API response
+ * Reserve an extraction before the request leaves BookQuotes. Both coordinators
+ * are Durable Objects, so their individual counters are serialized even when
+ * multiple Worker isolates receive requests at the same time.
  */
+export async function reserveExtraction(
+  userId: string,
+  clientKey: string,
+  idempotencyKey: string | null,
+  env: Env,
+  limits: RateLimitConfig = DEFAULT_LIMITS
+): Promise<RateLimitDecision> {
+  if (!isValidIdempotencyKey(idempotencyKey)) {
+    return {
+      allowed: false,
+      code: 'IDEMPOTENCY_INVALID',
+      reason: 'A valid Idempotency-Key header is required',
+      currentUsage: 0,
+      limit: limits.maxExtractionsPerMonth,
+    };
+  }
+
+  const userDecision = decisionFrom(await limiterRequest(env, `user:${userId}`, {
+    action: 'reserve-user',
+    userId,
+    idempotencyKey,
+    limits,
+  }));
+
+  if (!userDecision.allowed) {
+    return userDecision;
+  }
+
+  const ipDecision = decisionFrom(await limiterRequest(env, `ip:${clientKey}`, {
+    action: 'reserve-ip',
+    limits,
+  }));
+
+  if (ipDecision.allowed) {
+    return userDecision;
+  }
+
+  // The IP check happens after the user reservation so a retry with the same
+  // key cannot bypass monthly accounting. Release it when the provider will not
+  // be called so this user can retry from another network without waiting.
+  await releaseExtractionReservation(userId, idempotencyKey, env);
+  return ipDecision;
+}
+
+/** Mark a provider success as billable exactly once for its idempotency key. */
+export async function completeExtraction(
+  userId: string,
+  idempotencyKey: string,
+  env: Env
+): Promise<void> {
+  await limiterRequest(env, `user:${userId}`, {
+    action: 'complete',
+    userId,
+    idempotencyKey,
+  });
+}
+
+/**
+ * Provider failures, request validation failures, and interrupted Worker
+ * requests release their monthly reservation. The per-minute attempt remains
+ * counted deliberately, so failed requests cannot be used to evade abuse caps.
+ */
+export async function releaseExtractionReservation(
+  userId: string,
+  idempotencyKey: string,
+  env: Env
+): Promise<void> {
+  await limiterRequest(env, `user:${userId}`, {
+    action: 'release',
+    userId,
+    idempotencyKey,
+  });
+}
+
 export async function getUsageStats(
   userId: string,
   env: Env,
@@ -155,15 +164,23 @@ export async function getUsageStats(
   extractionsLimit: number;
   resetDate: string;
 }> {
-  const usage = await getUsage(userId, env);
-
-  // Calculate reset date (first of next month)
-  const now = new Date();
-  const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const response = await limiterRequest(env, `user:${userId}`, {
+    action: 'usage',
+    userId,
+    limits,
+  });
 
   return {
-    extractionsThisMonth: usage.extractionCount,
-    extractionsLimit: limits.maxExtractionsPerMonth,
-    resetDate: resetDate.toISOString(),
+    extractionsThisMonth: response.extractionsThisMonth ?? 0,
+    extractionsLimit: response.extractionsLimit ?? limits.maxExtractionsPerMonth,
+    resetDate: response.resetDate ?? getResetDate(),
   };
+}
+
+/** Remove the atomic usage and idempotency records when an account is deleted. */
+export async function deleteExtractionUsage(userId: string, env: Env): Promise<void> {
+  await limiterRequest(env, `user:${userId}`, {
+    action: 'delete-user',
+    userId,
+  });
 }

@@ -245,6 +245,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         let request = try XCTUnwrap(server.allRequests().first)
         XCTAssertEqual(request.path, "/api/extract-quotes-hf")
         XCTAssertEqual(request.headers["Authorization"], "<redacted>")
+        XCTAssertNotNil(UUID(uuidString: request.headers["Idempotency-Key"] ?? ""))
 
         let body = try XCTUnwrap(JSONSerialization.jsonObject(with: request.body) as? [String: Any])
         XCTAssertNotNil(body["contents"])

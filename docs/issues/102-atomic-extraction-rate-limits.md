@@ -1,6 +1,6 @@
 # 102 - Make extraction usage and abuse limits atomic
 
-Status: open
+Status: in_progress
 Area: Backend / Abuse Prevention / Billing
 Priority: high (release blocker 11)
 
@@ -10,15 +10,25 @@ Monthly usage and per-minute limits use Cloudflare KV read-modify-write operatio
 
 ## Acceptance Criteria
 
-- [ ] Counters use an atomic coordinator such as a Durable Object or equivalent serialized service.
-- [ ] Per-user and per-IP limits are enforced before provider calls.
-- [ ] Successful usage is charged exactly once, including retry/idempotency handling.
-- [ ] Provider failures and client cancellations have an explicit charging policy.
-- [ ] Limit decisions are observable without logging prompts or images.
+- [x] Counters use an atomic coordinator such as a Durable Object or equivalent serialized service.
+- [x] Per-user and per-IP limits are enforced before provider calls.
+- [x] Successful usage is charged exactly once, including retry/idempotency handling.
+- [x] Provider failures and client cancellations have an explicit charging policy.
+- [x] Limit decisions are observable without logging prompts or images.
 
 ## Verification
 
-- Concurrent request tests proving limits cannot be exceeded.
-- Idempotency and retry tests.
-- Load test against a staging deployment.
+- [x] Concurrent request tests proving limits cannot be exceeded.
+- [x] Idempotency and retry tests.
+- [ ] Load test against a staging deployment.
 
+## Implementation Notes
+
+Named SQLite-backed Durable Objects coordinate the user and network counters separately,
+while the user object owns monthly usage and idempotency state. A monthly slot is reserved
+before a provider call, finalized once on a successful provider response, and released on
+validation or provider failure. The short per-minute attempt slot is intentionally retained
+after failure to prevent failed requests from bypassing abuse protection. Reservations expire
+after five minutes if a Worker is interrupted; completed idempotency records expire after 24
+hours. Existing KV monthly usage is read during the one-way migration, and account deletion
+removes both legacy KV and Durable Object usage state.

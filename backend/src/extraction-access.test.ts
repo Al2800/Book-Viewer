@@ -34,9 +34,50 @@ class MockKVNamespace {
   }
 }
 
+class AllowingRateLimiterNamespace {
+  idFromName(name: string): DurableObjectId {
+    return { toString: () => name, equals: () => false } as DurableObjectId;
+  }
+
+  get(): DurableObjectStub {
+    return {
+      fetch: async (_input: RequestInfo | URL, init?: RequestInit) => {
+        const body = JSON.parse(String(init?.body ?? '{}')) as { action?: string };
+        if (body.action === 'usage') {
+          return Response.json({
+            extractionsThisMonth: 0,
+            extractionsLimit: 1000,
+            resetDate: '2026-08-01T00:00:00.000Z',
+          });
+        }
+        return Response.json({ allowed: true, currentUsage: 0, limit: 1000 });
+      },
+    } as unknown as DurableObjectStub;
+  }
+}
+
+class RejectingRateLimiterNamespace {
+  idFromName(name: string): DurableObjectId {
+    return { toString: () => name, equals: () => false } as DurableObjectId;
+  }
+
+  get(): DurableObjectStub {
+    return {
+      fetch: async () => Response.json({
+        allowed: false,
+        code: 'RATE_LIMIT',
+        reason: 'Too many requests per minute',
+        currentUsage: 30,
+        limit: 30,
+      }),
+    } as unknown as DurableObjectStub;
+  }
+}
+
 function makeEnv(overrides: Partial<Env> = {}): Env {
   return {
     KV: new MockKVNamespace() as unknown as KVNamespace,
+    EXTRACTION_LIMITER: new AllowingRateLimiterNamespace() as unknown as DurableObjectNamespace,
     GEMINI_API_KEY: 'test-gemini-key',
     APPLE_TEAM_ID: 'test-team',
     JWT_SECRET: 'test-secret',
@@ -53,8 +94,9 @@ function makeExtractionRequest(path = '/api/extract-quotes'): Request {
   return new Request(`https://api.bookquotes.uk${path}`, {
     method: 'POST',
     headers: {
-      Authorization: 'Bearer test-session-token',
-      'Content-Type': 'application/json',
+        Authorization: 'Bearer test-session-token',
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'test-request-key-0001',
     },
     body: JSON.stringify({
       contents: [
@@ -131,6 +173,25 @@ describe('extraction access policy', () => {
 
     expect(response.status).toBe(402);
     expect(body.code).toBe('SUBSCRIPTION_REQUIRED');
+    expect(geminiFetch).not.toHaveBeenCalled();
+  });
+
+  it('rejects an exhausted reservation before forwarding an image to Gemini', async () => {
+    const { default: worker } = await import('./index');
+    const geminiFetch = vi.fn();
+    vi.stubGlobal('fetch', geminiFetch);
+
+    const response = await worker.fetch(
+      makeExtractionRequest(),
+      makeEnv({
+        ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+        EXTRACTION_LIMITER: new RejectingRateLimiterNamespace() as unknown as DurableObjectNamespace,
+      })
+    );
+    const body = await response.json() as { code: string };
+
+    expect(response.status).toBe(429);
+    expect(body.code).toBe('RATE_LIMIT');
     expect(geminiFetch).not.toHaveBeenCalled();
   });
 

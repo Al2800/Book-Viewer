@@ -20,7 +20,13 @@ import {
   toClientSubscriptionStatus,
 } from './subscription';
 import { deleteUserAccountData } from './account-data';
-import { checkRateLimit, incrementUsage, getUsageStats } from './rate-limit';
+import {
+  completeExtraction,
+  getUsageStats,
+  releaseExtractionReservation,
+  reserveExtraction,
+  type RateLimitDecision,
+} from './rate-limit';
 import {
   proxyToHuggingFaceQuoteExtractor,
   resolveApprovedHuggingFaceModelId,
@@ -35,9 +41,11 @@ import {
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, Idempotency-Key',
   'Access-Control-Expose-Headers': SESSION_TOKEN_HEADER,
 };
+
+export { ExtractionRateLimiter } from './extraction-rate-limiter';
 
 /**
  * Create JSON response with CORS headers
@@ -107,6 +115,76 @@ function getClientKey(request: Request, userId: string): string {
 
 function allowsAuthenticatedExtraction(env: Env): boolean {
   return env.ALLOW_AUTHENTICATED_EXTRACTION === 'true';
+}
+
+function logRateLimitDecision(path: string, decision: RateLimitDecision): void {
+  // Keep operations observable without emitting image data, prompts, account IDs, or IP addresses.
+  console.log(JSON.stringify({
+    event: 'extraction_rate_limit',
+    path,
+    outcome: decision.allowed ? 'reserved' : 'rejected',
+    code: decision.code ?? 'ALLOWED',
+  }));
+}
+
+function rateLimitResponse(decision: RateLimitDecision): Response {
+  const status = decision.code === 'IDEMPOTENCY_INVALID'
+    ? 400
+    : decision.code === 'IDEMPOTENCY_REPLAY' || decision.code === 'IDEMPOTENCY_IN_PROGRESS'
+      ? 409
+      : 429;
+  return errorResponse(
+    decision.reason || 'Rate limit exceeded',
+    decision.code || 'RATE_LIMIT',
+    status
+  );
+}
+
+async function releaseFailedExtraction(
+  userId: string,
+  idempotencyKey: string,
+  env: Env,
+  path: string
+): Promise<void> {
+  try {
+    await releaseExtractionReservation(userId, idempotencyKey, env);
+    console.log(JSON.stringify({
+      event: 'extraction_usage',
+      path,
+      outcome: 'released',
+    }));
+  } catch {
+    // The reservation expires automatically, so a limiter outage cannot create a permanent charge.
+    console.error(JSON.stringify({
+      event: 'extraction_usage',
+      path,
+      outcome: 'release_deferred',
+    }));
+  }
+}
+
+async function completeSuccessfulExtraction(
+  userId: string,
+  idempotencyKey: string,
+  env: Env,
+  path: string
+): Promise<boolean> {
+  try {
+    await completeExtraction(userId, idempotencyKey, env);
+    console.log(JSON.stringify({
+      event: 'extraction_usage',
+      path,
+      outcome: 'charged',
+    }));
+    return true;
+  } catch {
+    console.error(JSON.stringify({
+      event: 'extraction_usage',
+      path,
+      outcome: 'charge_failed',
+    }));
+    return false;
+  }
 }
 
 /**
@@ -229,15 +307,21 @@ export default {
     // Book cover metadata extraction
     if (path === '/api/extract-cover' && request.method === 'POST') {
       const clientKey = getClientKey(request, userId);
+      const idempotencyKey = request.headers.get('Idempotency-Key');
 
-      // Check rate limit
-      const rateCheck = await checkRateLimit(userId, env, clientKey);
-      if (!rateCheck.allowed) {
+      let rateCheck: RateLimitDecision;
+      try {
+        rateCheck = await reserveExtraction(userId, clientKey, idempotencyKey, env);
+      } catch {
         return respond(errorResponse(
-          rateCheck.reason || 'Rate limit exceeded',
-          'RATE_LIMIT',
-          429
+          'Extraction limits are temporarily unavailable',
+          'RATE_LIMIT_UNAVAILABLE',
+          503
         ));
+      }
+      logRateLimitDecision(path, rateCheck);
+      if (!rateCheck.allowed) {
+        return respond(rateLimitResponse(rateCheck));
       }
 
       try {
@@ -251,13 +335,21 @@ export default {
           CORS_HEADERS
         );
 
-        // Track usage on success
         if (response.ok) {
-          await incrementUsage(userId, env);
+          if (!await completeSuccessfulExtraction(userId, idempotencyKey!, env, path)) {
+            return respond(errorResponse(
+              'Extraction completed but usage could not be recorded. Please retry with the same request key.',
+              'RATE_LIMIT_UNAVAILABLE',
+              503
+            ));
+          }
+        } else {
+          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
         }
 
         return respond(response);
       } catch (error) {
+        await releaseFailedExtraction(userId, idempotencyKey!, env, path);
         if (error instanceof RequestValidationError) {
           return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
         }
@@ -269,15 +361,21 @@ export default {
     // Quote extraction
     if (path === '/api/extract-quotes' && request.method === 'POST') {
       const clientKey = getClientKey(request, userId);
+      const idempotencyKey = request.headers.get('Idempotency-Key');
 
-      // Check rate limit
-      const rateCheck = await checkRateLimit(userId, env, clientKey);
-      if (!rateCheck.allowed) {
+      let rateCheck: RateLimitDecision;
+      try {
+        rateCheck = await reserveExtraction(userId, clientKey, idempotencyKey, env);
+      } catch {
         return respond(errorResponse(
-          rateCheck.reason || 'Rate limit exceeded',
-          'RATE_LIMIT',
-          429
+          'Extraction limits are temporarily unavailable',
+          'RATE_LIMIT_UNAVAILABLE',
+          503
         ));
+      }
+      logRateLimitDecision(path, rateCheck);
+      if (!rateCheck.allowed) {
+        return respond(rateLimitResponse(rateCheck));
       }
 
       try {
@@ -291,13 +389,21 @@ export default {
           CORS_HEADERS
         );
 
-        // Track usage on success
         if (response.ok) {
-          await incrementUsage(userId, env);
+          if (!await completeSuccessfulExtraction(userId, idempotencyKey!, env, path)) {
+            return respond(errorResponse(
+              'Extraction completed but usage could not be recorded. Please retry with the same request key.',
+              'RATE_LIMIT_UNAVAILABLE',
+              503
+            ));
+          }
+        } else {
+          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
         }
 
         return respond(response);
       } catch (error) {
+        await releaseFailedExtraction(userId, idempotencyKey!, env, path);
         if (error instanceof RequestValidationError) {
           return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
         }
@@ -309,15 +415,7 @@ export default {
     // Model-assisted quote extraction through Hugging Face.
     if (path === '/api/extract-quotes-hf' && request.method === 'POST') {
       const clientKey = getClientKey(request, userId);
-
-      const rateCheck = await checkRateLimit(userId, env, clientKey);
-      if (!rateCheck.allowed) {
-        return respond(errorResponse(
-          rateCheck.reason || 'Rate limit exceeded',
-          'RATE_LIMIT',
-          429
-        ));
-      }
+      const idempotencyKey = request.headers.get('Idempotency-Key');
 
       if (!env.HF_API_TOKEN) {
         return respond(errorResponse(
@@ -336,6 +434,21 @@ export default {
         ));
       }
 
+      let rateCheck: RateLimitDecision;
+      try {
+        rateCheck = await reserveExtraction(userId, clientKey, idempotencyKey, env);
+      } catch {
+        return respond(errorResponse(
+          'Extraction limits are temporarily unavailable',
+          'RATE_LIMIT_UNAVAILABLE',
+          503
+        ));
+      }
+      logRateLimitDecision(path, rateCheck);
+      if (!rateCheck.allowed) {
+        return respond(rateLimitResponse(rateCheck));
+      }
+
       try {
         const body = await parseGeminiRequest(request);
         const response = await proxyToHuggingFaceQuoteExtractor(body, {
@@ -344,7 +457,15 @@ export default {
         });
 
         if (response.ok) {
-          await incrementUsage(userId, env);
+          if (!await completeSuccessfulExtraction(userId, idempotencyKey!, env, path)) {
+            return respond(errorResponse(
+              'Extraction completed but usage could not be recorded. Please retry with the same request key.',
+              'RATE_LIMIT_UNAVAILABLE',
+              503
+            ));
+          }
+        } else {
+          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
         }
 
         return respond(new Response(await response.text(), {
@@ -355,6 +476,7 @@ export default {
           },
         }));
       } catch (error) {
+        await releaseFailedExtraction(userId, idempotencyKey!, env, path);
         if (error instanceof RequestValidationError) {
           return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
         }
