@@ -730,6 +730,10 @@ enum AccessibilityIdentifiers {
         static let extractionQuoteEditButton = "capture_extraction_quote_edit_button"
         static let extractionQuoteTextEditor = "capture_extraction_quote_text_editor"
         static let extractionQuoteMarginNoteField = "capture_extraction_quote_margin_note_field"
+
+        static let extractionQuoteSourceLabel = "capture_extraction_quote_source_label"
+
+        static let extractionFallbackNotice = "capture_extraction_fallback_notice"
     }
 
     enum Collections {

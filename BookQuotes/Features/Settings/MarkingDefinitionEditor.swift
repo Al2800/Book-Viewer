@@ -146,6 +146,9 @@ struct MarkingDefinitionEditor: View {
                 .onSubmit {
                     focusedField = .visualDescription
                 }
+                .onChange(of: name) { _, newValue in
+                    name = QuoteExtractionPromptBuilder.sanitizedName(newValue)
+                }
                 .fieldChrome()
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.nameField)
         }
@@ -161,6 +164,9 @@ struct MarkingDefinitionEditor: View {
                 .focused($focusedField, equals: .visualDescription)
                 .onSubmit {
                     focusedField = .meaning
+                }
+                .onChange(of: visualDescription) { _, newValue in
+                    visualDescription = QuoteExtractionPromptBuilder.sanitizedVisualDescription(newValue)
                 }
                 .fieldChrome(minHeight: 72)
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.visualDescriptionField)
@@ -181,6 +187,9 @@ struct MarkingDefinitionEditor: View {
                 .focused($focusedField, equals: .meaning)
                 .onSubmit {
                     focusedField = nil
+                }
+                .onChange(of: meaning) { _, newValue in
+                    meaning = QuoteExtractionPromptBuilder.sanitizedMeaning(newValue)
                 }
                 .fieldChrome(minHeight: 72)
                 .accessibilityIdentifier(AccessibilityIdentifiers.MarkingEditor.meaningField)
@@ -281,9 +290,9 @@ struct MarkingDefinitionEditor: View {
     // MARK: - Validation
 
     private var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !visualDescription.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !meaning.trimmingCharacters(in: .whitespaces).isEmpty
+        !QuoteExtractionPromptBuilder.sanitizedName(name).isEmpty &&
+        !QuoteExtractionPromptBuilder.sanitizedVisualDescription(visualDescription).isEmpty &&
+        !QuoteExtractionPromptBuilder.sanitizedMeaning(meaning).isEmpty
     }
 
     // MARK: - Actions
@@ -298,6 +307,10 @@ struct MarkingDefinitionEditor: View {
     }
 
     private func save() {
+        let sanitizedName = QuoteExtractionPromptBuilder.sanitizedName(name)
+        let sanitizedVisualDescription = QuoteExtractionPromptBuilder.sanitizedVisualDescription(visualDescription)
+        let sanitizedMeaning = QuoteExtractionPromptBuilder.sanitizedMeaning(meaning)
+
         guard isValid else {
             showValidationError = true
             return
@@ -307,18 +320,18 @@ struct MarkingDefinitionEditor: View {
 
         if let existing = marking {
             // Update existing marking
-            existing.name = name.trimmingCharacters(in: .whitespaces)
-            existing.visualDescription = visualDescription.trimmingCharacters(in: .whitespaces)
-            existing.meaning = meaning.trimmingCharacters(in: .whitespaces)
+            existing.name = sanitizedName
+            existing.visualDescription = sanitizedVisualDescription
+            existing.meaning = sanitizedMeaning
             existing.icon = selectedIcon
             existing.colorName = selectedColor
             savedMarking = existing
         } else {
             // Create new marking
             let newMarking = MarkingDefinition(
-                name: name.trimmingCharacters(in: .whitespaces),
-                visualDescription: visualDescription.trimmingCharacters(in: .whitespaces),
-                meaning: meaning.trimmingCharacters(in: .whitespaces),
+                name: sanitizedName,
+                visualDescription: sanitizedVisualDescription,
+                meaning: sanitizedMeaning,
                 icon: selectedIcon,
                 colorName: selectedColor
             )

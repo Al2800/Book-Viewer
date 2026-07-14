@@ -26,6 +26,7 @@ struct AIProcessingConsentStore {
 }
 
 struct RemoteModelQuoteExtractor: QuoteExtracting {
+    private static let maximumResponseBytes = 256 * 1024
     private let authService: AuthService
     private let baseURL: URL
     private let session: URLSession
@@ -78,11 +79,14 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
         request.httpBody = try JSONEncoder().encode(body)
 
         let (data, response) = try await session.data(for: request)
+        guard data.count <= Self.maximumResponseBytes else {
+            throw ExtractionError.parsingError("Remote response exceeds the size limit")
+        }
         if let httpResponse = response as? HTTPURLResponse {
             await MainActor.run {
                 authService.applyRefreshedSessionToken(from: httpResponse)
             }
-            try handleHTTPResponse(httpResponse, data: data)
+            try handleHTTPResponse(httpResponse)
         }
 
         let proxyResponse = try JSONDecoder().decode(RemoteModelQuoteResponse.self, from: data)
@@ -93,7 +97,7 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
         return try QuoteExtractionResult.parse(from: text).withExtractionSource(.modelAssisted)
     }
 
-    private func handleHTTPResponse(_ response: HTTPURLResponse, data: Data) throws {
+    private func handleHTTPResponse(_ response: HTTPURLResponse) throws {
         switch response.statusCode {
         case 200:
             return
@@ -103,10 +107,9 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
             throw ExtractionError.subscriptionRequired
         case 429:
             throw ExtractionError.rateLimited
+        case 413:
+            throw ExtractionError.invalidImage
         default:
-            if let error = try? JSONDecoder().decode(RemoteModelErrorResponse.self, from: data) {
-                throw ExtractionError.parsingError("\(error.code): \(error.error)")
-            }
             throw ExtractionError.networkError(URLError(.badServerResponse))
         }
     }
@@ -165,9 +168,4 @@ private struct RemoteModelQuoteResponse: Decodable {
     struct Part: Decodable {
         let text: String
     }
-}
-
-private struct RemoteModelErrorResponse: Decodable {
-    let error: String
-    let code: String
 }

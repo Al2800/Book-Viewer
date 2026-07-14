@@ -121,6 +121,17 @@ enum UITestConfiguration {
         hasArgument("--mock-low-confidence")
     }
 
+    /// Deterministic extraction result used to verify review provenance UI.
+    /// Set via `--mock-extraction-scenario remote|local-fallback|mixed`.
+    static var mockExtractionScenario: String? {
+        guard isUITesting, shouldMockCamera,
+              let scenario = value(for: "--mock-extraction-scenario"),
+              ["remote", "local-fallback", "mixed"].contains(scenario) else {
+            return nil
+        }
+        return scenario
+    }
+
     // MARK: - Animation Control
 
     /// Whether to disable animations for faster UI tests.
@@ -167,6 +178,7 @@ enum UITestConfiguration {
         if shouldMockCamera { flags.append("Camera: mocked") }
         if shouldMockMultipleQuotes { flags.append("Gemini: multiple quotes") }
         if shouldMockLowConfidence { flags.append("Gemini: low confidence") }
+        if let mockExtractionScenario { flags.append("Extraction: \(mockExtractionScenario)") }
         if shouldDisableAnimations { flags.append("Animations: disabled") }
         if isAppStoreMediaMode { flags.append("App Store media mode") }
 

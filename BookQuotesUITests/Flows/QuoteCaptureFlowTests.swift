@@ -7,7 +7,17 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        ["--preload-library-test-data", "--mock-camera"]
+        ["--preload-library-test-data", "--mock-camera", "--mock-extraction-scenario", extractionScenario]
+    }
+
+    private var extractionScenario: String {
+        if name.contains("RemoteSource") {
+            return "remote"
+        }
+        if name.contains("LocalFallback") {
+            return "local-fallback"
+        }
+        return "mixed"
     }
 
     override func waitForAppReady() {
@@ -164,6 +174,12 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         let reviewTitle = app.navigationBars["Review Extractions"]
         let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton]
         let saveButton = app.buttons["Save All"]
+        let modelSource = app.descendants(matching: .any)
+            .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_model_assisted")
+            .firstMatch
+        let onDeviceSource = app.descendants(matching: .any)
+            .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_on_device")
+            .firstMatch
         let failureTitle = app.staticTexts["Extraction Failed"]
         let noQuotesTitle = app.staticTexts["No Quotes Found"]
 
@@ -174,8 +190,34 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         let hasExtractedQuoteControls = editButton.waitForExistence(timeout: 10) || saveButton.waitForExistence(timeout: 2)
         XCTAssertTrue(hasExtractedQuoteControls, "Extraction review should show editable extracted quote controls")
         XCTAssertTrue(saveButton.exists && saveButton.isEnabled, "Save All should be enabled when mock extraction returns quotes")
+        XCTAssertTrue(modelSource.exists, "Review should identify the model-assisted candidate")
+        XCTAssertTrue(onDeviceSource.exists, "Review should identify the on-device candidate")
 
         logger.success("Extraction review displayed extracted quotes")
+    }
+
+    func testExtractionReview_ShowsRemoteSource() throws {
+        try navigateToExtractionReview()
+
+        let modelSource = app.descendants(matching: .any)
+            .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_model_assisted")
+            .firstMatch
+
+        XCTAssertTrue(modelSource.waitForExistence(timeout: 5))
+    }
+
+    func testExtractionReview_ShowsLocalFallback() throws {
+        try navigateToExtractionReview()
+
+        let onDeviceSource = app.descendants(matching: .any)
+            .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_on_device")
+            .firstMatch
+        let fallbackNotice = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionFallbackNotice)
+            .firstMatch
+
+        XCTAssertTrue(onDeviceSource.waitForExistence(timeout: 5))
+        XCTAssertTrue(fallbackNotice.waitForExistence(timeout: 5))
     }
 
     // MARK: - Quote Editing Tests

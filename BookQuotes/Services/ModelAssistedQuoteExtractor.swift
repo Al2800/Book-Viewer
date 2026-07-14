@@ -14,7 +14,7 @@ struct QuoteExtractionPipeline: QuoteExtracting {
     }
 
     static func live(authService: AuthService) -> QuoteExtractionPipeline {
-        QuoteExtractionPipeline(
+        return QuoteExtractionPipeline(
             localExtractor: OnDeviceQuoteExtractor(),
             remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
         )
@@ -52,11 +52,13 @@ struct ModelAssistedQuoteExtractor: QuoteExtracting {
             }
 
             let localResult = try await localExtractor.extractQuotes(from: image, markings: markings)
-            return localResult.isSuccessful ? localResult : remoteResult
+            return localResult.isSuccessful
+                ? localResult.withFallbackReason(.remoteReturnedNoQuotes)
+                : remoteResult
         } catch {
             let localResult = try? await localExtractor.extractQuotes(from: image, markings: markings)
             if let localResult, localResult.isSuccessful {
-                return localResult
+                return localResult.withFallbackReason(.from(error))
             }
             throw error
         }

@@ -356,8 +356,40 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         XCTAssertEqual(result.quotes.first?.text, "local OCR fallback quote")
         XCTAssertEqual(result.processingNotes, "local fallback")
+        XCTAssertEqual(result.fallbackReason, .remoteUnavailable)
         XCTAssertEqual(remote.callCount, 1)
         XCTAssertEqual(local.callCount, 1)
+    }
+
+    func testQuoteExtractionPipelineShowsFallbackWhenRemoteReturnsNoQuotes() async throws {
+        let local = SpyQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [
+                ExtractedQuoteData(
+                    text: "local quote after empty remote response",
+                    pageNumber: nil,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.72,
+                    extractionSource: .onDevice
+                )
+            ],
+            pageNumber: nil,
+            processingNotes: "local OCR"
+        ))
+        let remote = SpyQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [],
+            pageNumber: nil,
+            processingNotes: "remote found no quotes"
+        ))
+        let extractor = QuoteExtractionPipeline(localExtractor: local, remoteExtractor: remote)
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertEqual(result.quotes.first?.extractionSource, .onDevice)
+        XCTAssertEqual(result.fallbackReason, .remoteReturnedNoQuotes)
     }
 
     func testOnDeviceExtractorReturnsLowConfidenceMarkedCandidatesForReview() async throws {

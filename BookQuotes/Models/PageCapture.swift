@@ -55,6 +55,9 @@ final class PageCapture {
     /// Detected page number (if any)
     var detectedPageNumber: Int?
 
+    /// Why on-device extraction was used after a remote attempt, if applicable.
+    var extractionFallbackReason: ExtractionFallbackReason?
+
     /// JSON-encoded extracted quote data from processing
     /// Stored as Data for SwiftData compatibility
     @Attribute(.externalStorage)
@@ -155,6 +158,7 @@ final class PageCapture {
         extractedQuoteCount = 0
         averageConfidence = nil
         extractedQuotesData = nil
+        extractionFallbackReason = nil
     }
 
     // MARK: - Extraction Results Management
@@ -183,6 +187,7 @@ final class PageCapture {
             avgConfidence: result.averageConfidence,
             pageNumber: result.pageNumber
         )
+        extractionFallbackReason = result.fallbackReason
     }
 
     /// Retrieve stored extracted quotes

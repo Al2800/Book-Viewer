@@ -28,6 +28,8 @@ final class GeminiService {
     /// URL session for requests
     private let session: URLSession
 
+    private static let maximumResponseBytes = 256 * 1024
+
     /// Consent required before sending an image to the remote cover model.
     private let consentStore: AIProcessingConsentStore
 
@@ -75,7 +77,7 @@ final class GeminiService {
         )
 
         // Parse the response
-        return try QuoteExtractionResult.parse(from: response)
+        return try QuoteExtractionResult.parse(from: response).withExtractionSource(.modelAssisted)
     }
 
     /// Quick extraction with simplified prompt (faster but less detailed)
@@ -95,7 +97,7 @@ final class GeminiService {
             prompt: prompt
         )
 
-        return try QuoteExtractionResult.parse(from: response)
+        return try QuoteExtractionResult.parse(from: response).withExtractionSource(.modelAssisted)
     }
 
     // MARK: - Cover Extraction
@@ -220,13 +222,16 @@ final class GeminiService {
         // Make request
         do {
             let (data, response) = try await session.data(for: request)
+            guard data.count <= Self.maximumResponseBytes else {
+                throw ExtractionError.parsingError("Remote response exceeds the size limit")
+            }
 
             // Handle HTTP errors
             if let httpResponse = response as? HTTPURLResponse {
                 await MainActor.run {
                     authService.applyRefreshedSessionToken(from: httpResponse)
                 }
-                try handleHTTPResponse(httpResponse, data: data)
+                try handleHTTPResponse(httpResponse)
             }
 
             // Parse Gemini response
@@ -318,7 +323,7 @@ final class GeminiService {
     }
 
     /// Handle HTTP response status codes
-    private func handleHTTPResponse(_ response: HTTPURLResponse, data: Data) throws {
+    private func handleHTTPResponse(_ response: HTTPURLResponse) throws {
         switch response.statusCode {
         case 200:
             return  // Success
@@ -333,13 +338,6 @@ final class GeminiService {
             throw ExtractionError.rateLimited
 
         default:
-            // Try to parse error message from response
-            if let errorResponse = try? JSONDecoder().decode(ProxyErrorResponse.self, from: data) {
-                throw ExtractionError.networkError(ProxyError(
-                    code: errorResponse.code,
-                    message: errorResponse.error
-                ))
-            }
             throw ExtractionError.networkError(URLError(.badServerResponse))
         }
     }
@@ -433,20 +431,3 @@ private struct PromptFeedback: Decodable {
 }
 
 // MARK: - Error Types
-
-/// Error response from proxy server
-private struct ProxyErrorResponse: Decodable {
-    let error: String
-    let code: String
-    let details: String?
-}
-
-/// Custom error for proxy responses
-private struct ProxyError: LocalizedError {
-    let code: String
-    let message: String
-
-    var errorDescription: String? {
-        "\(code): \(message)"
-    }
-}

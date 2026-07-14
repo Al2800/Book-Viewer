@@ -223,6 +223,12 @@ enum AccessibilityIdentifiers {
 
         /// Margin note field inside the "Edit Quote" sheet during extraction review.
         static let extractionQuoteMarginNoteField = "capture_extraction_quote_margin_note_field"
+
+        /// Per-candidate provenance shown during extraction review.
+        static let extractionQuoteSourceLabel = "capture_extraction_quote_source_label"
+
+        /// On-device fallback status shown for a processed page.
+        static let extractionFallbackNotice = "capture_extraction_fallback_notice"
     }
 
     // MARK: - Collections

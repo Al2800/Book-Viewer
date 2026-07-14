@@ -148,7 +148,7 @@ final class GeminiServiceTests: SwiftDataTestCase {
         XCTAssertEqual(result.quotes.first?.extractionSource, .unknown)
     }
 
-    func testParseQuoteResponse_ExplicitExtractionSourceIsPreserved() async throws {
+    func testParseQuoteResponse_IgnoresModelReportedExtractionSource() async throws {
         let json = """
         {
             "quotes": [
@@ -163,6 +163,21 @@ final class GeminiServiceTests: SwiftDataTestCase {
         """
 
         let result = try QuoteExtractionResult.parse(from: json)
+
+        XCTAssertEqual(result.quotes.first?.extractionSource, .unknown)
+    }
+
+    func testApplicationAssignedExtractionSourceOverridesUntrustedResponseValue() throws {
+        let json = """
+        {
+            "quotes": [
+                {"text":"Candidate","markingType":"underline","confidence":0.8,"extractionSource":"manual"}
+            ]
+        }
+        """
+
+        let result = try QuoteExtractionResult.parse(from: json)
+            .withExtractionSource(.modelAssisted)
 
         XCTAssertEqual(result.quotes.first?.extractionSource, .modelAssisted)
     }
@@ -242,6 +257,60 @@ final class GeminiServiceTests: SwiftDataTestCase {
         XCTAssertEqual(result.quotes.first?.text, "Quote from code block")
 
         logger.success("Code block wrapped JSON parsed correctly")
+    }
+
+    func testParseQuoteResponseRejectsOversizedPayload() throws {
+        let json = "{\"quotes\":[],\"processingNotes\":\"\(String(repeating: "x", count: 128 * 1024))\"}"
+
+        XCTAssertThrowsError(try QuoteExtractionResult.parse(from: json)) { error in
+            XCTAssertEqual(error.localizedDescription, "The extraction result could not be read")
+        }
+    }
+
+    func testParseQuoteResponseRejectsTooManyCandidates() throws {
+        let candidates = (0...30).map { index in
+            "{\"text\":\"Quote \(index)\",\"markingType\":\"underline\",\"confidence\":0.8}"
+        }.joined(separator: ",")
+        let json = "{\"quotes\":[\(candidates)]}"
+
+        XCTAssertThrowsError(try QuoteExtractionResult.parse(from: json)) { error in
+            XCTAssertEqual(error.localizedDescription, "The extraction result could not be read")
+        }
+    }
+
+    func testParseQuoteResponseDropsInvalidCandidatesAndNormalizesNumericValues() throws {
+        let oversizedQuote = String(repeating: "x", count: 2_001)
+        let json = """
+        {
+          "quotes": [
+            {"text":"   ","markingType":"underline","confidence":0.9},
+            {"text":"\(oversizedQuote)","markingType":"highlight","confidence":0.9},
+            {"text":"  Kept   quote  ","pageNumber":0,"markingType":"<b>Highlight</b>","confidence":-0.4},
+            {"text":"Second kept quote","pageNumber":10001,"markingType":"margin note","confidence":1.4}
+          ],
+          "pageNumber":-2
+        }
+        """
+
+        let result = try QuoteExtractionResult.parse(from: json)
+
+        XCTAssertEqual(result.quotes.map(\.text), ["Kept quote", "Second kept quote"])
+        XCTAssertNil(result.pageNumber)
+        XCTAssertNil(result.quotes[0].pageNumber)
+        XCTAssertEqual(result.quotes[0].confidence, 0)
+        XCTAssertEqual(result.quotes[0].markingType, "b_highlight_b")
+        XCTAssertNil(result.quotes[1].pageNumber)
+        XCTAssertEqual(result.quotes[1].confidence, 1)
+    }
+
+    func testParseQuoteResponseRejectsNonFiniteConfidence() throws {
+        let json = """
+        {"quotes":[{"text":"Quote","markingType":"underline","confidence":1e999}]}
+        """
+
+        XCTAssertThrowsError(try QuoteExtractionResult.parse(from: json)) { error in
+            XCTAssertEqual(error.localizedDescription, "The extraction result could not be read")
+        }
     }
 
     // MARK: - Book Metadata Response Parsing Tests
@@ -495,5 +564,19 @@ final class GeminiServiceTests: SwiftDataTestCase {
         }
 
         logger.success("All errors have descriptions and recovery suggestions")
+    }
+
+    func testExtractionErrorDoesNotExposeProviderDetails() {
+        let providerError = ExtractionError.parsingError("provider returned a prompt and account token")
+        let networkError = ExtractionError.networkError(NSError(
+            domain: "Provider",
+            code: 1,
+            userInfo: [NSLocalizedDescriptionKey: "internal provider details"]
+        ))
+
+        XCTAssertEqual(providerError.localizedDescription, "The extraction result could not be read")
+        XCTAssertEqual(networkError.localizedDescription, "The extraction service could not be reached")
+        XCTAssertFalse(providerError.localizedDescription.contains("token"))
+        XCTAssertFalse(networkError.localizedDescription.contains("internal"))
     }
 }

@@ -13,6 +13,21 @@ struct QuoteExtractionResult: Codable, Sendable {
     /// Optional notes about the extraction process
     let processingNotes: String?
 
+    /// Why on-device extraction was used after a remote attempt, if applicable.
+    let fallbackReason: ExtractionFallbackReason?
+
+    init(
+        quotes: [ExtractedQuoteData],
+        pageNumber: Int?,
+        processingNotes: String?,
+        fallbackReason: ExtractionFallbackReason? = nil
+    ) {
+        self.quotes = quotes
+        self.pageNumber = pageNumber
+        self.processingNotes = processingNotes
+        self.fallbackReason = fallbackReason
+    }
+
     /// Whether extraction was successful
     var isSuccessful: Bool {
         !quotes.isEmpty
@@ -44,6 +59,79 @@ enum QuoteExtractionSource: String, Codable, Sendable {
     case modelAssisted = "model_assisted"
     case manual
     case unknown
+}
+
+extension QuoteExtractionSource {
+    var reviewLabel: String {
+        switch self {
+        case .onDevice:
+            return "On-device"
+        case .modelAssisted:
+            return "Model-assisted"
+        case .manual:
+            return "Manual"
+        case .unknown:
+            return "Source unavailable"
+        }
+    }
+
+    var reviewSymbol: String {
+        switch self {
+        case .onDevice:
+            return "iphone"
+        case .modelAssisted:
+            return "sparkles"
+        case .manual:
+            return "pencil"
+        case .unknown:
+            return "questionmark.circle"
+        }
+    }
+}
+
+enum ExtractionFallbackReason: String, Codable, Sendable, Equatable {
+    case remoteProcessingDisabled
+    case remoteAuthenticationRequired
+    case remoteSubscriptionRequired
+    case remoteRateLimited
+    case remoteUnavailable
+    case remoteReturnedNoQuotes
+
+    var reviewMessage: String {
+        switch self {
+        case .remoteProcessingDisabled:
+            return "On-device extraction was used because remote processing is off."
+        case .remoteAuthenticationRequired:
+            return "On-device extraction was used because remote processing needs sign-in."
+        case .remoteSubscriptionRequired:
+            return "On-device extraction was used because remote processing needs a subscription."
+        case .remoteRateLimited:
+            return "On-device extraction was used while remote processing is temporarily limited."
+        case .remoteUnavailable:
+            return "On-device extraction was used because remote processing was unavailable."
+        case .remoteReturnedNoQuotes:
+            return "On-device extraction was used because remote processing found no marked text."
+        }
+    }
+
+    static func from(_ error: Error) -> ExtractionFallbackReason {
+        guard let extractionError = error as? ExtractionError else {
+            return .remoteUnavailable
+        }
+
+        switch extractionError {
+        case .thirdPartyAIConsentRequired:
+            return .remoteProcessingDisabled
+        case .authenticationRequired:
+            return .remoteAuthenticationRequired
+        case .subscriptionRequired:
+            return .remoteSubscriptionRequired
+        case .rateLimited:
+            return .remoteRateLimited
+        case .invalidImage, .networkError, .parsingError, .noQuotesFound:
+            return .remoteUnavailable
+        }
+    }
 }
 
 /// Individual quote data from extraction response
@@ -219,10 +307,10 @@ enum ExtractionError: LocalizedError {
         switch self {
         case .invalidImage:
             return "The image could not be processed"
-        case .networkError(let error):
-            return "Network error: \(error.localizedDescription)"
-        case .parsingError(let details):
-            return "Failed to parse response: \(details)"
+        case .networkError:
+            return "The extraction service could not be reached"
+        case .parsingError:
+            return "The extraction result could not be read"
         case .noQuotesFound:
             return "No marked passages were found in the image"
         case .rateLimited:
@@ -241,9 +329,9 @@ enum ExtractionError: LocalizedError {
         case .invalidImage:
             return "Try capturing a clearer image with better lighting"
         case .networkError:
-            return "Check your internet connection and try again"
+            return "Try again, or continue with on-device extraction"
         case .parsingError:
-            return "Try capturing the image again"
+            return "Try again, or review the image and add the quote manually"
         case .noQuotesFound:
             return "Make sure your markings are clearly visible in the image"
         case .rateLimited:
@@ -274,12 +362,26 @@ extension QuoteExtractionResult {
                 )
             },
             pageNumber: pageNumber,
-            processingNotes: processingNotes
+            processingNotes: processingNotes,
+            fallbackReason: fallbackReason
+        )
+    }
+
+    func withFallbackReason(_ reason: ExtractionFallbackReason) -> QuoteExtractionResult {
+        QuoteExtractionResult(
+            quotes: quotes,
+            pageNumber: pageNumber,
+            processingNotes: processingNotes,
+            fallbackReason: reason
         )
     }
 
     /// Parse from JSON string response
     static func parse(from jsonString: String) throws -> QuoteExtractionResult {
+        guard jsonString.lengthOfBytes(using: .utf8) <= QuoteExtractionOutputValidator.maximumResponseBytes else {
+            throw ExtractionError.parsingError("Response exceeds the extraction size limit")
+        }
+
         // Clean up common JSON issues
         var cleaned = jsonString
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -301,9 +403,28 @@ extension QuoteExtractionResult {
         }
 
         do {
-            let decoder = JSONDecoder()
-            return try decoder.decode(QuoteExtractionResult.self, from: data)
+            let rawResult = try JSONDecoder().decode(RawQuoteExtractionResult.self, from: data)
+            guard rawResult.quotes.count <= QuoteExtractionOutputValidator.maximumCandidateCount else {
+                throw ExtractionError.parsingError("Response contains too many quote candidates")
+            }
+
+            let quotes = rawResult.quotes.compactMap(QuoteExtractionOutputValidator.quote(from:))
+            if !rawResult.quotes.isEmpty && quotes.isEmpty {
+                throw ExtractionError.parsingError("Response contains no valid quote candidates")
+            }
+
+            return QuoteExtractionResult(
+                quotes: quotes,
+                pageNumber: QuoteExtractionOutputValidator.pageNumber(rawResult.pageNumber),
+                processingNotes: QuoteExtractionOutputValidator.optionalText(
+                    rawResult.processingNotes,
+                    maximumLength: QuoteExtractionOutputValidator.maximumProcessingNotesLength
+                )
+            )
         } catch {
+            if let extractionError = error as? ExtractionError {
+                throw extractionError
+            }
             throw ExtractionError.parsingError(error.localizedDescription)
         }
     }
@@ -312,6 +433,10 @@ extension QuoteExtractionResult {
 extension BookMetadataResult {
     /// Parse from JSON string response
     static func parse(from jsonString: String) throws -> BookMetadataResult {
+        guard jsonString.lengthOfBytes(using: .utf8) <= QuoteExtractionOutputValidator.maximumResponseBytes else {
+            throw ExtractionError.parsingError("Response exceeds the extraction size limit")
+        }
+
         var cleaned = jsonString
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -337,5 +462,101 @@ extension BookMetadataResult {
         } catch {
             throw ExtractionError.parsingError(error.localizedDescription)
         }
+    }
+}
+
+private struct RawQuoteExtractionResult: Decodable {
+    let quotes: [RawExtractedQuoteData]
+    let pageNumber: Int?
+    let processingNotes: String?
+}
+
+private struct RawExtractedQuoteData: Decodable {
+    let text: String?
+    let pageNumber: Int?
+    let marginNote: String?
+    let markingType: String?
+    let confidence: Double?
+}
+
+private enum QuoteExtractionOutputValidator {
+    static let maximumResponseBytes = 128 * 1024
+    static let maximumCandidateCount = 30
+    static let maximumQuoteLength = 2_000
+    static let maximumMarginNoteLength = 500
+    static let maximumMarkingTypeLength = 64
+    static let maximumProcessingNotesLength = 500
+    static let maximumPageNumber = 10_000
+
+    static func quote(from raw: RawExtractedQuoteData) -> ExtractedQuoteData? {
+        guard let text = requiredText(raw.text, maximumLength: maximumQuoteLength) else {
+            return nil
+        }
+
+        return ExtractedQuoteData(
+            text: text,
+            pageNumber: pageNumber(raw.pageNumber),
+            marginNote: optionalText(raw.marginNote, maximumLength: maximumMarginNoteLength),
+            markingType: markingType(raw.markingType),
+            confidence: confidence(raw.confidence)
+        )
+    }
+
+    static func pageNumber(_ value: Int?) -> Int? {
+        guard let value, (1...maximumPageNumber).contains(value) else {
+            return nil
+        }
+        return value
+    }
+
+    static func confidence(_ value: Double?) -> Double? {
+        guard let value, value.isFinite else {
+            return nil
+        }
+        return min(max(value, 0), 1)
+    }
+
+    static func optionalText(_ value: String?, maximumLength: Int) -> String? {
+        guard let value else { return nil }
+        return normalizedText(value, maximumLength: maximumLength)
+    }
+
+    private static func requiredText(_ value: String?, maximumLength: Int) -> String? {
+        guard let value else { return nil }
+        return normalizedText(value, maximumLength: maximumLength)
+    }
+
+    private static func normalizedText(_ value: String, maximumLength: Int) -> String? {
+        let withoutControls = value.components(separatedBy: .controlCharacters).joined(separator: " ")
+        let normalized = withoutControls
+            .split(whereSeparator: { $0.isWhitespace })
+            .joined(separator: " ")
+
+        guard !normalized.isEmpty, normalized.count <= maximumLength else {
+            return nil
+        }
+        return normalized
+    }
+
+    private static func markingType(_ value: String?) -> String {
+        guard let value else { return "mixed" }
+
+        var result = ""
+        var needsSeparator = false
+        for scalar in value.lowercased().unicodeScalars {
+            switch scalar.value {
+            case 97...122, 48...57:
+                if needsSeparator && !result.isEmpty {
+                    result.append("_")
+                }
+                result.unicodeScalars.append(scalar)
+                needsSeparator = false
+            default:
+                needsSeparator = !result.isEmpty
+            }
+        }
+
+        let normalized = String(result.prefix(maximumMarkingTypeLength))
+        return normalized.isEmpty ? "mixed" : normalized
     }
 }

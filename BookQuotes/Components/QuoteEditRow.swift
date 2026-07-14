@@ -20,6 +20,8 @@ struct QuoteEditRow: View {
 
                 MarkingTypeStringBadge(type: quote.markingType)
 
+                ExtractionSourceBadge(source: quote.extractionSource)
+
                 Spacer()
 
                 if let pageNumber = quote.pageNumber {
@@ -104,6 +106,18 @@ struct QuoteEditRow: View {
             quote.isModified = true
         }
         showEditor = false
+    }
+}
+
+private struct ExtractionSourceBadge: View {
+    let source: QuoteExtractionSource
+
+    var body: some View {
+        Label(source.reviewLabel, systemImage: source.reviewSymbol)
+            .font(.caption2)
+            .foregroundStyle(Color.textSecondary)
+            .accessibilityIdentifier("\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_\(source.rawValue)")
+            .accessibilityLabel("Extraction source: \(source.reviewLabel)")
     }
 }
 

@@ -67,7 +67,8 @@ final class PageCaptureTests: SwiftDataTestCase {
                 )
             ],
             pageNumber: 42,
-            processingNotes: "clear marking"
+            processingNotes: "clear marking",
+            fallbackReason: .remoteUnavailable
         )
 
         try capture.completeExtraction(with: result)
@@ -76,6 +77,7 @@ final class PageCaptureTests: SwiftDataTestCase {
         XCTAssertEqual(capture.extractedQuoteCount, 1)
         XCTAssertEqual(capture.detectedPageNumber, 42)
         XCTAssertEqual(capture.loadExtractedQuotes().first?.text, "A marked passage")
+        XCTAssertEqual(capture.extractionFallbackReason, .remoteUnavailable)
     }
 
     func testCompleteExtractionFailsForEmptyResult() {

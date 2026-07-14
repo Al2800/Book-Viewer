@@ -63,15 +63,61 @@ struct QuoteCaptureSessionStore {
         pageCapture: PageCapture,
         session: CaptureSession
     ) {
-        let quotes = [
-            ExtractedQuoteData(
-                text: "Test quote extracted for UI testing.",
-                pageNumber: 12,
-                marginNote: nil,
-                markingType: "underline",
-                confidence: 0.92
-            )
-        ]
+        let quotes: [ExtractedQuoteData]
+        switch UITestConfiguration.mockExtractionScenario {
+        case "remote":
+            quotes = [
+                ExtractedQuoteData(
+                    text: "A model-assisted quote used for review testing.",
+                    pageNumber: 38,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.94,
+                    extractionSource: .modelAssisted
+                )
+            ]
+        case "local-fallback":
+            quotes = [
+                ExtractedQuoteData(
+                    text: "An on-device fallback quote used for review testing.",
+                    pageNumber: 38,
+                    marginNote: "review locally",
+                    markingType: "highlight",
+                    confidence: 0.74,
+                    extractionSource: .onDevice
+                )
+            ]
+            pageCapture.extractionFallbackReason = .remoteUnavailable
+        case "mixed":
+            quotes = [
+                ExtractedQuoteData(
+                    text: "A model-assisted quote used for review testing.",
+                    pageNumber: 38,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.94,
+                    extractionSource: .modelAssisted
+                ),
+                ExtractedQuoteData(
+                    text: "An on-device quote used for review testing.",
+                    pageNumber: 38,
+                    marginNote: "review locally",
+                    markingType: "highlight",
+                    confidence: 0.74,
+                    extractionSource: .onDevice
+                )
+            ]
+        default:
+            quotes = [
+                ExtractedQuoteData(
+                    text: "Test quote extracted for UI testing.",
+                    pageNumber: 12,
+                    marginNote: nil,
+                    markingType: "underline",
+                    confidence: 0.92
+                )
+            ]
+        }
 
         pageCapture.storeExtractedQuotes(quotes)
         pageCapture.completeProcessing(

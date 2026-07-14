@@ -107,21 +107,30 @@ struct PageQuoteEditor: View {
     private var quotesSection: some View {
         VStack(spacing: 0) {
             // Header
-            HStack {
-                Label(PageQuoteEditorList(quotes: quotes).countTitle, systemImage: "text.quote")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundStyle(Color.textPrimary)
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                HStack {
+                    Label(PageQuoteEditorList(quotes: quotes).countTitle, systemImage: "text.quote")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.textPrimary)
 
-                Spacer()
+                    Spacer()
 
-                Button {
-                    onAddManualQuote()
-                } label: {
-                    Label("Add", systemImage: "plus")
-                        .font(.caption)
+                    Button {
+                        onAddManualQuote()
+                    } label: {
+                        Label("Add", systemImage: "plus")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.secondaryCompact)
                 }
-                .buttonStyle(.secondaryCompact)
+
+                if let fallbackReason = page.extractionFallbackReason {
+                    Label(fallbackReason.reviewMessage, systemImage: "iphone")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionFallbackNotice)
+                }
             }
             .padding(Spacing.md)
             .background(Color.backgroundSecondary)
