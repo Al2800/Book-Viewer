@@ -144,9 +144,9 @@ final class OnboardingFlowTests: BaseUITestCase {
 
     // MARK: - Marking Setup Tests
 
-    func testOnboarding_MarkingSetup_DisplaysMarkingOptions() throws {
+    func testOnboarding_MarkingSetup_DisplaysMarkingOptions() {
         logger.step(1, "Navigating to marking setup")
-        try navigateToMarkingSetup()
+        navigateToMarkingSetup()
 
         logger.step(2, "Verifying marking setup screen")
         let header = app.staticTexts["How Do You Mark Books?"]
@@ -166,9 +166,9 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.success("Marking setup displays options")
     }
 
-    func testOnboarding_MarkingSetup_UseDefaultsOption() throws {
+    func testOnboarding_MarkingSetup_UseDefaultsOption() {
         logger.step(1, "Navigating to marking setup")
-        try navigateToMarkingSetup()
+        navigateToMarkingSetup()
 
         logger.step(2, "Finding Use defaults option")
         let useDefaultsButton = app.buttons["Use defaults"]
@@ -191,9 +191,9 @@ final class OnboardingFlowTests: BaseUITestCase {
 
     // MARK: - Completion Step Tests
 
-    func testOnboarding_CompletionStep_DisplaysSuccessState() throws {
+    func testOnboarding_CompletionStep_DisplaysSuccessState() {
         logger.step(1, "Navigating to completion step")
-        try navigateToCompletionStep()
+        navigateToCompletionStep()
 
         logger.step(2, "Verifying completion screen elements")
 
@@ -214,9 +214,9 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.success("Completion step displays success state")
     }
 
-    func testOnboarding_CompletionStep_TapStartCapturing_DismissesOnboarding() throws {
+    func testOnboarding_CompletionStep_TapStartCapturing_DismissesOnboarding() {
         logger.step(1, "Navigating to completion step")
-        try navigateToCompletionStep()
+        navigateToCompletionStep()
 
         logger.step(2, "Tapping Start Capturing")
         let startButton = app.buttons["Start Capturing"]
@@ -231,8 +231,8 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.success("Start Capturing dismisses onboarding")
     }
 
-    func testOnboarding_RemoteAIConsentCanBeEnabledAndRevokedInSettings() throws {
-        try navigateToCompletionStep()
+    func testOnboarding_RemoteAIConsentCanBeEnabledAndRevokedInSettings() {
+        navigateToCompletionStep()
         app.buttons["Start Capturing"].tap()
         XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 5))
 
@@ -283,65 +283,42 @@ final class OnboardingFlowTests: BaseUITestCase {
 
     private func navigateToSignInStep() {
         let skipButton = app.buttons["Skip"]
-        if skipButton.waitForExistence(timeout: 5) {
-            skipButton.tap()
-        } else {
-            // Navigate through welcome pages
-            let getStarted = app.buttons["Get Started"]
-            if getStarted.exists {
-                getStarted.tap()
-            }
-        }
+        XCTAssertTrue(skipButton.waitForExistence(timeout: 5), "Welcome should provide Skip on the first page")
+        skipButton.tap()
 
-        // Wait for sign-in screen
-        _ = app.staticTexts["Sign In or Continue Locally"].waitForExistence(timeout: 5)
+        let signInHeader = app.staticTexts["Sign In or Continue Locally"]
+        XCTAssertTrue(signInHeader.waitForExistence(timeout: 5), "Skip should open the sign-in step")
     }
 
-    private func navigateToMarkingSetup() throws {
+    private func navigateToMarkingSetup() {
         navigateToSignInStep()
 
-        // In test mode with --skip-auth, bypass sign-in.
-        if app.buttons["Continue Without an Account"].waitForExistence(timeout: 3) {
-            app.buttons["Continue Without an Account"].tap()
-        }
+        // The local-only path is a required first-run route, independent of authentication.
+        let localOnly = app.buttons["Continue Without an Account"]
+        XCTAssertTrue(localOnly.waitForExistence(timeout: 5), "Sign-in should offer a local-only path")
+        localOnly.tap()
 
-        // Subscription-enabled builds insert a paywall step before marking setup.
+        // Signed-in routes may pass through a subscription prompt; local-only setup should not.
         let subscriptionHeader = app.staticTexts["Choose Your Plan"]
-        if subscriptionHeader.waitForExistence(timeout: 5) {
-            let maybeLater = app.buttons["Maybe later"]
-            XCTAssertTrue(maybeLater.waitForExistence(timeout: 3), "Subscription step should offer a skip path in UI tests")
-            maybeLater.tap()
-        }
+        XCTAssertFalse(subscriptionHeader.waitForExistence(timeout: 1), "Local-only onboarding should not require a subscription choice")
 
         let markingHeader = app.staticTexts["How Do You Mark Books?"]
-        if !markingHeader.waitForExistence(timeout: 5) {
-            throw XCTSkip("Could not navigate to marking setup - may require auth")
-        }
+        XCTAssertTrue(markingHeader.waitForExistence(timeout: 5), "Local-only onboarding should reach marking setup")
     }
 
-    private func navigateToCompletionStep() throws {
-        try navigateToMarkingSetup()
+    private func navigateToCompletionStep() {
+        navigateToMarkingSetup()
 
-        // Use defaults to skip to completion
+        // Use the advertised defaults path to continue without editing preferences.
         let useDefaults = app.buttons["Use defaults"]
-        if useDefaults.waitForExistence(timeout: 3) {
-            useDefaults.tap()
-        } else {
-            let continueButton = app.buttons["Continue"]
-            if continueButton.exists {
-                continueButton.tap()
-            }
-        }
+        XCTAssertTrue(useDefaults.waitForExistence(timeout: 5), "Marking setup should offer Use defaults")
+        useDefaults.tap()
 
         let localOnly = app.buttons["Use On-Device Only"]
-        if localOnly.waitForExistence(timeout: 5) {
-            localOnly.tap()
-        }
+        XCTAssertTrue(localOnly.waitForExistence(timeout: 5), "Onboarding should ask for an AI processing decision")
+        localOnly.tap()
 
-        // Wait for completion
         let completionTitle = app.staticTexts["You're All Set!"]
-        if !completionTitle.waitForExistence(timeout: 5) {
-            throw XCTSkip("Could not navigate to completion step")
-        }
+        XCTAssertTrue(completionTitle.waitForExistence(timeout: 5), "Onboarding should reach completion after choosing on-device processing")
     }
 }

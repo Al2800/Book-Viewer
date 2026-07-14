@@ -22,7 +22,7 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - `CoverCaptureFlowTests`: 5 skip sites (resolved; 0 remaining).
 - `QuoteCaptureFlowTests`: 11 skip sites (resolved; 0 remaining).
 - `LibraryManagementTests`: 1 skip site (resolved; 0 remaining).
-- `OnboardingFlowTests`: 2 skip sites.
+- `OnboardingFlowTests`: 2 skip sites (resolved; 0 remaining).
 
 ## Verification
 
@@ -44,6 +44,8 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - [x] The explicit UI-test cover fixture supplies deterministic local metadata only while mocked camera testing is enabled; production cover analysis remains unchanged.
 - [x] `LibraryManagementTests`: replaced the false-green delete skip with strict list-row, action-menu, destructive-confirmation, and cancellation assertions.
 - [x] Book deletion now uses a native alert rather than a popover-style confirmation, preserving an explicit visible Cancel action for an irreversible operation on every size class.
+- [x] `OnboardingFlowTests`: replaced both false-green skip branches with strict welcome, local-only sign-in, marking-defaults, AI-consent, and completion assertions.
+- [x] The local-only first-run path is verified not to require a subscription choice, and the required on-device-only AI decision is exercised before completion.
 
 ## Evidence
 
@@ -54,3 +56,4 @@ The full UI target contains 33 `XCTSkip` branches. Several skip when a required 
 - Targeted cover regressions: test-cover capture, shutter capture-to-crop, and saving a captured cover each passed on iPhone 17 (iOS 26.5).
 - Full cover workflow: 11 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-CoverCapture-full.xcresult`.
 - Full Library management workflow: 7 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-LibraryManagement-full.xcresult`.
+- Full onboarding workflow: 11 passed, 0 failed, 0 skipped on iPhone 17 (iOS 26.5). Result bundle: `/tmp/BookQuotes-Onboarding-full.xcresult`.
