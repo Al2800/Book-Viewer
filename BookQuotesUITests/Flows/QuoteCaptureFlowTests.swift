@@ -202,8 +202,11 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(textEditor.waitForExistence(timeout: 5), "Quote editor sheet should expose editable text")
 
         logger.step(3, "Editing quote text")
+        XCTAssertTrue(
+            app.keyboards.firstMatch.waitForExistence(timeout: 5),
+            "Quote editor should receive keyboard focus"
+        )
         textEditor.tap()
-        // Type some additional text
         textEditor.typeText(" - edited")
 
         logger.step(4, "Verifying edit")
@@ -211,7 +214,6 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             NSPredicate(format: "identifier == %@ AND value CONTAINS 'edited'",
                         AccessibilityIdentifiers.Capture.extractionQuoteTextEditor)
         ).firstMatch
-
         XCTAssertTrue(editedText.waitForExistence(timeout: 2), "Edited text should be present in the text editor")
 
         logger.success("Quote text edited successfully")
