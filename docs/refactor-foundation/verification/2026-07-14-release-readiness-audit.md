@@ -28,9 +28,14 @@
 - Custom marking identities now survive on-device or model-assisted extraction, cached review,
   queued processing, and quote saving. The focused regression gate passed on 2026-07-15 in
   49.802 seconds, and the unsigned Release build completed successfully after the change.
-- The quote-editor typing UI test remains unverified on the iOS 26 simulator: its rendered native
-  `TextEditor` does not receive keyboard focus from a synthesized XCTest tap. This is a simulator
-  automation gap, not a passing release result.
+- Quote editor interaction is covered by a native UIKit text editor that retries initial focus
+  through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
+  The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,
+  0 failures, 0 skips in 382.707 seconds on iPhone 17. Result bundle:
+  `/tmp/bookquotes-capture-regression-2026-07-15.xcresult`.
+- The direct quote-editor typing test also passed on iPad Air 11-inch (M4), iOS 26.5: 1 test,
+  0 failures, 0 skips in 90.072 seconds. Result bundle:
+  `/tmp/bookquotes-quote-editor-ipad-2026-07-15.xcresult`.
 - The full app-unit command returned success, but Xcode wrote an incomplete result bundle without
   `Info.plist`; do not use that rerun as countable release evidence. Re-run the full app-unit gate
   and retain a readable `.xcresult` before archiving.

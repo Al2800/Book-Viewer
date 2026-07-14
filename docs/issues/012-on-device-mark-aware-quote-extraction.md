@@ -168,7 +168,7 @@ None - can start immediately.
 - The deterministic on-device extractor now applies an enabled custom definition only when its visible mark family is unambiguous, retaining the reader-facing display name for review.
 - Model-assisted output is resolved only against validated, enabled local definitions after parsing; no model response can supply or select a SwiftData definition ID.
 - Cached capture results, extraction review, queued capture processing, and quote saving now preserve the resolved custom marking relationship.
-- The review editor now uses a fixed-height native text editor so its margin-note field remains visible on compact screens.
+- The review editor now uses a fixed-height native UIKit text editor so its margin-note field remains visible on compact screens, it reliably receives initial keyboard focus, and active edits are not overwritten by a stale SwiftUI update.
 
 ## Verification Results
 
@@ -298,7 +298,23 @@ Result:
 
 - Passed on 2026-07-15.
 - Runtime: `49.802` seconds.
-- The separate quote-editor typing UI test remains an iOS 26 simulator automation gap: the rendered `TextEditor` does not receive keyboard focus from a synthesized XCTest tap. It requires a physical-device/manual test before release.
+
+Quote-editor interaction regression:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesUITests/QuoteCaptureFlowTests \
+  -only-testing:BookQuotesTests/QuoteSaveDraftTests \
+  -only-testing:BookQuotesTests/ExtractionReviewQuoteStateTests
+```
+
+Result:
+
+- Passed on 2026-07-15: 20 tests, 0 failures, 0 skips; runtime `382.707` seconds.
+- Retained result bundle: `/tmp/bookquotes-capture-regression-2026-07-15.xcresult`.
+- `QuoteCaptureFlowTests/testQuoteEditor_CanEditText` also passed on iPad Air 11-inch (M4),
+  iOS 26.5: 1 test, 0 failures, 0 skips; runtime `90.072` seconds.
+- Retained result bundle: `/tmp/bookquotes-quote-editor-ipad-2026-07-15.xcresult`.
 
 ## Residual Risk
 
