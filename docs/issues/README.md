@@ -101,6 +101,20 @@ This folder tracks local markdown issues for the refactor programme.
 - `089-website-dependency-privacy-readiness.md` - closed
 - `090-quote-detail-view-final-slice.md` - closed
 - `091-release-evidence-pack-and-device-smoke.md` - in_progress
+- `092-batch-processing-blank-screen.md` - closed
+- `093-third-party-ai-explicit-consent.md` - open
+- `094-privacy-declarations-behavior-alignment.md` - open
+- `095-ai-provider-routing-and-retention-contract.md` - open
+- `096-capture-image-lifecycle-and-storage.md` - in_progress
+- `097-offline-capture-queue-and-draft-integrity.md` - in_progress
+- `098-real-library-backup-and-restore.md` - closed
+- `099-account-deletion-session-revocation.md` - open
+- `100-optional-sign-in-and-local-mode.md` - open
+- `101-signed-out-subscription-purchase-gating.md` - open
+- `102-atomic-extraction-rate-limits.md` - open
+- `103-ai-prompt-output-and-provenance-validation.md` - open
+- `104-ui-test-isolation-and-assertion-reliability.md` - open
+- `105-adaptive-ui-and-accessibility-layout.md` - open
 
 ## Refactor Rules
 

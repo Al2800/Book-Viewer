@@ -5,6 +5,7 @@ enum OnboardingStep: Equatable {
     case signIn
     case subscription
     case markingSetup
+    case aiConsent
     case complete
 }
 
@@ -33,7 +34,7 @@ struct OnboardingSessionState: Equatable {
     }
 
     mutating func advanceFromSignIn() {
-        currentStep = flowPolicy.stepAfterSignIn
+        currentStep = signedInUser == nil ? .markingSetup : flowPolicy.stepAfterSignIn
     }
 
     mutating func advanceFromSubscription() {
@@ -41,6 +42,10 @@ struct OnboardingSessionState: Equatable {
     }
 
     mutating func advanceFromMarkingSetup() {
+        currentStep = .aiConsent
+    }
+
+    mutating func advanceFromAIConsent() {
         currentStep = .complete
     }
 

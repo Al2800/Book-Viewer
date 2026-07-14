@@ -11,7 +11,7 @@ final class OnboardingSignInCopyPolicyTests: XCTestCase {
 
         XCTAssertEqual(
             policy.description,
-            "Sign in to start your 7-day free trial and unlock AI extraction while keeping your library stored on this device"
+            "Sign in for a free trial and remote AI features. You can continue locally and sign in later."
         )
     }
 
@@ -23,7 +23,7 @@ final class OnboardingSignInCopyPolicyTests: XCTestCase {
 
         XCTAssertEqual(
             policy.description,
-            "Sign in to sync your library across devices and unlock all features"
+            "Sign in to sync your library across devices. You can continue locally and sign in later."
         )
     }
 
@@ -35,7 +35,7 @@ final class OnboardingSignInCopyPolicyTests: XCTestCase {
 
         XCTAssertEqual(
             policy.description,
-            "Sign in to enable AI extraction while keeping your library stored on this device"
+            "Your library works on this device without an account. Sign in later for remote AI features."
         )
     }
 }

@@ -36,13 +36,27 @@ export default function PrivacyPage() {
 
             <h3>Image Processing</h3>
             <p>
-              When you capture a marked quote page, the image may be sent to the BookQuotes
-              proxy and then to Hugging Face for model-assisted quote extraction. If remote
-              extraction is unavailable, the app can fall back to Apple Vision OCR and local
-              mark detection on-device. Cover extraction may send the image to the BookQuotes
-              proxy and then to Google Gemini for processing.{' '}
-              <strong>Images are not stored</strong> after processing is complete. They exist
-              only in memory during extraction.
+              Captured pages and cover images are stored locally on your device while you
+              review, retry, or save them. When you save a quote, a compressed source-image
+              copy may be kept with that quote for reference until you delete the quote. Draft
+              and queued images remain on-device until they are processed or deleted.
+            </p>
+            <p>
+              If you enable Remote AI Processing, the selected image, extraction instructions,
+              and resulting text are sent through the BookQuotes service to Hugging Face
+              Inference for quote-page extraction or Google Gemini for cover extraction. The
+              BookQuotes service does not write those image or prompt payloads to its application
+              database; each provider handles request data under its own terms.
+            </p>
+
+            <h3>Service Usage and Subscription Records</h3>
+            <p>
+              To authenticate requests and enforce subscription access, BookQuotes stores your
+              Apple-provided account identifier, subscription access records, monthly extraction
+              counts, and last-updated timestamps. Short-lived rate-limit counters may use your
+              account and network information to protect the service. After account deletion, a
+              session-revocation record may remain for up to eight days solely to prevent use of
+              already-issued session tokens.
             </p>
 
             <h3>Your Quotes and Books</h3>
@@ -60,7 +74,7 @@ export default function PrivacyPage() {
               <li>Advertising identifiers</li>
               <li>Location information</li>
               <li>Contact lists or personal files</li>
-              <li>Usage patterns or behavioral data</li>
+              <li>Advertising profiles or behavioral analytics</li>
             </ul>
           </section>
 
@@ -71,18 +85,18 @@ export default function PrivacyPage() {
             </p>
             <ul>
               <li>
-                <strong>Hugging Face</strong> &mdash; For model-assisted quote extraction from
-                marked quote pages. Images are processed in-flight and are not retained after
-                extraction completes.
+                <strong>Hugging Face Inference</strong> &mdash; For model-assisted quote extraction
+                from marked quote pages when you enable Remote AI Processing. Provider handling
+                is governed by its applicable terms.
               </li>
               <li>
                 <strong>Apple Vision</strong> &mdash; For on-device OCR fallback of marked quote
                 pages.
               </li>
               <li>
-                <strong>Google Gemini API</strong> &mdash; For cover metadata extraction from
-                images. Images are processed according to Google&apos;s privacy policy and are
-                not retained after processing.
+                <strong>Google Gemini API</strong> &mdash; For cover metadata extraction from images
+                when you enable Remote AI Processing. Provider handling is governed by its
+                applicable terms.
               </li>
               <li>
                 <strong>Apple Sign-In</strong> &mdash; For secure authentication without
@@ -107,10 +121,11 @@ export default function PrivacyPage() {
             <h2>Your Rights</h2>
             <p>
               You can delete your BookQuotes account from Settings → Account → Delete Account.
-              That removes authentication and subscription access records from BookQuotes
-              servers. Your on-device library remains unless you delete it yourself. App Store
-              subscriptions are billed by Apple and must be cancelled in Apple subscription
-              management. Removing the app from your device also deletes local library data.
+              That removes subscription access records and usage data from BookQuotes servers;
+              a session-revocation record remains for up to eight days to block existing tokens.
+              Your on-device library remains unless you delete it yourself. App Store subscriptions
+              are billed by Apple and must be cancelled in Apple subscription management. Removing
+              the app from your device also deletes local library data.
             </p>
           </section>
 

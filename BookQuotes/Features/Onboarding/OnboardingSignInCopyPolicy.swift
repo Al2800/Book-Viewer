@@ -13,13 +13,13 @@ struct OnboardingSignInCopyPolicy: Equatable {
 
     var description: String {
         if subscriptionsEnabled {
-            return "Sign in to start your 7-day free trial and unlock AI extraction while keeping your library stored on this device"
+            return "Sign in for a free trial and remote AI features. You can continue locally and sign in later."
         }
 
         if cloudSyncEnabled {
-            return "Sign in to sync your library across devices and unlock all features"
+            return "Sign in to sync your library across devices. You can continue locally and sign in later."
         }
 
-        return "Sign in to enable AI extraction while keeping your library stored on this device"
+        return "Your library works on this device without an account. Sign in later for remote AI features."
     }
 }

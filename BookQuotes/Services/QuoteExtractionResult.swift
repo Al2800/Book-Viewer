@@ -213,6 +213,7 @@ enum ExtractionError: LocalizedError {
     case rateLimited
     case subscriptionRequired
     case authenticationRequired
+    case thirdPartyAIConsentRequired
 
     var errorDescription: String? {
         switch self {
@@ -230,6 +231,8 @@ enum ExtractionError: LocalizedError {
             return "A subscription is required to continue"
         case .authenticationRequired:
             return "Please sign in to continue"
+        case .thirdPartyAIConsentRequired:
+            return "Remote AI processing is disabled"
         }
     }
 
@@ -249,6 +252,8 @@ enum ExtractionError: LocalizedError {
             return "Subscribe to continue extracting quotes"
         case .authenticationRequired:
             return "Sign in with your Apple ID to continue"
+        case .thirdPartyAIConsentRequired:
+            return "Enable Remote AI Processing in Settings, or continue with on-device extraction"
         }
     }
 }

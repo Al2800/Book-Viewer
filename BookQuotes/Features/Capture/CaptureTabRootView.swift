@@ -6,9 +6,12 @@ import SwiftData
 /// Main orchestrator for the capture tab.
 /// Handles permission checking and mode switching between cover and quote capture.
 struct CaptureTabRootView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var captureSessions: [CaptureSession]
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureFlow = CaptureFlowState()
     @State private var selectedBook: Book?
+    @State private var selectedDraft: CaptureSession?
     var onBookCreated: ((Book) -> Void)?
     var onQuotesSaved: ((Book) -> Void)?
     @State private var showCoaching = false
@@ -71,6 +74,9 @@ struct CaptureTabRootView: View {
         switch captureFlow.mode {
         case .selection:
             CaptureModeSelectionView(
+                drafts: resumableDrafts,
+                onResumeDraft: resumeDraft,
+                onDeleteDraft: deleteDraft,
                 onSelectCoverCapture: {
                     HapticManager.light()
                     handleCaptureFlowEvent(.selectCoverCapture)
@@ -145,14 +151,17 @@ struct CaptureTabRootView: View {
         case .batchCapture:
             BatchCaptureFlowView(
                 book: selectedBook,
+                initialSession: selectedDraft,
                 onComplete: { _ in
                     let completedBook = selectedBook
+                    selectedDraft = nil
                     handleCaptureFlowEvent(.completeBatchCapture)
                     if let completedBook {
                         onQuotesSaved?(completedBook)
                     }
                 },
                 onCancel: {
+                    selectedDraft = nil
                     handleCaptureFlowEvent(.cancelBatchCapture)
                 }
             )
@@ -165,6 +174,25 @@ struct CaptureTabRootView: View {
         if command.clearsSelectedBook {
             selectedBook = nil
         }
+    }
+
+    private var resumableDrafts: [CaptureSession] {
+        captureSessions
+            .filter { $0.status == .readyToProcess && !$0.captures.isEmpty && $0.book != nil }
+            .sorted { $0.dateStarted > $1.dateStarted }
+    }
+
+    private func resumeDraft(_ session: CaptureSession) {
+        guard let book = session.book else { return }
+        selectedBook = book
+        selectedDraft = session
+        handleCaptureFlowEvent(.resumeBatchCapture)
+    }
+
+    private func deleteDraft(_ session: CaptureSession) {
+        session.deleteImageFiles()
+        modelContext.delete(session)
+        try? modelContext.save()
     }
 }
 

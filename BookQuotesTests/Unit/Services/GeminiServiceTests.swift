@@ -28,6 +28,29 @@ final class GeminiServiceTests: SwiftDataTestCase {
         try await super.tearDown()
     }
 
+    func testCoverExtractionRequiresConsentBeforeAuthenticationOrNetwork() async throws {
+        let suiteName = "GeminiConsentTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let service = GeminiService(
+            authService: authService,
+            consentStore: AIProcessingConsentStore(defaults: defaults)
+        )
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 8, height: 8)).image { context in
+            UIColor.systemBlue.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 8, height: 8))
+        }
+
+        do {
+            _ = try await service.extractCoverMetadata(from: image)
+            XCTFail("Expected a consent error")
+        } catch let error as ExtractionError {
+            XCTAssertEqual(error.errorDescription, "Remote AI processing is disabled")
+        }
+    }
+
     // MARK: - Quote Response Parsing Tests
 
     func testParseQuoteResponse_ValidJSON_Succeeds() async throws {

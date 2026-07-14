@@ -118,6 +118,13 @@ final class CaptureSession {
         status = totalPages > 0 ? .readyToProcess : .completed
     }
 
+    /// Return a saved draft to capture mode so pages can be added or reviewed.
+    func resumeCapturing() {
+        guard status == .readyToProcess else { return }
+        status = .capturing
+        dateCompleted = nil
+    }
+
     /// Begin processing the captured pages
     func beginProcessing() {
         guard status == .readyToProcess else { return }
@@ -150,6 +157,16 @@ final class CaptureSession {
     func cancel() {
         status = .cancelled
         dateCompleted = Date()
+    }
+
+    /// Remove full page images after reviewed quotes are safely persisted.
+    @discardableResult
+    func deleteImageFiles() -> Int {
+        captures.reduce(into: 0) { removedCount, capture in
+            if capture.deleteImageFile() {
+                removedCount += 1
+            }
+        }
     }
 }
 

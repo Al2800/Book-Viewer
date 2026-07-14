@@ -5,11 +5,9 @@ import SwiftData
 
 /// Multi-page batch capture interface with thumbnail strip and session controls.
 /// Supports capturing 20+ pages efficiently with real-time quality feedback.
-/// Integrates with CaptureQueueManager for offline processing.
 struct BatchCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Environment(NetworkMonitor.self) private var networkMonitor
 
     let book: Book
     let onComplete: (CaptureSession) -> Void
@@ -25,11 +23,18 @@ struct BatchCaptureView: View {
 
     // MARK: - Initialization
 
-    init(book: Book, onComplete: @escaping (CaptureSession) -> Void, onCancel: @escaping () -> Void) {
+    init(
+        book: Book,
+        session: CaptureSession? = nil,
+        onComplete: @escaping (CaptureSession) -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        let activeSession = session ?? CaptureSession(book: book)
+        activeSession.resumeCapturing()
         self.book = book
         self.onComplete = onComplete
         self.onCancel = onCancel
-        self._session = State(initialValue: CaptureSession(book: book))
+        self._session = State(initialValue: activeSession)
     }
 
     var body: some View {
@@ -81,17 +86,6 @@ struct BatchCaptureView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("You captured \(session.totalPages) pages. Would you like to process them now or save as draft?")
-        }
-        .sheet(isPresented: $lifecycleState.showsOfflineConfirmation) {
-            OfflineQueueConfirmationSheet(
-                queuedCount: lifecycleState.queuedCount,
-                bookTitle: book.title
-            ) {
-                lifecycleState.showsOfflineConfirmation = false
-                onComplete(session)
-            }
-            .presentationDetents([.medium])
-            .interactiveDismissDisabled()
         }
         .milestoneCelebration(manager: milestoneManager)
     }
@@ -294,51 +288,8 @@ struct BatchCaptureView: View {
         modelContext.insert(session)
         try? modelContext.save()
 
-        // Check network - if offline, queue for later processing
-        if !networkMonitor.isConnected {
-            Task {
-                await queueCapturesForLaterProcessing()
-            }
-        } else {
-            // Online - proceed with immediate processing
-            onComplete(session)
-        }
-    }
-
-    /// Queue all captures for offline processing
-    private func queueCapturesForLaterProcessing() async {
-        guard let queueManager = CaptureQueueManager.shared else {
-            // No queue manager - fall back to normal flow
-            await MainActor.run {
-                onComplete(session)
-            }
-            return
-        }
-
-        var queued = 0
-        for capture in session.captures {
-            guard let image = capture.loadFullImage() else { continue }
-
-            do {
-                try await queueManager.addToQueue(image: image, book: book)
-                queued += 1
-            } catch {
-                // Log error but continue with other captures
-                print("Failed to queue capture: \(error)")
-            }
-        }
-
-        await MainActor.run {
-            switch lifecycleState.completeOfflineQueue(queuedCount: queued) {
-            case .showOfflineConfirmation:
-                HapticManager.success()
-            case .complete:
-                // No captures queued - proceed normally
-                onComplete(session)
-            case .none, .cancel, .showFinishConfirmation:
-                break
-            }
-        }
+        // ModelAssistedQuoteExtractor falls back to on-device extraction when offline.
+        onComplete(session)
     }
 
     private func saveDraft() {

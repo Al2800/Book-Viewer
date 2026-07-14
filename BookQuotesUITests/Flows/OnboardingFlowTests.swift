@@ -89,7 +89,7 @@ final class OnboardingFlowTests: BaseUITestCase {
 
         logger.step(4, "Verifying navigation to sign-in")
         // Should navigate to sign-in step
-        let signInHeader = app.staticTexts["Create Your Account"]
+        let signInHeader = app.staticTexts["Sign In or Continue Locally"]
         XCTAssertTrue(signInHeader.waitForExistence(timeout: 5), "Should navigate to sign-in screen")
 
         logger.success("Get Started navigates to sign-in")
@@ -104,7 +104,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         skipButton.tap()
 
         logger.step(3, "Verifying navigation to sign-in")
-        let signInHeader = app.staticTexts["Create Your Account"]
+        let signInHeader = app.staticTexts["Sign In or Continue Locally"]
         XCTAssertTrue(signInHeader.waitForExistence(timeout: 5), "Skip should navigate to sign-in")
 
         logger.success("Skip button navigates to sign-in")
@@ -119,12 +119,12 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.step(2, "Verifying sign-in screen elements")
 
         // Header
-        let header = app.staticTexts["Create Your Account"]
+        let header = app.staticTexts["Sign In or Continue Locally"]
         XCTAssertTrue(header.exists, "Sign-in header should be visible")
 
         // Description
         let description = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS '7-day free trial'")
+            NSPredicate(format: "label CONTAINS 'continue locally'")
         ).firstMatch
         XCTAssertTrue(description.exists, "Sign-in description should be visible")
 
@@ -177,7 +177,12 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.step(3, "Tapping Use defaults")
         useDefaultsButton.tap()
 
-        logger.step(4, "Verifying navigation to completion")
+        logger.step(4, "Verifying navigation to the AI processing decision")
+        let consentHeader = app.staticTexts["Remote AI Processing"]
+        XCTAssertTrue(consentHeader.waitForExistence(timeout: 5), "Should ask for an AI processing decision")
+
+        app.buttons["Use On-Device Only"].tap()
+
         let completionHeader = app.staticTexts["You're All Set!"]
         XCTAssertTrue(completionHeader.waitForExistence(timeout: 5), "Should navigate to completion")
 
@@ -226,6 +231,34 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.success("Start Capturing dismisses onboarding")
     }
 
+    func testOnboarding_RemoteAIConsentCanBeEnabledAndRevokedInSettings() throws {
+        try navigateToCompletionStep()
+        app.buttons["Start Capturing"].tap()
+        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 5))
+
+        app.tabBars.buttons[AccessibilityIdentifiers.Tabs.settingsTab].tap()
+        let remoteAISettings = app.buttons[AccessibilityIdentifiers.Settings.remoteAIProcessingRow]
+        XCTAssertTrue(remoteAISettings.waitForExistence(timeout: 5))
+        remoteAISettings.tap()
+
+        let consentToggle = app.switches[AccessibilityIdentifiers.Settings.remoteAIProcessingToggle]
+        XCTAssertTrue(consentToggle.waitForExistence(timeout: 5))
+        XCTAssertEqual(consentToggle.value as? String, "0")
+
+        consentToggle.tap()
+        let allowButton = app.buttons["Allow Remote AI Processing"]
+        XCTAssertTrue(allowButton.waitForExistence(timeout: 5))
+        allowButton.tap()
+        XCTAssertTrue(waitUntil("remote AI is enabled") {
+            consentToggle.value as? String == "1"
+        })
+
+        consentToggle.tap()
+        XCTAssertTrue(waitUntil("remote AI is disabled") {
+            consentToggle.value as? String == "0"
+        })
+    }
+
     // MARK: - Page Indicators Tests
 
     func testOnboarding_WelcomeCarousel_PageIndicatorsUpdate() {
@@ -261,15 +294,15 @@ final class OnboardingFlowTests: BaseUITestCase {
         }
 
         // Wait for sign-in screen
-        _ = app.staticTexts["Create Your Account"].waitForExistence(timeout: 5)
+        _ = app.staticTexts["Sign In or Continue Locally"].waitForExistence(timeout: 5)
     }
 
     private func navigateToMarkingSetup() throws {
         navigateToSignInStep()
 
         // In test mode with --skip-auth, bypass sign-in.
-        if app.buttons["Maybe later"].waitForExistence(timeout: 3) {
-            app.buttons["Maybe later"].tap()
+        if app.buttons["Continue Without an Account"].waitForExistence(timeout: 3) {
+            app.buttons["Continue Without an Account"].tap()
         }
 
         // Subscription-enabled builds insert a paywall step before marking setup.
@@ -298,6 +331,11 @@ final class OnboardingFlowTests: BaseUITestCase {
             if continueButton.exists {
                 continueButton.tap()
             }
+        }
+
+        let localOnly = app.buttons["Use On-Device Only"]
+        if localOnly.waitForExistence(timeout: 5) {
+            localOnly.tap()
         }
 
         // Wait for completion

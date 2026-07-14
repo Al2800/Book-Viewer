@@ -28,7 +28,8 @@ struct PaywallView: View {
         NavigationStack {
             ScrollView {
                 if AppReleaseConfiguration.subscriptionsEnabled {
-                    VStack(spacing: Spacing.xl) {
+                    if subscriptionService.canLinkPurchasesToAccount {
+                        VStack(spacing: Spacing.xl) {
                         // Header
                         headerSection
 
@@ -46,8 +47,12 @@ struct PaywallView: View {
 
                         // Legal
                         legalSection
+                        }
+                        .padding(Spacing.lg)
+                    } else {
+                        accountLinkingRequiredSection
+                            .padding(Spacing.lg)
                     }
-                    .padding(Spacing.lg)
                 } else {
                     unavailableSection
                         .padding(Spacing.lg)
@@ -216,6 +221,24 @@ struct PaywallView: View {
                 compactLabels: true
             )
             .font(.caption)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var accountLinkingRequiredSection: some View {
+        VStack(spacing: Spacing.lg) {
+            Image(systemName: "person.crop.circle.badge.exclamationmark")
+                .font(.system(size: 48))
+                .foregroundStyle(Color.brand)
+
+            Text("Sign In Before Purchasing")
+                .font(.title3.weight(.semibold))
+                .multilineTextAlignment(.center)
+
+            Text("Subscriptions are linked to a BookQuotes account so your purchase can be verified and restored. Sign in with Apple, then return here to choose a plan.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
     }

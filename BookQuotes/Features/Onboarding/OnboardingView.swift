@@ -83,6 +83,11 @@ struct OnboardingView: View {
                         onContinue: advanceFromMarkingSetup
                     )
 
+                case .aiConsent:
+                    AIProcessingConsentView { _ in
+                        advanceFromAIConsent()
+                    }
+
                 case .complete:
                     OnboardingCompletionStepView(
                         isCompleting: sessionState.isCompleting,
@@ -120,6 +125,12 @@ struct OnboardingView: View {
     private func advanceFromMarkingSetup() {
         withAnimation {
             sessionState.advanceFromMarkingSetup()
+        }
+    }
+
+    private func advanceFromAIConsent() {
+        withAnimation {
+            sessionState.advanceFromAIConsent()
         }
     }
 

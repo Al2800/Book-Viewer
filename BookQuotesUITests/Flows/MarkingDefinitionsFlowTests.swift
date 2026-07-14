@@ -20,7 +20,7 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         XCTAssertTrue(findTextByScrolling("Library View"), "Library view setting should be visible")
         XCTAssertTrue(findTextByScrolling("Haptic Feedback"), "Haptic feedback setting should be visible")
         XCTAssertTrue(findTextByScrolling("Export Quotes"), "Export quotes row should be visible")
-        XCTAssertTrue(findTextByScrolling("Storage & Backup"), "Storage and backup row should be visible")
+        XCTAssertTrue(findTextByScrolling("Storage & Export"), "Storage and export row should be visible")
         XCTAssertTrue(findTextByScrolling("About BookQuotes"), "About row should be visible")
         XCTAssertTrue(findElementByScrolling(app.buttons[AccessibilityIdentifiers.Settings.privacyPolicyButton]), "Privacy policy row should be visible")
         XCTAssertTrue(findElementByScrolling(app.buttons[AccessibilityIdentifiers.Settings.termsOfServiceButton]), "Terms row should be visible")

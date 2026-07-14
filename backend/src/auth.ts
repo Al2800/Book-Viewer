@@ -82,6 +82,28 @@ export const SESSION_TOKEN_HEADER = 'X-Session-Token';
 
 /** Sliding session lifetime. Clients must persist refreshed tokens from responses. */
 export const SESSION_TOKEN_TTL = '7d';
+const SESSION_VERSION_TTL_SECONDS = 8 * 24 * 60 * 60;
+
+function sessionVersionKey(userId: string): string {
+  return `auth:session-version:${userId}`;
+}
+
+async function currentSessionVersion(userId: string, env: Env): Promise<number> {
+  const storedVersion = await env.KV.get(sessionVersionKey(userId));
+  const parsedVersion = Number(storedVersion);
+  return Number.isInteger(parsedVersion) && parsedVersion > 0 ? parsedVersion : 1;
+}
+
+/**
+ * Invalidate every existing session for a user. The record outlives the
+ * maximum JWT lifetime so an old token cannot become valid again.
+ */
+export async function revokeAllSessions(userId: string, env: Env): Promise<void> {
+  const nextVersion = (await currentSessionVersion(userId, env)) + 1;
+  await env.KV.put(sessionVersionKey(userId), String(nextVersion), {
+    expirationTtl: SESSION_VERSION_TTL_SECONDS,
+  });
+}
 
 /**
  * Create a session token for the user
@@ -92,8 +114,9 @@ export async function createSessionToken(
   env: Env
 ): Promise<string> {
   const secret = new TextEncoder().encode(env.JWT_SECRET);
+  const sessionVersion = await currentSessionVersion(userId, env);
 
-  const token = await new jose.SignJWT({ sub: userId })
+  const token = await new jose.SignJWT({ sub: userId, sv: sessionVersion })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(SESSION_TOKEN_TTL)
@@ -130,7 +153,13 @@ export async function validateSessionToken(
       issuer: 'bookquotes-proxy',
     });
 
-    return payload.sub as string;
+    const userId = payload.sub;
+    const tokenVersion = payload.sv;
+    if (typeof userId !== 'string' || !Number.isInteger(tokenVersion)) {
+      return null;
+    }
+
+    return tokenVersion === await currentSessionVersion(userId, env) ? userId : null;
   } catch (error) {
     console.error('Session token validation failed:', error);
     return null;

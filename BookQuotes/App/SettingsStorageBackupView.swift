@@ -6,6 +6,8 @@ struct StorageBackupView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var books: [Book]
     @Query private var quotes: [Quote]
+    @Query private var pageCaptures: [PageCapture]
+    @Query private var queueItems: [CaptureQueueItem]
 
     @State private var showExportOptions = false
     @State private var isExporting = false
@@ -32,7 +34,7 @@ struct StorageBackupView: View {
             .padding(.top, Spacing.lg)
             .padding(.bottom, Spacing.xxxl)
         }
-        .navigationTitle("Storage & Backup")
+        .navigationTitle("Storage & Export")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.backgroundPrimary)
         .confirmationDialog("Export Options", isPresented: $showExportOptions) {
@@ -54,7 +56,7 @@ struct StorageBackupView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This will remove cached images from completed captures and exports. Your quotes and book covers will not be affected.")
+            Text("This will remove unused capture images and temporary exports. Pending captures, drafts, quotes, and book covers will not be affected.")
         }
         .alert("Export", isPresented: $showExportResult) {
             if let url = exportURL {
@@ -99,18 +101,18 @@ struct StorageBackupView: View {
 
     private var backupCard: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("Backup")
+            Text("Export")
                 .sectionHeaderStyle()
 
             Button {
                 showExportOptions = true
             } label: {
-                Label("Export All Data", systemImage: "square.and.arrow.up")
+                Label("Export Quotes", systemImage: "square.and.arrow.up")
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .glassButton()
 
-            Text("Export your entire library as a backup file that can be restored later.")
+            Text("Share your saved quotes and their book details as JSON or Markdown.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -145,7 +147,7 @@ struct StorageBackupView: View {
                 .font(.caption)
                 .foregroundStyle(Color.success)
             } else {
-                Text("Clear cached images to free up storage space. Original images in your library will not be affected.")
+                Text("Clear unused capture images and temporary exports to free up storage space.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -155,13 +157,26 @@ struct StorageBackupView: View {
     }
 
     private var estimatedImageStorage: String {
-        let imageCount = books.filter { $0.coverThumbnailData != nil }.count +
-                         quotes.filter { $0.sourceImageData != nil }.count
-        let estimatedMB = Double(imageCount) * 0.05
-        if estimatedMB < 1 {
-            return "< 1 MB"
+        let embeddedBytes = books.reduce(0) {
+            $0 + ($1.coverThumbnailData?.count ?? 0) + ($1.coverFullData?.count ?? 0)
+        } + quotes.reduce(0) {
+            $0 + ($1.sourceImageData?.count ?? 0)
+        } + pageCaptures.reduce(0) {
+            $0 + ($1.thumbnailData?.count ?? 0)
+        } + queueItems.reduce(0) {
+            $0 + ($1.thumbnailData?.count ?? 0)
         }
-        return String(format: "%.1f MB", estimatedMB)
+
+        let fileBytes = pageCaptures.compactMap(\.imageURL).reduce(0) {
+            $0 + fileSize(at: $1)
+        } + queueItems.reduce(0) {
+            $0 + fileSize(at: $1.fullImagePath)
+        }
+
+        return ByteCountFormatter.string(
+            fromByteCount: Int64(embeddedBytes) + fileBytes,
+            countStyle: .file
+        )
     }
 
     private func exportAsJSON() async {
@@ -249,14 +264,10 @@ struct StorageBackupView: View {
             options: [.skipsHiddenFiles]
         ) else { return 0 }
 
-        let activeImagePaths = Set(
-            (try? modelContext.fetch(FetchDescriptor<CaptureQueueItem>()))?
-                .filter { $0.status == .pending || $0.status == .processing }
-                .map { $0.imagePath } ?? []
-        )
+        let referencedImagePaths = Set(queueItems.filter { !$0.imagePath.isEmpty }.map { $0.imagePath })
 
         for case let fileURL as URL in enumerator {
-            if activeImagePaths.contains(fileURL.lastPathComponent) {
+            if referencedImagePaths.contains(fileURL.lastPathComponent) {
                 continue
             }
 
@@ -286,7 +297,13 @@ struct StorageBackupView: View {
             options: [.skipsHiddenFiles]
         ) else { return 0 }
 
+        let referencedImagePaths = Set(pageCaptures.compactMap(\.imageURL).map(\.standardizedFileURL.path))
+
         for case let fileURL as URL in enumerator {
+            if referencedImagePaths.contains(fileURL.standardizedFileURL.path) {
+                continue
+            }
+
             if let resourceValues = try? fileURL.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]),
                resourceValues.isRegularFile == true,
                let size = resourceValues.fileSize {
@@ -324,8 +341,14 @@ struct StorageBackupView: View {
             }
         }
 
-        try? fileManager.removeItem(at: capturesDir)
-
         return bytesCleared
+    }
+
+    private func fileSize(at url: URL) -> Int64 {
+        guard let values = try? url.resourceValues(forKeys: [.fileSizeKey]),
+              let size = values.fileSize else {
+            return 0
+        }
+        return Int64(size)
     }
 }

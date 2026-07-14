@@ -126,7 +126,16 @@ final class HermeticHTTPServerIntegrationTests: XCTestCase {
         let auth = await MainActor.run { AuthService(keychainService: keychain) }
         defer { Task { await auth.signOut() } }
 
-        let gemini = await MainActor.run { GeminiService(authService: auth, baseURL: server.baseURL) }
+        let suiteName = "HermeticGeminiConsent.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let consentStore = AIProcessingConsentStore(defaults: defaults)
+        consentStore.grant()
+
+        let gemini = await MainActor.run {
+            GeminiService(authService: auth, baseURL: server.baseURL, consentStore: consentStore)
+        }
 
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: 8, height: 8))
         let image = renderer.image { ctx in

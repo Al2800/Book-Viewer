@@ -96,4 +96,83 @@ final class PageCaptureTests: SwiftDataTestCase {
         XCTAssertEqual(capture.extractedQuoteCount, 0)
         XCTAssertTrue(capture.loadExtractedQuotes().isEmpty)
     }
+
+    func testSavedCaptureImageIsExcludedFromBackupAndDeletionClearsPath() throws {
+        let sessionId = UUID()
+        let imagePath = PageCapture.generateImagePath(sessionId: sessionId)
+        let imageURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(imagePath)
+        let capture = PageCapture(imagePath: imagePath)
+
+        try PageCapture.ensureDirectory(for: sessionId)
+        try PageCapture.saveImage(Data([0x01, 0x02, 0x03]), to: imagePath)
+
+        XCTAssertTrue(FileManager.default.fileExists(atPath: imageURL.path))
+        XCTAssertEqual(
+            try imageURL.resourceValues(forKeys: [.isExcludedFromBackupKey]).isExcludedFromBackup,
+            true
+        )
+
+        XCTAssertTrue(capture.deleteImageFile())
+        XCTAssertTrue(capture.imagePath.isEmpty)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: imageURL.path))
+    }
+
+    func testSessionImageCleanupPreservesResultsAndRemovesFullImages() throws {
+        let session = CaptureSession()
+        let imagePath = PageCapture.generateImagePath(sessionId: session.id)
+        let imageURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(imagePath)
+        let capture = PageCapture(imagePath: imagePath, session: session)
+        capture.thumbnailData = Data([0x04])
+        capture.storeExtractedQuotes([
+            ExtractedQuoteData(
+                text: "Retained result",
+                pageNumber: 1,
+                marginNote: nil,
+                markingType: "underline",
+                confidence: 0.9
+            )
+        ])
+        session.addCapture(capture)
+
+        try PageCapture.ensureDirectory(for: session.id)
+        try PageCapture.saveImage(Data([0x01]), to: imagePath)
+
+        XCTAssertEqual(session.deleteImageFiles(), 1)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: imageURL.path))
+        XCTAssertEqual(capture.loadExtractedQuotes().first?.text, "Retained result")
+        XCTAssertEqual(capture.thumbnailData, Data([0x04]))
+    }
+
+    func testBookDeletionRemovesCaptureAndQueueArtifacts() throws {
+        let book = Book(title: "Delete Me", author: "Author")
+        let session = CaptureSession(book: book)
+        let capturePath = PageCapture.generateImagePath(sessionId: session.id)
+        let capture = PageCapture(imagePath: capturePath, session: session)
+        session.addCapture(capture)
+
+        let queueFilename = "\(UUID().uuidString).jpg"
+        let queueItem = CaptureQueueItem(book: book, imagePath: queueFilename)
+        let captureURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(capturePath)
+        let queueURL = CaptureQueueItem.queueDirectory.appendingPathComponent(queueFilename)
+
+        try PageCapture.ensureDirectory(for: session.id)
+        try PageCapture.saveImage(Data([0x01]), to: capturePath)
+        try CaptureImageFileSecurity.write(Data([0x02]), to: queueURL)
+
+        modelContext.insert(book)
+        modelContext.insert(session)
+        modelContext.insert(queueItem)
+        try modelContext.save()
+
+        try BookDeletionService(modelContext: modelContext).delete(book)
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: captureURL.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: queueURL.path))
+        XCTAssertEqual(try modelContext.fetchCount(FetchDescriptor<Book>()), 0)
+        XCTAssertEqual(try modelContext.fetchCount(FetchDescriptor<CaptureSession>()), 0)
+        XCTAssertEqual(try modelContext.fetchCount(FetchDescriptor<CaptureQueueItem>()), 0)
+    }
 }

@@ -13,20 +13,14 @@ final class OnboardingAuthSkipPolicyTests: XCTestCase {
         XCTAssertTrue(policy.allowsManualSkip)
     }
 
-    func testManualSkipOnDeviceFollowsLaunchArgument() {
-        let disabled = OnboardingAuthSkipPolicy(
+    func testManualSkipIsAllowedOnDeviceWithoutLaunchArgument() {
+        let policy = OnboardingAuthSkipPolicy(
             isSimulator: false,
             isUITesting: false,
             shouldSkipAuthArgument: false
         )
-        let enabled = OnboardingAuthSkipPolicy(
-            isSimulator: false,
-            isUITesting: true,
-            shouldSkipAuthArgument: true
-        )
 
-        XCTAssertFalse(disabled.allowsManualSkip)
-        XCTAssertTrue(enabled.allowsManualSkip)
+        XCTAssertTrue(policy.allowsManualSkip)
     }
 
     func testSimulatorAutoSkipIsDisabledDuringUITesting() {
@@ -39,14 +33,14 @@ final class OnboardingAuthSkipPolicyTests: XCTestCase {
         XCTAssertFalse(policy.shouldAutoSkipAuth)
     }
 
-    func testSimulatorAutoSkipIsEnabledOutsideUITesting() {
+    func testSimulatorDoesNotAutoSkipAuthOutsideUITesting() {
         let policy = OnboardingAuthSkipPolicy(
             isSimulator: true,
             isUITesting: false,
             shouldSkipAuthArgument: false
         )
 
-        XCTAssertTrue(policy.shouldAutoSkipAuth)
+        XCTAssertFalse(policy.shouldAutoSkipAuth)
     }
 
     func testDeviceNeverAutoSkipsAuth() {

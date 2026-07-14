@@ -22,6 +22,25 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(quote.extractionSource, .onDevice)
     }
 
+    func testAIProcessingConsentStoreRequiresCurrentVersionAndSupportsRevocation() {
+        let suiteName = "AIProcessingConsentStoreTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let store = AIProcessingConsentStore(defaults: defaults)
+        XCTAssertFalse(store.hasCurrentConsent)
+
+        store.grant()
+        XCTAssertTrue(store.hasCurrentConsent)
+
+        defaults.set("obsolete-version", forKey: AIProcessingConsentStore.consentVersionKey)
+        XCTAssertFalse(store.hasCurrentConsent)
+
+        store.revoke()
+        XCTAssertFalse(store.hasCurrentConsent)
+    }
+
     func testExtractsGraphiteUnderlinedTextFromSyntheticPageWithoutNetwork() async throws {
         let image = OnDeviceQuoteExtractorTestImage.graphiteUnderlinedPage()
         let marks = try PageMarkDetector().detectMarks(in: image)
@@ -209,7 +228,8 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         let extractor = RemoteModelQuoteExtractor(
             authService: authService,
-            baseURL: server.baseURL
+            baseURL: server.baseURL,
+            consentStore: makeConsentStore(granted: true)
         )
 
         let result = try await extractor.extractQuotes(
@@ -228,6 +248,41 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         let body = try XCTUnwrap(JSONSerialization.jsonObject(with: request.body) as? [String: Any])
         XCTAssertNotNil(body["contents"])
+    }
+
+    @MainActor
+    func testRemoteModelQuoteExtractorDoesNotUploadWithoutConsent() async throws {
+        let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
+        server.route(method: "POST", path: "/api/extract-quotes-hf") { _ in
+            XCTFail("Remote extraction must not be called without consent")
+            return .json(500, Data())
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let keychain = KeychainService()
+        keychain.setSessionToken("test-session-token")
+        let authService = AuthService(keychainService: keychain)
+        defer { Task { await authService.signOut() } }
+
+        let extractor = RemoteModelQuoteExtractor(
+            authService: authService,
+            baseURL: server.baseURL,
+            consentStore: makeConsentStore()
+        )
+
+        do {
+            _ = try await extractor.extractQuotes(
+                from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+                markings: []
+            )
+            XCTFail("Expected a consent error")
+        } catch let error as ExtractionError {
+            XCTAssertEqual(error.errorDescription, "Remote AI processing is disabled")
+        }
+
+        XCTAssertTrue(server.allRequests().isEmpty)
     }
 
     func testQuoteExtractionPipelineUsesRemoteModelBeforeLocalOCR() async throws {
@@ -353,6 +408,16 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
                 || extractedText.localizedCaseInsensitiveContains("skinned over"),
             "Expected underlined Chatham quote, got: \(extractedText)"
         )
+    }
+
+    private func makeConsentStore(granted: Bool = false) -> AIProcessingConsentStore {
+        let suiteName = "AIProcessingConsentStoreTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+        if granted {
+            defaults.set(AIProcessingConsentStore.currentVersion, forKey: AIProcessingConsentStore.consentVersionKey)
+        }
+        return AIProcessingConsentStore(defaults: defaults)
     }
 }
 

@@ -48,7 +48,14 @@ npm install
    wrangler secret put APPLE_IAP_KEY_ID
    wrangler secret put APPLE_IAP_ISSUER_ID
    wrangler secret put APPLE_IAP_PRIVATE_KEY
+   wrangler secret put HF_API_TOKEN
    ```
+
+   For model-assisted quote extraction, set `HF_MODEL_ID` to an explicitly
+   approved provider route, for example
+   `Qwen/Qwen2.5-VL-72B-Instruct:hf-inference`. Routing policies such as
+   `:preferred`, `:fastest`, and `:cheapest` are rejected by the Worker. Adding
+   a provider requires a privacy and retention review before deployment.
 
 3. **Configure Apple Sign-In:**
    - In Apple Developer Portal, enable Sign in with Apple for the app
@@ -111,6 +118,10 @@ ALLOW_AUTHENTICATED_EXTRACTION=true
 ```
 
 Production ships with this flag **unset/false** so extraction requires an active subscription. This does not remove authentication or rate limits.
+
+Session tokens include a server-side session version. Deleting an account increments that version
+before data deletion, invalidating all previously issued session tokens. A later Sign in with Apple
+creates a new session version for the same Apple identifier.
 
 #### `POST /api/extract-cover`
 Extract book metadata from cover image.

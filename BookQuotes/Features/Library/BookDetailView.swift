@@ -367,15 +367,13 @@ struct BookDetailView: View {
     // MARK: - Actions
 
     private func deleteBook() {
-        // SwiftData cascade delete handles quotes automatically
-        modelContext.delete(book)
         do {
-            try modelContext.save()
+            try BookDeletionService(modelContext: modelContext).delete(book)
             HapticManager.notification(.success)
+            dismiss()
         } catch {
             HapticManager.error()
         }
-        dismiss()
     }
 }
 

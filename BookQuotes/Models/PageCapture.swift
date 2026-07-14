@@ -206,10 +206,21 @@ final class PageCapture {
         return UIImage(contentsOfFile: url.path)
     }
 
-    /// Delete the image file from disk
-    func deleteImageFile() {
-        guard let url = imageURL else { return }
-        try? FileManager.default.removeItem(at: url)
+    /// Delete the image file from disk and clear the persisted reference.
+    @discardableResult
+    func deleteImageFile() -> Bool {
+        guard let url = imageURL else {
+            imagePath = ""
+            return true
+        }
+
+        do {
+            try CaptureImageFileSecurity.removeFileIfPresent(at: url)
+            imagePath = ""
+            return true
+        } catch {
+            return false
+        }
     }
 }
 
@@ -279,10 +290,7 @@ extension PageCapture {
             .appendingPathComponent("captures")
             .appendingPathComponent(sessionId.uuidString)
 
-        try FileManager.default.createDirectory(
-            at: directoryURL,
-            withIntermediateDirectories: true
-        )
+        try CaptureImageFileSecurity.prepareDirectory(directoryURL)
     }
 
     /// Save image data to the designated path
@@ -293,7 +301,49 @@ extension PageCapture {
         let documentsURL = try documentsDirectory()
 
         let fileURL = documentsURL.appendingPathComponent(path)
-        try data.write(to: fileURL)
+        try CaptureImageFileSecurity.write(data, to: fileURL)
+    }
+}
+
+// MARK: - Capture Image File Security
+
+enum CaptureImageFileSecurity {
+    static func prepareDirectory(_ directoryURL: URL) throws {
+        let fileManager = FileManager.default
+        try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+        try fileManager.setAttributes(
+            [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+            ofItemAtPath: directoryURL.path
+        )
+        try excludeFromBackup(directoryURL)
+    }
+
+    static func write(_ data: Data, to fileURL: URL) throws {
+        try prepareDirectory(fileURL.deletingLastPathComponent())
+        try data.write(to: fileURL, options: .atomic)
+        try FileManager.default.setAttributes(
+            [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+            ofItemAtPath: fileURL.path
+        )
+        try excludeFromBackup(fileURL)
+    }
+
+    static func removeFileIfPresent(at fileURL: URL) throws {
+        let fileManager = FileManager.default
+        guard fileManager.fileExists(atPath: fileURL.path) else { return }
+        try fileManager.removeItem(at: fileURL)
+
+        let parent = fileURL.deletingLastPathComponent()
+        if let contents = try? fileManager.contentsOfDirectory(atPath: parent.path), contents.isEmpty {
+            try? fileManager.removeItem(at: parent)
+        }
+    }
+
+    private static func excludeFromBackup(_ url: URL) throws {
+        var mutableURL = url
+        var resourceValues = URLResourceValues()
+        resourceValues.isExcludedFromBackup = true
+        try mutableURL.setResourceValues(resourceValues)
     }
 }
 

@@ -132,8 +132,7 @@ final class CaptureQueueItem {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let queueDir = documents.appendingPathComponent("CaptureQueue", isDirectory: true)
 
-        // Ensure directory exists
-        try? FileManager.default.createDirectory(at: queueDir, withIntermediateDirectories: true)
+        try? CaptureImageFileSecurity.prepareDirectory(queueDir)
 
         return queueDir
     }
@@ -270,8 +269,15 @@ extension CaptureQueueItem {
     }
 
     /// Delete the associated image file from disk
-    func deleteImageFile() {
-        try? FileManager.default.removeItem(at: fullImagePath)
+    @discardableResult
+    func deleteImageFile() -> Bool {
+        do {
+            try CaptureImageFileSecurity.removeFileIfPresent(at: fullImagePath)
+            imagePath = ""
+            return true
+        } catch {
+            return false
+        }
     }
 
     /// Save an image to the queue directory
@@ -288,7 +294,7 @@ extension CaptureQueueItem {
         let path = queueDirectory.appendingPathComponent(filename)
 
         do {
-            try data.write(to: path)
+            try CaptureImageFileSecurity.write(data, to: path)
             return filename
         } catch {
             return nil

@@ -148,7 +148,23 @@ struct AccountView: View {
 
     private var subscriptionSection: some View {
         SectionCard(title: "Subscription") {
-            if subscriptionService.hasActiveSubscription {
+            if !authService.isAuthenticated {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Text("Sign In to View Plans")
+                        .font(.headline)
+
+                    Text("Sign in with Apple before purchasing or restoring so your subscription can be linked to your BookQuotes account.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    Button("Sign in with Apple") {
+                        showSignIn = true
+                    }
+                    .buttonStyle(.primary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, Spacing.xs)
+            } else if subscriptionService.hasActiveSubscription {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     HStack {
                         Text(subscriptionTitle)
@@ -233,7 +249,7 @@ struct AccountView: View {
 
     @ViewBuilder
     private var actionsSection: some View {
-        if subscriptionsEnabled || authService.isAuthenticated {
+        if authService.isAuthenticated {
             SectionCard(title: "Manage") {
                 if subscriptionsEnabled {
                     Button {

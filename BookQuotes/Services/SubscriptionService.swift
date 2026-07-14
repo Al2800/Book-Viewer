@@ -82,6 +82,12 @@ final class SubscriptionService {
         products.first { $0.id == SubscriptionProductID.yearly.rawValue }
     }
 
+    /// StoreKit purchases must carry an app-account token so the backend can
+    /// reconcile the entitlement to the correct BookQuotes account.
+    var canLinkPurchasesToAccount: Bool {
+        authService.isAuthenticated
+    }
+
     // MARK: - Initialization
 
     init(authService: AuthService) {
@@ -126,6 +132,9 @@ final class SubscriptionService {
     @discardableResult
     func purchase(_ product: Product) async throws -> Transaction? {
         lastError = nil
+        guard canLinkPurchasesToAccount else {
+            throw SubscriptionError.authenticationRequired
+        }
 
         let result = try await product.purchase(options: purchaseOptions())
 
@@ -155,6 +164,9 @@ final class SubscriptionService {
     /// Restore previous purchases
     func restorePurchases() async throws {
         lastError = nil
+        guard canLinkPurchasesToAccount else {
+            throw SubscriptionError.authenticationRequired
+        }
 
         do {
             try await AppStore.sync()
@@ -323,6 +335,7 @@ final class SubscriptionService {
 
 /// Errors that can occur during subscription operations
 enum SubscriptionError: LocalizedError {
+    case authenticationRequired
     case productLoadFailed(Error)
     case verificationFailed(Error)
     case purchaseFailed(Error)
@@ -330,6 +343,8 @@ enum SubscriptionError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
+        case .authenticationRequired:
+            return "Sign in with Apple before purchasing or restoring so your subscription can be linked to your account."
         case .productLoadFailed(let error):
             return "Failed to load products: \(error.localizedDescription)"
         case .verificationFailed(let error):

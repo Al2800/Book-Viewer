@@ -37,6 +37,20 @@ final class OnboardingSessionStateTests: XCTestCase {
         XCTAssertEqual(state.currentStep, .markingSetup)
     }
 
+    func testSkippingSignInDoesNotPresentSubscriptionPurchase() {
+        var state = OnboardingSessionState(
+            flowPolicy: OnboardingFlowPolicy(
+                subscriptionsEnabled: true,
+                startsAtSubscriptionMediaScreen: false
+            )
+        )
+
+        state.advance(to: .signIn)
+        state.advanceFromSignIn()
+
+        XCTAssertEqual(state.currentStep, .markingSetup)
+    }
+
     func testAdvanceFromWelcomeMovesToSignIn() {
         var state = OnboardingSessionState()
 
@@ -54,11 +68,20 @@ final class OnboardingSessionStateTests: XCTestCase {
         XCTAssertEqual(state.currentStep, .markingSetup)
     }
 
-    func testAdvanceFromMarkingSetupMovesToComplete() {
+    func testAdvanceFromMarkingSetupMovesToAIConsent() {
         var state = OnboardingSessionState()
         state.advance(to: .markingSetup)
 
         state.advanceFromMarkingSetup()
+
+        XCTAssertEqual(state.currentStep, .aiConsent)
+    }
+
+    func testAdvanceFromAIConsentMovesToComplete() {
+        var state = OnboardingSessionState()
+        state.advance(to: .aiConsent)
+
+        state.advanceFromAIConsent()
 
         XCTAssertEqual(state.currentStep, .complete)
     }

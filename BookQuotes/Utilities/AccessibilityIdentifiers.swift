@@ -391,6 +391,12 @@ enum AccessibilityIdentifiers {
         /// Marking definitions navigation row
         static let markingDefinitionsRow = "settings_marking_definitions_row"
 
+        /// Remote AI processing settings destination.
+        static let remoteAIProcessingRow = "settings_remote_ai_processing_row"
+
+        /// Consent toggle for remote AI processing.
+        static let remoteAIProcessingToggle = "settings_remote_ai_processing_toggle"
+
         /// Export quotes row button
         static let exportQuotesButton = "settings_export_quotes_button"
 

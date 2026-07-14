@@ -70,6 +70,10 @@ struct CaptureQueueItemProcessor {
 
         item.markCompleted(quotes: quotes)
         try context.save()
+
+        if item.deleteImageFile() {
+            try? context.save()
+        }
     }
 
     private func fetchEnabledMarkingPrompts(

@@ -33,6 +33,8 @@ struct SettingsTab: View {
                             MarkingDefinitionsView()
                         case .storage:
                             StorageBackupView()
+                        case .aiProcessing:
+                            AIProcessingSettingsView()
                         case .about:
                             AboutView()
                         }
@@ -53,6 +55,7 @@ enum SettingsDestination: Hashable {
     case account
     case markings
     case storage
+    case aiProcessing
     case about
 }
 
@@ -96,6 +99,15 @@ struct SettingsView: View {
                         subtitle: "Process captures when online",
                         isOn: $autoProcessQueue
                     )
+
+                    NavigationLink(value: SettingsDestination.aiProcessing) {
+                        SettingsRow(
+                            icon: "sparkles",
+                            title: "Remote AI Processing",
+                            subtitle: "Manage image-sharing permission"
+                        )
+                    }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.remoteAIProcessingRow)
                 }
 
                 SectionCard(title: "Display") {
@@ -137,7 +149,7 @@ struct SettingsView: View {
                     NavigationLink(value: SettingsDestination.storage) {
                         SettingsRow(
                             icon: "externaldrive",
-                            title: "Storage & Backup"
+                            title: "Storage & Export"
                         )
                     }
                 }
@@ -189,6 +201,129 @@ struct SettingsView: View {
                 LegalDocumentView(document: document)
             }
         }
+    }
+}
+
+struct AIProcessingSettingsView: View {
+    @AppStorage(AIProcessingConsentStore.consentVersionKey) private var consentVersion = ""
+    @State private var showingConsent = false
+
+    private var hasCurrentConsent: Bool {
+        consentVersion == AIProcessingConsentStore.currentVersion
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: Spacing.lg) {
+                SectionCard(title: "Remote AI Processing") {
+                    SettingsToggleRow(
+                        icon: "sparkles",
+                        title: "Allow Remote AI Processing",
+                        subtitle: "Send page and cover images to approved providers",
+                        isOn: consentBinding
+                    )
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.remoteAIProcessingToggle)
+                }
+
+                SectionCard(title: "Your Choice") {
+                    Text(hasCurrentConsent
+                         ? "Remote processing is enabled. You can turn it off at any time; page and cover images will then stay on your device for on-device OCR or manual entry."
+                         : "Remote processing is off. You can still capture quotes with on-device OCR and add books or quotes manually.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.textSecondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.vertical, Spacing.lg)
+        }
+        .navigationTitle("AI Processing")
+        .background(Color.backgroundPrimary)
+        .sheet(isPresented: $showingConsent) {
+            AIProcessingConsentView { _ in
+                showingConsent = false
+            }
+            .interactiveDismissDisabled()
+        }
+    }
+
+    private var consentBinding: Binding<Bool> {
+        Binding(
+            get: { hasCurrentConsent },
+            set: { wantsRemoteProcessing in
+                if wantsRemoteProcessing {
+                    showingConsent = true
+                } else {
+                    AIProcessingConsentStore.shared.revoke()
+                }
+            }
+        )
+    }
+}
+
+struct AIProcessingConsentView: View {
+    let onDecision: (Bool) -> Void
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 44, weight: .medium))
+                        .foregroundStyle(Color.brand)
+
+                    Text("Remote AI Processing")
+                        .font(.title2.weight(.bold))
+                        .foregroundStyle(Color.textPrimary)
+
+                    Text("BookQuotes can use remote AI to help identify marked quotes and read book covers. This is optional.")
+                        .font(.body)
+                        .foregroundStyle(Color.textSecondary)
+
+                    disclosureSection(
+                        title: "What is shared",
+                        text: "The image you choose to process, the extraction instructions, and the resulting text are sent over TLS to the BookQuotes service and then to the applicable AI provider."
+                    )
+
+                    disclosureSection(
+                        title: "Who processes it",
+                        text: "Hugging Face Inference processes quote-page extraction and Google Gemini processes cover extraction. The provider receives only the content needed for that request."
+                    )
+
+                    disclosureSection(
+                        title: "Your alternatives",
+                        text: "You can use on-device OCR for quote pages, or add books and quotes manually. You can change this choice at any time in Settings."
+                    )
+
+                    Button("Allow Remote AI Processing") {
+                        AIProcessingConsentStore.shared.grant()
+                        onDecision(true)
+                    }
+                    .buttonStyle(.primary)
+
+                    Button("Use On-Device Only") {
+                        AIProcessingConsentStore.shared.revoke()
+                        onDecision(false)
+                    }
+                    .buttonStyle(.secondary)
+                }
+                .padding(Spacing.lg)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .background(Color.backgroundPrimary)
+        }
+    }
+
+    private func disclosureSection(title: String, text: String) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(Color.textPrimary)
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(Color.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

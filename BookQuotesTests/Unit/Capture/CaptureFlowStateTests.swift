@@ -63,6 +63,17 @@ final class CaptureFlowStateTests: XCTestCase {
         XCTAssertFalse(batchCommand.clearsSelectedBook)
     }
 
+    func testResumeBatchCaptureEntersBatchModeWithFreshIdentity() {
+        var state = CaptureFlowState()
+        let originalID = state.batchCaptureFlowID
+
+        let command = state.handle(.resumeBatchCapture)
+
+        XCTAssertEqual(state.mode, .batchCapture)
+        XCTAssertNotEqual(state.batchCaptureFlowID, originalID)
+        XCTAssertEqual(command, .none)
+    }
+
     func testCompletionAndCancellationPreserveCurrentSelectedBookClearingBehavior() {
         var state = CaptureFlowState()
 

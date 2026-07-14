@@ -1,7 +1,10 @@
 import type { GeminiRequest } from './types';
 
 const HUGGING_FACE_ROUTER_URL = 'https://router.huggingface.co/v1/chat/completions';
-const DEFAULT_MODEL_ID = 'Qwen/Qwen2.5-VL-72B-Instruct:preferred';
+export const DEFAULT_HUGGING_FACE_MODEL_ID = 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference';
+
+// Changes to this list require a privacy and retention review before deployment.
+const APPROVED_HUGGING_FACE_PROVIDERS = new Set(['hf-inference']);
 
 const QUOTE_EXTRACTION_SYSTEM_PROMPT = [
   'You extract marked passages from photographed book pages.',
@@ -16,7 +19,22 @@ export interface HuggingFaceQuoteConfig {
 }
 
 export interface HuggingFaceProxyConfig extends HuggingFaceQuoteConfig {
-  token: string;
+    token: string;
+}
+
+/**
+ * Reject policy suffixes such as `:preferred` and `:fastest` so an operator
+ * cannot silently broaden the list of third parties that receive book images.
+ */
+export function resolveApprovedHuggingFaceModelId(modelId?: string): string | null {
+  const candidate = modelId ?? DEFAULT_HUGGING_FACE_MODEL_ID;
+  const separator = candidate.lastIndexOf(':');
+  if (separator <= 0 || separator === candidate.length - 1) {
+    return null;
+  }
+
+  const provider = candidate.slice(separator + 1);
+  return APPROVED_HUGGING_FACE_PROVIDERS.has(provider) ? candidate : null;
 }
 
 interface HuggingFaceMessageContentText {
@@ -65,7 +83,7 @@ export function buildHuggingFaceQuoteRequest(
   const { prompt, image } = extractPromptAndImage(request);
 
   return {
-    model: config.modelId ?? DEFAULT_MODEL_ID,
+    model: config.modelId ?? DEFAULT_HUGGING_FACE_MODEL_ID,
     temperature: 0.1,
     max_tokens: 4096,
     response_format: { type: 'json_object' },

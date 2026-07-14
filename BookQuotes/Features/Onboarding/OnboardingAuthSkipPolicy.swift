@@ -20,10 +20,10 @@ struct OnboardingAuthSkipPolicy: Equatable {
     }
 
     var allowsManualSkip: Bool {
-        isSimulator || shouldSkipAuthArgument
+        true
     }
 
     var shouldAutoSkipAuth: Bool {
-        isSimulator && !isUITesting
+        false
     }
 }

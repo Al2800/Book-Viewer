@@ -325,15 +325,24 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         if saveDraftButton.waitForExistence(timeout: 3) {
             saveDraftButton.tap()
 
-            logger.step(3, "Verifying return to book detail or library")
-            let bookDetail = app.staticTexts["Quotes"]
-            let libraryTab = tabButton(.library)
+            logger.step(3, "Verifying the draft is visible and resumable")
+            XCTAssertTrue(
+                app.staticTexts["Saved Drafts"].waitForExistence(timeout: 5),
+                "Saved drafts should be visible on the Capture screen"
+            )
 
-            let returnedToApp = bookDetail.waitForExistence(timeout: 5) || libraryTab.exists
+            let resumeDraft = app.buttons.matching(
+                NSPredicate(format: "identifier BEGINSWITH 'capture_resume_draft_'")
+            ).firstMatch
+            XCTAssertTrue(resumeDraft.waitForExistence(timeout: 3), "Saved draft should have a resume action")
+            resumeDraft.tap()
 
-            XCTAssertTrue(returnedToApp, "Should return to app after saving draft")
+            XCTAssertTrue(
+                app.staticTexts["1 page in session"].waitForExistence(timeout: 5),
+                "Resuming a draft should reopen batch capture with its saved pages"
+            )
 
-            logger.success("Save draft works correctly")
+            logger.success("Save draft is visible and resumable")
         }
     }
 

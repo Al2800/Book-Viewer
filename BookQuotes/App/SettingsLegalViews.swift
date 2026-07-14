@@ -29,8 +29,9 @@ enum LegalDocument: String, Identifiable {
                     title: "What We Collect",
                     paragraphs: [
                         "When you sign in with Apple, we receive your Apple-provided identifier and, if Apple shares it, your email address. We use that information to authenticate requests to the BookQuotes service and maintain your subscription access state.",
-                        "When you capture a marked quote page, the image may be sent to the BookQuotes proxy and then to Hugging Face for model-assisted quote extraction. If remote extraction is unavailable, the app can fall back to Apple Vision OCR and local mark detection on-device. Cover extraction may send the image to the BookQuotes proxy and then to Google Gemini for processing. Images are processed in-flight and are not retained after extraction completes.",
-                        "Your books, quotes, tags, and collections are stored on-device. Cloud sync is not enabled in this v1 release."
+                        "Captured pages and cover images are stored locally on your device while you review, retry, or save them. When you save a quote, a compressed source-image copy may be kept with that quote for reference until you delete the quote. Draft and queued images remain on-device until they are processed or deleted.",
+                        "If you enable Remote AI Processing, the selected image, extraction instructions, and resulting text are sent through the BookQuotes service to Hugging Face Inference for quote-page extraction or Google Gemini for cover extraction. The BookQuotes service does not write those image or prompt payloads to its application database; each provider handles request data under its own terms.",
+                        "The BookQuotes service stores account-linked subscription access records and extraction counts with last-updated timestamps. Short-lived rate-limit counters may use your account and network information to protect the service. After account deletion, a session-revocation record may remain for up to eight days solely to prevent use of already-issued session tokens. Your books, quotes, tags, collections, and locally retained images are otherwise stored on-device. Cloud sync is not enabled in this v1 release."
                     ]
                 ),
                 LegalDocumentSection(
@@ -46,9 +47,9 @@ enum LegalDocument: String, Identifiable {
                 LegalDocumentSection(
                     title: "Third-Party Services",
                     bullets: [
-                        "Hugging Face for model-assisted quote extraction from marked quote pages",
+                        "Hugging Face Inference for model-assisted quote extraction from marked quote pages when you enable Remote AI Processing",
                         "Apple Vision for on-device OCR fallback of marked quote pages",
-                        "Google Gemini for cover extraction",
+                        "Google Gemini for cover extraction when you enable Remote AI Processing",
                         "Sign in with Apple for secure authentication",
                         "Apple StoreKit for subscription billing, trial eligibility, and purchase management"
                     ]
@@ -62,7 +63,7 @@ enum LegalDocument: String, Identifiable {
                 LegalDocumentSection(
                     title: "Account Deletion",
                     paragraphs: [
-                        "You can delete your BookQuotes account from Settings → Account → Delete Account. This removes your authentication and subscription access records from BookQuotes servers. Your on-device library remains unless you delete it yourself. App Store subscriptions are billed by Apple and must be cancelled in Apple subscription management."
+                        "You can delete your BookQuotes account from Settings → Account → Delete Account. This removes your subscription access records and usage data from BookQuotes servers; a session-revocation record remains for up to eight days to block existing tokens. Your on-device library remains unless you delete it yourself. App Store subscriptions are billed by Apple and must be cancelled in Apple subscription management."
                     ]
                 ),
                 LegalDocumentSection(

@@ -5,6 +5,7 @@ vi.mock('./auth', () => ({
   validateAppleToken: vi.fn(),
   validateSessionToken: vi.fn(async () => 'test-user'),
   createSessionToken: vi.fn(async () => 'refreshed-session-token'),
+  revokeAllSessions: vi.fn(),
   SESSION_TOKEN_HEADER: 'X-Session-Token',
 }));
 
@@ -179,7 +180,7 @@ describe('extraction access policy', () => {
       makeEnv({
         ALLOW_AUTHENTICATED_EXTRACTION: 'true',
         HF_API_TOKEN: 'hf-test-token',
-        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:preferred',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
       })
     );
     const body = await response.json() as {
@@ -191,5 +192,25 @@ describe('extraction access policy', () => {
     expect(hfFetch).toHaveBeenCalledOnce();
     expect(quoteResult.quotes[0].text).toBe('The marked passage is here.');
     expect(quoteResult.quotes[0].markingType).toBe('marginLine');
+  });
+
+  it('rejects an unapproved Hugging Face provider before reading or forwarding the image', async () => {
+    const { default: worker } = await import('./index');
+    const hfFetch = vi.fn();
+    vi.stubGlobal('fetch', hfFetch);
+
+    const response = await worker.fetch(
+      makeExtractionRequest('/api/extract-quotes-hf'),
+      makeEnv({
+        ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+        HF_API_TOKEN: 'hf-test-token',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:preferred',
+      })
+    );
+    const body = await response.json() as { code: string };
+
+    expect(response.status).toBe(503);
+    expect(body.code).toBe('HF_PROVIDER_NOT_APPROVED');
+    expect(hfFetch).not.toHaveBeenCalled();
   });
 });

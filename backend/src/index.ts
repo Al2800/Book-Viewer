@@ -8,6 +8,7 @@ import {
   validateSessionToken,
   validateAppleToken,
   createSessionToken,
+  revokeAllSessions,
   SESSION_TOKEN_HEADER,
 } from './auth';
 import {
@@ -20,7 +21,10 @@ import {
 } from './subscription';
 import { deleteUserAccountData } from './account-data';
 import { checkRateLimit, incrementUsage, getUsageStats } from './rate-limit';
-import { proxyToHuggingFaceQuoteExtractor } from './huggingface-quote-extraction';
+import {
+  proxyToHuggingFaceQuoteExtractor,
+  resolveApprovedHuggingFaceModelId,
+} from './huggingface-quote-extraction';
 import {
   parseGeminiRequest,
   proxyToGemini,
@@ -172,6 +176,7 @@ export default {
     // Account deletion (Guideline 5.1.1) — removes server-side account/subscription cache.
     if (path === '/api/auth/account' && request.method === 'DELETE') {
       try {
+        await revokeAllSessions(userId, env);
         await deleteUserAccountData(userId, env);
         return jsonResponse({ success: true, message: 'Account data deleted' });
       } catch (error) {
@@ -322,11 +327,20 @@ export default {
         ));
       }
 
+      const modelId = resolveApprovedHuggingFaceModelId(env.HF_MODEL_ID);
+      if (!modelId) {
+        return respond(errorResponse(
+          'Hugging Face extraction provider is not approved',
+          'HF_PROVIDER_NOT_APPROVED',
+          503
+        ));
+      }
+
       try {
         const body = await parseGeminiRequest(request);
         const response = await proxyToHuggingFaceQuoteExtractor(body, {
           token: env.HF_API_TOKEN,
-          modelId: env.HF_MODEL_ID,
+          modelId,
         });
 
         if (response.ok) {

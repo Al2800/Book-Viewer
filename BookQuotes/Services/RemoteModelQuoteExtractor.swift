@@ -1,25 +1,56 @@
 import Foundation
 import UIKit
 
+struct AIProcessingConsentStore {
+    static let consentVersionKey = "ai_processing_consent_version"
+    static let currentVersion = "2026-07"
+    static let shared = AIProcessingConsentStore()
+
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+    }
+
+    var hasCurrentConsent: Bool {
+        defaults.string(forKey: Self.consentVersionKey) == Self.currentVersion
+    }
+
+    func grant() {
+        defaults.set(Self.currentVersion, forKey: Self.consentVersionKey)
+    }
+
+    func revoke() {
+        defaults.removeObject(forKey: Self.consentVersionKey)
+    }
+}
+
 struct RemoteModelQuoteExtractor: QuoteExtracting {
     private let authService: AuthService
     private let baseURL: URL
     private let session: URLSession
+    private let consentStore: AIProcessingConsentStore
 
     init(
         authService: AuthService,
         baseURL: URL = AuthService.proxyBaseURL,
-        session: URLSession = .shared
+        session: URLSession = .shared,
+        consentStore: AIProcessingConsentStore = .shared
     ) {
         self.authService = authService
         self.baseURL = baseURL
         self.session = session
+        self.consentStore = consentStore
     }
 
     func extractQuotes(
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
+        guard consentStore.hasCurrentConsent else {
+            throw ExtractionError.thirdPartyAIConsentRequired
+        }
+
         let token = await MainActor.run { authService.getSessionToken() }
         guard let token else { throw ExtractionError.authenticationRequired }
 

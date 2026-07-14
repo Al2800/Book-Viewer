@@ -799,6 +799,8 @@ enum AccessibilityIdentifiers {
         static let restorePurchasesButton = "settings_restore_purchases"
         static let manageSubscriptionButton = "settings_manage_subscription"
         static let markingDefinitionsRow = "settings_marking_definitions_row"
+        static let remoteAIProcessingRow = "settings_remote_ai_processing_row"
+        static let remoteAIProcessingToggle = "settings_remote_ai_processing_toggle"
         static let exportQuotesButton = "settings_export_quotes_button"
         static let privacyPolicyButton = "settings_privacy_policy_button"
         static let termsOfServiceButton = "settings_terms_of_service_button"

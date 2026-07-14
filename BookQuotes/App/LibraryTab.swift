@@ -455,9 +455,8 @@ struct LibraryView: View {
 
     private func deleteBook(_ book: Book) {
         withAnimation {
-            modelContext.delete(book)
             do {
-                try modelContext.save()
+                try BookDeletionService(modelContext: modelContext).delete(book)
                 HapticManager.notification(.success)
             } catch {
                 HapticManager.error()

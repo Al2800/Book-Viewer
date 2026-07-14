@@ -85,7 +85,7 @@ struct OnboardingSignInStepView: View {
             .padding(.horizontal, Spacing.lg)
 
             if allowAuthSkip {
-                Button("Maybe later", action: onContinue)
+                Button("Continue Without an Account", action: onContinue)
                     .foregroundStyle(Color.textSecondary)
             }
 
@@ -104,7 +104,7 @@ struct OnboardingSignInStepView: View {
                 .font(.system(size: 60))
                 .foregroundStyle(Color.brand)
 
-            Text("Create Your Account")
+            Text("Sign In or Continue Locally")
                 .font(.system(.title, design: .serif).weight(.semibold))
 
             Text(copyPolicy.description)

@@ -28,14 +28,19 @@ final class GeminiService {
     /// URL session for requests
     private let session: URLSession
 
+    /// Consent required before sending an image to the remote cover model.
+    private let consentStore: AIProcessingConsentStore
+
     // MARK: - Initialization
 
     init(
         authService: AuthService,
-        baseURL: URL = GeminiService.defaultBaseURL
+        baseURL: URL = GeminiService.defaultBaseURL,
+        consentStore: AIProcessingConsentStore = .shared
     ) {
         self.authService = authService
         self.baseURL = baseURL
+        self.consentStore = consentStore
 
         // Configure URL session with reasonable timeouts
         let config = URLSessionConfiguration.default
@@ -162,6 +167,10 @@ final class GeminiService {
         image: UIImage,
         prompt: String
     ) async throws -> String {
+        guard consentStore.hasCurrentConsent else {
+            throw ExtractionError.thirdPartyAIConsentRequired
+        }
+
         // Get auth token
         let token = await MainActor.run { authService.getSessionToken() }
         guard let token else { throw ExtractionError.authenticationRequired }

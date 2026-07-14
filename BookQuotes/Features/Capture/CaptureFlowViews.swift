@@ -38,33 +38,43 @@ struct QuoteCaptureFlowView: View {
 /// Batch capture flow wrapper - delegates to BatchCaptureView then ExtractionReviewView.
 struct BatchCaptureFlowView: View {
     let book: Book?
+    let initialSession: CaptureSession?
     let onComplete: (CaptureSession) -> Void
     let onCancel: () -> Void
 
     @State private var capturedSession: CaptureSession?
-    @State private var showExtractionReview = false
+
+    init(
+        book: Book?,
+        initialSession: CaptureSession? = nil,
+        onComplete: @escaping (CaptureSession) -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        self.book = book
+        self.initialSession = initialSession
+        self.onComplete = onComplete
+        self.onCancel = onCancel
+    }
 
     var body: some View {
         if let book {
             BatchCaptureView(
                 book: book,
+                session: initialSession,
                 onComplete: { session in
                     capturedSession = session
-                    showExtractionReview = true
                 },
                 onCancel: onCancel
             )
-            .fullScreenCover(isPresented: $showExtractionReview) {
-                if let session = capturedSession {
-                    ExtractionReviewView(
-                        session: session,
-                        book: book,
-                        onComplete: {
-                            showExtractionReview = false
-                            onComplete(session)
-                        }
-                    )
-                }
+            .fullScreenCover(item: $capturedSession) { session in
+                ExtractionReviewView(
+                    session: session,
+                    book: book,
+                    onComplete: {
+                        capturedSession = nil
+                        onComplete(session)
+                    }
+                )
             }
         } else {
             MissingSelectedBookView(

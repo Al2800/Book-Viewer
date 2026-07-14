@@ -53,6 +53,7 @@ struct BookQuotesApp: App {
         if isUITesting {
             if UITestConfiguration.shouldResetOnboarding {
                 UserDefaults.standard.set(false, forKey: "hasCompletedOnboarding")
+                AIProcessingConsentStore.shared.revoke()
             } else {
                 UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
             }
