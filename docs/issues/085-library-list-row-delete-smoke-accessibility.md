@@ -1,6 +1,6 @@
 # Issue 085: Library List Row Delete Smoke Accessibility
 
-Status: `open`
+Status: `closed`
 
 Priority: medium
 
@@ -28,11 +28,19 @@ Reason: List rows unavailable for delete swipe
 
 ## Acceptance Criteria
 
-- [ ] Characterize the current Library list row accessibility hierarchy after switching to list view.
-- [ ] Decide whether `library_book_list_row` should identify the swipeable row container rather than a child image.
-- [ ] Make the production accessibility shape or the test target precise enough for swipe-to-delete to exercise the real row.
-- [ ] `LibraryManagementTests.testLibrary_DeleteBook_ShowsConfirmation` passes without `XCTSkip`.
-- [ ] Re-run the focused Library/Search UI smoke and record the result.
+- [x] Characterize the current Library list row accessibility hierarchy after switching to list view.
+- [x] Decide whether `library_book_list_row` should identify the swipeable row container rather than a child image.
+- [x] Make the production accessibility shape or the test target precise enough for swipe-to-delete to exercise the real row.
+- [x] `LibraryManagementTests.testLibrary_DeleteBook_ShowsConfirmation` passes without `XCTSkip`.
+- [x] Re-run the focused Library/Search UI smoke and record the result.
+
+## Resolution
+
+The Library list row now exposes a stable, single accessible control for the real
+book entry, and the destructive-confirmation path uses strict assertions rather
+than skipping when the row hierarchy changes. `LibraryManagementTests` completed
+7/7 with no failures or skips on iPhone 17; the full iPhone and iPad UI release
+gates each completed 90/90 with no failures or skips.
 
 ## Refactor Impact
 

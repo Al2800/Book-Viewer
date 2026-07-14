@@ -1,6 +1,6 @@
 # 106 - Eliminate false-green UI test skips
 
-Status: resolved
+Status: closed
 Area: XCUITest / Release Gate
 Priority: high (release blocker 15)
 

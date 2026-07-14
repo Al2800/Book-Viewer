@@ -94,7 +94,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `082-test-fixtures-modular-refactor.md` - closed
 - `083-quote-save-navigation-after-extraction-review.md` - closed
 - `084-cover-capture-created-book-visibility.md` - closed
-- `085-library-list-row-delete-smoke-accessibility.md` - open
+- `085-library-list-row-delete-smoke-accessibility.md` - closed
 - `086-capture-ship-readiness.md` - in_progress
 - `087-quote-extraction-pipeline-deepening.md` - closed
 - `088-backend-entitlement-account-complexity-refactor.md` - in_progress
@@ -102,20 +102,20 @@ This folder tracks local markdown issues for the refactor programme.
 - `090-quote-detail-view-final-slice.md` - closed
 - `091-release-evidence-pack-and-device-smoke.md` - in_progress
 - `092-batch-processing-blank-screen.md` - closed
-- `093-third-party-ai-explicit-consent.md` - open
-- `094-privacy-declarations-behavior-alignment.md` - open
-- `095-ai-provider-routing-and-retention-contract.md` - open
+- `093-third-party-ai-explicit-consent.md` - in_progress
+- `094-privacy-declarations-behavior-alignment.md` - in_progress
+- `095-ai-provider-routing-and-retention-contract.md` - in_progress
 - `096-capture-image-lifecycle-and-storage.md` - in_progress
 - `097-offline-capture-queue-and-draft-integrity.md` - in_progress
 - `098-real-library-backup-and-restore.md` - closed
-- `099-account-deletion-session-revocation.md` - open
+- `099-account-deletion-session-revocation.md` - in_progress
 - `100-optional-sign-in-and-local-mode.md` - closed
-- `101-signed-out-subscription-purchase-gating.md` - open
+- `101-signed-out-subscription-purchase-gating.md` - in_progress
 - `102-atomic-extraction-rate-limits.md` - in_progress
 - `103-ai-prompt-output-and-provenance-validation.md` - closed
 - `104-ui-test-isolation-and-assertion-reliability.md` - closed
 - `105-adaptive-ui-and-accessibility-layout.md` - open
-- `106-ui-test-skip-elimination.md` - open
+- `106-ui-test-skip-elimination.md` - closed
 
 ## Refactor Rules
 

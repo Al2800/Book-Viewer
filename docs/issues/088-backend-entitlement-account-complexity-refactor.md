@@ -52,4 +52,7 @@ These files own auth/session handling, entitlement checks, product metadata, App
 ## Residual Risk
 
 - `backend/src/subscription.ts` remains large because App Store verification, notification reconciliation, ownership, and client status mapping are still colocated. The next backend slice should separate entitlement/gate policy or App Store API verification if backend feature work resumes.
-- Account deletion removes KV records but does not revoke already-issued stateless session JWTs before expiry.
+- The previous stateless-session deletion risk is resolved by issue `099`: every JWT now carries
+  a server-side session version, and account deletion increments that version before data cleanup.
+  Concurrent deletion/request testing and deployed-Worker verification remain release gates in
+  issue `099`.

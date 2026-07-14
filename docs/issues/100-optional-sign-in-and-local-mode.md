@@ -1,6 +1,6 @@
 # 100 - Allow meaningful local use without account sign-in
 
-Status: resolved
+Status: closed
 Area: Onboarding / Authentication / App Review
 Priority: critical (release blocker 9)
 
