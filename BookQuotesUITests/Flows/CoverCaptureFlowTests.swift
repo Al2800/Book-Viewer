@@ -23,72 +23,50 @@ final class CoverCaptureFlowTests: BaseUITestCase {
     // MARK: - Cover Capture Navigation Tests
 
     func testAddBook_ShowsCoverCaptureOptions() {
-        logger.step(1, "Tapping add book button")
+        logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
-        logger.step(2, "Verifying cover capture options")
-        // Should see mode picker for photo/barcode
-        let modePicker = app.segmentedControls.firstMatch
-        let photoLabel = app.staticTexts["Position book cover"]
+        logger.step(2, "Verifying capture options")
+        XCTAssertTrue(modePicker.exists, "Cover capture should offer photo and barcode modes")
+        XCTAssertTrue(modePicker.buttons["Photo"].exists, "Photo mode should be available")
+        XCTAssertTrue(modePicker.buttons["Barcode"].exists, "Barcode mode should be available")
+        XCTAssertTrue(captureButton.exists && captureButton.isEnabled, "Mock camera should provide an enabled shutter")
+        XCTAssertTrue(testCoverButton.exists && testCoverButton.isEnabled, "UI tests should provide Use Test Cover")
+        XCTAssertTrue(manualEntryButton.exists, "Cover capture should always offer manual entry")
 
-        let hasCaptureUI = modePicker.waitForExistence(timeout: 5) || photoLabel.exists
-
-        if hasCaptureUI {
-            logger.success("Cover capture view displayed")
-        } else {
-            // May go directly to manual entry
-            let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField].exists
-                ? app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
-                : app.textFields["Title"]
-            if titleField.exists {
-                logger.info("Went directly to manual entry (camera may not be available)")
-            }
-        }
+        logger.success("Cover capture options displayed")
     }
 
     func testCoverCapture_ModePicker_SwitchesBetweenPhotoAndBarcode() {
         logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
-        logger.step(2, "Finding mode picker")
-        let modePicker = app.segmentedControls.firstMatch
-        guard modePicker.waitForExistence(timeout: 5) else {
-            logger.info("Mode picker not found - may be in manual entry mode")
-            return
-        }
+        logger.step(2, "Switching to barcode mode")
+        let barcodeButton = modePicker.buttons["Barcode"]
+        XCTAssertTrue(barcodeButton.exists, "Cover capture should offer barcode mode")
+        barcodeButton.tap()
 
-	        logger.step(3, "Switching to barcode mode")
-	        let barcodeButton = modePicker.buttons["Barcode"]
-	        if barcodeButton.exists {
-	            barcodeButton.tap()
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityIdentifiers.Capture.barcodeInstruction].waitForExistence(timeout: 3),
+            "Barcode mode should show an alignment instruction"
+        )
+        XCTAssertTrue(
+            app.otherElements[AccessibilityIdentifiers.Capture.barcodeScanFrame].exists,
+            "Barcode mode should show a scan frame"
+        )
+        XCTAssertEqual(manualEntryButton.label, "Enter ISBN manually", "Barcode mode should offer ISBN entry")
 
-            // Verify barcode UI
-            let barcodePrompt = app.staticTexts["Align barcode within frame"]
-            XCTAssertTrue(barcodePrompt.waitForExistence(timeout: 3), "Barcode mode should show alignment prompt")
+        logger.step(3, "Switching back to photo mode")
+        let photoButton = modePicker.buttons["Photo"]
+        XCTAssertTrue(photoButton.exists, "Cover capture should offer photo mode")
+        photoButton.tap()
 
-	            logger.step(4, "Switching back to photo mode")
-	            let photoButton = modePicker.buttons["Photo"]
-	            if photoButton.exists {
-	                photoButton.tap()
-	            }
-	
-	            // Photo mode UI copy can vary by OS/device and in mocked camera mode.
-	            // Accept any high-signal indicator that we're back in the photo capture UI.
-	            let photoPrompt = app.staticTexts["Position book cover"]
-	            let testCoverButton = app.buttons[AccessibilityIdentifiers.Capture.testCoverButton]
-	            let captureButton = app.buttons.matching(
-	                NSPredicate(format: "label CONTAINS 'capture' OR identifier CONTAINS 'capture'")
-	            ).firstMatch
-	
-	            let hasPhotoUI =
-	                photoPrompt.waitForExistence(timeout: 2) ||
-	                testCoverButton.exists ||
-	                captureButton.exists
-	            XCTAssertTrue(hasPhotoUI, "Photo mode should show cover capture UI")
-	
-	            logger.success("Mode picker switches correctly")
-	        }
-	    }
+        XCTAssertTrue(captureButton.waitForExistence(timeout: 3), "Photo mode should restore the shutter")
+        XCTAssertTrue(testCoverButton.exists, "Photo mode should restore Use Test Cover")
+        XCTAssertEqual(manualEntryButton.label, "Enter details manually", "Photo mode should offer metadata entry")
+
+        logger.success("Mode picker switches correctly")
+    }
 
     // MARK: - Photo Capture Tests
 
@@ -96,226 +74,135 @@ final class CoverCaptureFlowTests: BaseUITestCase {
         logger.step(1, "Opening cover capture in photo mode")
         openAddBookFlow()
 
-        logger.step(2, "Verifying capture button exists")
-        // Look for test cover button in UI test mode
-        let testCoverButton = app.buttons[AccessibilityIdentifiers.Capture.testCoverButton]
-        let captureButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'capture' OR identifier CONTAINS 'capture'")
-        ).firstMatch
+        logger.step(2, "Verifying camera controls")
+        XCTAssertTrue(cameraPreview.exists, "Mock camera should render a camera preview surface")
+        XCTAssertTrue(captureButton.exists && captureButton.isEnabled, "Photo mode should provide an enabled shutter")
+        XCTAssertTrue(testCoverButton.exists && testCoverButton.isEnabled, "Photo mode should provide Use Test Cover")
 
-        let hasCaptureButton = testCoverButton.waitForExistence(timeout: 5) || captureButton.exists
-
-        if hasCaptureButton {
-            logger.success("Capture button available in photo mode")
-        } else {
-            logger.info("Capture button not found (camera may require permissions)")
-        }
+        logger.success("Capture button available in photo mode")
     }
 
-    func testCoverCapture_TestCoverButton_NavigatesToBookEdit() throws {
+    func testCoverCapture_TestCoverButton_NavigatesToBookEdit() {
         logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
         logger.step(2, "Finding test cover button")
-        let testCoverButton = app.buttons[AccessibilityIdentifiers.Capture.testCoverButton]
-        guard testCoverButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test cover button not available (not in UI test mode)")
-        }
+        XCTAssertTrue(testCoverButton.waitForExistence(timeout: 5), "Mock cover capture should provide Use Test Cover")
 
         logger.step(3, "Tapping test cover button")
         testCoverButton.tap()
 
-        logger.step(4, "Waiting for processing")
-        // Should show processing indicator then navigate to edit
-        let processingText = app.staticTexts["Analyzing cover..."]
-        if processingText.waitForExistence(timeout: 2) {
-            logger.info("Processing cover...")
-        }
+        logger.step(4, "Accepting the test cover crop")
+        acceptCoverCrop()
 
         logger.step(5, "Verifying navigation to book edit")
-        let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField].exists
-            ? app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
-            : app.textFields["Title"]
-        let editNavBar = app.navigationBars.matching(
-            NSPredicate(format: "identifier CONTAINS 'Book' OR identifier CONTAINS 'Add'")
-        ).firstMatch
-
-        let navigatedToEdit = titleField.waitForExistence(timeout: 10) || editNavBar.exists
-
-        XCTAssertTrue(navigatedToEdit, "Should navigate to book edit after cover capture")
+        assertBookEditShowsTestCoverMetadata()
 
         logger.success("Test cover capture navigates to book edit")
     }
 
-    func testCoverCapture_CropAccept_DismissesReviewBeforeProcessing() throws {
+    func testCoverCapture_CropAccept_DismissesReviewBeforeProcessing() {
         logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
         logger.step(2, "Capturing mock cover photo")
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        guard captureButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Capture button not available in mocked camera mode")
-        }
+        XCTAssertTrue(captureButton.waitForExistence(timeout: 5), "Mock cover capture should provide an enabled shutter")
+        XCTAssertTrue(captureButton.isEnabled, "Mock cover shutter should be enabled")
         captureButton.tap()
 
         logger.step(3, "Accepting crop review")
-        let useCropButton = app.buttons[AccessibilityIdentifiers.CoverCrop.useCropButton]
-        guard useCropButton.waitForExistence(timeout: 7) else {
-            throw XCTSkip("Mocked camera capture did not present cover crop review on this simulator run")
-        }
-        useCropButton.tap()
+        let useCropButton = acceptCoverCrop()
 
-        logger.step(4, "Verifying crop review dismisses into processing or edit")
-        let processingText = app.staticTexts["Analyzing cover..."]
-        let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField].exists
-            ? app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
-            : app.textFields["Title"]
+        logger.step(4, "Verifying crop review reaches book edit")
 
         let leftCropReview = waitUntil("Crop review should dismiss", timeout: 5) {
             !useCropButton.exists
         }
         XCTAssertTrue(leftCropReview, "Crop review should dismiss after accepting crop")
-
-        let reachedProcessingOrEdit = waitUntil("Processing overlay or book edit should appear", timeout: 15) {
-            processingText.exists || titleField.exists || self.app.alerts.firstMatch.exists
-        }
-        XCTAssertTrue(reachedProcessingOrEdit, "Accepting crop should move to processing or book edit")
+        assertBookEditShowsTestCoverMetadata()
 
         logger.success("Crop accept dismisses review before processing")
     }
 
-    func testCoverCapture_TestCoverButton_CanSaveBook() throws {
+    func testCoverCapture_TestCoverButton_CanSaveBook() {
         executionTimeAllowance = 180
         logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
         logger.step(2, "Using test cover")
-        let testCoverButton = app.buttons[AccessibilityIdentifiers.Capture.testCoverButton]
-        guard testCoverButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test cover button not available (not in UI test mode)")
-        }
+        XCTAssertTrue(testCoverButton.waitForExistence(timeout: 5), "Mock cover capture should provide Use Test Cover")
         testCoverButton.tap()
+        acceptCoverCrop()
 
         logger.step(3, "Filling required fields on book edit")
         let suffix = String(UUID().uuidString.prefix(8))
         let titleToUse = "Cover Book \(suffix)"
 
-        // Wait for either the book edit form OR an error alert (Gemini may fail to read the cover in mocked mode).
-        // If an alert appears, dismiss it and keep waiting for the form.
         let titleFieldById = app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
-        let titleFieldByLabel = app.textFields["Title"]
-        while true {
-            let ready = waitUntil("Book edit form (or alert) to appear", timeout: 15) {
-                titleFieldById.exists || titleFieldByLabel.exists || self.app.alerts.firstMatch.exists
-            }
-            XCTAssertTrue(ready, "Expected book edit form (or an alert) to appear after using test cover")
-            if dismissAppAlertIfPresent() {
-                continue
-            }
-            break
-        }
-
-        let titleField: XCUIElement
-        if titleFieldById.waitForExistence(timeout: 10) {
-            titleField = titleFieldById
-        } else {
-            XCTAssertTrue(titleFieldByLabel.waitForExistence(timeout: 10), "Title field should exist")
-            titleField = titleFieldByLabel
-        }
-        // In XCUITest, an empty TextField's value often equals its placeholder text (e.g. "Title").
-        // Use a replace strategy to reliably set the value regardless of placeholder behavior.
-        replaceText(titleToUse, in: titleField)
-
-	        // Author is optional for saving; some capture flows may omit the author field.
-	        let authorFieldById = app.textFields[AccessibilityIdentifiers.BookEdit.authorField]
-	        let authorFieldByLabel = app.textFields["Author"]
-	        let authorField = authorFieldById.exists ? authorFieldById : authorFieldByLabel
-	        if authorField.waitForExistence(timeout: 1) {
-	            let current = (authorField.value as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-	            if current.isEmpty || current == "Author" {
-	                replaceText("Test Author", in: authorField)
-	            }
-	        }
+        XCTAssertTrue(titleFieldById.waitForExistence(timeout: 10), "Book edit form should open after using test cover")
+        replaceText(titleToUse, in: titleFieldById)
 
         logger.step(4, "Saving book")
-        // Prefer the stable accessibility identifier; fall back to nav bar label (varies by mode).
         let saveButtonById = app.buttons[AccessibilityIdentifiers.BookEdit.saveButton]
-        if saveButtonById.waitForExistence(timeout: 6) {
-            saveButtonById.tap()
-        } else {
-            let addBookNavButton = app.navigationBars.buttons["Add Book"]
-            let addBookButton = app.buttons["Add Book"]
-            let fallback = addBookNavButton.exists ? addBookNavButton : addBookButton
-            XCTAssertTrue(fallback.waitForExistence(timeout: 3), "Save/Add button should exist")
-            fallback.tap()
-        }
+        XCTAssertTrue(saveButtonById.waitForExistence(timeout: 6), "Book edit should provide Add Book")
+        XCTAssertTrue(saveButtonById.isEnabled, "Prefilled cover metadata should be saveable")
+        saveButtonById.tap()
 
         logger.step(5, "Verifying book was created")
-        // We may land on book detail or back in library.
-        let titleOnScreen = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS %@", titleToUse)
-        ).firstMatch
-        XCTAssertTrue(titleOnScreen.waitForExistence(timeout: 8), "Created book title should appear")
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 8),
+            "Saving a captured cover should open the new book"
+        )
+        XCTAssertEqual(
+            app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].label,
+            titleToUse,
+            "The created book detail should show the saved title"
+        )
 
         logger.success("Cover capture flow can create a book")
     }
 
     // MARK: - Barcode Scanning Tests
 
-    func testCoverCapture_BarcodeMode_ShowsScanFrame() throws {
+    func testCoverCapture_BarcodeMode_ShowsScanFrame() {
         logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
         logger.step(2, "Switching to barcode mode")
-        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
-        if permissionPrompt.waitForExistence(timeout: 2) {
-            throw XCTSkip("Camera permission prompt shown; barcode UI unavailable")
-        }
-
-        let modePicker = app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker]
-        guard modePicker.waitForExistence(timeout: 5) else {
-            logger.info("Mode picker not found")
-            return
-        }
+        XCTAssertFalse(permissionPrompt.waitForExistence(timeout: 2), "Mock camera should not request permission")
 
         let barcodeButton = modePicker.buttons["Barcode"]
-        if barcodeButton.exists {
-            barcodeButton.tap()
-        }
+        XCTAssertTrue(barcodeButton.exists, "Cover capture should offer barcode mode")
+        barcodeButton.tap()
 
         logger.step(3, "Verifying scan frame UI")
-        let scanPrompt = app.staticTexts["Align barcode within frame"]
-        XCTAssertTrue(scanPrompt.waitForExistence(timeout: 3), "Barcode scan frame should be visible")
+        XCTAssertTrue(scanFrame.waitForExistence(timeout: 3), "Barcode mode should show a scan frame")
+        XCTAssertTrue(barcodeInstruction.exists, "Barcode mode should show an alignment instruction")
 
         logger.success("Barcode scan frame displayed")
     }
 
-    func testCoverCapture_BarcodeMode_HasScanningAnimation() throws {
+    func testCoverCapture_BarcodeMode_OffersManualISBNEntry() {
         logger.step(1, "Opening cover capture in barcode mode")
         openAddBookFlow()
 
-        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
-        if permissionPrompt.waitForExistence(timeout: 2) {
-            throw XCTSkip("Camera permission prompt shown; barcode UI unavailable")
-        }
+        XCTAssertFalse(permissionPrompt.waitForExistence(timeout: 2), "Mock camera should not request permission")
 
-        let modePicker = app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker]
-        if modePicker.waitForExistence(timeout: 5) {
-            let barcodeButton = modePicker.buttons["Barcode"]
-            if barcodeButton.exists {
-                barcodeButton.tap()
-            }
-        }
+        let barcodeButton = modePicker.buttons["Barcode"]
+        XCTAssertTrue(barcodeButton.exists, "Cover capture should offer barcode mode")
+        barcodeButton.tap()
 
-        logger.step(2, "Verifying scanning UI elements")
-        // The scan line animation should be running
-        let scanPrompt = app.staticTexts["Align barcode within frame"]
+        logger.step(2, "Opening manual ISBN entry")
+        XCTAssertTrue(manualEntryButton.waitForExistence(timeout: 3), "Barcode mode should offer manual ISBN entry")
+        XCTAssertEqual(manualEntryButton.label, "Enter ISBN manually", "Barcode mode should label the fallback clearly")
+        manualEntryButton.tap()
 
-        if scanPrompt.waitForExistence(timeout: 3) {
-            logger.success("Barcode scanning UI active")
-        } else {
-            logger.info("Barcode scanning UI may differ")
-        }
+        XCTAssertTrue(
+            app.textFields[AccessibilityIdentifiers.BookEdit.isbnField].waitForExistence(timeout: 5),
+            "Manual ISBN entry should open the book form"
+        )
+
+        logger.success("Manual ISBN entry is available")
     }
 
     // MARK: - Manual Entry Fallback Tests
@@ -325,28 +212,19 @@ final class CoverCaptureFlowTests: BaseUITestCase {
         openAddBookFlow()
 
         logger.step(2, "Finding manual entry link")
-        let manualEntryButton = app.buttons["Enter manually"]
+        XCTAssertTrue(manualEntryButton.waitForExistence(timeout: 5), "Cover capture should offer manual entry")
+        XCTAssertEqual(manualEntryButton.label, "Enter details manually", "Photo mode should label the fallback clearly")
 
-        if manualEntryButton.waitForExistence(timeout: 5) {
-            logger.step(3, "Tapping manual entry")
-            manualEntryButton.tap()
+        logger.step(3, "Tapping manual entry")
+        manualEntryButton.tap()
 
-            logger.step(4, "Verifying navigation to manual form")
-            let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField].exists
-                ? app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
-                : app.textFields["Title"]
-            XCTAssertTrue(titleField.waitForExistence(timeout: 5), "Should navigate to manual entry form")
+        logger.step(4, "Verifying navigation to manual form")
+        XCTAssertTrue(
+            app.textFields[AccessibilityIdentifiers.BookEdit.titleField].waitForExistence(timeout: 5),
+            "Manual entry should open the book form"
+        )
 
-            logger.success("Manual entry link works correctly")
-        } else {
-            // May already be on manual entry form
-            let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField].exists
-                ? app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
-                : app.textFields["Title"]
-            if titleField.exists {
-                logger.info("Already on manual entry form")
-            }
-        }
+        logger.success("Manual entry link works correctly")
     }
 
     // MARK: - Cancel Flow Tests
@@ -356,63 +234,96 @@ final class CoverCaptureFlowTests: BaseUITestCase {
         openAddBookFlow()
 
         logger.step(2, "Finding cancel button")
-        let cancelButton = app.buttons["Cancel"]
+        XCTAssertTrue(cancelButton.waitForExistence(timeout: 5), "Cover capture should provide Cancel")
 
-        if cancelButton.waitForExistence(timeout: 5) {
-            logger.step(3, "Tapping cancel")
-            cancelButton.tap()
+        logger.step(3, "Tapping cancel")
+        cancelButton.tap()
 
-            logger.step(4, "Verifying dismissal")
-            // Should return to library view
-            let libraryTab = tabButton(.library)
-            let addBookButton = app.buttons[AccessibilityIdentifiers.Library.addBookButton]
+        logger.step(4, "Verifying dismissal")
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover].waitForExistence(timeout: 5),
+            "Cancelling cover capture should return to capture mode selection"
+        )
 
-            let returnedToLibrary = libraryTab.waitForExistence(timeout: 3) || addBookButton.exists
-
-            XCTAssertTrue(returnedToLibrary, "Cancel should return to library")
-
-            logger.success("Cancel dismisses cover capture")
-        }
+        logger.success("Cancel dismisses cover capture")
     }
 
     // MARK: - Error Handling Tests
 
-    func testCoverCapture_WithoutCamera_ShowsPermissionPrompt() {
-        // This test verifies graceful handling when camera isn't available
+    func testCoverCapture_MockCamera_DoesNotShowPermissionPrompt() {
         logger.step(1, "Opening cover capture")
         openAddBookFlow()
 
-        logger.step(2, "Checking for permission or capture UI")
-        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.testCoverButton]
-        let manualEntry = app.buttons["Enter manually"]
+        logger.step(2, "Checking mocked camera state")
+        XCTAssertFalse(permissionPrompt.waitForExistence(timeout: 2), "Mocked camera should bypass the permission prompt")
+        XCTAssertTrue(cameraPreview.exists, "Mocked camera should provide the preview surface")
+        XCTAssertTrue(captureButton.exists, "Mocked camera should provide the shutter")
 
-        let hasValidUI = permissionPrompt.waitForExistence(timeout: 5) ||
-                        captureButton.exists ||
-                        manualEntry.exists
-
-        XCTAssertTrue(hasValidUI, "Should show permission prompt, capture button, or manual entry option")
-
-        logger.success("Camera permission/fallback handled correctly")
+        logger.success("Mock camera is configured correctly")
     }
 
     // MARK: - Helpers
 
     private func openAddBookFlow() {
-        let captureTab = tabButton(.capture)
-        if captureTab.waitForExistence(timeout: 5) {
-            captureTab.tap()
-        }
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
 
         let coverOption = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
-        if coverOption.waitForExistence(timeout: 5) {
-            coverOption.tap()
-        }
+        XCTAssertTrue(coverOption.waitForExistence(timeout: 5), "Capture should offer cover mode")
+        coverOption.tap()
 
-        // Wait for capture view, manual entry, or permission prompt
-        _ = app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker].waitForExistence(timeout: 3) ||
-            app.textFields[AccessibilityIdentifiers.BookEdit.titleField].waitForExistence(timeout: 3) ||
-            app.textFields["Title"].waitForExistence(timeout: 3) ||
-            app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt].waitForExistence(timeout: 3)
+        XCTAssertTrue(modePicker.waitForExistence(timeout: 5), "Cover mode should open the photo and barcode picker")
+        XCTAssertTrue(testCoverButton.waitForExistence(timeout: 5), "Cover mode should provide the UI-test cover fixture")
+    }
+
+    private var modePicker: XCUIElement {
+        app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker]
+    }
+
+    private var cameraPreview: XCUIElement {
+        app.otherElements[AccessibilityIdentifiers.Capture.cameraPreview]
+    }
+
+    private var captureButton: XCUIElement {
+        app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+    }
+
+    private var testCoverButton: XCUIElement {
+        app.buttons[AccessibilityIdentifiers.Capture.testCoverButton]
+    }
+
+    private var manualEntryButton: XCUIElement {
+        app.buttons[AccessibilityIdentifiers.Capture.manualEntryButton]
+    }
+
+    private var cancelButton: XCUIElement {
+        app.buttons[AccessibilityIdentifiers.Capture.cancelButton]
+    }
+
+    private var permissionPrompt: XCUIElement {
+        app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
+    }
+
+    private var scanFrame: XCUIElement {
+        app.otherElements[AccessibilityIdentifiers.Capture.barcodeScanFrame]
+    }
+
+    private var barcodeInstruction: XCUIElement {
+        app.staticTexts[AccessibilityIdentifiers.Capture.barcodeInstruction]
+    }
+
+    private func assertBookEditShowsTestCoverMetadata() {
+        let titleField = app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
+        let authorField = app.textFields[AccessibilityIdentifiers.BookEdit.authorField]
+        XCTAssertTrue(titleField.waitForExistence(timeout: 10), "Cover capture should open the book edit form")
+        XCTAssertEqual(titleField.value as? String, "Test Cover Book", "Mock cover metadata should prefill the extracted title")
+        XCTAssertEqual(authorField.value as? String, "Test Author", "Mock cover metadata should prefill the extracted author")
+    }
+
+    @discardableResult
+    private func acceptCoverCrop() -> XCUIElement {
+        let useCropButton = app.buttons[AccessibilityIdentifiers.CoverCrop.useCropButton]
+        XCTAssertTrue(useCropButton.waitForExistence(timeout: 7), "Mock cover capture should present crop review")
+        useCropButton.tap()
+        return useCropButton
     }
 }

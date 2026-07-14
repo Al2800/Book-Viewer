@@ -11,6 +11,13 @@ struct CoverBarcodeScanOverlay: View {
                 .overlay {
                     CoverScanLineView()
                 }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.barcodeScanFrame)
+
+            Text("Align barcode within frame")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .padding(.top, Spacing.md)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.barcodeInstruction)
 
             Spacer()
         }
@@ -110,6 +117,7 @@ struct CoverCaptureBottomControls: View {
                         .frame(maxWidth: .infinity)
                 }
                 .glassButton()
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.manualEntryButton)
             }
         }
     }

@@ -189,6 +189,15 @@ enum AccessibilityIdentifiers {
         /// UI test-only button for injecting a test cover image
         static let testCoverButton = "capture_test_cover_button"
 
+        /// Manual metadata entry action shown in cover capture.
+        static let manualEntryButton = "capture_manual_entry_button"
+
+        /// Barcode scanner framing guide shown in cover capture.
+        static let barcodeScanFrame = "capture_barcode_scan_frame"
+
+        /// Barcode scanner instruction shown in cover capture.
+        static let barcodeInstruction = "capture_barcode_instruction"
+
         /// Capture mode selection: cover
         static let modeSelectCover = "capture_mode_select_cover"
 

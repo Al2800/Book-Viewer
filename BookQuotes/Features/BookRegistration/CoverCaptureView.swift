@@ -23,6 +23,7 @@ struct CoverCaptureView: View {
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureMode: CaptureMode = .photo
     @State private var cropLifecycle = CoverCaptureCropLifecycleState()
+    @State private var cropReview: CropReview?
     @State private var extractedMetadata: BookMetadata?
     @State private var showError = false
     @State private var errorMessage = ""
@@ -53,24 +54,23 @@ struct CoverCaptureView: View {
         // Prevent the system tab bar from overlapping camera capture UI.
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
-        .fullScreenCover(isPresented: $cropLifecycle.isReviewPresented, onDismiss: {
+        .fullScreenCover(item: $cropReview, onDismiss: {
             if let image = cropLifecycle.consumePendingCroppedCoverAfterReviewDismiss(isProcessing: isProcessing) {
                 Task {
                     await processCapturedCover(image)
                 }
             }
-        }) {
-            if let capturedImage = cropLifecycle.capturedImage {
-                CoverCropReviewView(
-                    image: capturedImage,
-                    onRetake: {
-                        resetCapturedPhoto()
-                    },
-                    onUse: { croppedImage in
-                        cropLifecycle.acceptCrop(croppedImage)
-                    }
-                )
-            }
+        }) { review in
+            CoverCropReviewView(
+                image: review.image,
+                onRetake: {
+                    resetCapturedPhoto()
+                },
+                onUse: { croppedImage in
+                    cropLifecycle.acceptCrop(croppedImage)
+                    cropReview = nil
+                }
+            )
         }
         .sheet(item: $extractedMetadata) { metadata in
             BookEditView(mode: .createFromMetadata(metadata)) { book in
@@ -100,9 +100,11 @@ struct CoverCaptureView: View {
         if cameraService.isAuthorized {
             CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
         } else {
             CameraPermissionView()
                 .environment(cameraPermission)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.permissionPrompt)
         }
     }
 
@@ -184,6 +186,11 @@ struct CoverCaptureView: View {
     // MARK: - Capture Actions
 
     private func capturePhoto() {
+        if shouldUseMockCoverFixture {
+            presentMockCoverForReview()
+            return
+        }
+
         Task {
             HapticManager.medium()
 
@@ -197,7 +204,7 @@ struct CoverCaptureView: View {
                     return (try? ImagePreprocessor.cropToAspectFillPreview(image, previewSize: previewSize)) ?? image
                 }.value
                 await MainActor.run {
-                    cropLifecycle.presentCapturedImage(CoverCaptureMetadataSupport.normalizeOrientation(previewCropped))
+                    presentCropReview(with: CoverCaptureMetadataSupport.normalizeOrientation(previewCropped))
                 }
 
             } catch {
@@ -209,11 +216,23 @@ struct CoverCaptureView: View {
     }
 
     private func captureTestCover() {
-        extractedMetadata = BookMetadata(
-            title: "Test Cover Book",
-            authors: ["Test Author"],
-            source: .coverPhoto
-        )
+        presentMockCoverForReview()
+    }
+
+    private var shouldUseMockCoverFixture: Bool {
+        UITestConfiguration.isUITesting &&
+            UITestConfiguration.shouldMockCamera &&
+            !UITestConfiguration.isAppStoreMediaMode
+    }
+
+    private func presentMockCoverForReview() {
+        HapticManager.medium()
+        presentCropReview(with: MockCameraImages.bookCoverImage)
+    }
+
+    private func presentCropReview(with image: UIImage) {
+        cropLifecycle.presentCapturedImage(image)
+        cropReview = CropReview(image: image)
     }
 
     @MainActor
@@ -263,6 +282,7 @@ struct CoverCaptureView: View {
 
     private func resetCapturedPhoto() {
         cropLifecycle.reset()
+        cropReview = nil
     }
 
     // MARK: - Extraction (Placeholders)
@@ -274,6 +294,11 @@ struct CoverCaptureView: View {
     private func lookupISBN(_ isbn: String) async throws -> BookMetadata {
         try await CoverCaptureMetadataSupport(authService: authService).lookupISBN(isbn)
     }
+}
+
+private struct CropReview: Identifiable {
+    let id = UUID()
+    let image: UIImage
 }
 
 // MARK: - Cover Crop Lifecycle State

@@ -8,6 +8,10 @@ struct CoverCaptureMetadataSupport {
 
     func extractCoverMetadata(from image: UIImage) async -> BookMetadata {
         let coverData = image.jpegData(compressionQuality: 0.85)
+        if let testMetadata = uiTestCoverMetadata(coverImageData: coverData) {
+            return testMetadata
+        }
+
         let service = GeminiService(authService: authService)
         let orchestrator = CoverExtractionOrchestrator(
             extractWithGemini: { image in
@@ -20,6 +24,21 @@ struct CoverCaptureMetadataSupport {
 
         let extracted = await orchestrator.extract(from: image, coverImageData: coverData)
         return await enrichWithCatalog(extracted)
+    }
+
+    private func uiTestCoverMetadata(coverImageData: Data?) -> BookMetadata? {
+        guard UITestConfiguration.isUITesting,
+              UITestConfiguration.shouldMockCamera,
+              !UITestConfiguration.isAppStoreMediaMode else {
+            return nil
+        }
+
+        return BookMetadata(
+            title: "Test Cover Book",
+            authors: ["Test Author"],
+            coverImageData: coverImageData,
+            source: .coverPhoto
+        )
     }
 
     /// Once the photo has been identified (title/author), look the book up in

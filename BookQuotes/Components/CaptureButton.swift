@@ -125,7 +125,7 @@ struct CaptureButton: View {
         }
 
         // Execute action
-        Task {
+        Task { @MainActor in
             await action()
         }
     }
