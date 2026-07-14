@@ -186,6 +186,23 @@ final class CaptureQueueManagerTests: SwiftDataTestCase {
         await manager.stop()
     }
 
+    func testStartRecoversInterruptedItemsBeforeQueueProcessing() async {
+        let queueStore = SpyCaptureQueueStore(pendingItemIds: [])
+        let itemProcessor = SpyCaptureQueueItemProcessor(outcomes: [])
+        let manager = CaptureQueueManager(
+            queueStore: queueStore,
+            itemProcessor: itemProcessor,
+            networkMonitor: StubCaptureQueueNetworkMonitor(isConnected: false)
+        )
+
+        await manager.start()
+
+        XCTAssertEqual(queueStore.recoveryCallCount, 1)
+        XCTAssertTrue(itemProcessor.processedItemIds.isEmpty)
+
+        await manager.stop()
+    }
+
     func testProcessNowDoesNotProcessWhenOffline() async throws {
         let itemId = UUID()
         let queueStore = SpyCaptureQueueStore(pendingItemIds: [itemId])

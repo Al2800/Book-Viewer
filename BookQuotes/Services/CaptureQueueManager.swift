@@ -76,6 +76,10 @@ actor CaptureQueueManager {
     /// Start monitoring network and processing queue.
     /// Call this when the app becomes active.
     func start() async {
+        // A previous app termination can leave a legacy item marked as processing.
+        // It is safe to retry because the processor is duplicate-safe.
+        try? queueStore.recoverInterruptedItems()
+
         // Start network observation
         await startNetworkObservation()
 

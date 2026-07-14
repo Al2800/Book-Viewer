@@ -2,6 +2,8 @@ import Foundation
 import SwiftData
 
 struct CaptureQueueItemProcessor {
+    private static let duplicateSimilarityThreshold = 0.85
+
     let modelContainer: ModelContainer
     let quoteExtractor: any QuoteExtracting
 
@@ -16,6 +18,34 @@ struct CaptureQueueItemProcessor {
 
         guard let item = try? context.fetch(descriptor).first else {
             return .missing
+        }
+
+        guard item.status != .completed else {
+            return .completed
+        }
+
+        if let resolvedQuotes = item.extractedQuotes, !resolvedQuotes.isEmpty {
+            item.markCompleted(quotes: resolvedQuotes)
+            do {
+                try context.save()
+
+                if item.deleteImageFile() {
+                    try context.save()
+                }
+            } catch {
+                item.markFailed(error: error)
+                try? context.save()
+                await onStateChanged()
+
+                return .failed(
+                    itemId: item.id,
+                    retryCount: item.retryCount,
+                    canRetry: item.canRetry
+                )
+            }
+
+            await onStateChanged()
+            return .completed
         }
 
         item.markProcessing()
@@ -54,7 +84,27 @@ struct CaptureQueueItemProcessor {
             throw QueueError.bookNotFound
         }
 
-        let quotes = result.quotes.map { extractedQuote in
+        var resolvedQuotes = try existingQuotes(for: book, in: context)
+        var quotesByNormalizedText: [String: Quote] = [:]
+        for quote in resolvedQuotes {
+            quotesByNormalizedText[normalizedText(quote.text), default: quote] = quote
+        }
+
+        let quotes: [Quote] = result.quotes.compactMap { extractedQuote -> Quote? in
+            let normalizedQuote = normalizedText(extractedQuote.text)
+            guard !normalizedQuote.isEmpty else { return nil }
+
+            if let existingQuote = quotesByNormalizedText[normalizedQuote] {
+                return existingQuote
+            }
+
+            if let existingQuote = duplicateQuote(
+                matching: normalizedQuote,
+                in: resolvedQuotes
+            ) {
+                return existingQuote
+            }
+
             let extractedData = extractedQuote.toExtractedQuote()
             let quote = Quote(
                 text: extractedQuote.text,
@@ -65,6 +115,8 @@ struct CaptureQueueItemProcessor {
             quote.marginNote = extractedQuote.marginNote
             quote.confidence = extractedQuote.confidence
             context.insert(quote)
+            resolvedQuotes.append(quote)
+            quotesByNormalizedText[normalizedQuote] = quote
             return quote
         }
 
@@ -73,6 +125,32 @@ struct CaptureQueueItemProcessor {
 
         if item.deleteImageFile() {
             try? context.save()
+        }
+    }
+
+    private func existingQuotes(for book: Book, in context: ModelContext) throws -> [Quote] {
+        let bookId = book.id
+        let descriptor = FetchDescriptor<Quote>(
+            predicate: #Predicate<Quote> { $0.book?.id == bookId }
+        )
+        return try context.fetch(descriptor)
+    }
+
+    private func normalizedText(_ text: String) -> String {
+        text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    private func duplicateQuote(matching candidateText: String, in quotes: [Quote]) -> Quote? {
+        quotes.first { quote in
+            let existingText = normalizedText(quote.text)
+            guard !existingText.isEmpty else { return false }
+            return levenshteinSimilarity(candidateText, existingText)
+                >= Self.duplicateSimilarityThreshold
         }
     }
 

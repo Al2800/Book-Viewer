@@ -31,6 +31,7 @@ final class SpyCaptureQueueStore: CaptureQueueStoring, @unchecked Sendable {
     private var storedCanRetryItemIds: [UUID] = []
     private var storedRemovedItemIds: [UUID] = []
     private var storedRetriedItemIds: [UUID] = []
+    private var storedRecoveryCallCount = 0
 
     var statsProcessingStates: [Bool] {
         locked { storedStatsProcessingStates }
@@ -46,6 +47,10 @@ final class SpyCaptureQueueStore: CaptureQueueStoring, @unchecked Sendable {
 
     var retriedItemIds: [UUID] {
         locked { storedRetriedItemIds }
+    }
+
+    var recoveryCallCount: Int {
+        locked { storedRecoveryCallCount }
     }
 
     init(
@@ -81,6 +86,12 @@ final class SpyCaptureQueueStore: CaptureQueueStoring, @unchecked Sendable {
     func cancelItem(id itemId: UUID) throws {}
 
     func cleanupOldItems() throws {}
+
+    func recoverInterruptedItems() throws {
+        locked {
+            storedRecoveryCallCount += 1
+        }
+    }
 
     func stats(isProcessing: Bool) throws -> QueueStats {
         locked {

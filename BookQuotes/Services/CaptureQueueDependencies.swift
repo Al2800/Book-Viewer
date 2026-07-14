@@ -12,6 +12,7 @@ protocol CaptureQueueStoring {
     func retryItem(id itemId: UUID) throws
     func cancelItem(id itemId: UUID) throws
     func cleanupOldItems() throws
+    func recoverInterruptedItems() throws
     func stats(isProcessing: Bool) throws -> QueueStats
     func nextPendingItemID() throws -> UUID?
     func canRetryItem(id itemId: UUID) throws -> Bool

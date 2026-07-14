@@ -69,6 +69,19 @@ struct CaptureQueueStore {
         try context.save()
     }
 
+    func recoverInterruptedItems() throws {
+        let context = ModelContext(modelContainer)
+        let descriptor = FetchDescriptor<CaptureQueueItem>(
+            predicate: #Predicate<CaptureQueueItem> { $0.statusRaw == "processing" }
+        )
+
+        for item in try context.fetch(descriptor) {
+            item.resetForRetry()
+        }
+
+        try context.save()
+    }
+
     func stats(isProcessing: Bool) throws -> QueueStats {
         let context = ModelContext(modelContainer)
         let items = try context.fetch(FetchDescriptor<CaptureQueueItem>())
