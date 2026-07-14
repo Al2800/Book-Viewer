@@ -125,6 +125,7 @@ struct CaptureDetailSheet: View {
                     Label("Remove Page", systemImage: "trash")
                 }
                 .buttonStyle(.destructive)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.removePageButton)
             }
             .padding(Spacing.lg)
             .navigationTitle("Page \(capture.orderIndex + 1)")

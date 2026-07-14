@@ -245,17 +245,20 @@ struct CaptureControlsBar: View {
 struct CaptureHeaderBar<Trailing: View>: View {
     let title: String
     let subtitle: String?
+    let subtitleAccessibilityIdentifier: String?
     let onCancel: () -> Void
     let trailing: Trailing
 
     init(
         title: String,
         subtitle: String? = nil,
+        subtitleAccessibilityIdentifier: String? = nil,
         onCancel: @escaping () -> Void,
         @ViewBuilder trailing: () -> Trailing
     ) {
         self.title = title
         self.subtitle = subtitle
+        self.subtitleAccessibilityIdentifier = subtitleAccessibilityIdentifier
         self.onCancel = onCancel
         self.trailing = trailing()
     }
@@ -271,10 +274,18 @@ struct CaptureHeaderBar<Trailing: View>: View {
                     .lineLimit(1)
 
                 if let subtitle {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.72))
-                        .lineLimit(1)
+                    if let subtitleAccessibilityIdentifier {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.72))
+                            .lineLimit(1)
+                            .accessibilityIdentifier(subtitleAccessibilityIdentifier)
+                    } else {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.72))
+                            .lineLimit(1)
+                    }
                 }
             }
 
@@ -296,9 +307,15 @@ extension CaptureHeaderBar where Trailing == EmptyView {
     init(
         title: String,
         subtitle: String? = nil,
+        subtitleAccessibilityIdentifier: String? = nil,
         onCancel: @escaping () -> Void
     ) {
-        self.init(title: title, subtitle: subtitle, onCancel: onCancel) {
+        self.init(
+            title: title,
+            subtitle: subtitle,
+            subtitleAccessibilityIdentifier: subtitleAccessibilityIdentifier,
+            onCancel: onCancel
+        ) {
             EmptyView()
         }
     }
@@ -372,6 +389,7 @@ struct CameraIconButton: View {
                 )
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
     }
 }
 

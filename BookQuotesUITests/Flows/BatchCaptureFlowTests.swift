@@ -1,484 +1,238 @@
 import XCTest
 
-/// End-to-end tests for batch/multi-page capture flow.
-/// Tests capturing multiple pages, thumbnail strip, and session management.
+/// End-to-end tests for the batch/multi-page capture workflow.
 final class BatchCaptureFlowTests: BaseUITestCase {
 
-    // MARK: - Setup
-
     override var additionalLaunchArguments: [String] {
-        ["--preload-library-test-data", "--mock-camera"]
+        [
+            "--preload-library-test-data",
+            "--mock-camera",
+            "--mock-extraction-scenario", "remote"
+        ]
     }
 
     override func waitForAppReady() {
         super.waitForAppReady()
-
-        // Navigate to library and open a book
-        let libraryTab = tabButton(.library)
-        if libraryTab.waitForExistence(timeout: 5) {
-            libraryTab.tap()
-        }
+        logger.info("Batch capture tests ready")
     }
 
     // MARK: - Batch Capture Entry Tests
 
-    func testBatchCapture_OpensFromCaptureTab() throws {
-        logger.step(1, "Opening batch capture from Capture tab")
-        try openBatchCapture()
+    func testBatchCapture_OpensFromCaptureTab() {
+        openBatchCapture()
 
-        logger.step(2, "Verifying batch capture view")
-        // Should see page counter and capture controls
-        let pageCounter = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS 'pages'")
-        ).firstMatch
-        let captureButtonInView = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        let pageCounter = app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
         let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
 
-        let hasBatchUI = pageCounter.waitForExistence(timeout: 5) ||
-                        captureButtonInView.exists ||
-                        testImageButton.exists
-
-        if hasBatchUI {
-            logger.success("Batch capture view opened")
-        } else {
-            logger.info("Batch capture may require camera permissions")
-        }
+        XCTAssertTrue(pageCounter.exists, "Batch capture should display a page counter")
+        XCTAssertTrue(testImageButton.exists && testImageButton.isEnabled, "Mock batch capture should provide Use Test Image")
     }
 
     // MARK: - Page Counter Tests
 
-    func testBatchCapture_PageCounter_StartsAtZero() throws {
-        logger.step(1, "Opening batch capture")
-        try openBatchCapture()
-
-        logger.step(2, "Verifying page counter")
-        let pageCounter = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS '0' AND label CONTAINS 'page'")
-        ).firstMatch
-
-        // Alternative: look for "0 pages" text anywhere
-        let zeroPages = app.staticTexts["0"]
-
-        let startsAtZero = pageCounter.waitForExistence(timeout: 3) || zeroPages.exists
-
-        if startsAtZero {
-            logger.success("Page counter starts at 0")
-        } else {
-            logger.info("Page counter may have different format")
-        }
+    func testBatchCapture_PageCounter_StartsAtZero() {
+        openBatchCapture()
+        assertPageCount(0)
     }
 
-    func testBatchCapture_CapturePhoto_IncrementsCounter() throws {
-        logger.step(1, "Opening batch capture")
-        try openBatchCapture()
-
-        logger.step(2, "Capturing a test image")
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
-        }
-
-        testImageButton.tap()
-
-        logger.step(3, "Verifying counter incremented")
-        // Wait for capture to complete and counter to update
-        let onePageText = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS '1'")
-        ).firstMatch
-
-        XCTAssertTrue(onePageText.waitForExistence(timeout: 5), "Page counter should show 1 after capture")
-
-        logger.success("Page counter incremented after capture")
+    func testBatchCapture_CapturePhoto_IncrementsCounter() {
+        openBatchCapture()
+        captureTestPage(expectedPageCount: 1)
     }
 
     // MARK: - Thumbnail Strip Tests
 
-    func testBatchCapture_AfterCapture_ShowsThumbnail() throws {
-        logger.step(1, "Opening batch capture and capturing")
-        try openBatchCapture()
+    func testBatchCapture_AfterCapture_ShowsThumbnail() {
+        openBatchCapture()
+        captureTestPage(expectedPageCount: 1)
 
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
-        }
-
-        testImageButton.tap()
-
-        logger.step(2, "Waiting for thumbnail to appear")
-        // Thumbnail should appear in the strip
-        // Look for scrollable horizontal content or image elements
-        let thumbnails = app.scrollViews.images
-
-        // Wait for the thumbnail strip to update (avoid fixed sleeps).
-        _ = waitUntil("thumbnail appears", timeout: 3) { [weak self] in
-            guard let self else { return false }
-            return thumbnails.count > 0 || self.app.images.count > 0
-        }
-
-        logger.step(3, "Verifying thumbnail exists")
-        // The thumbnail strip should have at least one item
-        let hasThumbnails = thumbnails.count > 0 ||
-                           app.images.count > 0
-
-        if hasThumbnails {
-            logger.success("Thumbnail displayed after capture")
-        } else {
-            logger.info("Thumbnail may be rendered differently")
-        }
+        XCTAssertTrue(waitForThumbnailCount(1), "Capturing a page should add a thumbnail")
+        XCTAssertTrue(thumbnailElements.firstMatch.isHittable, "Captured thumbnail should be available for review")
     }
 
-    func testBatchCapture_ThumbnailDetail_CanRemoveCapture() throws {
-        logger.step(1, "Opening batch capture and capturing")
-        try openBatchCapture()
+    func testBatchCapture_ThumbnailDetail_CanRemoveCapture() {
+        openBatchCapture()
+        captureTestPage(expectedPageCount: 1)
+        XCTAssertTrue(waitForThumbnailCount(1), "A captured page should have a thumbnail")
 
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
-        }
-
-        testImageButton.tap()
-        _ = waitUntil("thumbnail appears", timeout: 6) { [weak self] in
-            guard let self else { return false }
-            return self.app.scrollViews.images.count > 0 || self.app.images.count > 0
-        }
-
-        logger.step(2, "Opening thumbnail detail")
-        let thumbnail = app.scrollViews.images.firstMatch.exists
-            ? app.scrollViews.images.firstMatch
-            : app.images.firstMatch
-        guard thumbnail.waitForExistence(timeout: 3) else {
-            throw XCTSkip("Thumbnail not available")
-        }
+        let thumbnail = thumbnailElements.firstMatch
         thumbnail.tap()
 
-        logger.step(3, "Removing captured page")
-        let removeButton = app.buttons["Remove Page"]
-        XCTAssertTrue(removeButton.waitForExistence(timeout: 3), "Capture detail should show remove action")
+        let removeButton = app.buttons[AccessibilityIdentifiers.Capture.removePageButton]
+        XCTAssertTrue(removeButton.waitForExistence(timeout: 5), "Capture detail should provide Remove Page")
         removeButton.tap()
 
-        logger.step(4, "Verifying page count returns to zero")
-        let zeroPages = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS '0' AND label CONTAINS 'page'")
-        ).firstMatch
-        XCTAssertTrue(zeroPages.waitForExistence(timeout: 5), "Removing the only capture should return page count to zero")
-
-        logger.success("Thumbnail detail can remove capture")
+        assertPageCount(0)
+        XCTAssertTrue(waitForThumbnailCount(0), "Removing the only page should remove its thumbnail")
     }
 
-    func testBatchCapture_MultipleCaptures_ShowsMultipleThumbnails() throws {
-        logger.step(1, "Opening batch capture")
-        try openBatchCapture()
+    func testBatchCapture_MultipleCaptures_ShowsMultipleThumbnails() {
+        openBatchCapture()
 
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
+        for expectedPageCount in 1...3 {
+            captureTestPage(expectedPageCount: expectedPageCount)
         }
 
-        logger.step(2, "Capturing multiple images")
-        func waitForPageCount(_ expected: Int) {
-            let counter = app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
-            _ = waitUntil("page counter shows \(expected)", timeout: 6) {
-                if counter.exists, counter.label.contains("\(expected)") { return true }
-                let match = self.app.staticTexts.matching(
-                    NSPredicate(format: "label CONTAINS %@", "\(expected)")
-                ).firstMatch
-                return match.exists
-            }
-        }
-
-        testImageButton.tap()
-        waitForPageCount(1)
-        testImageButton.tap()
-        waitForPageCount(2)
-        testImageButton.tap()
-        waitForPageCount(3)
-
-        logger.step(3, "Verifying page count")
-        let threePages = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS '3'")
-        ).firstMatch
-
-        XCTAssertTrue(threePages.waitForExistence(timeout: 5), "Should show 3 pages after 3 captures")
-
-        logger.success("Multiple captures tracked correctly")
+        XCTAssertTrue(waitForThumbnailCount(3), "Each captured page should have its own thumbnail")
     }
 
     // MARK: - Done Button Tests
 
-    func testBatchCapture_DoneButton_DisabledWithNoCaptures() throws {
-        logger.step(1, "Opening batch capture")
-        try openBatchCapture()
+    func testBatchCapture_DoneButton_DisabledWithNoCaptures() {
+        openBatchCapture()
 
-        logger.step(2, "Finding done button")
-        let doneButton = app.buttons["Done"]
-
-        if doneButton.waitForExistence(timeout: 3) {
-            logger.step(3, "Verifying done is disabled with no captures")
-            // Done button should be disabled or dimmed when no pages captured
-            // In SwiftUI this might still be tappable but styled differently
-            logger.info("Done button state verified (may be disabled or styled)")
-        }
-
-        logger.success("Done button behavior checked")
+        let doneButton = app.buttons[AccessibilityIdentifiers.Capture.doneButton]
+        XCTAssertTrue(doneButton.waitForExistence(timeout: 5), "Batch capture should provide Done")
+        XCTAssertFalse(doneButton.isEnabled, "Done must be disabled before any pages are captured")
     }
 
-    func testBatchCapture_DoneButton_EnabledAfterCapture() throws {
-        logger.step(1, "Opening batch capture and capturing")
-        try openBatchCapture()
+    func testBatchCapture_DoneButton_EnabledAfterCapture() {
+        openBatchCapture()
+        captureTestPage(expectedPageCount: 1)
 
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
-        }
+        finishCaptureSession()
 
-        testImageButton.tap()
-
-        logger.step(2, "Finding done button")
-        let doneButton = app.buttons["Done"]
-        XCTAssertTrue(doneButton.waitForExistence(timeout: 3), "Done button should exist")
-
-        logger.step(3, "Tapping done button")
-        doneButton.tap()
-
-        logger.step(4, "Verifying confirmation dialog")
-        let processButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Process'")
-        ).firstMatch
-        let saveDraftButton = app.buttons["Save Draft"]
-
-        let hasConfirmation = processButton.waitForExistence(timeout: 3) || saveDraftButton.exists
-
-        XCTAssertTrue(hasConfirmation, "Should show confirmation dialog")
-
-        logger.success("Done button shows confirmation after capture")
+        let processButton = app.buttons[AccessibilityIdentifiers.Capture.processBatchButton].firstMatch
+        let saveDraftButton = app.buttons[AccessibilityIdentifiers.Capture.saveDraftButton].firstMatch
+        XCTAssertTrue(processButton.waitForExistence(timeout: 5), "Done should offer processing after a capture")
+        XCTAssertTrue(saveDraftButton.exists, "Done should offer saving a draft after a capture")
     }
 
     // MARK: - Session Completion Tests
 
-    func testBatchCapture_ProcessOption_ProcessesCaptures() throws {
-        logger.step(1, "Capturing and finishing session")
-        try openBatchCapture()
+    func testBatchCapture_ProcessOption_ProcessesCaptures() {
+        openBatchCapture()
+        captureTestPage(expectedPageCount: 1)
+        finishCaptureSession()
 
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
+        let processButton = app.buttons[AccessibilityIdentifiers.Capture.processBatchButton].firstMatch
+        XCTAssertTrue(processButton.waitForExistence(timeout: 5), "Batch completion should provide Process")
+        processButton.tap()
+
+        let consentButton = app.buttons["Allow Remote AI Processing"]
+        if consentButton.waitForExistence(timeout: 3) {
+            consentButton.tap()
         }
 
-        testImageButton.tap()
-        // Wait for capture state to settle before attempting to complete.
-        _ = waitUntil("capture recorded", timeout: 6) { [weak self] in
-            guard let self else { return false }
-            let counter = self.app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
-            return counter.exists || self.app.staticTexts.matching(NSPredicate(format: "label CONTAINS '1'")).firstMatch.exists
-        }
+        let reviewTitle = app.navigationBars["Review Extractions"]
+        XCTAssertTrue(reviewTitle.waitForExistence(timeout: 15), "Processing a batch should open extraction review")
 
-        let doneButton = app.buttons["Done"]
-        doneButton.tap()
-
-        logger.step(2, "Selecting process option")
-        let processButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Process'")
-        ).firstMatch
-
-        if processButton.waitForExistence(timeout: 3) {
-            processButton.tap()
-
-            logger.step(3, "Verifying processing or navigation")
-            // Should either show processing UI or navigate to extraction review
-            let processingIndicator = app.progressIndicators.firstMatch
-            let extractionReview = app.navigationBars["Review Extractions"]
-            let libraryTab = tabButton(.library)
-
-            let movedForward = processingIndicator.waitForExistence(timeout: 3) ||
-                              extractionReview.waitForExistence(timeout: 10) ||
-                              libraryTab.waitForExistence(timeout: 10)
-
-            XCTAssertTrue(movedForward, "Should proceed with processing")
-
-            logger.success("Process option initiates processing")
-        }
+        let modelSource = app.descendants(matching: .any)
+            .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_model_assisted")
+            .firstMatch
+        XCTAssertTrue(modelSource.waitForExistence(timeout: 15), "Mock batch processing should render extracted model-assisted content")
     }
 
-    func testBatchCapture_SaveDraftOption_SavesWithoutProcessing() throws {
-        logger.step(1, "Capturing and finishing session")
-        try openBatchCapture()
+    func testBatchCapture_SaveDraftOption_SavesWithoutProcessing() {
+        openBatchCapture()
+        captureTestPage(expectedPageCount: 1)
+        finishCaptureSession()
 
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
-        }
+        let saveDraftButton = app.buttons[AccessibilityIdentifiers.Capture.saveDraftButton].firstMatch
+        XCTAssertTrue(saveDraftButton.waitForExistence(timeout: 5), "Batch completion should provide Save Draft")
+        saveDraftButton.tap()
 
-        testImageButton.tap()
-        // Wait for capture state to settle before attempting to complete.
-        _ = waitUntil("capture recorded", timeout: 6) { [weak self] in
-            guard let self else { return false }
-            let counter = self.app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
-            return counter.exists || self.app.staticTexts.matching(NSPredicate(format: "label CONTAINS '1'")).firstMatch.exists
-        }
+        XCTAssertTrue(app.staticTexts["Saved Drafts"].waitForExistence(timeout: 5), "Saved drafts should be visible on Capture")
 
-        let doneButton = app.buttons["Done"]
-        doneButton.tap()
+        let resumeDraft = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH 'capture_resume_draft_'")
+        ).firstMatch
+        XCTAssertTrue(resumeDraft.waitForExistence(timeout: 5), "Saved draft should be resumable")
+        resumeDraft.tap()
 
-        logger.step(2, "Selecting save draft option")
-        let saveDraftButton = app.buttons["Save Draft"]
-
-        if saveDraftButton.waitForExistence(timeout: 3) {
-            saveDraftButton.tap()
-
-            logger.step(3, "Verifying the draft is visible and resumable")
-            XCTAssertTrue(
-                app.staticTexts["Saved Drafts"].waitForExistence(timeout: 5),
-                "Saved drafts should be visible on the Capture screen"
-            )
-
-            let resumeDraft = app.buttons.matching(
-                NSPredicate(format: "identifier BEGINSWITH 'capture_resume_draft_'")
-            ).firstMatch
-            XCTAssertTrue(resumeDraft.waitForExistence(timeout: 3), "Saved draft should have a resume action")
-            resumeDraft.tap()
-
-            XCTAssertTrue(
-                app.staticTexts["1 page in session"].waitForExistence(timeout: 5),
-                "Resuming a draft should reopen batch capture with its saved pages"
-            )
-
-            logger.success("Save draft is visible and resumable")
-        }
+        assertPageCount(1)
     }
 
     // MARK: - Cancel Flow Tests
 
-    func testBatchCapture_CancelWithNoCaptures_DismissesImmediately() throws {
-        logger.step(1, "Opening batch capture")
-        try openBatchCapture()
+    func testBatchCapture_CancelWithNoCaptures_DismissesImmediately() {
+        openBatchCapture()
 
-        logger.step(2, "Finding cancel button (X)")
-        let cancelButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'xmark' OR identifier CONTAINS 'cancel'")
-        ).firstMatch
+        let cancelButton = app.buttons[AccessibilityIdentifiers.Capture.cancelButton]
+        XCTAssertTrue(cancelButton.waitForExistence(timeout: 5), "Batch capture should provide Cancel")
+        cancelButton.tap()
 
-        // Also try finding by position (top left)
-        let closeButton = app.buttons["Close"]
-        let xButton = app.buttons.element(boundBy: 0)
-
-        if cancelButton.waitForExistence(timeout: 3) {
-            cancelButton.tap()
-        } else if closeButton.exists {
-            closeButton.tap()
-        } else if xButton.exists && xButton.isHittable {
-            xButton.tap()
-        }
-
-        logger.step(3, "Verifying dismissal")
-        let bookDetail = app.staticTexts["Quotes"]
-        let returnedToDetail = bookDetail.waitForExistence(timeout: 3)
-
-        if returnedToDetail {
-            logger.success("Cancel dismisses immediately with no captures")
-        } else {
-            logger.info("Navigation behavior may differ")
-        }
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Capture.modeSelectBatch].waitForExistence(timeout: 5),
+            "Cancelling an empty batch should return to capture mode selection"
+        )
     }
 
-    func testBatchCapture_CancelWithCaptures_ShowsConfirmation() throws {
-        logger.step(1, "Opening and capturing")
-        try openBatchCapture()
+    func testBatchCapture_CancelWithCaptures_ShowsConfirmation() {
+        openBatchCapture()
+        captureTestPage(expectedPageCount: 1)
 
-        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        guard testImageButton.waitForExistence(timeout: 5) else {
-            throw XCTSkip("Test image button not available")
-        }
+        let cancelButton = app.buttons[AccessibilityIdentifiers.Capture.cancelButton]
+        XCTAssertTrue(cancelButton.waitForExistence(timeout: 5), "Batch capture should provide Cancel")
+        cancelButton.tap()
 
-        testImageButton.tap()
-        _ = waitUntil("capture recorded", timeout: 6) { [weak self] in
-            guard let self else { return false }
-            let counter = self.app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
-            return counter.exists || self.app.staticTexts.matching(NSPredicate(format: "label CONTAINS '1'")).firstMatch.exists
-        }
-
-        logger.step(2, "Tapping cancel with captures")
-        // The X button in top left should show confirmation when there are captures
-        let xButton = app.buttons.element(boundBy: 0)
-        if xButton.exists && xButton.isHittable {
-            xButton.tap()
-        }
-
-        logger.step(3, "Verifying confirmation shown")
-        // Should show same confirmation as Done button
-        let processButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Process'")
-        ).firstMatch
-        let cancelOption = app.buttons["Cancel"]
-
-        let hasConfirmation = processButton.waitForExistence(timeout: 3) || cancelOption.exists
-
-        if hasConfirmation {
-            logger.success("Cancel with captures shows confirmation")
-            // Dismiss the dialog
-            if cancelOption.exists {
-                cancelOption.tap()
-            }
-        }
+        let processButton = app.buttons[AccessibilityIdentifiers.Capture.processBatchButton].firstMatch
+        let saveDraftButton = app.buttons[AccessibilityIdentifiers.Capture.saveDraftButton].firstMatch
+        XCTAssertTrue(processButton.waitForExistence(timeout: 5), "Cancelling a non-empty batch should request a decision")
+        XCTAssertTrue(saveDraftButton.exists, "Cancellation decision should allow saving a draft")
     }
 
     // MARK: - Helpers
 
-    private func openBatchCapture() throws {
-        let captureTab = tabButton(.capture)
-        guard captureTab.waitForExistence(timeout: 3) else {
-            throw XCTSkip("Capture tab not available")
-        }
-        captureTab.tap()
+    private var pageCounter: XCUIElement {
+        app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
+    }
+
+    private var thumbnailElements: XCUIElementQuery {
+        app.buttons.matching(identifier: AccessibilityIdentifiers.Capture.thumbnail)
+    }
+
+    private func openBatchCapture() {
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
 
         let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
-        if permissionPrompt.waitForExistence(timeout: 2) {
-            throw XCTSkip("Camera permission required")
-        }
+        XCTAssertFalse(permissionPrompt.waitForExistence(timeout: 2), "Mock camera should not request permission")
 
         let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        let existingPageCounter = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS 'page'")
-        ).firstMatch
-        if existingPageCounter.exists && app.buttons["Done"].exists {
+        if testImageButton.exists && pageCounter.exists {
             return
         }
 
         let batchModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectBatch]
-        if batchModeCard.waitForExistence(timeout: 5) {
-            batchModeCard.tap()
-        }
+        XCTAssertTrue(batchModeCard.waitForExistence(timeout: 5), "Capture should offer batch mode")
+        batchModeCard.tap()
 
         let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-        guard bookCard.waitForExistence(timeout: 5) else {
-            throw XCTSkip("No book available for batch capture")
-        }
+        XCTAssertTrue(bookCard.waitForExistence(timeout: 5), "Seeded library should provide a book for batch capture")
         bookCard.tap()
 
-        let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        let pageCounter = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS 'page'")
-        ).firstMatch
-
-        let hasUI = testImageButton.waitForExistence(timeout: 5) ||
-                   captureButton.exists ||
-                   pageCounter.exists
-
-        guard hasUI else {
-            throw XCTSkip("Batch capture UI not available")
-        }
+        XCTAssertTrue(testImageButton.waitForExistence(timeout: 5), "Batch capture should provide Use Test Image")
+        assertPageCount(0)
     }
 
-    private func findMoreMenuButton() -> XCUIElement {
-        let explicitButton = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
-        if explicitButton.exists {
-            return explicitButton
+    private func captureTestPage(expectedPageCount: Int) {
+        let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        XCTAssertTrue(testImageButton.waitForExistence(timeout: 5), "Batch capture should provide Use Test Image")
+        XCTAssertTrue(testImageButton.isEnabled, "Use Test Image should be enabled before capture")
+        testImageButton.tap()
+        assertPageCount(expectedPageCount)
+    }
+
+    private func finishCaptureSession() {
+        let doneButton = app.buttons[AccessibilityIdentifiers.Capture.doneButton]
+        XCTAssertTrue(doneButton.waitForExistence(timeout: 5), "Batch capture should provide Done")
+        XCTAssertTrue(doneButton.isEnabled, "Done should be enabled after at least one capture")
+        doneButton.tap()
+    }
+
+    private func assertPageCount(_ expected: Int) {
+        let expectedLabel = "\(expected) page\(expected == 1 ? "" : "s") in session"
+        XCTAssertTrue(
+            waitUntil("page counter shows \(expected)", timeout: 8) {
+                self.pageCounter.exists && self.pageCounter.label == expectedLabel
+            },
+            "Page counter should read \(expectedLabel)"
+        )
+    }
+
+    private func waitForThumbnailCount(_ expected: Int) -> Bool {
+        waitUntil("thumbnail count is \(expected)", timeout: 8) {
+            self.thumbnailElements.count == expected
         }
-        let navButtons = app.navigationBars.buttons
-        let predicate = NSPredicate(format: "label CONTAINS 'More' OR label CONTAINS 'ellipsis'")
-        let match = navButtons.matching(predicate).firstMatch
-        if match.exists {
-            return match
-        }
-        return navButtons.element(boundBy: navButtons.count > 0 ? navButtons.count - 1 : 0)
     }
 }

@@ -80,9 +80,11 @@ struct BatchCaptureView: View {
             Button("Process \(session.totalPages) Pages") {
                 finishAndProcess()
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.processBatchButton)
             Button("Save Draft") {
                 saveDraft()
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.saveDraftButton)
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("You captured \(session.totalPages) pages. Would you like to process them now or save as draft?")
@@ -115,6 +117,7 @@ struct BatchCaptureView: View {
         CaptureHeaderBar(
             title: book.title,
             subtitle: "\(session.totalPages) page\(session.totalPages == 1 ? "" : "s") in session",
+            subtitleAccessibilityIdentifier: AccessibilityIdentifiers.Capture.pageCounter,
             onCancel: cancelBatchCapture
         ) {
             Button {
@@ -126,6 +129,7 @@ struct BatchCaptureView: View {
             }
             .buttonStyle(.plain)
             .disabled(!lifecycleState.canFinish(pageCount: session.totalPages))
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.doneButton)
         }
     }
 
@@ -196,18 +200,23 @@ struct BatchCaptureView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: Spacing.sm) {
                     ForEach(session.captures) { capture in
-                        ThumbnailView(capture: capture)
-                            .id(capture.id)
-                            .onTapGesture {
-                                selectedCapture = capture
-                                lifecycleState.showsCaptureDetail = true
-                            }
+                        Button {
+                            selectedCapture = capture
+                            lifecycleState.showsCaptureDetail = true
+                        } label: {
+                            ThumbnailView(capture: capture)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.thumbnail)
+                        .accessibilityLabel("Captured page \(capture.orderIndex + 1)")
+                        .id(capture.id)
                     }
                 }
                 .padding(.horizontal, Spacing.md)
             }
             .frame(height: 70)
             .cameraChrome(cornerRadius: CornerRadius.lg)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.thumbnailStrip)
             .overlay {
                 RoundedRectangle(cornerRadius: CornerRadius.lg)
                     .stroke(Color.white.opacity(0.10), lineWidth: 1)

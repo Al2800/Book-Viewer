@@ -213,6 +213,18 @@ enum AccessibilityIdentifiers {
         /// Thumbnail strip in batch capture
         static let thumbnailStrip = "capture_thumbnail_strip"
 
+        /// Individual page thumbnail in batch capture
+        static let thumbnail = "capture_thumbnail"
+
+        /// Process button in the batch completion confirmation
+        static let processBatchButton = "capture_process_batch_button"
+
+        /// Save draft button in the batch completion confirmation
+        static let saveDraftButton = "capture_save_draft_button"
+
+        /// Remove page button in the batch capture detail sheet
+        static let removePageButton = "capture_remove_page_button"
+
         // MARK: Extraction Review (Quote Capture)
 
         /// Edit button (pencil) on an extracted quote row during extraction review.

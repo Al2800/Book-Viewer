@@ -728,6 +728,10 @@ enum AccessibilityIdentifiers {
         static let pageCounter = "capture_page_counter"
         static let doneButton = "capture_done_button"
         static let thumbnailStrip = "capture_thumbnail_strip"
+        static let thumbnail = "capture_thumbnail"
+        static let processBatchButton = "capture_process_batch_button"
+        static let saveDraftButton = "capture_save_draft_button"
+        static let removePageButton = "capture_remove_page_button"
 
         // Extraction review (quote capture)
         static let extractionQuoteEditButton = "capture_extraction_quote_edit_button"
