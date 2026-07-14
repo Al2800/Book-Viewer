@@ -14,13 +14,21 @@ Camera permission and sign-in copy mention AI processing but do not obtain expli
 - [x] Consent is affirmative, versioned, locally persisted, and revocable from Settings.
 - [x] Remote cover and quote extraction cannot run until consent is granted.
 - [x] Declining consent leaves manual and on-device workflows usable.
-- [ ] Consent copy and App Store privacy answers use the same terminology.
+- [x] Consent copy and App Store privacy answers use the same terminology.
 
 ## Verification
 
 - [x] Unit tests for consent state and remote-extraction gating.
 - [x] UI tests for accept, decline, and revoke flows.
 - Manual review against App Review Guidelines 5.1.1 and 5.1.2.
+
+## Progress
+
+2026-07-14:
+
+- The App Store Connect answer map now uses the same "Remote AI Processing" terminology as the
+  consent view and identifies Hugging Face Inference for quote pages and Google Gemini for covers.
+- Entering and reviewing those answers in App Store Connect remains a manual release step.
 
 ## Dependencies
 

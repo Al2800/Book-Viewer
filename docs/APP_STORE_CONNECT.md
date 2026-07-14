@@ -51,6 +51,27 @@ The helper reads `~/.appstoreconnect/config.json` by default. Override with:
 ASC_CONFIG_PATH=/path/to/config.json node scripts/appstoreconnect_status.js
 ```
 
+## App Privacy Questionnaire
+
+The checked-in privacy manifest is the source of truth for the data categories below. Before
+submission, enter the same selections in App Store Connect and have the submitted values reviewed
+against `BookQuotes/Resources/PrivacyInfo.xcprivacy` and the in-app Privacy Policy.
+
+| Data category | Linked to user | Tracking | Purpose | Evidence |
+| --- | --- | --- | --- | --- |
+| User ID | Yes | No | App functionality | Apple Sign-In session and subscription ownership |
+| Email address | Yes | No | App functionality | Optional Apple-provided sign-in email is received during authentication |
+| Purchase history | Yes | No | App functionality | StoreKit entitlement and App Store transaction reconciliation |
+| Other usage data | Yes | No | App functionality | Monthly extraction count and last-updated time for service limits |
+| Photos or videos | Yes | No | App functionality | Page or cover image is sent only after Remote AI Processing consent |
+| Other user content | Yes | No | App functionality | Remote extraction instructions and result text are sent only after consent |
+
+Do not select tracking, advertising, analytics, or data sale/sharing. Local-only books, quotes,
+tags, collections, and images are not cloud-synced. Google Books and Open Library receive only
+the requested ISBN or title/author lookup query, never the BookQuotes account identifier or
+library. The configured remote providers are Hugging Face Inference for quote pages and Google
+Gemini for covers; Remote AI Processing is optional and can be revoked in Settings.
+
 ## Latest TestFlight Verification
 
 Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect API:

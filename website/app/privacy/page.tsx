@@ -49,6 +49,14 @@ export default function PrivacyPage() {
               database; each provider handles request data under its own terms.
             </p>
 
+            <h3>Book Metadata Lookup</h3>
+            <p>
+              When you look up a book, BookQuotes sends an ISBN, or a book title and author,
+              directly to Google Books to find metadata and cover images. If an ISBN is not
+              found there, it is sent to Open Library as a fallback. These catalogue requests do
+              not include your BookQuotes account identifier or library.
+            </p>
+
             <h3>Service Usage and Subscription Records</h3>
             <p>
               To authenticate requests and enforce subscription access, BookQuotes stores your
@@ -97,6 +105,16 @@ export default function PrivacyPage() {
                 <strong>Google Gemini API</strong> &mdash; For cover metadata extraction from images
                 when you enable Remote AI Processing. Provider handling is governed by its
                 applicable terms.
+              </li>
+              <li>
+                <strong>Google Books</strong> &mdash; For requested ISBN, title, and author metadata
+                lookups and cover images. BookQuotes does not include your account identifier or
+                library in these catalogue requests.
+              </li>
+              <li>
+                <strong>Open Library</strong> &mdash; As an ISBN metadata fallback when Google Books
+                has no match. BookQuotes does not include your account identifier or library in
+                these catalogue requests.
               </li>
               <li>
                 <strong>Apple Sign-In</strong> &mdash; For secure authentication without
