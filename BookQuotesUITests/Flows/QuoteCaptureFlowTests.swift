@@ -67,6 +67,15 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.success("Test image button found and enabled")
     }
 
+    func testQuoteCamera_PassesSystemAccessibilityAudit() throws {
+        navigateToCaptureWithBook()
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Capture.testImageButton].waitForExistence(timeout: 5),
+            "Mock quote camera should be ready before auditing"
+        )
+        try performSystemAccessibilityAudit()
+    }
+
     // MARK: - Book Context Capture Tests
 
     func testCaptureFromBook_ShowsCaptureView() {

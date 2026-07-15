@@ -356,6 +356,8 @@ struct CaptureControlTray<Content: View>: View {
 }
 
 struct CaptureStatusPill: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let systemImage: String
     let text: String
     var tint: Color = .white
@@ -364,10 +366,12 @@ struct CaptureStatusPill: View {
         HStack(spacing: Spacing.xs) {
             Image(systemName: systemImage)
                 .font(.caption.weight(.semibold))
+                .accessibilityHidden(true)
 
             Text(text)
                 .font(.caption.weight(.medium))
-                .lineLimit(1)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 1)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundStyle(tint)
         .padding(.horizontal, Spacing.md)
@@ -375,6 +379,8 @@ struct CaptureStatusPill: View {
         // Deterministic dark fill: adaptive materials go light over bright
         // scenes and wash out the white text.
         .background(Color.black.opacity(0.55), in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(text)
     }
 }
 
@@ -387,13 +393,14 @@ struct CameraIconButton: View {
             Image(systemName: systemImage)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
-                .frame(width: 36, height: 36)
+                .frame(width: 44, height: 44)
                 .background(
                     Circle()
                         .fill(Color.white.opacity(0.12))
                 )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("Close")
         .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
     }
 }

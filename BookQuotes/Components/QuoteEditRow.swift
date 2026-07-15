@@ -21,7 +21,8 @@ struct QuoteEditRow: View {
             // Quote text editor
             Text(quote.text)
                 .font(.quoteBody)
-                .lineLimit(3)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 3)
+                .fixedSize(horizontal: false, vertical: true)
                 .foregroundStyle(Color.textPrimary)
                 .textSelection(.enabled)
                 .onTapGesture {
@@ -134,6 +135,8 @@ struct QuoteEditRow: View {
                 .frame(width: 44, height: 44)
         }
         .buttonStyle(.plain)
+        .frame(width: 44, height: 44)
+        .contentShape(Rectangle())
         .accessibilityLabel("Edit quote")
         .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
     }
@@ -148,6 +151,8 @@ struct QuoteEditRow: View {
                 .frame(width: 44, height: 44)
         }
         .buttonStyle(.plain)
+        .frame(width: 44, height: 44)
+        .contentShape(Rectangle())
         .accessibilityLabel("Delete quote")
     }
 

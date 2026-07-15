@@ -96,11 +96,11 @@ The phone library grid can compress cards to 100 points while retaining status a
   primary and secondary text against card backgrounds in light and dark modes. The focused
   contrast, seeded-library, and system-audit checks passed with 0 failures on 2026-07-15; the
   combined Account and Storage audit also passed on the physical iPhone 17 (1 test, 0 failures).
-- [x] The Capture mode-selection and photo-review screens pass the same reliable system audits
-  on iPhone 17 Pro simulator (2 tests, 0 failures on 2026-07-15). The audit drove a reflowing
-  quality summary, spoken Good/Fair/Poor metric values, untruncated warning copy, vertically
-  stacked large-text actions, and a labelled captured-page preview with an accessible zoom action.
-  The physical rerun was queued but not executed because the connected phone locked.
+- [x] The Capture mode-selection, quote-camera, and photo-review screens pass the same reliable
+  system audits on iPhone 17 Pro simulator (3 tests, 0 failures on 2026-07-15). The audit drove a
+  reflowing quality summary, spoken Good/Fair/Poor metric values, untruncated guidance and warning
+  copy, labelled camera/preview actions, and vertically stacked large-text actions. The physical
+  rerun was queued but not executed because the connected phone locked.
   Apple's iOS 26 contrast pixel audit and OCR element detector are excluded because they produced
   reproducible unlocatable false positives despite compliant captured pixels and a hierarchy
   containing every visible app string; the retained checks and dedicated Accessibility XXXL

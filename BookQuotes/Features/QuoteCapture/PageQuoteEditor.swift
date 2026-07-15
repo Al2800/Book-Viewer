@@ -186,6 +186,7 @@ struct PageQuoteEditor: View {
         } label: {
             Label("Add", systemImage: "plus")
                 .font(.caption)
+                .frame(minHeight: 44)
         }
         .buttonStyle(.secondaryCompact)
     }
