@@ -8,6 +8,17 @@ import XCTest
 @MainActor
 final class SearchDatabaseTests: FTS5TestCase {
 
+    func testInitialization_InvalidPathThrowsDatabaseOpenFailed() {
+        let invalidPath = URL(fileURLWithPath: "/dev/null/search_index.sqlite")
+
+        XCTAssertThrowsError(try SearchDatabase(path: invalidPath)) { error in
+            guard case SearchError.databaseOpenFailed = error else {
+                XCTFail("Expected databaseOpenFailed, got \(error)")
+                return
+            }
+        }
+    }
+
     // MARK: - Indexing Tests
 
     func testIndexQuote_CreatesSearchableEntry() async throws {

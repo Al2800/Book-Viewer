@@ -6,54 +6,60 @@ import SQLite3
 /// Actor managing SQLite FTS5 database for blazing-fast full-text search.
 /// Uses porter stemming for word variations and BM25 for relevance ranking.
 actor SearchDatabase {
-    private var db: OpaquePointer?
-    private let sqlitePath: String
+    private let db: OpaquePointer
 
     // MARK: - Initialization
 
     /// Initialize with default path in documents directory
     init() throws {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        sqlitePath = docs.appendingPathComponent("search_index.sqlite").path
-
-        try openDatabase()
-        try createFTSTables()
+        let path = docs.appendingPathComponent("search_index.sqlite").path
+        db = try Self.makeConfiguredDatabase(at: path)
     }
 
     /// Initialize an in-memory database (for tests).
     init(inMemory: Bool) throws {
         precondition(inMemory, "Use init() or init(path:) for on-disk databases")
-        sqlitePath = ":memory:"
-
-        try openDatabase()
-        try createFTSTables()
+        db = try Self.makeConfiguredDatabase(at: ":memory:")
     }
 
     /// Initialize with a custom path (for testing)
     init(path: URL) throws {
-        sqlitePath = path.path
-
-        try openDatabase()
-        try createFTSTables()
+        db = try Self.makeConfiguredDatabase(at: path.path)
     }
 
     deinit {
-        if let db = db {
-            sqlite3_close(db)
-        }
+        sqlite3_close(db)
     }
 
     // MARK: - Database Setup
 
-    private func openDatabase() throws {
-        guard sqlite3_open(sqlitePath, &db) == SQLITE_OK else {
+    private static func makeConfiguredDatabase(at path: String) throws -> OpaquePointer {
+        var connection: OpaquePointer?
+        guard sqlite3_open(path, &connection) == SQLITE_OK, let connection else {
+            if let connection {
+                sqlite3_close(connection)
+            }
             throw SearchError.databaseOpenFailed
+        }
+
+        do {
+            try execute(SearchDatabaseSQL.createQuotesFTS, on: connection)
+            try execute(SearchDatabaseSQL.createBooksFTS, on: connection)
+            return connection
+        } catch {
+            sqlite3_close(connection)
+            throw error
         }
     }
 
-    private func createFTSTables() throws {
-        try execute(SearchDatabaseSQL.createQuotesFTS)
-        try execute(SearchDatabaseSQL.createBooksFTS)
+    private static func execute(_ sql: String, on connection: OpaquePointer) throws {
+        var errorMessage: UnsafeMutablePointer<CChar>?
+        guard sqlite3_exec(connection, sql, nil, nil, &errorMessage) == SQLITE_OK else {
+            let message = errorMessage.map { String(cString: $0) } ?? "Unknown error"
+            sqlite3_free(errorMessage)
+            throw SearchError.queryFailed(message)
+        }
     }
 
     // MARK: - Search Operations
@@ -203,12 +209,7 @@ actor SearchDatabase {
     // MARK: - SQL Execution Helpers
 
     private func execute(_ sql: String) throws {
-        var errorMessage: UnsafeMutablePointer<CChar>?
-        guard sqlite3_exec(db, sql, nil, nil, &errorMessage) == SQLITE_OK else {
-            let message = errorMessage.map { String(cString: $0) } ?? "Unknown error"
-            sqlite3_free(errorMessage)
-            throw SearchError.queryFailed(message)
-        }
+        try Self.execute(sql, on: db)
     }
 
     private func execute(_ sql: String, params: [String]) throws {

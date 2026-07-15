@@ -189,8 +189,10 @@
   upstream website risk rather than an iOS-binary blocker. A separate high Picomatch advisory is
   limited to the Tailwind 3 development watcher chain; it requires a planned Tailwind 4 migration
   and is not in the deployed production dependency set.
-- Existing Swift 6 concurrency and API deprecation warnings remain during Xcode builds. They do
-  not fail the current Swift 5-mode build, but should be resolved before a Swift 6 migration.
+- Existing Swift 6 concurrency and API deprecation warnings remain during Xcode builds. The
+  `SearchDatabase` actor-initialization warnings were removed on 2026-07-15 with 68 focused search
+  tests passing; the remaining production warning inventory is tracked in issue `107`. These do
+  not fail the current Swift 5.9-mode build, but should be resolved before a Swift 6 migration.
 
 ## Decision
 
