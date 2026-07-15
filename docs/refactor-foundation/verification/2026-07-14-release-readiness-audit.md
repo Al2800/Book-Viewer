@@ -77,6 +77,13 @@
   the quote-review UI smoke also passed (1 test, 0 failures, 0 skips). Result bundles:
   `/tmp/BookQuotes-highlight-mark-family-2026-07-15.xcresult` and
   `/tmp/BookQuotes-highlight-review-ui-2026-07-15.xcresult`.
+- Candidate confidence now includes OCR, detected-mark, mark-to-text geometry, and passage
+  continuity signals. Focused tests prove that distant underlines and loose multi-line passages
+  score below close, continuous equivalents without suppressing low-confidence review cards.
+  The on-device suite passed: 25 tests passed, 0 failed, and 1 documented local-only fixture
+  skip; the quote-review UI smoke also passed (1 test, 0 failures, 0 skips). Result bundles:
+  `/tmp/BookQuotes-confidence-mark-family-2026-07-15.xcresult` and
+  `/tmp/BookQuotes-confidence-review-ui-2026-07-15.xcresult`.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,

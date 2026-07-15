@@ -273,6 +273,78 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         )
     }
 
+    func testSelectorLowersConfidenceForDistantUnderlineGeometry() throws {
+        let selector = QuoteMarkTextSelector()
+        let closeCandidates = selector.selectCandidates(
+            textLines: [
+                RecognizedTextLine(
+                    text: "A clearly marked passage",
+                    confidence: 0.90,
+                    boundingBox: CGRect(x: 240, y: 220, width: 360, height: 24)
+                )
+            ],
+            marks: [
+                DetectedPageMark(
+                    type: .underline,
+                    boundingBox: CGRect(x: 240, y: 246, width: 340, height: 3),
+                    confidence: 0.80
+                )
+            ]
+        )
+        let distantCandidates = selector.selectCandidates(
+            textLines: [
+                RecognizedTextLine(
+                    text: "A clearly marked passage",
+                    confidence: 0.90,
+                    boundingBox: CGRect(x: 240, y: 142, width: 360, height: 24)
+                )
+            ],
+            marks: [
+                DetectedPageMark(
+                    type: .underline,
+                    boundingBox: CGRect(x: 240, y: 246, width: 340, height: 3),
+                    confidence: 0.80
+                )
+            ]
+        )
+
+        let closeCandidate = try XCTUnwrap(closeCandidates.first)
+        let distantCandidate = try XCTUnwrap(distantCandidates.first)
+
+        XCTAssertGreaterThan(closeCandidate.confidence, distantCandidate.confidence)
+    }
+
+    func testSelectorLowersConfidenceForLooselyGroupedPassage() throws {
+        let selector = QuoteMarkTextSelector()
+        let continuousCandidates = selector.selectCandidates(
+            textLines: [
+                RecognizedTextLine(text: "The first marked line", confidence: 0.90, boundingBox: CGRect(x: 240, y: 220, width: 360, height: 24)),
+                RecognizedTextLine(text: "continues immediately below", confidence: 0.90, boundingBox: CGRect(x: 240, y: 252, width: 360, height: 24))
+            ],
+            marks: [
+                DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 246, width: 340, height: 3), confidence: 0.80),
+                DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 278, width: 340, height: 3), confidence: 0.80)
+            ]
+        )
+        let looseCandidates = selector.selectCandidates(
+            textLines: [
+                RecognizedTextLine(text: "The first marked line", confidence: 0.90, boundingBox: CGRect(x: 240, y: 220, width: 360, height: 24)),
+                RecognizedTextLine(text: "continues after a larger gap", confidence: 0.90, boundingBox: CGRect(x: 240, y: 280, width: 360, height: 24))
+            ],
+            marks: [
+                DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 246, width: 340, height: 3), confidence: 0.80),
+                DetectedPageMark(type: .underline, boundingBox: CGRect(x: 240, y: 306, width: 340, height: 3), confidence: 0.80)
+            ]
+        )
+
+        XCTAssertEqual(continuousCandidates.count, 1)
+        XCTAssertEqual(looseCandidates.count, 1)
+        let continuousCandidate = try XCTUnwrap(continuousCandidates.first)
+        let looseCandidate = try XCTUnwrap(looseCandidates.first)
+
+        XCTAssertGreaterThan(continuousCandidate.confidence, looseCandidate.confidence)
+    }
+
     func testSelectorRepairsObviousLineWrapHyphenationAfterSelection() {
         let lines = [
             RecognizedTextLine(text: "to the unbeliev-", confidence: 0.92, boundingBox: CGRect(x: 240, y: 220, width: 250, height: 24)),

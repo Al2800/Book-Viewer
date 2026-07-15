@@ -55,7 +55,7 @@ The pipeline should return the same quote-review data shape the app already expe
 - [x] User-defined `MarkingDefinition` records influence classification and display naming without requiring a prompt to a cloud model.
 - [x] Unmarked page text is excluded from extracted quote candidates.
 - [x] Multi-line marked passages are grouped into one quote candidate when line spacing and mark continuity indicate the same passage.
-- [ ] Candidate confidence is derived from OCR confidence, mark/text geometry quality, and grouping certainty.
+- [x] Candidate confidence is derived from OCR confidence, mark/text geometry quality, and grouping certainty.
 - [x] Low-confidence or ambiguous candidates still appear in review for user correction rather than being silently discarded.
 - [x] The extraction review screen can process a captured marked page with no network connection.
 - [x] Cloud/Gemini extraction is removed from the default quote-capture path or placed behind an explicit fallback flag that is off by default.
@@ -218,6 +218,20 @@ None - can start immediately.
   `/tmp/BookQuotes-highlight-mark-family-2026-07-15.xcresult` and
   `/tmp/BookQuotes-highlight-review-ui-2026-07-15.xcresult`. Real highlighted camera pages
   remain physical-device characterization work.
+
+2026-07-15 confidence-scoring follow-up:
+
+- Candidate confidence now combines OCR confidence, detector confidence, mark-to-text geometry,
+  and multi-line passage continuity. A distant underline or a loosely grouped passage therefore
+  scores below an otherwise equivalent close, continuous match.
+- Low-confidence marked candidates still reach editable review; confidence is a review signal,
+  not a silent discard rule.
+- The focused confidence gate passed 4 tests, 0 failures, 0 skips. The full on-device extractor
+  suite passed on iPhone 17 / iOS 26.5: 25 tests passed, 0 failures, and 1 documented local-only
+  fixture skip. The quote-review UI smoke also passed: 1 test, 0 failures, 0 skips. Result
+  bundles: `/tmp/BookQuotes-confidence-scoring-2026-07-15.xcresult`,
+  `/tmp/BookQuotes-confidence-mark-family-2026-07-15.xcresult`, and
+  `/tmp/BookQuotes-confidence-review-ui-2026-07-15.xcresult`.
 
 ## Verification Results
 

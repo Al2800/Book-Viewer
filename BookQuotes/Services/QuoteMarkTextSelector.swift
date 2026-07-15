@@ -149,7 +149,18 @@ struct QuoteMarkTextSelector: Sendable {
         let averageMarkConfidence = marks.isEmpty
             ? 0.55
             : marks.map(\.confidence).reduce(0, +) / Double(marks.count)
-        let confidence = min(0.98, max(0.45, (averageOCRConfidence + averageMarkConfidence) / 2))
+        let geometryConfidence = geometryConfidence(for: selectedLines, marks: marks)
+        let groupingConfidence = groupingConfidence(for: selectedLines)
+        let confidence = min(
+            0.98,
+            max(
+                0.35,
+                averageOCRConfidence * 0.4
+                    + averageMarkConfidence * 0.25
+                    + geometryConfidence * 0.25
+                    + groupingConfidence * 0.1
+            )
+        )
 
         return OnDeviceQuoteCandidate(
             text: text,
@@ -157,6 +168,84 @@ struct QuoteMarkTextSelector: Sendable {
             marginNote: marginNote(near: selectedLines, marks: marks, from: allTextLines),
             confidence: confidence
         )
+    }
+
+    private func geometryConfidence(
+        for selectedLines: [RecognizedTextLine],
+        marks: [DetectedPageMark]
+    ) -> Double {
+        guard !marks.isEmpty else { return 0.5 }
+
+        let scores = marks.map { mark in
+            selectedLines.map { line in
+                geometryConfidence(for: line, mark: mark)
+            }
+            .max() ?? 0.35
+        }
+        return scores.reduce(0, +) / Double(scores.count)
+    }
+
+    private func geometryConfidence(
+        for line: RecognizedTextLine,
+        mark: DetectedPageMark
+    ) -> Double {
+        switch mark.type {
+        case .underline, .doubleUnderline:
+            let overlap = Double(horizontalOverlapRatio(line.boundingBox, mark.boundingBox))
+            let verticalGap = abs(mark.boundingBox.minY - line.boundingBox.maxY)
+            let allowedGap = max(80, line.boundingBox.height * 1.8)
+            let proximity = max(0, 1 - Double(verticalGap / allowedGap))
+            return overlap * 0.6 + proximity * 0.4
+        case .highlight:
+            let intersection = line.boundingBox.intersection(mark.boundingBox)
+            guard !intersection.isNull else { return 0 }
+            let smallerArea = max(
+                min(line.boundingBox.width * line.boundingBox.height, mark.boundingBox.width * mark.boundingBox.height),
+                1
+            )
+            return min(1, Double(intersection.width * intersection.height / smallerArea))
+        case .marginLine, .bracket:
+            let verticalOverlap = max(
+                0,
+                min(line.boundingBox.maxY, mark.boundingBox.maxY)
+                    - max(line.boundingBox.minY, mark.boundingBox.minY)
+            )
+            let verticalAlignment = Double(verticalOverlap / max(line.boundingBox.height, 1))
+            let horizontalGap = horizontalGap(between: line.boundingBox, and: mark.boundingBox)
+            let allowedGap = max(80, line.boundingBox.height * 2)
+            let proximity = max(0, 1 - Double(horizontalGap / allowedGap))
+            return verticalAlignment * 0.5 + proximity * 0.5
+        case .marginNote, .mixed:
+            return 0.5
+        }
+    }
+
+    private func groupingConfidence(for selectedLines: [RecognizedTextLine]) -> Double {
+        let orderedLines = selectedLines.sorted { $0.boundingBox.minY < $1.boundingBox.minY }
+        guard orderedLines.count > 1 else { return 1 }
+
+        let scores = zip(orderedLines, orderedLines.dropFirst()).map { previous, line in
+            let verticalGap = max(0, line.boundingBox.minY - previous.boundingBox.maxY)
+            let allowedGap = max(34, previous.boundingBox.height * 1.6)
+            let verticalContinuity = max(0, 1 - Double(verticalGap / allowedGap))
+            let horizontalContinuity = max(
+                Double(horizontalOverlapRatio(previous.boundingBox, line.boundingBox)),
+                max(0, 1 - Double(abs(previous.boundingBox.minX - line.boundingBox.minX) / 80))
+            )
+            return verticalContinuity * 0.7 + horizontalContinuity * 0.3
+        }
+
+        return scores.reduce(0, +) / Double(scores.count)
+    }
+
+    private func horizontalGap(between lhs: CGRect, and rhs: CGRect) -> CGFloat {
+        if lhs.maxX < rhs.minX {
+            return rhs.minX - lhs.maxX
+        }
+        if rhs.maxX < lhs.minX {
+            return lhs.minX - rhs.maxX
+        }
+        return 0
     }
 
     private func marginNote(
@@ -189,15 +278,11 @@ struct QuoteMarkTextSelector: Sendable {
             }
             guard verticalGap <= max(80, line.boundingBox.height * 2) else { return false }
 
-            let horizontalGap: CGFloat
-            if line.boundingBox.maxX < quoteBounds.minX {
-                horizontalGap = quoteBounds.minX - line.boundingBox.maxX
-            } else if quoteBounds.maxX < line.boundingBox.minX {
-                horizontalGap = line.boundingBox.minX - quoteBounds.maxX
-            } else {
+            let lineHorizontalGap = horizontalGap(between: line.boundingBox, and: quoteBounds)
+            if lineHorizontalGap == 0 {
                 return false
             }
-            return horizontalGap <= maximumHorizontalGap
+            return lineHorizontalGap <= maximumHorizontalGap
         }
         .sorted { $0.boundingBox.minY < $1.boundingBox.minY }
 
@@ -271,15 +356,8 @@ struct QuoteMarkTextSelector: Sendable {
     ) -> [RecognizedTextLine] {
         textLines.filter { line in
             let verticalOverlap = min(line.boundingBox.maxY, mark.boundingBox.maxY) - max(line.boundingBox.minY, mark.boundingBox.minY)
-            let horizontalGap: CGFloat
-            if line.boundingBox.maxX < mark.boundingBox.minX {
-                horizontalGap = mark.boundingBox.minX - line.boundingBox.maxX
-            } else if mark.boundingBox.maxX < line.boundingBox.minX {
-                horizontalGap = line.boundingBox.minX - mark.boundingBox.maxX
-            } else {
-                horizontalGap = 0
-            }
-            let isAdjacent = horizontalGap <= max(80, line.boundingBox.height * 2)
+            let lineHorizontalGap = horizontalGap(between: line.boundingBox, and: mark.boundingBox)
+            let isAdjacent = lineHorizontalGap <= max(80, line.boundingBox.height * 2)
             return verticalOverlap > 0 && isAdjacent
         }
     }
