@@ -192,6 +192,19 @@ None - can start immediately.
   `/tmp/BookQuotes-mark-families-2026-07-15.xcresult`. Real photographed double underlines and
   handwritten margin-note transcription remain separate validation work.
 
+2026-07-15 margin-note follow-up:
+
+- When a short OCR line sits beside a marked quote, the local selector preserves it as the
+  editable `marginNote` rather than merging it into the quote body or discarding it.
+- The matching rule is deliberately narrow: the line must be short, beside rather than
+  overlapping the quote, vertically close to the marked region, and within a bounded horizontal
+  gap. A wider opposing text column remains excluded.
+- The full on-device extractor suite passed on iPhone 17 / iOS 26.5: 22 tests passed, 0
+  failures, and 1 documented local-only fixture skip. Result bundle:
+  `/tmp/BookQuotes-mark-families-margin-note-2026-07-15.xcresult`. This covers OCR-readable
+  margin notes only; handwritten annotations and real photographed margin-note pages remain
+  physical-device characterization work.
+
 ## Verification Results
 
 Focused on-device extractor tracer:

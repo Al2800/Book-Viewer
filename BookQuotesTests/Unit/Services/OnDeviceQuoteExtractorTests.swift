@@ -61,6 +61,45 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(quote.customMarkingDisplayName, "Follow Up")
     }
 
+    func testOnDeviceExtractorCapturesNearbyMarginNoteSeparately() async throws {
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "The marked passage remains the quote.",
+                    confidence: 0.94,
+                    boundingBox: CGRect(x: 300, y: 220, width: 640, height: 32)
+                ),
+                RecognizedTextLine(
+                    text: "Return to this later.",
+                    confidence: 0.86,
+                    boundingBox: CGRect(x: 1_030, y: 224, width: 220, height: 28)
+                ),
+                RecognizedTextLine(
+                    text: "Unrelated header",
+                    confidence: 0.90,
+                    boundingBox: CGRect(x: 300, y: 80, width: 260, height: 28)
+                )
+            ]),
+            markDetector: StubPageMarkDetector(marks: [
+                DetectedPageMark(
+                    type: .underline,
+                    boundingBox: CGRect(x: 300, y: 260, width: 620, height: 4),
+                    confidence: 0.82
+                )
+            ])
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        let quote = try XCTUnwrap(result.quotes.first)
+        XCTAssertEqual(quote.text, "The marked passage remains the quote.")
+        XCTAssertEqual(quote.marginNote, "Return to this later.")
+        XCTAssertEqual(quote.markingType, "underline")
+    }
+
     func testAIProcessingConsentStoreRequiresCurrentVersionAndSupportsRevocation() {
         let suiteName = "AIProcessingConsentStoreTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -270,6 +309,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             "The marked paragraph begins here and continues with the same idea before ending on this final line"
         )
         XCTAssertEqual(candidates.first?.markingType, .marginLine)
+        XCTAssertNil(candidates.first?.marginNote)
     }
 
     func testSelectorSplitsSeparateMarginLinesByParagraphGap() {

@@ -21,7 +21,12 @@ struct QuoteMarkTextSelector: Sendable {
         )
         let otherCandidates = nonGroupedMarks.compactMap { mark in
             let selectedLines = lines(for: mark, from: textLines)
-            return candidate(from: selectedLines, marks: [mark], markingType: mark.type)
+            return candidate(
+                from: selectedLines,
+                marks: [mark],
+                markingType: mark.type,
+                allTextLines: textLines
+            )
         }
 
         // A bracket or highlight can overlap an underline; retain the structural mark's broader
@@ -67,7 +72,8 @@ struct QuoteMarkTextSelector: Sendable {
                 marks: group.map(\.mark),
                 markingType: group.contains(where: { $0.mark.type == .doubleUnderline })
                     ? .doubleUnderline
-                    : .underline
+                    : .underline,
+                allTextLines: textLines
             )
         }
     }
@@ -89,7 +95,8 @@ struct QuoteMarkTextSelector: Sendable {
             candidate(
                 from: group.map(\.line),
                 marks: group.map(\.mark),
-                markingType: .marginLine
+                markingType: .marginLine,
+                allTextLines: textLines
             )
         }
     }
@@ -97,7 +104,8 @@ struct QuoteMarkTextSelector: Sendable {
     private func candidate(
         from selectedLines: [RecognizedTextLine],
         marks: [DetectedPageMark],
-        markingType: MarkingType
+        markingType: MarkingType,
+        allTextLines: [RecognizedTextLine]
     ) -> OnDeviceQuoteCandidate? {
         guard !selectedLines.isEmpty else { return nil }
 
@@ -116,9 +124,55 @@ struct QuoteMarkTextSelector: Sendable {
         return OnDeviceQuoteCandidate(
             text: text,
             markingType: markingType,
-            marginNote: nil,
+            marginNote: marginNote(near: selectedLines, marks: marks, from: allTextLines),
             confidence: confidence
         )
+    }
+
+    private func marginNote(
+        near selectedLines: [RecognizedTextLine],
+        marks: [DetectedPageMark],
+        from allTextLines: [RecognizedTextLine]
+    ) -> String? {
+        guard var quoteBounds = selectedLines.first?.boundingBox else { return nil }
+        for line in selectedLines.dropFirst() {
+            quoteBounds = quoteBounds.union(line.boundingBox)
+        }
+
+        let markedBounds = marks.reduce(quoteBounds) { bounds, mark in
+            bounds.union(mark.boundingBox)
+        }
+        let maximumNoteWidth = max(120, quoteBounds.width * 0.55)
+        let maximumHorizontalGap = max(180, quoteBounds.width * 0.45)
+
+        let notes = allTextLines.filter { line in
+            guard !selectedLines.contains(line) else { return false }
+            guard line.boundingBox.width <= maximumNoteWidth else { return false }
+
+            let verticalGap: CGFloat
+            if line.boundingBox.maxY < markedBounds.minY {
+                verticalGap = markedBounds.minY - line.boundingBox.maxY
+            } else if markedBounds.maxY < line.boundingBox.minY {
+                verticalGap = line.boundingBox.minY - markedBounds.maxY
+            } else {
+                verticalGap = 0
+            }
+            guard verticalGap <= max(80, line.boundingBox.height * 2) else { return false }
+
+            let horizontalGap: CGFloat
+            if line.boundingBox.maxX < quoteBounds.minX {
+                horizontalGap = quoteBounds.minX - line.boundingBox.maxX
+            } else if quoteBounds.maxX < line.boundingBox.minX {
+                horizontalGap = line.boundingBox.minX - quoteBounds.maxX
+            } else {
+                return false
+            }
+            return horizontalGap <= maximumHorizontalGap
+        }
+        .sorted { $0.boundingBox.minY < $1.boundingBox.minY }
+
+        let note = notes.joinedOCRText()
+        return note.isEmpty ? nil : note
     }
 
     private func closestLinesAboveUnderline(

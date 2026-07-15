@@ -65,6 +65,11 @@
   underline. The full mark-family suite passed on iPhone 17 / iOS 26.5: 21 tests passed,
   0 failed, and 1 documented local-only fixture skip. Result bundle:
   `/tmp/BookQuotes-mark-families-2026-07-15.xcresult`.
+- A short OCR-readable line beside a marked quote is now retained as that quote's editable
+  margin note. The selector excludes wider opposing text columns, and the full on-device suite
+  passed with this rule: 22 tests passed, 0 failed, and 1 documented local-only fixture skip on
+  iPhone 17 / iOS 26.5. Result bundle:
+  `/tmp/BookQuotes-mark-families-margin-note-2026-07-15.xcresult`.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,
