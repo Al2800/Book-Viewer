@@ -16,7 +16,7 @@ future Xcode upgrade becoming a blocking migration.
 - [x] `SearchDatabase` initialization does not call actor-isolated methods from a nonisolated
   actor initializer.
 - [x] Quote-save result types do not claim unsafe `Sendable` conformance for SwiftData models.
-- [ ] Capture queue publisher and retry dependencies use accurate isolation and sendability.
+- [x] Capture queue publisher and retry dependencies use accurate isolation and sendability.
 - [ ] Camera capture resolution and orientation use supported iOS 17+ APIs.
 - [ ] Unreachable error handlers and deprecated trailing-closure syntax are removed.
 - [ ] A clean Release build emits no production warnings that are Swift 6 errors or current-target
@@ -47,3 +47,15 @@ future Xcode upgrade becoming a blocking migration.
 - The focused save, draft, review-state, review-processor, and page-capture gate passed 23 tests,
   0 failures, and 0 skips on iPhone 17 / iOS 26.5.
 - A Release simulator build completed without any `QuoteSaveTypes.swift` sendability warning.
+
+2026-07-15 capture-queue isolation slice:
+
+- Replaced ineffective `nonisolated(unsafe)` annotations with a Sendable reporter dependency and
+  an explicitly `nonisolated` publisher surface.
+- Protected synchronous current-stats reads with a lock while keeping Combine delivery outside
+  the lock to avoid subscriber reentrancy deadlocks.
+- Typed the production retry delay as a stored `CaptureQueueRetrySleep` closure, preserving the
+  existing backoff behavior while satisfying its `@Sendable` contract.
+- The complete `CaptureQueue*` gate passed 61 tests, 0 failures, and 0 skips on iPhone 17 / iOS
+  26.5.
+- A Release simulator build completed without any queue isolation or retry sendability warning.

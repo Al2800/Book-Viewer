@@ -1,10 +1,15 @@
 import Combine
+import Foundation
 
 final class CaptureQueueStatsReporter: @unchecked Sendable {
+    private let stateLock = NSLock()
     private let subject = CurrentValueSubject<QueueStats, Never>(QueueStats())
+    private var currentStats = QueueStats()
 
     var stats: QueueStats {
-        subject.value
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return currentStats
     }
 
     var publisher: AnyPublisher<QueueStats, Never> {
@@ -12,6 +17,10 @@ final class CaptureQueueStatsReporter: @unchecked Sendable {
     }
 
     func publish(_ stats: QueueStats) {
+        stateLock.lock()
+        currentStats = stats
+        stateLock.unlock()
+
         subject.send(stats)
     }
 }

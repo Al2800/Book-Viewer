@@ -32,7 +32,7 @@ actor CaptureQueueManager {
     private var retryCoordinator: CaptureQueueRetryCoordinator
 
     /// Published queue statistics for UI binding
-    nonisolated(unsafe) private let statsReporter = CaptureQueueStatsReporter()
+    private let statsReporter = CaptureQueueStatsReporter()
 
     // MARK: - Initialization
 
@@ -175,7 +175,7 @@ actor CaptureQueueManager {
     }
 
     /// Publisher for queue statistics updates.
-    nonisolated(unsafe) var statsPublisher: AnyPublisher<QueueStats, Never> {
+    nonisolated var statsPublisher: AnyPublisher<QueueStats, Never> {
         statsReporter.publisher
     }
 

@@ -47,7 +47,7 @@ struct CaptureQueueRetryCoordinator {
         scheduler.cancelAll()
     }
 
-    private static func standardSleep(_ delay: TimeInterval) async {
+    private static let standardSleep: CaptureQueueRetrySleep = { delay in
         try? await Task.sleep(for: .seconds(delay))
     }
 }
