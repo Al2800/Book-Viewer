@@ -94,6 +94,10 @@ final class LibraryManagementTests: BaseUITestCase {
         logger.success("Found Atomic Habits book")
     }
 
+    func testLibrary_PassesSystemAccessibilityAudit() throws {
+        try performSystemAccessibilityAudit()
+    }
+
     // MARK: - Book Editing Tests
 
     func testBookDetail_EditButton_Available() {

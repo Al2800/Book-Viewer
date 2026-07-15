@@ -52,14 +52,14 @@ struct DailyPassageCard: View {
                 .font(.quoteLarge)
                 .foregroundStyle(Color.textPrimary)
                 .lineSpacing(5)
-                .lineLimit(6)
                 .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
 
             if let book = quote.book {
                 Text("— \(book.title), \(book.author)")
                     .font(.attribution)
                     .foregroundStyle(Color.textSecondary)
-                    .lineLimit(1)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -135,6 +135,8 @@ struct LibraryBrowseSection: View {
             }
             .font(.subheadline)
             .foregroundStyle(Color.brand)
+            .frame(minHeight: 44, alignment: .trailing)
+            .contentShape(Rectangle())
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.sortMenu)
     }
@@ -427,6 +429,7 @@ private struct LibrarySummaryPill: View {
         HStack(spacing: Spacing.xs) {
             Image(systemName: systemImage)
                 .font(.caption.weight(.semibold))
+                .accessibilityHidden(true)
 
             Text(text)
                 .font(.caption.weight(.medium))
@@ -464,6 +467,7 @@ private struct LibraryIconCircle: View {
             Image(systemName: systemImage)
                 .font(font)
                 .foregroundStyle(foreground)
+                .accessibilityHidden(true)
         }
     }
 }

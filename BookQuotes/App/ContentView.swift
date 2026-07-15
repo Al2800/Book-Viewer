@@ -69,7 +69,7 @@ struct ContentView: View {
             if UITestConfiguration.isUITesting && uiTestSeeded && !UITestConfiguration.isAppStoreMediaMode {
                 Text("UI Test Seeded")
                     .font(.caption2)
-                    .opacity(0.01)
+                    .foregroundStyle(Color.clear)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestSeeded)
             }
 

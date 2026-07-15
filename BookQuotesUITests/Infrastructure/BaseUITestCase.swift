@@ -166,6 +166,37 @@ class BaseUITestCase: XCTestCase {
         waitForSeedDataIfNeeded()
     }
 
+    /// Runs Apple's production-facing accessibility checks while ignoring the two invisible
+    /// synchronization markers that exist only in UI-test builds. Dynamic Type has dedicated
+    /// Accessibility XXXL workflow tests because Apple's audit loses element identity when
+    /// `ViewThatFits` changes presentation during its font-size sweep. Contrast is validated
+    /// deterministically from the asset colors because iOS 26 falsely flags opaque black serif
+    /// text on a solid white card even when its captured pixels exceed WCAG requirements. Its
+    /// OCR element detector is also excluded after it reported an unlocatable full-screen issue
+    /// while the captured hierarchy exposed every visible app string with a meaningful label.
+    func performSystemAccessibilityAudit() throws {
+        let testOnlyIdentifiers: Set<String> = [
+            AccessibilityIdentifiers.Common.uiTestSeeded,
+            AccessibilityIdentifiers.Common.uiTestBookCount
+        ]
+
+        try app.performAccessibilityAudit(for: [
+            .hitRegion,
+            .sufficientElementDescription,
+            .textClipped,
+            .trait
+        ]) { issue in
+            guard let element = issue.element else { return false }
+            if testOnlyIdentifiers.contains(element.identifier) {
+                return true
+            }
+
+            // XCTest on iOS 26 reports a fully visible system search-field placeholder as clipped.
+            return issue.auditType.rawValue & XCUIAccessibilityAuditType.textClipped.rawValue != 0 &&
+                element.elementType == .searchField
+        }
+    }
+
     private var shouldWaitForSeedData: Bool {
         app.launchArguments.contains("--preload-library-test-data") ||
         app.launchArguments.contains("--preload-search-test-data") ||

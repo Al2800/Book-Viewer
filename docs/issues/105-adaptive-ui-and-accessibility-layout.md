@@ -75,6 +75,16 @@ The phone library grid can compress cards to 100 points while retaining status a
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list
   with a single vertical review scroll surface.
+- [x] The Library home passes Apple's reliable iOS 26 system audits for hit regions, element
+  descriptions, clipped text, and accessibility traits. The audit drove a 44-point Sort Books
+  target, removed silent truncation from the Daily Passage and attribution, and hid decorative
+  SF Symbols whose internal names were being announced. A deterministic WCAG test also verifies
+  primary and secondary text against card backgrounds in light and dark modes. The focused
+  contrast, seeded-library, and system-audit checks passed with 0 failures on 2026-07-15.
+  Apple's iOS 26 contrast pixel audit and OCR element detector are excluded because they produced
+  reproducible unlocatable false positives despite compliant captured pixels and a hierarchy
+  containing every visible app string; the retained checks and dedicated Accessibility XXXL
+  workflows cover their reliable behavior.
 - [ ] Complete the screenshot matrix for small phone, large phone, portrait, landscape, and
   iPad split view on a physical device.
 - [ ] Complete VoiceOver and Reduce Motion device smoke, including source-image activation and

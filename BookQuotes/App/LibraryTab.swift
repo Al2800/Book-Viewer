@@ -105,7 +105,7 @@ struct LibraryView: View {
             if UITestConfiguration.isUITesting {
                 Text("\(books.count)")
                     .font(.caption2)
-                    .opacity(0.01)
+                    .foregroundStyle(Color.clear)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestBookCount)
             }
         }
