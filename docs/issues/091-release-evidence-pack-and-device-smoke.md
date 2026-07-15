@@ -93,3 +93,10 @@ The evidence must cover both local verification and real-device TestFlight behav
 - A signed development build compiled, installed, launched, and remained running on the connected
   iPhone 17. The reader confirmed moving live previews in both ISBN registration and quote capture,
   clearing the physical camera gate for replacement Build 41.
+- Build 41 was archived from GitHub commit `b35d6fb`, exported with an App Store distribution
+  signature, validated by Apple with no errors, and uploaded under delivery ID
+  `a756cb97-8e92-4205-8a09-66a40a3d3088`.
+- Apple processing completed with `VALID`, `APP_STORE_ELIGIBLE`, and
+  `usesNonExemptEncryption: false`. The remaining open acceptance is the Build 41 TestFlight smoke
+  for subscription purchase/restore, authenticated remote extraction, network loss and recovery,
+  queued processing, and account deletion.

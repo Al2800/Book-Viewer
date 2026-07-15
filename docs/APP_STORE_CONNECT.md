@@ -91,6 +91,25 @@ signing out or deleting a server account does not delete the local library.
 
 ## Latest TestFlight Verification
 
+Build 41 was uploaded on 2026-07-15 and verified through Apple's delivery status service:
+
+- App: `BookQuotes`
+- App ID: `6758091579`
+- Bundle ID: `com.acampbell.bookquotes`
+- Delivery ID: `a756cb97-8e92-4205-8a09-66a40a3d3088`
+- Uploaded date: `2026-07-15T16:32:07+01:00`
+- Processing state: `VALID`
+- Encryption status: `usesNonExemptEncryption: false`
+- Audience: `APP_STORE_ELIGIBLE`
+
+Alastair Campbell is in the internal `Test v1` beta group. That group has `hasAccessToAllBuilds: true`, so App Store Connect does not allow assigning individual builds to it manually.
+
+Build 40 remains release-stopped and must not be selected for App Review. Build 41 is the
+replacement TestFlight candidate for subscription, remote-AI, ISBN, network-loss, queue, and
+account-deletion acceptance.
+
+## Build 38 Verification
+
 Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect API:
 
 - App: `BookQuotes`
@@ -100,8 +119,6 @@ Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect A
 - Uploaded date: `2026-07-12T06:48:13-07:00`
 - Processing state: `VALID`
 - Encryption status: `usesNonExemptEncryption: false`
-
-Alastair Campbell is in the internal `Test v1` beta group. That group has `hasAccessToAllBuilds: true`, so App Store Connect does not allow assigning individual builds to it manually.
 
 ## Build 29 Verification
 
