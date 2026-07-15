@@ -37,5 +37,5 @@ The actor had already gained useful seams for SQLite statement lifecycle and FTS
 
 ## Residual Risk / Next Slice
 
-- `SearchDatabase` still emits existing Swift 6 actor-isolation warnings from synchronous initializers calling actor-isolated setup methods.
-- A future slice should address initialization/concurrency warnings separately, with tests proving default, in-memory, and path-based initialization still work.
+- Resolved by issue 107 on 2026-07-15: initialization now uses a static SQLite factory, including
+  default, in-memory, and path-based regression coverage.

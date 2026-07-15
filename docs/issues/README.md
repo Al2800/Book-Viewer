@@ -116,7 +116,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `104-ui-test-isolation-and-assertion-reliability.md` - closed
 - `105-adaptive-ui-and-accessibility-layout.md` - in_progress
 - `106-ui-test-skip-elimination.md` - closed
-- `107-swift-6-and-sdk-warning-cleanup.md` - in_progress
+- `107-swift-6-and-sdk-warning-cleanup.md` - closed
 
 ## Refactor Rules
 
@@ -156,7 +156,8 @@ Every user testing note should be captured before or alongside implementation wo
 - Tags contract: `080`, tag casing, duplicate-prevention identity, display casing, and case-insensitive search behaviour.
 - Simulator/UI verification: `081`, XCUITest AX runner initialization, focused UI smoke, seeded/mock-camera launch, and pre-TestFlight simulator confidence.
 - Test infrastructure: `082`, fixture builders, generated image fixtures, search datasets, and broad unit gate support.
-- Build and migration health: `107`, Swift 6 isolation/sendability and current iOS SDK deprecation warnings.
+- Build and migration health: `107` closed after removing the tracked production Swift 6 and
+  current iOS SDK warnings.
 - Quote capture save route: `083`, post-extraction save completion, duplicate review save path, and capture completion routing.
 - Cover capture save route: `084`, created-book visibility, cover capture completion, and book edit save dismissal routing.
 - Library delete smoke: `085`, list-row accessibility shape, swipe-to-delete target, and delete confirmation UI smoke.

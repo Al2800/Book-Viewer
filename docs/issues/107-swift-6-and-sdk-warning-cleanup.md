@@ -1,6 +1,6 @@
 # 107 - Remove Swift 6 and current-SDK release warnings
 
-Status: in_progress
+Status: closed
 Area: Build / Concurrency / Camera
 Priority: medium
 
@@ -100,3 +100,7 @@ future Xcode upgrade becoming a blocking migration.
 - Removed three unused locals from the UI-test camera image renderer without changing its output.
 - Quote and batch mock-camera UI smoke tests passed 2 tests, 0 failures, and 0 skips.
 - A clean Release simulator build completed successfully with zero production compiler warnings.
+- The final generic-iOS archive completed with zero compiler warnings and exported a signed App
+  Store IPA as version 1.0, build 39.
+- The exported app retains bundle ID `com.acampbell.bookquotes`, Sign in with Apple, the expected
+  distribution signature, and `get-task-allow = false`.

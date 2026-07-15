@@ -55,3 +55,10 @@ The exported app was inspected and has:
   `APPLE_IAP_PRIVATE_KEY`; deploy only after they are provisioned.
 - The guarded staging checks, real-device TestFlight matrix, App Privacy questionnaire, App
   Review Notes, and physical accessibility review remain required before App Review submission.
+
+## Post-cleanup Rerun
+
+After issue 107 removed the tracked production compiler diagnostics, the archive and local export
+were repeated from the final source on 2026-07-15. Both completed successfully with zero production
+compiler warnings. The exported IPA remains version `1.0`, build `39`, with the same bundle ID,
+distribution signature, Sign in with Apple entitlement, and `get-task-allow = false` values above.

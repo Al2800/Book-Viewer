@@ -40,6 +40,6 @@ Those support behaviours are independently tested and do not need to live in the
 
 ## Residual Risk / Next Slice
 
-- `CameraService.swift` still has existing Swift 6 concurrency warnings around detached session start/stop and existing AVFoundation deprecation warnings.
-- A follow-on camera slice should characterize mock-camera/session state before changing session concurrency behaviour.
+- Resolved by issue 107 on 2026-07-15: session transitions use stable task captures, while capture
+  dimensions and portrait rotation use current AVFoundation APIs with focused unit and UI coverage.
 - 2026-07-01: issue 063 added `CameraAuthorizationPolicy` for deterministic camera status decisions. Future authorization status changes should start in `CameraAuthorizationPolicyTests`; live permission prompting remains in `CameraService`.
