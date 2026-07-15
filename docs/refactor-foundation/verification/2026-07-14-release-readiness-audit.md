@@ -98,6 +98,10 @@
   documented local-only real-book-photo fixture (`testRealBookFixtureExtractsUnderlinedPassageWhenProvided`).
   Result bundle: `/tmp/BookQuotes-app-unit-2026-07-15-post-upload-budget.xcresult`
   (`Info.plist` verified present).
+- The full app-unit gate passed again on the current branch after the margin-note, highlighted
+  passage, and confidence-scoring fixes: 622 tests passed, 0 failed, and 1 documented local-only
+  real-book-photo fixture skip in 197.354 seconds on iPhone 17 / iOS 26.5. Result bundle:
+  `/tmp/BookQuotes-app-unit-2026-07-15-current.xcresult`.
 - Backend tests and typecheck passed: 39 tests, 0 failures.
 - Production Worker deployment tooling is now on Wrangler 4 / Worker types 5 / Vitest 4, with
   Node 22.12+ compatibility verified. The full backend suite passed and
