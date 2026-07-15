@@ -19,7 +19,7 @@ future Xcode upgrade becoming a blocking migration.
 - [x] Capture queue publisher and retry dependencies use accurate isolation and sendability.
 - [x] Camera capture resolution and orientation use supported iOS 17+ APIs.
 - [x] Unreachable error handlers and deprecated trailing-closure syntax are removed.
-- [ ] A clean Release build emits no production warnings that are Swift 6 errors or current-target
+- [x] A clean Release build emits no production warnings that are Swift 6 errors or current-target
   SDK deprecations.
 
 ## Verification
@@ -94,3 +94,9 @@ future Xcode upgrade becoming a blocking migration.
 - The production OCR, normalization, and heuristic gate passed 25 tests, 0 failures, and 0 skips
   on iPhone 17 Pro / iOS 26.5.
 - A Release simulator build completed without the cover OCR or rectangle-detection warnings.
+
+2026-07-15 final production warning gate:
+
+- Removed three unused locals from the UI-test camera image renderer without changing its output.
+- Quote and batch mock-camera UI smoke tests passed 2 tests, 0 failures, and 0 skips.
+- A clean Release simulator build completed successfully with zero production compiler warnings.

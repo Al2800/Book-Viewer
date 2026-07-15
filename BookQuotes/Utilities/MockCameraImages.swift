@@ -120,9 +120,6 @@ enum MockCameraImages {
             let paragraphLengths = [5, 8, 6, 7, 5, 9, 6, 8, 7, 6, 8, 5, 7, 9, 6]
 
             var lineIndex = 0
-            var isInHighlight = false
-            var highlightedLineCount = 0
-            let quoteCount = multipleQuotes ? 3 : 1
 
             // Determine which lines should be highlighted
             var highlightRanges: [(start: Int, length: Int)] = []
