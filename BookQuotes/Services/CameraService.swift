@@ -46,6 +46,7 @@ final class CameraService: NSObject {
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var previewSizeStore = CameraPreviewSizeStore()
+    private var configuredPhotoDimensions: CMVideoDimensions?
 
     // MARK: - Continuations for async capture
 
@@ -144,10 +145,10 @@ final class CameraService: NSObject {
 
         // Add photo output
         let output = AVCapturePhotoOutput()
-        output.isHighResolutionCaptureEnabled = true
 
         if session.canAddOutput(output) {
             session.addOutput(output)
+            configurePhotoDimensions(for: videoDevice, output: output)
             photoOutput = output
         } else {
             throw CameraError.cannotAddOutput
@@ -163,9 +164,7 @@ final class CameraService: NSObject {
 
         let layer = AVCaptureVideoPreviewLayer(session: session)
         layer.videoGravity = framingProfile.previewVideoGravity
-        if let connection = layer.connection, connection.isVideoOrientationSupported {
-            connection.videoOrientation = .portrait
-        }
+        CameraCaptureConfiguration.applyPortraitRotation(to: layer.connection)
         previewLayer = layer
         return layer
     }
@@ -191,10 +190,10 @@ final class CameraService: NSObject {
 
         guard let session = captureSession, !session.isRunning else { return }
 
-        Task.detached(priority: .userInitiated) { [weak self] in
+        Task.detached(priority: .userInitiated) { [self, session] in
             session.startRunning()
             await MainActor.run {
-                self?.isSessionRunning = true
+                isSessionRunning = true
             }
         }
     }
@@ -209,10 +208,10 @@ final class CameraService: NSObject {
 
         guard let session = captureSession, session.isRunning else { return }
 
-        Task.detached(priority: .userInitiated) { [weak self] in
+        Task.detached(priority: .userInitiated) { [self, session] in
             session.stopRunning()
             await MainActor.run {
-                self?.isSessionRunning = false
+                isSessionRunning = false
             }
         }
     }
@@ -231,7 +230,9 @@ final class CameraService: NSObject {
         }
 
         let settings = AVCapturePhotoSettings()
-        settings.isHighResolutionPhotoEnabled = true
+        if let configuredPhotoDimensions {
+            settings.maxPhotoDimensions = configuredPhotoDimensions
+        }
 
         let captureID = UUID()
         guard captureLifecycle.begin(
@@ -333,6 +334,9 @@ final class CameraService: NSObject {
                 session.addInput(newInput)
                 videoDeviceInput = newInput
                 cameraPosition = newPosition
+                if let photoOutput {
+                    configurePhotoDimensions(for: newDevice, output: photoOutput)
+                }
             } else {
                 session.addInput(currentInput)
                 throw CameraError.cannotAddInput
@@ -341,6 +345,22 @@ final class CameraService: NSObject {
             session.commitConfiguration()
         } catch {
             throw CameraError.inputConfigurationFailed(error)
+        }
+    }
+
+    // MARK: - Photo Configuration
+
+    private func configurePhotoDimensions(
+        for device: AVCaptureDevice,
+        output: AVCapturePhotoOutput
+    ) {
+        let dimensions = CameraCaptureConfiguration.maximumPhotoDimensions(
+            from: device.activeFormat.supportedMaxPhotoDimensions
+        )
+        configuredPhotoDimensions = dimensions
+
+        if let dimensions {
+            output.maxPhotoDimensions = dimensions
         }
     }
 
@@ -387,6 +407,7 @@ final class CameraService: NSObject {
         stopSession()
         captureSession = nil
         photoOutput = nil
+        configuredPhotoDimensions = nil
         videoDeviceInput = nil
         previewLayer = nil
         capturedImage = nil

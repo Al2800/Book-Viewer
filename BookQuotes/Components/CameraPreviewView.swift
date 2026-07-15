@@ -44,7 +44,9 @@ struct CameraPreviewView: UIViewRepresentable {
             super.layoutSubviews()
             previewLayer?.frame = bounds
             if bounds.width > 0, bounds.height > 0 {
-                previewLayer?.connection?.videoOrientation = .portrait
+                CameraCaptureConfiguration.applyPortraitRotation(
+                    to: previewLayer?.connection
+                )
                 cameraService?.updatePreviewSize(bounds.size)
             }
         }

@@ -1,5 +1,6 @@
 import XCTest
 import UIKit
+import CoreMedia
 
 @testable import BookQuotes
 
@@ -63,5 +64,24 @@ final class CameraServiceTests: XCTestCase {
 
         XCTAssertFalse(lifecycle.isCapturing)
         XCTAssertNil(lifecycle.captureID(matchingPhotoSettingsID: 99))
+    }
+
+    func testCaptureConfigurationSelectsLargestSupportedPhotoDimensions() throws {
+        let selected = try XCTUnwrap(CameraCaptureConfiguration.maximumPhotoDimensions(from: [
+            CMVideoDimensions(width: 1920, height: 1080),
+            CMVideoDimensions(width: 4032, height: 3024),
+            CMVideoDimensions(width: 5712, height: 4284)
+        ]))
+
+        XCTAssertEqual(selected.width, 5712)
+        XCTAssertEqual(selected.height, 4284)
+    }
+
+    func testCaptureConfigurationReturnsNilWithoutSupportedDimensions() {
+        XCTAssertNil(CameraCaptureConfiguration.maximumPhotoDimensions(from: []))
+    }
+
+    func testCaptureConfigurationUsesPortraitRotationAngle() {
+        XCTAssertEqual(CameraCaptureConfiguration.portraitRotationAngle, 90)
     }
 }

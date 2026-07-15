@@ -1,3 +1,4 @@
+import AVFoundation
 import SwiftUI
 
 enum CameraError: LocalizedError {
@@ -76,6 +77,31 @@ struct CameraCaptureLifecycle {
     private mutating func reset() {
         activeCaptureID = nil
         activePhotoSettingsID = nil
+    }
+}
+
+enum CameraCaptureConfiguration {
+    static let portraitRotationAngle: CGFloat = 90
+
+    static func maximumPhotoDimensions(
+        from supportedDimensions: [CMVideoDimensions]
+    ) -> CMVideoDimensions? {
+        supportedDimensions.max { lhs, rhs in
+            pixelCount(lhs) < pixelCount(rhs)
+        }
+    }
+
+    static func applyPortraitRotation(to connection: AVCaptureConnection?) {
+        guard let connection,
+              connection.isVideoRotationAngleSupported(portraitRotationAngle) else {
+            return
+        }
+
+        connection.videoRotationAngle = portraitRotationAngle
+    }
+
+    private static func pixelCount(_ dimensions: CMVideoDimensions) -> Int64 {
+        Int64(dimensions.width) * Int64(dimensions.height)
     }
 }
 

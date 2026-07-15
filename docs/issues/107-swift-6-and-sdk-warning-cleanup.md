@@ -17,7 +17,7 @@ future Xcode upgrade becoming a blocking migration.
   actor initializer.
 - [x] Quote-save result types do not claim unsafe `Sendable` conformance for SwiftData models.
 - [x] Capture queue publisher and retry dependencies use accurate isolation and sendability.
-- [ ] Camera capture resolution and orientation use supported iOS 17+ APIs.
+- [x] Camera capture resolution and orientation use supported iOS 17+ APIs.
 - [x] Unreachable error handlers and deprecated trailing-closure syntax are removed.
 - [ ] A clean Release build emits no production warnings that are Swift 6 errors or current-target
   SDK deprecations.
@@ -71,3 +71,16 @@ future Xcode upgrade becoming a blocking migration.
   0 failures, and 0 skips on iPhone 17 / iOS 26.5.
 - A clean Release simulator build completed without the startup, extraction-review, or tag-call
   diagnostics removed in this slice.
+
+2026-07-15 camera SDK slice:
+
+- Replaced deprecated high-resolution flags with the largest `maxPhotoDimensions` advertised by
+  the active camera format and uses that same value for each photo request.
+- Reconfigures the maximum dimensions after switching cameras.
+- Replaced fixed `videoOrientation` writes with a supported 90-degree `videoRotationAngle` check.
+- Replaced weak mutable captures in detached session start/stop tasks with stable strong captures;
+  the service remains alive until the requested AVFoundation transition completes.
+- The focused camera and image-processing gate passed 27 tests, 0 failures, and 0 skips on iPhone
+  17 Pro / iOS 26.5.
+- Quote, cover, and batch camera UI smoke tests passed 3 tests, 0 failures, and 0 skips.
+- A clean Release simulator build completed without camera deprecation or session-capture warnings.
