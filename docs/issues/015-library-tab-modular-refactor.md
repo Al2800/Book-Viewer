@@ -1,6 +1,6 @@
 # Library Tab Modular Refactor
 
-Status: `in_progress`
+Status: `closed`
 
 Priority: high
 
@@ -203,6 +203,13 @@ Move Library overview presentation out of `LibraryTab.swift` while keeping navig
   - `AppStoreScreenshotsTests/testAppStoreScreenshots`
   - `CollectionsTagsFlowTests/testCollectionSheet_CreateNew_ShowsNameField`
 - Final simulator debug build passed. Existing Swift 6/concurrency/deprecation warnings remain unchanged.
+
+## Resolution
+
+The modular-refactor acceptance criteria are complete. `LibraryTab.swift` is currently 482 LOC,
+below the 500-LOC target, and the 2026-07-12 verification recorded focused Library unit coverage,
+Library/Search simulator smoke, and a final simulator debug build. The remaining notes below
+describe intentionally deferred refactors and future characterization seams, not release work.
 
 ## Residual Risk / Next Slice
 

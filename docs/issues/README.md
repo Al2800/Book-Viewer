@@ -24,7 +24,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `012-on-device-mark-aware-quote-extraction.md` - in_progress
 - `013-real-photo-mark-detection-and-quote-windowing.md` - open
 - `014-camera-preview-framing-and-guidance.md` - in_progress
-- `015-library-tab-modular-refactor.md` - in_progress
+- `015-library-tab-modular-refactor.md` - closed
 - `016-onboarding-and-capture-queue-modular-refactor.md` - closed
 - `017-extraction-review-status-presentation-refactor.md` - closed
 - `018-onboarding-step-and-capture-queue-processing-refactor.md` - closed
