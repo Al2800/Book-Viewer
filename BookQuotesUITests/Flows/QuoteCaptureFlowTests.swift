@@ -47,6 +47,15 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.success("Capture tab displays correctly")
     }
 
+    func testCaptureRoot_PassesSystemAccessibilityAudit() throws {
+        XCTAssertTrue(tapTab(.capture, timeout: 5), "Capture tab should exist")
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote].waitForExistence(timeout: 5),
+            "Capture mode selection should be ready before auditing"
+        )
+        try performSystemAccessibilityAudit()
+    }
+
     func testCaptureTab_CaptureButton_Exists() {
         logger.step(1, "Navigating to Capture tab")
         openQuoteCaptureFromTab()
@@ -119,6 +128,17 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(returned, "Should return to camera view")
 
         logger.success("Retake returns to camera")
+    }
+
+    func testImageReview_PassesSystemAccessibilityAudit() throws {
+        navigateToCaptureWithBook()
+        triggerCapture()
+
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton].waitForExistence(timeout: 5),
+            "Image review should be ready before auditing"
+        )
+        try performSystemAccessibilityAudit()
     }
 
     // MARK: - Extraction Review Tests

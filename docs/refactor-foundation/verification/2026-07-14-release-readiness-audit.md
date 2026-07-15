@@ -119,6 +119,11 @@
   opened and closed its full-screen viewer, and passed the retained Apple system accessibility
   audit while that viewer was open (1 test, 0 failures). Manual VoiceOver reading order and
   Reduce Motion remain open under issue `105`.
+- The Capture mode-selection and photo-review screens passed the retained Apple system audits on
+  iPhone 17 Pro simulator (2 tests, 0 failures). The resulting photo-review fixes reflow quality
+  metrics and actions at large text sizes, expose spoken metric states, preserve warning copy,
+  and provide an accessible preview zoom action. The connected phone locked before this focused
+  physical rerun could start, so it remains simulator evidence.
 - The full app-unit gate passed again on 2026-07-15 after the remote-image budget change with a
   complete, readable result bundle: 616 tests passed, 0 failed, and 1 skipped in 204.243 seconds
   on iPhone 17 / iOS 26.5. The skip is the

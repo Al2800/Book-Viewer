@@ -6,6 +6,7 @@ import SwiftUI
 /// Allows user to retake or confirm the photo.
 struct ImageReviewView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let image: UIImage
     let qualityResult: ImageQualityAnalyzer.QualityResult?
@@ -92,17 +93,14 @@ struct ImageReviewView: View {
                     )
                 )
                 .onTapGesture(count: 2) {
-                    withAnimation(.spring()) {
-                        if imageScale > 1.0 {
-                            imageScale = 1.0
-                            imageOffset = .zero
-                            lastOffset = .zero
-                        } else {
-                            imageScale = 2.5
-                        }
-                    }
+                    toggleImageZoom()
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height)
+                .accessibilityLabel("Captured page preview")
+                .accessibilityHint("Activate to zoom in or reset zoom")
+                .accessibilityAction {
+                    toggleImageZoom()
+                }
         }
     }
 
@@ -111,26 +109,16 @@ struct ImageReviewView: View {
     private func qualitySection(_ result: ImageQualityAnalyzer.QualityResult) -> some View {
         VStack(spacing: Spacing.sm) {
             // Quality bar
-            HStack(spacing: Spacing.md) {
-                // Overall score
-                HStack(spacing: Spacing.xs) {
-                    Circle()
-                        .fill(qualityColor(for: result.overallScore))
-                        .frame(width: 10, height: 10)
-
-                    Text(qualityLabel(for: result.overallScore))
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundStyle(Color.textPrimary)
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Spacing.md) {
+                    overallQualityIndicator(result)
+                    Spacer()
+                    qualityMetrics(result)
                 }
 
-                Spacer()
-
-                // Individual metrics
-                HStack(spacing: Spacing.md) {
-                    metricIndicator(label: "Blur", score: normalizedBlurScore(result.blurScore))
-                    metricIndicator(label: "Light", score: normalizedBrightnessScore(result.brightnessScore))
-                    metricIndicator(label: "Text", score: result.textConfidence)
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    overallQualityIndicator(result)
+                    qualityMetrics(result)
                 }
             }
             .padding(Spacing.md)
@@ -144,10 +132,12 @@ struct ImageReviewView: View {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .font(.caption2)
                                 .foregroundStyle(Color.warning)
+                                .accessibilityHidden(true)
 
                             Text(issue.description)
                                 .font(.caption)
                                 .foregroundStyle(Color.textSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                 }
@@ -183,44 +173,33 @@ struct ImageReviewView: View {
             Text(label)
                 .font(.caption2)
                 .foregroundStyle(Color.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
 
             Circle()
                 .fill(qualityColor(for: score))
                 .frame(width: 8, height: 8)
+                .accessibilityHidden(true)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label): \(metricQualityLabel(for: score))")
     }
 
     // MARK: - Action Buttons
 
+    @ViewBuilder
     private var actionButtons: some View {
-        HStack(spacing: Spacing.lg) {
-            // Retake button
-            Button {
-                onRetake()
-                dismiss()
-            } label: {
-                HStack {
-                    Image(systemName: "arrow.counterclockwise")
-                    Text("Retake")
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: Spacing.sm) {
+                    retakeButton
+                    usePhotoButton
+                }
+            } else {
+                HStack(spacing: Spacing.lg) {
+                    retakeButton
+                    usePhotoButton
                 }
             }
-            .buttonStyle(.secondary)
-            .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.retakeButton)
-
-            // Use photo button
-            Button {
-                onConfirm()
-                dismiss()
-            } label: {
-                HStack {
-                    Image(systemName: "checkmark")
-                    Text("Use Photo")
-                }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-            }
-            .glassButton()
-            .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.usePhotoButton)
         }
         .padding(Spacing.lg)
         .glassFloating(cornerRadius: CornerRadius.xl)
@@ -228,7 +207,67 @@ struct ImageReviewView: View {
         .padding(.bottom, Spacing.lg)
     }
 
+    private var retakeButton: some View {
+        Button {
+            onRetake()
+            dismiss()
+        } label: {
+            Label("Retake", systemImage: "arrow.counterclockwise")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.secondary)
+        .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.retakeButton)
+    }
+
+    private var usePhotoButton: some View {
+        Button {
+            onConfirm()
+            dismiss()
+        } label: {
+            Label("Use Photo", systemImage: "checkmark")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+        }
+        .glassButton()
+        .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.usePhotoButton)
+    }
+
+    private func overallQualityIndicator(_ result: ImageQualityAnalyzer.QualityResult) -> some View {
+        HStack(spacing: Spacing.xs) {
+            Circle()
+                .fill(qualityColor(for: result.overallScore))
+                .frame(width: 10, height: 10)
+                .accessibilityHidden(true)
+
+            Text(qualityLabel(for: result.overallScore))
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(Color.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func qualityMetrics(_ result: ImageQualityAnalyzer.QualityResult) -> some View {
+        HStack(spacing: Spacing.md) {
+            metricIndicator(label: "Blur", score: normalizedBlurScore(result.blurScore))
+            metricIndicator(label: "Light", score: normalizedBrightnessScore(result.brightnessScore))
+            metricIndicator(label: "Text", score: result.textConfidence)
+        }
+    }
+
     // MARK: - Helpers
+
+    private func toggleImageZoom() {
+        withAnimation(.spring()) {
+            if imageScale > 1.0 {
+                imageScale = 1.0
+                imageOffset = .zero
+                lastOffset = .zero
+            } else {
+                imageScale = 2.5
+            }
+        }
+    }
 
     private var shouldShowWarning: Bool {
         guard let result = qualityResult else { return false }
@@ -258,6 +297,16 @@ struct ImageReviewView: View {
             return "Fair (Usable)"
         } else {
             return "Poor Quality"
+        }
+    }
+
+    private func metricQualityLabel(for score: Double) -> String {
+        if score >= 0.75 {
+            return "Good"
+        } else if score >= 0.4 {
+            return "Fair"
+        } else {
+            return "Poor"
         }
     }
 
