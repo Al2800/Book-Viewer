@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Cloudflare Workers proxy for BookQuotes Gemini API",
   "main": "src/index.ts",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
@@ -16,10 +19,10 @@
     "jose": "^5.2.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240117.0",
+    "@cloudflare/workers-types": "^5.20260714.1",
     "@types/node": "^26.1.1",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.0",
-    "wrangler": "^3.24.0"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.110.0"
   }
 }

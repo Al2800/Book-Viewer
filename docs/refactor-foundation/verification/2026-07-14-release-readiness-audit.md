@@ -52,7 +52,9 @@
   documented local-only real-book-photo fixture (`testRealBookFixtureExtractsUnderlinedPassageWhenProvided`).
   Result bundle: `/tmp/BookQuotes-app-unit-2026-07-15.xcresult` (`Info.plist` verified present).
 - Backend tests and typecheck passed: 39 tests, 0 failures.
-- Production Worker dependency audit reported no known vulnerabilities.
+- Production Worker deployment tooling is now on Wrangler 4 / Worker types 5 / Vitest 4, with
+  Node 22.12+ compatibility verified. The full backend suite passed and
+  `npm audit --audit-level=moderate` reports zero vulnerabilities.
 - A tracked-file secret-pattern scan found no credential material. The only match is the expected
   private-key format validation in `backend/src/subscription.ts`.
 

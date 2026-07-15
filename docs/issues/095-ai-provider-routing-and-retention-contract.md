@@ -60,3 +60,14 @@ recorded by the account owner.
 - The production secret inventory is missing `APPLE_IAP_KEY_ID`, `APPLE_IAP_ISSUER_ID`, and
   `APPLE_IAP_PRIVATE_KEY`. Provision those App Store Server API credentials before deploying the
   subscription-gated production Worker; do not substitute placeholder values.
+
+2026-07-15 deployment-tooling follow-up:
+
+- Upgraded the Worker deployment toolchain from the obsolete Wrangler 3 line to Wrangler 4,
+  including its required Cloudflare Worker type definitions and the compatible Vitest version.
+- The current Node 22.12+ runtime satisfies the declared toolchain requirement. A clean
+  lockfile install, backend typecheck, and all 39 tests passed; `wrangler deploy --env production
+  --dry-run` passed with the expected production bindings, and
+  `npm audit --audit-level=moderate` reported zero vulnerabilities.
+- This removes a local release-tooling security risk; it does not replace the missing production
+  secrets, actual deployment, or provider-retention evidence.
