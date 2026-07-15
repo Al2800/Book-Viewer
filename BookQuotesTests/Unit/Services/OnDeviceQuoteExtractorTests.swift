@@ -85,35 +85,31 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
     }
 
     func testOnDeviceExtractorCapturesNearbyMarginNoteSeparately() async throws {
+        let image = OnDeviceQuoteExtractorTestImage.underlinedPageWithMarginNote()
+        let scale = image.scale
         let extractor = OnDeviceQuoteExtractor(
             textRecognizer: StubPageTextRecognizer(lines: [
                 RecognizedTextLine(
                     text: "The marked passage remains the quote.",
                     confidence: 0.94,
-                    boundingBox: CGRect(x: 300, y: 220, width: 640, height: 32)
+                    boundingBox: CGRect(x: 140 * scale, y: 620 * scale, width: 620 * scale, height: 80 * scale)
                 ),
                 RecognizedTextLine(
                     text: "Return to this later.",
                     confidence: 0.86,
-                    boundingBox: CGRect(x: 1_030, y: 224, width: 220, height: 28)
+                    boundingBox: CGRect(x: 850 * scale, y: 632 * scale, width: 240 * scale, height: 32 * scale)
                 ),
                 RecognizedTextLine(
                     text: "Unrelated header",
                     confidence: 0.90,
-                    boundingBox: CGRect(x: 300, y: 80, width: 260, height: 28)
+                    boundingBox: CGRect(x: 140 * scale, y: 400 * scale, width: 260 * scale, height: 28 * scale)
                 )
             ]),
-            markDetector: StubPageMarkDetector(marks: [
-                DetectedPageMark(
-                    type: .underline,
-                    boundingBox: CGRect(x: 300, y: 260, width: 620, height: 4),
-                    confidence: 0.82
-                )
-            ])
+            markDetector: PageMarkDetector()
         )
 
         let result = try await extractor.extractQuotes(
-            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            from: image,
             markings: []
         )
 
@@ -121,6 +117,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(quote.text, "The marked passage remains the quote.")
         XCTAssertEqual(quote.marginNote, "Return to this later.")
         XCTAssertEqual(quote.markingType, "underline")
+        XCTAssertGreaterThanOrEqual(quote.confidence ?? 0, 0.65)
     }
 
     func testAIProcessingConsentStoreRequiresCurrentVersionAndSupportsRevocation() {
@@ -201,6 +198,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         )
         XCTAssertEqual(quote.markingType, "highlight")
         XCTAssertEqual(quote.extractionSource, .onDevice)
+        XCTAssertGreaterThanOrEqual(quote.confidence ?? 0, 0.65)
     }
 
     func testPlainPrintedTextIsNotTreatedAsMarkedQuote() throws {
@@ -219,6 +217,74 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(marginMarks.count, 1, "Expected one vertical margin mark, got: \(marks)")
         XCTAssertLessThanOrEqual(marginMarks[0].boundingBox.width, 24)
         XCTAssertGreaterThanOrEqual(marginMarks[0].boundingBox.height, 120)
+    }
+
+    func testSyntheticMarginLineFixtureSelectsAdjacentParagraph() async throws {
+        let image = OnDeviceQuoteExtractorTestImage.graphiteMarginLinePage()
+        let scale = image.scale
+        let marks = try PageMarkDetector().detectMarks(in: image)
+            .filter { $0.type == .marginLine }
+        XCTAssertEqual(marks.count, 1)
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "The marked paragraph begins here",
+                    confidence: 0.92,
+                    boundingBox: CGRect(x: 300 * scale, y: 560 * scale, width: 760 * scale, height: 54 * scale)
+                ),
+                RecognizedTextLine(
+                    text: "and continues with the same idea",
+                    confidence: 0.90,
+                    boundingBox: CGRect(x: 300 * scale, y: 618 * scale, width: 760 * scale, height: 54 * scale)
+                ),
+                RecognizedTextLine(
+                    text: "before ending on this final line",
+                    confidence: 0.91,
+                    boundingBox: CGRect(x: 300 * scale, y: 676 * scale, width: 760 * scale, height: 54 * scale)
+                ),
+                RecognizedTextLine(
+                    text: "Opposite column must stay excluded",
+                    confidence: 0.94,
+                    boundingBox: CGRect(x: 0, y: 100 * scale, width: 100 * scale, height: 54 * scale)
+                )
+            ]),
+            markDetector: StubPageMarkDetector(marks: marks)
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: image,
+            markings: []
+        )
+
+        XCTAssertEqual(result.quoteCount, 1)
+        let quote = try XCTUnwrap(result.quotes.first)
+        XCTAssertEqual(
+            quote.text,
+            "The marked paragraph begins here and continues with the same idea before ending on this final line"
+        )
+        XCTAssertEqual(quote.markingType, "margin_line")
+        XCTAssertNil(quote.marginNote)
+        XCTAssertGreaterThanOrEqual(quote.confidence ?? 0, 0.55)
+    }
+
+    func testUnmarkedSyntheticPageProducesNoQuoteCandidate() async throws {
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "Plain printed text should not become a quote.",
+                    confidence: 0.94,
+                    boundingBox: CGRect(x: 140, y: 620, width: 700, height: 80)
+                )
+            ]),
+            markDetector: PageMarkDetector()
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertTrue(result.quotes.isEmpty)
     }
 
     func testDoubleUnderlineRetainsItsMarkingFamily() throws {
@@ -913,6 +979,42 @@ private enum OnDeviceQuoteExtractorTestImage {
             text: "The pleasure of finding things out.",
             underlineColor: UIColor(white: 0.28, alpha: 1)
         )
+    }
+
+    static func underlinedPageWithMarginNote() -> UIImage {
+        let size = CGSize(width: 1200, height: 1600)
+        let renderer = UIGraphicsImageRenderer(size: size)
+
+        return renderer.image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+
+            let quoteRect = CGRect(x: 140, y: 620, width: 620, height: 80)
+            let quoteAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 42, weight: .regular),
+                .foregroundColor: UIColor.black
+            ]
+            "The marked passage remains the quote.".draw(
+                in: quoteRect,
+                withAttributes: quoteAttributes
+            )
+
+            let underline = UIBezierPath()
+            underline.move(to: CGPoint(x: quoteRect.minX, y: quoteRect.maxY + 8))
+            underline.addLine(to: CGPoint(x: quoteRect.maxX, y: quoteRect.maxY + 8))
+            UIColor.systemRed.setStroke()
+            underline.lineWidth = 7
+            underline.stroke()
+
+            let noteAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.italicSystemFont(ofSize: 26),
+                .foregroundColor: UIColor.darkGray
+            ]
+            "Return to this later.".draw(
+                in: CGRect(x: 850, y: 632, width: 240, height: 32),
+                withAttributes: noteAttributes
+            )
+        }
     }
 
     static func doubleUnderlinedPage() -> UIImage {

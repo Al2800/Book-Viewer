@@ -66,15 +66,15 @@ The pipeline should return the same quote-review data shape the app already expe
 
 Before replacing the extractor, characterize the current desired behaviour with fixture-driven tests:
 
-- [ ] Create synthetic fixture images for:
+- [x] Create synthetic fixture images for:
   - a single underlined passage;
   - a highlighted multi-line passage;
   - a margin-line marked paragraph;
   - a margin note next to a marked quote;
   - an unmarked page that should return no quotes.
-- [ ] Use the existing mock camera image renderer where possible, then add real photographed fixtures once available.
-- [ ] Record expected candidate quote text, marking type, margin note handling, and confidence band for each fixture.
-- [ ] Add tests that assert downstream review receives editable quote data, not just that the review route opens.
+- [x] Use the existing mock camera image renderer where possible, then add real photographed fixtures once available.
+- [x] Record expected candidate quote text, marking type, margin note handling, and confidence band for each fixture.
+- [x] Add tests that assert downstream review receives editable quote data, not just that the review route opens.
 
 ## TDD / Implementation Plan
 
@@ -245,6 +245,22 @@ None - can start immediately.
 - This closes the local module, Vision OCR metadata, and mark-family criteria. Representative
   real photographed pages and handwritten margin annotations remain open validation work.
 
+2026-07-15 synthetic-fixture contract follow-up:
+
+- The deterministic fixture suite now carries the entire local extraction contract, rather than
+  only checking that a mark bitmap was detected: a single underline selects its text with at least
+  0.50 confidence; a two-line highlight is grouped at at least 0.65 confidence; a graphite
+  margin line selects only its adjacent three-line paragraph at at least 0.55 confidence; and an
+  underlined quote retains its nearby margin note at at least 0.65 confidence. The unmarked page
+  produces no candidate.
+- Unit fixtures use a deterministic test renderer because the app's existing `MockCameraImages`
+  generator intentionally varies its simulated line widths for UI exercise. The UI path continues
+  to use that mock renderer, while the optional ignored real-photo harness remains ready for a
+  user-supplied fixture.
+- `ExtractionReviewProcessorTests.testOnDeviceExtractionFlowsIntoAnEditableReviewQuote` proves an
+  actual on-device extractor result is stored on the capture, mapped into review state with its
+  source, marking, confidence, and margin note intact, then remains editable before save.
+
 ## Verification Results
 
 Focused on-device extractor tracer:
@@ -390,6 +406,22 @@ Result:
 - `QuoteCaptureFlowTests/testQuoteEditor_CanEditText` also passed on iPad Air 11-inch (M4),
   iOS 26.5: 1 test, 0 failures, 0 skips; runtime `90.072` seconds.
 - Retained result bundle: `/tmp/bookquotes-quote-editor-ipad-2026-07-15.xcresult`.
+
+Synthetic fixture and editable-review regression:
+
+```bash
+xcodebuild test -quiet -project BookQuotes.xcodeproj -scheme BookQuotes -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
+  -only-testing:BookQuotesTests/OnDeviceQuoteExtractorTests \
+  -only-testing:BookQuotesTests/ExtractionReviewProcessorTests \
+  -only-testing:BookQuotesTests/ExtractionReviewQuoteStateTests
+```
+
+Result:
+
+- Passed on 2026-07-15: 40 tests passed, 0 failures, and 1 documented optional real-photo
+  fixture skip on iPhone 17 / iOS 26.5.
+- This run includes the density-corrected synthetic margin-line and margin-note fixtures and the
+  on-device-extractor-to-editable-review handoff.
 
 ## Residual Risk
 

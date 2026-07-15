@@ -52,6 +52,62 @@ final class ExtractionReviewProcessorTests: SwiftDataTestCase {
         XCTAssertEqual(extractor.callCount, 1)
     }
 
+    func testOnDeviceExtractionFlowsIntoAnEditableReviewQuote() async throws {
+        let book = Book(title: "Marked Book", author: "Reader")
+        let session = CaptureSession(book: book)
+        let capture = PageCapture(imagePath: try writeTestImage())
+        session.addCapture(capture)
+        session.finishCapturing()
+        modelContext.insert(book)
+        modelContext.insert(session)
+        try modelContext.save()
+
+        let onDeviceExtractor = OnDeviceQuoteExtractor(
+            textRecognizer: FixturePageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "An on-device quote reaches review.",
+                    confidence: 0.94,
+                    boundingBox: CGRect(x: 120, y: 220, width: 560, height: 32)
+                ),
+                RecognizedTextLine(
+                    text: "Check this later.",
+                    confidence: 0.88,
+                    boundingBox: CGRect(x: 760, y: 224, width: 180, height: 28)
+                )
+            ]),
+            markDetector: FixturePageMarkDetector(marks: [
+                DetectedPageMark(
+                    type: .underline,
+                    boundingBox: CGRect(x: 120, y: 260, width: 540, height: 4),
+                    confidence: 0.84
+                )
+            ])
+        )
+        let processor = ExtractionReviewProcessor(
+            modelContext: modelContext,
+            session: session,
+            quoteExtractor: onDeviceExtractor
+        )
+
+        await processor.processPendingCaptures(onCaptureChanged: {})
+
+        XCTAssertEqual(capture.status, .completed)
+        var reviewState = ExtractionReviewQuoteState()
+        reviewState.loadCompletedQuotes(from: [ExtractionReviewPageQuoteSnapshot(capture: capture)])
+        var editableQuote = try XCTUnwrap(reviewState.quotes(for: capture.id).first)
+
+        XCTAssertEqual(editableQuote.text, "An on-device quote reaches review.")
+        XCTAssertEqual(editableQuote.marginNote, "Check this later.")
+        XCTAssertEqual(editableQuote.markingType, "underline")
+        XCTAssertEqual(editableQuote.extractionSource, .onDevice)
+        XCTAssertFalse(editableQuote.isManual)
+
+        editableQuote.text = "Reader-corrected quote."
+        editableQuote.marginNote = "Reader-corrected note."
+        XCTAssertEqual(editableQuote.text, "Reader-corrected quote.")
+        XCTAssertEqual(editableQuote.marginNote, "Reader-corrected note.")
+    }
+
     func testProcessingFailureMarksCaptureFailedAndRecordsSessionFailure() async throws {
         let book = Book(title: "Marked Book", author: "Reader")
         let session = CaptureSession(book: book)
@@ -140,5 +196,21 @@ private final class StubQuoteExtractor: QuoteExtracting {
             throw error
         }
         return try XCTUnwrap(result)
+    }
+}
+
+private struct FixturePageTextRecognizer: PageTextRecognizing {
+    let lines: [RecognizedTextLine]
+
+    func recognizeText(in image: UIImage) async throws -> [RecognizedTextLine] {
+        lines
+    }
+}
+
+private struct FixturePageMarkDetector: PageMarkDetecting {
+    let marks: [DetectedPageMark]
+
+    func detectMarks(in image: UIImage) throws -> [DetectedPageMark] {
+        marks
     }
 }
