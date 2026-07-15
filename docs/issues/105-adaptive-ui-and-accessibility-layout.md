@@ -48,6 +48,10 @@ The phone library grid can compress cards to 100 points while retaining status a
 - [x] The complete UI release target passed on both iPhone 17 Pro and iPad Air 11-inch (M4):
   101 tests, 0 failures, and 0 skips on each simulator. This covers all automated tablet
   workflows on revision `a5ed719`; physical accessibility and split-view checks remain below.
+- [x] Accessibility XXXL onboarding now uses vertically scrollable steps, presents marking
+  choices in one readable column, and reflows subscription cards so plan details and prices do
+  not truncate. The local-only first-run path, accessibility subscription screen, normal marking
+  setup, and normal subscription media screen passed 4 tests with no failures or skips.
 - [x] Simulator screenshots were visually inspected for the iPhone accessibility-text and iPad
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list

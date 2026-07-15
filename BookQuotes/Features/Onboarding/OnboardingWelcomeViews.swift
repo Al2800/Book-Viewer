@@ -59,43 +59,45 @@ struct WelcomePageView: View {
     let page: WelcomePage
 
     var body: some View {
-        VStack(spacing: Spacing.xl) {
-            Spacer()
+        OnboardingScrollableStep {
+            VStack(spacing: Spacing.xl) {
+                Spacer(minLength: Spacing.lg)
 
-            // Frontispiece epigraph
-            VStack(spacing: Spacing.md) {
-                Text("\u{201C}\(page.epigraph)\u{201D}")
-                    .font(.system(.title3, design: .serif).italic())
-                    .foregroundStyle(Color.textPrimary)
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(4)
+                // Frontispiece epigraph
+                VStack(spacing: Spacing.md) {
+                    Text("\u{201C}\(page.epigraph)\u{201D}")
+                        .font(.system(.title3, design: .serif).italic())
+                        .foregroundStyle(Color.textPrimary)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(4)
 
-                Text("— \(page.epigraphAttribution)")
-                    .font(.attribution)
-                    .foregroundStyle(Color.textSecondary)
+                    Text("— \(page.epigraphAttribution)")
+                        .font(.attribution)
+                        .foregroundStyle(Color.textSecondary)
+                }
+                .padding(.horizontal, Spacing.xl)
+
+                Spacer(minLength: Spacing.lg)
+
+                VStack(spacing: Spacing.md) {
+                    Image(systemName: page.icon)
+                        .font(.system(size: 44))
+                        .foregroundStyle(Color.brand)
+
+                    Text(page.title)
+                        .font(.system(.title2, design: .serif).weight(.semibold))
+                        .multilineTextAlignment(.center)
+
+                    Text(page.description)
+                        .font(.body)
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Spacing.xl)
+                }
+
+                Spacer(minLength: Spacing.lg)
             }
-            .padding(.horizontal, Spacing.xl)
-
-            Spacer()
-
-            VStack(spacing: Spacing.md) {
-                Image(systemName: page.icon)
-                    .font(.system(size: 44))
-                    .foregroundStyle(Color.brand)
-
-                Text(page.title)
-                    .font(.system(.title2, design: .serif).weight(.semibold))
-                    .multilineTextAlignment(.center)
-
-                Text(page.description)
-                    .font(.body)
-                    .foregroundStyle(Color.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, Spacing.xl)
-            }
-
-            Spacer()
+            .padding(.horizontal, Spacing.lg)
         }
-        .padding(.horizontal, Spacing.lg)
     }
 }

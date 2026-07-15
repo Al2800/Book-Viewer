@@ -43,17 +43,19 @@ enum MediaSubscriptionPlan: String, CaseIterable, Identifiable {
 }
 
 struct MediaSubscriptionOptionCard: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let plan: MediaSubscriptionPlan
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: Spacing.md) {
-                selectionIndicator
-                planCopy
-                Spacer()
-                planPrice
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    accessibilityLayout
+                } else {
+                    standardLayout
+                }
             }
             .padding(Spacing.md)
             .background(
@@ -66,6 +68,55 @@ struct MediaSubscriptionOptionCard: View {
             )
         }
         .buttonStyle(.plain)
+    }
+
+    private var standardLayout: some View {
+        HStack(spacing: Spacing.md) {
+            selectionIndicator
+            planCopy
+            Spacer()
+            planPrice
+        }
+    }
+
+    private var accessibilityLayout: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            HStack(alignment: .firstTextBaseline, spacing: Spacing.md) {
+                selectionIndicator
+                Text(plan.title)
+                    .font(.headline)
+                Spacer(minLength: 0)
+            }
+
+            if let badge = plan.badge {
+                Text(badge)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, Spacing.sm)
+                    .padding(.vertical, Spacing.xxs)
+                    .background(Color.brand, in: Capsule())
+            }
+
+            Text("7-day free trial for eligible new subscribers")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(plan.subtitle)
+                .font(.caption2)
+                .foregroundStyle(Color.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(alignment: .firstTextBaseline, spacing: Spacing.sm) {
+                Text(plan.price)
+                    .font(.headline)
+                Text(plan.period)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var selectionIndicator: some View {

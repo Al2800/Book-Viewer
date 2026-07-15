@@ -153,6 +153,57 @@ final class AppStoreSubscriptionReviewTests: BaseUITestCase {
     }
 }
 
+/// Regression coverage for the onboarding subscription screen at accessibility text sizes.
+final class AdaptiveSubscriptionLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--reset-onboarding",
+            "--app-store-media",
+            "--media-screen",
+            "subscription",
+            "--disable-animations",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    override func waitForAppReady() {
+        XCTAssertTrue(
+            app.staticTexts["Choose Your Plan"].waitForExistence(timeout: 8),
+            "Subscription media route should open the onboarding paywall"
+        )
+    }
+
+    func testSubscriptionActionsRemainReachableWithAccessibilityText() {
+        let yearlyPlan = app.buttons.matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Yearly")
+        ).firstMatch
+        XCTAssertTrue(yearlyPlan.waitForExistence(timeout: 5), "Subscription screen should show the yearly plan")
+        XCTAssertTrue(reveal(yearlyPlan), "Yearly plan should remain reachable")
+
+        let startTrial = app.buttons["Start Free Trial"]
+        XCTAssertTrue(startTrial.waitForExistence(timeout: 5), "Subscription screen should show Start Free Trial")
+        XCTAssertTrue(reveal(startTrial), "Start Free Trial should remain reachable")
+
+        let maybeLater = app.buttons["Maybe later"]
+        XCTAssertTrue(maybeLater.waitForExistence(timeout: 5), "Subscription screen should show Maybe later")
+        XCTAssertTrue(reveal(maybeLater), "Maybe later should remain reachable")
+        captureScreenshot(
+            named: "accessibility_text_subscription",
+            description: "Subscription screen at accessibility text size"
+        )
+    }
+
+    private func reveal(_ element: XCUIElement) -> Bool {
+        for _ in 0..<10 {
+            if element.exists && element.isHittable { return true }
+            app.swipeUp()
+        }
+        return element.exists && element.isHittable
+    }
+}
+
 // MARK: - Shared Helpers
 
 fileprivate extension BaseUITestCase {

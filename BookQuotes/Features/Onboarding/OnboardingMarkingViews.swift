@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct MarkingTemplateSelector: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var selectionState = OnboardingMarkingSelectionState()
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Spacing.md) {
+        LazyVGrid(columns: columns, spacing: Spacing.md) {
             ForEach(MarkingType.allCases, id: \.self) { type in
                 MarkingStyleOption(
                     type: type,
@@ -16,21 +17,36 @@ struct MarkingTemplateSelector: View {
             }
         }
     }
+
+    private var columns: [GridItem] {
+        Array(
+            repeating: GridItem(.flexible()),
+            count: dynamicTypeSize.isAccessibilitySize ? 1 : 2
+        )
+    }
 }
 
 private struct MarkingStyleOption: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let type: MarkingType
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: Spacing.sm) {
-                Image(systemName: type.systemImage)
-                    .font(.title2)
-
-                Text(type.displayName)
-                    .font(.caption)
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    HStack(spacing: Spacing.md) {
+                        markingIcon
+                        markingLabel
+                        Spacer(minLength: 0)
+                    }
+                } else {
+                    VStack(spacing: Spacing.sm) {
+                        markingIcon
+                        markingLabel
+                    }
+                }
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, Spacing.md)
@@ -43,5 +59,17 @@ private struct MarkingStyleOption: View {
             )
         }
         .buttonStyle(.plain)
+    }
+
+    private var markingIcon: some View {
+        Image(systemName: type.systemImage)
+            .font(.title2)
+    }
+
+    private var markingLabel: some View {
+        Text(type.displayName)
+            .font(dynamicTypeSize.isAccessibilitySize ? .body : .caption)
+            .multilineTextAlignment(dynamicTypeSize.isAccessibilitySize ? .leading : .center)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }

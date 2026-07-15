@@ -1,5 +1,19 @@
 import SwiftUI
 
+struct OnboardingScrollableStep<Content: View>: View {
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                content()
+                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+    }
+}
+
 struct OnboardingWelcomeCarouselView: View {
     let onSkip: () -> Void
     let onComplete: () -> Void
@@ -73,24 +87,26 @@ struct OnboardingSignInStepView: View {
     let onContinue: () -> Void
 
     var body: some View {
-        VStack(spacing: Spacing.xl) {
-            Spacer()
-            header
-            Spacer()
+        OnboardingScrollableStep {
+            VStack(spacing: Spacing.xl) {
+                Spacer(minLength: Spacing.lg)
+                header
+                Spacer(minLength: Spacing.lg)
 
-            AppleSignInButton(authService: authService) { user in
-                onSignedIn(user)
-                onContinue()
+                AppleSignInButton(authService: authService) { user in
+                    onSignedIn(user)
+                    onContinue()
+                }
+                .padding(.horizontal, Spacing.lg)
+
+                if allowAuthSkip {
+                    Button("Continue Without an Account", action: onContinue)
+                        .foregroundStyle(Color.textSecondary)
+                }
+
+                terms
+                    .padding(.bottom, Spacing.xl)
             }
-            .padding(.horizontal, Spacing.lg)
-
-            if allowAuthSkip {
-                Button("Continue Without an Account", action: onContinue)
-                    .foregroundStyle(Color.textSecondary)
-            }
-
-            terms
-                .padding(.bottom, Spacing.xl)
         }
         .onAppear {
             guard shouldAutoSkipAuth else { return }
@@ -137,19 +153,21 @@ struct OnboardingSubscriptionStepView: View {
     let onContinue: () -> Void
 
     var body: some View {
-        VStack(spacing: Spacing.xl) {
-            HStack {
-                Text("Choose Your Plan")
-                    .font(.system(.title2, design: .serif).weight(.semibold))
-                Spacer()
-            }
-            .padding(.horizontal, Spacing.lg)
-            .padding(.top, Spacing.lg)
+        OnboardingScrollableStep {
+            VStack(spacing: Spacing.xl) {
+                HStack {
+                    Text("Choose Your Plan")
+                        .font(.system(.title2, design: .serif).weight(.semibold))
+                    Spacer()
+                }
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
 
-            PaywallEmbeddedView(
-                subscriptionService: subscriptionService,
-                onContinue: onContinue
-            )
+                PaywallEmbeddedView(
+                    subscriptionService: subscriptionService,
+                    onContinue: onContinue
+                )
+            }
         }
     }
 }
@@ -158,24 +176,26 @@ struct OnboardingMarkingSetupStepView: View {
     let onContinue: () -> Void
 
     var body: some View {
-        VStack(spacing: Spacing.xl) {
-            Spacer()
-            header
+        OnboardingScrollableStep {
+            VStack(spacing: Spacing.xl) {
+                Spacer(minLength: Spacing.lg)
+                header
 
-            MarkingTemplateSelector()
+                MarkingTemplateSelector()
+                    .padding(.horizontal, Spacing.lg)
+
+                Spacer(minLength: Spacing.lg)
+
+                Button(action: onContinue) {
+                    Text("Continue")
+                }
+                .buttonStyle(.primary)
                 .padding(.horizontal, Spacing.lg)
 
-            Spacer()
-
-            Button(action: onContinue) {
-                Text("Continue")
+                Button("Use defaults", action: onContinue)
+                    .foregroundStyle(Color.textSecondary)
+                    .padding(.bottom, Spacing.xl)
             }
-            .buttonStyle(.primary)
-            .padding(.horizontal, Spacing.lg)
-
-            Button("Use defaults", action: onContinue)
-                .foregroundStyle(Color.textSecondary)
-                .padding(.bottom, Spacing.xl)
         }
     }
 
@@ -201,21 +221,23 @@ struct OnboardingCompletionStepView: View {
     let onStartCapturing: () -> Void
 
     var body: some View {
-        VStack(spacing: Spacing.xl) {
-            Spacer()
-            successMessage
-            Spacer()
+        OnboardingScrollableStep {
+            VStack(spacing: Spacing.xl) {
+                Spacer(minLength: Spacing.lg)
+                successMessage
+                Spacer(minLength: Spacing.lg)
 
-            Button(action: onStartCapturing) {
-                HStack {
-                    Text("Start Capturing")
-                    Image(systemName: "camera.fill")
+                Button(action: onStartCapturing) {
+                    HStack {
+                        Text("Start Capturing")
+                        Image(systemName: "camera.fill")
+                    }
                 }
+                .buttonStyle(.primary)
+                .padding(.horizontal, Spacing.lg)
+                .padding(.bottom, Spacing.xl)
+                .disabled(isCompleting)
             }
-            .buttonStyle(.primary)
-            .padding(.horizontal, Spacing.lg)
-            .padding(.bottom, Spacing.xl)
-            .disabled(isCompleting)
         }
     }
 

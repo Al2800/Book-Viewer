@@ -377,3 +377,70 @@ final class OnboardingFlowTests: BaseUITestCase {
         XCTAssertTrue(completionTitle.waitForExistence(timeout: 5), "Onboarding should reach completion after choosing on-device processing")
     }
 }
+
+/// Regression coverage for first-run onboarding at the largest supported text size.
+final class AdaptiveOnboardingLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--reset-onboarding",
+            "--reset-auth",
+            "--skip-auth",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    override func waitForAppReady() {
+        XCTAssertTrue(
+            app.staticTexts["Capture Quotes Instantly"].waitForExistence(timeout: 8),
+            "Accessibility onboarding should open on the welcome step"
+        )
+    }
+
+    func testLocalOnlyOnboardingControlsRemainReachableWithAccessibilityText() {
+        let skip = app.buttons["Skip"]
+        XCTAssertTrue(skip.waitForExistence(timeout: 5), "Welcome should expose Skip")
+        XCTAssertTrue(skip.isHittable, "Skip should remain reachable at accessibility text sizes")
+        skip.tap()
+
+        let localOnly = app.buttons["Continue Without an Account"]
+        XCTAssertTrue(localOnly.waitForExistence(timeout: 5), "Sign-in should expose local-only onboarding")
+        XCTAssertTrue(reveal(localOnly), "The local-only action should remain reachable")
+        localOnly.tap()
+
+        XCTAssertTrue(app.staticTexts["How Do You Mark Books?"].waitForExistence(timeout: 5))
+        let useDefaults = app.buttons["Use defaults"]
+        XCTAssertTrue(useDefaults.waitForExistence(timeout: 5), "Marking setup should expose Use defaults")
+        XCTAssertTrue(reveal(useDefaults), "Use defaults should remain reachable")
+        captureScreenshot(
+            named: "accessibility_text_marking_setup",
+            description: "Single-column marking choices at accessibility text size"
+        )
+        useDefaults.tap()
+
+        XCTAssertTrue(app.staticTexts["Remote AI Processing"].waitForExistence(timeout: 5))
+        let onDeviceOnly = app.buttons["Use On-Device Only"]
+        XCTAssertTrue(reveal(onDeviceOnly), "The on-device-only consent action should remain reachable")
+        onDeviceOnly.tap()
+
+        XCTAssertTrue(app.staticTexts["You're All Set!"].waitForExistence(timeout: 5))
+        let startCapturing = app.buttons["Start Capturing"]
+        XCTAssertTrue(reveal(startCapturing), "Start Capturing should remain reachable")
+        captureScreenshot(
+            named: "accessibility_text_onboarding_complete",
+            description: "Completed local-only onboarding at accessibility text size"
+        )
+        startCapturing.tap()
+
+        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
+    }
+
+    private func reveal(_ element: XCUIElement) -> Bool {
+        for _ in 0..<10 {
+            if element.exists && element.isHittable { return true }
+            app.swipeUp()
+        }
+        return element.exists && element.isHittable
+    }
+}
