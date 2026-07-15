@@ -149,8 +149,13 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             .firstMatch
         let failureTitle = app.staticTexts["Extraction Failed"]
         let noQuotesTitle = app.staticTexts["No Quotes Found"]
+        let remoteConsentButton = app.buttons["Allow Remote AI Processing"]
 
         XCTAssertTrue(reviewTitle.waitForExistence(timeout: 15), "Extraction review should appear")
+        XCTAssertFalse(
+            remoteConsentButton.exists,
+            "On-device quote review must not be blocked by the optional remote-AI consent sheet"
+        )
         XCTAssertFalse(failureTitle.exists, "Extraction should not fail in mock-camera UI smoke")
         XCTAssertFalse(noQuotesTitle.exists, "Mock-camera extraction should return at least one quote")
 

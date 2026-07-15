@@ -47,6 +47,14 @@
   Result bundle: `/tmp/BookQuotes-batch-path-removal-2026-07-15.xcresult`. An additional
   `BatchCaptureFlowTests` run was interrupted after Xcode stalled while installing and launching
   the simulator test runner, before any test started; it is not counted as passing evidence.
+- Quote-page extraction now runs on-device OCR first. Remote AI processing is an optional,
+  consent-controlled recovery path only when on-device OCR finds no candidate or errors; a normal
+  local result never uploads the page. Extraction Review no longer blocks local processing on the
+  remote-consent sheet. The focused extractor suite passed on 2026-07-15: 19 tests passed,
+  0 failed, 1 documented local-only-fixture skip on iPhone 17 / iOS 26.5. The quote-capture UI
+  regression also passed: 1 test, 0 failures, 0 skips. Result bundles:
+  `/tmp/BookQuotes-local-first-extraction-2026-07-15.xcresult` and
+  `/tmp/BookQuotes-local-first-review-ui-2026-07-15.xcresult`.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,

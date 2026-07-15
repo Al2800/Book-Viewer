@@ -331,7 +331,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertTrue(server.allRequests().isEmpty)
     }
 
-    func testQuoteExtractionPipelineUsesRemoteModelBeforeLocalOCR() async throws {
+    func testQuoteExtractionPipelineUsesLocalOCRBeforeRemoteModel() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
@@ -368,30 +368,36 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             markings: []
         )
 
-        XCTAssertEqual(result.quotes.first?.text, "complete model-assisted quote across the bracketed paragraph")
-        XCTAssertEqual(result.processingNotes, "model-assisted")
-        XCTAssertEqual(remote.callCount, 1)
-        XCTAssertEqual(local.callCount, 0)
+        XCTAssertEqual(result.quotes.first?.text, "confident but incomplete local OCR fragment")
+        XCTAssertEqual(result.processingNotes, "local OCR")
+        XCTAssertEqual(local.callCount, 1)
+        XCTAssertEqual(remote.callCount, 0)
     }
 
-    func testQuoteExtractionPipelineFallsBackToLocalOCRWhenRemoteModelFails() async throws {
+    func testQuoteExtractionPipelineUsesRemoteModelOnlyAfterLocalOCRFindsNoQuotes() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [],
+            pageNumber: nil,
+            processingNotes: "local found no quotes"
+        ))
+        let remote = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
-                    text: "local OCR fallback quote",
+                    text: "complete model-assisted quote across the bracketed paragraph",
                     pageNumber: nil,
                     marginNote: nil,
-                    markingType: "underline",
-                    confidence: 0.72
+                    markingType: "bracket",
+                    confidence: 0.91,
+                    extractionSource: .modelAssisted
                 )
             ],
             pageNumber: nil,
-            processingNotes: "local fallback"
+            processingNotes: "model-assisted"
         ))
-        let remote = SpyQuoteExtractor(error: ExtractionError.networkError(URLError(.timedOut)))
         let extractor = QuoteExtractionPipeline(
             localExtractor: local,
-            remoteExtractor: remote
+            remoteExtractor: remote,
+            isRemoteProcessingEnabled: true
         )
 
         let result = try await extractor.extractQuotes(
@@ -399,14 +405,13 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             markings: []
         )
 
-        XCTAssertEqual(result.quotes.first?.text, "local OCR fallback quote")
-        XCTAssertEqual(result.processingNotes, "local fallback")
-        XCTAssertEqual(result.fallbackReason, .remoteUnavailable)
-        XCTAssertEqual(remote.callCount, 1)
+        XCTAssertEqual(result.quotes.first?.text, "complete model-assisted quote across the bracketed paragraph")
+        XCTAssertEqual(result.processingNotes, "model-assisted")
         XCTAssertEqual(local.callCount, 1)
+        XCTAssertEqual(remote.callCount, 1)
     }
 
-    func testQuoteExtractionPipelineFallsBackToLocalOCRWhenRemoteRequiresSignIn() async throws {
+    func testQuoteExtractionPipelineDoesNotUseConfiguredRemoteModelUntilEnabled() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
@@ -431,40 +436,33 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         XCTAssertEqual(result.quotes.first?.text, "local quote while signed out")
         XCTAssertEqual(result.quotes.first?.extractionSource, .onDevice)
-        XCTAssertEqual(result.fallbackReason, .remoteAuthenticationRequired)
-        XCTAssertEqual(remote.callCount, 1)
+        XCTAssertNil(result.fallbackReason)
         XCTAssertEqual(local.callCount, 1)
+        XCTAssertEqual(remote.callCount, 0)
     }
 
-    func testQuoteExtractionPipelineShowsFallbackWhenRemoteReturnsNoQuotes() async throws {
+    func testQuoteExtractionPipelineKeepsEmptyLocalResultWhenEnabledRemoteFails() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
-            quotes: [
-                ExtractedQuoteData(
-                    text: "local quote after empty remote response",
-                    pageNumber: nil,
-                    marginNote: nil,
-                    markingType: "underline",
-                    confidence: 0.72,
-                    extractionSource: .onDevice
-                )
-            ],
-            pageNumber: nil,
-            processingNotes: "local OCR"
-        ))
-        let remote = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [],
             pageNumber: nil,
-            processingNotes: "remote found no quotes"
+            processingNotes: "local found no quotes"
         ))
-        let extractor = QuoteExtractionPipeline(localExtractor: local, remoteExtractor: remote)
+        let remote = SpyQuoteExtractor(error: ExtractionError.networkError(URLError(.timedOut)))
+        let extractor = QuoteExtractionPipeline(
+            localExtractor: local,
+            remoteExtractor: remote,
+            isRemoteProcessingEnabled: true
+        )
 
         let result = try await extractor.extractQuotes(
             from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
             markings: []
         )
 
-        XCTAssertEqual(result.quotes.first?.extractionSource, .onDevice)
-        XCTAssertEqual(result.fallbackReason, .remoteReturnedNoQuotes)
+        XCTAssertTrue(result.quotes.isEmpty)
+        XCTAssertEqual(result.processingNotes, "local found no quotes")
+        XCTAssertEqual(local.callCount, 1)
+        XCTAssertEqual(remote.callCount, 1)
     }
 
     func testOnDeviceExtractorReturnsLowConfidenceMarkedCandidatesForReview() async throws {

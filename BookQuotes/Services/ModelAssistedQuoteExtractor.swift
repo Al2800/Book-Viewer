@@ -5,12 +5,15 @@ struct QuoteExtractionPipeline: QuoteExtracting {
 
     init(
         localExtractor: any QuoteExtracting,
-        remoteExtractor: any QuoteExtracting
+        remoteExtractor: any QuoteExtracting,
+        isRemoteProcessingEnabled: Bool = false
     ) {
-        self.extractor = ModelAssistedQuoteExtractor(
-            localExtractor: localExtractor,
-            remoteExtractor: remoteExtractor
-        )
+        self.extractor = isRemoteProcessingEnabled
+            ? ModelAssistedQuoteExtractor(
+                localExtractor: localExtractor,
+                remoteExtractor: remoteExtractor
+            )
+            : localExtractor
     }
 
     private init(extractor: any QuoteExtracting) {
@@ -22,9 +25,15 @@ struct QuoteExtractionPipeline: QuoteExtracting {
             return QuoteExtractionPipeline(extractor: UITestQuoteExtractor(scenario: scenario))
         }
 
+        let localExtractor = OnDeviceQuoteExtractor()
+        guard AIProcessingConsentStore.shared.hasCurrentConsent else {
+            return QuoteExtractionPipeline(extractor: localExtractor)
+        }
+
         return QuoteExtractionPipeline(
-            localExtractor: OnDeviceQuoteExtractor(),
-            remoteExtractor: RemoteModelQuoteExtractor(authService: authService)
+            localExtractor: localExtractor,
+            remoteExtractor: RemoteModelQuoteExtractor(authService: authService),
+            isRemoteProcessingEnabled: true
         )
     }
 
@@ -121,23 +130,26 @@ struct ModelAssistedQuoteExtractor: QuoteExtracting {
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
+        let localResult: QuoteExtractionResult
+        do {
+            localResult = try await localExtractor.extractQuotes(from: image, markings: markings)
+        } catch let localError {
+            // Remote processing is an explicitly enabled recovery path when local OCR itself fails.
+            // Preserve the local failure when the optional service cannot recover it.
+            do {
+                return try await remoteExtractor.extractQuotes(from: image, markings: markings)
+            } catch {
+                throw localError
+            }
+        }
+
+        guard !localResult.isSuccessful else { return localResult }
+
         do {
             let remoteResult = try await remoteExtractor.extractQuotes(from: image, markings: markings)
-
-            guard !remoteResult.isSuccessful else {
-                return remoteResult
-            }
-
-            let localResult = try await localExtractor.extractQuotes(from: image, markings: markings)
-            return localResult.isSuccessful
-                ? localResult.withFallbackReason(.remoteReturnedNoQuotes)
-                : remoteResult
+            return remoteResult.isSuccessful ? remoteResult : localResult
         } catch {
-            let localResult = try? await localExtractor.extractQuotes(from: image, markings: markings)
-            if let localResult, localResult.isSuccessful {
-                return localResult.withFallbackReason(.from(error))
-            }
-            throw error
+            return localResult
         }
     }
 }

@@ -24,7 +24,6 @@ struct ExtractionReviewView: View {
     @State private var currentDuplicateCheck: DuplicateCheckItem?
     @State private var hasAppeared = false
     @State private var hasStartedProcessing = false
-    @State private var showingAIConsent = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -144,23 +143,13 @@ struct ExtractionReviewView: View {
                 )
             }
         }
-        .sheet(isPresented: $showingAIConsent, onDismiss: startProcessingIfNeeded) {
-            AIProcessingConsentView { _ in
-                showingAIConsent = false
-            }
-            .interactiveDismissDisabled()
-        }
         // Prevent swipe-to-dismiss. If the user dismisses this early (for example while processing),
         // the underlying capture view can be left in a "completed" state with no shutter controls.
         .interactiveDismissDisabled(true)
         .onAppear {
             loadExtractedQuotes()
             selectFirstPage()
-            if requiresAIConsentDecision {
-                showingAIConsent = true
-            } else {
-                startProcessingIfNeeded()
-            }
+            startProcessingIfNeeded()
             // Trigger entrance animation
             guard !reduceMotion else {
                 hasAppeared = true
@@ -173,11 +162,6 @@ struct ExtractionReviewView: View {
         // Animate quote count changes
         .animation(reduceMotion ? .none : .snappy, value: totalQuoteCount)
         .milestoneCelebration(manager: milestoneManager)
-    }
-
-    private var requiresAIConsentDecision: Bool {
-        session.captures.contains { $0.status == .pending }
-            && !AIProcessingConsentStore.shared.hasCurrentConsent
     }
 
     // MARK: - Subviews

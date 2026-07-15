@@ -57,10 +57,10 @@ The pipeline should return the same quote-review data shape the app already expe
 - [ ] Multi-line marked passages are grouped into one quote candidate when line spacing and mark continuity indicate the same passage.
 - [ ] Candidate confidence is derived from OCR confidence, mark/text geometry quality, and grouping certainty.
 - [ ] Low-confidence or ambiguous candidates still appear in review for user correction rather than being silently discarded.
-- [ ] The extraction review screen can process a captured marked page with no network connection.
-- [ ] Cloud/Gemini extraction is removed from the default quote-capture path or placed behind an explicit fallback flag that is off by default.
-- [ ] Legal/privacy copy is updated so quote page extraction no longer claims images are sent to Gemini when the on-device path is active.
-- [ ] Existing manual quote-add and quote-edit flows remain unchanged.
+- [x] The extraction review screen can process a captured marked page with no network connection.
+- [x] Cloud/Gemini extraction is removed from the default quote-capture path or placed behind an explicit fallback flag that is off by default.
+- [x] Legal/privacy copy is updated so quote page extraction no longer claims images are sent to Gemini when the on-device path is active.
+- [x] Existing manual quote-add and quote-edit flows remain unchanged.
 
 ## Characterization Plan
 
@@ -169,6 +169,18 @@ None - can start immediately.
 - Model-assisted output is resolved only against validated, enabled local definitions after parsing; no model response can supply or select a SwiftData definition ID.
 - Cached capture results, extraction review, queued capture processing, and quote saving now preserve the resolved custom marking relationship.
 - The review editor now uses a fixed-height native UIKit text editor so its margin-note field remains visible on compact screens, it reliably receives initial keyboard focus, and active edits are not overwritten by a stale SwiftUI update.
+
+2026-07-15 local-first follow-up:
+
+- Quote extraction now starts with on-device OCR regardless of consent, sign-in, subscription, or
+  network availability. A successful local result never calls the hosted model.
+- Remote quote extraction is now an explicit, consent-controlled recovery path: it is constructed
+  only when Remote AI Processing is enabled and runs only after local OCR finds no candidate or
+  encounters an error.
+- Extraction Review no longer presents the Remote AI Processing sheet before processing a pending
+  capture. The optional decision remains available in onboarding and Settings.
+- The quote-capture UI regression now asserts that on-device review is not blocked by the remote
+  consent sheet.
 
 ## Verification Results
 

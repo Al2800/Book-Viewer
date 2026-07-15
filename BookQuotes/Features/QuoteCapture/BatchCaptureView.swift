@@ -297,7 +297,7 @@ struct BatchCaptureView: View {
         modelContext.insert(session)
         try? modelContext.save()
 
-        // ModelAssistedQuoteExtractor falls back to on-device extraction when offline.
+        // Extraction Review starts with on-device OCR; remote processing is an explicit fallback.
         onComplete(session)
     }
 
