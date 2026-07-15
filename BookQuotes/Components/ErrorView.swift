@@ -36,10 +36,16 @@ struct ErrorView: View {
     var body: some View {
         VStack(spacing: Spacing.lg) {
             // Icon with shake animation for errors
-            Image(systemName: iconName)
+            Group {
+                if #available(iOS 18.0, *) {
+                    Image(systemName: iconName)
+                        .symbolEffect(.bounce, options: .speed(0.5), isActive: iconAppeared && style == .critical && !reduceMotion)
+                } else {
+                    Image(systemName: iconName)
+                }
+            }
                 .font(.system(size: 50))
                 .foregroundStyle(iconColor)
-                .symbolEffect(.bounce, options: .speed(0.5), isActive: iconAppeared && style == .critical && !reduceMotion)
                 .opacity(iconAppeared ? 1 : 0)
                 .scaleEffect(iconAppeared ? 1 : 0.5)
 

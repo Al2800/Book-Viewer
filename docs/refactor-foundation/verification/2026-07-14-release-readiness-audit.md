@@ -107,6 +107,9 @@
   states, eliminating the prior non-exhaustive-switch warnings; the onboarding sign-in UI check
   passed (1 test, 0 failures, 0 skips). Result bundle:
   `/tmp/BookQuotes-sign-in-ui-2026-07-15.xcresult`.
+- The app supports iOS 17, so the Empty State and Error views now use the iOS 18 symbol bounce
+  effect only when available and retain their normal icon transition on earlier supported OS
+  versions. The unsigned Release build passed with both prior availability warnings eliminated.
 - Backend tests and typecheck passed: 39 tests, 0 failures.
 - Production Worker deployment tooling is now on Wrangler 4 / Worker types 5 / Vitest 4, with
   Node 22.12+ compatibility verified. The full backend suite passed and

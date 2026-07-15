@@ -78,10 +78,16 @@ struct EmptyStateView: View {
     private var defaultStyle: some View {
         VStack(spacing: Spacing.lg) {
             // Animated icon with gentle bounce
-            Image(systemName: icon)
+            Group {
+                if #available(iOS 18.0, *) {
+                    Image(systemName: icon)
+                        .symbolEffect(.bounce, options: .speed(0.5), isActive: iconAppeared && !reduceMotion)
+                } else {
+                    Image(systemName: icon)
+                }
+            }
                 .font(.system(size: 60))
                 .foregroundStyle(Color.accent.opacity(0.7))
-                .symbolEffect(.bounce, options: .speed(0.5), isActive: iconAppeared && !reduceMotion)
                 .opacity(iconAppeared ? 1 : 0)
                 .scaleEffect(iconAppeared ? 1 : 0.5)
 
