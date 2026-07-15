@@ -4,7 +4,7 @@ import Foundation
 // MARK: - Extracted Quote
 
 /// Represents quote data extracted before persistence.
-struct ExtractedQuote: Sendable {
+struct ExtractedQuote {
     let text: String
     let markingType: MarkingType
     let confidence: Double?
@@ -38,7 +38,7 @@ struct ExtractedQuote: Sendable {
 // MARK: - Batch Save Result
 
 /// Result of a batch save operation.
-struct BatchSaveResult: Sendable {
+struct BatchSaveResult {
     let savedQuotes: [Quote]
     let failures: [SaveFailure]
     let book: Book
@@ -78,7 +78,7 @@ struct BatchSaveResult: Sendable {
 // MARK: - Save Failure
 
 /// Details about a failed quote save.
-struct SaveFailure: Sendable {
+struct SaveFailure {
     let index: Int
     let extractedQuote: ExtractedQuote
     let error: Error

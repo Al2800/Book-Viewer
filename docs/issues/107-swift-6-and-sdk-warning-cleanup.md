@@ -15,7 +15,7 @@ future Xcode upgrade becoming a blocking migration.
 
 - [x] `SearchDatabase` initialization does not call actor-isolated methods from a nonisolated
   actor initializer.
-- [ ] Quote-save result types do not claim unsafe `Sendable` conformance for SwiftData models.
+- [x] Quote-save result types do not claim unsafe `Sendable` conformance for SwiftData models.
 - [ ] Capture queue publisher and retry dependencies use accurate isolation and sendability.
 - [ ] Camera capture resolution and orientation use supported iOS 17+ APIs.
 - [ ] Unreachable error handlers and deprecated trailing-closure syntax are removed.
@@ -38,3 +38,12 @@ future Xcode upgrade becoming a blocking migration.
 - Added an invalid-path regression that preserves `SearchError.databaseOpenFailed`.
 - The focused search stack passed 68 tests, 0 failures, and 0 skips on iPhone 17 / iOS 26.5.
 - A Release simulator build completed without any `SearchDatabase.swift` warning.
+
+2026-07-15 quote-save sendability slice:
+
+- Removed `Sendable` from `ExtractedQuote`, `SaveFailure`, and `BatchSaveResult` rather than using
+  unchecked conformance for their SwiftData `MarkingDefinition`, `Quote`, and `Book` references.
+- These contracts remain owned by the existing `@MainActor` quote-save and review workflow.
+- The focused save, draft, review-state, review-processor, and page-capture gate passed 23 tests,
+  0 failures, and 0 skips on iPhone 17 / iOS 26.5.
+- A Release simulator build completed without any `QuoteSaveTypes.swift` sendability warning.
