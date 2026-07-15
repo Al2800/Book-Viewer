@@ -23,6 +23,10 @@ The phone library grid can compress cards to 100 points while retaining status a
   reachable at full width; the review uses a horizontal page selector and exposes its source
   image as an accessible action. On 2026-07-15, the compact review also rotated to landscape,
   scrolled to a fully visible quote row, and opened its editor (2 focused tests passed, 0 failed).
+- [x] iPhone 17 UI tests at `UICTContentSizeCategoryAccessibilityXXXL` also cover Settings
+  navigation (Remote AI Processing and Storage & Export) and the manual book-entry route. Both
+  Settings actions and the title, publisher, and Add Book controls remain reachable after the
+  form scrolls to fully visible fields (2 focused tests passed, 0 failed on 2026-07-15).
 - [x] iPad Pro 13-inch UI test verifies the normal-text, side-by-side extraction-review layout.
 - [x] A 2026-07-15 iPad Air 11-inch (M4) simulator rerun verified the regular-width,
   side-by-side extraction-review layout (1 focused test passed, 0 failed). The compact and

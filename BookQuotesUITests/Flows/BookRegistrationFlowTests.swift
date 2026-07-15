@@ -532,3 +532,68 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         return inCells.waitForExistence(timeout: timeout)
     }
 }
+
+/// Regression coverage for manual book entry at the largest supported text size.
+final class AdaptiveBookRegistrationLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "--mock-camera",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    override func waitForAppReady() {
+        super.waitForAppReady()
+        XCTAssertTrue(tapTab(.library), "Library tab should be available")
+    }
+
+    func testManualBookEntryFieldsRemainReachableWithAccessibilityText() {
+        let addButton = app.buttons[AccessibilityIdentifiers.Library.addBookButton]
+        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "Library should expose Add Book")
+        XCTAssertTrue(addButton.isHittable, "Add Book should remain reachable")
+        addButton.tap()
+
+        let manualEntry = app.buttons[AccessibilityIdentifiers.Capture.manualEntryButton]
+        XCTAssertTrue(manualEntry.waitForExistence(timeout: 5), "Cover capture should expose manual entry")
+        XCTAssertTrue(manualEntry.isHittable, "Manual entry should remain reachable")
+        manualEntry.tap()
+
+        let title = app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
+        XCTAssertTrue(title.waitForExistence(timeout: 5), "Manual entry should expose the title field")
+        XCTAssertTrue(reveal(title), "Title field should remain reachable after scrolling")
+        typeText("Accessible Book", into: title, dismissKeyboardAfter: true)
+
+        let publisher = app.textFields[AccessibilityIdentifiers.BookEdit.publisherField]
+        XCTAssertTrue(reveal(publisher), "Publisher field should remain reachable after scrolling")
+
+        let save = app.buttons[AccessibilityIdentifiers.BookEdit.saveButton]
+        XCTAssertTrue(save.waitForExistence(timeout: 5), "Manual entry should expose Add Book")
+        XCTAssertTrue(save.isHittable, "Add Book should remain reachable after entering a title")
+        captureScreenshot(named: "accessibility_text_manual_book_entry", description: "Manual book entry at accessibility text size")
+    }
+
+    private func reveal(_ element: XCUIElement) -> Bool {
+        let form = app.scrollViews[AccessibilityIdentifiers.BookEdit.formScrollView]
+        for _ in 0..<8 {
+            if isFullyVisible(element) { return true }
+            if form.exists {
+                form.swipeUp()
+            } else {
+                app.swipeUp()
+            }
+        }
+        return isFullyVisible(element)
+    }
+
+    private func isFullyVisible(_ element: XCUIElement) -> Bool {
+        guard element.exists, element.isHittable else { return false }
+
+        let navigationBottom = app.navigationBars.firstMatch.exists
+            ? app.navigationBars.firstMatch.frame.maxY
+            : app.frame.minY
+        return element.frame.minY >= navigationBottom && element.frame.maxY <= app.frame.maxY
+    }
+}

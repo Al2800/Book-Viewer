@@ -293,3 +293,67 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         return element.exists
     }
 }
+
+/// Regression coverage for Settings at the largest supported text size.
+final class AdaptiveSettingsLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    override func waitForAppReady() {
+        super.waitForAppReady()
+        XCTAssertTrue(tapTab(.settings), "Settings tab should be available")
+    }
+
+    func testSettingsActionsRemainReachableWithAccessibilityText() {
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.Settings.remoteAIProcessingRow),
+            "Remote AI Processing should remain reachable at accessibility text sizes"
+        )
+        captureScreenshot(named: "accessibility_text_settings", description: "Settings at accessibility text size")
+
+        let remoteProcessing = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Settings.remoteAIProcessingRow)
+            .firstMatch
+        remoteProcessing.tap()
+
+        XCTAssertTrue(
+            app.navigationBars["AI Processing"].waitForExistence(timeout: 5),
+            "Remote AI Processing should still open"
+        )
+        let remoteToggle = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Settings.remoteAIProcessingToggle)
+            .firstMatch
+        XCTAssertTrue(remoteToggle.waitForExistence(timeout: 5), "Remote processing toggle should exist")
+        XCTAssertTrue(remoteToggle.isHittable, "Remote processing toggle should remain reachable")
+
+        tapBackButton()
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.Settings.storageAndExportRow),
+            "Storage and export should remain reachable after returning to Settings"
+        )
+
+        let storage = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Settings.storageAndExportRow)
+            .firstMatch
+        storage.tap()
+        XCTAssertTrue(
+            app.navigationBars["Storage & Export"].waitForExistence(timeout: 5),
+            "Storage and export should still open"
+        )
+    }
+
+    private func scrollToHittable(_ identifier: String) -> Bool {
+        let element = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+        for _ in 0..<8 {
+            if element.exists && element.isHittable { return true }
+            app.swipeUp()
+        }
+        return element.exists && element.isHittable
+    }
+}
