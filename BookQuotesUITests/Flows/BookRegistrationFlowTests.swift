@@ -411,35 +411,26 @@ final class BookRegistrationFlowTests: BaseUITestCase {
             }
         }
 
-        // Tap first book. SwiftUI rows/cards use gestures, so coordinate taps are
-        // more reliable than semantic taps on accessibility wrapper elements.
         let candidates = [
-            app.staticTexts[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
-            app.images[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
-            app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
             app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
-            app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
-            app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
-            app.staticTexts[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
-            app.images[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
             app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
-            app.links[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
-            app.cells.firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
+                .firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+                .firstMatch
         ]
 
-        let tappedBook = candidates.contains { element in
-            guard element.waitForExistence(timeout: 2) else { return false }
-            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-            return true
+        guard let book = candidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("A reachable library book should exist")
+            return
         }
-        XCTAssertTrue(tappedBook, "A tappable library book should exist")
+        book.tap()
 
         // Wait for detail view
         let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
-        let author = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookAuthor]
-        let quotesLabel = app.staticTexts["Quotes"]
-        let detailVisible = title.waitForExistence(timeout: 4) || author.exists || quotesLabel.exists
-        XCTAssertTrue(detailVisible, "Book detail should appear")
+        XCTAssertTrue(title.waitForExistence(timeout: 4), "Book detail should appear")
     }
 
     private func findMoreMenuButton() -> XCUIElement {

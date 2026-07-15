@@ -306,14 +306,21 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             }
         }
 
-        let bookRow = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
-            .firstMatch
-        guard bookRow.waitForExistence(timeout: 5) else {
-            XCTFail("Seeded library should expose an openable book")
+        let bookCandidates = [
+            app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
+                .firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+                .firstMatch
+        ]
+        guard let book = bookCandidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("Seeded library should expose a reachable book")
             return
         }
-        bookRow.tap()
+        book.tap()
 
         XCTAssertTrue(
             app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 5),
@@ -581,7 +588,7 @@ final class IPadExtractionReviewLayoutTests: BaseUITestCase {
         ]
     }
 
-    func testExtractionReviewUsesSideBySideLayoutOnIPad() {
+    func testExtractionReviewUsesLayoutForCurrentWidth() {
         XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
 
         let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
@@ -616,11 +623,19 @@ final class IPadExtractionReviewLayoutTests: BaseUITestCase {
             .firstMatch
 
         XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Extraction review should expose its page selector")
-        XCTAssertLessThan(
-            pageSelector.frame.width,
-            app.frame.width * 0.25,
-            "Regular-width iPad layouts should keep the page selector beside the editor"
-        )
+        if app.frame.width >= 700 {
+            XCTAssertLessThan(
+                pageSelector.frame.width,
+                app.frame.width * 0.25,
+                "Regular-width layouts should keep the page selector beside the editor"
+            )
+        } else {
+            XCTAssertGreaterThan(
+                pageSelector.frame.width,
+                app.frame.width * 0.5,
+                "Compact-width layouts should keep the page selector above the editor"
+            )
+        }
         XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose the source image")
         captureScreenshot(named: "ipad_side_by_side_review", description: "iPad extraction review at normal text size")
     }

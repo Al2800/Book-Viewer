@@ -70,6 +70,9 @@ class BaseUITestCase: XCTestCase {
 
         // Initialize app
         app = XCUIApplication()
+        if app.state != .notRunning {
+            app.terminate()
+        }
         app.launchArguments = defaultLaunchArguments + additionalLaunchArguments
         app.launchEnvironment = launchEnvironment
 
@@ -116,6 +119,12 @@ class BaseUITestCase: XCTestCase {
         // Optionally write to file
         if ProcessInfo.processInfo.environment["WRITE_UI_TEST_LOGS"] != nil {
             logger.writeSummaryToFile()
+        }
+
+        // A fresh process gives each test its own in-memory SwiftData store and root navigation
+        // state. Without this, a following test can begin on the prior test's detail screen.
+        if app.state != .notRunning {
+            app.terminate()
         }
 
         app = nil
@@ -463,6 +472,19 @@ class BaseUITestCase: XCTestCase {
 
         XCTFail("Tab '\(tab.label)' not found", file: file, line: line)
         return false
+    }
+
+    /// Scroll until a known element can be acted on. A SwiftUI lazy stack can expose an element
+    /// before its frame is on screen, so existence alone is not sufficient for a real user tap.
+    @discardableResult
+    func revealForInteraction(_ element: XCUIElement, maxSwipes: Int = 6) -> Bool {
+        for _ in 0..<maxSwipes {
+            if element.exists && element.isHittable {
+                return true
+            }
+            app.swipeUp()
+        }
+        return element.exists && element.isHittable
     }
 
     /// Tap the back button in navigation.

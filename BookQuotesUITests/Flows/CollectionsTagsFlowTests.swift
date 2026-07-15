@@ -62,9 +62,7 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
         if menuButton.waitForExistence(timeout: 3) {
             menuButton.tap()
 
-            let addToCollectionOption = app.buttons.matching(
-                NSPredicate(format: "label CONTAINS 'Collection'")
-            ).firstMatch
+            let addToCollectionOption = app.buttons["Add to Collection"]
 
             if addToCollectionOption.waitForExistence(timeout: 2) {
                 addToCollectionOption.tap()
@@ -96,9 +94,7 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
         if menuButton.waitForExistence(timeout: 3) {
             menuButton.tap()
 
-            let addToCollectionOption = app.buttons.matching(
-                NSPredicate(format: "label CONTAINS 'Collection'")
-            ).firstMatch
+            let addToCollectionOption = app.buttons["Add to Collection"]
 
             if addToCollectionOption.waitForExistence(timeout: 2) {
                 addToCollectionOption.tap()
@@ -154,9 +150,7 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
 
         menuButton.tap()
 
-        let addToCollectionOption = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Collection'")
-        ).firstMatch
+        let addToCollectionOption = app.buttons["Add to Collection"]
 
         guard addToCollectionOption.waitForExistence(timeout: 2) else {
             logger.info("Add to collection not available")
@@ -431,20 +425,17 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
         openFirstBook()
 
         // Find and tap first quote
-        let quoteCard = app.otherElements[AccessibilityIdentifiers.QuoteCard.container].firstMatch
         let quoteButton = app.buttons[AccessibilityIdentifiers.QuoteCard.container].firstMatch
-        let quoteCells = app.cells.firstMatch
-
-        if quoteCard.waitForExistence(timeout: 3) {
-            quoteCard.tap()
-        } else if quoteButton.waitForExistence(timeout: 3) {
-            quoteButton.tap()
-        } else if quoteCells.exists {
-            quoteCells.tap()
+        let quoteCard = app.otherElements[AccessibilityIdentifiers.QuoteCard.container].firstMatch
+        let quoteCandidates = [quoteButton, quoteCard]
+        guard let quote = quoteCandidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("Book detail should expose a reachable quote")
+            return
         }
+        quote.tap()
 
         // Wait for quote detail
-        _ = app.textViews.firstMatch.waitForExistence(timeout: 3)
+        XCTAssertTrue(app.navigationBars["Quote"].waitForExistence(timeout: 3), "Quote detail should open")
     }
 
     private func openFirstBook() {
@@ -456,25 +447,27 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
             }
         }
 
-        // Tap first book
-        let bookRow = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookOther = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let bookButton = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        if bookRow.waitForExistence(timeout: 3) {
-            bookRow.tap()
-        } else if bookLink.waitForExistence(timeout: 3) {
-            bookLink.tap()
-        } else if bookButton.waitForExistence(timeout: 3) {
-            bookButton.tap()
-        } else if bookOther.waitForExistence(timeout: 3) {
-            bookOther.tap()
-        } else if app.cells.firstMatch.exists {
-            app.cells.firstMatch.tap()
+        let bookCandidates = [
+            app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
+                .firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+                .firstMatch
+        ]
+        guard let book = bookCandidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("Library should expose a reachable book")
+            return
         }
+        book.tap()
 
         // Wait for detail view
-        _ = app.staticTexts["Quotes"].waitForExistence(timeout: 3)
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 4),
+            "Book detail should open"
+        )
     }
 
     private func findMoreMenuButton() -> XCUIElement {

@@ -59,3 +59,9 @@ The evidence must cover both local verification and real-device TestFlight behav
   arm64 `com.acampbell.bookquotes` application at version `1.0` build `38`, plus its privacy
   manifest and dSYM. This proves the local Release build, not signing, upload, or App Store
   acceptance; those remaining gates stay open.
+- The complete iPhone 17 UI target passed 101 tests, 0 failures, and 0 skips after the
+  library-navigation and test-isolation regression repair. Result bundle:
+  `/tmp/BookQuotes-full-ui-isolated-2026-07-15.xcresult`.
+- The current regular-width extraction-review regression passed on iPad Air 11-inch (M4), iOS
+  26.5: 1 test, 0 failures, and 0 skips. Result bundle:
+  `/tmp/BookQuotes-extraction-review-ipad-current-layout-2026-07-15.xcresult`.

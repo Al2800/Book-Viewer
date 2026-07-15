@@ -20,7 +20,6 @@ struct BookCoverCard: View {
 
     // MARK: - State
 
-    @State private var isPressed = false
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -28,6 +27,30 @@ struct BookCoverCard: View {
     // MARK: - Body
 
     var body: some View {
+        Group {
+            if let onTap {
+                Button {
+                    HapticManager.light()
+                    onTap()
+                } label: {
+                    cardContent
+                }
+                .buttonStyle(BookCardButtonStyle(pressedScale: 0.96, reduceMotion: reduceMotion))
+            } else {
+                cardContent
+            }
+        }
+        .if(hasContextMenu) { view in
+            view.polishedContextMenu(
+                menuItems: { contextMenuItems },
+                preview: { BookContextMenuPreview(book: book) }
+            )
+        }
+        .contentShape(Rectangle())
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)
+    }
+
+    private var cardContent: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             ZStack(alignment: .topTrailing) {
                 // Cover image
@@ -52,9 +75,6 @@ struct BookCoverCard: View {
         }
         .padding(Spacing.md)
         .paperCard(cornerRadius: CornerRadius.lg)
-        // MARK: - Press State Animation
-        .scaleEffect(isPressed ? 0.96 : 1.0)
-        .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
         // MARK: - Entrance Animation
         .opacity(hasAppeared ? 1.0 : 0.0)
         .scaleEffect(hasAppeared ? 1.0 : 0.9)
@@ -67,29 +87,6 @@ struct BookCoverCard: View {
                 hasAppeared = true
             }
         }
-        // MARK: - Tap Gesture with Haptics
-        .if(onTap != nil) { view in
-            view
-                .onTapGesture {
-                    HapticManager.light()
-                    onTap?()
-                }
-                .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-                    guard !hasContextMenu else { return }
-                    withAnimation(.quickSpring) {
-                        isPressed = pressing
-                    }
-                }, perform: {})
-        }
-        // MARK: - Context Menu
-        .if(hasContextMenu) { view in
-            view.polishedContextMenu(
-                menuItems: { contextMenuItems },
-                preview: { BookContextMenuPreview(book: book) }
-            )
-        }
-        .contentShape(Rectangle())
-        .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookCoverCard)
     }
 
     @ViewBuilder
@@ -179,7 +176,6 @@ struct BookListRow: View {
 
     // MARK: - State
 
-    @State private var isPressed = false
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -187,6 +183,30 @@ struct BookListRow: View {
     // MARK: - Body
 
     var body: some View {
+        Group {
+            if let onTap {
+                Button {
+                    HapticManager.light()
+                    onTap()
+                } label: {
+                    rowContent
+                }
+                .buttonStyle(BookCardButtonStyle(pressedScale: 0.98, reduceMotion: reduceMotion))
+            } else {
+                rowContent
+            }
+        }
+        .if(hasContextMenu) { view in
+            view.polishedContextMenu(
+                menuItems: { contextMenuItems },
+                preview: { BookContextMenuPreview(book: book) }
+            )
+        }
+        .contentShape(Rectangle())
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookListRow)
+    }
+
+    private var rowContent: some View {
         HStack(spacing: Spacing.md) {
             // Small cover thumbnail
             BookCoverArtwork(book: book, style: .list, reduceMotion: reduceMotion)
@@ -214,9 +234,6 @@ struct BookListRow: View {
         }
         .padding(Spacing.md)
         .paperCard(cornerRadius: CornerRadius.lg)
-        // MARK: - Press State
-        .scaleEffect(isPressed ? 0.98 : 1.0)
-        .animation(reduceMotion ? .none : .quickSpring, value: isPressed)
         // MARK: - Entrance Animation
         .opacity(hasAppeared ? 1.0 : 0.0)
         .offset(x: hasAppeared ? 0 : -10)
@@ -229,28 +246,6 @@ struct BookListRow: View {
                 hasAppeared = true
             }
         }
-        // MARK: - Tap Gesture
-        .if(onTap != nil) { view in
-            view
-                .onTapGesture {
-                    HapticManager.light()
-                    onTap?()
-                }
-                .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-                    guard !hasContextMenu else { return }
-                    withAnimation(.quickSpring) {
-                        isPressed = pressing
-                    }
-                }, perform: {})
-        }
-        // MARK: - Context Menu
-        .if(hasContextMenu) { view in
-            view.polishedContextMenu(
-                menuItems: { contextMenuItems },
-                preview: { BookContextMenuPreview(book: book) }
-            )
-        }
-        .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookListRow)
     }
 
     @ViewBuilder
@@ -310,6 +305,17 @@ struct BookListRow: View {
             onShare: onShare,
             onDelete: onDelete
         )
+    }
+}
+
+private struct BookCardButtonStyle: ButtonStyle {
+    let pressedScale: CGFloat
+    let reduceMotion: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? pressedScale : 1)
+            .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
     }
 }
 

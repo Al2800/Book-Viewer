@@ -39,6 +39,17 @@ The focused release suite reported 55 passes, 7 failures, and 1 skip. Six Settin
 - iPad reading-status persistence, 1/1: `/Users/skyhub/Library/Developer/Xcode/DerivedData/BookQuotes-avxqmbzwmqonovbvenamjvakwlyv/Logs/Test/Test-BookQuotes-2026.07.14_16-23-12-+0100.xcresult`
 - Unit suite, 602 tests: `/Users/skyhub/Library/Developer/Xcode/DerivedData/BookQuotes-avxqmbzwmqonovbvenamjvakwlyv/Logs/Test/Test-BookQuotes-2026.07.14_16-24-56-+0100.xcresult` (0 failures, 1 existing skip)
 
+## Full-Suite Regression 2026-07-15
+
+- The complete iPhone UI target exposed stale navigation and offscreen lazy-stack selection in
+  several library-backed workflows. `BaseUITestCase` now terminates the app before and after every
+  case, and shared workflow helpers scroll until a control is rendered and hittable before tapping.
+- Library cards and list rows are now real plain-styled buttons rather than gesture-only elements,
+  preserving their context menus and press feedback while giving VoiceOver and UI automation a
+  native button action.
+- The complete iPhone 17 UI target passed 101 tests, 0 failures, and 0 skips on iOS 26.5. Result
+  bundle: `/tmp/BookQuotes-full-ui-isolated-2026-07-15.xcresult`.
+
 ## Follow-up
 
 The full UI target still contains 33 legacy `XCTSkip` branches. Camera hardware limitations can remain explicitly reported as environmental skips, but missing application controls, navigation, fixtures, or save actions must fail. That work is tracked separately in issue 106 and is not counted as green full-suite evidence.

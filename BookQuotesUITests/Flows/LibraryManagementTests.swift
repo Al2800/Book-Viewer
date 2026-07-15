@@ -65,8 +65,8 @@ final class LibraryManagementTests: BaseUITestCase {
         openFirstBookDetail()
 
         logger.step(2, "Verifying book detail view")
-        let quotesLabel = app.staticTexts["Quotes"]
-        XCTAssertTrue(quotesLabel.waitForExistence(timeout: 3), "Should navigate to book detail")
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        XCTAssertTrue(title.waitForExistence(timeout: 3), "Should navigate to book detail")
 
         logger.success("Book detail view displayed")
     }
@@ -192,19 +192,15 @@ final class LibraryManagementTests: BaseUITestCase {
         switchToListViewIfPossible()
 
         logger.step(2, "Finding a book row")
+        let firstButton = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         let firstCell = app.cells[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         let firstLink = app.links[AccessibilityIdentifiers.Library.bookListRow].firstMatch
         let firstElement = app.otherElements[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        let firstButton = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
-        XCTAssertTrue(
-            firstCell.waitForExistence(timeout: 3) ||
-                firstLink.exists ||
-                firstElement.exists ||
-                firstButton.exists,
-            "List view should expose a book row for deletion"
-        )
-        let bookRow = firstCell.exists ? firstCell :
-            (firstLink.exists ? firstLink : (firstElement.exists ? firstElement : firstButton))
+        let bookCandidates = [firstButton, firstCell, firstLink, firstElement]
+        guard let bookRow = bookCandidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("List view should expose a reachable book row for deletion")
+            return
+        }
 
         logger.step(3, "Opening the book actions menu")
         bookRow.press(forDuration: 1)
@@ -256,42 +252,26 @@ final class LibraryManagementTests: BaseUITestCase {
         // With seeded data, we expect books to exist
         switchToListViewIfPossible()
 
-        // Try using accessibility identifier first
-        let bookRowElement = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
-            .firstMatch
-        if bookRowElement.waitForExistence(timeout: 3) {
-            bookRowElement.tap()
+        let candidates = [
+            app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
+                .firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+                .firstMatch
+        ]
+
+        guard let book = candidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("Seeded library should expose a reachable book")
             return
         }
 
-        let bookElement = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
-            .firstMatch
-        if bookElement.waitForExistence(timeout: 3) {
-            bookElement.tap()
-            return
-        }
-
-        // Fallback to generic table cells
-        if app.tables.cells.firstMatch.exists {
-            app.tables.cells.firstMatch.tap()
-            return
-        }
-
-        // Try grid view buttons
-        let gridButton = app.scrollViews.buttons.firstMatch
-        let gridLink = app.scrollViews.links.firstMatch
-        if gridButton.waitForExistence(timeout: 2) {
-            gridButton.tap()
-        } else if gridLink.waitForExistence(timeout: 2) {
-            gridLink.tap()
-        }
+        book.tap()
 
         let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
-        let author = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookAuthor]
-        let quotesLabel = app.staticTexts["Quotes"]
-        _ = title.waitForExistence(timeout: 4) || author.exists || quotesLabel.exists
+        XCTAssertTrue(title.waitForExistence(timeout: 4), "Opening a book should show its detail screen")
     }
 
     private func switchToListViewIfPossible() {
