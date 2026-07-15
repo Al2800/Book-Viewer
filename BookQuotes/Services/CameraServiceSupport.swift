@@ -9,6 +9,8 @@ enum CameraError: LocalizedError {
     case sessionNotConfigured
     case captureFailed(Error)
     case imageProcessingFailed
+    case captureInProgress
+    case captureCancelled
     case captureTimedOut
 
     var errorDescription: String? {
@@ -29,9 +31,51 @@ enum CameraError: LocalizedError {
             return "Photo capture failed: \(error.localizedDescription)"
         case .imageProcessingFailed:
             return "Failed to process captured image"
+        case .captureInProgress:
+            return "A photo is already being captured."
+        case .captureCancelled:
+            return "Camera capture was cancelled."
         case .captureTimedOut:
             return "Camera capture timed out. Please try again."
         }
+    }
+}
+
+/// Correlates one AVFoundation photo request with its callback so stale callbacks cannot
+/// complete a later capture after a timeout or view dismissal.
+struct CameraCaptureLifecycle {
+    private(set) var activeCaptureID: UUID?
+    private(set) var activePhotoSettingsID: Int64?
+
+    var isCapturing: Bool {
+        activeCaptureID != nil
+    }
+
+    mutating func begin(captureID: UUID, photoSettingsID: Int64) -> Bool {
+        guard !isCapturing else { return false }
+        activeCaptureID = captureID
+        activePhotoSettingsID = photoSettingsID
+        return true
+    }
+
+    func captureID(matchingPhotoSettingsID photoSettingsID: Int64) -> UUID? {
+        guard activePhotoSettingsID == photoSettingsID else { return nil }
+        return activeCaptureID
+    }
+
+    mutating func finish(captureID: UUID) -> Bool {
+        guard activeCaptureID == captureID else { return false }
+        reset()
+        return true
+    }
+
+    mutating func cancel() {
+        reset()
+    }
+
+    private mutating func reset() {
+        activeCaptureID = nil
+        activePhotoSettingsID = nil
     }
 }
 

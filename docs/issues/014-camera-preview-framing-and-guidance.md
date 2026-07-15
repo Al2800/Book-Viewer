@@ -97,6 +97,22 @@ This matters because extraction quality now depends on the photographed page ima
 - The subjective physical-lens comparison and real-device/TestFlight capture-quality smoke remain
   open; simulator testing cannot prove them.
 
+2026-07-15 capture-lifecycle reliability follow-up:
+
+- `CameraService` now permits exactly one in-flight AVFoundation photo request. Both the quote
+  and cover shutters disable while that request is pending, so a rapid second tap cannot replace
+  the first continuation.
+- Each pending request is correlated with AVFoundation's photo-settings identifier. A late
+  callback after a timeout, cancellation, or subsequent capture is ignored rather than being
+  delivered as the wrong image.
+- Leaving either capture screen now resolves a pending capture as cancelled instead of discarding
+  its continuation and leaving the caller suspended.
+- The focused camera lifecycle gate passed 5 tests, 0 failures, 0 skips; quote-capture,
+  cover-capture, and batch-capture UI smokes passed on iPhone 17 / iOS 26.5. Result bundles:
+  `/tmp/BookQuotes-camera-lifecycle-2026-07-15.xcresult` and
+  `/tmp/BookQuotes-cover-capture-lifecycle-2026-07-15.xcresult`, plus
+  `/tmp/BookQuotes-batch-capture-lifecycle-2026-07-15.xcresult`.
+
 ## Verification Results
 
 Focused unit tests:

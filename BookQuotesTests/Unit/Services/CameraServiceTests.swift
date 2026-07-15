@@ -13,6 +13,8 @@ final class CameraServiceTests: XCTestCase {
         XCTAssertEqual(CameraError.cannotAddInput.errorDescription, "Cannot add camera input")
         XCTAssertEqual(CameraError.cannotAddOutput.errorDescription, "Cannot add photo output")
         XCTAssertEqual(CameraError.imageProcessingFailed.errorDescription, "Failed to process captured image")
+        XCTAssertEqual(CameraError.captureInProgress.errorDescription, "A photo is already being captured.")
+        XCTAssertEqual(CameraError.captureCancelled.errorDescription, "Camera capture was cancelled.")
     }
 
     @MainActor
@@ -37,5 +39,29 @@ final class CameraServiceTests: XCTestCase {
             service.currentPreviewSizeForCropping(),
             CGSize(width: 390, height: 844)
         )
+    }
+
+    func testCaptureLifecycleRejectsOverlapAndOnlyAcceptsMatchingCallback() {
+        var lifecycle = CameraCaptureLifecycle()
+        let firstCaptureID = UUID()
+
+        XCTAssertTrue(lifecycle.begin(captureID: firstCaptureID, photoSettingsID: 41))
+        XCTAssertTrue(lifecycle.isCapturing)
+        XCTAssertFalse(lifecycle.begin(captureID: UUID(), photoSettingsID: 42))
+        XCTAssertNil(lifecycle.captureID(matchingPhotoSettingsID: 42))
+        XCTAssertEqual(lifecycle.captureID(matchingPhotoSettingsID: 41), firstCaptureID)
+        XCTAssertFalse(lifecycle.finish(captureID: UUID()))
+        XCTAssertTrue(lifecycle.finish(captureID: firstCaptureID))
+        XCTAssertFalse(lifecycle.isCapturing)
+    }
+
+    func testCaptureLifecycleIgnoresCallbackAfterCancellation() {
+        var lifecycle = CameraCaptureLifecycle()
+
+        XCTAssertTrue(lifecycle.begin(captureID: UUID(), photoSettingsID: 99))
+        lifecycle.cancel()
+
+        XCTAssertFalse(lifecycle.isCapturing)
+        XCTAssertNil(lifecycle.captureID(matchingPhotoSettingsID: 99))
     }
 }

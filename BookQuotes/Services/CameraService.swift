@@ -17,6 +17,11 @@ final class CameraService: NSObject {
     /// Whether the camera session is currently running
     private(set) var isSessionRunning = false
 
+    /// Whether AVFoundation has a photo request awaiting a terminal callback.
+    var isCapturing: Bool {
+        captureLifecycle.isCapturing
+    }
+
     /// Last captured image
     private(set) var capturedImage: UIImage?
 
@@ -45,7 +50,7 @@ final class CameraService: NSObject {
     // MARK: - Continuations for async capture
 
     private var photoContinuation: CheckedContinuation<UIImage, Error>?
-    private var activePhotoCaptureID: UUID?
+    private var captureLifecycle = CameraCaptureLifecycle()
     private var photoTimeoutTask: Task<Void, Never>?
     private static let defaultCaptureTimeoutSeconds: UInt64 = 15
 
@@ -225,11 +230,16 @@ final class CameraService: NSObject {
             throw CameraError.sessionNotConfigured
         }
 
-        let captureID = UUID()
-        activePhotoCaptureID = captureID
+        let settings = AVCapturePhotoSettings()
+        settings.isHighResolutionPhotoEnabled = true
 
-        // Only one capture at a time; cancel any stale timeout watcher.
-        photoTimeoutTask?.cancel()
+        let captureID = UUID()
+        guard captureLifecycle.begin(
+            captureID: captureID,
+            photoSettingsID: settings.uniqueID
+        ) else {
+            throw CameraError.captureInProgress
+        }
 
         return try await withCheckedThrowingContinuation { continuation in
             photoContinuation = continuation
@@ -243,19 +253,37 @@ final class CameraService: NSObject {
                     return
                 }
 
-                guard let self,
-                      self.activePhotoCaptureID == captureID,
-                      self.photoContinuation != nil else { return }
-
-                self.photoContinuation?.resume(throwing: CameraError.captureTimedOut)
-                self.photoContinuation = nil
-                self.activePhotoCaptureID = nil
+                guard let self else { return }
+                self.completePendingCapture(
+                    captureID: captureID,
+                    result: .failure(CameraError.captureTimedOut)
+                )
             }
 
-            let settings = AVCapturePhotoSettings()
-            settings.isHighResolutionPhotoEnabled = true
-
             photoOutput.capturePhoto(with: settings, delegate: self)
+        }
+    }
+
+    private func completePendingCapture(
+        captureID: UUID,
+        result: Result<UIImage, Error>
+    ) {
+        guard captureLifecycle.activeCaptureID == captureID,
+              let continuation = photoContinuation,
+              captureLifecycle.finish(captureID: captureID) else {
+            return
+        }
+
+        photoTimeoutTask?.cancel()
+        photoTimeoutTask = nil
+        photoContinuation = nil
+
+        switch result {
+        case .success(let image):
+            capturedImage = image
+            continuation.resume(returning: image)
+        case .failure(let error):
+            continuation.resume(throwing: error)
         }
     }
 
@@ -344,10 +372,17 @@ final class CameraService: NSObject {
     // MARK: - Cleanup
 
     func cleanup() {
+        if let captureID = captureLifecycle.activeCaptureID {
+            completePendingCapture(
+                captureID: captureID,
+                result: .failure(CameraError.captureCancelled)
+            )
+        }
+
         photoTimeoutTask?.cancel()
         photoTimeoutTask = nil
-        activePhotoCaptureID = nil
         photoContinuation = nil
+        captureLifecycle.cancel()
 
         stopSession()
         captureSession = nil
@@ -365,21 +400,28 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
         // Keep any heavy work (fileDataRepresentation + JPEG decode) off the MainActor.
         // On some devices this decode can be expensive enough to freeze the capture UI.
         let imageData = photo.fileDataRepresentation()
+        let photoSettingsID = photo.resolvedSettings.uniqueID
 
         Task { @MainActor in
-            photoTimeoutTask?.cancel()
-            photoTimeoutTask = nil
-            activePhotoCaptureID = nil
+            guard let captureID = captureLifecycle.captureID(
+                matchingPhotoSettingsID: photoSettingsID
+            ) else {
+                return
+            }
 
             if let error = error {
-                photoContinuation?.resume(throwing: CameraError.captureFailed(error))
-                photoContinuation = nil
+                completePendingCapture(
+                    captureID: captureID,
+                    result: .failure(CameraError.captureFailed(error))
+                )
                 return
             }
 
             guard let imageData else {
-                photoContinuation?.resume(throwing: CameraError.imageProcessingFailed)
-                photoContinuation = nil
+                completePendingCapture(
+                    captureID: captureID,
+                    result: .failure(CameraError.imageProcessingFailed)
+                )
                 return
             }
 
@@ -390,14 +432,14 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
                     guard let self else { return }
 
                     guard let image else {
-                        self.photoContinuation?.resume(throwing: CameraError.imageProcessingFailed)
-                        self.photoContinuation = nil
+                        self.completePendingCapture(
+                            captureID: captureID,
+                            result: .failure(CameraError.imageProcessingFailed)
+                        )
                         return
                     }
 
-                    self.capturedImage = image
-                    self.photoContinuation?.resume(returning: image)
-                    self.photoContinuation = nil
+                    self.completePendingCapture(captureID: captureID, result: .success(image))
                 }
             }
         }

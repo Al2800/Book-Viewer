@@ -132,6 +132,7 @@ struct CoverCaptureView: View {
         CoverCaptureBottomControls(
             captureMode: captureMode,
             isProcessing: isProcessing,
+            isCapturing: cameraService.isCapturing,
             isSessionRunning: cameraService.isSessionRunning,
             showsTestCoverButton: UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode,
             onCapturePhoto: capturePhoto,

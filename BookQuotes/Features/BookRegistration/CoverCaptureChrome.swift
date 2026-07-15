@@ -79,6 +79,7 @@ struct CoverCaptureModeSwitcher: View {
 struct CoverCaptureBottomControls: View {
     let captureMode: CoverCaptureView.CaptureMode
     let isProcessing: Bool
+    let isCapturing: Bool
     let isSessionRunning: Bool
     let showsTestCoverButton: Bool
     let onCapturePhoto: () -> Void
@@ -93,10 +94,10 @@ struct CoverCaptureBottomControls: View {
             }
 
             if captureMode == .photo && !isProcessing {
-                CaptureButton(isProcessing: isProcessing) {
+                CaptureButton(isProcessing: isProcessing || isCapturing) {
                     onCapturePhoto()
                 }
-                .disabled(!isSessionRunning)
+                .disabled(!isSessionRunning || isCapturing)
 
                 if showsTestCoverButton {
                     Button("Use Test Cover") {

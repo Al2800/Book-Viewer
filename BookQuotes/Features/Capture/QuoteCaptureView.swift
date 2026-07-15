@@ -159,7 +159,7 @@ struct QuoteCaptureView: View {
                             .frame(width: 82, height: 82)
                     }
                 }
-                .disabled(!cameraService.isSessionRunning)
+                .disabled(!cameraService.isSessionRunning || cameraService.isCapturing)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
 
                 Spacer()
