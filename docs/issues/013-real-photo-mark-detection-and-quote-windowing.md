@@ -233,6 +233,19 @@ Hosted-model acceptance criteria:
   comparison, small-mark recognition, image-crop minimization, and physical TestFlight evidence
   remain open.
 
+2026-07-15 upload-budget follow-up:
+
+- The remote extractor now sends a bounded, processed JPEG rather than risking a raw high-entropy
+  camera image that exceeds the Worker's 4.5 MB decoded-image limit. It preserves the initial
+  2048 px / 0.85 quality setting, then recompresses and reduces dimensions only when necessary,
+  with a 4 MB upload budget that leaves room for base64 and JSON transport.
+- The page passed to that encoder remains the best-effort document-cropped image prepared by the
+  capture flow. This is a transport safeguard, not evidence that the current Vision crop is the
+  smallest useful crop for every real page, so that acceptance criterion remains open.
+- A high-entropy image regression forces adaptive recompression below a constrained budget, and
+  the remote-extractor integration test decodes its outgoing request and asserts the submitted
+  image never exceeds the production 4 MB budget.
+
 ## Verification Results
 
 Backend adapter and route:

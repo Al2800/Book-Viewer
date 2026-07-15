@@ -27,6 +27,22 @@ final class ImagePreprocessorTests: XCTestCase {
         XCTAssertLessThanOrEqual(result.processedSize.height, 200)
     }
 
+    func testQuoteExtractionProcessingAdaptsAHighEntropyImageToTheUploadBudget() throws {
+        let image = makeNoisyImage(width: 2048, height: 1536)
+        let initial = try ImagePreprocessor.process(image, config: .highQuality)
+        let constrainedBudget = initial.data.count / 2
+
+        let result = try ImagePreprocessor.processForQuoteExtraction(
+            image,
+            maximumUploadBytes: constrainedBudget
+        )
+
+        XCTAssertGreaterThan(initial.data.count, constrainedBudget)
+        XCTAssertLessThanOrEqual(result.data.count, constrainedBudget)
+        XCTAssertLessThan(result.processedSize.width, initial.processedSize.width)
+        XCTAssertLessThan(result.processedSize.height, initial.processedSize.height)
+    }
+
     func testProcessWithContrastEnhancement() throws {
         let imageData = TestFixtures.TestImages.bookCover
         let image = UIImage(data: imageData) ?? UIImage()
@@ -52,6 +68,40 @@ final class ImagePreprocessorTests: XCTestCase {
 
         let data = try image.preprocessed()
         XCTAssertFalse(data.isEmpty)
+    }
+
+    private func makeNoisyImage(width: Int, height: Int) -> UIImage {
+        var bytes = Data(count: width * height * 4)
+        var state: UInt32 = 0x5EED_1234
+        bytes.withUnsafeMutableBytes { rawBuffer in
+            guard let pixels = rawBuffer.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                return
+            }
+
+            for offset in stride(from: 0, to: rawBuffer.count, by: 4) {
+                state = state &* 1_664_525 &+ 1_013_904_223
+                pixels[offset] = UInt8(truncatingIfNeeded: state)
+                pixels[offset + 1] = UInt8(truncatingIfNeeded: state >> 8)
+                pixels[offset + 2] = UInt8(truncatingIfNeeded: state >> 16)
+                pixels[offset + 3] = 255
+            }
+        }
+
+        let provider = CGDataProvider(data: bytes as CFData)!
+        let image = CGImage(
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bitsPerPixel: 32,
+            bytesPerRow: width * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+            provider: provider,
+            decode: nil,
+            shouldInterpolate: false,
+            intent: .defaultIntent
+        )!
+        return UIImage(cgImage: image)
     }
 }
 

@@ -288,6 +288,12 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         let body = try XCTUnwrap(JSONSerialization.jsonObject(with: request.body) as? [String: Any])
         XCTAssertNotNil(body["contents"])
+        let contents = try XCTUnwrap(body["contents"] as? [[String: Any]])
+        let parts = try XCTUnwrap(contents.first?["parts"] as? [[String: Any]])
+        let inlineData = try XCTUnwrap(parts.compactMap { $0["inlineData"] as? [String: Any] }.first)
+        let base64 = try XCTUnwrap(inlineData["data"] as? String)
+        let imageData = try XCTUnwrap(Data(base64Encoded: base64))
+        XCTAssertLessThanOrEqual(imageData.count, ImagePreprocessor.maximumRemoteQuoteImageBytes)
     }
 
     @MainActor

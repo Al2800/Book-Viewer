@@ -11,6 +11,10 @@ import UniformTypeIdentifiers
 /// Handles orientation normalization, resizing, and JPEG compression
 enum ImagePreprocessor {
 
+    /// Leaves room for base64 encoding, JSON, and the bounded extraction prompt under the
+    /// Worker's 7 MB request limit and 4.5 MB decoded-image limit.
+    static let maximumRemoteQuoteImageBytes = 4_000_000
+
     // MARK: - Configuration
 
     struct Config {
@@ -105,9 +109,33 @@ enum ImagePreprocessor {
         try process(image, config: .coverImage)
     }
 
-    /// Process for quote extraction (high quality for OCR)
-    static func processForQuoteExtraction(_ image: UIImage) throws -> Result {
-        try process(image, config: .highQuality)
+    /// Process for quote extraction while keeping the third-party upload within the Worker limit.
+    /// The first attempt preserves the existing 2048 px quality target; only oversized images are
+    /// recompressed and resized, so a difficult photographed page does not silently fall back to
+    /// local extraction because its payload was rejected by the proxy.
+    static func processForQuoteExtraction(
+        _ image: UIImage,
+        maximumUploadBytes: Int = maximumRemoteQuoteImageBytes
+    ) throws -> Result {
+        guard maximumUploadBytes > 0 else {
+            throw PreprocessorError.outputTooLarge
+        }
+
+        let configurations = [
+            Config.highQuality,
+            Config(maxDimension: 1792, compressionQuality: 0.80),
+            Config(maxDimension: 1536, compressionQuality: 0.75),
+            Config(maxDimension: 1280, compressionQuality: 0.70),
+        ]
+
+        for configuration in configurations {
+            let result = try process(image, config: configuration)
+            if result.data.count <= maximumUploadBytes {
+                return result
+            }
+        }
+
+        throw PreprocessorError.outputTooLarge
     }
 
     // MARK: - Capture Helpers
@@ -302,6 +330,7 @@ enum ImagePreprocessor {
 enum PreprocessorError: LocalizedError {
     case compressionFailed
     case invalidImage
+    case outputTooLarge
     case processingFailed(String)
 
     var errorDescription: String? {
@@ -310,6 +339,8 @@ enum PreprocessorError: LocalizedError {
             return "Failed to compress image to JPEG"
         case .invalidImage:
             return "Invalid or corrupted image data"
+        case .outputTooLarge:
+            return "Image could not be prepared within the upload size limit"
         case .processingFailed(let reason):
             return "Image processing failed: \(reason)"
         }

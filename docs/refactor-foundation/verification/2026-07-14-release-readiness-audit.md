@@ -35,6 +35,10 @@
   quote-review schema before marking it billable; malformed output returns `502` and releases the
   extraction reservation. The backend suite passed: 39 tests, 0 failures; TypeScript typecheck
   passed.
+- Remote quote extraction now limits its prepared JPEG to 4 MB, below the Worker's 4.5 MB decoded
+  image limit, by adapting compression and dimensions only when the normal 2048 px image would
+  exceed the budget. Focused iOS tests cover both a high-entropy image and the actual outbound
+  request payload.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,
