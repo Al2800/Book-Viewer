@@ -48,6 +48,9 @@ enum AccessibilityIdentifiers {
 
         /// Organize section row linking to Tags
         static let tagsRow = "library_tags_row"
+
+        /// Horizontal collection and tag filter strip
+        static let organizationFilterBar = "library_organization_filter_bar"
     }
 
     // MARK: - Search
@@ -138,6 +141,12 @@ enum AccessibilityIdentifiers {
 
         /// Marking type picker button
         static let markingPickerButton = "quote_detail_marking_picker"
+
+        /// Opens collection assignment from quote detail
+        static let collectionsButton = "quote_detail_collections_button"
+
+        /// Opens tag assignment from quote detail
+        static let tagsButton = "quote_detail_tags_button"
     }
 
     // MARK: - Book Edit

@@ -695,6 +695,9 @@ enum AccessibilityIdentifiers {
         static let sortMenu = "library_sort_menu"
         static let viewModeToggle = "library_view_mode_toggle"
         static let dismissSearchButton = "library_dismiss_search_button"
+        static let collectionsRow = "library_collections_row"
+        static let tagsRow = "library_tags_row"
+        static let organizationFilterBar = "library_organization_filter_bar"
     }
 
     enum Search {
@@ -730,6 +733,8 @@ enum AccessibilityIdentifiers {
         static let shareButton = "quote_detail_share_button"
         static let sourceImageButton = "quote_detail_source_image_button"
         static let markingPickerButton = "quote_detail_marking_picker"
+        static let collectionsButton = "quote_detail_collections_button"
+        static let tagsButton = "quote_detail_tags_button"
     }
 
     enum BookEdit {

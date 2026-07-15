@@ -21,6 +21,9 @@ struct AddToCollectionSheet: View {
     /// The quote to add to collections
     @Bindable var quote: Quote
 
+    /// Optional owner-controlled dismissal used when this sheet shares a destination binding.
+    var onDismiss: (() -> Void)? = nil
+
     // MARK: - State
 
     @State private var selectedCollectionIds: Set<UUID> = []
@@ -45,7 +48,7 @@ struct AddToCollectionSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        dismiss()
+                        close()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
@@ -136,7 +139,15 @@ struct AddToCollectionSheet: View {
         quote.dateModified = Date()
 
         try? modelContext.save()
-        dismiss()
+        close()
+    }
+
+    private func close() {
+        if let onDismiss {
+            onDismiss()
+        } else {
+            dismiss()
+        }
     }
 }
 

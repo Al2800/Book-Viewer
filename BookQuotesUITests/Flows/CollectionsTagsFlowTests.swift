@@ -484,3 +484,180 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
         return navButtons.element(boundBy: navButtons.count > 0 ? navButtons.count - 1 : 0)
     }
 }
+
+/// Regression coverage for collection and tag workflows at the largest supported text size.
+final class AdaptiveCollectionsTagsLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    override func waitForAppReady() {
+        super.waitForAppReady()
+        XCTAssertTrue(tapTab(.library), "Library tab should be available")
+    }
+
+    func testLibraryOrganizationRoutesRemainReachableWithAccessibilityText() {
+        let collectionsRow = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Library.collectionsRow)
+            .firstMatch
+        XCTAssertTrue(revealForInteraction(collectionsRow), "Collections should remain reachable from Library")
+        collectionsRow.tap()
+        XCTAssertTrue(app.navigationBars["Collections"].waitForExistence(timeout: 5), "Collections should open")
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Collections.createButton].waitForExistence(timeout: 5),
+            "Create Collection should remain available"
+        )
+        app.buttons[AccessibilityIdentifiers.Collections.createButton].tap()
+
+        let collectionName = "Accessible Collection"
+        let collectionNameField = app.textFields[AccessibilityIdentifiers.Collections.nameField]
+        XCTAssertTrue(collectionNameField.waitForExistence(timeout: 5), "The collection name field should be reachable")
+        collectionNameField.tap()
+        collectionNameField.typeText(collectionName)
+        dismissKeyboard()
+        let createCollection = app.navigationBars["New Collection"].buttons["Create"]
+        XCTAssertTrue(createCollection.waitForExistence(timeout: 3) && createCollection.isEnabled)
+        createCollection.tap()
+        XCTAssertTrue(app.staticTexts[collectionName].waitForExistence(timeout: 5), "The new collection should appear")
+
+        tapBackButton()
+        let tagsRow = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Library.tagsRow)
+            .firstMatch
+        XCTAssertTrue(revealForInteraction(tagsRow), "Tags should remain reachable from Library")
+        tagsRow.tap()
+        XCTAssertTrue(app.navigationBars["Tags"].waitForExistence(timeout: 5), "Tags should open")
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Tags.addButton].waitForExistence(timeout: 5),
+            "Create Tag should remain available"
+        )
+        app.buttons[AccessibilityIdentifiers.Tags.addButton].tap()
+
+        let tagName = "accessible-tag"
+        let tagNameField = app.textFields[AccessibilityIdentifiers.Tags.nameField]
+        XCTAssertTrue(tagNameField.waitForExistence(timeout: 5), "The tag name field should be reachable")
+        tagNameField.tap()
+        tagNameField.typeText(tagName)
+        dismissKeyboard()
+        let createTag = app.navigationBars["New Tag"].buttons["Create"]
+        XCTAssertTrue(createTag.waitForExistence(timeout: 3) && createTag.isEnabled)
+        createTag.tap()
+        XCTAssertTrue(app.staticTexts[tagName].waitForExistence(timeout: 5), "The new tag should appear")
+
+        tapBackButton()
+        let collectionFilter = app.buttons[AccessibilityIdentifiers.Collections.collectionRow].firstMatch
+        let tagFilter = app.buttons[AccessibilityIdentifiers.Tags.tagChip].firstMatch
+        XCTAssertTrue(collectionFilter.waitForExistence(timeout: 5), "The new collection filter should appear")
+        XCTAssertTrue(collectionFilter.isHittable, "Collection filters should remain reachable")
+        let filterBar = app.scrollViews[AccessibilityIdentifiers.Library.organizationFilterBar]
+        XCTAssertTrue(filterBar.waitForExistence(timeout: 3), "The organization filter strip should be available")
+        filterBar.swipeLeft()
+        XCTAssertTrue(tagFilter.exists && tagFilter.isHittable, "Tag filters should remain reachable by scrolling")
+        captureScreenshot(
+            named: "accessibility_text_organization_filters",
+            description: "Collection and tag filters at accessibility text size"
+        )
+    }
+
+    func testQuoteOrganizationSheetsRemainReachableWithAccessibilityText() {
+        openFirstQuote()
+
+        let collectionsButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.collectionsButton]
+        let tagsButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.tagsButton]
+        XCTAssertTrue(revealForInteraction(collectionsButton), "The quote's Collections action should remain reachable")
+        XCTAssertTrue(tagsButton.exists && tagsButton.isHittable, "The quote's Tags action should remain reachable")
+        captureScreenshot(
+            named: "accessibility_text_quote_organization",
+            description: "Quote collection and tag actions at accessibility text size"
+        )
+
+        collectionsButton.tap()
+        XCTAssertTrue(
+            app.navigationBars["Add to Collection"].waitForExistence(timeout: 5),
+            "The collection assignment sheet should open"
+        )
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Collections.createButton].waitForExistence(timeout: 5),
+            "Create New Collection should remain available"
+        )
+        let collectionSheetNavigation = app.navigationBars["Add to Collection"]
+        collectionSheetNavigation.buttons["Cancel"].tap()
+        XCTAssertTrue(
+            waitUntil("The collection sheet should fully dismiss", timeout: 5) {
+                !collectionSheetNavigation.exists
+            }
+        )
+
+        let tagsButtonAfterDismissal = app.buttons[AccessibilityIdentifiers.QuoteDetail.tagsButton]
+        XCTAssertTrue(
+            revealForInteraction(tagsButtonAfterDismissal),
+            "The quote's Tags action should remain reachable after dismissal"
+        )
+        tagsButtonAfterDismissal.tap()
+        XCTAssertTrue(
+            app.navigationBars["Manage Tags"].waitForExistence(timeout: 5),
+            "The tag assignment sheet should open"
+        )
+        XCTAssertTrue(
+            app.buttons["Create New Tag"].waitForExistence(timeout: 5),
+            "Create New Tag should remain available"
+        )
+    }
+
+    func testQuoteTagsSheetOpensDirectlyWithAccessibilityText() {
+        openFirstQuote()
+
+        let tagsButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.tagsButton]
+        XCTAssertTrue(revealForInteraction(tagsButton), "The quote's Tags action should remain reachable")
+        tagsButton.tap()
+
+        XCTAssertTrue(
+            app.navigationBars["Manage Tags"].waitForExistence(timeout: 5),
+            "The tag assignment sheet should open directly"
+        )
+    }
+
+    private func openFirstQuote() {
+        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
+        if viewModeToggle.waitForExistence(timeout: 2), viewModeToggle.buttons.count > 1 {
+            viewModeToggle.buttons.element(boundBy: 1).tap()
+        }
+
+        let bookCandidates = [
+            app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch,
+            app.buttons[AccessibilityIdentifiers.Library.bookCoverCard].firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
+                .firstMatch,
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+                .firstMatch
+        ]
+        guard let book = bookCandidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("Library should expose a reachable book")
+            return
+        }
+        book.tap()
+
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 5),
+            "Book detail should open"
+        )
+        let quoteCandidates = [
+            app.buttons[AccessibilityIdentifiers.QuoteCard.container].firstMatch,
+            app.otherElements[AccessibilityIdentifiers.QuoteCard.container].firstMatch
+        ]
+        guard let quote = quoteCandidates.first(where: { revealForInteraction($0) }) else {
+            XCTFail("Book detail should expose a reachable quote")
+            return
+        }
+        quote.tap()
+
+        XCTAssertTrue(app.navigationBars["Quote"].waitForExistence(timeout: 5), "Quote detail should open")
+    }
+}

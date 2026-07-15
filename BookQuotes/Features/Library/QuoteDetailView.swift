@@ -24,8 +24,7 @@ struct QuoteDetailView: View {
     @State private var showMarkingPicker = false
     @State private var showShareSheet = false
     @State private var shareItems: [Any] = []
-    @State private var showCollectionsSheet = false
-    @State private var showTagsSheet = false
+    @State private var organizationSheet: OrganizationSheet?
 
     // MARK: - Editing State
 
@@ -69,11 +68,11 @@ struct QuoteDetailView: View {
                     quote: quote,
                     onCollections: {
                         HapticManager.light()
-                        showCollectionsSheet = true
+                        organizationSheet = .collections
                     },
                     onTags: {
                         HapticManager.light()
-                        showTagsSheet = true
+                        organizationSheet = .tags
                     }
                 )
                     .opacity(hasAppeared ? 1 : 0)
@@ -155,13 +154,13 @@ struct QuoteDetailView: View {
                         Divider()
 
                         Button {
-                            showCollectionsSheet = true
+                            organizationSheet = .collections
                         } label: {
                             Label("Add to Collection", systemImage: "folder.badge.plus")
                         }
 
                         Button {
-                            showTagsSheet = true
+                            organizationSheet = .tags
                         } label: {
                             Label("Manage Tags", systemImage: "tag")
                         }
@@ -233,12 +232,25 @@ struct QuoteDetailView: View {
         .sheet(isPresented: $showShareSheet) {
             QuoteShareSheet(items: shareItems)
         }
-        .sheet(isPresented: $showCollectionsSheet) {
-            AddToCollectionSheet(quote: quote)
+        .sheet(item: $organizationSheet) { destination in
+            switch destination {
+            case .collections:
+                AddToCollectionSheet(quote: quote) {
+                    organizationSheet = nil
+                }
+            case .tags:
+                AddTagToQuoteSheet(quote: quote) {
+                    organizationSheet = nil
+                }
+            }
         }
-        .sheet(isPresented: $showTagsSheet) {
-            AddTagToQuoteSheet(quote: quote)
-        }
+    }
+
+    private enum OrganizationSheet: String, Identifiable {
+        case collections
+        case tags
+
+        var id: Self { self }
     }
 
     // MARK: - Quote Section

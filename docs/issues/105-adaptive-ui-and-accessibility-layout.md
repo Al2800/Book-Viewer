@@ -61,6 +61,12 @@ The phone library grid can compress cards to 100 points while retaining status a
   Marking, and verifies the name, visual-description, and meaning fields plus the fixed Cancel
   and Save actions. The focused iPhone 17 Pro journey passed with 0 failures on 2026-07-15;
   list and editor screenshots were visually inspected for clipping and overlap.
+- [x] Accessibility XXXL collection and tag coverage now creates both organization types,
+  reaches their horizontally scrolling Library filters, and opens the quote assignment sheets.
+  Quote organization actions reflow into full-width controls, and dismissing the collection
+  sheet no longer prevents the tag sheet from opening. Three focused iPhone 17 Pro tests passed
+  with 0 failures on 2026-07-15; the quote action screenshot was visually inspected for clipping
+  and overlap.
 - [x] Simulator screenshots were visually inspected for the iPhone accessibility-text and iPad
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list

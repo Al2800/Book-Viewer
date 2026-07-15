@@ -192,6 +192,9 @@ struct AddTagToQuoteSheet: View {
 
     @Bindable var quote: Quote
 
+    /// Optional owner-controlled dismissal used when this sheet shares a destination binding.
+    var onDismiss: (() -> Void)? = nil
+
     // MARK: - State
 
     @State private var selectedTagIds: Set<UUID> = []
@@ -251,7 +254,7 @@ struct AddTagToQuoteSheet: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        dismiss()
+                        close()
                     }
                 }
             }
@@ -280,6 +283,14 @@ struct AddTagToQuoteSheet: View {
     private func removeTag(_ tag: Tag) {
         QuoteTagMutation().remove(tag, from: quote)
         try? modelContext.save()
+    }
+
+    private func close() {
+        if let onDismiss {
+            onDismiss()
+        } else {
+            dismiss()
+        }
     }
 }
 

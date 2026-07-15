@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct QuoteDetailOrganizeSection: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let quote: Quote
     let onCollections: () -> Void
     let onTags: () -> Void
@@ -32,21 +34,48 @@ struct QuoteDetailOrganizeSection: View {
                 }
             }
 
-            HStack(spacing: Spacing.sm) {
-                Button(action: onCollections) {
-                    Label("Collections", systemImage: "folder.badge.plus")
-                }
-                .buttonStyle(.secondaryCompact)
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Button(action: onCollections) {
+                        accessibilityActionLabel(title: "Collections", systemImage: "folder.badge.plus")
+                    }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.collectionsButton)
 
-                Button(action: onTags) {
-                    Label("Tags", systemImage: "tag")
+                    Button(action: onTags) {
+                        accessibilityActionLabel(title: "Tags", systemImage: "tag")
+                    }
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.tagsButton)
                 }
-                .buttonStyle(.secondaryCompact)
+                .buttonStyle(.secondary)
+            } else {
+                HStack(spacing: Spacing.sm) {
+                    Button(action: onCollections) {
+                        Label("Collections", systemImage: "folder.badge.plus")
+                    }
+                    .buttonStyle(.secondaryCompact)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.collectionsButton)
+
+                    Button(action: onTags) {
+                        Label("Tags", systemImage: "tag")
+                    }
+                    .buttonStyle(.secondaryCompact)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.tagsButton)
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.lg)
         .paperCard()
+    }
+
+    private func accessibilityActionLabel(title: String, systemImage: String) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Image(systemName: systemImage)
+            Text(title)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 }
 

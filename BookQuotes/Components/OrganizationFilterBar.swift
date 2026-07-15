@@ -38,6 +38,7 @@ struct OrganizationFilterBar: View {
                 }
                 .padding(.horizontal, Spacing.md)
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Library.organizationFilterBar)
             .padding(.vertical, Spacing.xs)
             .background(Color.backgroundSecondary.opacity(0.3))
         }
