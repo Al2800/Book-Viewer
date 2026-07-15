@@ -20,11 +20,18 @@ struct VisionPageTextRecognizer: PageTextRecognizing {
                     guard let candidate = observation.topCandidates(1).first else { return nil }
                     let text = candidate.string.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !text.isEmpty else { return nil }
+                    let normalizedBoundingBox = Self.normalizedTopLeftRect(
+                        from: observation.boundingBox
+                    )
 
                     return RecognizedTextLine(
                         text: text,
                         confidence: Double(candidate.confidence),
-                        boundingBox: Self.pixelRect(from: observation.boundingBox, imageSize: imageSize)
+                        boundingBox: Self.pixelRect(
+                            from: normalizedBoundingBox,
+                            imageSize: imageSize
+                        ),
+                        normalizedBoundingBox: normalizedBoundingBox
                     )
                 }
                 .sorted { lhs, rhs in
@@ -52,12 +59,21 @@ struct VisionPageTextRecognizer: PageTextRecognizing {
         }
     }
 
-    private static func pixelRect(from visionRect: CGRect, imageSize: CGSize) -> CGRect {
+    static func normalizedTopLeftRect(from visionRect: CGRect) -> CGRect {
         CGRect(
-            x: visionRect.minX * imageSize.width,
-            y: (1 - visionRect.maxY) * imageSize.height,
-            width: visionRect.width * imageSize.width,
-            height: visionRect.height * imageSize.height
+            x: visionRect.minX,
+            y: 1 - visionRect.maxY,
+            width: visionRect.width,
+            height: visionRect.height
+        )
+    }
+
+    static func pixelRect(from normalizedTopLeftRect: CGRect, imageSize: CGSize) -> CGRect {
+        CGRect(
+            x: normalizedTopLeftRect.minX * imageSize.width,
+            y: normalizedTopLeftRect.minY * imageSize.height,
+            width: normalizedTopLeftRect.width * imageSize.width,
+            height: normalizedTopLeftRect.height * imageSize.height
         )
     }
 

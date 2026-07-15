@@ -91,6 +91,11 @@
   skip; the quote-review UI smoke also passed (1 test, 0 failures, 0 skips). Result bundles:
   `/tmp/BookQuotes-confidence-mark-family-2026-07-15.xcresult` and
   `/tmp/BookQuotes-confidence-review-ui-2026-07-15.xcresult`.
+- Vision OCR now retains both top-left normalized and image-pixel bounding boxes for every
+  recognized line. Existing mark geometry continues using pixels, while the normalized rectangle
+  remains available to the extraction pipeline. The complete on-device extractor suite passed:
+  30 tests, 0 failures, and 1 documented local-photo fixture skip. Result bundle:
+  `/tmp/BookQuotes-on-device-normalized-bounds-2026-07-15.xcresult`.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,

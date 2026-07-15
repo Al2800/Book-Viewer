@@ -39,9 +39,9 @@ The pipeline should return the same quote-review data shape the app already expe
 
 ## Acceptance Criteria
 
-- [ ] A dedicated on-device quote extraction module exists behind a small public interface that accepts a page image plus enabled marking definitions and returns `QuoteExtractionResult` or an equivalent adapter into the existing review state.
-- [ ] Apple Vision OCR is used for raw text recognition and exposes recognized text, confidence, and normalized bounding boxes to the quote extraction pipeline.
-- [ ] The pipeline detects at least these mark families locally:
+- [x] A dedicated on-device quote extraction module exists behind a small public interface that accepts a page image plus enabled marking definitions and returns `QuoteExtractionResult` or an equivalent adapter into the existing review state.
+- [x] Apple Vision OCR is used for raw text recognition and exposes recognized text, confidence, and normalized bounding boxes to the quote extraction pipeline.
+- [x] The pipeline detects at least these mark families locally:
   - underline / double underline
   - highlighted text regions
   - margin line / vertical side mark
@@ -232,6 +232,18 @@ None - can start immediately.
   bundles: `/tmp/BookQuotes-confidence-scoring-2026-07-15.xcresult`,
   `/tmp/BookQuotes-confidence-mark-family-2026-07-15.xcresult`, and
   `/tmp/BookQuotes-confidence-review-ui-2026-07-15.xcresult`.
+
+2026-07-15 normalized-bounds follow-up:
+
+- `RecognizedTextLine` now retains both the top-left normalized Vision rectangle and the existing
+  pixel rectangle used by deterministic mark geometry. This keeps the local selector's coordinate
+  system stable while exposing portable OCR coordinates to the extraction pipeline.
+- A focused conversion test proves Vision's bottom-left normalized rectangle becomes the expected
+  top-left normalized and pixel coordinates. The full on-device extractor suite passed: 30 tests
+  passed, 0 failures, and 1 documented local-photo fixture skip on iPhone 17 / iOS 26.5. Result
+  bundle: `/tmp/BookQuotes-on-device-normalized-bounds-2026-07-15.xcresult`.
+- This closes the local module, Vision OCR metadata, and mark-family criteria. Representative
+  real photographed pages and handwritten margin annotations remain open validation work.
 
 ## Verification Results
 

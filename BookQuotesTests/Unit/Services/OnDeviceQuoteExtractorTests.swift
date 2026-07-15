@@ -5,6 +5,29 @@ import XCTest
 
 final class OnDeviceQuoteExtractorTests: XCTestCase {
 
+    func testVisionTextRecognizerRetainsNormalizedAndPixelBoundingBoxes() {
+        let visionRect = CGRect(x: 0.12, y: 0.30, width: 0.45, height: 0.20)
+        let normalizedRect = VisionPageTextRecognizer.normalizedTopLeftRect(from: visionRect)
+        let pixelRect = VisionPageTextRecognizer.pixelRect(
+            from: normalizedRect,
+            imageSize: CGSize(width: 2_000, height: 1_000)
+        )
+        let line = RecognizedTextLine(
+            text: "A marked passage",
+            confidence: 0.94,
+            boundingBox: pixelRect,
+            normalizedBoundingBox: normalizedRect
+        )
+
+        XCTAssertEqual(normalizedRect.origin.x, 0.12, accuracy: 0.0001)
+        XCTAssertEqual(normalizedRect.origin.y, 0.50, accuracy: 0.0001)
+        XCTAssertEqual(normalizedRect.width, 0.45, accuracy: 0.0001)
+        XCTAssertEqual(normalizedRect.height, 0.20, accuracy: 0.0001)
+        XCTAssertEqual(pixelRect, CGRect(x: 240, y: 500, width: 900, height: 200))
+        XCTAssertEqual(line.normalizedBoundingBox, normalizedRect)
+        XCTAssertEqual(line.boundingBox, pixelRect)
+    }
+
     func testExtractsUnderlinedTextFromSyntheticPageWithoutNetwork() async throws {
         let image = OnDeviceQuoteExtractorTestImage.underlinedPage()
         let extractor = OnDeviceQuoteExtractor()

@@ -18,7 +18,22 @@ protocol PageMarkDetecting: Sendable {
 struct RecognizedTextLine: Sendable, Equatable {
     let text: String
     let confidence: Double
+    /// Pixel coordinates in the normalized image, used by local mark geometry.
     let boundingBox: CGRect
+    /// Top-left normalized coordinates from Vision, retained for downstream consumers.
+    let normalizedBoundingBox: CGRect?
+
+    init(
+        text: String,
+        confidence: Double,
+        boundingBox: CGRect,
+        normalizedBoundingBox: CGRect? = nil
+    ) {
+        self.text = text
+        self.confidence = confidence
+        self.boundingBox = boundingBox
+        self.normalizedBoundingBox = normalizedBoundingBox
+    }
 }
 
 struct DetectedPageMark: Sendable, Equatable {
