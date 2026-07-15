@@ -62,7 +62,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 | UI | SwiftUI (iOS 17+, iOS 26 Liquid Glass ready) |
 | Architecture | MV pattern (Model-View) |
 | Persistence | SwiftData (local-first in v1; Cloud sync planned) |
-| AI | Google Gemini API (proxied via BookQuotes backend) |
+| AI | Apple Vision OCR, Hugging Face quote extraction, and Google Gemini cover extraction |
 | Camera | AVFoundation |
 
 ## Documentation
@@ -127,10 +127,12 @@ BookQuotes/
 
 ## Privacy
 
-- **Your images**: Sent to the BookQuotes proxy and then to Gemini for processing; not stored after processing
-- **Your data**: Stored locally on device in this v1 release
-- **Minimal account data**: Apple Sign-In identifier, optional email relay, and subscription status only
-- **No analytics**: No tracking, no telemetry, no ad network SDKs
+Read the full [BookQuotes Privacy Policy](PRIVACY.md).
+
+- **Local-first library**: Books, quotes, tags, collections, and retained source images stay on-device.
+- **Optional remote processing**: After explicit consent, marked pages use Hugging Face Inference and covers use Google Gemini.
+- **Minimal account data**: Apple Sign-In identifier, optional email relay, subscription state, and service-limit usage records.
+- **No tracking or advertising**: No analytics, advertising identifiers, or ad network SDKs.
 
 ## Supported Marking Styles
 
@@ -149,4 +151,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-Built with SwiftUI and powered by Gemini AI.
+Built with SwiftUI, Apple Vision, Hugging Face Inference, and Google Gemini.
