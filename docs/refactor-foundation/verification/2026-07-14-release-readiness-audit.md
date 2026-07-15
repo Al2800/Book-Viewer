@@ -47,10 +47,12 @@
 - The direct quote-editor typing test also passed on iPad Air 11-inch (M4), iOS 26.5: 1 test,
   0 failures, 0 skips in 90.072 seconds. Result bundle:
   `/tmp/bookquotes-quote-editor-ipad-2026-07-15.xcresult`.
-- The full app-unit gate passed on 2026-07-15 with a complete, readable result bundle:
-  615 tests passed, 0 failed, and 1 skipped in 242.649 seconds on iPhone 17. The skip is the
+- The full app-unit gate passed again on 2026-07-15 after the remote-image budget change with a
+  complete, readable result bundle: 616 tests passed, 0 failed, and 1 skipped in 204.243 seconds
+  on iPhone 17 / iOS 26.5. The skip is the
   documented local-only real-book-photo fixture (`testRealBookFixtureExtractsUnderlinedPassageWhenProvided`).
-  Result bundle: `/tmp/BookQuotes-app-unit-2026-07-15.xcresult` (`Info.plist` verified present).
+  Result bundle: `/tmp/BookQuotes-app-unit-2026-07-15-post-upload-budget.xcresult`
+  (`Info.plist` verified present).
 - Backend tests and typecheck passed: 39 tests, 0 failures.
 - Production Worker deployment tooling is now on Wrangler 4 / Worker types 5 / Vitest 4, with
   Node 22.12+ compatibility verified. The full backend suite passed and
