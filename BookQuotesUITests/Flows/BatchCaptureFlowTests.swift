@@ -236,3 +236,52 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         }
     }
 }
+
+/// Regression coverage for multi-page capture at the largest supported text size.
+final class AdaptiveBatchCaptureLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "--mock-camera",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    func testBatchCaptureControlsRemainReachableWithAccessibilityText() {
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
+
+        let batchMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectBatch]
+        XCTAssertTrue(batchMode.waitForExistence(timeout: 5), "Capture should offer batch mode")
+        XCTAssertTrue(reveal(batchMode), "Batch mode should remain reachable after scrolling")
+        batchMode.tap()
+
+        let book = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
+        XCTAssertTrue(book.waitForExistence(timeout: 5), "Seeded library should provide a book")
+        XCTAssertTrue(book.isHittable, "Batch book selection should remain reachable")
+        book.tap()
+
+        let testImage = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        let done = app.buttons[AccessibilityIdentifiers.Capture.doneButton]
+        XCTAssertTrue(testImage.waitForExistence(timeout: 5), "Batch capture should provide Use Test Image")
+        XCTAssertTrue(testImage.isHittable, "Batch capture action should remain reachable")
+        XCTAssertTrue(done.waitForExistence(timeout: 5), "Batch capture should provide Done")
+        XCTAssertTrue(done.isHittable, "Batch Done action should remain reachable")
+
+        testImage.tap()
+
+        let thumbnail = app.buttons[AccessibilityIdentifiers.Capture.thumbnail].firstMatch
+        XCTAssertTrue(thumbnail.waitForExistence(timeout: 8), "Captured batch page should create a thumbnail")
+        XCTAssertTrue(thumbnail.isHittable, "Captured page thumbnail should remain reachable")
+        captureScreenshot(named: "accessibility_text_batch_capture", description: "Batch capture at accessibility text size")
+    }
+
+    private func reveal(_ element: XCUIElement) -> Bool {
+        for _ in 0..<6 {
+            if element.exists && element.isHittable { return true }
+            app.swipeUp()
+        }
+        return element.exists && element.isHittable
+    }
+}

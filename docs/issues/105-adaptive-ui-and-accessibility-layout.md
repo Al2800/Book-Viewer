@@ -28,6 +28,13 @@ The phone library grid can compress cards to 100 points while retaining status a
   Settings actions and the title, publisher, and Add Book controls remain reachable; the form
   scrolls to fully visible optional fields when needed (2 focused tests passed, 0 failed on
   2026-07-15).
+- [x] iPhone 17 UI tests at `UICTContentSizeCategoryAccessibilityXXXL` cover quote search,
+  opening a result, and entering the quote editor. The result row, detail actions, and editor
+  remain reachable (1 focused test passed, 0 failed on 2026-07-15).
+- [x] iPhone 17 UI test at `UICTContentSizeCategoryAccessibilityXXXL` covers batch capture
+  entry, book selection, capture, Done, and the captured-page thumbnail. Batch mode is
+  reachable after scrolling at the largest text size (1 focused test passed, 0 failed on
+  2026-07-15).
 - [x] Manual book entry now places required book details above the optional cover panel, so its
   title field is immediately visible at accessibility text sizes. Edit and populated
   metadata-confirmation forms retain their cover-first order. The large-text regression,

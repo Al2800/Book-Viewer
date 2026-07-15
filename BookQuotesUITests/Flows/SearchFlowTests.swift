@@ -195,3 +195,60 @@ final class SearchFlowTests: BaseUITestCase {
         return false
     }
 }
+
+/// Regression coverage for Search and quote detail at the largest supported text size.
+final class AdaptiveSearchAndQuoteDetailLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-search-test-data",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    override func waitForAppReady() {
+        super.waitForAppReady()
+        XCTAssertTrue(tapTab(.library), "Library tab should be available")
+    }
+
+    func testSearchAndQuoteEditorRemainReachableWithAccessibilityText() {
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5), "Search should be available")
+        XCTAssertTrue(searchField.isHittable, "Search should remain reachable")
+        searchField.tap()
+        app.typeText(UITestData.SearchTokens.improvement)
+
+        let quoteResult = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Search.quoteResultRow)
+            .firstMatch
+        XCTAssertTrue(quoteResult.waitForExistence(timeout: 8), "Seeded quote search should return a quote row")
+        XCTAssertTrue(reveal(quoteResult), "Quote result should remain reachable")
+        captureScreenshot(named: "accessibility_text_search", description: "Quote search at accessibility text size")
+        quoteResult.tap()
+
+        let favorite = app.buttons[AccessibilityIdentifiers.QuoteDetail.favoriteButton]
+        XCTAssertTrue(favorite.waitForExistence(timeout: 6), "Quote detail should open from search")
+        XCTAssertTrue(favorite.isHittable, "Quote detail favorite control should remain reachable")
+
+        let moreMenu = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
+        XCTAssertTrue(moreMenu.waitForExistence(timeout: 5), "Quote detail should expose its actions")
+        moreMenu.tap()
+
+        let edit = app.buttons["Edit"]
+        XCTAssertTrue(edit.waitForExistence(timeout: 5), "Quote detail should offer editing")
+        edit.tap()
+
+        let editor = app.textViews[AccessibilityIdentifiers.QuoteDetail.textEditor]
+        XCTAssertTrue(editor.waitForExistence(timeout: 5), "Quote editor should open")
+        XCTAssertTrue(reveal(editor), "Quote editor should remain reachable")
+    }
+
+    private func reveal(_ element: XCUIElement) -> Bool {
+        for _ in 0..<6 {
+            if element.exists && element.isHittable { return true }
+            app.swipeUp()
+        }
+        return element.exists && element.isHittable
+    }
+}
