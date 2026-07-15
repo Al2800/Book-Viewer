@@ -51,8 +51,11 @@
 
 ## Submission Blockers
 
-1. Confirm the deployed Worker uses the approved Hugging Face provider route and record the
-   Hugging Face and Gemini retention/zero-data-retention evidence. See issue `095`.
+1. Provision the three missing App Store Server API secrets (`APPLE_IAP_KEY_ID`,
+   `APPLE_IAP_ISSUER_ID`, and `APPLE_IAP_PRIVATE_KEY`), then deploy the preflight-verified
+   Worker. The currently deployed June Worker has `ALLOW_AUTHENTICATED_EXTRACTION=true` and no
+   atomic limiter binding; it is not the release configuration. After deployment, confirm the
+   pinned `hf-inference` route and record Hugging Face/Gemini retention evidence. See issue `095`.
 2. Run the staging load test for Durable Object extraction limits and the deployed-Worker
    account-deletion check. See issues `102` and `099`.
 3. Test the next TestFlight build on physical hardware:

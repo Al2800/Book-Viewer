@@ -46,3 +46,17 @@ recorded by the account owner.
 - Full backend verification passed: 36 tests, 0 failures; `npm run typecheck` passed.
 - Deployment configuration review and recorded Hugging Face/Gemini retention evidence remain
   required before submission.
+
+2026-07-15 production inspection and deployment-preflight follow-up:
+
+- Read-only Cloudflare inspection found the active production Worker version dated 2026-06-07.
+  It has `HF_API_TOKEN` and `HF_MODEL_ID` configured, but still exposes the old deployment shape:
+  `ALLOW_AUTHENTICATED_EXTRACTION=true` and no `EXTRACTION_LIMITER` binding.
+- `backend/wrangler.toml` now makes the production contract explicit: subscription bypass is
+  `false`, quote pages are pinned to `Qwen/Qwen2.5-VL-72B-Instruct:hf-inference`, the bundle ID
+  is pinned for Apple Sign-In audience validation, and the atomic limiter binding is present.
+- `wrangler deploy --env production --dry-run` verified that the next deployment contains the
+  Durable Object, production KV namespace, disabled bypass, approved model route, and bundle ID.
+- The production secret inventory is missing `APPLE_IAP_KEY_ID`, `APPLE_IAP_ISSUER_ID`, and
+  `APPLE_IAP_PRIVATE_KEY`. Provision those App Store Server API credentials before deploying the
+  subscription-gated production Worker; do not substitute placeholder values.
