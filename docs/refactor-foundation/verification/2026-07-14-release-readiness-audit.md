@@ -109,6 +109,12 @@
 - The direct quote-editor typing test also passed on iPad Air 11-inch (M4), iOS 26.5: 1 test,
   0 failures, 0 skips in 90.072 seconds. Result bundle:
   `/tmp/bookquotes-quote-editor-ipad-2026-07-15.xcresult`.
+- A physical iPhone 17 / iOS 26.5.2 passed quote-editor typing and Save All navigation, plus
+  multi-page Process-to-Review and Save Draft-to-Resume (4 UI tests, 0 failures). A focused unit
+  test on the same device directly verified that a saved capture file and its directory use
+  `completeUntilFirstUserAuthentication` protection, are excluded from backup, and are removed
+  by the lifecycle cleanup (1 test, 0 failures). This closes issue `096`; issue `097` still needs
+  the manual TestFlight network-loss interruption.
 - The full app-unit gate passed again on 2026-07-15 after the remote-image budget change with a
   complete, readable result bundle: 616 tests passed, 0 failed, and 1 skipped in 204.243 seconds
   on iPhone 17 / iOS 26.5. The skip is the

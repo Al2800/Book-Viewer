@@ -37,3 +37,9 @@ Offline batch capture records the same page in the interactive session and retry
 - 32 queue, offline-flow, and extraction-review tests passed on iPhone 17 / iOS 26.5 with no
   failures or skips. A physical-device network-loss run during a multi-page session remains a
   manual release verification step.
+
+2026-07-15:
+
+- A physical iPhone 17 / iOS 26.5.2 completed the mocked multi-page Process-to-Review workflow
+  and the Save Draft-to-Resume workflow (2 tests, 0 failures). The real network-loss interruption
+  check remains open because it requires manual connectivity changes in a TestFlight build.

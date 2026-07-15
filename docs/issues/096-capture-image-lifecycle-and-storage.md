@@ -1,6 +1,6 @@
 # 096 - Define and enforce the captured-page image lifecycle
 
-Status: in_progress
+Status: closed
 Area: Capture / Storage / Privacy
 Priority: critical (release blocker 2)
 
@@ -19,9 +19,9 @@ Full page images remain in Documents after extraction, quote saving, and book de
 
 ## Verification
 
-- File-lifecycle unit tests for save, retry, delete, and cache-clear paths.
-- Migration/cleanup test for existing orphan files.
-- Device storage and backup inspection.
+- [x] File-lifecycle unit tests for save, retry, delete, and cache-clear paths.
+- [x] Migration/cleanup test for existing orphan files.
+- [x] Device storage and backup inspection.
 
 ## Progress
 
@@ -31,4 +31,11 @@ Full page images remain in Documents after extraction, quote saving, and book de
 - Successful reviewed saves and successful queue processing remove full page images.
 - Book deletion removes owned session/queue records and their image files.
 - Cache clearing removes only orphan capture/queue files and reports actual image bytes.
-- 22 focused PageCapture/CaptureQueue tests passed. Real-device backup inspection remains.
+- 22 focused PageCapture/CaptureQueue tests passed.
+
+2026-07-15:
+
+- A focused test ran on a physical iPhone 17 / iOS 26.5.2 and inspected the actual device-volume
+  metadata for a newly saved capture. Both the image and its directory used
+  `completeUntilFirstUserAuthentication` protection and were excluded from backup; image deletion
+  also succeeded (1 test, 0 failures). This closes the remaining device inspection.

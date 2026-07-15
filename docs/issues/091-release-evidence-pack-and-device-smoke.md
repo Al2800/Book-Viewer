@@ -71,3 +71,7 @@ The evidence must cover both local verification and real-device TestFlight behav
   managed build value is `39`; it was exported locally, not uploaded. The retained command,
   export profile, and remaining external gates are in
   `docs/refactor-foundation/verification/2026-07-15-signed-release-preflight.md`.
+- A physical iPhone 17 / iOS 26.5.2 passed quote-editor keyboard typing and Save All navigation
+  (2 tests, 0 failures), plus multi-page Process-to-Review and Save Draft-to-Resume workflows
+  (2 tests, 0 failures). These are local development-build checks with deterministic fixtures;
+  production subscription, remote AI, network-loss, and account-deletion TestFlight checks remain.

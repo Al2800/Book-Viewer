@@ -121,9 +121,22 @@ final class PageCaptureTests: SwiftDataTestCase {
         try PageCapture.saveImage(Data([0x01, 0x02, 0x03]), to: imagePath)
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: imageURL.path))
+        let captureDirectoryURL = imageURL.deletingLastPathComponent()
         XCTAssertEqual(
             try imageURL.resourceValues(forKeys: [.isExcludedFromBackupKey]).isExcludedFromBackup,
             true
+        )
+        XCTAssertEqual(
+            try captureDirectoryURL.resourceValues(forKeys: [.isExcludedFromBackupKey]).isExcludedFromBackup,
+            true
+        )
+        XCTAssertEqual(
+            try FileManager.default.attributesOfItem(atPath: imageURL.path)[.protectionKey] as? FileProtectionType,
+            .completeUntilFirstUserAuthentication
+        )
+        XCTAssertEqual(
+            try FileManager.default.attributesOfItem(atPath: captureDirectoryURL.path)[.protectionKey] as? FileProtectionType,
+            .completeUntilFirstUserAuthentication
         )
 
         XCTAssertTrue(capture.deleteImageFile())

@@ -105,7 +105,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `093-third-party-ai-explicit-consent.md` - in_progress
 - `094-privacy-declarations-behavior-alignment.md` - in_progress
 - `095-ai-provider-routing-and-retention-contract.md` - in_progress
-- `096-capture-image-lifecycle-and-storage.md` - in_progress
+- `096-capture-image-lifecycle-and-storage.md` - closed
 - `097-offline-capture-queue-and-draft-integrity.md` - in_progress
 - `098-real-library-backup-and-restore.md` - closed
 - `099-account-deletion-session-revocation.md` - in_progress
