@@ -13,7 +13,8 @@ import XCTest
 /// Non-goals:
 /// - Full HTTP spec compliance.
 /// - Streaming bodies / chunked transfer encoding.
-final class HermeticHTTPServer {
+// Socket state is confined to `queue`; route and observation state use `LockedState`.
+final class HermeticHTTPServer: @unchecked Sendable {
 
     struct Request: Sendable {
         let method: String
@@ -252,7 +253,7 @@ final class HermeticHTTPServer {
                 self.requestsLog.withLock { $0.append(self.redact(request: request)) }
                 return self.dispatch(request)
             } onClose: { [weak self] fd in
-                self?.clients.withLock { $0.removeValue(forKey: fd) }
+                _ = self?.clients.withLock { $0.removeValue(forKey: fd) }
             }
 
             clients.withLock { $0[clientFD] = client }

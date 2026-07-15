@@ -192,13 +192,10 @@ final class BookModelTests: SwiftDataTestCase {
         try insertBook(book)
 
         let fetched = try XCTUnwrap(fetchAllBooks().first)
-        // Note: TestFixtures adds default cover, but raw Book init doesn't
-        // This test verifies raw init behavior
-        let rawBook = Book(title: "Raw", author: "Author")
-        XCTAssertNil(rawBook.coverThumbnailData)
-        XCTAssertNil(rawBook.coverFullData)
+        XCTAssertNil(fetched.coverThumbnailData)
+        XCTAssertNil(fetched.coverFullData)
 
-        logger.success("Cover image nil by default for raw init")
+        logger.success("Default cover image state persists")
     }
 
     // MARK: - Date Tests

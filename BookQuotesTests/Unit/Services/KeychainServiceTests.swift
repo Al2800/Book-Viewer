@@ -513,25 +513,3 @@ final class KeychainServiceTests: XCTestCase {
         logger.success("Shared instance shares keychain state")
     }
 }
-
-// MARK: - KeychainError Equatable
-
-extension KeychainService.KeychainError: Equatable {
-    public static func == (lhs: KeychainService.KeychainError, rhs: KeychainService.KeychainError) -> Bool {
-        switch (lhs, rhs) {
-        case (.saveFailed(let s1), .saveFailed(let s2)):
-            return s1 == s2
-        case (.readFailed(let s1), .readFailed(let s2)):
-            return s1 == s2
-        case (.deleteFailed(let s1), .deleteFailed(let s2)):
-            return s1 == s2
-        case (.dataEncodingFailed, .dataEncodingFailed),
-             (.dataDecodingFailed, .dataDecodingFailed),
-             (.itemNotFound, .itemNotFound),
-             (.unexpectedData, .unexpectedData):
-            return true
-        default:
-            return false
-        }
-    }
-}

@@ -97,21 +97,16 @@ final class ScreenshotCapture {
 
     // MARK: - Helpers
 
-    /// Safe screenshot that won't throw even if UI isn't fully loaded.
-    /// - Returns: Screenshot attachment if successful, nil otherwise.
-    func safeCaptureScreen() -> XCTAttachment? {
-        do {
-            let screenshot = try app.screenshot()
-            let attachment = XCTAttachment(screenshot: screenshot)
-            attachment.name = "\(sanitizedTestName)_safe_capture_\(captureCount)"
-            attachment.lifetime = .keepAlways
-            captureCount += 1
-            saveScreenshot(screenshot, name: "safe_capture_\(captureCount)")
-            return attachment
-        } catch {
-            print("⚠️ Safe screenshot capture failed: \(error)")
-            return nil
-        }
+    /// Capture the current application screen using XCTest's nonthrowing API.
+    /// - Returns: The screenshot attachment.
+    func safeCaptureScreen() -> XCTAttachment {
+        let screenshot = app.screenshot()
+        let attachment = XCTAttachment(screenshot: screenshot)
+        attachment.name = "\(sanitizedTestName)_safe_capture_\(captureCount)"
+        attachment.lifetime = .keepAlways
+        captureCount += 1
+        saveScreenshot(screenshot, name: "safe_capture_\(captureCount)")
+        return attachment
     }
 
     private var sanitizedTestName: String {

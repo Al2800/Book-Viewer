@@ -10,7 +10,7 @@ final class KeychainService: Sendable {
     // MARK: - Types
 
     /// Keychain storage errors
-    enum KeychainError: LocalizedError {
+    enum KeychainError: LocalizedError, Equatable, Sendable {
         case saveFailed(OSStatus)
         case readFailed(OSStatus)
         case deleteFailed(OSStatus)
