@@ -3,25 +3,48 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const https = require("https");
+const os = require("os");
+const path = require("path");
 
-const DEFAULT_CONFIG_PATH =
-  "/Volumes/Macintosh_HD/Users/user298279/.appstoreconnect/config.json";
+const DEFAULT_CONFIG_PATH = path.join(os.homedir(), ".appstoreconnect", "config.json");
 const DEFAULT_BUNDLE_ID = "com.acampbell.bookquotes";
 
 const args = new Set(process.argv.slice(2));
-const configPath = process.env.ASC_CONFIG_PATH || DEFAULT_CONFIG_PATH;
+const configPath = expandHomeDirectory(process.env.ASC_CONFIG_PATH || DEFAULT_CONFIG_PATH);
 const appIdOverride = process.env.ASC_APP_ID;
 const bundleId = process.env.ASC_BUNDLE_ID || DEFAULT_BUNDLE_ID;
 const buildNumber = process.env.BUILD_NUMBER || process.env.ASC_BUILD_NUMBER || "22";
 const shouldSetEncryptionFalse = args.has("--set-encryption-false");
 
+function expandHomeDirectory(filePath) {
+  if (filePath === "~") {
+    return os.homedir();
+  }
+
+  return filePath.startsWith("~/")
+    ? path.join(os.homedir(), filePath.slice(2))
+    : filePath;
+}
+
 function loadConfig() {
-  const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  let config;
+  try {
+    config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      throw new Error(
+        `App Store Connect config not found at ${configPath}. Create it there or set ASC_CONFIG_PATH.`
+      );
+    }
+    throw error;
+  }
+
   for (const key of ["issuerId", "keyId", "privateKeyPath"]) {
     if (!config[key]) {
       throw new Error(`Missing ${key} in ${configPath}`);
     }
   }
+  config.privateKeyPath = expandHomeDirectory(config.privateKeyPath);
   return config;
 }
 
@@ -170,21 +193,22 @@ async function getGroups(config, appId) {
       config,
       "GET",
       `/v1/betaGroups/${group.id}/betaTesters?${query({
-        "fields[betaTesters]": "firstName,lastName,email",
-        limit: "200",
+        limit: "1",
       })}`
     );
+
+    const testerCount =
+      testersResponse.status === 200
+        ? (testersResponse.body.meta?.paging?.total ??
+          (testersResponse.body.data || []).length)
+        : null;
 
     groupDetails.push({
       id: group.id,
       ...group.attributes,
-      testers:
-        testersResponse.status === 200
-          ? (testersResponse.body.data || []).map((tester) => ({
-              id: tester.id,
-              ...tester.attributes,
-            }))
-          : { status: testersResponse.status, body: testersResponse.body },
+      testerCount,
+      testerLookupStatus:
+        testersResponse.status === 200 ? "ok" : testersResponse.status,
     });
   }
 
@@ -223,11 +247,6 @@ async function main() {
         appId,
         bundleId,
         requestedBuildNumber: buildNumber,
-        config: {
-          keyId: config.keyId,
-          privateKeyPath: config.privateKeyPath,
-          subject: config.subject || null,
-        },
         builds: refreshedBuilds.map((build) => ({ id: build.id, ...build.attributes })),
         betaGroups: groups,
       },

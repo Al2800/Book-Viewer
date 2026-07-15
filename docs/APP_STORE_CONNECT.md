@@ -10,20 +10,21 @@ Expected local config:
 ~/.appstoreconnect/config.json
 ```
 
-Current working shape:
+Config shape:
 
 ```json
 {
-  "issuerId": "45e5d092-22b3-47d7-95f5-04dbb8c6ca94",
-  "keyId": "2DTSJAJ0SZB9",
-  "privateKeyPath": "/Volumes/Macintosh_HD/Users/user298279/.appstoreconnect/private_keys/AuthKey_2DTSJAJ0SZB9.p8",
+  "issuerId": "<issuer-id>",
+  "keyId": "<key-id>",
+  "privateKeyPath": "~/.appstoreconnect/private_keys/AuthKey_<key-id>.p8",
   "subject": "user"
 }
 ```
 
 `subject: "user"` is required for the local individual App Store Connect key. Without it, direct REST calls return `401 NOT_AUTHORIZED`.
 
-The team key ID `6JS7J77LTP` was provided, but the matching local private key file was not found. Use that key ID only if `AuthKey_6JS7J77LTP.p8` is also available.
+Keep this file and its `.p8` private key outside the repository. The helper expands `~/` in both
+the config location and `privateKeyPath`.
 
 ## Status Helper
 
@@ -50,6 +51,8 @@ The helper reads `~/.appstoreconnect/config.json` by default. Override with:
 ```bash
 ASC_CONFIG_PATH=/path/to/config.json node scripts/appstoreconnect_status.js
 ```
+
+Status output intentionally omits local private-key paths and individual TestFlight tester data.
 
 ## App Privacy Questionnaire
 

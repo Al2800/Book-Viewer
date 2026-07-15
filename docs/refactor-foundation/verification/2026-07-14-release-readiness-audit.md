@@ -116,6 +116,10 @@
   `npm audit --audit-level=moderate` reports zero vulnerabilities.
 - A tracked-file secret-pattern scan found no credential material. The only match is the expected
   private-key format validation in `backend/src/subscription.ts`.
+- The App Store Connect status helper now defaults to the active Mac user's local configuration,
+  supports `~/` private-key paths, and permits an explicit `ASC_CONFIG_PATH` override. Its status
+  output omits local private-key paths and individual TestFlight tester data, reducing accidental
+  credential-location and personal-data exposure in release logs.
 
 ## Submission Blockers
 
