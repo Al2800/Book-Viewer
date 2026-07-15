@@ -84,3 +84,13 @@ future Xcode upgrade becoming a blocking migration.
   17 Pro / iOS 26.5.
 - Quote, cover, and batch camera UI smoke tests passed 3 tests, 0 failures, and 0 skips.
 - A clean Release simulator build completed without camera deprecation or session-capture warnings.
+
+2026-07-15 cover Vision isolation slice:
+
+- Constructed and executed each Vision request and request handler on the same worker queue, so
+  non-Sendable framework objects no longer cross concurrency boundaries.
+- Reworked the synthetic-cover integration test to call the shipping OCR fallback instead of a
+  duplicate test implementation.
+- The production OCR, normalization, and heuristic gate passed 25 tests, 0 failures, and 0 skips
+  on iPhone 17 Pro / iOS 26.5.
+- A Release simulator build completed without the cover OCR or rectangle-detection warnings.

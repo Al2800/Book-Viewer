@@ -117,19 +117,19 @@ struct CoverCaptureMetadataSupport {
         }
 
         let observations: [VNRecognizedTextObservation] = await withCheckedContinuation { continuation in
-            let request = VNRecognizeTextRequest { request, error in
-                if error != nil {
-                    continuation.resume(returning: [])
-                    return
-                }
-                continuation.resume(returning: (request.results as? [VNRecognizedTextObservation]) ?? [])
-            }
-            request.recognitionLevel = .accurate
-            request.usesLanguageCorrection = true
-            request.minimumTextHeight = 0.02
-
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             DispatchQueue.global(qos: .userInitiated).async {
+                let request = VNRecognizeTextRequest { request, error in
+                    if error != nil {
+                        continuation.resume(returning: [])
+                        return
+                    }
+                    continuation.resume(returning: (request.results as? [VNRecognizedTextObservation]) ?? [])
+                }
+                request.recognitionLevel = .accurate
+                request.usesLanguageCorrection = true
+                request.minimumTextHeight = 0.02
+
+                let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
                 do {
                     try handler.perform([request])
                 } catch {
@@ -185,56 +185,56 @@ struct CoverCaptureMetadataSupport {
         }
 
         return await withCheckedContinuation { continuation in
-            let request = VNDetectRectanglesRequest { request, error in
-                if error != nil {
-                    continuation.resume(returning: nil)
-                    return
-                }
-
-                guard let rectangles = request.results as? [VNRectangleObservation],
-                      let best = rectangles.max(by: {
-                          ($0.boundingBox.width * $0.boundingBox.height) < ($1.boundingBox.width * $1.boundingBox.height)
-                      }) else {
-                    continuation.resume(returning: nil)
-                    return
-                }
-
-                let ciImage = CIImage(cgImage: cgImage)
-                let size = ciImage.extent.size
-
-                let topLeft = CGPoint(x: best.topLeft.x * size.width, y: best.topLeft.y * size.height)
-                let topRight = CGPoint(x: best.topRight.x * size.width, y: best.topRight.y * size.height)
-                let bottomLeft = CGPoint(x: best.bottomLeft.x * size.width, y: best.bottomLeft.y * size.height)
-                let bottomRight = CGPoint(x: best.bottomRight.x * size.width, y: best.bottomRight.y * size.height)
-
-                let corrected = ciImage.applyingFilter(
-                    "CIPerspectiveCorrection",
-                    parameters: [
-                        "inputTopLeft": CIVector(cgPoint: topLeft),
-                        "inputTopRight": CIVector(cgPoint: topRight),
-                        "inputBottomLeft": CIVector(cgPoint: bottomLeft),
-                        "inputBottomRight": CIVector(cgPoint: bottomRight)
-                    ]
-                )
-
-                let context = CIContext(options: nil)
-                guard let output = context.createCGImage(corrected, from: corrected.extent) else {
-                    continuation.resume(returning: nil)
-                    return
-                }
-
-                continuation.resume(returning: UIImage(cgImage: output))
-            }
-
-            request.maximumObservations = 5
-            request.minimumConfidence = 0.6
-            request.minimumAspectRatio = 0.45
-            request.maximumAspectRatio = 0.9
-            request.minimumSize = 0.25
-            request.quadratureTolerance = 20
-
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             DispatchQueue.global(qos: .userInitiated).async {
+                let request = VNDetectRectanglesRequest { request, error in
+                    if error != nil {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+
+                    guard let rectangles = request.results as? [VNRectangleObservation],
+                          let best = rectangles.max(by: {
+                              ($0.boundingBox.width * $0.boundingBox.height) < ($1.boundingBox.width * $1.boundingBox.height)
+                          }) else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+
+                    let ciImage = CIImage(cgImage: cgImage)
+                    let size = ciImage.extent.size
+
+                    let topLeft = CGPoint(x: best.topLeft.x * size.width, y: best.topLeft.y * size.height)
+                    let topRight = CGPoint(x: best.topRight.x * size.width, y: best.topRight.y * size.height)
+                    let bottomLeft = CGPoint(x: best.bottomLeft.x * size.width, y: best.bottomLeft.y * size.height)
+                    let bottomRight = CGPoint(x: best.bottomRight.x * size.width, y: best.bottomRight.y * size.height)
+
+                    let corrected = ciImage.applyingFilter(
+                        "CIPerspectiveCorrection",
+                        parameters: [
+                            "inputTopLeft": CIVector(cgPoint: topLeft),
+                            "inputTopRight": CIVector(cgPoint: topRight),
+                            "inputBottomLeft": CIVector(cgPoint: bottomLeft),
+                            "inputBottomRight": CIVector(cgPoint: bottomRight)
+                        ]
+                    )
+
+                    let context = CIContext(options: nil)
+                    guard let output = context.createCGImage(corrected, from: corrected.extent) else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+
+                    continuation.resume(returning: UIImage(cgImage: output))
+                }
+
+                request.maximumObservations = 5
+                request.minimumConfidence = 0.6
+                request.minimumAspectRatio = 0.45
+                request.maximumAspectRatio = 0.9
+                request.minimumSize = 0.25
+                request.quadratureTolerance = 20
+
+                let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
                 do {
                     try handler.perform([request])
                 } catch {
