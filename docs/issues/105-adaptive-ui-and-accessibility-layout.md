@@ -84,13 +84,14 @@ The phone library grid can compress cards to 100 points while retaining status a
   smoke (2 tests, 0 failures), plus the Accessibility XXXL Library and Settings workflows
   covering grid/list views, Remote AI, Storage & Export, export, and marking editing (5 tests,
   0 failures on 2026-07-15).
-- [x] The Library home, Settings root, Remote AI settings, and Remote AI consent sheet pass
-  Apple's reliable iOS 26 system audits for hit regions, element descriptions, clipped text,
-  and accessibility traits. The audit drove a 44-point Sort Books target, removed silent
-  truncation from the Daily Passage and attribution, and hid decorative SF Symbols whose
-  internal names were being announced. A deterministic WCAG test also verifies primary and
-  secondary text against card backgrounds in light and dark modes. The focused contrast,
-  seeded-library, and system-audit checks passed with 0 failures on 2026-07-15.
+- [x] The Library home, Settings root, Remote AI settings and consent, Account, and Storage &
+  Export screens pass Apple's reliable iOS 26 system audits for hit regions, element
+  descriptions, clipped text, and accessibility traits. The audit drove a 44-point Sort Books
+  target, removed silent truncation from the Daily Passage and attribution, and hid decorative
+  SF Symbols whose internal names were being announced. A deterministic WCAG test also verifies
+  primary and secondary text against card backgrounds in light and dark modes. The focused
+  contrast, seeded-library, and system-audit checks passed with 0 failures on 2026-07-15; the
+  combined Account and Storage audit also passed on the physical iPhone 17 (1 test, 0 failures).
   Apple's iOS 26 contrast pixel audit and OCR element detector are excluded because they produced
   reproducible unlocatable false positives despite compliant captured pixels and a hierarchy
   containing every visible app string; the retained checks and dedicated Accessibility XXXL

@@ -79,6 +79,7 @@ struct AccountView: View {
                 Image(systemName: "person.crop.circle.fill")
                     .font(.system(size: 50))
                     .foregroundStyle(Color.brand)
+                    .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
                     if let user = authService.currentUser {
@@ -119,6 +120,7 @@ struct AccountView: View {
                 Image(systemName: "person.crop.circle.badge.questionmark")
                     .font(.system(size: 50))
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
 
                 Text("Optional Account")
                     .font(.headline)
@@ -174,6 +176,7 @@ struct AccountView: View {
 
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(Color.success)
+                            .accessibilityHidden(true)
                     }
 
                     if subscriptionService.isInTrial {

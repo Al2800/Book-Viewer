@@ -51,6 +51,18 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         try performSystemAccessibilityAudit()
     }
 
+    func testAccountAndStorage_PassSystemAccessibilityAudit() throws {
+        XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.accountRow))
+        assertNavigationTitle("Account", timeout: 5)
+        try performSystemAccessibilityAudit()
+
+        tapBackButton()
+        assertNavigationTitle("Settings", timeout: 5)
+        XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.storageAndExportRow))
+        assertNavigationTitle("Storage & Export", timeout: 5)
+        try performSystemAccessibilityAudit()
+    }
+
     func testSettingsRoot_NavigatesToExtractedDestinationsAndLegalSheets() {
         logger.step(1, "Opening Account destination")
         XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.accountRow))
