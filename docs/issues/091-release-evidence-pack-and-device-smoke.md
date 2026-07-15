@@ -49,3 +49,13 @@ The evidence must cover both local verification and real-device TestFlight behav
 - A release-configured physical-device build completed successfully without code signing.
 - Current release status and remaining production/device gates are recorded in
   `docs/refactor-foundation/verification/2026-07-14-release-readiness-audit.md`.
+
+2026-07-15 local release gate follow-up:
+
+- The complete app unit target passed on iPhone 17 / iOS 26.5: 632 tests passed, 0 failures,
+  and 1 documented optional local-photo fixture skip. Result bundle:
+  `/tmp/BookQuotes-full-unit-after-release-hardening-2026-07-15.xcresult`.
+- An unsigned Release archive for generic iOS devices completed successfully. It contains an
+  arm64 `com.acampbell.bookquotes` application at version `1.0` build `38`, plus its privacy
+  manifest and dSYM. This proves the local Release build, not signing, upload, or App Store
+  acceptance; those remaining gates stay open.
