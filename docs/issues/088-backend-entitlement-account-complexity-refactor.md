@@ -1,6 +1,6 @@
 # 088 - Backend entitlement and account complexity refactor
 
-Status: in_progress
+Status: closed
 Area: Backend / Subscription / Account deletion
 Priority: high
 
@@ -59,6 +59,16 @@ These files own auth/session handling, entitlement checks, product metadata, App
   tests continue to prove the Worker applies the policy before provider forwarding.
 - Reduced `backend/src/index.ts` from 501 to 497 LOC without introducing a pass-through module.
   The full backend suite passed: 42 tests, 0 failures. TypeScript typecheck passed.
+
+2026-07-15 closure verification:
+
+- Re-ran the full backend test suite on the current branch: 42 tests passed, 0 failures.
+  `npm run typecheck -- --pretty false` passed.
+- Current source sizes remain `src/index.ts` 497 LOC, `src/subscription.ts` 929 LOC,
+  `src/account-data.ts` 70 LOC, and `src/extraction-access-policy.ts` 46 LOC.
+- Every acceptance criterion for this refactor is satisfied. Deployed-Worker deletion-race
+  verification remains open under issue `099`; it is an operational release gate, not a missing
+  refactor acceptance criterion here.
 
 ## Residual Risk
 
