@@ -31,7 +31,10 @@
   49.802 seconds, and the unsigned Release build completed successfully after the change.
 - The legacy Gemini quote-page endpoint now returns `410` before parsing or forwarding an image;
   quote pages can only use the approved Hugging Face route, which rejects dynamic provider
-  suffixes. The backend suite passed: 36 tests, 0 failures; TypeScript typecheck passed.
+  suffixes. The Worker also normalizes each successful provider reply to the app's bounded
+  quote-review schema before marking it billable; malformed output returns `502` and releases the
+  extraction reservation. The backend suite passed: 39 tests, 0 failures; TypeScript typecheck
+  passed.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,
@@ -44,7 +47,7 @@
   615 tests passed, 0 failed, and 1 skipped in 242.649 seconds on iPhone 17. The skip is the
   documented local-only real-book-photo fixture (`testRealBookFixtureExtractsUnderlinedPassageWhenProvided`).
   Result bundle: `/tmp/BookQuotes-app-unit-2026-07-15.xcresult` (`Info.plist` verified present).
-- Backend tests and typecheck passed: 36 tests, 0 failures.
+- Backend tests and typecheck passed: 39 tests, 0 failures.
 - Production Worker dependency audit reported no known vulnerabilities.
 - A tracked-file secret-pattern scan found no credential material. The only match is the expected
   private-key format validation in `backend/src/subscription.ts`.

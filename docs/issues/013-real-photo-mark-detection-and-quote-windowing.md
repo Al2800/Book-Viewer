@@ -44,7 +44,7 @@ This means the current on-device path can reach the edit screen, but the mark-de
 - [x] The model-assisted route is the default extraction path, with local OCR retained only as fallback when the model fails or returns no usable quotes.
 - [ ] The model-assisted route can identify underlined passages, vertical margin-line marked paragraphs, and multiple marked passages on one page.
 - [ ] The model-assisted route treats small brackets, short side ticks, braces, partial bracket hooks, and faint pencil marks beside readable text as intentional quote marks.
-- [ ] The model-assisted route returns strict normalized quote-review JSON, not free-form prose.
+- [x] The model-assisted route returns strict normalized quote-review JSON, not free-form prose.
 - [x] The app records whether a quote result came from on-device extraction, model-assisted extraction, or manual entry.
 - [x] `PageMarkDetector` has a deterministic vertical-mark path that scans column runs or otherwise detects thin, neutral margin strokes.
 - [x] Vertical margin-line detection does not classify normal printed text stems as margin marks.
@@ -183,7 +183,7 @@ Hosted-model acceptance criteria:
 
 - [ ] The model path is behind a feature flag or explicit fallback setting.
 - [ ] The model receives the smallest useful image crop, not automatically every full page.
-- [ ] The model returns strict JSON matching the existing review data shape: quote text, mark type, margin note, confidence, and reason.
+- [x] The model returns strict JSON matching the existing review data shape: quote text, mark type, margin note, confidence, and reason.
 - [x] The app prefers hosted-assist before on-device OCR for quote capture.
 - [ ] A/B fixture results compare on-device-only vs hosted-assist for the same real page photos.
 - [ ] The privacy/legal copy states when page images or crops are sent off-device.
@@ -218,6 +218,20 @@ Hosted-model acceptance criteria:
 - Verified after build 29 that production had `HF_API_TOKEN` but did not have `HF_MODEL_ID`, so the Worker used the old default `Qwen/Qwen2.5-VL-7B-Instruct:preferred`. A direct Hugging Face router probe showed that model is unsupported by the enabled providers, causing build 29 to fall back to OCR.
 - Set Cloudflare production `HF_MODEL_ID` to `Qwen/Qwen2.5-VL-72B-Instruct:preferred`, which detected both underline and vertical margin-line markings in a non-verbatim probe of the failing page.
 - Tightened the iOS quote extraction prompt so small brackets, short side ticks, braces, partial bracket hooks, and faint pencil marks count as intentional marks. Also added bounded line-wrap hyphenation guidance for the model.
+
+2026-07-15 provider-response boundary follow-up:
+
+- The Worker now normalizes a Hugging Face reply before returning it to the app, using the same
+  response-size, candidate-count, text, page, marking-type, note, and confidence boundaries as
+  the quote-review parser.
+- Malformed JSON, an oversized candidate list, and replies containing no usable quote candidate
+  return `502 HF_INVALID_RESPONSE`. They cannot be marked as a successful, billable extraction.
+- The route-level regression proves the Durable Object reservation is released after this failure
+  rather than completed; the focused adapter/access checks and full backend gate passed with
+  39 tests, and TypeScript typecheck passed.
+- This closes the strict-normalized-output criterion only. Real-photo fixtures, model quality
+  comparison, small-mark recognition, image-crop minimization, and physical TestFlight evidence
+  remain open.
 
 ## Verification Results
 

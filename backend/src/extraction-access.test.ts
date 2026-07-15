@@ -75,6 +75,26 @@ class RejectingRateLimiterNamespace {
   }
 }
 
+class RecordingRateLimiterNamespace {
+  readonly actions: string[] = [];
+
+  idFromName(name: string): DurableObjectId {
+    return { toString: () => name, equals: () => false } as DurableObjectId;
+  }
+
+  get(): DurableObjectStub {
+    return {
+      fetch: async (_input: RequestInfo | URL, init?: RequestInit) => {
+        const body = JSON.parse(String(init?.body ?? '{}')) as { action?: string };
+        if (body.action) {
+          this.actions.push(body.action);
+        }
+        return Response.json({ allowed: true, currentUsage: 0, limit: 1000 });
+      },
+    } as unknown as DurableObjectStub;
+  }
+}
+
 function makeEnv(overrides: Partial<Env> = {}): Env {
   return {
     KV: new MockKVNamespace() as unknown as KVNamespace,
@@ -236,7 +256,35 @@ describe('extraction access policy', () => {
     expect(response.status).toBe(200);
     expect(hfFetch).toHaveBeenCalledOnce();
     expect(quoteResult.quotes[0].text).toBe('The marked passage is here.');
-    expect(quoteResult.quotes[0].markingType).toBe('marginLine');
+    expect(quoteResult.quotes[0].markingType).toBe('marginline');
+  });
+
+  it('releases the reservation when the model result cannot be normalized for quote review', async () => {
+    const { default: worker } = await import('./index');
+    const limiter = new RecordingRateLimiterNamespace();
+    const hfFetch = vi.fn(async () => new Response(
+      JSON.stringify({
+        choices: [{ message: { content: 'not JSON' } }],
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    ));
+    vi.stubGlobal('fetch', hfFetch);
+
+    const response = await worker.fetch(
+      makeExtractionRequest('/api/extract-quotes-hf'),
+      makeEnv({
+        ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+        HF_API_TOKEN: 'hf-test-token',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+        EXTRACTION_LIMITER: limiter as unknown as DurableObjectNamespace,
+      })
+    );
+    const body = await response.json() as { code: string };
+
+    expect(response.status).toBe(502);
+    expect(body.code).toBe('HF_INVALID_RESPONSE');
+    expect(hfFetch).toHaveBeenCalledOnce();
+    expect(limiter.actions).toEqual(['reserve-user', 'reserve-ip', 'release']);
   });
 
   it('rejects an unapproved Hugging Face provider before reading or forwarding the image', async () => {

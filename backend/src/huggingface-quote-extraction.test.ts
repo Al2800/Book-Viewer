@@ -67,7 +67,7 @@ describe('resolveApprovedHuggingFaceModelId', () => {
 });
 
 describe('normalizeHuggingFaceQuoteResponse', () => {
-  it('returns Gemini-compatible response JSON containing normalized quote result text', async () => {
+  it('returns Gemini-compatible response JSON containing quote-review-safe result text', async () => {
     const response = new Response(
       JSON.stringify({
         choices: [
@@ -76,12 +76,15 @@ describe('normalizeHuggingFaceQuoteResponse', () => {
               content: JSON.stringify({
                 quotes: [
                   {
-                    text: 'Marked quote text',
-                    markingType: 'underline',
-                    confidence: 0.88,
+                    text: '  Marked\nquote\u0000text  ',
+                    markingType: 'Margin Line!',
+                    pageNumber: 5,
+                    marginNote: '  Important\ncontext  ',
+                    confidence: 1.4,
                   },
                 ],
-                processingNotes: 'Model-assisted extraction',
+                pageNumber: 99_999,
+                processingNotes: '  Model-assisted\nextraction  ',
               }),
             },
           },
@@ -101,12 +104,61 @@ describe('normalizeHuggingFaceQuoteResponse', () => {
       quotes: [
         {
           text: 'Marked quote text',
-          markingType: 'underline',
-          confidence: 0.88,
+          markingType: 'margin_line',
+          pageNumber: 5,
+          marginNote: 'Important context',
+          confidence: 1,
         },
       ],
       processingNotes: 'Model-assisted extraction',
     });
+  });
+
+  it('rejects malformed or unusable quote results before they reach the app', async () => {
+    const response = new Response(
+      JSON.stringify({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                quotes: [{ text: '   ', markingType: 'underline' }],
+              }),
+            },
+          },
+        ],
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+
+    const normalized = await normalizeHuggingFaceQuoteResponse(response);
+    const body = await normalized.json() as { code: string };
+
+    expect(normalized.status).toBe(502);
+    expect(body.code).toBe('HF_INVALID_RESPONSE');
+  });
+
+  it('rejects more candidates than the quote review can display safely', async () => {
+    const response = new Response(
+      JSON.stringify({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                quotes: Array.from({ length: 31 }, (_, index) => ({
+                  text: `Quote ${index + 1}`,
+                  markingType: 'underline',
+                })),
+              }),
+            },
+          },
+        ],
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+
+    const normalized = await normalizeHuggingFaceQuoteResponse(response);
+
+    expect(normalized.status).toBe(502);
   });
 });
 

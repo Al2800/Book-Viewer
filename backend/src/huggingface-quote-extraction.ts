@@ -2,6 +2,13 @@ import type { GeminiRequest } from './types';
 
 const HUGGING_FACE_ROUTER_URL = 'https://router.huggingface.co/v1/chat/completions';
 export const DEFAULT_HUGGING_FACE_MODEL_ID = 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference';
+const MAXIMUM_RESPONSE_BYTES = 128 * 1024;
+const MAXIMUM_CANDIDATE_COUNT = 30;
+const MAXIMUM_QUOTE_LENGTH = 2_000;
+const MAXIMUM_MARGIN_NOTE_LENGTH = 500;
+const MAXIMUM_MARKING_TYPE_LENGTH = 64;
+const MAXIMUM_PROCESSING_NOTES_LENGTH = 500;
+const MAXIMUM_PAGE_NUMBER = 10_000;
 
 // Changes to this list require a privacy and retention review before deployment.
 const APPROVED_HUGGING_FACE_PROVIDERS = new Set(['hf-inference']);
@@ -74,6 +81,20 @@ interface HuggingFaceChatCompletionResponse {
       content?: string;
     };
   }>;
+}
+
+interface NormalizedQuoteCandidate {
+  text: string;
+  markingType: string;
+  pageNumber?: number;
+  marginNote?: string;
+  confidence?: number;
+}
+
+interface NormalizedQuoteExtractionResult {
+  quotes: NormalizedQuoteCandidate[];
+  pageNumber?: number;
+  processingNotes?: string;
 }
 
 export function buildHuggingFaceQuoteRequest(
@@ -151,12 +172,17 @@ export async function normalizeHuggingFaceQuoteResponse(response: Response): Pro
     return invalidHuggingFaceResponse('No content in Hugging Face response');
   }
 
+  const normalizedContent = normalizeQuoteExtractionContent(content);
+  if (!normalizedContent) {
+    return invalidHuggingFaceResponse('Invalid quote extraction result');
+  }
+
   return new Response(JSON.stringify({
     candidates: [
       {
         content: {
           parts: [
-            { text: content },
+            { text: normalizedContent },
           ],
         },
         finishReason: 'STOP',
@@ -168,6 +194,157 @@ export async function normalizeHuggingFaceQuoteResponse(response: Response): Pro
       'Content-Type': 'application/json',
     },
   });
+}
+
+/**
+ * Keep the provider boundary aligned with QuoteExtractionResult.parse so a
+ * syntactically successful model reply cannot be charged if the app cannot use it.
+ */
+function normalizeQuoteExtractionContent(content: string): string | null {
+  if (new TextEncoder().encode(content).byteLength > MAXIMUM_RESPONSE_BYTES) {
+    return null;
+  }
+
+  let rawResult: unknown;
+  try {
+    rawResult = JSON.parse(removeMarkdownFence(content));
+  } catch {
+    return null;
+  }
+
+  if (!isRecord(rawResult) || !Array.isArray(rawResult.quotes)
+    || rawResult.quotes.length > MAXIMUM_CANDIDATE_COUNT) {
+    return null;
+  }
+
+  const quotes = rawResult.quotes.flatMap((candidate) => {
+    const normalized = normalizeQuoteCandidate(candidate);
+    return normalized ? [normalized] : [];
+  });
+  if (rawResult.quotes.length > 0 && quotes.length === 0) {
+    return null;
+  }
+
+  const result: NormalizedQuoteExtractionResult = { quotes };
+  const pageNumber = normalizePageNumber(rawResult.pageNumber);
+  if (pageNumber !== undefined) {
+    result.pageNumber = pageNumber;
+  }
+
+  const processingNotes = normalizeOptionalText(
+    rawResult.processingNotes,
+    MAXIMUM_PROCESSING_NOTES_LENGTH
+  );
+  if (processingNotes !== undefined) {
+    result.processingNotes = processingNotes;
+  }
+
+  return JSON.stringify(result);
+}
+
+function normalizeQuoteCandidate(value: unknown): NormalizedQuoteCandidate | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const text = normalizeRequiredText(value.text, MAXIMUM_QUOTE_LENGTH);
+  if (!text) {
+    return null;
+  }
+
+  const candidate: NormalizedQuoteCandidate = {
+    text,
+    markingType: normalizeMarkingType(value.markingType),
+  };
+  const pageNumber = normalizePageNumber(value.pageNumber);
+  if (pageNumber !== undefined) {
+    candidate.pageNumber = pageNumber;
+  }
+
+  const marginNote = normalizeOptionalText(value.marginNote, MAXIMUM_MARGIN_NOTE_LENGTH);
+  if (marginNote !== undefined) {
+    candidate.marginNote = marginNote;
+  }
+
+  const confidence = normalizeConfidence(value.confidence);
+  if (confidence !== undefined) {
+    candidate.confidence = confidence;
+  }
+
+  return candidate;
+}
+
+function removeMarkdownFence(content: string): string {
+  let cleaned = content.trim();
+  if (cleaned.startsWith('```json')) {
+    cleaned = cleaned.slice(7);
+  } else if (cleaned.startsWith('```')) {
+    cleaned = cleaned.slice(3);
+  }
+  if (cleaned.endsWith('```')) {
+    cleaned = cleaned.slice(0, -3);
+  }
+  return cleaned.trim();
+}
+
+function normalizeRequiredText(value: unknown, maximumLength: number): string | undefined {
+  return normalizeOptionalText(value, maximumLength);
+}
+
+function normalizeOptionalText(value: unknown, maximumLength: number): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const normalized = value
+    .replace(/\p{Cc}/gu, ' ')
+    .trim()
+    .split(/\s+/u)
+    .filter(Boolean)
+    .join(' ');
+  return normalized && [...normalized].length <= maximumLength ? normalized : undefined;
+}
+
+function normalizePageNumber(value: unknown): number | undefined {
+  return typeof value === 'number'
+    && Number.isSafeInteger(value)
+    && value >= 1
+    && value <= MAXIMUM_PAGE_NUMBER
+    ? value
+    : undefined;
+}
+
+function normalizeConfidence(value: unknown): number | undefined {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return undefined;
+  }
+  return Math.min(Math.max(value, 0), 1);
+}
+
+function normalizeMarkingType(value: unknown): string {
+  if (typeof value !== 'string') {
+    return 'mixed';
+  }
+
+  let normalized = '';
+  let needsSeparator = false;
+  for (const character of value.toLowerCase()) {
+    if (/^[a-z0-9]$/.test(character)) {
+      if (needsSeparator && normalized) {
+        normalized += '_';
+      }
+      normalized += character;
+      needsSeparator = false;
+    } else {
+      needsSeparator = Boolean(normalized);
+    }
+  }
+
+  return normalized.slice(0, MAXIMUM_MARKING_TYPE_LENGTH) || 'mixed';
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function extractPromptAndImage(request: GeminiRequest): {
