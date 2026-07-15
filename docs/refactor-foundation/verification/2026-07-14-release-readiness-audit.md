@@ -114,6 +114,10 @@
   passage, and confidence-scoring fixes: 622 tests passed, 0 failed, and 1 documented local-only
   real-book-photo fixture skip in 197.354 seconds on iPhone 17 / iOS 26.5. Result bundle:
   `/tmp/BookQuotes-app-unit-2026-07-15-current.xcresult`.
+- The full app-unit gate passed again on the final current revision after remote-crop, extraction
+  metadata, and backend-policy work: 627 tests passed, 0 failed, and 1 documented local-only
+  real-book-photo fixture skip in 216.089 seconds on iPhone 17 / iOS 26.5. Result bundle:
+  `/tmp/BookQuotes-app-unit-2026-07-15-final.xcresult` (`Info.plist` verified present).
 - The unsigned Release build completed successfully after the current extraction changes. The
   two Sign In with Apple error handlers now share a graceful default for newer authorization
   states, eliminating the prior non-exhaustive-switch warnings; the onboarding sign-in UI check
