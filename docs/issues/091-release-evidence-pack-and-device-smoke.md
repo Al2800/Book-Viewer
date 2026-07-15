@@ -91,5 +91,5 @@ The evidence must cover both local verification and real-device TestFlight behav
   enabled. Live smoke returned `200` for health, `410 COVER_EXTRACTION_ROUTE_RETIRED` for the cover
   route before image parsing, and `401 AUTH_REQUIRED` for unauthenticated Hugging Face extraction.
 - A signed development build compiled, installed, launched, and remained running on the connected
-  iPhone 17. Manual live-preview and physical ISBN framing confirmation remains open before a
-  replacement TestFlight build is archived.
+  iPhone 17. The reader confirmed moving live previews in both ISBN registration and quote capture,
+  clearing the physical camera gate for replacement Build 41.

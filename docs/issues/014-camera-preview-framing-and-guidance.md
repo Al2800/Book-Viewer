@@ -40,7 +40,7 @@ This matters because extraction quality now depends on the photographed page ima
 - [x] Cover capture remains usable and does not regress while quote-capture framing is improved.
 - [x] Camera changes are covered by characterization tests around any extracted framing/crop module before production behaviour changes.
 - [x] Simulator smoke covers opening the camera, reviewing a captured page, and reaching extraction review.
-- [ ] Real-device/TestFlight smoke confirms preview framing and capture quality before the next release candidate is treated as accepted.
+- [x] Real-device smoke confirms moving ISBN and quote-capture previews before replacement Build 41.
 
 ## TDD / Refactor Plan
 
@@ -147,6 +147,13 @@ Result:
 Remaining verification:
 
 - Real-device/TestFlight preview-framing check is still required because simulator mock camera cannot validate actual lens/focal-length feel.
+
+2026-07-15 Build 41 recovery check:
+
+- A signed development build from commit `75b460d` was installed on the connected iPhone 17.
+- The reader confirmed both Add New Book ISBN scanning and Capture Quotes displayed moving live
+  previews. This clears the frozen-preview regression reported against Build 40.
+- TestFlight extraction quality remains a separate acceptance check after Build 41 processing.
 
 Minimal guidance check:
 
