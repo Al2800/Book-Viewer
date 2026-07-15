@@ -70,6 +70,13 @@
   passed with this rule: 22 tests passed, 0 failed, and 1 documented local-only fixture skip on
   iPhone 17 / iOS 26.5. Result bundle:
   `/tmp/BookQuotes-mark-families-margin-note-2026-07-15.xcresult`.
+- Adjacent highlighted lines now become one review candidate rather than separate cards. A
+  colored highlight also takes precedence over a substantially overlapping neutral-ink run, so
+  printed text inside a highlighter stroke cannot produce a duplicate underline candidate. The
+  on-device suite passed: 23 tests passed, 0 failed, and 1 documented local-only fixture skip;
+  the quote-review UI smoke also passed (1 test, 0 failures, 0 skips). Result bundles:
+  `/tmp/BookQuotes-highlight-mark-family-2026-07-15.xcresult` and
+  `/tmp/BookQuotes-highlight-review-ui-2026-07-15.xcresult`.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,

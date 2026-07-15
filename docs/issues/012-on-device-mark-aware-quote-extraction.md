@@ -46,17 +46,17 @@ The pipeline should return the same quote-review data shape the app already expe
   - highlighted text regions
   - margin line / vertical side mark
   - margin note / annotation text
-- [ ] Mark detection is deterministic and testable separately from OCR.
-- [ ] OCR line selection is based on geometry:
+- [x] Mark detection is deterministic and testable separately from OCR.
+- [x] OCR line selection is based on geometry:
   - highlighted text selects OCR lines inside or overlapping the highlight region;
   - underline selects the OCR line immediately above or intersecting the underline;
   - margin line selects adjacent paragraph lines in the text column;
   - margin note text is captured separately from the quote body where possible.
 - [x] User-defined `MarkingDefinition` records influence classification and display naming without requiring a prompt to a cloud model.
-- [ ] Unmarked page text is excluded from extracted quote candidates.
-- [ ] Multi-line marked passages are grouped into one quote candidate when line spacing and mark continuity indicate the same passage.
+- [x] Unmarked page text is excluded from extracted quote candidates.
+- [x] Multi-line marked passages are grouped into one quote candidate when line spacing and mark continuity indicate the same passage.
 - [ ] Candidate confidence is derived from OCR confidence, mark/text geometry quality, and grouping certainty.
-- [ ] Low-confidence or ambiguous candidates still appear in review for user correction rather than being silently discarded.
+- [x] Low-confidence or ambiguous candidates still appear in review for user correction rather than being silently discarded.
 - [x] The extraction review screen can process a captured marked page with no network connection.
 - [x] Cloud/Gemini extraction is removed from the default quote-capture path or placed behind an explicit fallback flag that is off by default.
 - [x] Legal/privacy copy is updated so quote page extraction no longer claims images are sent to Gemini when the on-device path is active.
@@ -204,6 +204,20 @@ None - can start immediately.
   `/tmp/BookQuotes-mark-families-margin-note-2026-07-15.xcresult`. This covers OCR-readable
   margin notes only; handwritten annotations and real photographed margin-note pages remain
   physical-device characterization work.
+
+2026-07-15 highlighted-passage follow-up:
+
+- A synthetic two-line highlight initially produced two review cards: one grouped highlight and
+  one false graphite underline created from the printed ink inside the yellow marking.
+- The selector now groups adjacent highlighted OCR lines into one passage. The detector also
+  gives a colored highlight precedence over a substantially overlapping neutral-ink candidate,
+  preventing a duplicate underline card without weakening graphite detection outside highlights.
+- The full on-device extractor suite passed on iPhone 17 / iOS 26.5: 23 tests passed, 0
+  failures, and 1 documented local-only fixture skip. The quote-review UI smoke also passed:
+  1 test, 0 failures, 0 skips. Result bundles:
+  `/tmp/BookQuotes-highlight-mark-family-2026-07-15.xcresult` and
+  `/tmp/BookQuotes-highlight-review-ui-2026-07-15.xcresult`. Real highlighted camera pages
+  remain physical-device characterization work.
 
 ## Verification Results
 

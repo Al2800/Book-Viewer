@@ -7,12 +7,17 @@ struct QuoteMarkTextSelector: Sendable {
         marks: [DetectedPageMark]
     ) -> [OnDeviceQuoteCandidate] {
         let underlineMarks = marks.filter { $0.type == .underline || $0.type == .doubleUnderline }
+        let highlightMarks = marks.filter { $0.type == .highlight }
         let marginLineMarks = marks.filter { $0.type == .marginLine }
-        let groupedMarkTypes: Set<MarkingType> = [.underline, .doubleUnderline, .marginLine]
+        let groupedMarkTypes: Set<MarkingType> = [.underline, .doubleUnderline, .highlight, .marginLine]
         let nonGroupedMarks = marks.filter { !groupedMarkTypes.contains($0.type) }
 
         let underlineCandidates = groupedUnderlineCandidates(
             marks: underlineMarks,
+            textLines: textLines
+        )
+        let highlightCandidates = groupedHighlightCandidates(
+            marks: highlightMarks,
             textLines: textLines
         )
         let marginLineCandidates = groupedMarginLineCandidates(
@@ -29,9 +34,11 @@ struct QuoteMarkTextSelector: Sendable {
             )
         }
 
-        // A bracket or highlight can overlap an underline; retain the structural mark's broader
-        // quote window instead of creating a second, narrower underline candidate.
-        return deduplicatedCandidates(otherCandidates + marginLineCandidates + underlineCandidates)
+        // Structural candidates precede underline candidates so exact duplicates retain the
+        // broader structural marking family.
+        return deduplicatedCandidates(
+            otherCandidates + marginLineCandidates + highlightCandidates + underlineCandidates
+        )
     }
 
     private func lines(
@@ -96,6 +103,29 @@ struct QuoteMarkTextSelector: Sendable {
                 from: group.map(\.line),
                 marks: group.map(\.mark),
                 markingType: .marginLine,
+                allTextLines: textLines
+            )
+        }
+    }
+
+    private func groupedHighlightCandidates(
+        marks: [DetectedPageMark],
+        textLines: [RecognizedTextLine]
+    ) -> [OnDeviceQuoteCandidate] {
+        let selections = marks.flatMap { mark in
+            highlightedLines(mark, textLines: textLines).map { line in
+                MarkedLineSelection(line: line, mark: mark)
+            }
+        }
+        let uniqueSelections = deduplicatedMarkedLineSelections(selections)
+            .sorted { $0.line.boundingBox.minY < $1.line.boundingBox.minY }
+        let groups = groupAdjacentMarkedLineSelections(uniqueSelections)
+
+        return groups.compactMap { group in
+            candidate(
+                from: group.map(\.line),
+                marks: group.map(\.mark),
+                markingType: .highlight,
                 allTextLines: textLines
             )
         }

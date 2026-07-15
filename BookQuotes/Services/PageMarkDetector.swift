@@ -17,14 +17,16 @@ struct PageMarkDetector: PageMarkDetecting {
             horizontalRuns: horizontalRuns
         )
         let bracketMarks = verticalMarks.filter { $0.type == .bracket }
-        let coloredRegions = mergeRowRuns(coloredRowRuns)
+        let coloredMarks = mergeRowRuns(coloredRowRuns)
             .filter { !isBracketHook($0.rect, for: bracketMarks) }
             .compactMap(coloredMark)
+        let highlights = coloredMarks.filter { $0.type == .highlight }
         let neutralUnderlineRegions = mergeRowRuns(neutralRowRuns)
             .filter { !isBracketHook($0.rect, for: bracketMarks) }
             .compactMap(neutralUnderlineMark)
+            .filter { !overlapsColoredHighlight($0, highlights: highlights) }
 
-        let horizontalMarks = classifyDoubleUnderlines(coloredRegions + neutralUnderlineRegions)
+        let horizontalMarks = classifyDoubleUnderlines(coloredMarks + neutralUnderlineRegions)
         return horizontalMarks + verticalMarks
     }
 
@@ -152,6 +154,22 @@ struct PageMarkDetector: PageMarkDetecting {
             let isNearEndpoint = abs(rect.midY - bracket.boundingBox.minY) <= 24
                 || abs(rect.midY - bracket.boundingBox.maxY) <= 24
             return isHookLength && touchesVerticalStroke && isNearEndpoint
+        }
+    }
+
+    private func overlapsColoredHighlight(
+        _ mark: DetectedPageMark,
+        highlights: [DetectedPageMark]
+    ) -> Bool {
+        highlights.contains { highlight in
+            let horizontalOverlap = min(mark.boundingBox.maxX, highlight.boundingBox.maxX)
+                - max(mark.boundingBox.minX, highlight.boundingBox.minX)
+            let verticalOverlap = min(mark.boundingBox.maxY, highlight.boundingBox.maxY)
+                - max(mark.boundingBox.minY, highlight.boundingBox.minY)
+            guard horizontalOverlap > 0, verticalOverlap > 0 else { return false }
+
+            return horizontalOverlap / max(mark.boundingBox.width, 1) >= 0.6
+                && verticalOverlap / max(mark.boundingBox.height, 1) >= 0.6
         }
     }
 

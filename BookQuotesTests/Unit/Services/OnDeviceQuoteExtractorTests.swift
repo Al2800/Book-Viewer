@@ -138,6 +138,48 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(quote.confidence ?? 0, 0.5)
     }
 
+    func testExtractsMultilineHighlightFromSyntheticPageWithoutNetwork() async throws {
+        let image = OnDeviceQuoteExtractorTestImage.highlightedParagraphPage()
+        let marks = try PageMarkDetector().detectMarks(in: image)
+        XCTAssertEqual(
+            marks.filter { $0.type == .highlight }.count,
+            2,
+            "Expected separate highlight strokes for each marked line, got: \(marks)"
+        )
+
+        let scale = image.scale
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "A highlight can mark the first line",
+                    confidence: 0.94,
+                    boundingBox: CGRect(x: 300 * scale, y: 536 * scale, width: 680 * scale, height: 45 * scale)
+                ),
+                RecognizedTextLine(
+                    text: "and continue through the next line.",
+                    confidence: 0.92,
+                    boundingBox: CGRect(x: 300 * scale, y: 602 * scale, width: 680 * scale, height: 45 * scale)
+                )
+            ]),
+            markDetector: PageMarkDetector()
+        )
+
+        let result = try await extractor.extractQuotes(from: image, markings: [])
+
+        XCTAssertEqual(
+            result.quoteCount,
+            1,
+            "Expected one grouped highlight quote, got: \(result.quotes.map { "\($0.markingType): \($0.text)" })"
+        )
+        let quote = try XCTUnwrap(result.quotes.first)
+        XCTAssertEqual(
+            quote.text,
+            "A highlight can mark the first line and continue through the next line."
+        )
+        XCTAssertEqual(quote.markingType, "highlight")
+        XCTAssertEqual(quote.extractionSource, .onDevice)
+    }
+
     func testPlainPrintedTextIsNotTreatedAsMarkedQuote() throws {
         let image = OnDeviceQuoteExtractorTestImage.plainTextPage()
         let marks = try PageMarkDetector().detectMarks(in: image)
@@ -671,6 +713,33 @@ private enum OnDeviceQuoteExtractorTestImage {
 
     static func doubleUnderlinedPage() -> UIImage {
         page(text: "The obstacle is the way.", underlineColor: .systemRed, underlineCount: 2)
+    }
+
+    static func highlightedParagraphPage() -> UIImage {
+        let size = CGSize(width: 1200, height: 1600)
+        let renderer = UIGraphicsImageRenderer(size: size)
+
+        return renderer.image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+
+            UIColor(red: 1, green: 0.91, blue: 0.15, alpha: 1).setFill()
+            context.fill(CGRect(x: 280, y: 530, width: 720, height: 50))
+            context.fill(CGRect(x: 280, y: 596, width: 720, height: 50))
+
+            let paragraphAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 42, weight: .regular),
+                .foregroundColor: UIColor.black
+            ]
+            "A highlight can mark the first line".draw(
+                in: CGRect(x: 300, y: 536, width: 680, height: 45),
+                withAttributes: paragraphAttributes
+            )
+            "and continue through the next line.".draw(
+                in: CGRect(x: 300, y: 602, width: 680, height: 45),
+                withAttributes: paragraphAttributes
+            )
+        }
     }
 
     static func plainTextPage() -> UIImage {
