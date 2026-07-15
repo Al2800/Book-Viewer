@@ -75,3 +75,21 @@ The evidence must cover both local verification and real-device TestFlight behav
   (2 tests, 0 failures), plus multi-page Process-to-Review and Save Draft-to-Resume workflows
   (2 tests, 0 failures). These are local development-build checks with deterministic fixtures;
   production subscription, remote AI, network-loss, and account-deletion TestFlight checks remain.
+
+2026-07-15 build 40 direction recovery:
+
+- Build 40 is release-stopped after device feedback: cover-photo recognition was the wrong book
+  registration path, OCR had regressed into the primary quote path, the live camera appeared still,
+  and subscription activation did not provide a usable route to remote AI.
+- Commit `75b460d` restores consented remote AI as the first quote extractor with Apple Vision OCR
+  fallback, makes ISBN scanning the default and only camera-based book registration route, waits
+  for an actually configured camera session before constructing the preview, and guides sign-in,
+  plan loading, retry, restore, and consent activation.
+- Focused iPhone 17 simulator verification passed 61 unit tests with 1 hardware-only skip and 9
+  user-flow tests with no failures. Backend verification passed 48 tests and TypeScript typecheck.
+- Production Worker version `cc9350c2-d3a8-4a47-b291-a0fb8312b787` is deployed with the paid gate
+  enabled. Live smoke returned `200` for health, `410 COVER_EXTRACTION_ROUTE_RETIRED` for the cover
+  route before image parsing, and `401 AUTH_REQUIRED` for unauthenticated Hugging Face extraction.
+- A signed development build compiled, installed, launched, and remained running on the connected
+  iPhone 17. Manual live-preview and physical ISBN framing confirmation remains open before a
+  replacement TestFlight build is archived.

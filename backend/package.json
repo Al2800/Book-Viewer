@@ -1,7 +1,7 @@
 {
   "name": "bookquotes-proxy",
   "version": "1.0.0",
-  "description": "Cloudflare Workers proxy for BookQuotes Gemini API",
+  "description": "Cloudflare Workers proxy for authenticated BookQuotes quote extraction",
   "main": "src/index.ts",
   "engines": {
     "node": ">=22.12.0"
