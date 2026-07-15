@@ -39,6 +39,14 @@
   image limit, by adapting compression and dimensions only when the normal 2048 px image would
   exceed the budget. Focused iOS tests cover both a high-entropy image and the actual outbound
   request payload.
+- Removed the unreferenced `BatchProcessingService` and unused `QuoteSaveService.saveFromSession`
+  placeholder. They represented an obsolete batch path that either always failed authentication or
+  returned an empty save result; the live flow remains `BatchCaptureFlowView` to
+  `ExtractionReviewView` to the direct quote-save path. Focused draft/save/review tests passed on
+  2026-07-15 after the removal: 12 tests passed, 0 failures, 0 skips on iPhone 17 / iOS 26.5.
+  Result bundle: `/tmp/BookQuotes-batch-path-removal-2026-07-15.xcresult`. An additional
+  `BatchCaptureFlowTests` run was interrupted after Xcode stalled while installing and launching
+  the simulator test runner, before any test started; it is not counted as passing evidence.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,

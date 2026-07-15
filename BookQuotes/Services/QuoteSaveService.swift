@@ -104,34 +104,6 @@ final class QuoteSaveService {
         )
     }
 
-    /// Save quotes from a capture session
-    /// - Parameters:
-    ///   - session: The capture session with extracted quotes
-    ///   - book: The book to attach quotes to
-    /// - Returns: Batch save result
-    func saveFromSession(
-        _ session: CaptureSession,
-        to book: Book
-    ) -> BatchSaveResult {
-        var allSavedQuotes: [Quote] = []
-        var allFailures: [SaveFailure] = []
-
-        // Process each completed capture
-        for capture in session.captures where capture.status == .completed {
-            // Get source image data if available
-            let sourceImage = try? capture.loadFullImage()?.jpegData(compressionQuality: 0.7)
-
-            // Note: In a real implementation, quotes would be stored with PageCapture
-            // For now, this is a placeholder for the integration point
-        }
-
-        return BatchSaveResult(
-            savedQuotes: allSavedQuotes,
-            failures: allFailures,
-            book: book
-        )
-    }
-
     // MARK: - Update Operations
 
     /// Update an existing quote

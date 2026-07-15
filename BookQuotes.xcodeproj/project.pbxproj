@@ -191,7 +191,6 @@
 		7894B5076DF7830571AA3976 /* BookQuotes/Models/SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6BF87F3684ED20972856C5 /* BookQuotes/Models/SearchResults.swift */; };
 		7A6F5C0E2F75F8DD366CF178 /* BookQuotesUITests/Flows/CollectionsTagsFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128FD3F2AB0A7A55F02F62C8 /* BookQuotesUITests/Flows/CollectionsTagsFlowTests.swift */; };
 		7H2XJ14IS24WQI56I446I5YR /* SearchScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6XBJW6W8XE065Y30BQLYR1KC /* SearchScope.swift */; };
-		808A04CF01B4C2112F8F1636 /* BookQuotes/Services/BatchProcessingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C459BF09403A795150EB9239 /* BookQuotes/Services/BatchProcessingService.swift */; };
 		ODQ000000000000000000003 /* OnDeviceQuoteExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000004 /* OnDeviceQuoteExtractor.swift */; };
 		ODQ000000000000000000005 /* VisionPageTextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000006 /* VisionPageTextRecognizer.swift */; };
 		ODQ000000000000000000007 /* PageMarkDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = ODQ000000000000000000008 /* PageMarkDetector.swift */; };
@@ -556,7 +555,6 @@
 			DAA200000000000000000002 /* BookQuotesTests/Unit/BookRegistration/BookISBNScanLookupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/BookRegistration/BookISBNScanLookupTests.swift; sourceTree = SOURCE_ROOT; };
 			DAA300000000000000000002 /* BookISBNScanResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookISBNScanResultView.swift; sourceTree = "<group>"; };
 			C3A0B1C2D3E4F5A6B7C8D9E0 /* MarkingDefinitionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkingDefinitionsView.swift; sourceTree = "<group>"; };
-		C459BF09403A795150EB9239 /* BookQuotes/Services/BatchProcessingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Services/BatchProcessingService.swift; sourceTree = SOURCE_ROOT; };
 		ODQ000000000000000000004 /* OnDeviceQuoteExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceQuoteExtractor.swift; sourceTree = "<group>"; };
 		ODQ000000000000000000006 /* VisionPageTextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionPageTextRecognizer.swift; sourceTree = "<group>"; };
 		ODQ000000000000000000008 /* PageMarkDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageMarkDetector.swift; sourceTree = "<group>"; };
@@ -1013,7 +1011,6 @@
 				CFFF00000000000000000002 /* BookQuotes/Services/SubscriptionAccountToken.swift */,
 				DAB400000000000000000002 /* BookQuotes/Services/SubscriptionSyncState.swift */,
 				DAB600000000000000000002 /* BookQuotes/Services/SubscriptionProductID.swift */,
-				C459BF09403A795150EB9239 /* BookQuotes/Services/BatchProcessingService.swift */,
 				325C4BC08BDA497283297C60 /* BookQuotes/Services/GeminiService.swift */,
 				083C0E7212BA89EDBF1FCE49 /* BookQuotes/Services/CaptureQueueManager.swift */,
 				CF7500000000000000000002 /* BookQuotes/Services/CaptureQueueTypes.swift */,
@@ -1803,7 +1800,6 @@
 				CFFF00000000000000000001 /* BookQuotes/Services/SubscriptionAccountToken.swift in Sources */,
 				DAB400000000000000000001 /* BookQuotes/Services/SubscriptionSyncState.swift in Sources */,
 				DAB600000000000000000001 /* BookQuotes/Services/SubscriptionProductID.swift in Sources */,
-				808A04CF01B4C2112F8F1636 /* BookQuotes/Services/BatchProcessingService.swift in Sources */,
 				ODQ000000000000000000003 /* OnDeviceQuoteExtractor.swift in Sources */,
 				ODQ000000000000000000005 /* VisionPageTextRecognizer.swift in Sources */,
 				ODQ000000000000000000007 /* PageMarkDetector.swift in Sources */,
