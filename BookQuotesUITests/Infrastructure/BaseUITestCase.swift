@@ -756,6 +756,7 @@ enum AccessibilityIdentifiers {
 
         static let extractionFallbackNotice = "capture_extraction_fallback_notice"
         static let extractionPageSelector = "capture_extraction_page_selector"
+        static let extractionReviewScrollView = "capture_extraction_review_scroll_view"
         static let extractionPageImage = "capture_extraction_page_image"
     }
 

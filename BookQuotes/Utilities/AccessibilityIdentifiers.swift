@@ -263,6 +263,9 @@ enum AccessibilityIdentifiers {
         /// Page selector shown during extraction review.
         static let extractionPageSelector = "capture_extraction_page_selector"
 
+        /// Main vertical scroll view for compact extraction review layouts.
+        static let extractionReviewScrollView = "capture_extraction_review_scroll_view"
+
         /// Source page image shown during extraction review.
         static let extractionPageImage = "capture_extraction_page_image"
     }

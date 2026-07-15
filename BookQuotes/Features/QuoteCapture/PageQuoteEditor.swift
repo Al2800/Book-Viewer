@@ -9,6 +9,7 @@ struct PageQuoteEditor: View {
     @Binding var quotes: [EditableQuote]
     let onAddManualQuote: () -> Void
     let imageHeight: CGFloat
+    let scrollsQuotesIndependently: Bool
 
     @State private var showingFullImage = false
     @State private var imageScale: CGFloat = 1.0
@@ -124,23 +125,29 @@ struct PageQuoteEditor: View {
             // Quote list
             if quotes.isEmpty {
                 emptyState
-            } else {
+            } else if scrollsQuotesIndependently {
                 ScrollView {
-                    LazyVStack(spacing: Spacing.md) {
-                        ForEach($quotes) { $quote in
-                            QuoteEditRow(
-                                quote: $quote,
-                                onDelete: {
-                                    deleteQuote(quote)
-                                }
-                            )
-                        }
-                    }
-                    .padding(Spacing.md)
+                    quoteRows
                 }
+            } else {
+                quoteRows
             }
         }
         .paperCard(cornerRadius: CornerRadius.lg)
+    }
+
+    private var quoteRows: some View {
+        LazyVStack(spacing: Spacing.md) {
+            ForEach($quotes) { $quote in
+                QuoteEditRow(
+                    quote: $quote,
+                    onDelete: {
+                        deleteQuote(quote)
+                    }
+                )
+            }
+        }
+        .padding(Spacing.md)
     }
 
     private var quoteListHeader: some View {
@@ -248,6 +255,7 @@ struct PageQuoteEditor: View {
             )
         ]),
         onAddManualQuote: {},
-        imageHeight: 260
+        imageHeight: 260,
+        scrollsQuotesIndependently: true
     )
 }

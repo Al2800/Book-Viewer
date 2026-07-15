@@ -172,15 +172,21 @@ struct ExtractionReviewView: View {
         if usesSideBySideReviewLayout {
             HStack(spacing: Spacing.md) {
                 pageList(layout: .vertical)
-                editorContent(imageHeight: 260)
+                editorContent(imageHeight: 260, scrollsQuotesIndependently: true)
             }
             .padding(Spacing.md)
         } else {
-            VStack(spacing: Spacing.sm) {
-                pageList(layout: .horizontal)
-                editorContent(imageHeight: dynamicTypeSize.isAccessibilitySize ? 150 : 180)
+            ScrollView {
+                VStack(spacing: Spacing.sm) {
+                    pageList(layout: .horizontal)
+                    editorContent(
+                        imageHeight: dynamicTypeSize.isAccessibilitySize ? 150 : 180,
+                        scrollsQuotesIndependently: false
+                    )
+                }
+                .padding(Spacing.sm)
             }
-            .padding(Spacing.sm)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionReviewScrollView)
         }
     }
 
@@ -198,17 +204,31 @@ struct ExtractionReviewView: View {
     }
 
     @ViewBuilder
-    private func editorContent(imageHeight: CGFloat) -> some View {
+    private func editorContent(imageHeight: CGFloat, scrollsQuotesIndependently: Bool) -> some View {
         if let page = selectedPage {
-            PageQuoteEditor(
-                page: page,
-                quotes: bindingForPage(page),
-                onAddManualQuote: {
-                    showingAddQuoteSheet = true
-                },
-                imageHeight: imageHeight
-            )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            if scrollsQuotesIndependently {
+                PageQuoteEditor(
+                    page: page,
+                    quotes: bindingForPage(page),
+                    onAddManualQuote: {
+                        showingAddQuoteSheet = true
+                    },
+                    imageHeight: imageHeight,
+                    scrollsQuotesIndependently: true
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                PageQuoteEditor(
+                    page: page,
+                    quotes: bindingForPage(page),
+                    onAddManualQuote: {
+                        showingAddQuoteSheet = true
+                    },
+                    imageHeight: imageHeight,
+                    scrollsQuotesIndependently: false
+                )
+                .frame(maxWidth: .infinity)
+            }
         } else {
             noSelectionView
         }

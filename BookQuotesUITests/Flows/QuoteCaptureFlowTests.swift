@@ -431,6 +431,18 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 /// Regression coverage for extraction review on compact layouts with accessibility text.
 final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
 
+    override func setUp() {
+        XCUIDevice.shared.orientation = .portrait
+        super.setUp()
+        XCTAssertTrue(
+            waitUntil("portrait orientation", timeout: 5) { [weak self] in
+                guard let self else { return false }
+                return self.app.frame.height > self.app.frame.width
+            },
+            "Each adaptive-layout test should begin in portrait orientation"
+        )
+    }
+
     override var additionalLaunchArguments: [String] {
         [
             "--preload-library-test-data",
@@ -442,6 +454,61 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
     }
 
     func testExtractionReviewStacksControlsWithAccessibilityText() {
+        openExtractionReview()
+
+        let pageSelector = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
+            .firstMatch
+        let sourceImage = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
+            .firstMatch
+
+        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Extraction review should expose its page selector")
+        XCTAssertGreaterThan(
+            pageSelector.frame.width,
+            app.frame.width * 0.7,
+            "Compact accessibility layouts should place the page selector above the editor"
+        )
+        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose the source image")
+        XCTAssertTrue(sourceImage.isHittable, "The source image should be reachable by assistive technologies")
+        captureScreenshot(named: "accessibility_text_stacked_review", description: "Compact extraction review at accessibility text size")
+        openVisibleQuoteEditor()
+    }
+
+    func testExtractionReviewRemainsUsableInLandscapeWithAccessibilityText() {
+        XCUIDevice.shared.orientation = .landscapeLeft
+        defer { XCUIDevice.shared.orientation = .portrait }
+
+        XCTAssertTrue(
+            waitUntil("landscape orientation", timeout: 5) { [weak self] in
+                guard let self else { return false }
+                return self.app.frame.width > self.app.frame.height
+            },
+            "The simulator should rotate before beginning the extraction review"
+        )
+
+        openExtractionReview()
+
+        let pageSelector = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
+            .firstMatch
+        let sourceImage = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
+            .firstMatch
+
+        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Landscape review should expose its page selector")
+        XCTAssertGreaterThan(
+            pageSelector.frame.width,
+            app.frame.width * 0.7,
+            "Accessibility text should keep the page selector above the editor in landscape"
+        )
+        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Landscape review should expose the source image")
+        XCTAssertTrue(sourceImage.isHittable, "The source image should remain reachable in landscape")
+        captureScreenshot(named: "accessibility_text_landscape_review", description: "Landscape extraction review at accessibility text size")
+        openVisibleQuoteEditor()
+    }
+
+    private func openExtractionReview() {
         XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
 
         let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
@@ -467,25 +534,39 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
             app.navigationBars["Review Extractions"].waitForExistence(timeout: 15),
             "Mock capture should open extraction review"
         )
+    }
 
-        let pageSelector = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
-            .firstMatch
-        let sourceImage = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
-            .firstMatch
-        let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].firstMatch
+    private func openVisibleQuoteEditor() {
+        let reviewScrollView = app.scrollViews[AccessibilityIdentifiers.Capture.extractionReviewScrollView]
+        XCTAssertTrue(reviewScrollView.waitForExistence(timeout: 5), "Compact review should expose its vertical scroll surface")
 
-        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Extraction review should expose its page selector")
-        XCTAssertGreaterThan(
-            pageSelector.frame.width,
-            app.frame.width * 0.7,
-            "Compact accessibility layouts should place the page selector above the editor"
-        )
-        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose the source image")
-        XCTAssertTrue(sourceImage.isHittable, "The source image should be reachable by assistive technologies")
-        XCTAssertTrue(editButton.waitForExistence(timeout: 5), "Extracted quotes should remain editable")
-        captureScreenshot(named: "accessibility_text_stacked_review", description: "Compact extraction review at accessibility text size")
+        for _ in 0..<3 {
+            if let editButton = visibleQuoteEditButton() {
+                editButton.tap()
+                XCTAssertTrue(
+                    app.navigationBars["Edit Quote"].waitForExistence(timeout: 5),
+                    "Extracted quotes should remain editable"
+                )
+                return
+            }
+            reviewScrollView.swipeUp()
+        }
+
+        XCTFail("A visible edit control should be available after scrolling the extraction review")
+    }
+
+    private func visibleQuoteEditButton() -> XCUIElement? {
+        let editButtons = app.buttons.matching(identifier: AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
+        for index in 0..<editButtons.count {
+            let editButton = editButtons.element(boundBy: index)
+            let frame = editButton.frame
+            if frame.height > 0,
+               frame.minY >= app.navigationBars["Review Extractions"].frame.maxY,
+               frame.maxY <= app.frame.maxY {
+                return editButton
+            }
+        }
+        return nil
     }
 }
 
