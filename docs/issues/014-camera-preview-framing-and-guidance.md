@@ -35,9 +35,9 @@ This matters because extraction quality now depends on the photographed page ima
 - [x] Document the expected camera framing contract for quote capture: whole marked region visible, margin marks included, line endings included, and no hidden preview/capture crop mismatch.
 - [ ] The camera opening state no longer feels artificially zoomed compared with the default iPhone camera for the same lens where possible.
 - [x] Preview framing and captured-image crop align: what the user frames is what extraction receives.
-- [ ] Quote capture guidance stays minimal: a short, quiet hint that the page should be visible is enough unless testing proves more is needed.
-- [ ] Guidance does not add a busy overlay or repeated instructions over the image capture surface.
-- [ ] Cover capture remains usable and does not regress while quote-capture framing is improved.
+- [x] Quote capture guidance stays minimal: a short, quiet hint that the page should be visible is enough unless testing proves more is needed.
+- [x] Guidance does not add a busy overlay or repeated instructions over the image capture surface.
+- [x] Cover capture remains usable and does not regress while quote-capture framing is improved.
 - [x] Camera changes are covered by characterization tests around any extracted framing/crop module before production behaviour changes.
 - [x] Simulator smoke covers opening the camera, reviewing a captured page, and reaching extraction review.
 - [ ] Real-device/TestFlight smoke confirms preview framing and capture quality before the next release candidate is treated as accepted.
@@ -82,6 +82,20 @@ This matters because extraction quality now depends on the photographed page ima
 - Reduced `CameraService.swift` from 418 LOC to 415 LOC.
 - Focused camera/capture tests and simulator build passed.
 - Quote capture UI smoke was attempted but failed before app assertions with the known local XCTest AX runner error: `Timed out waiting for AX loaded notification`.
+
+2026-07-15 acceptance-evidence follow-up:
+
+- `CameraFramingProfile.quotePage` continues to use full-frame `.resizeAspect`, no hidden capture
+  crop, and exactly one concise guidance string: `Keep the page visible.` The framing-profile
+  tests also guard against expanding it into margin or line-ending instructions.
+- The guidance is rendered as one `CaptureStatusPill` in the existing bottom control tray, rather
+  than an overlay on the camera image. It is replaced by one quality state after analysis, so the
+  capture surface does not accumulate instructions.
+- Re-ran the focused camera, quote-review, and cover-crop simulator gate: 5 tests passed, 0
+  failures on iPhone 17 / iOS 26.5. This includes the quote quality-indicator path and the cover
+  crop-accept path, so the automated cover-regression criterion is now closed.
+- The subjective physical-lens comparison and real-device/TestFlight capture-quality smoke remain
+  open; simulator testing cannot prove them.
 
 ## Verification Results
 
