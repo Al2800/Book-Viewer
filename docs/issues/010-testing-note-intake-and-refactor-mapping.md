@@ -1,6 +1,6 @@
 # 010 - Testing Note Intake and Refactor Mapping
 
-Status: open
+Status: closed
 Area: Refactor foundation
 Priority: high
 
@@ -43,3 +43,17 @@ User testing notes can expose product bugs, model/proxy behaviour, simulator gap
 
 - The issue README contains the intake rule.
 - New issue notes link back to obvious refactor areas instead of standing alone.
+
+## Outcome
+
+2026-07-15 closure verification:
+
+- `docs/issues/README.md` now contains the required Testing Note Intake rule: attach an existing
+  issue or create a new local issue, record the symptom, suspected seam, characterization plan,
+  refactor impact, acceptance criteria, and verification route, and label external evidence when
+  local reproduction is not possible.
+- The same guide maps every live-test area to the relevant local issue families, including real
+  photo extraction, camera, subscription, offline queue, Library, settings, and simulator/UI
+  evidence. Refactor work is therefore required to inspect open notes in its area before it starts.
+- The existing real-photo, production, and device-only issues demonstrate the external-evidence
+  path instead of leaving those observations as untracked chat notes.

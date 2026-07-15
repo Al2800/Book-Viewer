@@ -19,7 +19,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `007-testflight-build-22-quote-extraction-empty-results.md` - in_progress
 - `008-cover-metadata-noisy-title-author-extraction.md` - closed
 - `009-cover-capture-white-screen-after-use-photo.md` - closed
-- `010-testing-note-intake-and-refactor-mapping.md` - open
+- `010-testing-note-intake-and-refactor-mapping.md` - closed
 - `011-settings-legal-sheet-activation.md` - closed
 - `012-on-device-mark-aware-quote-extraction.md` - in_progress
 - `013-real-photo-mark-detection-and-quote-windowing.md` - open
@@ -97,7 +97,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `085-library-list-row-delete-smoke-accessibility.md` - closed
 - `086-capture-ship-readiness.md` - in_progress
 - `087-quote-extraction-pipeline-deepening.md` - closed
-- `088-backend-entitlement-account-complexity-refactor.md` - in_progress
+- `088-backend-entitlement-account-complexity-refactor.md` - closed
 - `089-website-dependency-privacy-readiness.md` - closed
 - `090-quote-detail-view-final-slice.md` - closed
 - `091-release-evidence-pack-and-device-smoke.md` - in_progress
@@ -114,7 +114,7 @@ This folder tracks local markdown issues for the refactor programme.
 - `102-atomic-extraction-rate-limits.md` - in_progress
 - `103-ai-prompt-output-and-provenance-validation.md` - closed
 - `104-ui-test-isolation-and-assertion-reliability.md` - closed
-- `105-adaptive-ui-and-accessibility-layout.md` - open
+- `105-adaptive-ui-and-accessibility-layout.md` - in_progress
 - `106-ui-test-skip-elimination.md` - closed
 
 ## Refactor Rules
