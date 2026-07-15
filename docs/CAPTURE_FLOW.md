@@ -35,14 +35,14 @@ The capture system is designed around three principles:
 │                                                                   │
 │   ┌───────────────┐    ┌───────────────┐    ┌───────────────┐   │
 │   │  Add New Book │    │ Capture Quotes│    │  Batch Mode   │   │
-│   │ (Cover photo) │    │(Single page)  │    │(Multi-page)   │   │
+│   │  (ISBN scan)  │    │(Single page)  │    │(Multi-page)   │   │
 │   └───────┬───────┘    └───────┬───────┘    └───────┬───────┘   │
 │           │                    │                    │            │
 │           ▼                    ▼                    ▼            │
 │    CoverCaptureView      QuoteCaptureView     BatchCaptureView  │
 │           │                    │                    │            │
 │           ▼                    ▼                    ▼            │
-│      AI Metadata          AI Extraction        Batch Processing │
+│   Catalog Metadata        AI Extraction        Batch Processing │
 │           │                    │                    │            │
 │           ▼                    ▼                    ▼            │
 │       BookEditView       QuoteDetailView     ExtractionReviewView│
@@ -72,11 +72,13 @@ CaptureModeSelectionView(
 
 | Mode | Use Case | Flow |
 |------|----------|------|
-| **Add New Book** | Register a new book | Cover photo → AI metadata → Edit → Save |
+| **Add New Book** | Register a new book | ISBN barcode → catalogue metadata → Edit → Save |
 | **Capture Quotes** | Extract from one page | Select book → Photo → AI extraction → Review |
 | **Batch Mode** | Extract from many pages | Select book → Multiple photos → Process all → Review all |
 
-In UI tests, cover capture exposes a `Use Test Cover` affordance. That button injects deterministic cover metadata and opens `BookEditView` directly. Production capture still uses the real photo/crop/extraction path.
+In UI tests, book registration exposes a `Use Test ISBN` affordance. It injects deterministic
+catalogue metadata and opens `BookEditView` directly. Production registration scans a real ISBN
+barcode, with manual entry available when a barcode or catalogue result is unavailable.
 
 ### Flow State (`CaptureFlowState`)
 
@@ -318,9 +320,12 @@ actor BatchProcessingService {
 
 ---
 
-## Cover Capture
+## ISBN Book Registration
 
-Registering a new book from a cover photo.
+The current production flow scans an ISBN barcode, looks up catalogue metadata, then opens the
+editable book form. Manual entry is the fallback. Cover-photo AI, photo/ISBN mode switching, crop
+review, and Gemini cover extraction shown in the historical diagram below are retired and are not
+reachable from the app.
 
 ### Flow Diagram
 
@@ -362,14 +367,14 @@ Registering a new book from a cover photo.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### ISBN vs Photo
+### Registration Options
 
 | Method | Accuracy | Speed | Best For |
 |--------|----------|-------|----------|
 | ISBN Scan | ~99% (database lookup) | Fast | Books with visible barcode |
-| Photo | ~85% (AI) | Slower | Books without barcode, foreign editions |
+| Manual entry | User supplied | Variable | Books without a usable barcode or catalogue result |
 
-### Photo Metadata Extraction
+### Retired Photo Metadata Extraction
 
 `CoverCaptureView` owns camera services, captured image state, crop-review sheet presentation, loading/error state, image data creation, and concrete service wiring. Screen chrome sections live in `CoverCaptureChrome`, crop-review presentation lives in `CoverCropReviewView`, pure crop math lives in `CoverCropGeometry`, OCR text-line heuristics live in `CoverOCRHeuristics`, and the deterministic photo metadata decision path lives in `CoverExtractionOrchestrator`.
 
@@ -382,7 +387,9 @@ Registering a new book from a cover photo.
 
 When changing extraction fallback behavior, characterize it in `CoverExtractionOrchestratorTests` first, then keep the simulator cover flow green through `CoverCaptureFlowTests`.
 
-When changing cover crop behavior, characterize the math in `CoverCropGeometryTests` before editing `CoverCropReviewView`. When changing cover-screen controls, mode switching, or manual/test-cover affordances, keep `CoverCaptureFlowTests` green on the simulator. A direct simulator assertion for the real crop-review sheet is still a testability gap: the current mock camera acceptance path uses deterministic metadata to avoid OCR/network/camera flake.
+These helpers remain as legacy compatibility seams only and must not be reconnected to production
+navigation. Current registration changes should keep `CoverCaptureFlowTests`,
+`BookISBNScanLookupTests`, and the ISBN confirmation tests green.
 
 ---
 

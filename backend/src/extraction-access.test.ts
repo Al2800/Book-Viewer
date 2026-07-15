@@ -158,6 +158,22 @@ describe('extraction access policy', () => {
     expect(providerFetch).not.toHaveBeenCalled();
   });
 
+  it('retires cover-photo extraction before parsing or forwarding an image', async () => {
+    const { default: worker } = await import('./index');
+    const providerFetch = vi.fn();
+    vi.stubGlobal('fetch', providerFetch);
+
+    const response = await worker.fetch(
+      makeExtractionRequest('/api/extract-cover'),
+      makeEnv({ ALLOW_AUTHENTICATED_EXTRACTION: 'true' })
+    );
+    const body = await response.json() as { code: string };
+
+    expect(response.status).toBe(410);
+    expect(body.code).toBe('COVER_EXTRACTION_ROUTE_RETIRED');
+    expect(providerFetch).not.toHaveBeenCalled();
+  });
+
   it('keeps subscription enforcement when authenticated extraction is not explicitly enabled', async () => {
     const { default: worker } = await import('./index');
     const providerFetch = vi.fn();

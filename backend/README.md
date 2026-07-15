@@ -1,14 +1,13 @@
 # BookQuotes Backend Proxy
 
 Cloudflare Workers serverless proxy for BookQuotes iOS app. Handles authentication,
-subscription validation, atomic rate limiting, and routes cover metadata to Gemini and quote-page
-extraction to the approved Hugging Face provider.
+subscription validation, atomic rate limiting, and quote-page extraction through the approved
+Hugging Face provider. Book registration uses ISBN catalogue lookup directly from the app.
 
 ## Architecture
 
 ```
-iOS App → Cloudflare Workers Proxy → Gemini (cover metadata)
-                                       → Hugging Face (quote pages)
+iOS App → Cloudflare Workers Proxy → Hugging Face (quote pages)
                     ↓
                Validates:
                - Apple Sign-In JWT
@@ -24,7 +23,6 @@ iOS App → Cloudflare Workers Proxy → Gemini (cover metadata)
 - Cloudflare account with Workers enabled
 - Wrangler CLI (`npm install -g wrangler`)
 - Apple Developer account (for Sign-In with Apple)
-- Google AI Studio account (for Gemini API key)
 
 ### Installation
 
@@ -46,7 +44,6 @@ npm install
 
 2. **Set Secrets:**
    ```bash
-   wrangler secret put GEMINI_API_KEY
    wrangler secret put APPLE_TEAM_ID
    wrangler secret put JWT_SECRET
    wrangler secret put APPLE_BUNDLE_ID
@@ -150,13 +147,8 @@ before data deletion, invalidating all previously issued session tokens. A later
 creates a new session version for the same Apple identifier.
 
 #### `POST /api/extract-cover`
-Extract book metadata from cover image.
-
-**Headers:**
-- `Authorization: Bearer <session_token>`
-- `Idempotency-Key: <new UUID for one extraction attempt>`
-
-**Body:** Gemini API request format with image data.
+Retired. Returns `410 COVER_EXTRACTION_ROUTE_RETIRED` before authentication, request parsing, or
+provider forwarding. The app scans ISBN barcodes and uses catalogue metadata instead.
 
 #### `POST /api/extract-quotes-hf`
 Extract quotes from a book page through the approved Hugging Face provider route.

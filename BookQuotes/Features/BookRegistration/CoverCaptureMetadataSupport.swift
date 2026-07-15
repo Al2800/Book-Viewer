@@ -4,12 +4,20 @@ import UIKit
 import Vision
 
 struct CoverCaptureMetadataSupport {
-    let authService: AuthService
+    let authService: AuthService?
+
+    init(authService: AuthService? = nil) {
+        self.authService = authService
+    }
 
     func extractCoverMetadata(from image: UIImage) async -> BookMetadata {
         let coverData = image.jpegData(compressionQuality: 0.85)
         if let testMetadata = uiTestCoverMetadata(coverImageData: coverData) {
             return testMetadata
+        }
+
+        guard let authService else {
+            return await extractCoverMetadataViaOCR(from: image, coverImageData: coverData)
         }
 
         let service = GeminiService(authService: authService)

@@ -123,10 +123,17 @@ struct QuoteCaptureView: View {
 
     @ViewBuilder
     private var cameraContent: some View {
-        if cameraService.isAuthorized {
+        if cameraService.isAuthorized && cameraService.isSessionConfigured {
             CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
+        } else if cameraService.isAuthorized {
+            Color.black
+                .ignoresSafeArea()
+                .overlay {
+                    ProgressView()
+                        .tint(.white)
+                }
         } else {
             CameraPermissionView()
                 .environment(cameraPermission)

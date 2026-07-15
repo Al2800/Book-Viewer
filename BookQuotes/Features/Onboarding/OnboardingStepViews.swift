@@ -150,7 +150,7 @@ struct OnboardingSignInStepView: View {
 
 struct OnboardingSubscriptionStepView: View {
     let subscriptionService: SubscriptionService
-    let onContinue: () -> Void
+    let onContinue: (Bool) -> Void
 
     var body: some View {
         OnboardingScrollableStep {

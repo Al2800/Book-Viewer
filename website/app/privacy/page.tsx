@@ -36,25 +36,24 @@ export default function PrivacyPage() {
 
             <h3>Image Processing</h3>
             <p>
-              Captured pages and cover images are stored locally on your device while you
-              review, retry, or save them. When you save a quote, a compressed source-image
-              copy may be kept with that quote for reference until you delete the quote. Draft
-              and queued images remain on-device until they are processed or deleted.
+              Captured pages and downloaded catalogue cover images are stored locally on your
+              device while you review, retry, or save them. When you save a quote, a compressed
+              source-image copy may be kept with that quote for reference until you delete the
+              quote. Draft and queued images remain on-device until they are processed or deleted.
             </p>
             <p>
-              If you enable Remote AI Processing, the selected image, extraction instructions,
+              If you enable Remote AI Processing, the marked-page image, extraction instructions,
               and resulting text are sent through the BookQuotes service to Hugging Face
-              Inference for quote-page extraction or Google Gemini for cover extraction. The
-              BookQuotes service does not write those image or prompt payloads to its application
-              database; each provider handles request data under its own terms.
+              Inference. The BookQuotes service does not write those image or prompt payloads to
+              its application database; the provider handles request data under its own terms.
             </p>
 
             <h3>Book Metadata Lookup</h3>
             <p>
-              When you look up a book, BookQuotes sends an ISBN, or a book title and author,
-              directly to Google Books to find metadata and cover images. If an ISBN is not
-              found there, it is sent to Open Library as a fallback. These catalogue requests do
-              not include your BookQuotes account identifier or library.
+              When you scan a book, BookQuotes sends its ISBN directly to Google Books to find
+              metadata and a canonical cover image. If the ISBN is not found there, it is sent to
+              Open Library as a fallback. These catalogue requests do not include your BookQuotes
+              account identifier or library.
             </p>
 
             <h3>Service Usage and Subscription Records</h3>
@@ -102,14 +101,9 @@ export default function PrivacyPage() {
                 pages.
               </li>
               <li>
-                <strong>Google Gemini API</strong> &mdash; For cover metadata extraction from images
-                when you enable Remote AI Processing. Provider handling is governed by its
-                applicable terms.
-              </li>
-              <li>
-                <strong>Google Books</strong> &mdash; For requested ISBN, title, and author metadata
-                lookups and cover images. BookQuotes does not include your account identifier or
-                library in these catalogue requests.
+                <strong>Google Books</strong> &mdash; For requested ISBN metadata lookups and cover
+                images. BookQuotes does not include your account identifier or library in these
+                catalogue requests.
               </li>
               <li>
                 <strong>Open Library</strong> &mdash; As an ISBN metadata fallback when Google Books

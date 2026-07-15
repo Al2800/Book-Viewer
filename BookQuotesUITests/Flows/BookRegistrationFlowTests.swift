@@ -40,7 +40,7 @@ final class BookRegistrationFlowTests: BaseUITestCase {
         }
 
         logger.step(2, "Verifying camera-first add flow appears")
-        // The library add button opens the cover capture flow (camera-first),
+        // The library add button opens the ISBN scanner,
         // which offers manual entry as a fallback.
         let manualEntryButton = app.buttons.matching(
             NSPredicate(format: "label CONTAINS 'manually'")

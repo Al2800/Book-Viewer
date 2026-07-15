@@ -105,7 +105,7 @@ struct LibraryBrowseSection: View {
                     LibraryActionRow(
                         icon: "camera.viewfinder",
                         title: "Add New Book",
-                        subtitle: "Scan a cover or ISBN barcode"
+                        subtitle: "Scan an ISBN barcode"
                     )
                 }
                 .buttonStyle(.plain)
@@ -210,7 +210,7 @@ struct EmptyLibraryView: View {
                         LibraryActionRow(
                             icon: "camera.viewfinder",
                             title: "Add Your First Book",
-                            subtitle: "Scan a cover or ISBN barcode"
+                            subtitle: "Scan an ISBN barcode"
                         )
                     }
                     .buttonStyle(.plain)

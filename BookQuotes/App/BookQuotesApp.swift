@@ -13,7 +13,6 @@ struct BookQuotesApp: App {
 
     /// Shared services initialized at app launch
     @State private var authService: AuthService
-    @State private var geminiService: GeminiService
     @State private var networkMonitor: NetworkMonitor
 
     init() {
@@ -78,10 +77,7 @@ struct BookQuotesApp: App {
 
         // Initialize services
         let auth = AuthService()
-        let gemini = GeminiService(authService: auth)
-
         _authService = State(initialValue: auth)
-        _geminiService = State(initialValue: gemini)
         _networkMonitor = State(initialValue: NetworkMonitor.shared)
 
         let containerResult: ModelContainer?
@@ -222,7 +218,6 @@ struct BookQuotesApp: App {
             if let container {
                 ContentView()
                     .environment(authService)
-                    .environment(geminiService)
                     .environment(networkMonitor)
                     .task {
                         // Start network monitoring

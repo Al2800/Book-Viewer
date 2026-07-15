@@ -214,19 +214,15 @@ BookQuotes/
 - `BookISBNScanLookup`: injectable async ISBN scan-result metadata lookup and success/failure result mapping.
 - `BookISBNScanResultView`: SwiftUI-only loading, found metadata, retry, cancel, and error presentation for `BookISBNConfirmationSheet.FromScanResult`.
 - `BookEditSections`: SwiftUI-only form sections for cover, details, metadata, reading status, and notes.
-- `CoverMetadataNormalizer`: pure mapper from Gemini/OCR/manual extraction results into `BookMetadata`.
-- `CoverExtractionOrchestrator`: async decision seam for Gemini success/failure, OCR fallback, and manual fallback.
-- `CoverCaptureChrome`: cover-capture top mode switcher, barcode overlay, processing overlay, and bottom controls.
-- `CoverCaptureMetadataSupport`: Gemini service handoff, Vision OCR fallback, rectangle detection support, image orientation normalization, and ISBN lookup helper.
+- `CoverCaptureChrome`: ISBN scanner header, barcode overlay, processing overlay, and manual-entry controls.
+- `CoverCaptureMetadataSupport`: ISBN catalogue lookup helper used by the live registration flow.
 - `CoverCropGeometry`: pure crop viewport, scale, offset clamp, and image crop-rect calculations.
 - `CoverCropReviewView`: crop-review sheet UI for move/zoom/use/retake.
 - `CoverOCRHeuristics`: pure Vision text-line sanitizing and title/author guessing.
 
-This keeps source-to-form mapping, save mapping, form section composition, and cover metadata normalization testable without exposing SwiftUI state, `ModelContext`, haptics, dismissal, API calls, camera services, Vision requests, or photo picker behavior. Further refactor slices should apply the same pattern to cover/image picking.
+This keeps source-to-form mapping, save mapping, form section composition, and ISBN lookup testable without exposing SwiftUI state, `ModelContext`, haptics, dismissal, API calls, or camera services.
 
-New cover extraction behavior should be characterized in `CoverExtractionOrchestratorTests` first. `CoverCaptureView` should keep camera setup, mode switching, crop-review state, loading/error state, and sheet presentation while delegating concrete Gemini/OCR/ISBN/image-normalization support to `CoverCaptureMetadataSupport` and deterministic fallback decisions to the orchestrator.
-
-New cover crop math should be characterized in `CoverCropGeometryTests` before touching `CoverCropReviewView`. New OCR title/author heuristics should be characterized in `CoverOCRHeuristicsTests`. Cover screen chrome changes should keep `CoverCaptureFlowTests` green because their observable behavior is user navigation and controls, not the internal SwiftUI section layout.
+`CoverCaptureView` should keep camera setup, ISBN scanner lifecycle, loading/error state, and edit-sheet presentation while delegating catalogue lookup to `CoverCaptureMetadataSupport`. Cover screen chrome changes should keep `CoverCaptureFlowTests` green because their observable behavior is user navigation and controls, not the internal SwiftUI section layout. Retired cover-photo extraction helpers remain only for compatibility tests and must not be reconnected to production navigation.
 
 New book edit UI should be added to the relevant section in `BookEditSections.swift` unless it owns mode, persistence, photo loading, validation, save/update, dismissal, or milestone behavior. Those orchestration concerns remain in `BookEditView.swift`. New ISBN confirmation save behavior should be characterized in `BookISBNConfirmationDraftTests` and reuse `BookEditSaveDraft` where possible. New ISBN confirmation field-validation behavior should be characterized in `BookISBNConfirmationValidationTests` before changing `BookISBNConfirmationValidation` or `BookISBNConfirmationSheet.validateAndSave()`. New ISBN scan-result metadata lookup behavior should be characterized in `BookISBNScanLookupTests`; scan-result loading/error presentation belongs in `BookISBNScanResultView`. Simulator coverage for this area should include manual create, validation, cancel, cover section visibility, ISBN scan result loading/error, and create-then-edit persisted title behavior.
 

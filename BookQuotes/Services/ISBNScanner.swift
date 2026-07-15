@@ -285,6 +285,7 @@ extension ISBNScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         Task {
             if let result = await detectBarcode(in: pixelBuffer) {
                 await MainActor.run {
+                    guard isScanning else { return }
                     detectedISBN = result.isbn
                     confidence = result.confidence
                     onBarcodeDetected?(result.isbn)

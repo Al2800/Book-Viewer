@@ -14,6 +14,7 @@ struct OnboardingSessionState: Equatable {
 
     private(set) var currentStep: OnboardingStep
     private(set) var signedInUser: User?
+    private(set) var subscriptionActivated = false
     private(set) var isCompleting = false
 
     init(flowPolicy: OnboardingFlowPolicy = .current) {
@@ -37,12 +38,13 @@ struct OnboardingSessionState: Equatable {
         currentStep = signedInUser == nil ? .markingSetup : flowPolicy.stepAfterSignIn
     }
 
-    mutating func advanceFromSubscription() {
+    mutating func advanceFromSubscription(activated: Bool) {
+        subscriptionActivated = activated
         currentStep = .markingSetup
     }
 
     mutating func advanceFromMarkingSetup() {
-        currentStep = .aiConsent
+        currentStep = subscriptionActivated ? .aiConsent : .complete
     }
 
     mutating func advanceFromAIConsent() {

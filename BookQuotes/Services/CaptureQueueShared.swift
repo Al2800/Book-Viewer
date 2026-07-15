@@ -7,7 +7,7 @@ extension CaptureQueueManager {
     static var shared: CaptureQueueManager?
 
     /// Initialize the shared instance.
-    /// Uses the same local-first extractor seam as interactive quote review.
+    /// Uses the same consent-controlled remote-first extractor seam as interactive quote review.
     @MainActor
     static func initialize(
         modelContainer: ModelContainer,

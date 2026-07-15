@@ -121,6 +121,10 @@ final class SubscriptionService {
             products = try await Product.products(for: Set(SubscriptionProductID.allRawValues))
                 .sorted { $0.price < $1.price }
 
+            if products.isEmpty {
+                lastError = .productsUnavailable
+            }
+
             // Also update subscription status
             await updateSubscriptionStatus()
         } catch {
@@ -374,6 +378,7 @@ final class SubscriptionService {
 enum SubscriptionError: LocalizedError {
     case authenticationRequired
     case entitlementReconciliationPending
+    case productsUnavailable
     case productLoadFailed(Error)
     case verificationFailed(Error)
     case purchaseFailed(Error)
@@ -385,6 +390,8 @@ enum SubscriptionError: LocalizedError {
             return "Sign in with Apple before purchasing or restoring so your subscription can be linked to your account."
         case .entitlementReconciliationPending:
             return SubscriptionEntitlementReconciliationStatus.retryRequired.retryMessage
+        case .productsUnavailable:
+            return "The App Store did not return BookQuotes subscription options. Check your connection, then try again or restore an existing purchase."
         case .productLoadFailed(let error):
             return "Failed to load products: \(error.localizedDescription)"
         case .verificationFailed(let error):

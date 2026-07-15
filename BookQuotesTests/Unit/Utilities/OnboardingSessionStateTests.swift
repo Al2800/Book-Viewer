@@ -59,22 +59,34 @@ final class OnboardingSessionStateTests: XCTestCase {
         XCTAssertEqual(state.currentStep, .signIn)
     }
 
-    func testAdvanceFromSubscriptionMovesToMarkingSetup() {
+    func testAdvanceFromSubscriptionRecordsActivationAndMovesToMarkingSetup() {
         var state = OnboardingSessionState()
         state.advance(to: .subscription)
 
-        state.advanceFromSubscription()
+        state.advanceFromSubscription(activated: true)
 
         XCTAssertEqual(state.currentStep, .markingSetup)
+        XCTAssertTrue(state.subscriptionActivated)
     }
 
-    func testAdvanceFromMarkingSetupMovesToAIConsent() {
+    func testAdvanceFromMarkingSetupMovesSubscriberToAIConsent() {
         var state = OnboardingSessionState()
+        state.advanceFromSubscription(activated: true)
         state.advance(to: .markingSetup)
 
         state.advanceFromMarkingSetup()
 
         XCTAssertEqual(state.currentStep, .aiConsent)
+    }
+
+    func testAdvanceFromMarkingSetupCompletesLocalOnlyOnboardingWithoutConsentPrompt() {
+        var state = OnboardingSessionState()
+        state.advance(to: .markingSetup)
+
+        state.advanceFromMarkingSetup()
+
+        XCTAssertEqual(state.currentStep, .complete)
+        XCTAssertFalse(state.subscriptionActivated)
     }
 
     func testAdvanceFromAIConsentMovesToComplete() {

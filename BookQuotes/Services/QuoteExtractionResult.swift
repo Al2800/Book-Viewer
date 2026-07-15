@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - Quote Extraction Result
 
-/// Parsed response from Gemini API quote extraction.
+/// Parsed response from a quote extraction provider or the on-device fallback.
 struct QuoteExtractionResult: Codable, Sendable {
     /// Extracted quotes from the page
     let quotes: [ExtractedQuoteData]
@@ -268,7 +268,7 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
 
 // MARK: - Book Metadata Result
 
-/// Parsed response from Gemini API cover extraction
+/// Legacy parsed response retained for compatibility with retired cover-extraction tests.
 struct BookMetadataResult: Codable, Sendable {
     /// Extracted title
     let title: String

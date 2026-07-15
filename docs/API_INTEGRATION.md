@@ -1,4 +1,15 @@
-# Gemini Proxy Integration Specification
+# Remote Quote Extraction Contract
+
+> **Current release contract (2026-07-15):** Book registration is ISBN/manual only. Cover photos
+> are not sent to an AI provider. For consented, authenticated subscribers, quote capture calls
+> `/api/extract-quotes-hf` first through the BookQuotes Worker and the pinned Hugging Face provider.
+> Apple Vision OCR is the fallback. `/api/extract-cover` and `/api/extract-quotes` are retired and
+> return `410` before parsing or forwarding images.
+
+The Gemini material below is retained only as historical implementation reference. It does not
+describe a reachable production workflow and must not be used for release copy or new features.
+
+# Legacy Gemini Proxy Integration Specification
 
 ## Overview
 

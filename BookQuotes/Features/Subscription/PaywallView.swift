@@ -119,9 +119,23 @@ struct PaywallView: View {
                 ProgressView()
                     .padding()
             } else if subscriptionService.products.isEmpty {
-                Text("Unable to load subscription options")
-                    .foregroundStyle(.secondary)
-                    .padding()
+                VStack(spacing: Spacing.sm) {
+                    Text(subscriptionService.lastError?.localizedDescription
+                         ?? "Unable to load subscription options")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+
+                    Button("Try Again") {
+                        Task {
+                            await subscriptionService.loadProducts()
+                            selectedProduct = subscriptionService.yearlyProduct
+                                ?? subscriptionService.monthlyProduct
+                        }
+                    }
+                    .buttonStyle(.secondaryCompact)
+                }
+                .padding()
             } else {
                 ForEach(subscriptionService.products) { product in
                     SubscriptionOptionCard(

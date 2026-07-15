@@ -29,7 +29,7 @@ protocol RemoteQuoteImageCropping: Sendable {
     func crop(_ image: UIImage) async -> UIImage
 }
 
-/// Produces a smaller, still-contextual image for the explicitly enabled remote fallback.
+/// Produces a smaller, still-contextual image for explicitly enabled remote extraction.
 /// It leaves the document-prepared capture untouched unless Vision can safely remove enough
 /// outer camera area while retaining generous space for margin marks.
 struct VisionRemoteQuoteImageCropper: RemoteQuoteImageCropping {

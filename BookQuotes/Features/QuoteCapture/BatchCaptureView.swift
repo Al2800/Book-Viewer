@@ -97,8 +97,13 @@ struct BatchCaptureView: View {
     @ViewBuilder
     private var cameraPreviewLayer: some View {
         ZStack {
-            CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
-                .ignoresSafeArea()
+            if cameraService.isSessionConfigured {
+                CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
+                    .ignoresSafeArea()
+            } else {
+                Color.black
+                    .ignoresSafeArea()
+            }
 
             if !cameraService.isSessionRunning {
                 Color.black.opacity(0.6)
@@ -297,7 +302,7 @@ struct BatchCaptureView: View {
         modelContext.insert(session)
         try? modelContext.save()
 
-        // Extraction Review starts with on-device OCR; remote processing is an explicit fallback.
+        // Extraction Review uses consented remote AI first, with on-device OCR as its fallback.
         onComplete(session)
     }
 

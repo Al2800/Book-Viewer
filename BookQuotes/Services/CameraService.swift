@@ -17,6 +17,9 @@ final class CameraService: NSObject {
     /// Whether the camera session is currently running
     private(set) var isSessionRunning = false
 
+    /// Whether inputs and outputs are ready for a live preview layer.
+    private(set) var isSessionConfigured = false
+
     /// Whether AVFoundation has a photo request awaiting a terminal callback.
     var isCapturing: Bool {
         captureLifecycle.isCapturing
@@ -64,6 +67,7 @@ final class CameraService: NSObject {
         if isMockCameraMode {
             // In mock mode, camera is always "authorized" and "running"
             isAuthorized = true
+            isSessionConfigured = true
             isSessionRunning = true
         }
     }
@@ -156,6 +160,7 @@ final class CameraService: NSObject {
 
         session.commitConfiguration()
         captureSession = session
+        isSessionConfigured = true
     }
 
     /// Create a preview layer for the camera feed
@@ -405,6 +410,7 @@ final class CameraService: NSObject {
         captureLifecycle.cancel()
 
         stopSession()
+        isSessionConfigured = false
         captureSession = nil
         photoOutput = nil
         configuredPhotoDimensions = nil

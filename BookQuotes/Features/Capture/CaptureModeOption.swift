@@ -37,8 +37,8 @@ struct CaptureModeOption: Identifiable, Equatable {
         CaptureModeOption(
             kind: .cover,
             title: "Add New Book",
-            subtitle: "Scan a cover or ISBN",
-            systemImage: "book.closed.fill",
+            subtitle: "Scan the ISBN barcode",
+            systemImage: "barcode.viewfinder",
             accent: .brand,
             accessibilityId: AccessibilityIdentifiers.Capture.modeSelectCover
         ),

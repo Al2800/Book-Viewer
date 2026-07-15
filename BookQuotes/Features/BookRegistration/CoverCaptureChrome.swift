@@ -45,74 +45,44 @@ struct CoverProcessingOverlay: View {
     }
 }
 
-struct CoverCaptureModeSwitcher: View {
-    @Binding var captureMode: CoverCaptureView.CaptureMode
+struct CoverCaptureHeader: View {
     let onCancel: () -> Void
 
     var body: some View {
-        VStack(spacing: Spacing.md) {
-            CaptureHeaderBar(
-                title: "Add Book",
-                subtitle: captureMode == .photo ? "Scan cover or ISBN" : "Scan the ISBN barcode",
-                onCancel: onCancel
-            )
-
-            Picker("Mode", selection: $captureMode) {
-                Label("Photo", systemImage: "camera.fill").tag(CoverCaptureView.CaptureMode.photo)
-                Label("Barcode", systemImage: "barcode.viewfinder").tag(CoverCaptureView.CaptureMode.barcode)
-            }
-            .pickerStyle(.segmented)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modePicker)
-            .padding(.horizontal, Spacing.md)
-            .padding(.vertical, Spacing.sm)
-            .cameraChrome(cornerRadius: CornerRadius.xl)
-            .overlay {
-                RoundedRectangle(cornerRadius: CornerRadius.xl)
-                    .stroke(Color.white.opacity(0.10), lineWidth: 1)
-            }
-        }
+        CaptureHeaderBar(
+            title: "Add Book",
+            subtitle: "Scan the ISBN barcode",
+            onCancel: onCancel
+        )
         .padding(.horizontal, Spacing.lg)
         .padding(.top, Spacing.sm)
     }
 }
 
 struct CoverCaptureBottomControls: View {
-    let captureMode: CoverCaptureView.CaptureMode
     let isProcessing: Bool
-    let isCapturing: Bool
-    let isSessionRunning: Bool
-    let showsTestCoverButton: Bool
-    let onCapturePhoto: () -> Void
-    let onUseTestCover: () -> Void
+    let showsTestISBNButton: Bool
+    let onUseTestISBN: () -> Void
     let onManualEntry: () -> Void
 
     var body: some View {
         CaptureControlTray {
-            if let statusPill {
-                statusPill
-                    .frame(maxWidth: .infinity, alignment: .center)
-            }
+            statusPill
+                .frame(maxWidth: .infinity, alignment: .center)
 
-            if captureMode == .photo && !isProcessing {
-                CaptureButton(isProcessing: isProcessing || isCapturing) {
-                    onCapturePhoto()
-                }
-                .disabled(!isSessionRunning || isCapturing)
-
-                if showsTestCoverButton {
-                    Button("Use Test Cover") {
-                        onUseTestCover()
+            if !isProcessing {
+                if showsTestISBNButton {
+                    Button("Use Test ISBN") {
+                        onUseTestISBN()
                     }
                     .buttonStyle(.primaryCompact)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Capture.testCoverButton)
                 }
-            }
 
-            if !isProcessing {
                 Button {
                     onManualEntry()
                 } label: {
-                    Text(captureMode == .photo ? "Enter details manually" : "Enter ISBN manually")
+                    Text("Enter book details manually")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity, minHeight: 44)
@@ -124,21 +94,15 @@ struct CoverCaptureBottomControls: View {
         }
     }
 
-    private var statusPill: CaptureStatusPill? {
+    private var statusPill: CaptureStatusPill {
         if isProcessing {
-            let text = captureMode == .photo ? "Reading cover..." : "Looking up ISBN..."
-            return CaptureStatusPill(systemImage: "viewfinder", text: text)
+            return CaptureStatusPill(systemImage: "viewfinder", text: "Looking up ISBN...")
         }
 
-        switch captureMode {
-        case .photo:
-            return nil
-        case .barcode:
-            return CaptureStatusPill(
-                systemImage: "barcode.viewfinder",
-                text: "Hold the barcode steady inside the scanner"
-            )
-        }
+        return CaptureStatusPill(
+            systemImage: "barcode.viewfinder",
+            text: "Hold the barcode steady inside the scanner"
+        )
     }
 }
 

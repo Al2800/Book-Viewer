@@ -42,7 +42,7 @@ struct PremiumFeatureList: View {
             PremiumFeatureRow(
                 icon: "person.badge.shield.checkmark",
                 title: "Privacy First",
-                description: "On-device by default; remote AI requires your consent"
+                description: "Remote AI requires your consent; OCR remains available offline"
             )
         }
         .padding(Spacing.lg)

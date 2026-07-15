@@ -35,14 +35,14 @@ If that audit trail is missing, then you must act as if the operation never happ
 - **UI:** SwiftUI
 - **Architecture:** MV pattern (Model-View)
 - **State:** `@Observable`, `@State`, `@Environment`
-- **Persistence:** SwiftData with CloudKit
-- **AI:** Google Gemini API (via BookQuotes proxy)
-- **Image Processing:** Vision framework + Gemini
+- **Persistence:** SwiftData local storage (Cloud sync is not enabled in v1)
+- **AI:** Hugging Face quote extraction via the BookQuotes proxy
+- **Image Processing:** Remote AI first for consented subscribers, with Apple Vision OCR fallback
 - **Camera:** AVFoundation / PhotosUI
 - **Networking:** async/await with URLSession
 
 ### Core Features
-1. **Book Registration** - Cover photo AI recognition + ISBN barcode scanning
+1. **Book Registration** - ISBN barcode catalogue lookup + manual entry
 2. **Quote Capture** - Multi-page batch capture with image quality assessment
 3. **Custom Markings** - User-defined annotation vocabulary (underline, highlight, margin notes)
 4. **Quote Editing** - Correct LLM extraction errors with confidence scoring
@@ -62,7 +62,7 @@ If that audit trail is missing, then you must act as if the operation never happ
 ```
 App/           → Entry point, tabs, routing (AppTab, AppRouter)
 Models/        → SwiftData models (Book, Quote, Collection, Tag)
-Services/      → GeminiService, CameraManager, ImageQualityAnalyzer, ISBNScanner
+Services/      → RemoteModelQuoteExtractor, CameraService, ImageQualityAnalyzer, ISBNScanner
 Features/      → Feature modules (Library, Capture, BookDetail, QuoteDetail)
 Components/    → Reusable UI (QuoteCard, BookCoverView, AsyncButton)
 Utilities/     → Helpers, extensions, constants
@@ -73,7 +73,7 @@ Utilities/     → Helpers, extensions, constants
 BookQuotes/
 ├── App/                    # App entry, tabs, routing
 ├── Models/                 # SwiftData models
-├── Services/               # Gemini, Camera, Persistence, ImageQuality, ISBN
+├── Services/               # Remote AI, OCR, Camera, Persistence, ImageQuality, ISBN
 ├── Features/               # Feature modules (Library, Capture, BookDetail, etc.)
 ├── Components/             # Reusable UI components
 ├── Utilities/              # Helpers, extensions
@@ -83,7 +83,7 @@ BookQuotes/
 ### Reference Documents
 - `IMPLEMENTATION_PLAN.md` - Full project plan, phases, architecture
 - `docs/DATA_MODELS.md` - SwiftData models, relationships, queries
-- `docs/API_INTEGRATION.md` - Gemini API service, prompts, error handling
+- `docs/API_INTEGRATION.md` - Remote quote extraction contract and legacy reference
 - `docs/APP_STORE_CONNECT.md` - TestFlight/App Store Connect API process and local key config shape
 - `docs/UI_COMPONENTS.md` - Design system, components, screens
 - `docs/CUSTOM_MARKINGS.md` - User-defined annotation vocabulary system

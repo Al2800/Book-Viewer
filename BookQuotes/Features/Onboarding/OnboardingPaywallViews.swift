@@ -4,7 +4,7 @@ import SwiftUI
 /// Simplified paywall for embedding in onboarding.
 struct PaywallEmbeddedView: View {
     let subscriptionService: SubscriptionService
-    let onContinue: () -> Void
+    let onContinue: (Bool) -> Void
 
     @State private var selectedProduct: Product?
     @State private var selectedMediaPlan: MediaSubscriptionPlan = .yearly
@@ -51,7 +51,7 @@ struct PaywallEmbeddedView: View {
             }
 
             Button("Maybe later") {
-                onContinue()
+                onContinue(subscriptionService.hasActiveSubscription)
             }
             .foregroundStyle(Color.textSecondary)
             .padding(.bottom, Spacing.lg)
@@ -83,11 +83,23 @@ struct PaywallEmbeddedView: View {
     }
 
     private var emptyProductsMessage: some View {
-        Text("Unable to load subscription options right now.")
-            .font(.subheadline)
-            .foregroundStyle(Color.textSecondary)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, Spacing.xl)
+        VStack(spacing: Spacing.sm) {
+            Text(subscriptionService.lastError?.localizedDescription
+                 ?? "Unable to load subscription options right now.")
+                .font(.subheadline)
+                .foregroundStyle(Color.textSecondary)
+                .multilineTextAlignment(.center)
+
+            Button("Try Again") {
+                Task {
+                    await subscriptionService.loadProducts()
+                    selectedProduct = subscriptionService.yearlyProduct
+                        ?? subscriptionService.monthlyProduct
+                }
+            }
+            .buttonStyle(.secondaryCompact)
+        }
+        .padding(.horizontal, Spacing.xl)
     }
 
     private var productOptions: some View {
@@ -128,7 +140,7 @@ struct PaywallEmbeddedView: View {
 
     private func startTrial() {
         if shouldShowMediaPlans {
-            onContinue()
+            onContinue(true)
             return
         }
 
@@ -142,7 +154,7 @@ struct PaywallEmbeddedView: View {
             do {
                 let transaction = try await subscriptionService.purchase(selectedProduct)
                 if transaction != nil || subscriptionService.hasActiveSubscription {
-                    onContinue()
+                    onContinue(true)
                 }
             } catch {
                 errorMessage = error.localizedDescription

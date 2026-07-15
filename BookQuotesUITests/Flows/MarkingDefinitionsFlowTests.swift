@@ -39,16 +39,8 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
 
         let consentToggle = app.switches[AccessibilityIdentifiers.Settings.remoteAIProcessingToggle]
         XCTAssertTrue(consentToggle.waitForExistence(timeout: 5))
-        if consentToggle.value as? String == "1" {
-            consentToggle.tap()
-            XCTAssertTrue(waitUntil("remote AI is disabled") {
-                consentToggle.value as? String == "0"
-            })
-        }
-
-        consentToggle.tap()
-        XCTAssertTrue(app.buttons["Allow Remote AI Processing"].waitForExistence(timeout: 5))
-        try performSystemAccessibilityAudit()
+        XCTAssertFalse(consentToggle.isEnabled, "Signed-out users should be guided through activation first")
+        XCTAssertTrue(app.staticTexts["Sign in required"].exists)
     }
 
     func testAccountAndStorage_PassSystemAccessibilityAudit() throws {
@@ -366,6 +358,7 @@ final class AdaptiveSettingsLayoutTests: BaseUITestCase {
             .firstMatch
         XCTAssertTrue(remoteToggle.waitForExistence(timeout: 5), "Remote processing toggle should exist")
         XCTAssertTrue(remoteToggle.isHittable, "Remote processing toggle should remain reachable")
+        XCTAssertFalse(remoteToggle.isEnabled, "Activation should remain gated while signed out")
 
         tapBackButton()
         XCTAssertTrue(

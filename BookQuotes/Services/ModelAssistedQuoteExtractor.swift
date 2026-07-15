@@ -130,26 +130,19 @@ struct ModelAssistedQuoteExtractor: QuoteExtracting {
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
-        let localResult: QuoteExtractionResult
+        let remoteResult: QuoteExtractionResult
         do {
-            localResult = try await localExtractor.extractQuotes(from: image, markings: markings)
-        } catch let localError {
-            // Remote processing is an explicitly enabled recovery path when local OCR itself fails.
-            // Preserve the local failure when the optional service cannot recover it.
-            do {
-                return try await remoteExtractor.extractQuotes(from: image, markings: markings)
-            } catch {
-                throw localError
-            }
+            remoteResult = try await remoteExtractor.extractQuotes(from: image, markings: markings)
+        } catch let remoteError {
+            return try await localExtractor
+                .extractQuotes(from: image, markings: markings)
+                .withFallbackReason(.from(remoteError))
         }
 
-        guard !localResult.isSuccessful else { return localResult }
+        guard !remoteResult.isSuccessful else { return remoteResult }
 
-        do {
-            let remoteResult = try await remoteExtractor.extractQuotes(from: image, markings: markings)
-            return remoteResult.isSuccessful ? remoteResult : localResult
-        } catch {
-            return localResult
-        }
+        return try await localExtractor
+            .extractQuotes(from: image, markings: markings)
+            .withFallbackReason(.remoteReturnedNoQuotes)
     }
 }

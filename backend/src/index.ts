@@ -35,7 +35,6 @@ import {
 } from './huggingface-quote-extraction';
 import {
   parseGeminiRequest,
-  proxyToGemini,
   RequestValidationError,
 } from './gemini-proxy';
 
@@ -251,6 +250,15 @@ export default {
       );
     }
 
+    // Book registration uses ISBN catalog lookup; cover-photo AI is no longer a product route.
+    if (path === '/api/extract-cover' && request.method === 'POST') {
+      return errorResponse(
+        'Cover-photo extraction is no longer available. Scan the ISBN barcode instead.',
+        'COVER_EXTRACTION_ROUTE_RETIRED',
+        410
+      );
+    }
+
     // All other API routes require authentication
     const authHeader = request.headers.get('Authorization');
     const session = await validateSession(authHeader, env);
@@ -352,65 +360,6 @@ export default {
         extractionAccess.status,
         extractionAccess.details
       ));
-    }
-
-    // Book cover metadata extraction
-    if (path === '/api/extract-cover' && request.method === 'POST') {
-      const clientKey = getClientKey(request, userId);
-      const idempotencyKey = request.headers.get('Idempotency-Key');
-
-      let rateCheck: RateLimitDecision;
-      try {
-        rateCheck = await reserveExtraction(userId, clientKey, idempotencyKey, env);
-      } catch {
-        return respond(errorResponse(
-          'Extraction limits are temporarily unavailable',
-          'RATE_LIMIT_UNAVAILABLE',
-          503
-        ));
-      }
-      logRateLimitDecision(path, rateCheck);
-      if (!rateCheck.allowed) {
-        return respond(rateLimitResponse(rateCheck));
-      }
-
-      try {
-        const body = await parseGeminiRequest(request);
-        const revoked = await revokedSessionResponse();
-        if (revoked) {
-          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
-          return revoked;
-        }
-
-        // Proxy to Gemini
-        const response = await proxyToGemini(
-          '/models/gemini-2.0-flash:generateContent',
-          body,
-          env,
-          CORS_HEADERS
-        );
-
-        if (response.ok) {
-          if (!await completeSuccessfulExtraction(userId, idempotencyKey!, env, path)) {
-            return respond(errorResponse(
-              'Extraction completed but usage could not be recorded. Please retry with the same request key.',
-              'RATE_LIMIT_UNAVAILABLE',
-              503
-            ));
-          }
-        } else {
-          await releaseFailedExtraction(userId, idempotencyKey!, env, path);
-        }
-
-        return respond(response);
-      } catch (error) {
-        await releaseFailedExtraction(userId, idempotencyKey!, env, path);
-        if (error instanceof RequestValidationError) {
-          return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
-        }
-        console.error('Cover extraction error:', error);
-        return respond(errorResponse('Extraction failed', 'EXTRACTION_ERROR', 500));
-      }
     }
 
     // Model-assisted quote extraction through Hugging Face.

@@ -10,7 +10,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 
 ## The Solution
 
-1. **Capture a book cover** → AI extracts title, author, metadata
+1. **Scan a book's ISBN barcode** → catalogue metadata fills title, author, and cover
 2. **Capture a marked page** → AI identifies and transcribes your underlines/highlights
 3. **Build your library** → Beautiful display of quotes, searchable, shareable
 
@@ -19,8 +19,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 ### Phase 1 (MVP)
 
 **Book Registration**
-- Cover photo recognition with AI metadata extraction
-- **ISBN Barcode Scanning** - near-100% accuracy via Google Books/OpenLibrary
+- **ISBN Barcode Scanning** - catalogue lookup via Google Books/Open Library
 - Manual editing and correction
 
 **Quote Capture**
@@ -62,7 +61,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 | UI | SwiftUI (iOS 17+, iOS 26 Liquid Glass ready) |
 | Architecture | MV pattern (Model-View) |
 | Persistence | SwiftData (local-first in v1; Cloud sync planned) |
-| AI | Apple Vision OCR, Hugging Face quote extraction, and Google Gemini cover extraction |
+| AI | Hugging Face quote extraction with Apple Vision OCR fallback |
 | Camera | AVFoundation |
 
 ## Documentation
@@ -89,7 +88,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 | Document | Description |
 |----------|-------------|
 | [docs/DATA_MODELS.md](docs/DATA_MODELS.md) | SwiftData models, relationships, queries |
-| [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md) | Gemini API service, prompts, error handling |
+| [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md) | Current remote quote extraction contract and legacy reference |
 | [docs/UI_COMPONENTS.md](docs/UI_COMPONENTS.md) | Design system, components, screens |
 | [docs/PRIORITY_FEATURES.md](docs/PRIORITY_FEATURES.md) | 5 priority features with full technical specs |
 
@@ -106,7 +105,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 BookQuotes/
 ├── App/                    # App entry, tabs, routing
 ├── Models/                 # SwiftData models
-├── Services/               # Gemini, Camera, Persistence
+├── Services/               # Remote AI, OCR, Camera, Persistence
 ├── Features/               # Feature modules (Library, Capture, etc.)
 ├── Components/             # Reusable UI components
 ├── Utilities/              # Helpers, extensions
@@ -130,7 +129,7 @@ BookQuotes/
 Read the full [BookQuotes Privacy Policy](PRIVACY.md).
 
 - **Local-first library**: Books, quotes, tags, collections, and retained source images stay on-device.
-- **Optional remote processing**: After explicit consent, marked pages use Hugging Face Inference and covers use Google Gemini.
+- **Optional remote processing**: After explicit consent, marked pages use Hugging Face Inference first with Apple Vision OCR as the offline fallback.
 - **Minimal account data**: Apple Sign-In identifier, optional email relay, subscription state, and service-limit usage records.
 - **No tracking or advertising**: No analytics, advertising identifiers, or ad network SDKs.
 
@@ -151,4 +150,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-Built with SwiftUI, Apple Vision, Hugging Face Inference, and Google Gemini.
+Built with SwiftUI, Apple Vision, and Hugging Face Inference.

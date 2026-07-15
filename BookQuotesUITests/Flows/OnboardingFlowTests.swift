@@ -177,12 +177,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.step(3, "Tapping Use defaults")
         useDefaultsButton.tap()
 
-        logger.step(4, "Verifying navigation to the AI processing decision")
-        let consentHeader = app.staticTexts["Remote AI Processing"]
-        XCTAssertTrue(consentHeader.waitForExistence(timeout: 5), "Should ask for an AI processing decision")
-
-        app.buttons["Use On-Device Only"].tap()
-
+        logger.step(4, "Verifying local-only onboarding completes without an unusable AI prompt")
         let completionHeader = app.staticTexts["You're All Set!"]
         XCTAssertTrue(completionHeader.waitForExistence(timeout: 5), "Should navigate to completion")
 
@@ -278,7 +273,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.success("Local-only onboarding opens manual book entry")
     }
 
-    func testOnboarding_RemoteAIConsentCanBeEnabledAndRevokedInSettings() {
+    func testOnboarding_LocalOnlyRemoteAISettingsExplainActivationRequirements() {
         navigateToCompletionStep()
         app.buttons["Start Capturing"].tap()
         XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
@@ -291,19 +286,9 @@ final class OnboardingFlowTests: BaseUITestCase {
         let consentToggle = app.switches[AccessibilityIdentifiers.Settings.remoteAIProcessingToggle]
         XCTAssertTrue(consentToggle.waitForExistence(timeout: 5))
         XCTAssertEqual(consentToggle.value as? String, "0")
-
-        consentToggle.tap()
-        let allowButton = app.buttons["Allow Remote AI Processing"]
-        XCTAssertTrue(allowButton.waitForExistence(timeout: 5))
-        allowButton.tap()
-        XCTAssertTrue(waitUntil("remote AI is enabled") {
-            consentToggle.value as? String == "1"
-        })
-
-        consentToggle.tap()
-        XCTAssertTrue(waitUntil("remote AI is disabled") {
-            consentToggle.value as? String == "0"
-        })
+        XCTAssertFalse(consentToggle.isEnabled)
+        XCTAssertTrue(app.staticTexts["Sign in required"].exists)
+        XCTAssertTrue(app.buttons["Sign in with Apple"].exists)
     }
 
     // MARK: - Page Indicators Tests
@@ -369,12 +354,8 @@ final class OnboardingFlowTests: BaseUITestCase {
         XCTAssertTrue(useDefaults.waitForExistence(timeout: 5), "Marking setup should offer Use defaults")
         useDefaults.tap()
 
-        let localOnly = app.buttons["Use On-Device Only"]
-        XCTAssertTrue(localOnly.waitForExistence(timeout: 5), "Onboarding should ask for an AI processing decision")
-        localOnly.tap()
-
         let completionTitle = app.staticTexts["You're All Set!"]
-        XCTAssertTrue(completionTitle.waitForExistence(timeout: 5), "Onboarding should reach completion after choosing on-device processing")
+        XCTAssertTrue(completionTitle.waitForExistence(timeout: 5), "Local-only onboarding should reach completion directly")
     }
 }
 
@@ -418,11 +399,6 @@ final class AdaptiveOnboardingLayoutTests: BaseUITestCase {
             description: "Single-column marking choices at accessibility text size"
         )
         useDefaults.tap()
-
-        XCTAssertTrue(app.staticTexts["Remote AI Processing"].waitForExistence(timeout: 5))
-        let onDeviceOnly = app.buttons["Use On-Device Only"]
-        XCTAssertTrue(reveal(onDeviceOnly), "The on-device-only consent action should remain reachable")
-        onDeviceOnly.tap()
 
         XCTAssertTrue(app.staticTexts["You're All Set!"].waitForExistence(timeout: 5))
         let startCapturing = app.buttons["Start Capturing"]

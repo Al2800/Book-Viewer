@@ -38,7 +38,7 @@ struct AboutView: View {
                 }
 
                 infoCard(title: "Credits") {
-                    Text("Built with SwiftUI, SwiftData, and Gemini AI")
+                    Text("Built with SwiftUI, SwiftData, Apple Vision, and Hugging Face Inference")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

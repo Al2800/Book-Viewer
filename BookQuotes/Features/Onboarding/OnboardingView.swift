@@ -75,7 +75,9 @@ struct OnboardingView: View {
                 case .subscription:
                     OnboardingSubscriptionStepView(
                         subscriptionService: subscriptionService,
-                        onContinue: advanceFromSubscription
+                        onContinue: { activated in
+                            advanceFromSubscription(activated: activated)
+                        }
                     )
 
                 case .markingSetup:
@@ -116,9 +118,9 @@ struct OnboardingView: View {
         }
     }
 
-    private func advanceFromSubscription() {
+    private func advanceFromSubscription(activated: Bool) {
         withAnimation {
-            sessionState.advanceFromSubscription()
+            sessionState.advanceFromSubscription(activated: activated)
         }
     }
 

@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// Capture tab - camera interface for book covers and pages
+/// Capture tab - ISBN scanning and marked-page capture
 struct CaptureTab: View {
     var onBookCreated: ((Book) -> Void)?
     var onQuotesSaved: ((Book) -> Void)?

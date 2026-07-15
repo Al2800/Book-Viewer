@@ -34,7 +34,12 @@ struct SettingsTab: View {
                         case .storage:
                             StorageBackupView()
                         case .aiProcessing:
-                            AIProcessingSettingsView()
+                            if let subscriptionService {
+                                AIProcessingSettingsView(
+                                    authService: authService,
+                                    subscriptionService: subscriptionService
+                                )
+                            }
                         case .about:
                             AboutView()
                         }
@@ -105,7 +110,7 @@ struct SettingsView: View {
                         SettingsRow(
                             icon: "sparkles",
                             title: "Remote AI Processing",
-                            subtitle: "Manage image-sharing permission"
+                            subtitle: "Subscription, access, and image-sharing consent"
                         )
                     }
                     .accessibilityIdentifier(AccessibilityIdentifiers.Settings.remoteAIProcessingRow)
@@ -208,30 +213,43 @@ struct SettingsView: View {
 }
 
 struct AIProcessingSettingsView: View {
+    let authService: AuthService
+    let subscriptionService: SubscriptionService
+
     @AppStorage(AIProcessingConsentStore.consentVersionKey) private var consentVersion = ""
     @State private var showingConsent = false
+    @State private var showingSignIn = false
+    @State private var showingPaywall = false
+    @State private var offerConsentAfterPurchase = false
 
     private var hasCurrentConsent: Bool {
         consentVersion == AIProcessingConsentStore.currentVersion
     }
 
+    private var canEnableRemoteAI: Bool {
+        authService.isAuthenticated && subscriptionService.hasActiveSubscription
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
+                accessSection
+
                 SectionCard(title: "Remote AI Processing") {
                     SettingsToggleRow(
                         icon: "sparkles",
                         title: "Allow Remote AI Processing",
-                        subtitle: "Send page and cover images to approved providers",
+                        subtitle: "Send marked-page images to the approved quote model",
                         isOn: consentBinding
                     )
+                    .disabled(!canEnableRemoteAI)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Settings.remoteAIProcessingToggle)
                 }
 
                 SectionCard(title: "Your Choice") {
                     Text(hasCurrentConsent
-                         ? "Remote processing is enabled. You can turn it off at any time; page and cover images will then stay on your device for on-device OCR or manual entry."
-                         : "Remote processing is off. You can still capture quotes with on-device OCR and add books or quotes manually.")
+                         ? "Remote AI is the default for marked-page extraction. You can turn it off at any time; OCR will then run on your device."
+                         : "Remote processing is off. Quote capture will use on-device OCR, and books can still be added by ISBN or manual entry.")
                         .font(.subheadline)
                         .foregroundStyle(Color.textSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -248,6 +266,66 @@ struct AIProcessingSettingsView: View {
             }
             .interactiveDismissDisabled()
         }
+        .sheet(isPresented: $showingSignIn, onDismiss: refreshSubscriptionAccess) {
+            SignInView(authService: authService)
+        }
+        .sheet(isPresented: $showingPaywall, onDismiss: finishSubscriptionActivation) {
+            PaywallView(subscriptionService: subscriptionService)
+        }
+        .task {
+            await subscriptionService.loadProducts()
+        }
+    }
+
+    @ViewBuilder
+    private var accessSection: some View {
+        SectionCard(title: "Access") {
+            if !authService.isAuthenticated {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Label("Sign in required", systemImage: "person.crop.circle.badge.exclamationmark")
+                        .font(.headline)
+                    Text("Sign in with Apple so a subscription can be verified before a page is sent for remote extraction.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.textSecondary)
+                    Button("Sign in with Apple") {
+                        showingSignIn = true
+                    }
+                    .buttonStyle(.primary)
+                }
+            } else if !subscriptionService.hasActiveSubscription {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Label("Subscription required", systemImage: "sparkles")
+                        .font(.headline)
+                    Text("Choose a plan or restore an existing purchase to use AI-first quote extraction.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.textSecondary)
+
+                    if subscriptionService.products.isEmpty,
+                       let message = subscriptionService.lastError?.localizedDescription {
+                        Text(message)
+                            .font(.caption)
+                            .foregroundStyle(Color.warning)
+                    }
+
+                    HStack {
+                        Button("View Plans") {
+                            offerConsentAfterPurchase = true
+                            showingPaywall = true
+                        }
+                        .buttonStyle(.primary)
+
+                        Button("Retry") {
+                            refreshSubscriptionAccess()
+                        }
+                        .buttonStyle(.secondaryCompact)
+                    }
+                }
+            } else {
+                Label("Subscription active", systemImage: "checkmark.seal.fill")
+                    .font(.headline)
+                    .foregroundStyle(Color.success)
+            }
+        }
     }
 
     private var consentBinding: Binding<Bool> {
@@ -255,12 +333,30 @@ struct AIProcessingSettingsView: View {
             get: { hasCurrentConsent },
             set: { wantsRemoteProcessing in
                 if wantsRemoteProcessing {
-                    showingConsent = true
+                    if canEnableRemoteAI {
+                        showingConsent = true
+                    }
                 } else {
                     AIProcessingConsentStore.shared.revoke()
                 }
             }
         )
+    }
+
+    private func refreshSubscriptionAccess() {
+        Task {
+            await subscriptionService.loadProducts()
+        }
+    }
+
+    private func finishSubscriptionActivation() {
+        Task {
+            await subscriptionService.updateSubscriptionStatus()
+            guard offerConsentAfterPurchase,
+                  subscriptionService.hasActiveSubscription else { return }
+            offerConsentAfterPurchase = false
+            showingConsent = true
+        }
     }
 }
 
@@ -279,7 +375,7 @@ struct AIProcessingConsentView: View {
                         .font(.title2.weight(.bold))
                         .foregroundStyle(Color.textPrimary)
 
-                    Text("BookQuotes can use remote AI to help identify marked quotes and read book covers. This is optional.")
+                    Text("BookQuotes can use remote AI as the primary way to identify marked quotes. This is optional.")
                         .font(.body)
                         .foregroundStyle(Color.textSecondary)
 
@@ -290,12 +386,12 @@ struct AIProcessingConsentView: View {
 
                     disclosureSection(
                         title: "Who processes it",
-                        text: "Hugging Face Inference processes quote-page extraction and Google Gemini processes cover extraction. The provider receives only the content needed for that request."
+                        text: "Hugging Face Inference processes marked-page extraction. The provider receives only the content needed for that request."
                     )
 
                     disclosureSection(
                         title: "Your alternatives",
-                        text: "You can use on-device OCR for quote pages, or add books and quotes manually. You can change this choice at any time in Settings."
+                        text: "You can use on-device OCR for quote pages, scan books by ISBN, or add books and quotes manually. You can change this choice at any time in Settings."
                     )
 
                     Button("Allow Remote AI Processing") {

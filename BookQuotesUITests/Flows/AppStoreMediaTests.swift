@@ -51,7 +51,7 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
 
         logger.step(7, "Add Book")
         openCoverCaptureForMedia()
-        captureScreenshot(named: "07_add_book", description: "Add Book cover capture flow")
+        captureScreenshot(named: "07_add_book", description: "Add Book ISBN scanning flow")
 
         logger.step(8, "Settings")
         showSettingsForMedia()
@@ -477,7 +477,7 @@ fileprivate extension BaseUITestCase {
             app.navigationBars.buttons.element(boundBy: app.navigationBars.buttons.count - 1).tap()
         }
 
-        // The library add button opens the camera-first cover capture flow.
+        // The library add button opens the ISBN scanner.
         let captureHeader = app.staticTexts["Add Book"]
         let manualEntryButton = app.buttons.matching(
             NSPredicate(format: "label CONTAINS 'manually'")
