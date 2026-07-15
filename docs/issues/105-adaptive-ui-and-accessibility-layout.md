@@ -45,6 +45,9 @@ The phone library grid can compress cards to 100 points while retaining status a
   side-by-side extraction-review layout (1 focused test passed, 0 failed). The compact and
   regular layout branches cover the size-class behavior used by iPad split views; physical
   split-view interaction remains in the device matrix below.
+- [x] The complete UI release target passed on both iPhone 17 Pro and iPad Air 11-inch (M4):
+  101 tests, 0 failures, and 0 skips on each simulator. This covers all automated tablet
+  workflows on revision `a5ed719`; physical accessibility and split-view checks remain below.
 - [x] Simulator screenshots were visually inspected for the iPhone accessibility-text and iPad
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list

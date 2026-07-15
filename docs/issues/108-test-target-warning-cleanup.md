@@ -29,4 +29,5 @@ HTTP test server.
 - The onboarding UI compile/smoke check passed 1 test, 0 failures, and 0 skips.
 - A clean `build-for-testing` completed successfully with zero compiler or framework-strip
   warnings.
-
+- The post-change full gate passed 636 app-unit tests with one documented local-photo fixture
+  skip, plus 101 UI tests with zero failures or skips on both iPhone 17 Pro and iPad Air 11-inch.

@@ -3,7 +3,7 @@
 ## Revision Assessed
 
 - Baseline Git revision: `b52c907` (`fix(ui): adapt library and extraction review layouts`).
-- Latest locally verified code revision: `6d4ed38` (`docs(release): close compiler warning gate`).
+- Latest locally verified code revision: `a5ed719` (`fix(tests): clear Debug build diagnostics`).
 - The project build number remains `38`; the final local App Store export is version `1.0`, build
   `39`, but it has not been uploaded. The latest TestFlight build 38 predates this revision.
 
@@ -18,9 +18,15 @@
 
 - Subscription-account linkage and reconciliation tests passed: 9 tests, 0 failures, 0 skips.
   Result bundle: `/tmp/BookQuotes-subscription-reconciliation-final.xcresult`.
-- The complete UI release target previously passed on this mainline work: 90 tests, 0 failures,
-  0 skips on iPhone 17 and on iPad Air 11-inch. The subscription change above is separately
-  compiled and covered by its focused tests.
+- The complete current UI release target passed 101 tests, 0 failures, and 0 skips on both iPhone
+  17 Pro and iPad Air 11-inch (M4), iOS 26.5. Result bundles:
+  `/tmp/BookQuotes-full-ui-iphone-a5ed719-2026-07-15.xcresult` and
+  `/tmp/BookQuotes-full-ui-ipad-a5ed719-2026-07-15.xcresult`.
+- The full app-unit gate passed 636 tests, 0 failures, and 1 documented local-photo fixture skip
+  on iPhone 17 Pro / iOS 26.5. Result bundle:
+  `/tmp/BookQuotes-full-unit-a5ed719-2026-07-15.xcresult`.
+- A clean Debug `build-for-testing` completed with zero source or Apple-framework strip warnings.
+  The focused warning-regression gate passed 60 unit/integration tests and one UI smoke test.
 - Adaptive-layout follow-up passed its focused simulator matrix: Library grid, Library list, and
   compact Extraction Review at Accessibility XXXL on iPhone 17; plus the normal-text,
   side-by-side Extraction Review on iPad Pro 13-inch. The corresponding screenshots were
