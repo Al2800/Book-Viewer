@@ -12,47 +12,11 @@ struct QuoteEditRow: View {
     @State private var showEditor = false
     @State private var draftText = ""
     @State private var draftMarginNote = ""
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            // Header with confidence and marking type
-            HStack {
-                ConfidenceBadge(confidence: quote.confidence)
-
-                MarkingTypeStringBadge(
-                    type: quote.markingType,
-                    displayName: quote.customMarkingDisplayName
-                )
-
-                ExtractionSourceBadge(source: quote.extractionSource)
-
-                Spacer()
-
-                if let pageNumber = quote.pageNumber {
-                    Text("p. \(pageNumber)")
-                        .font(.caption)
-                        .foregroundStyle(Color.textTertiary)
-                }
-
-                Button {
-                    openEditor()
-                } label: {
-                    Image(systemName: "pencil")
-                        .font(.caption)
-                        .foregroundStyle(Color.textSecondary)
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
-
-                Button {
-                    onDelete()
-                } label: {
-                    Image(systemName: "trash")
-                        .font(.caption)
-                        .foregroundStyle(Color.error)
-                }
-                .buttonStyle(.plain)
-            }
+            quoteHeader
 
             // Quote text editor
             Text(quote.text)
@@ -67,6 +31,10 @@ struct QuoteEditRow: View {
             Text("Tap to edit or select text")
                 .font(.caption2)
                 .foregroundStyle(Color.textTertiary)
+
+            if dynamicTypeSize.isAccessibilitySize {
+                accessibilityActions
+            }
 
             // Margin note if present
         if let marginNote = quote.marginNote, !marginNote.isEmpty {
@@ -91,6 +59,117 @@ struct QuoteEditRow: View {
                 marginNote: $draftMarginNote,
                 onSave: applyEdits
             )
+        }
+    }
+
+    @ViewBuilder
+    private var quoteHeader: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                HStack {
+                    ConfidenceBadge(confidence: quote.confidence)
+                    Spacer()
+                    pageNumberLabel
+                }
+
+                MarkingTypeStringBadge(
+                    type: quote.markingType,
+                    displayName: quote.customMarkingDisplayName
+                )
+                ExtractionSourceBadge(source: quote.extractionSource)
+            }
+        } else {
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    regularQuoteMetadata
+                    Spacer()
+                    pageNumberLabel
+                    compactEditButton
+                    compactDeleteButton
+                }
+
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    HStack {
+                        regularQuoteMetadata
+                        Spacer()
+                        pageNumberLabel
+                    }
+                    HStack {
+                        Spacer()
+                        compactEditButton
+                        compactDeleteButton
+                    }
+                }
+            }
+        }
+    }
+
+    private var regularQuoteMetadata: some View {
+        HStack {
+            ConfidenceBadge(confidence: quote.confidence)
+            MarkingTypeStringBadge(
+                type: quote.markingType,
+                displayName: quote.customMarkingDisplayName
+            )
+            ExtractionSourceBadge(source: quote.extractionSource)
+        }
+    }
+
+    @ViewBuilder
+    private var pageNumberLabel: some View {
+        if let pageNumber = quote.pageNumber {
+            Text("p. \(pageNumber)")
+                .font(.caption)
+                .foregroundStyle(Color.textTertiary)
+        }
+    }
+
+    private var compactEditButton: some View {
+        Button {
+            openEditor()
+        } label: {
+            Image(systemName: "pencil")
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
+                .frame(width: 44, height: 44)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Edit quote")
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
+    }
+
+    private var compactDeleteButton: some View {
+        Button {
+            onDelete()
+        } label: {
+            Image(systemName: "trash")
+                .font(.caption)
+                .foregroundStyle(Color.error)
+                .frame(width: 44, height: 44)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Delete quote")
+    }
+
+    private var accessibilityActions: some View {
+        HStack(spacing: Spacing.sm) {
+            Button {
+                openEditor()
+            } label: {
+                Label("Edit quote", systemImage: "pencil")
+                    .frame(minHeight: 44)
+            }
+            .buttonStyle(.secondaryCompact)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
+
+            Button(role: .destructive) {
+                onDelete()
+            } label: {
+                Label("Delete quote", systemImage: "trash")
+                    .frame(minHeight: 44)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Color.error)
         }
     }
 

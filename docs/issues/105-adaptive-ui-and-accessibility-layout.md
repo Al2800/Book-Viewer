@@ -75,6 +75,15 @@ The phone library grid can compress cards to 100 points while retaining status a
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list
   with a single vertical review scroll surface.
+- [x] A physical iPhone 17 running iOS 26.5.2 verified the Accessibility XXXL extraction review
+  in portrait and landscape. The first landscape run exposed quote edit controls being scrolled
+  behind the navigation bar while the quote remained visible. Large-text quote actions now sit
+  directly beneath each quote and the normal icon actions use 44-point targets; the exact
+  portrait and landscape regressions then passed (2 tests, 0 failures on 2026-07-15).
+- [x] The same physical iPhone passed the Library system-accessibility audit and seeded-library
+  smoke (2 tests, 0 failures), plus the Accessibility XXXL Library and Settings workflows
+  covering grid/list views, Remote AI, Storage & Export, export, and marking editing (5 tests,
+  0 failures on 2026-07-15).
 - [x] The Library home, Settings root, Remote AI settings, and Remote AI consent sheet pass
   Apple's reliable iOS 26 system audits for hit regions, element descriptions, clipped text,
   and accessibility traits. The audit drove a 44-point Sort Books target, removed silent
