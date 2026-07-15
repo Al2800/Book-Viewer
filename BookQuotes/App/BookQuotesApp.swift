@@ -103,42 +103,37 @@ struct BookQuotesApp: App {
                     )
                 }
 
+                // If the local store itself is corrupted/misconfigured, rotate to a fresh store
+                // without deleting the old one (safe recovery for early versions).
+                let rotatedName = rotateLocalStoreName()
                 do {
-                    // If the local store itself is corrupted/misconfigured, rotate to a fresh store
-                    // without deleting the old one (safe recovery for early versions).
-                    let rotatedName = rotateLocalStoreName()
-                    do {
-                        containerResult = try ModelContainer(
-                            for: schema,
-                            configurations: [makeLocalOnlyConfig(name: rotatedName)]
-                        )
-                        errorResult = nil
-                        logger.warning("SwiftData initialized using rotated local store after local init failure.")
-                        setRecoveryMessage("Storage was reset due to a startup issue. Your previous local store was preserved; a fresh local store is now in use.")
-                    } catch {
-                        // Last resort: allow app to boot in-memory so user can still access the UI.
-                        let rescueNSError = error as NSError
-                        logger.error("SwiftData rescue init failed (in-memory): domain=\(rescueNSError.domain, privacy: .public) code=\(rescueNSError.code, privacy: .public) desc=\(rescueNSError.localizedDescription, privacy: .public)")
-
-                        let rescueConfig = ModelConfiguration(
-                            schema: schema,
-                            isStoredInMemoryOnly: true,
-                            cloudKitDatabase: .none
-                        )
-
-                        if let rescueContainer = try? ModelContainer(for: schema, configurations: [rescueConfig]) {
-                            containerResult = rescueContainer
-                            errorResult = error
-                            logger.warning("SwiftData running in rescue in-memory mode; data will not persist.")
-                            setRecoveryMessage("Storage could not be opened. Running in temporary mode; data will not persist. Please reinstall the app or contact support if this repeats.")
-                        } else {
-                            containerResult = nil
-                            errorResult = error
-                        }
-                    }
+                    containerResult = try ModelContainer(
+                        for: schema,
+                        configurations: [makeLocalOnlyConfig(name: rotatedName)]
+                    )
+                    errorResult = nil
+                    logger.warning("SwiftData initialized using rotated local store after local init failure.")
+                    setRecoveryMessage("Storage was reset due to a startup issue. Your previous local store was preserved; a fresh local store is now in use.")
                 } catch {
-                    containerResult = nil
-                    errorResult = error
+                    // Last resort: allow app to boot in-memory so user can still access the UI.
+                    let rescueNSError = error as NSError
+                    logger.error("SwiftData rescue init failed (in-memory): domain=\(rescueNSError.domain, privacy: .public) code=\(rescueNSError.code, privacy: .public) desc=\(rescueNSError.localizedDescription, privacy: .public)")
+
+                    let rescueConfig = ModelConfiguration(
+                        schema: schema,
+                        isStoredInMemoryOnly: true,
+                        cloudKitDatabase: .none
+                    )
+
+                    if let rescueContainer = try? ModelContainer(for: schema, configurations: [rescueConfig]) {
+                        containerResult = rescueContainer
+                        errorResult = error
+                        logger.warning("SwiftData running in rescue in-memory mode; data will not persist.")
+                        setRecoveryMessage("Storage could not be opened. Running in temporary mode; data will not persist. Please reinstall the app or contact support if this repeats.")
+                    } else {
+                        containerResult = nil
+                        errorResult = error
+                    }
                 }
             } else {
                 containerResult = nil

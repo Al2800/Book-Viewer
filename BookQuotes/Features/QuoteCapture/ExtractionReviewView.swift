@@ -418,57 +418,49 @@ struct ExtractionReviewView: View {
         isSaving = true
 
         Task {
-            do {
-                let saveService = QuoteSaveService(modelContext: modelContext)
-                let result = saveService.saveMultiple(quotesToSave, to: book)
+            let saveService = QuoteSaveService(modelContext: modelContext)
+            let result = saveService.saveMultiple(quotesToSave, to: book)
 
-                await MainActor.run {
-                    isSaving = false
+            await MainActor.run {
+                isSaving = false
 
-                    if result.isFullSuccess {
-                        session.deleteImageFiles()
-                        try? modelContext.save()
+                if result.isFullSuccess {
+                    session.deleteImageFiles()
+                    try? modelContext.save()
 
-                        // Check if we crossed any milestone
-                        let newTotal = previousCount + savedCount
-                        let crossedMilestone = MilestoneManager.quoteMilestones.first { milestone in
-                            previousCount < milestone && newTotal >= milestone
-                        }
-
-                        if let milestone = crossedMilestone {
-                            milestoneManager.checkQuoteMilestone(totalQuotes: milestone)
-                            // Delay dismiss to show celebration
-                            Task {
-                                try? await Task.sleep(for: .seconds(2.2))
-                                await MainActor.run {
-                                    onComplete?()
-                                    dismiss()
-                                }
-                            }
-                        } else {
-                            HapticManager.success()
-                            onComplete?()
-                            dismiss()
-                        }
-                    } else if result.isPartialSuccess {
-                        // Show partial success - some quotes saved
-                        quoteState.replaceAfterPartialSave(with: result.failures)
-                        HapticManager.warning()
-                    } else {
-                        saveError = QuoteSaveError.persistenceFailed(
-                            NSError(
-                                domain: "ExtractionReview",
-                                code: -1,
-                                userInfo: [NSLocalizedDescriptionKey: "Failed to save quotes"]
-                            )
-                        )
-                        HapticManager.error()
+                    // Check if we crossed any milestone
+                    let newTotal = previousCount + savedCount
+                    let crossedMilestone = MilestoneManager.quoteMilestones.first { milestone in
+                        previousCount < milestone && newTotal >= milestone
                     }
-                }
-            } catch {
-                await MainActor.run {
-                    isSaving = false
-                    saveError = error
+
+                    if let milestone = crossedMilestone {
+                        milestoneManager.checkQuoteMilestone(totalQuotes: milestone)
+                        // Delay dismiss to show celebration
+                        Task {
+                            try? await Task.sleep(for: .seconds(2.2))
+                            await MainActor.run {
+                                onComplete?()
+                                dismiss()
+                            }
+                        }
+                    } else {
+                        HapticManager.success()
+                        onComplete?()
+                        dismiss()
+                    }
+                } else if result.isPartialSuccess {
+                    // Show partial success - some quotes saved
+                    quoteState.replaceAfterPartialSave(with: result.failures)
+                    HapticManager.warning()
+                } else {
+                    saveError = QuoteSaveError.persistenceFailed(
+                        NSError(
+                            domain: "ExtractionReview",
+                            code: -1,
+                            userInfo: [NSLocalizedDescriptionKey: "Failed to save quotes"]
+                        )
+                    )
                     HapticManager.error()
                 }
             }

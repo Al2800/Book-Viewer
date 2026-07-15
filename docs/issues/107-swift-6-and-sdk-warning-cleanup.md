@@ -18,7 +18,7 @@ future Xcode upgrade becoming a blocking migration.
 - [x] Quote-save result types do not claim unsafe `Sendable` conformance for SwiftData models.
 - [x] Capture queue publisher and retry dependencies use accurate isolation and sendability.
 - [ ] Camera capture resolution and orientation use supported iOS 17+ APIs.
-- [ ] Unreachable error handlers and deprecated trailing-closure syntax are removed.
+- [x] Unreachable error handlers and deprecated trailing-closure syntax are removed.
 - [ ] A clean Release build emits no production warnings that are Swift 6 errors or current-target
   SDK deprecations.
 
@@ -59,3 +59,15 @@ future Xcode upgrade becoming a blocking migration.
 - The complete `CaptureQueue*` gate passed 61 tests, 0 failures, and 0 skips on iPhone 17 / iOS
   26.5.
 - A Release simulator build completed without any queue isolation or retry sendability warning.
+
+2026-07-15 compiler-diagnostic slice:
+
+- Removed an impossible outer startup-recovery `catch` while retaining the real rotated-store and
+  in-memory rescue failure handling.
+- Removed the impossible quote-save `catch`; the nonthrowing batch result continues to drive full,
+  partial, and failed save presentation.
+- Labeled the tag-chip removal closure explicitly, avoiding deprecated backward closure matching.
+- The focused save/review unit tests plus save-to-book and add-tag UI workflows passed 14 tests,
+  0 failures, and 0 skips on iPhone 17 / iOS 26.5.
+- A clean Release simulator build completed without the startup, extraction-review, or tag-call
+  diagnostics removed in this slice.

@@ -208,9 +208,9 @@ struct AddTagToQuoteSheet: View {
                     Section("Current Tags") {
                         FlowLayout(spacing: Spacing.sm) {
                             ForEach(quote.tags) { tag in
-                                TagChip(tag: tag) {
+                                TagChip(tag: tag, onRemove: {
                                     removeTag(tag)
-                                }
+                                })
                             }
                         }
                     }
