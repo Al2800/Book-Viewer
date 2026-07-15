@@ -28,6 +28,29 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         logger.success("Settings root sections and rows are visible")
     }
 
+    func testSettingsRoot_PassesSystemAccessibilityAudit() throws {
+        try performSystemAccessibilityAudit()
+    }
+
+    func testRemoteAIProcessing_PassesSystemAccessibilityAudit() throws {
+        XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.remoteAIProcessingRow))
+        assertNavigationTitle("AI Processing", timeout: 5)
+        try performSystemAccessibilityAudit()
+
+        let consentToggle = app.switches[AccessibilityIdentifiers.Settings.remoteAIProcessingToggle]
+        XCTAssertTrue(consentToggle.waitForExistence(timeout: 5))
+        if consentToggle.value as? String == "1" {
+            consentToggle.tap()
+            XCTAssertTrue(waitUntil("remote AI is disabled") {
+                consentToggle.value as? String == "0"
+            })
+        }
+
+        consentToggle.tap()
+        XCTAssertTrue(app.buttons["Allow Remote AI Processing"].waitForExistence(timeout: 5))
+        try performSystemAccessibilityAudit()
+    }
+
     func testSettingsRoot_NavigatesToExtractedDestinationsAndLegalSheets() {
         logger.step(1, "Opening Account destination")
         XCTAssertTrue(tapSettingsRow(AccessibilityIdentifiers.Settings.accountRow))

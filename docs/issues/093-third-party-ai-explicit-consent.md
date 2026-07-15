@@ -24,6 +24,13 @@ Camera permission and sign-in copy mention AI processing but do not obtain expli
 
 ## Progress
 
+2026-07-15:
+
+- The Settings root, Remote AI Processing settings page, and explicit consent sheet pass the
+  reliable iOS 26 system accessibility checks for hit regions, meaningful descriptions, clipped
+  text, and traits. The focused Settings and consent audit tests passed with 0 failures.
+- Physical VoiceOver order and App Store Connect questionnaire review remain manual release steps.
+
 2026-07-14:
 
 - The App Store Connect answer map now uses the same "Remote AI Processing" terminology as the
