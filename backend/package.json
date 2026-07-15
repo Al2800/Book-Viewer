@@ -8,7 +8,9 @@
     "deploy": "wrangler deploy",
     "deploy:production": "wrangler deploy --env production",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify:staging-rate-limit": "node scripts/staging-extraction-rate-limit.mjs",
+    "verify:staging-account-deletion": "node scripts/staging-account-deletion-check.mjs"
   },
   "dependencies": {
     "jose": "^5.2.0"

@@ -22,6 +22,11 @@ Monthly usage and per-minute limits use Cloudflare KV read-modify-write operatio
 - [x] Idempotency and retry tests.
 - [ ] Load test against a staging deployment.
 
+For staging load verification, use `npm run verify:staging-rate-limit` with a disposable account,
+`STAGING_CONFIRM_RATE_LIMIT_LOAD=true`, and a staging Worker URL/session token. The guarded check
+sends 31 concurrent quote requests by default and fails unless it observes at least one
+`429 RATE_LIMIT` response. It reports aggregate status/code counts only, never the token or image.
+
 ## Implementation Notes
 
 Named SQLite-backed Durable Objects coordinate the user and network counters separately,

@@ -22,6 +22,11 @@ Account deletion removes KV records but does not invalidate existing seven-day J
 - [x] Concurrent deletion/request race tests.
 - [ ] Device end-to-end test against a deployed Worker.
 
+For staging deployment verification, use `npm run verify:staging-account-deletion` with a
+disposable account and `STAGING_CONFIRM_ACCOUNT_DELETE=true`. The guarded check deletes the
+account, then confirms its old session receives `401 AUTH_SESSION_REVOKED` from usage,
+subscription sync, and quote extraction without exposing the token or image payload in output.
+
 ## Implementation Notes
 
 Every session JWT now carries a server-side session version. Account deletion increments the

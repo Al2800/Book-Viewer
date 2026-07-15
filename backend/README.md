@@ -93,6 +93,27 @@ npm run deploy
 npm run deploy:production
 ```
 
+### Staging verification
+
+Run these only against a disposable staging account and Worker. Both commands require an explicit
+confirmation flag and never print the supplied session token or request image.
+
+```bash
+STAGING_BASE_URL=https://your-staging-worker.example \
+STAGING_SESSION_TOKEN=... \
+STAGING_CONFIRM_RATE_LIMIT_LOAD=true \
+npm run verify:staging-rate-limit
+
+STAGING_BASE_URL=https://your-staging-worker.example \
+STAGING_SESSION_TOKEN=... \
+STAGING_CONFIRM_ACCOUNT_DELETE=true \
+npm run verify:staging-account-deletion
+```
+
+The rate-limit check sends 31 concurrent quote requests by default and expects at least one
+`429 RATE_LIMIT` response. The account-deletion check permanently deletes the staging account,
+then verifies that its old token cannot access usage, subscription sync, or quote extraction.
+
 ## API Endpoints
 
 ### Authentication

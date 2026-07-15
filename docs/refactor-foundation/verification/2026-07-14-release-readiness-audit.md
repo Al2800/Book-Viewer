@@ -56,8 +56,9 @@
    Worker. The currently deployed June Worker has `ALLOW_AUTHENTICATED_EXTRACTION=true` and no
    atomic limiter binding; it is not the release configuration. After deployment, confirm the
    pinned `hf-inference` route and record Hugging Face/Gemini retention evidence. See issue `095`.
-2. Run the staging load test for Durable Object extraction limits and the deployed-Worker
-   account-deletion check. See issues `102` and `099`.
+2. Run the guarded staging checks with a disposable account: `npm run verify:staging-rate-limit`
+   for Durable Object extraction limits, then `npm run verify:staging-account-deletion` for
+   deployed-Worker session revocation. See issues `102` and `099`.
 3. Test the next TestFlight build on physical hardware:
    - Sandbox purchase, intentionally interrupted reconciliation, Restore Purchases, then remote
      extraction as the restored customer.
