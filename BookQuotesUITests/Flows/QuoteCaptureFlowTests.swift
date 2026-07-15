@@ -482,6 +482,28 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
         openVisibleQuoteEditor()
     }
 
+    func testSourceImageAccessibleActionOpensFullScreen() throws {
+        openExtractionReview()
+
+        let sourceImage = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
+            .firstMatch
+        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose its source image")
+        XCTAssertTrue(sourceImage.isHittable, "The source image should be available as an accessibility action")
+        sourceImage.tap()
+
+        let closeButton = app.buttons["Close image"]
+        XCTAssertTrue(closeButton.waitForExistence(timeout: 5), "Activating the source image should open its full-screen viewer")
+        XCTAssertTrue(app.staticTexts["Page 38"].exists, "The full-screen viewer should retain the detected page context")
+        try performSystemAccessibilityAudit()
+        closeButton.tap()
+
+        XCTAssertTrue(
+            app.navigationBars["Review Extractions"].waitForExistence(timeout: 5),
+            "Closing the source image should return to extraction review"
+        )
+    }
+
     func testExtractionReviewRemainsUsableInLandscapeWithAccessibilityText() {
         XCUIDevice.shared.orientation = .landscapeLeft
         defer { XCUIDevice.shared.orientation = .portrait }

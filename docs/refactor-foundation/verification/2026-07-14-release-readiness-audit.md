@@ -115,6 +115,10 @@
   `completeUntilFirstUserAuthentication` protection, are excluded from backup, and are removed
   by the lifecycle cleanup (1 test, 0 failures). This closes issue `096`; issue `097` still needs
   the manual TestFlight network-loss interruption.
+- The physical iPhone also activated the Accessibility XXXL extraction-review source image,
+  opened and closed its full-screen viewer, and passed the retained Apple system accessibility
+  audit while that viewer was open (1 test, 0 failures). Manual VoiceOver reading order and
+  Reduce Motion remain open under issue `105`.
 - The full app-unit gate passed again on 2026-07-15 after the remote-image budget change with a
   complete, readable result bundle: 616 tests passed, 0 failed, and 1 skipped in 204.243 seconds
   on iPhone 17 / iOS 26.5. The skip is the

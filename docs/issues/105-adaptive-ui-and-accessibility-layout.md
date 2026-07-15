@@ -80,6 +80,10 @@ The phone library grid can compress cards to 100 points while retaining status a
   behind the navigation bar while the quote remained visible. Large-text quote actions now sit
   directly beneath each quote and the normal icon actions use 44-point targets; the exact
   portrait and landscape regressions then passed (2 tests, 0 failures on 2026-07-15).
+- [x] On the same physical iPhone, the Accessibility XXXL source-page action opened the full-screen
+  image viewer, retained its page context, and returned to review. The viewer now gives its image,
+  Close, and Reset Zoom controls human-readable labels and 44-point toolbar targets; Apple's
+  reliable system audit passed while the viewer was open (1 test, 0 failures on 2026-07-15).
 - [x] The same physical iPhone passed the Library system-accessibility audit and seeded-library
   smoke (2 tests, 0 failures), plus the Accessibility XXXL Library and Settings workflows
   covering grid/list views, Remote AI, Storage & Export, export, and marking editing (5 tests,
@@ -98,5 +102,5 @@ The phone library grid can compress cards to 100 points while retaining status a
   workflows cover their reliable behavior.
 - [ ] Complete the screenshot matrix for small phone, large phone, portrait, landscape, and
   iPad split view on a physical device.
-- [ ] Complete VoiceOver and Reduce Motion device smoke, including source-image activation and
-  page-selector order.
+- [ ] Complete manual VoiceOver reading-order and Reduce Motion device smoke, including the
+  page-selector order. Source-image activation is now covered on a physical device above.

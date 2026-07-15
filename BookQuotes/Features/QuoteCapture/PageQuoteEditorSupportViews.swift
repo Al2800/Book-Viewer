@@ -62,6 +62,7 @@ struct FullImageViewer: View {
                                     }
                                 }
                             }
+                            .accessibilityLabel("Full source page image")
                     } else {
                         ContentUnavailableView(
                             "Image Not Found",
@@ -79,7 +80,9 @@ struct FullImageViewer: View {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title2)
                             .foregroundStyle(.white.opacity(0.8))
+                            .frame(width: 44, height: 44)
                     }
+                    .accessibilityLabel("Close image")
                 }
 
                 ToolbarItem(placement: .principal) {
@@ -101,7 +104,9 @@ struct FullImageViewer: View {
                         } label: {
                             Image(systemName: "arrow.down.right.and.arrow.up.left")
                                 .foregroundStyle(.white.opacity(0.8))
+                                .frame(width: 44, height: 44)
                         }
+                        .accessibilityLabel("Reset zoom")
                     }
                 }
             }
