@@ -26,6 +26,8 @@ For staging load verification, use `npm run verify:staging-rate-limit` with a di
 `STAGING_CONFIRM_RATE_LIMIT_LOAD=true`, and a staging Worker URL/session token. The guarded check
 sends 31 concurrent quote requests by default and fails unless it observes at least one
 `429 RATE_LIMIT` response. It reports aggregate status/code counts only, never the token or image.
+The shared URL helper rejects the production BookQuotes host, credential-bearing URLs, non-HTTP
+URLs, and cross-origin endpoint paths before sending the load request.
 
 ## Implementation Notes
 
@@ -37,3 +39,13 @@ after failure to prevent failed requests from bypassing abuse protection. Reserv
 after five minutes if a Worker is interrupted; completed idempotency records expire after 24
 hours. Existing KV monthly usage is read during the one-way migration, and account deletion
 removes both legacy KV and Durable Object usage state.
+
+## Progress
+
+2026-07-15 staging-script safety follow-up:
+
+- The concurrent load verifier now shares a strict staging URL guard with the account-deletion
+  verifier. It refuses the known production API host, credential-bearing URLs, non-HTTP URLs, and
+  cross-origin endpoint paths before generating rate-limit traffic.
+- Shared staging-helper tests passed 5 tests, 0 failures. The complete backend suite passed 47
+  tests, 0 failures, and TypeScript typecheck passed.

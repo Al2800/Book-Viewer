@@ -1,5 +1,10 @@
 const CONFIRMATION_VALUE = 'true';
 const TEST_IMAGE_DATA = 'dGVzdA==';
+const PRODUCTION_HOSTS = new Set([
+  'api.bookquotes.uk',
+  'bookquotes.uk',
+  'www.bookquotes.uk',
+]);
 
 export function requireEnvironment(name) {
   const value = process.env[name]?.trim();
@@ -16,7 +21,24 @@ export function requireConfirmation(name) {
 }
 
 export function stagingURL(baseURL, path) {
-  return new URL(path, ensureTrailingSlash(baseURL));
+  const root = new URL(ensureTrailingSlash(baseURL));
+
+  if (!['http:', 'https:'].includes(root.protocol)) {
+    throw new Error('STAGING_BASE_URL must use http or https');
+  }
+  if (root.username || root.password) {
+    throw new Error('STAGING_BASE_URL must not include credentials');
+  }
+  if (PRODUCTION_HOSTS.has(root.hostname.toLowerCase())) {
+    throw new Error('STAGING_BASE_URL must not target the production BookQuotes API');
+  }
+
+  const endpoint = new URL(path, root);
+  if (endpoint.origin !== root.origin) {
+    throw new Error('Staging endpoint path must remain on STAGING_BASE_URL');
+  }
+
+  return endpoint;
 }
 
 export function quoteExtractionBody() {
