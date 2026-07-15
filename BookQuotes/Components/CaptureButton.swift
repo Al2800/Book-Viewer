@@ -243,6 +243,8 @@ struct CaptureControlsBar: View {
 // MARK: - Shared Camera Chrome
 
 struct CaptureHeaderBar<Trailing: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let title: String
     let subtitle: String?
     let subtitleAccessibilityIdentifier: String?
@@ -271,20 +273,23 @@ struct CaptureHeaderBar<Trailing: View>: View {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.white)
-                    .lineLimit(1)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 if let subtitle {
                     if let subtitleAccessibilityIdentifier {
                         Text(subtitle)
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.72))
-                            .lineLimit(1)
+                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+                            .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier(subtitleAccessibilityIdentifier)
                     } else {
                         Text(subtitle)
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.72))
-                            .lineLimit(1)
+                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }

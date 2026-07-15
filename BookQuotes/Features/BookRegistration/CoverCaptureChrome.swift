@@ -53,7 +53,7 @@ struct CoverCaptureModeSwitcher: View {
         VStack(spacing: Spacing.md) {
             CaptureHeaderBar(
                 title: "Add Book",
-                subtitle: captureMode == .photo ? "Scan the cover or switch to ISBN" : "Scan the ISBN barcode",
+                subtitle: captureMode == .photo ? "Scan cover or ISBN" : "Scan the ISBN barcode",
                 onCancel: onCancel
             )
 

@@ -327,3 +327,48 @@ final class CoverCaptureFlowTests: BaseUITestCase {
         return useCropButton
     }
 }
+
+/// Regression coverage for cover capture at the largest supported text size.
+final class AdaptiveCoverCaptureLayoutTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-library-test-data",
+            "--mock-camera",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+    }
+
+    func testCoverCaptureActionsRemainReachableWithAccessibilityText() {
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
+
+        let coverOption = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
+        XCTAssertTrue(coverOption.waitForExistence(timeout: 5), "Capture should offer cover mode")
+        XCTAssertTrue(coverOption.isHittable, "Cover mode should remain reachable at accessibility text sizes")
+        coverOption.tap()
+
+        let modePicker = app.segmentedControls[AccessibilityIdentifiers.Capture.modePicker]
+        let testCoverButton = app.buttons[AccessibilityIdentifiers.Capture.testCoverButton]
+        let manualEntryButton = app.buttons[AccessibilityIdentifiers.Capture.manualEntryButton]
+        XCTAssertTrue(modePicker.waitForExistence(timeout: 5), "Photo and barcode modes should remain visible")
+        XCTAssertTrue(testCoverButton.waitForExistence(timeout: 5), "Use Test Cover should remain visible")
+        XCTAssertTrue(testCoverButton.isHittable, "Use Test Cover should remain reachable")
+        XCTAssertTrue(manualEntryButton.exists && manualEntryButton.isHittable, "Manual entry should remain reachable")
+        captureScreenshot(
+            named: "accessibility_text_cover_capture",
+            description: "Cover capture controls at accessibility text size"
+        )
+
+        testCoverButton.tap()
+        let useCropButton = app.buttons[AccessibilityIdentifiers.CoverCrop.useCropButton]
+        XCTAssertTrue(useCropButton.waitForExistence(timeout: 7), "Crop review should open")
+        XCTAssertTrue(useCropButton.isHittable, "Crop confirmation should remain reachable")
+        useCropButton.tap()
+
+        XCTAssertTrue(
+            app.textFields[AccessibilityIdentifiers.BookEdit.titleField].waitForExistence(timeout: 10),
+            "Accepting the cover should open the book form"
+        )
+    }
+}

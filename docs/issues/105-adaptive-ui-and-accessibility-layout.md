@@ -52,6 +52,11 @@ The phone library grid can compress cards to 100 points while retaining status a
   choices in one readable column, and reflows subscription cards so plan details and prices do
   not truncate. The local-only first-run path, accessibility subscription screen, normal marking
   setup, and normal subscription media screen passed 4 tests with no failures or skips.
+- [x] Accessibility XXXL cover capture keeps its mode picker, shutter fixture, manual-entry
+  fallback, and crop confirmation reachable through to the book form. The shared camera header
+  now reflows at accessibility sizes, and the concise cover instruction remains fully readable.
+  The focused iPhone 17 Pro journey passed with 0 failures on 2026-07-15; its screenshot was
+  also visually inspected for clipping and overlap.
 - [x] Simulator screenshots were visually inspected for the iPhone accessibility-text and iPad
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list
