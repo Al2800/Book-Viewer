@@ -55,6 +55,11 @@
   regression also passed: 1 test, 0 failures, 0 skips. Result bundles:
   `/tmp/BookQuotes-local-first-extraction-2026-07-15.xcresult` and
   `/tmp/BookQuotes-local-first-review-ui-2026-07-15.xcresult`.
+- The on-device detector now recognizes a hooked vertical mark as a bracket, suppresses its hook
+  fragments as duplicate underlines, and selects the entire adjacent paragraph. The full
+  on-device extractor suite passed after the change: 20 tests passed, 0 failed, 1 documented
+  local-only fixture skip on iPhone 17 / iOS 26.5. Result bundle:
+  `/tmp/BookQuotes-bracket-extraction-2026-07-15.xcresult`.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,

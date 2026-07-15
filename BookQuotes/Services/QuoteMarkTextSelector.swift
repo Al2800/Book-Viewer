@@ -24,7 +24,9 @@ struct QuoteMarkTextSelector: Sendable {
             return candidate(from: selectedLines, marks: [mark], markingType: mark.type)
         }
 
-        return deduplicatedCandidates(underlineCandidates + marginLineCandidates + otherCandidates)
+        // A bracket or highlight can overlap an underline; retain the structural mark's broader
+        // quote window instead of creating a second, narrower underline candidate.
+        return deduplicatedCandidates(otherCandidates + marginLineCandidates + underlineCandidates)
     }
 
     private func lines(
@@ -38,7 +40,9 @@ struct QuoteMarkTextSelector: Sendable {
             return highlightedLines(mark, textLines: textLines)
         case .marginLine:
             return marginMarkedLines(mark, textLines: textLines)
-        case .marginNote, .bracket, .mixed:
+        case .bracket:
+            return marginMarkedLines(mark, textLines: textLines)
+        case .marginNote, .mixed:
             return highlightedLines(mark, textLines: textLines)
         }
     }
@@ -181,7 +185,15 @@ struct QuoteMarkTextSelector: Sendable {
     ) -> [RecognizedTextLine] {
         textLines.filter { line in
             let verticalOverlap = min(line.boundingBox.maxY, mark.boundingBox.maxY) - max(line.boundingBox.minY, mark.boundingBox.minY)
-            let isAdjacent = abs(line.boundingBox.minX - mark.boundingBox.maxX) <= max(80, line.boundingBox.height * 2)
+            let horizontalGap: CGFloat
+            if line.boundingBox.maxX < mark.boundingBox.minX {
+                horizontalGap = mark.boundingBox.minX - line.boundingBox.maxX
+            } else if mark.boundingBox.maxX < line.boundingBox.minX {
+                horizontalGap = line.boundingBox.minX - mark.boundingBox.maxX
+            } else {
+                horizontalGap = 0
+            }
+            let isAdjacent = horizontalGap <= max(80, line.boundingBox.height * 2)
             return verticalOverlap > 0 && isAdjacent
         }
     }

@@ -117,6 +117,31 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(marginMarks[0].boundingBox.height, 120)
     }
 
+    func testBracketHookSelectsTheAdjacentParagraphWithoutUnderlineDuplicates() throws {
+        let image = OnDeviceQuoteExtractorTestImage.graphiteBracketPage()
+        let marks = try PageMarkDetector().detectMarks(in: image)
+        guard let bracket = marks.first(where: { $0.type == .bracket }) else {
+            XCTFail("Expected a bracket mark, got: \(marks)")
+            return
+        }
+        XCTAssertGreaterThanOrEqual(bracket.boundingBox.height, 120)
+
+        let lines = [
+            RecognizedTextLine(text: "The bracketed paragraph begins here", confidence: 0.92, boundingBox: CGRect(x: 900, y: 1680, width: 2040, height: 126)),
+            RecognizedTextLine(text: "and continues with the same idea", confidence: 0.90, boundingBox: CGRect(x: 900, y: 1854, width: 2040, height: 126)),
+            RecognizedTextLine(text: "before ending on this final line", confidence: 0.91, boundingBox: CGRect(x: 900, y: 2028, width: 2040, height: 126))
+        ]
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(textLines: lines, marks: marks)
+
+        XCTAssertEqual(candidates.count, 1)
+        XCTAssertEqual(candidates.first?.markingType, .bracket)
+        XCTAssertEqual(
+            candidates.first?.text,
+            "The bracketed paragraph begins here and continues with the same idea before ending on this final line"
+        )
+    }
+
     func testSelectorGroupsAdjacentUnderlineFragmentsIntoOneQuote() {
         let lines = [
             RecognizedTextLine(text: "breakneck pace of", confidence: 0.92, boundingBox: CGRect(x: 240, y: 220, width: 250, height: 24)),
@@ -613,6 +638,25 @@ private enum OnDeviceQuoteExtractorTestImage {
             let path = UIBezierPath()
             path.move(to: CGPoint(x: 250, y: 552))
             path.addLine(to: CGPoint(x: 250, y: 732))
+            UIColor(white: 0.22, alpha: 1).setStroke()
+            path.lineWidth = 7
+            path.stroke()
+        }
+    }
+
+    static func graphiteBracketPage() -> UIImage {
+        let size = CGSize(width: 1200, height: 1600)
+        let renderer = UIGraphicsImageRenderer(size: size)
+
+        return renderer.image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+
+            let path = UIBezierPath()
+            path.move(to: CGPoint(x: 310, y: 552))
+            path.addLine(to: CGPoint(x: 250, y: 552))
+            path.addLine(to: CGPoint(x: 250, y: 732))
+            path.addLine(to: CGPoint(x: 310, y: 732))
             UIColor(white: 0.22, alpha: 1).setStroke()
             path.lineWidth = 7
             path.stroke()

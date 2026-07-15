@@ -8,16 +8,23 @@ struct PageMarkDetector: PageMarkDetecting {
         }
 
         let bitmap = try MarkBitmap(cgImage: cgImage)
-        let coloredRegions = mergeRowRuns(bitmap.coloredMarkedRowRuns())
-            .compactMap(coloredMark)
-        let neutralUnderlineRegions = mergeRowRuns(bitmap.neutralUnderlineRowRuns())
-            .compactMap(neutralUnderlineMark)
-        let verticalMarginRegions = mergeColumnRuns(
+        let coloredRowRuns = bitmap.coloredMarkedRowRuns()
+        let neutralRowRuns = bitmap.neutralUnderlineRowRuns()
+        let horizontalRuns = coloredRowRuns + neutralRowRuns
+        let verticalMarks = mergeColumnRuns(
             bitmap.coloredMarkedColumnRuns() + bitmap.neutralMarkedColumnRuns(),
-            imageWidth: bitmap.width
+            imageWidth: bitmap.width,
+            horizontalRuns: horizontalRuns
         )
+        let bracketMarks = verticalMarks.filter { $0.type == .bracket }
+        let coloredRegions = mergeRowRuns(coloredRowRuns)
+            .filter { !isBracketHook($0.rect, for: bracketMarks) }
+            .compactMap(coloredMark)
+        let neutralUnderlineRegions = mergeRowRuns(neutralRowRuns)
+            .filter { !isBracketHook($0.rect, for: bracketMarks) }
+            .compactMap(neutralUnderlineMark)
 
-        return coloredRegions + neutralUnderlineRegions + verticalMarginRegions
+        return coloredRegions + neutralUnderlineRegions + verticalMarks
     }
 
     private func coloredMark(_ region: MarkRegion) -> DetectedPageMark? {
@@ -45,7 +52,11 @@ struct PageMarkDetector: PageMarkDetecting {
         )
     }
 
-    private func verticalMarginMark(_ region: MarkRegion, imageWidth: Int) -> DetectedPageMark? {
+    private func verticalMarginMark(
+        _ region: MarkRegion,
+        imageWidth: Int,
+        horizontalRuns: [MarkRowRun]
+    ) -> DetectedPageMark? {
         let rect = region.rect
         guard rect.height >= 140 else { return nil }
         guard rect.width >= 1 && rect.width <= 24 else { return nil }
@@ -56,7 +67,7 @@ struct PageMarkDetector: PageMarkDetecting {
         guard horizontalPosition <= 0.35 || horizontalPosition >= 0.65 else { return nil }
 
         return DetectedPageMark(
-            type: .marginLine,
+            type: hasBracketHook(near: rect, in: horizontalRuns) ? .bracket : .marginLine,
             boundingBox: rect,
             confidence: min(0.82, max(0.55, region.density))
         )
@@ -92,7 +103,11 @@ struct PageMarkDetector: PageMarkDetecting {
         return regions.filter { $0.rect.width >= 40 }
     }
 
-    private func mergeColumnRuns(_ runs: [MarkColumnRun], imageWidth: Int) -> [DetectedPageMark] {
+    private func mergeColumnRuns(
+        _ runs: [MarkColumnRun],
+        imageWidth: Int,
+        horizontalRuns: [MarkRowRun]
+    ) -> [DetectedPageMark] {
         var regions: [MarkRegion] = []
 
         for run in runs.sorted(by: { lhs, rhs in
@@ -105,7 +120,38 @@ struct PageMarkDetector: PageMarkDetecting {
             }
         }
 
-        return regions.compactMap { verticalMarginMark($0, imageWidth: imageWidth) }
+        return regions.compactMap {
+            verticalMarginMark(
+                $0,
+                imageWidth: imageWidth,
+                horizontalRuns: horizontalRuns
+            )
+        }
+    }
+
+    private func hasBracketHook(near verticalRect: CGRect, in runs: [MarkRowRun]) -> Bool {
+        runs.contains { run in
+            let hookRect = run.rect
+            let maximumHookWidth = max(120, verticalRect.width * 16)
+            let isHookLength = hookRect.width >= 24 && hookRect.width <= maximumHookWidth
+            let touchesVerticalStroke = hookRect.maxX >= verticalRect.minX - 16
+                && hookRect.minX <= verticalRect.maxX + 16
+            let isNearEndpoint = abs(hookRect.midY - verticalRect.minY) <= 24
+                || abs(hookRect.midY - verticalRect.maxY) <= 24
+            return isHookLength && touchesVerticalStroke && isNearEndpoint
+        }
+    }
+
+    private func isBracketHook(_ rect: CGRect, for bracketMarks: [DetectedPageMark]) -> Bool {
+        bracketMarks.contains { bracket in
+            let maximumHookWidth = max(120, bracket.boundingBox.width * 16)
+            let isHookLength = rect.width >= 24 && rect.width <= maximumHookWidth
+            let touchesVerticalStroke = rect.maxX >= bracket.boundingBox.minX - 16
+                && rect.minX <= bracket.boundingBox.maxX + 16
+            let isNearEndpoint = abs(rect.midY - bracket.boundingBox.minY) <= 24
+                || abs(rect.midY - bracket.boundingBox.maxY) <= 24
+            return isHookLength && touchesVerticalStroke && isNearEndpoint
+        }
     }
 }
 

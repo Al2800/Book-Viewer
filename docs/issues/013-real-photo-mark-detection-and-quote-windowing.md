@@ -19,7 +19,7 @@ Observed user symptom on 2026-06-07:
 - The app did not pick up a vertical margin line in the page margin.
 - After build 29 moved to the 72B model path, line capture improved, but very small brackets/ticks can still be missed and line-wrap hyphenation still needs explicit handling.
 
-This means the current on-device path can reach the edit screen, but the mark-detection and mark-to-OCR selection seams are too brittle for real camera pages. OCR/local geometry should remain useful context and offline fallback, but it should not be treated as the primary quality ceiling for quote extraction. As of the 2026-06-07 TestFlight review after build 28, model-assisted extraction should run before OCR because OCR-first selection was still returning partial/missing lines.
+This means the current on-device path can reach the edit screen, but the mark-detection and mark-to-OCR selection seams are too brittle for real camera pages. OCR/local geometry remains the default and offline path; model-assisted extraction is an explicit, consent-controlled recovery path when the local result is empty or fails. Real-page quality still needs evidence before the hosted fallback can be treated as a solution for these cases.
 
 ## Current Characterization
 
@@ -41,7 +41,7 @@ This means the current on-device path can reach the edit screen, but the mark-de
 
 - [ ] A real photographed fixture reproduces the bad build 27 output or the missed vertical margin-line case.
 - [ ] A model-assisted extraction route exists for quote capture and is available from TestFlight behind backend configuration.
-- [x] The model-assisted route is the default extraction path, with local OCR retained only as fallback when the model fails or returns no usable quotes.
+- [x] The model-assisted route is an explicit, consent-controlled fallback after on-device OCR returns no candidate or encounters an error.
 - [ ] The model-assisted route can identify underlined passages, vertical margin-line marked paragraphs, and multiple marked passages on one page.
 - [ ] The model-assisted route treats small brackets, short side ticks, braces, partial bracket hooks, and faint pencil marks beside readable text as intentional quote marks.
 - [x] The model-assisted route returns strict normalized quote-review JSON, not free-form prose.
@@ -60,7 +60,7 @@ This means the current on-device path can reach the edit screen, but the mark-de
 
 1. Add a local-only real photo fixture for the failing page or a close equivalent.
 2. Add a backend contract test for a Hugging Face extraction response being normalized into `QuoteExtractionResult`.
-3. Add an app-side extractor test proving low-confidence on-device output can fall back to the model-assisted route.
+3. Add an app-side extractor test proving empty or failed on-device output can use the explicitly enabled model-assisted fallback.
 4. Add a local-only real-photo evaluation harness that compares on-device-only vs model-assisted output.
 5. Write a failing detector test for the missed vertical margin line so the offline fallback still improves.
 6. Add a detector seam for vertical column runs and margin-region classification.
@@ -112,6 +112,21 @@ This means the current on-device path can reach the edit screen, but the mark-de
 - Added focused characterization across JSON parsing, on-device extraction, remote-model extraction, and extraction-review editable state.
 - Verified the focused source-tracking gate: 6 tests, 0 failures.
 - This closes the source-tracking criterion. The issue remains open for real-photo fixture reproduction, hosted-model quality checks, strict JSON guarantees, and small bracket/tick recognition.
+
+2026-07-15 local-first and bracket follow-up:
+
+- Quote capture now starts on-device and never uploads a page after a successful local result. The
+  Hugging Face route is constructed only after the reader explicitly enables Remote AI Processing
+  and is used only for an empty or failed local result.
+- The review screen no longer blocks ordinary local processing on the remote-consent sheet.
+- `PageMarkDetector` now recognizes a sustained vertical stroke with a short top or bottom hook
+  as a bracket and suppresses those hook fragments from separate underline candidates. The
+  selector takes the full adjacent paragraph for that structural mark.
+- The synthetic bracket characterization and the full on-device extractor suite passed: 20 tests,
+  0 failures, 1 documented local-photo fixture skip on iPhone 17 / iOS 26.5. Result bundle:
+  `/tmp/BookQuotes-bracket-extraction-2026-07-15.xcresult`.
+- Small real photographed brackets, short side ticks, braces, and handwritten margin notes remain
+  open until verified with representative device photos.
 
 ## Model Option
 
@@ -181,13 +196,13 @@ The route should return the same normalized quote result shape consumed by `Extr
 
 Hosted-model acceptance criteria:
 
-- [ ] The model path is behind a feature flag or explicit fallback setting.
+- [x] The model path is behind a feature flag or explicit fallback setting.
 - [ ] The model receives the smallest useful image crop, not automatically every full page.
 - [x] The model returns strict JSON matching the existing review data shape: quote text, mark type, margin note, confidence, and reason.
-- [x] The app prefers hosted-assist before on-device OCR for quote capture.
+- [x] The app prefers on-device OCR and invokes hosted assist only after an empty or failed local result.
 - [ ] A/B fixture results compare on-device-only vs hosted-assist for the same real page photos.
-- [ ] The privacy/legal copy states when page images or crops are sent off-device.
-- [ ] The app still works without network access by falling back to editable low-confidence local candidates or manual quote entry.
+- [x] The privacy/legal copy states when page images or crops are sent off-device.
+- [x] The app still works without network access using editable local candidates or manual quote entry.
 
 ## Evidence Needed
 
