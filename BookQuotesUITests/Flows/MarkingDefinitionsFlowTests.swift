@@ -348,6 +348,59 @@ final class AdaptiveSettingsLayoutTests: BaseUITestCase {
         )
     }
 
+    func testMarkingEditorFieldsRemainReachableWithAccessibilityText() {
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.Settings.markingDefinitionsRow),
+            "Marking Definitions should remain reachable at accessibility text sizes"
+        )
+        app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Settings.markingDefinitionsRow)
+            .firstMatch
+            .tap()
+
+        XCTAssertTrue(
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.MarkingDefinitions.listView)
+                .firstMatch
+                .waitForExistence(timeout: 5),
+            "Marking Styles should open"
+        )
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.MarkingDefinitions.addButton),
+            "Add Custom Marking should remain reachable"
+        )
+        captureScreenshot(
+            named: "accessibility_text_marking_definitions",
+            description: "Marking definitions at accessibility text size"
+        )
+        app.buttons[AccessibilityIdentifiers.MarkingDefinitions.addButton].tap()
+
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.MarkingEditor.nameField),
+            "The marking name field should remain reachable"
+        )
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.MarkingEditor.visualDescriptionField),
+            "The visual description field should remain reachable"
+        )
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.MarkingEditor.meaningField),
+            "The meaning field should remain reachable"
+        )
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.MarkingEditor.cancelButton].exists,
+            "The editor should keep its Cancel action visible"
+        )
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.MarkingEditor.saveButton].exists,
+            "The editor should keep its Save action visible"
+        )
+        captureScreenshot(
+            named: "accessibility_text_marking_editor",
+            description: "Marking editor fields at accessibility text size"
+        )
+    }
+
     private func scrollToHittable(_ identifier: String) -> Bool {
         let element = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
         for _ in 0..<8 {

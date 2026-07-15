@@ -57,6 +57,10 @@ The phone library grid can compress cards to 100 points while retaining status a
   now reflows at accessibility sizes, and the concise cover instruction remains fully readable.
   The focused iPhone 17 Pro journey passed with 0 failures on 2026-07-15; its screenshot was
   also visually inspected for clipping and overlap.
+- [x] Accessibility XXXL Settings coverage now opens Marking Styles, reaches Add Custom
+  Marking, and verifies the name, visual-description, and meaning fields plus the fixed Cancel
+  and Save actions. The focused iPhone 17 Pro journey passed with 0 failures on 2026-07-15;
+  list and editor screenshots were visually inspected for clipping and overlap.
 - [x] Simulator screenshots were visually inspected for the iPhone accessibility-text and iPad
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list
