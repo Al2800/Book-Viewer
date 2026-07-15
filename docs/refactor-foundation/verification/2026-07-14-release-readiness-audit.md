@@ -3,10 +3,9 @@
 ## Revision Assessed
 
 - Baseline Git revision: `b52c907` (`fix(ui): adapt library and extraction review layouts`).
-- Latest locally verified code revision: `147a198` (`fix(capture): stabilize quote editor focus`).
-- The project build number is still `38`; the latest TestFlight build 38 predates this revision.
-  A new signed archive and upload, with the build number incremented, are required after the
-  remaining release gates pass.
+- Latest locally verified code revision: `6d4ed38` (`docs(release): close compiler warning gate`).
+- The project build number remains `38`; the final local App Store export is version `1.0`, build
+  `39`, but it has not been uploaded. The latest TestFlight build 38 predates this revision.
 
 ## Local Evidence
 
@@ -129,6 +128,10 @@
   clears the local archive/export configuration check; it does not upload a build or replace the
   production, TestFlight, or App Store Connect gates. Detailed evidence:
   `docs/refactor-foundation/verification/2026-07-15-signed-release-preflight.md`.
+- The signed archive and local export were repeated after issue `107` closed. The generic-iOS
+  archive and clean Release simulator build emitted zero production compiler warnings. The final
+  IPA remains correctly distribution-signed as version `1.0`, build `39`, with Sign in with Apple
+  and `get-task-allow = false`.
 - The app supports iOS 17, so the Empty State and Error views now use the iOS 18 symbol bounce
   effect only when available and retain their normal icon transition on earlier supported OS
   versions. The unsigned Release build passed with both prior availability warnings eliminated.
@@ -189,13 +192,13 @@
   upstream website risk rather than an iOS-binary blocker. A separate high Picomatch advisory is
   limited to the Tailwind 3 development watcher chain; it requires a planned Tailwind 4 migration
   and is not in the deployed production dependency set.
-- Existing Swift 6 concurrency and API deprecation warnings remain during Xcode builds. The
-  `SearchDatabase` actor-initialization warnings were removed on 2026-07-15 with 68 focused search
-  tests passing; the remaining production warning inventory is tracked in issue `107`. These do
-  not fail the current Swift 5.9-mode build, but should be resolved before a Swift 6 migration.
+- The tracked production Swift 6 isolation/sendability and current-SDK deprecation warnings were
+  removed under issue `107`; its final clean Release build and signed archive emitted no production
+  compiler warnings. Test-target diagnostics remain maintenance work but are not present in the
+  shipping binary.
 
 ## Decision
 
-The codebase is simulator-ready and the iPad release gate is green. It is **not ready to submit
-to App Review** until the production, physical-device, App Store Connect, and fresh-archive gates
-above are completed and recorded.
+The codebase is simulator-ready, the iPad simulator gate is green, and the local signed
+archive/export gate is green. It is **not ready to submit to App Review** until the production,
+physical-device, and App Store Connect gates above are completed and recorded.
