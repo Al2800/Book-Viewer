@@ -33,3 +33,13 @@ The website now builds locally, but the dependency audit has production findings
 - Moved the Google Fonts `@import` before Tailwind directives so Next 16/Turbopack production build succeeds.
 - Confirmed website privacy copy still matches the current app/backend extraction and account deletion behaviour.
 - `npm audit --omit=dev` still reports the Next-bundled `postcss <8.5.10` advisory. `npm audit fix --force` proposes downgrading to `next@9.3.3`, so the acceptable mitigation is to stay on the latest available Next and track the upstream advisory.
+
+2026-07-15 revalidation:
+
+- Confirmed `next@16.2.10` remains the latest published release and the production build passes.
+- A clean production audit still reports only the two moderate Next/PostCSS advisories. Next pins
+  its nested `postcss@8.4.31` exactly; an npm override produces an invalid dependency tree, so it
+  is not an acceptable substitute for an upstream Next release.
+- The full development audit also reports a high Picomatch advisory through Tailwind 3's local
+  file-watcher chain. It is not part of the deployed website dependency set; remediation requires
+  the Tailwind 4 major-version migration and should be planned outside this release branch.

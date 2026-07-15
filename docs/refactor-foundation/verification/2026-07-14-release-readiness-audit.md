@@ -91,7 +91,9 @@
 
 - The website's production dependency audit reports two moderate inherited PostCSS advisories
   under Next.js. The available automatic fix proposes a breaking downgrade, so this remains an
-  upstream website risk rather than an iOS-binary blocker.
+  upstream website risk rather than an iOS-binary blocker. A separate high Picomatch advisory is
+  limited to the Tailwind 3 development watcher chain; it requires a planned Tailwind 4 migration
+  and is not in the deployed production dependency set.
 - Existing Swift 6 concurrency and API deprecation warnings remain during Xcode builds. They do
   not fail the current Swift 5-mode build, but should be resolved before a Swift 6 migration.
 
