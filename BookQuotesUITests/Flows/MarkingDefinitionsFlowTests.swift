@@ -348,6 +348,52 @@ final class AdaptiveSettingsLayoutTests: BaseUITestCase {
         )
     }
 
+    func testExportWorkflowRemainsReachableWithAccessibilityText() {
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.Settings.exportQuotesButton),
+            "Export Quotes should remain reachable at accessibility text sizes"
+        )
+        app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Settings.exportQuotesButton)
+            .firstMatch
+            .tap()
+
+        let formatPicker = app.buttons[AccessibilityIdentifiers.Export.formatPicker]
+        XCTAssertTrue(formatPicker.waitForExistence(timeout: 5), "The export format picker should be available")
+        XCTAssertTrue(formatPicker.isHittable, "The export format picker should remain reachable")
+        formatPicker.tap()
+        let jsonOption = app.buttons["JSON"]
+        XCTAssertTrue(jsonOption.waitForExistence(timeout: 3), "JSON should remain available as an export format")
+        jsonOption.tap()
+
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.Export.includeMarginNotesToggle),
+            "All export options should remain reachable"
+        )
+        let marginNotes = app.switches[AccessibilityIdentifiers.Export.includeMarginNotesToggle]
+        XCTAssertTrue(marginNotes.exists && marginNotes.isHittable, "Include margin notes should be usable")
+
+        XCTAssertTrue(
+            scrollToHittable(AccessibilityIdentifiers.Export.previewText),
+            "The export preview should remain reachable"
+        )
+        let preview = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Export.previewText)
+            .firstMatch
+        XCTAssertTrue(preview.label.contains("{"), "The JSON preview should reflect the selected format")
+        captureScreenshot(
+            named: "accessibility_text_export",
+            description: "Export options and preview at accessibility text size"
+        )
+
+        let exportButton = app.buttons[AccessibilityIdentifiers.Export.exportButton]
+        XCTAssertTrue(exportButton.exists && exportButton.isHittable, "The final Export action should remain reachable")
+        exportButton.tap()
+        XCTAssertTrue(app.buttons["Save to Files"].waitForExistence(timeout: 5), "Save to Files should be offered")
+        XCTAssertTrue(app.buttons["Share"].exists, "Share should be offered")
+        app.swipeDown()
+    }
+
     func testMarkingEditorFieldsRemainReachableWithAccessibilityText() {
         XCTAssertTrue(
             scrollToHittable(AccessibilityIdentifiers.Settings.markingDefinitionsRow),

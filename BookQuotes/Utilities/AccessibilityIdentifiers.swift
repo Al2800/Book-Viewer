@@ -370,8 +370,17 @@ enum AccessibilityIdentifiers {
         /// Include book info toggle
         static let includeBookInfoToggle = "export_include_book_info"
 
+        /// Include metadata toggle
+        static let includeMetadataToggle = "export_include_metadata"
+
+        /// Group by book toggle
+        static let groupByBookToggle = "export_group_by_book"
+
         /// Include page numbers toggle
         static let includePageNumbersToggle = "export_include_page_numbers"
+
+        /// Include margin notes toggle
+        static let includeMarginNotesToggle = "export_include_margin_notes"
     }
 
     // MARK: - Book Detail

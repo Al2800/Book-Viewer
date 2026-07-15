@@ -824,7 +824,10 @@ enum AccessibilityIdentifiers {
         static let previewText = "export_preview_text"
         static let shareButton = "export_share_button"
         static let includeBookInfoToggle = "export_include_book_info"
+        static let includeMetadataToggle = "export_include_metadata"
+        static let groupByBookToggle = "export_group_by_book"
         static let includePageNumbersToggle = "export_include_page_numbers"
+        static let includeMarginNotesToggle = "export_include_margin_notes"
     }
 
     enum BookDetail {

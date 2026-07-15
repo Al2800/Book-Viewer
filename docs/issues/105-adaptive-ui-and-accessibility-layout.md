@@ -12,7 +12,7 @@ The phone library grid can compress cards to 100 points while retaining status a
 
 - [x] Book cards remain legible without overlapping or clipped status/count text.
 - [x] Extraction Review adapts its source image, page navigation, and editor by size class.
-- [ ] All core workflows support Accessibility text sizes without inaccessible controls.
+- [x] All core workflows support Accessibility text sizes without inaccessible controls.
 - [x] Declared orientations and iPad split-view sizes are either supported or intentionally constrained.
 - [ ] VoiceOver order, labels, and touch targets pass a manual audit.
 
@@ -67,6 +67,10 @@ The phone library grid can compress cards to 100 points while retaining status a
   sheet no longer prevents the tag sheet from opening. Three focused iPhone 17 Pro tests passed
   with 0 failures on 2026-07-15; the quote action screenshot was visually inspected for clipping
   and overlap.
+- [x] Accessibility XXXL export coverage opens Export Quotes from Settings, selects JSON,
+  reaches all option toggles and the updated preview, performs the export, and verifies that Save
+  to Files and Share remain available. The focused iPhone 17 Pro journey passed with 0 failures
+  on 2026-07-15; its options/preview screenshot was visually inspected for clipping and overlap.
 - [x] Simulator screenshots were visually inspected for the iPhone accessibility-text and iPad
   review layouts. The focused Xcode commands completed successfully on 2026-07-14 and the
   2026-07-15 landscape/compact regression after replacing its zero-height nested quote list
