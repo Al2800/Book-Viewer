@@ -563,7 +563,7 @@ final class AdaptiveBookRegistrationLayoutTests: BaseUITestCase {
 
         let title = app.textFields[AccessibilityIdentifiers.BookEdit.titleField]
         XCTAssertTrue(title.waitForExistence(timeout: 5), "Manual entry should expose the title field")
-        XCTAssertTrue(reveal(title), "Title field should remain reachable after scrolling")
+        XCTAssertTrue(isFullyVisible(title), "Manual entry should start with the required title field visible")
         typeText("Accessible Book", into: title, dismissKeyboardAfter: true)
 
         let publisher = app.textFields[AccessibilityIdentifiers.BookEdit.publisherField]

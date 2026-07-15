@@ -80,19 +80,7 @@ struct BookEditView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.lg) {
-                    BookEditCoverSection(
-                        coverImage: $coverImage,
-                        selectedPhotoItem: $selectedPhotoItem,
-                        showCameraPicker: $showCameraPicker
-                    )
-                    BookEditDetailsSection(
-                        title: $title,
-                        author: $author,
-                        subtitle: $subtitle,
-                        focusedField: $focusedField,
-                        titleShakeTrigger: titleShakeTrigger,
-                        authorShakeTrigger: authorShakeTrigger
-                    )
+                    primarySections
                     BookEditMetadataSection(
                         isbn: $isbn,
                         publisher: $publisher,
@@ -152,6 +140,51 @@ struct BookEditView: View {
             return "Edit Book"
         case .createFromMetadata:
             return "Confirm Book"
+        }
+    }
+
+    @ViewBuilder
+    private var primarySections: some View {
+        if prioritizesRequiredDetails {
+            detailsSection
+            coverSection
+        } else {
+            coverSection
+            detailsSection
+        }
+    }
+
+    private var coverSection: some View {
+        BookEditCoverSection(
+            coverImage: $coverImage,
+            selectedPhotoItem: $selectedPhotoItem,
+            showCameraPicker: $showCameraPicker
+        )
+    }
+
+    private var detailsSection: some View {
+        BookEditDetailsSection(
+            title: $title,
+            author: $author,
+            subtitle: $subtitle,
+            focusedField: $focusedField,
+            titleShakeTrigger: titleShakeTrigger,
+            authorShakeTrigger: authorShakeTrigger
+        )
+    }
+
+    /// Manual entry should start with the required book details rather than an optional cover.
+    private var prioritizesRequiredDetails: Bool {
+        switch mode {
+        case .create:
+            return true
+        case .createFromMetadata(let metadata):
+            return metadata.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+                metadata.authors.isEmpty &&
+                metadata.coverImageData == nil &&
+                metadata.coverImageURL == nil
+        case .edit:
+            return false
         }
     }
 
