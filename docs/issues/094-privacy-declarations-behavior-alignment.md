@@ -37,6 +37,14 @@ The published policy says captured images exist only in memory and that usage-pa
   on iPhone 17 (iOS 26.5), and the server-side deletion/usage claims with 8 backend
   account-revocation and atomic-rate-limit test passes plus a TypeScript typecheck.
 
+2026-07-15 paywall-copy follow-up:
+
+- Replaced the stale "Sync Everywhere" sales claim while CloudKit remains disabled in this v1
+  release.
+- Replaced the unsupported "never shared" privacy claim with accurate local-first, explicit
+  remote-AI-consent wording. Provider retention evidence is recorded in
+  `docs/AI_PROVIDER_RETENTION.md`.
+
 ## Dependencies
 
 - Complete `093`, `095`, `096`, `097`, and `099` before final wording.

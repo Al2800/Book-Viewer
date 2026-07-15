@@ -20,7 +20,7 @@ The Hugging Face model uses `:preferred`, which may route requests to external i
 
 - [x] Backend tests for provider selection and rejected providers.
 - [ ] Deployment configuration review.
-- [ ] Recorded evidence of provider retention terms or ZDR approval.
+- [x] Recorded evidence of provider retention terms or ZDR approval.
 
 ## Implementation Notes
 
@@ -71,3 +71,14 @@ recorded by the account owner.
   `npm audit --audit-level=moderate` reported zero vulnerabilities.
 - This removes a local release-tooling security risk; it does not replace the missing production
   secrets, actual deployment, or provider-retention evidence.
+
+2026-07-15 provider-terms evidence follow-up:
+
+- Added `docs/AI_PROVIDER_RETENTION.md`, recording the active Hugging Face `hf-inference` quote
+  route and Gemini cover route with the official primary-source terms reviewed on this date.
+- The record distinguishes Hugging Face's routed-inference data handling from Inference Endpoints,
+  and distinguishes Gemini's paid-service non-training position from its separate limited
+  abuse-monitoring retention.
+- No Zero Data Retention approval has been asserted for the BookQuotes Gemini project. The
+  in-app policy and paywall now avoid unsupported "never shared" or provider-zero-retention
+  promises. Deployment configuration review remains open.

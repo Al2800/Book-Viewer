@@ -140,6 +140,11 @@
   module rather than route-controller logic. The HTTP routes retain the same client-facing denied
   response and remain covered by request-level tests. The complete backend suite passed: 42 tests,
   0 failures; TypeScript typecheck passed.
+- The subscription paywall now avoids advertising cloud sync while the v1 CloudKit flag is off and
+  avoids promising that a consented remote-AI request is never shared. The dated provider-terms
+  record at `docs/AI_PROVIDER_RETENTION.md` distinguishes the pinned Hugging Face route from
+  Gemini's account-level Zero Data Retention setting; it does not claim ZDR approval for the
+  BookQuotes project.
 
 ## Submission Blockers
 

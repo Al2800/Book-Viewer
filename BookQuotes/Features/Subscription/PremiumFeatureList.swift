@@ -22,9 +22,9 @@ struct PremiumFeatureList: View {
             )
 
             PremiumFeatureRow(
-                icon: "icloud",
-                title: "Sync Everywhere",
-                description: "Access your library on all your Apple devices"
+                icon: "books.vertical",
+                title: "Local-First Library",
+                description: "Keep your books and quotes on this iPhone or iPad"
             )
 
             PremiumFeatureRow(
@@ -42,7 +42,7 @@ struct PremiumFeatureList: View {
             PremiumFeatureRow(
                 icon: "person.badge.shield.checkmark",
                 title: "Privacy First",
-                description: "Your quotes stay private, never shared or used for training"
+                description: "On-device by default; remote AI requires your consent"
             )
         }
         .padding(Spacing.lg)
