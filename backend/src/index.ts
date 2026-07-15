@@ -16,11 +16,11 @@ import {
 import {
   getSubscription,
   handleAppStoreNotification,
-  hasActiveSubscription,
   reconcileSubscription,
   rememberUserAppAccountToken,
   toClientSubscriptionStatus,
 } from './subscription';
+import { evaluateExtractionAccess } from './extraction-access-policy';
 import { deleteUserAccountData } from './account-data';
 import {
   completeExtraction,
@@ -115,10 +115,6 @@ function getClientKey(request: Request, userId: string): string {
   }
 
   return `user:${userId}`;
-}
-
-function allowsAuthenticatedExtraction(env: Env): boolean {
-  return env.ALLOW_AUTHENTICATED_EXTRACTION === 'true';
 }
 
 function logRateLimitDecision(path: string, decision: RateLimitDecision): void {
@@ -348,13 +344,13 @@ export default {
     if (revoked) {
       return revoked;
     }
-    const hasSubscription = await hasActiveSubscription(userId, env);
-    if (!hasSubscription && !allowsAuthenticatedExtraction(env)) {
+    const extractionAccess = await evaluateExtractionAccess(userId, env);
+    if (!extractionAccess.allowed) {
       return respond(errorResponse(
-        'Active subscription required',
-        'SUBSCRIPTION_REQUIRED',
-        402,
-        'Please subscribe to use this feature'
+        extractionAccess.error,
+        extractionAccess.code,
+        extractionAccess.status,
+        extractionAccess.details
       ));
     }
 

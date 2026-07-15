@@ -127,6 +127,10 @@
   supports `~/` private-key paths, and permits an explicit `ASC_CONFIG_PATH` override. Its status
   output omits local private-key paths and individual TestFlight tester data, reducing accidental
   credential-location and personal-data exposure in release logs.
+- Subscription and explicit authenticated-beta extraction access are now a tested backend policy
+  module rather than route-controller logic. The HTTP routes retain the same client-facing denied
+  response and remain covered by request-level tests. The complete backend suite passed: 42 tests,
+  0 failures; TypeScript typecheck passed.
 
 ## Submission Blockers
 

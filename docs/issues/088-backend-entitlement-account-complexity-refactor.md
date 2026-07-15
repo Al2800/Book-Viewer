@@ -17,7 +17,7 @@ These files own auth/session handling, entitlement checks, product metadata, App
 
 - [x] Characterization tests pin the current subscription entitlement, beta/subscription extraction gate, usage, and account deletion behaviour before production edits.
 - [x] Account deletion data removal is concentrated behind a small backend module interface.
-- [ ] Entitlement/gate policy is separated from HTTP route orchestration where practical.
+- [x] Entitlement/gate policy is separated from HTTP route orchestration where practical.
 - [x] `backend/src/index.ts` moves below 500 LOC without creating pass-through modules.
 - [x] `backend/src/subscription.ts` is reduced materially, or a documented follow-up explains why remaining size is cohesive.
 - [x] Backend unit tests and typecheck pass after each slice.
@@ -49,9 +49,20 @@ These files own auth/session handling, entitlement checks, product metadata, App
 - Backend tests passed: 22 tests, 0 failures.
 - Backend typecheck passed.
 
+2026-07-15 extraction-access policy follow-up:
+
+- Extracted the subscription-or-explicit-authenticated-beta extraction decision into
+  `backend/src/extraction-access-policy.ts`. The module owns the complete allow/deny contract;
+  `index.ts` only translates a denied decision into its existing HTTP response.
+- Added direct policy tests for active subscription access, explicitly enabled authenticated beta
+  access, and the unchanged subscription-required response. Existing request-level extraction
+  tests continue to prove the Worker applies the policy before provider forwarding.
+- Reduced `backend/src/index.ts` from 501 to 497 LOC without introducing a pass-through module.
+  The full backend suite passed: 42 tests, 0 failures. TypeScript typecheck passed.
+
 ## Residual Risk
 
-- `backend/src/subscription.ts` remains large because App Store verification, notification reconciliation, ownership, and client status mapping are still colocated. The next backend slice should separate entitlement/gate policy or App Store API verification if backend feature work resumes.
+- `backend/src/subscription.ts` remains large because App Store verification, notification reconciliation, ownership, and client status mapping are still colocated. Extraction access policy is now separate; a future backend slice can isolate App Store API verification if feature work resumes.
 - The previous stateless-session deletion risk is resolved by issue `099`: every JWT now carries
   a server-side session version, and account deletion increments that version before data cleanup.
   Concurrent deletion/request testing and deployed-Worker verification remain release gates in
