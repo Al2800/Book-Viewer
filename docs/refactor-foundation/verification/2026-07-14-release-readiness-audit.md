@@ -39,6 +39,13 @@
   image limit, by adapting compression and dimensions only when the normal 2048 px image would
   exceed the budget. Focused iOS tests cover both a high-entropy image and the actual outbound
   request payload.
+- The explicitly consented remote fallback now sends a Vision text-bounded content crop when at
+  least three recognized lines safely remove at least 10 percent of outer camera area while
+  retaining generous space for margin marks. Sparse, broad, or failed crops retain the
+  document-prepared image. Geometry, crop-rendering, and outbound-request tests passed, and the
+  complete on-device extractor suite passed: 29 tests,
+  0 failures, and 1 documented local-photo fixture skip. Result bundle:
+  `/tmp/BookQuotes-on-device-remote-crop-final-2026-07-15.xcresult`.
 - Removed the unreferenced `BatchProcessingService` and unused `QuoteSaveService.saveFromSession`
   placeholder. They represented an obsolete batch path that either always failed authentication or
   returned an empty save result; the live flow remains `BatchCaptureFlowView` to

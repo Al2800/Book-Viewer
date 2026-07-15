@@ -446,6 +446,51 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         ])
     }
 
+    func testRemoteQuoteImageCropGeometryKeepsTextAndMarginSpaceWhileReducingUpload() throws {
+        let imageSize = CGSize(width: 1_200, height: 1_800)
+        let cropRect = try XCTUnwrap(RemoteQuoteImageCropGeometry.contentCropRect(
+            imageSize: imageSize,
+            textLines: [
+                RecognizedTextLine(text: "First line of the marked passage", confidence: 0.94, boundingBox: CGRect(x: 350, y: 400, width: 500, height: 80)),
+                RecognizedTextLine(text: "Second line of the marked passage", confidence: 0.92, boundingBox: CGRect(x: 350, y: 520, width: 500, height: 80)),
+                RecognizedTextLine(text: "Third line of the marked passage", confidence: 0.91, boundingBox: CGRect(x: 350, y: 640, width: 500, height: 80))
+            ]
+        ))
+
+        let marginMark = CGRect(x: 230, y: 350, width: 12, height: 460)
+        XCTAssertTrue(cropRect.contains(marginMark))
+        XCTAssertLessThan(cropRect.width * cropRect.height, imageSize.width * imageSize.height * 0.9)
+    }
+
+    func testRemoteQuoteImageCropGeometryKeepsThePreparedImageWhenTextFillsThePage() {
+        let cropRect = RemoteQuoteImageCropGeometry.contentCropRect(
+            imageSize: CGSize(width: 1_200, height: 1_800),
+            textLines: [
+                RecognizedTextLine(text: "Top text", confidence: 0.94, boundingBox: CGRect(x: 80, y: 100, width: 1_040, height: 80)),
+                RecognizedTextLine(text: "Middle text", confidence: 0.93, boundingBox: CGRect(x: 80, y: 850, width: 1_040, height: 80)),
+                RecognizedTextLine(text: "Bottom text", confidence: 0.92, boundingBox: CGRect(x: 80, y: 1_600, width: 1_040, height: 80))
+            ]
+        )
+
+        XCTAssertNil(cropRect)
+    }
+
+    func testVisionRemoteQuoteImageCropperAppliesTheSafeContentCrop() async {
+        let source = makeImage(size: CGSize(width: 1_200, height: 1_800), color: .white)
+        let cropper = VisionRemoteQuoteImageCropper(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(text: "First line of the marked passage", confidence: 0.94, boundingBox: CGRect(x: 350, y: 400, width: 500, height: 80)),
+                RecognizedTextLine(text: "Second line of the marked passage", confidence: 0.92, boundingBox: CGRect(x: 350, y: 520, width: 500, height: 80)),
+                RecognizedTextLine(text: "Third line of the marked passage", confidence: 0.91, boundingBox: CGRect(x: 350, y: 640, width: 500, height: 80))
+            ])
+        )
+
+        let cropped = await cropper.crop(source)
+
+        XCTAssertEqual(cropped.size.width, 980, accuracy: 1)
+        XCTAssertEqual(cropped.size.height, 680, accuracy: 1)
+    }
+
     @MainActor
     func testRemoteModelQuoteExtractorCallsModelAssistedProxyRoute() async throws {
         let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
@@ -495,6 +540,52 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         let base64 = try XCTUnwrap(inlineData["data"] as? String)
         let imageData = try XCTUnwrap(Data(base64Encoded: base64))
         XCTAssertLessThanOrEqual(imageData.count, ImagePreprocessor.maximumRemoteQuoteImageBytes)
+    }
+
+    @MainActor
+    func testRemoteModelQuoteExtractorUploadsThePreparedContentCrop() async throws {
+        let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
+        server.route(method: "POST", path: "/api/extract-quotes-hf") { _ in
+            let quoteJSONText =
+                #"{"quotes":[{"text":"A model selected marked quote.","markingType":"underline","confidence":0.91}]}"#
+            let responseBody =
+                #"{"candidates":[{"content":{"parts":[{"text":\#(String(reflecting: quoteJSONText))}]}}]}"#
+
+            return .json(200, Data(responseBody.utf8))
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let keychain = KeychainService()
+        keychain.setSessionToken("test-session-token")
+        let authService = AuthService(keychainService: keychain)
+        defer { Task { await authService.signOut() } }
+
+        let expectedCrop = makeImage(size: CGSize(width: 240, height: 360), color: .systemGreen)
+        let extractor = RemoteModelQuoteExtractor(
+            authService: authService,
+            baseURL: server.baseURL,
+            consentStore: makeConsentStore(granted: true),
+            imageCropper: StubRemoteQuoteImageCropper(image: expectedCrop)
+        )
+
+        _ = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        let request = try XCTUnwrap(server.allRequests().first)
+        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: request.body) as? [String: Any])
+        let contents = try XCTUnwrap(body["contents"] as? [[String: Any]])
+        let parts = try XCTUnwrap(contents.first?["parts"] as? [[String: Any]])
+        let inlineData = try XCTUnwrap(parts.compactMap { $0["inlineData"] as? [String: Any] }.first)
+        let base64 = try XCTUnwrap(inlineData["data"] as? String)
+        let imageData = try XCTUnwrap(Data(base64Encoded: base64))
+        let uploadedImage = try XCTUnwrap(UIImage(data: imageData))
+
+        XCTAssertEqual(uploadedImage.size.width, expectedCrop.size.width, accuracy: 1)
+        XCTAssertEqual(uploadedImage.size.height, expectedCrop.size.height, accuracy: 1)
     }
 
     @MainActor
@@ -726,6 +817,16 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         }
         return AIProcessingConsentStore(defaults: defaults)
     }
+
+    private func makeImage(size: CGSize, color: UIColor) -> UIImage {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        return renderer.image { context in
+            color.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+        }
+    }
 }
 
 private struct StubPageTextRecognizer: PageTextRecognizing {
@@ -741,6 +842,14 @@ private struct StubPageMarkDetector: PageMarkDetecting {
 
     func detectMarks(in image: UIImage) throws -> [DetectedPageMark] {
         marks
+    }
+}
+
+private struct StubRemoteQuoteImageCropper: RemoteQuoteImageCropping {
+    let image: UIImage
+
+    func crop(_ image: UIImage) async -> UIImage {
+        self.image
     }
 }
 

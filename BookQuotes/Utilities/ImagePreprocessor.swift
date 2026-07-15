@@ -166,6 +166,30 @@ enum ImagePreprocessor {
         return UIImage(cgImage: cgImage, scale: image.scale, orientation: .up)
     }
 
+    /// Crops an image using pixel coordinates from a normalized Vision request.
+    static func crop(_ image: UIImage, toPixelRect pixelRect: CGRect) throws -> UIImage {
+        guard let oriented = makeOrientedCIImage(from: image) else {
+            throw PreprocessorError.invalidImage
+        }
+
+        let extent = oriented.extent.integral
+        let cropRect = pixelRect
+            .offsetBy(dx: extent.minX, dy: extent.minY)
+            .integral
+            .intersection(extent)
+        guard !cropRect.isNull, !cropRect.isEmpty else {
+            throw PreprocessorError.invalidImage
+        }
+
+        let cropped = oriented.cropped(to: cropRect)
+        let context = CIContext(options: [.useSoftwareRenderer: false])
+        guard let cgImage = context.createCGImage(cropped, from: cropped.extent.integral) else {
+            throw PreprocessorError.processingFailed("Failed to render cropped image")
+        }
+
+        return UIImage(cgImage: cgImage, scale: image.scale, orientation: .up)
+    }
+
     /// Best-effort document auto-crop using Vision rectangle detection.
     /// Falls back to the original image if no rectangle is detected.
     static func autoCropDocument(_ image: UIImage) async -> UIImage {

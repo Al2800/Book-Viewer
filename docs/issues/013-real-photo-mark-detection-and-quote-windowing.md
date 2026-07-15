@@ -197,7 +197,7 @@ The route should return the same normalized quote result shape consumed by `Extr
 Hosted-model acceptance criteria:
 
 - [x] The model path is behind a feature flag or explicit fallback setting.
-- [ ] The model receives the smallest useful image crop, not automatically every full page.
+- [x] The model receives the smallest useful image crop, not automatically every full page.
 - [x] The model returns strict JSON matching the existing review data shape: quote text, mark type, margin note, confidence, and reason.
 - [x] The app prefers on-device OCR and invokes hosted assist only after an empty or failed local result.
 - [ ] A/B fixture results compare on-device-only vs hosted-assist for the same real page photos.
@@ -257,6 +257,24 @@ Hosted-model acceptance criteria:
 - The page passed to that encoder remains the best-effort document-cropped image prepared by the
   capture flow. This is a transport safeguard, not evidence that the current Vision crop is the
   smallest useful crop for every real page, so that acceptance criterion remains open.
+
+2026-07-15 content-crop follow-up:
+
+- Before the explicitly consented remote fallback uploads an image, it now uses Vision text bounds
+  to derive a content crop only when at least three text lines support it and the crop removes at
+  least 10 percent of the image area. The crop adds 20 percent horizontal and 10 percent vertical
+  padding, preserving room for margin lines, brackets, and short side marks.
+- If text bounds are sparse, broad, or cropping/rendering fails, the extractor retains the
+  document-prepared image rather than risking a clipped passage. The remote path remains
+  unavailable until on-device extraction has no candidate or errors, consent is current, and an
+  authenticated session exists.
+- Geometry tests prove that a smaller crop retains a tall side mark and that near-full-page text
+  keeps the prepared image. Crop-rendering and request-level tests prove the outbound JPEG is the
+  prepared crop. The full on-device extractor suite passed: 29 tests passed, 0 failures, and 1
+  documented local-photo fixture skip on iPhone 17 / iOS 26.5. Result bundle:
+  `/tmp/BookQuotes-on-device-remote-crop-final-2026-07-15.xcresult`.
+- This closes the image-crop minimization criterion. Real-photo fixtures, real-page model-quality
+  comparison, small-mark recognition, and physical TestFlight evidence remain open.
 - A high-entropy image regression forces adaptive recompression below a constrained budget, and
   the remote-extractor integration test decodes its outgoing request and asserts the submitted
   image never exceeds the production 4 MB budget.
