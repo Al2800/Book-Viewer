@@ -102,6 +102,11 @@
   passage, and confidence-scoring fixes: 622 tests passed, 0 failed, and 1 documented local-only
   real-book-photo fixture skip in 197.354 seconds on iPhone 17 / iOS 26.5. Result bundle:
   `/tmp/BookQuotes-app-unit-2026-07-15-current.xcresult`.
+- The unsigned Release build completed successfully after the current extraction changes. The
+  two Sign In with Apple error handlers now share a graceful default for newer authorization
+  states, eliminating the prior non-exhaustive-switch warnings; the onboarding sign-in UI check
+  passed (1 test, 0 failures, 0 skips). Result bundle:
+  `/tmp/BookQuotes-sign-in-ui-2026-07-15.xcresult`.
 - Backend tests and typecheck passed: 39 tests, 0 failures.
 - Production Worker deployment tooling is now on Wrangler 4 / Worker types 5 / Vitest 4, with
   Node 22.12+ compatibility verified. The full backend suite passed and
