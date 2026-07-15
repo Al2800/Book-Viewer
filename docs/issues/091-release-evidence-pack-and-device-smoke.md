@@ -65,3 +65,9 @@ The evidence must cover both local verification and real-device TestFlight behav
 - The current regular-width extraction-review regression passed on iPad Air 11-inch (M4), iOS
   26.5: 1 test, 0 failures, and 0 skips. Result bundle:
   `/tmp/BookQuotes-extraction-review-ipad-current-layout-2026-07-15.xcresult`.
+- The signed App Store distribution preflight passed after Xcode refreshed the automatic
+  provisioning profile with `-allowProvisioningUpdates`. The local IPA has the distribution
+  signature, Sign in with Apple entitlement, and `get-task-allow = false`. Its automatically
+  managed build value is `39`; it was exported locally, not uploaded. The retained command,
+  export profile, and remaining external gates are in
+  `docs/refactor-foundation/verification/2026-07-15-signed-release-preflight.md`.

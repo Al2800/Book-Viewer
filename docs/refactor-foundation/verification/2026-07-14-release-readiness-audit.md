@@ -123,6 +123,12 @@
   states, eliminating the prior non-exhaustive-switch warnings; the onboarding sign-in UI check
   passed (1 test, 0 failures, 0 skips). Result bundle:
   `/tmp/BookQuotes-sign-in-ui-2026-07-15.xcresult`.
+- A signed App Store distribution export preflight completed on 2026-07-15 after Xcode refreshed
+  the Sign in with Apple provisioning profile. The resulting local IPA has a valid distribution
+  signature, the expected Sign in with Apple entitlement, and `get-task-allow = false`. This
+  clears the local archive/export configuration check; it does not upload a build or replace the
+  production, TestFlight, or App Store Connect gates. Detailed evidence:
+  `docs/refactor-foundation/verification/2026-07-15-signed-release-preflight.md`.
 - The app supports iOS 17, so the Empty State and Error views now use the iOS 18 symbol bounce
   effect only when available and retain their normal icon transition on earlier supported OS
   versions. The unsigned Release build passed with both prior availability warnings eliminated.
@@ -169,6 +175,9 @@
    These runs close the remaining evidence for issues `007`, `086`, `096`, `097`, `099`, and `101`.
 4. Enter and review the App Privacy questionnaire and App Review Notes in App Store Connect using
    `docs/APP_STORE_CONNECT.md`. See issues `093`, `094`, and `086`.
+   The local App Store Connect API configuration is currently absent, so its processing and build
+   status cannot be verified from this machine until it is restored at
+   `~/.appstoreconnect/config.json` or supplied through `ASC_CONFIG_PATH`.
 5. Complete the remaining physical-device Accessibility/Dynamic Type/VoiceOver audit in issue
    `105`: VoiceOver order and source-image activation, Reduce Motion, rotation, and iPad
    split-view behavior.

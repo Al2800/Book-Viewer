@@ -232,7 +232,33 @@ docs/refactor-foundation/verification/2026-06-06-testflight-build-22.md
 When uploading a future build, use the same release pattern:
 
 1. Run focused unit and simulator acceptance checks.
-2. Archive with `xcodebuild archive`.
-3. Upload with `xcodebuild -exportArchive`.
-4. Use `scripts/appstoreconnect_status.js` to verify processing state, encryption status, and tester group visibility.
-5. Record results in `docs/refactor-foundation/verification/`.
+2. Archive with `xcodebuild archive -allowProvisioningUpdates`.
+3. Run a local distribution-export preflight with the tracked
+   `scripts/ExportOptions-AppStore.plist`. It deliberately uses `destination = export`, so it
+   verifies distribution signing without uploading anything.
+4. Once all release gates are closed, copy that plist under ignored `artifacts/release/`, change
+   its `destination` value to `upload`, then use `xcodebuild -exportArchive` for the deliberate
+   TestFlight upload.
+5. Use `scripts/appstoreconnect_status.js` to verify processing state, encryption status, and tester group visibility.
+6. Record results in `docs/refactor-foundation/verification/`.
+
+The local distribution preflight is:
+
+```sh
+mkdir -p artifacts/release
+
+xcodebuild archive -project BookQuotes.xcodeproj -scheme BookQuotes \
+  -configuration Release -destination 'generic/platform=iOS' \
+  -archivePath artifacts/release/BookQuotes.xcarchive \
+  -allowProvisioningUpdates
+
+xcodebuild -exportArchive \
+  -archivePath artifacts/release/BookQuotes.xcarchive \
+  -exportPath artifacts/release/BookQuotes-app-store-export \
+  -exportOptionsPlist scripts/ExportOptions-AppStore.plist \
+  -allowProvisioningUpdates
+```
+
+This produces an IPA locally and does not contact App Store Connect for an upload. Do not change
+the tracked plist to `destination = upload`; make that one-time change in an ignored copy only
+after the TestFlight release decision.
