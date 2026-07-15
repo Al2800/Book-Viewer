@@ -117,6 +117,28 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(marginMarks[0].boundingBox.height, 120)
     }
 
+    func testDoubleUnderlineRetainsItsMarkingFamily() throws {
+        let image = OnDeviceQuoteExtractorTestImage.doubleUnderlinedPage()
+        let marks = try PageMarkDetector().detectMarks(in: image)
+        let doubleUnderline = try XCTUnwrap(marks.first { $0.type == .doubleUnderline })
+
+        XCTAssertFalse(marks.contains { $0.type == .underline })
+
+        let candidates = QuoteMarkTextSelector().selectCandidates(
+            textLines: [
+                RecognizedTextLine(
+                    text: "The obstacle is the way.",
+                    confidence: 0.94,
+                    boundingBox: CGRect(x: 420, y: 1860, width: 2700, height: 240)
+                )
+            ],
+            marks: [doubleUnderline]
+        )
+
+        XCTAssertEqual(candidates.count, 1)
+        XCTAssertEqual(candidates.first?.markingType, .doubleUnderline)
+    }
+
     func testBracketHookSelectsTheAdjacentParagraphWithoutUnderlineDuplicates() throws {
         let image = OnDeviceQuoteExtractorTestImage.graphiteBracketPage()
         let marks = try PageMarkDetector().detectMarks(in: image)
@@ -607,6 +629,10 @@ private enum OnDeviceQuoteExtractorTestImage {
         )
     }
 
+    static func doubleUnderlinedPage() -> UIImage {
+        page(text: "The obstacle is the way.", underlineColor: .systemRed, underlineCount: 2)
+    }
+
     static func plainTextPage() -> UIImage {
         page(text: "The pleasure of finding things out.", underlineColor: nil)
     }
@@ -681,7 +707,11 @@ private enum OnDeviceQuoteExtractorTestImage {
         return FileManager.default.fileExists(atPath: fixture.path) ? fixture.path : nil
     }
 
-    private static func page(text: String, underlineColor: UIColor?) -> UIImage {
+    private static func page(
+        text: String,
+        underlineColor: UIColor?,
+        underlineCount: Int = 1
+    ) -> UIImage {
         let size = CGSize(width: 1200, height: 1600)
         let renderer = UIGraphicsImageRenderer(size: size)
 
@@ -698,13 +728,15 @@ private enum OnDeviceQuoteExtractorTestImage {
 
             guard let underlineColor else { return }
 
-            let underlineY = textRect.maxY + 8
-            let path = UIBezierPath()
-            path.move(to: CGPoint(x: textRect.minX, y: underlineY))
-            path.addLine(to: CGPoint(x: textRect.minX + 620, y: underlineY))
-            underlineColor.setStroke()
-            path.lineWidth = 7
-            path.stroke()
+            for index in 0..<underlineCount {
+                let underlineY = textRect.maxY + 8 + CGFloat(index * 12)
+                let path = UIBezierPath()
+                path.move(to: CGPoint(x: textRect.minX, y: underlineY))
+                path.addLine(to: CGPoint(x: textRect.minX + 620, y: underlineY))
+                underlineColor.setStroke()
+                path.lineWidth = 7
+                path.stroke()
+            }
         }
     }
 }

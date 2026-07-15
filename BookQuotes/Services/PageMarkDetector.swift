@@ -24,7 +24,8 @@ struct PageMarkDetector: PageMarkDetecting {
             .filter { !isBracketHook($0.rect, for: bracketMarks) }
             .compactMap(neutralUnderlineMark)
 
-        return coloredRegions + neutralUnderlineRegions + verticalMarks
+        let horizontalMarks = classifyDoubleUnderlines(coloredRegions + neutralUnderlineRegions)
+        return horizontalMarks + verticalMarks
     }
 
     private func coloredMark(_ region: MarkRegion) -> DetectedPageMark? {
@@ -152,6 +153,59 @@ struct PageMarkDetector: PageMarkDetecting {
                 || abs(rect.midY - bracket.boundingBox.maxY) <= 24
             return isHookLength && touchesVerticalStroke && isNearEndpoint
         }
+    }
+
+    private func classifyDoubleUnderlines(_ marks: [DetectedPageMark]) -> [DetectedPageMark] {
+        let ordered = marks.enumerated().sorted { lhs, rhs in
+            lhs.element.boundingBox.minY == rhs.element.boundingBox.minY
+                ? lhs.element.boundingBox.minX < rhs.element.boundingBox.minX
+                : lhs.element.boundingBox.minY < rhs.element.boundingBox.minY
+        }
+        var matchedIndices = Set<Int>()
+        var classified: [DetectedPageMark] = []
+
+        for (position, entry) in ordered.enumerated() {
+            let index = entry.offset
+            let mark = entry.element
+            guard !matchedIndices.contains(index) else { continue }
+            guard mark.type == .underline else {
+                classified.append(mark)
+                continue
+            }
+
+            if let pair = ordered.dropFirst(position + 1).first(where: { candidate in
+                !matchedIndices.contains(candidate.offset)
+                    && candidate.element.type == .underline
+                    && isDoubleUnderlinePair(mark, candidate.element)
+            }) {
+                matchedIndices.insert(index)
+                matchedIndices.insert(pair.offset)
+                classified.append(
+                    DetectedPageMark(
+                        type: .doubleUnderline,
+                        boundingBox: mark.boundingBox.union(pair.element.boundingBox),
+                        confidence: (mark.confidence + pair.element.confidence) / 2
+                    )
+                )
+            } else {
+                classified.append(mark)
+            }
+        }
+
+        return classified
+    }
+
+    private func isDoubleUnderlinePair(_ first: DetectedPageMark, _ second: DetectedPageMark) -> Bool {
+        let verticalGap = second.boundingBox.minY - first.boundingBox.maxY
+        guard verticalGap >= 0 else { return false }
+        guard verticalGap <= max(48, min(first.boundingBox.height, second.boundingBox.height) * 2.5) else {
+            return false
+        }
+
+        let overlap = min(first.boundingBox.maxX, second.boundingBox.maxX)
+            - max(first.boundingBox.minX, second.boundingBox.minX)
+        guard overlap > 0 else { return false }
+        return overlap / max(min(first.boundingBox.width, second.boundingBox.width), 1) >= 0.75
     }
 }
 

@@ -65,7 +65,9 @@ struct QuoteMarkTextSelector: Sendable {
             candidate(
                 from: group.map(\.line),
                 marks: group.map(\.mark),
-                markingType: .underline
+                markingType: group.contains(where: { $0.mark.type == .doubleUnderline })
+                    ? .doubleUnderline
+                    : .underline
             )
         }
     }

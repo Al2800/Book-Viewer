@@ -60,6 +60,11 @@
   on-device extractor suite passed after the change: 20 tests passed, 0 failed, 1 documented
   local-only fixture skip on iPhone 17 / iOS 26.5. Result bundle:
   `/tmp/BookQuotes-bracket-extraction-2026-07-15.xcresult`.
+- Two close, aligned underline strokes now merge into a single `doubleUnderline` marking before
+  quote selection, preserving the reader's marking family rather than flattening it to an
+  underline. The full mark-family suite passed on iPhone 17 / iOS 26.5: 21 tests passed,
+  0 failed, and 1 documented local-only fixture skip. Result bundle:
+  `/tmp/BookQuotes-mark-families-2026-07-15.xcresult`.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,

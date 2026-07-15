@@ -182,6 +182,16 @@ None - can start immediately.
 - The quote-capture UI regression now asserts that on-device review is not blocked by the remote
   consent sheet.
 
+2026-07-15 double-underline follow-up:
+
+- Two close, aligned underline strokes now merge into one deterministic `doubleUnderline` mark
+  before quote selection. The resulting candidate retains that marking family for review and
+  custom-definition matching rather than being silently treated as a single underline.
+- The complete mark-family suite passed on iPhone 17 / iOS 26.5: 21 tests passed, 0 failures,
+  and 1 documented local-only fixture skip. Result bundle:
+  `/tmp/BookQuotes-mark-families-2026-07-15.xcresult`. Real photographed double underlines and
+  handwritten margin-note transcription remain separate validation work.
+
 ## Verification Results
 
 Focused on-device extractor tracer:
