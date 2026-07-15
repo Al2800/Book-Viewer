@@ -91,7 +91,7 @@ function makeEnv(overrides: Partial<Env> = {}): Env {
   };
 }
 
-function makeExtractionRequest(path = '/api/extract-quotes'): Request {
+function makeExtractionRequest(path = '/api/extract-quotes-hf'): Request {
   return new Request(`https://api.bookquotes.uk${path}`, {
     method: 'POST',
     headers: {
@@ -122,70 +122,53 @@ describe('extraction access policy', () => {
     vi.unstubAllGlobals();
   });
 
-  it('allows authenticated beta extraction without an active subscription when explicitly enabled', async () => {
+  it('retires the legacy Gemini quote route before parsing or forwarding a page image', async () => {
     const { default: worker } = await import('./index');
-    const geminiFetch = vi.fn(async () => new Response(
-      JSON.stringify({
-        candidates: [
-          {
-            content: {
-              parts: [
-                {
-                  text: JSON.stringify({
-                    quotes: [
-                      {
-                        text: 'The truth is rarely pure and never simple.',
-                        pageNumber: 12,
-                        confidence: 0.92,
-                      },
-                    ],
-                  }),
-                },
-              ],
-            },
-            finishReason: 'STOP',
-          },
-        ],
-      }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    ));
-
-    vi.stubGlobal('fetch', geminiFetch);
+    const providerFetch = vi.fn();
+    vi.stubGlobal('fetch', providerFetch);
 
     const response = await worker.fetch(
-      makeExtractionRequest(),
+      makeExtractionRequest('/api/extract-quotes'),
       makeEnv({ ALLOW_AUTHENTICATED_EXTRACTION: 'true' })
     );
+    const body = await response.json() as { code: string };
 
-    expect(response.status).toBe(200);
-    expect(geminiFetch).toHaveBeenCalledOnce();
+    expect(response.status).toBe(410);
+    expect(body.code).toBe('QUOTE_EXTRACTION_ROUTE_RETIRED');
+    expect(providerFetch).not.toHaveBeenCalled();
   });
 
   it('keeps subscription enforcement when authenticated extraction is not explicitly enabled', async () => {
     const { default: worker } = await import('./index');
-    const geminiFetch = vi.fn();
-    vi.stubGlobal('fetch', geminiFetch);
+    const providerFetch = vi.fn();
+    vi.stubGlobal('fetch', providerFetch);
 
     const response = await worker.fetch(
       makeExtractionRequest(),
-      makeEnv({ ALLOW_AUTHENTICATED_EXTRACTION: undefined })
+      makeEnv({
+        ALLOW_AUTHENTICATED_EXTRACTION: undefined,
+        HF_API_TOKEN: 'hf-test-token',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+      })
     );
     const body = await response.json() as { code: string };
 
     expect(response.status).toBe(402);
     expect(body.code).toBe('SUBSCRIPTION_REQUIRED');
-    expect(geminiFetch).not.toHaveBeenCalled();
+    expect(providerFetch).not.toHaveBeenCalled();
   });
 
-  it('rejects an exhausted reservation before forwarding an image to Gemini', async () => {
+  it('rejects an exhausted reservation before forwarding an image to Hugging Face', async () => {
     const { default: worker } = await import('./index');
-    const geminiFetch = vi.fn();
-    vi.stubGlobal('fetch', geminiFetch);
+    const providerFetch = vi.fn();
+    vi.stubGlobal('fetch', providerFetch);
 
     const response = await worker.fetch(
       makeExtractionRequest(),
       makeEnv({
         ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+        HF_API_TOKEN: 'hf-test-token',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
         EXTRACTION_LIMITER: new RejectingRateLimiterNamespace() as unknown as DurableObjectNamespace,
       })
     );
@@ -193,7 +176,7 @@ describe('extraction access policy', () => {
 
     expect(response.status).toBe(429);
     expect(body.code).toBe('RATE_LIMIT');
-    expect(geminiFetch).not.toHaveBeenCalled();
+    expect(providerFetch).not.toHaveBeenCalled();
   });
 
   it('returns a clear error when Hugging Face extraction is not configured', async () => {

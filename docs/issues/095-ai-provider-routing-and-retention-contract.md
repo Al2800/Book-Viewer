@@ -33,3 +33,16 @@ outside BookQuotes' control, and remote processing remains an explicit, revocabl
 This remains open until production deployment is confirmed with a supported `hf-inference` model
 route and the applicable provider terms (including Google Gemini's retention configuration) are
 recorded by the account owner.
+
+2026-07-15 route retirement follow-up:
+
+- Retired `POST /api/extract-quotes`, the legacy Gemini page-quote endpoint. It now returns
+  `410 QUOTE_EXTRACTION_ROUTE_RETIRED` before request parsing, authentication, rate-limit
+  reservation, or provider forwarding.
+- `POST /api/extract-quotes-hf` is the sole Worker route for quote-page images and continues to
+  reject unapproved Hugging Face provider suffixes before reading or forwarding an image.
+- Migrated the account-deletion extraction race regression to the approved Hugging Face route so
+  that revocation coverage matches the production quote path.
+- Full backend verification passed: 36 tests, 0 failures; `npm run typecheck` passed.
+- Deployment configuration review and recorded Hugging Face/Gemini retention evidence remain
+  required before submission.

@@ -85,11 +85,13 @@ function makeEnv(limiter: RecordingRateLimiterNamespace): Env {
     APPLE_IAP_PRIVATE_KEY: 'test-private-key',
     ENVIRONMENT: 'test',
     ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+    HF_API_TOKEN: 'hf-test-token',
+    HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
   };
 }
 
 function extractionRequest(): Request {
-  return new Request('https://api.bookquotes.uk/api/extract-quotes', {
+  return new Request('https://api.bookquotes.uk/api/extract-quotes-hf', {
     method: 'POST',
     headers: {
       Authorization: 'Bearer session-token',

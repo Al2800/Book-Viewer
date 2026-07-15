@@ -1,16 +1,19 @@
 # BookQuotes Backend Proxy
 
-Cloudflare Workers serverless proxy for BookQuotes iOS app. Handles authentication, subscription validation, rate limiting, and proxies requests to the Gemini API.
+Cloudflare Workers serverless proxy for BookQuotes iOS app. Handles authentication,
+subscription validation, atomic rate limiting, and routes cover metadata to Gemini and quote-page
+extraction to the approved Hugging Face provider.
 
 ## Architecture
 
 ```
-iOS App → Cloudflare Workers Proxy → Gemini API
-              ↓
-         Validates:
-         - Apple Sign-In JWT
-         - App Store-verified subscription status
-         - Atomic rate limits (Durable Objects)
+iOS App → Cloudflare Workers Proxy → Gemini (cover metadata)
+                                       → Hugging Face (quote pages)
+                    ↓
+               Validates:
+               - Apple Sign-In JWT
+               - App Store-verified subscription status
+               - Atomic rate limits (Durable Objects)
 ```
 
 ## Setup
@@ -134,14 +137,18 @@ Extract book metadata from cover image.
 
 **Body:** Gemini API request format with image data.
 
-#### `POST /api/extract-quotes`
-Extract quotes from book page image.
+#### `POST /api/extract-quotes-hf`
+Extract quotes from a book page through the approved Hugging Face provider route.
 
 **Headers:**
 - `Authorization: Bearer <session_token>`
 - `Idempotency-Key: <new UUID for one extraction attempt>`
 
-**Body:** Gemini API request format with image data.
+**Body:** BookQuotes quote-extraction request format with prompt and inline image data.
+
+`POST /api/extract-quotes` is retired and returns `410 QUOTE_EXTRACTION_ROUTE_RETIRED`
+without parsing or forwarding the image. This prevents legacy page-quote traffic from reaching
+Gemini outside the approved provider contract.
 
 ### Usage
 

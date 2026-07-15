@@ -29,6 +29,9 @@
 - Custom marking identities now survive on-device or model-assisted extraction, cached review,
   queued processing, and quote saving. The focused regression gate passed on 2026-07-15 in
   49.802 seconds, and the unsigned Release build completed successfully after the change.
+- The legacy Gemini quote-page endpoint now returns `410` before parsing or forwarding an image;
+  quote pages can only use the approved Hugging Face route, which rejects dynamic provider
+  suffixes. The backend suite passed: 36 tests, 0 failures; TypeScript typecheck passed.
 - Quote editor interaction is covered by a native UIKit text editor that retries initial focus
   through sheet presentation and does not overwrite an active edit with stale SwiftUI state.
   The capture, extraction-review, and quote-save regression set passed on 2026-07-15: 20 tests,
