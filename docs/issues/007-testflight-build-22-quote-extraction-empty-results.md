@@ -1,6 +1,6 @@
 # 007 - TestFlight Build 22 Quote Extraction Empty Results
 
-Status: in_progress
+Status: closed
 Area: Quote capture
 Priority: high
 
@@ -50,7 +50,30 @@ Build 22 on TestFlight signs in successfully but returns no quotes from pages th
 
 ## Residual Risk
 
-- If the same TestFlight symptom persists with real images, the next diagnostic should compare proxy/model responses against the failing images because this issue now prevents valid empty arrays from masquerading as successful extraction.
+- If the same TestFlight symptom persists with real images, compare the local/model paths against the
+  failing images under issue `013`. This issue prevents empty arrays or extraction failures from
+  masquerading as a successful quote-review result; it is not the remaining real-photo quality
+  investigation.
+
+## Closure Verification
+
+2026-07-15:
+
+- The current fallback prompt still requires best-effort marked text at lower confidence when
+  boundaries are uncertain and reserves an empty array for pages with no marked/readable text.
+  `QuoteExtractionPromptBuilderTests` explicitly characterizes that contract.
+- `PageCapture.completeExtraction(with:)` rejects an empty result, while
+  `ExtractionReviewProcessingSummary` presents failed captures as `Extraction Failed` and
+  completed empty captures as `No Quotes Found`. The two states are therefore no longer collapsed.
+- The quote-capture default is now on-device OCR. The remote Hugging Face path is an explicitly
+  consented fallback only after local extraction fails or finds no candidate, preserving the
+  original failure distinction without depending on the retired Gemini quote route.
+- Current focused verification passed on iPhone 17 / iOS 26.5: 30 tests, 0 failures. It includes
+  `PageCaptureTests`, `QuoteExtractionPromptBuilderTests`, extraction-review processing and state
+  tests, plus the `testExtractionReview_DisplaysExtractedQuotes` and `testQuoteEditor_CanEditText`
+  UI routes.
+- The original empty-result incident is resolved. Real photographed-page quality, model-assisted
+  A/B evidence, and TestFlight validation remain tracked by issue `013`.
 
 ## Reopened
 
