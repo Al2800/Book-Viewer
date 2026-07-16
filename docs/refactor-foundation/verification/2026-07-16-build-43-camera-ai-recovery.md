@@ -43,3 +43,14 @@ After Build 43 finishes TestFlight processing, verify on the connected iPhone th
    `On-device` result.
 5. `Retry AI Extraction` succeeds after connectivity returns, and `Use On-Device Instead` only
    runs when deliberately selected.
+
+## TestFlight Delivery
+
+- Source commit: `ff352fd` on `main`.
+- Signed archive: version `1.0`, build `43`, arm64.
+- Local App Store distribution export: passed.
+- TestFlight upload: succeeded on 2026-07-16.
+- App Store Connect build ID: `54d631bb-819e-4609-b68b-a29a830ac713`.
+- Processing state: `VALID`.
+- Encryption declaration: `usesNonExemptEncryption: false`.
+- Internal group: `Test v1`, with access to all builds and one tester.
