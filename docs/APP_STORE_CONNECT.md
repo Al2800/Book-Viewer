@@ -108,6 +108,19 @@ Build 40 remains release-stopped and must not be selected for App Review. Build 
 replacement TestFlight candidate for subscription, remote-AI, ISBN, network-loss, queue, and
 account-deletion acceptance.
 
+### Build 41 Subscription Availability Blocker
+
+On 2026-07-16, StoreKit returned an empty product list in TestFlight. API and archive checks
+confirmed the requested product IDs, UK/US availability, pricing, bundle ID, signing, and
+In-App Purchase capability. The App Store Connect Business page showed the actual blocker:
+
+- Paid Apps Agreement: `Pending User Info`
+- Bank account: not added
+- U.S. tax questionnaire: `Missing Tax Info`
+
+The Account Holder must complete all three items. Apple TN3186 notes that sandbox/TestFlight
+product changes and account updates can take up to one hour to propagate before retrying.
+
 ## Build 38 Verification
 
 Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect API:

@@ -34,6 +34,21 @@ Settings exposes plan purchase while signed out. A customer can complete StoreKi
   connectivity. Confirm the account is enabled server-side and remote extraction
   succeeds.
 
+## 2026-07-16 TestFlight Blocker
+
+Build 41 correctly requests `com.bookquotes.monthly` and `com.bookquotes.yearly`, and App Store
+Connect confirms both products have prices plus UK/US availability. StoreKit nevertheless returns
+an empty product array because the account's commerce setup is incomplete:
+
+- Paid Apps Agreement: `Pending User Info`
+- Bank account: not added
+- U.S. tax questionnaire: `Missing Tax Info`
+
+Apple TN3186 identifies an active Paid Apps Agreement and complete banking/tax information as
+requirements for sandbox/TestFlight product availability. The Account Holder must complete those
+items in App Store Connect Business, wait up to one hour for propagation, then retry Build 41.
+No app binary change is required for this blocker.
+
 ## Verification
 
 - StoreKit tests for signed-out, signed-in, interrupted, restored, and family/shared ownership states.

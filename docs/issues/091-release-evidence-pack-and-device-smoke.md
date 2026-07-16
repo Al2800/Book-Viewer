@@ -100,3 +100,8 @@ The evidence must cover both local verification and real-device TestFlight behav
   `usesNonExemptEncryption: false`. The remaining open acceptance is the Build 41 TestFlight smoke
   for subscription purchase/restore, authenticated remote extraction, network loss and recovery,
   queued processing, and account deletion.
+- Build 41 StoreKit returned no products despite correct product IDs, prices, UK/US availability,
+  bundle ID, and In-App Purchase capability. App Store Connect Business inspection identified the
+  external blocker: the Paid Apps Agreement is `Pending User Info`, no bank account is configured,
+  and the U.S. tax questionnaire is missing. Subscription and remote-AI TestFlight acceptance must
+  resume after the Account Holder completes those items and Apple's sandbox data propagates.
