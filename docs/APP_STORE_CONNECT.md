@@ -121,6 +121,10 @@ In-App Purchase capability. The App Store Connect Business page showed the actua
 The Account Holder must complete all three items. Apple TN3186 notes that sandbox/TestFlight
 product changes and account updates can take up to one hour to propagate before retrying.
 
+On 2026-07-16, both submitted US tax forms changed to `Active`. The bank account remains
+`Processing`, with App Store Connect warning that banking updates may take up to 24 hours. The
+Paid Apps Agreement remains `Pending User Info` until processing completes.
+
 ## Build 38 Verification
 
 Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect API:

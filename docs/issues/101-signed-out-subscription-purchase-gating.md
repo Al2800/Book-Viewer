@@ -49,6 +49,16 @@ requirements for sandbox/TestFlight product availability. The Account Holder mus
 items in App Store Connect Business, wait up to one hour for propagation, then retry Build 41.
 No app binary change is required for this blocker.
 
+2026-07-16 account update:
+
+- The Certificate of Foreign Status and W-8BEN are now `Active`.
+- The GBP bank account is `Processing`; App Store Connect states banking changes can take up to
+  24 hours.
+- The Paid Apps Agreement remains `Pending User Info` while banking is processed.
+
+Retry Build 41 only becomes a meaningful acceptance check after both the bank account and Paid Apps
+Agreement report `Active`, followed by sandbox propagation time.
+
 ## Verification
 
 - StoreKit tests for signed-out, signed-in, interrupted, restored, and family/shared ownership states.
