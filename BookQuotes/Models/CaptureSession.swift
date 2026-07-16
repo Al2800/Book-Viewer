@@ -143,6 +143,17 @@ final class CaptureSession {
         updateCompletionStatus()
     }
 
+    /// Return failed pages to the pending queue for an explicit user retry.
+    func retryFailedCaptures() {
+        let failedCaptures = captures.filter { $0.status == .failed }
+        guard !failedCaptures.isEmpty else { return }
+
+        failedCaptures.forEach { $0.resetForRetry() }
+        failedPages = max(0, failedPages - failedCaptures.count)
+        status = .readyToProcess
+        dateCompleted = nil
+    }
+
     /// Update completion status based on current counts
     private func updateCompletionStatus() {
         guard status == .processing else { return }

@@ -61,7 +61,7 @@ You underline sentences, draw margin lines next to important paragraphs, and jot
 | UI | SwiftUI (iOS 17+, iOS 26 Liquid Glass ready) |
 | Architecture | MV pattern (Model-View) |
 | Persistence | SwiftData (local-first in v1; Cloud sync planned) |
-| AI | Hugging Face quote extraction with Apple Vision OCR fallback |
+| AI | Qwen vision extraction through Hugging Face and pinned Featherless AI; optional Apple Vision OCR |
 | Camera | AVFoundation |
 
 ## Documentation
@@ -129,7 +129,7 @@ BookQuotes/
 Read the full [BookQuotes Privacy Policy](PRIVACY.md).
 
 - **Local-first library**: Books, quotes, tags, collections, and retained source images stay on-device.
-- **Optional remote processing**: After explicit consent, marked pages use Hugging Face Inference first with Apple Vision OCR as the offline fallback.
+- **Optional remote processing**: After explicit consent, marked pages use the pinned remote Qwen provider first. Remote failures remain visible; Apple Vision OCR is an explicit on-device choice.
 - **Minimal account data**: Apple Sign-In identifier, optional email relay, subscription state, and service-limit usage records.
 - **No tracking or advertising**: No analytics, advertising identifiers, or ad network SDKs.
 

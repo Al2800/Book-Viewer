@@ -184,7 +184,7 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
             await MainActor.run {
                 authService.applyRefreshedSessionToken(from: httpResponse)
             }
-            try handleHTTPResponse(httpResponse)
+            try handleHTTPResponse(httpResponse, responseData: data)
         }
 
         let proxyResponse = try JSONDecoder().decode(RemoteModelQuoteResponse.self, from: data)
@@ -197,10 +197,15 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
             .withExtractionSource(.modelAssisted)
     }
 
-    private func handleHTTPResponse(_ response: HTTPURLResponse) throws {
+    private func handleHTTPResponse(_ response: HTTPURLResponse, responseData: Data) throws {
         switch response.statusCode {
         case 200:
             return
+        case 400:
+            let serviceError = try? JSONDecoder().decode(RemoteModelServiceError.self, from: responseData)
+            throw ExtractionError.remoteServiceRejected(
+                serviceError?.error ?? "The AI request was rejected"
+            )
         case 401:
             throw ExtractionError.authenticationRequired
         case 402:
@@ -213,6 +218,10 @@ struct RemoteModelQuoteExtractor: QuoteExtracting {
             throw ExtractionError.networkError(URLError(.badServerResponse))
         }
     }
+}
+
+private struct RemoteModelServiceError: Decodable {
+    let error: String
 }
 
 private struct RemoteModelQuoteRequest: Encodable {

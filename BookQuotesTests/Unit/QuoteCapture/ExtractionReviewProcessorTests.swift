@@ -140,6 +140,38 @@ final class ExtractionReviewProcessorTests: SwiftDataTestCase {
         XCTAssertEqual(extractor.callCount, 1)
     }
 
+    func testValidEmptyExtractionCompletesAsNoQuotesFound() async throws {
+        let book = Book(title: "Marked Book", author: "Reader")
+        let session = CaptureSession(book: book)
+        let capture = PageCapture(imagePath: try writeTestImage())
+        session.addCapture(capture)
+        session.finishCapturing()
+        modelContext.insert(book)
+        modelContext.insert(session)
+        try modelContext.save()
+
+        let extractor = StubQuoteExtractor(result: QuoteExtractionResult(
+            quotes: [],
+            pageNumber: 14,
+            processingNotes: "No unambiguous marked passages"
+        ))
+        let processor = ExtractionReviewProcessor(
+            modelContext: modelContext,
+            session: session,
+            quoteExtractor: extractor
+        )
+
+        await processor.processPendingCaptures(onCaptureChanged: {})
+
+        XCTAssertEqual(session.status, .completed)
+        XCTAssertEqual(session.processedPages, 1)
+        XCTAssertEqual(session.failedPages, 0)
+        XCTAssertEqual(capture.status, .completed)
+        XCTAssertEqual(capture.extractedQuoteCount, 0)
+        XCTAssertEqual(capture.detectedPageNumber, 14)
+        XCTAssertNil(capture.errorMessage)
+    }
+
     private func writeTestImage() throws -> String {
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: 64, height: 64))
         let image = renderer.image { context in

@@ -55,7 +55,7 @@ npm install
 
    For model-assisted quote extraction, set `HF_MODEL_ID` to an explicitly
    approved provider route, for example
-   `Qwen/Qwen2.5-VL-72B-Instruct:hf-inference`. Routing policies such as
+   `Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai`. Routing policies such as
    `:preferred`, `:fastest`, and `:cheapest` are rejected by the Worker. Adding
    a provider requires a privacy and retention review before deployment.
 

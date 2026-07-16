@@ -72,17 +72,17 @@ against `BookQuotes/Resources/PrivacyInfo.xcprivacy` and the in-app Privacy Poli
 Do not select tracking, advertising, analytics, or data sale/sharing. Local-only books, quotes,
 tags, collections, and images are not cloud-synced. Google Books and Open Library receive only
 the requested ISBN, never the BookQuotes account identifier or library. The configured remote AI
-provider is Hugging Face Inference for marked quote pages; Remote AI Processing is optional and
-can be revoked in Settings. Book covers come from ISBN catalogue metadata and are not sent to an
-AI provider.
+route uses Hugging Face Inference with the pinned Featherless AI provider for marked quote pages;
+Remote AI Processing is optional and can be revoked in Settings. Book covers come from ISBN
+catalogue metadata and are not sent to an AI provider.
 
 ## App Review Notes
 
 No account is required to use the app's core on-device features. Reviewers can choose
 **Continue Without an Account** during onboarding, then add and manage books, capture marked
 pages with on-device OCR, search the local library, export quotes, and change Settings. Eligible,
-consented subscribers use remote AI first for marked-page extraction, with on-device OCR as the
-offline fallback.
+consented subscribers use remote AI first for marked-page extraction. A remote failure is shown
+explicitly with Retry AI, Use On-Device Instead, and manual-entry recovery choices.
 
 Apple Sign In is requested only when the reviewer chooses an account-only feature: remote AI
 processing or subscription purchase/restoration. Remote AI processing also requires a separate,

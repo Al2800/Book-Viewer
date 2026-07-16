@@ -87,7 +87,7 @@ function makeEnv(limiter: RecordingRateLimiterNamespace): Env {
     ALLOW_AUTHENTICATED_EXTRACTION: 'true',
     AUTHENTICATED_EXTRACTION_BYPASS_UNTIL: '2099-01-01T00:00:00Z',
     HF_API_TOKEN: 'hf-test-token',
-    HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+    HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai',
   };
 }
 

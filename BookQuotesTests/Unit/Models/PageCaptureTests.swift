@@ -91,7 +91,7 @@ final class PageCaptureTests: SwiftDataTestCase {
         XCTAssertEqual(capture.extractionFallbackReason, .remoteUnavailable)
     }
 
-    func testCompleteExtractionFailsForEmptyResult() {
+    func testCompleteExtractionStoresValidEmptyResult() throws {
         let capture = PageCapture(imagePath: "captures/test.jpg")
         capture.beginProcessing()
         let result = QuoteExtractionResult(
@@ -100,12 +100,9 @@ final class PageCaptureTests: SwiftDataTestCase {
             processingNotes: "No marked passages found"
         )
 
-        XCTAssertThrowsError(try capture.completeExtraction(with: result)) { error in
-            guard case ExtractionError.noQuotesFound = error else {
-                return XCTFail("Expected noQuotesFound, got \(error)")
-            }
-        }
-        XCTAssertEqual(capture.status, .processing)
+        try capture.completeExtraction(with: result)
+
+        XCTAssertEqual(capture.status, .completed)
         XCTAssertEqual(capture.extractedQuoteCount, 0)
         XCTAssertTrue(capture.loadExtractedQuotes().isEmpty)
     }

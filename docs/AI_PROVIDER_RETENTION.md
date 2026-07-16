@@ -1,6 +1,6 @@
 # AI Provider Retention Record
 
-Last reviewed: 2026-07-15
+Last reviewed: 2026-07-16
 
 This record covers the remote AI services currently reachable from the BookQuotes Worker. It is
 an evidence record, not a substitute for the providers' terms or a confirmation of account-level
@@ -11,23 +11,29 @@ this evidence.
 
 | Feature | Provider route | Data sent after consent | Enforced control |
 | --- | --- | --- | --- |
-| Quote-page extraction | Hugging Face Inference Providers router with the `hf-inference` provider | One prepared page image and the bounded quote-extraction prompt | `HF_MODEL_ID` must include the approved `:hf-inference` suffix. Dynamic provider suffixes are rejected before image parsing or forwarding. |
+| Quote-page extraction | Hugging Face Inference Providers router with the pinned `featherless-ai` provider | One prepared page image and the bounded quote-extraction prompt | `HF_MODEL_ID` must include the approved `:featherless-ai` suffix. Dynamic and unapproved provider suffixes are rejected before image parsing or forwarding. |
 
 For a reader with current consent, an authenticated session, and an eligible subscription, the
-remote quote route is attempted first. Apple Vision OCR is the fallback when remote processing is
-disabled, unavailable, rate-limited, or returns no quote candidates.
+remote quote route is attempted first. A remote failure remains visible and offers Retry AI,
+an explicit on-device attempt, or manual entry. Apple Vision OCR is used by default only when
+remote processing is disabled.
 
 ## Hugging Face Inference Providers
 
 The current quote route is the Hugging Face Inference Providers router, pinned to
-`hf-inference`; it is not a Hugging Face Inference Endpoint. The official security and compliance
-documentation reviewed on 2026-07-15 states that Hugging Face does not store routed request or
-response bodies for training and may retain debugging logs for up to 30 days without user data or
-tokens. It also states that an external provider is responsible for its own security policy. The
-provider pin avoids dynamic routing, but it does not justify claims about services other than
-`hf-inference`.
+`featherless-ai`; it is not a Hugging Face Inference Endpoint. The official Hugging Face security
+documentation states that Hugging Face does not store routed request or response bodies for
+training and may retain debugging logs for up to 30 days without user data or tokens. It also
+states that an external provider is responsible for its own security policy.
+
+Featherless states that API prompts, images, and completions are processed in real time and are
+not stored, while aggregate usage such as prompt and token counts may be retained. The pin avoids
+dynamic routing to another inference provider. These statements are provider policy evidence,
+not a BookQuotes guarantee of provider behavior.
 
 Source: [Hugging Face Inference Providers security and compliance](https://huggingface.co/docs/inference-providers/en/security).
+Source: [Featherless AI privacy and logging](https://featherless.ai/docs/privacy-and-logging).
+Source: [Featherless AI privacy policy](https://featherless.ai/legal/privacy-policy).
 
 ## Retired Cover Route
 

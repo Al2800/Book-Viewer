@@ -302,7 +302,7 @@ struct BatchCaptureView: View {
         modelContext.insert(session)
         try? modelContext.save()
 
-        // Extraction Review uses consented remote AI first, with on-device OCR as its fallback.
+        // Extraction Review uses consented remote AI first and keeps remote failures visible.
         onComplete(session)
     }
 

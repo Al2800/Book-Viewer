@@ -66,6 +66,8 @@ struct ExtractionReviewNoQuotesView: View {
 
 struct ExtractionReviewFailureView: View {
     let primaryFailureMessage: String?
+    let onRetry: () -> Void
+    let onUseOnDevice: () -> Void
     let onAddManualQuote: () -> Void
     let onClose: () -> Void
 
@@ -80,10 +82,26 @@ struct ExtractionReviewFailureView: View {
                     .foregroundStyle(Color.textSecondary)
             }
         } actions: {
-            ExtractionReviewFallbackActions(
-                onAddManualQuote: onAddManualQuote,
-                onClose: onClose
-            )
+            VStack(spacing: Spacing.md) {
+                Button {
+                    onRetry()
+                } label: {
+                    Label("Retry AI Extraction", systemImage: "arrow.clockwise")
+                }
+                .buttonStyle(.primaryCompact)
+
+                Button {
+                    onUseOnDevice()
+                } label: {
+                    Label("Use On-Device Instead", systemImage: "iphone")
+                }
+                .buttonStyle(.secondaryCompact)
+
+                ExtractionReviewFallbackActions(
+                    onAddManualQuote: onAddManualQuote,
+                    onClose: onClose
+                )
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

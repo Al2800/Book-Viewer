@@ -23,9 +23,10 @@ with that quote for reference until you delete the quote. Draft and queued image
 on-device until they are processed or deleted.
 
 If you enable Remote AI Processing, the marked-page image, extraction instructions, and resulting
-text are sent through the BookQuotes service to Hugging Face Inference. The BookQuotes service
-does not write those image or prompt payloads to its application database. The provider handles
-request data under its own terms.
+text are sent through the BookQuotes service and the Hugging Face Inference Providers router to
+the pinned Featherless AI inference provider. The BookQuotes service does not write those image
+or prompt payloads to its application database. These providers handle request data under their
+own terms.
 
 ### Book Metadata Lookup
 
@@ -58,7 +59,9 @@ on your device. Cloud sync is not enabled in this release.
 
 - **Hugging Face Inference** provides model-assisted quote extraction from marked pages when you
   enable Remote AI Processing.
-- **Apple Vision** provides on-device OCR fallback for marked pages.
+- **Featherless AI** is the pinned inference provider that processes those consented requests.
+- **Apple Vision** provides on-device OCR when Remote AI Processing is off or you explicitly
+  choose the on-device option.
 - **Google Books** provides requested ISBN metadata lookups and cover images.
 - **Open Library** is used as an ISBN metadata fallback when Google Books has no match.
 - **Sign in with Apple** provides secure authentication without a BookQuotes password.

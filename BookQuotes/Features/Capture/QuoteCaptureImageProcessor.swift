@@ -15,7 +15,7 @@ struct QuoteCaptureImageProcessor {
         cropToVisibleArea: @escaping (UIImage, CGSize) throws -> UIImage = ImagePreprocessor.cropToAspectFillPreview,
         autoCropDocument: @escaping (UIImage) async -> UIImage = ImagePreprocessor.autoCropDocument,
         analyzeQuality: @escaping (UIImage) async throws -> ImageQualityAnalyzer.QualityResult = { image in
-            let analyzer = ImageQualityAnalyzer(configuration: .lenient)
+            let analyzer = ImageQualityAnalyzer(configuration: .default)
             return try await analyzer.analyze(image: image)
         }
     ) {

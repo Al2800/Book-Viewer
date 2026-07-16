@@ -838,6 +838,41 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
     }
 
     @MainActor
+    func testRemoteModelQuoteExtractorReportsValidationRejection() async throws {
+        let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
+        server.route(method: "POST", path: "/api/extract-quotes-hf") { _ in
+            .json(400, Data(#"{"error":"Image payload exceeds maximum size","code":"INVALID_REQUEST"}"#.utf8))
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let keychain = KeychainService()
+        keychain.setSessionToken("test-session-token")
+        let authService = AuthService(keychainService: keychain)
+        defer { Task { await authService.signOut() } }
+
+        let extractor = RemoteModelQuoteExtractor(
+            authService: authService,
+            baseURL: server.baseURL,
+            consentStore: makeConsentStore(granted: true)
+        )
+
+        do {
+            _ = try await extractor.extractQuotes(
+                from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+                markings: []
+            )
+            XCTFail("Expected a validation rejection")
+        } catch let error as ExtractionError {
+            XCTAssertEqual(
+                error.localizedDescription,
+                "AI extraction was rejected: Image payload exceeds maximum size"
+            )
+        }
+    }
+
+    @MainActor
     func testRemoteModelQuoteExtractorDoesNotUploadWithoutConsent() async throws {
         let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
         server.route(method: "POST", path: "/api/extract-quotes-hf") { _ in
@@ -984,7 +1019,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(remote.callCount, 0)
     }
 
-    func testQuoteExtractionPipelineKeepsEmptyLocalResultWhenEnabledRemoteFails() async throws {
+    func testQuoteExtractionPipelineDoesNotSilentlyUseLocalOCRWhenEnabledRemoteFails() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [],
             pageNumber: nil,
@@ -997,19 +1032,23 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             isRemoteProcessingEnabled: true
         )
 
-        let result = try await extractor.extractQuotes(
-            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
-            markings: []
-        )
+        do {
+            _ = try await extractor.extractQuotes(
+                from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+                markings: []
+            )
+            XCTFail("Expected the remote failure to remain visible")
+        } catch {
+            guard case ExtractionError.networkError = error else {
+                return XCTFail("Expected networkError, got \(error)")
+            }
+        }
 
-        XCTAssertTrue(result.quotes.isEmpty)
-        XCTAssertEqual(result.processingNotes, "local found no quotes")
-        XCTAssertEqual(result.fallbackReason, .remoteUnavailable)
-        XCTAssertEqual(local.callCount, 1)
+        XCTAssertEqual(local.callCount, 0)
         XCTAssertEqual(remote.callCount, 1)
     }
 
-    func testQuoteExtractionPipelineExplainsSubscriptionFallback() async throws {
+    func testQuoteExtractionPipelineDoesNotBypassSubscriptionWithLocalOCR() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
@@ -1031,15 +1070,20 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             isRemoteProcessingEnabled: true
         )
 
-        let result = try await extractor.extractQuotes(
-            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
-            markings: []
-        )
+        do {
+            _ = try await extractor.extractQuotes(
+                from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+                markings: []
+            )
+            XCTFail("Expected subscriptionRequired")
+        } catch {
+            guard case ExtractionError.subscriptionRequired = error else {
+                return XCTFail("Expected subscriptionRequired, got \(error)")
+            }
+        }
 
-        XCTAssertEqual(result.quotes.first?.extractionSource, .onDevice)
-        XCTAssertEqual(result.fallbackReason, .remoteSubscriptionRequired)
         XCTAssertEqual(remote.callCount, 1)
-        XCTAssertEqual(local.callCount, 1)
+        XCTAssertEqual(local.callCount, 0)
     }
 
     func testOnDeviceExtractorReturnsLowConfidenceMarkedCandidatesForReview() async throws {

@@ -68,6 +68,32 @@ final class CaptureSessionTests: SwiftDataTestCase {
         logger.success("Session failure captured")
     }
 
+    func testRetryFailedCapturesReturnsOnlyFailuresToPending() throws {
+        let session = CaptureSession()
+        let successfulCapture = TestFixtures.pageCapture()
+        let failedCapture = TestFixtures.pageCapture()
+        session.addCapture(successfulCapture)
+        session.addCapture(failedCapture)
+        session.finishCapturing()
+        session.beginProcessing()
+
+        successfulCapture.completeProcessing(quoteCount: 1, avgConfidence: 0.9, pageNumber: 1)
+        session.recordSuccess()
+        failedCapture.failProcessing(error: "Remote service unavailable")
+        session.recordFailure()
+
+        session.retryFailedCaptures()
+
+        XCTAssertEqual(session.status, .readyToProcess)
+        XCTAssertEqual(session.processedPages, 1)
+        XCTAssertEqual(session.failedPages, 0)
+        XCTAssertEqual(session.pendingPages, 1)
+        XCTAssertEqual(successfulCapture.status, .completed)
+        XCTAssertEqual(failedCapture.status, .pending)
+        XCTAssertNil(failedCapture.errorMessage)
+        XCTAssertNil(session.dateCompleted)
+    }
+
     func testCancelSetsCompletion() throws {
         let session = CaptureSession()
         session.cancel()

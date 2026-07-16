@@ -33,10 +33,10 @@ function makeGeminiRequest(): GeminiRequest {
 describe('buildHuggingFaceQuoteRequest', () => {
   it('builds a vision chat-completions payload from the quote extraction request', () => {
     const body = buildHuggingFaceQuoteRequest(makeGeminiRequest(), {
-      modelId: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+      modelId: 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai',
     });
 
-    expect(body.model).toBe('Qwen/Qwen2.5-VL-72B-Instruct:hf-inference');
+    expect(body.model).toBe('Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai');
     expect(body.temperature).toBe(0.1);
     expect(body.response_format).toEqual({ type: 'json_object' });
     expect(body.messages).toHaveLength(2);
@@ -58,8 +58,9 @@ describe('buildHuggingFaceQuoteRequest', () => {
 
 describe('resolveApprovedHuggingFaceModelId', () => {
   it('accepts only an explicitly approved provider suffix', () => {
-    expect(resolveApprovedHuggingFaceModelId('Qwen/Qwen2.5-VL-72B-Instruct:hf-inference'))
-      .toBe('Qwen/Qwen2.5-VL-72B-Instruct:hf-inference');
+    expect(resolveApprovedHuggingFaceModelId('Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai'))
+      .toBe('Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai');
+    expect(resolveApprovedHuggingFaceModelId('Qwen/Qwen2.5-VL-72B-Instruct:hf-inference')).toBeNull();
     expect(resolveApprovedHuggingFaceModelId('Qwen/Qwen2.5-VL-72B-Instruct:preferred')).toBeNull();
     expect(resolveApprovedHuggingFaceModelId('Qwen/Qwen2.5-VL-72B-Instruct:fastest')).toBeNull();
     expect(resolveApprovedHuggingFaceModelId('Qwen/Qwen2.5-VL-72B-Instruct')).toBeNull();
@@ -67,6 +68,27 @@ describe('resolveApprovedHuggingFaceModelId', () => {
 });
 
 describe('normalizeHuggingFaceQuoteResponse', () => {
+  it('normalizes provider errors without forwarding an unbounded response body', async () => {
+    const response = new Response(
+      JSON.stringify({
+        error: {
+          message: 'Model is not supported by the selected provider',
+          internal: 'provider-debug-data',
+        },
+      }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+
+    const normalized = await normalizeHuggingFaceQuoteResponse(response);
+    const body = await normalized.json() as { error: string; code: string };
+
+    expect(normalized.status).toBe(400);
+    expect(body).toEqual({
+      error: 'Model is not supported by the selected provider',
+      code: 'HF_PROVIDER_ERROR',
+    });
+  });
+
   it('returns Gemini-compatible response JSON containing quote-review-safe result text', async () => {
     const response = new Response(
       JSON.stringify({
@@ -180,7 +202,7 @@ describe('proxyToHuggingFaceQuoteExtractor', () => {
 
     const response = await proxyToHuggingFaceQuoteExtractor(makeGeminiRequest(), {
       token: 'hf-test-token',
-      modelId: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+      modelId: 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai',
     });
 
     expect(response.status).toBe(200);

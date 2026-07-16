@@ -30,7 +30,7 @@ enum LegalDocument: String, Identifiable {
                     paragraphs: [
                         "When you sign in with Apple, we receive your Apple-provided identifier and, if Apple shares it, your email address. We use that information to authenticate requests to the BookQuotes service and maintain your subscription access state.",
                         "Captured pages and downloaded catalogue cover images are stored locally on your device while you review, retry, or save them. When you save a quote, a compressed source-image copy may be kept with that quote for reference until you delete the quote. Draft and queued images remain on-device until they are processed or deleted.",
-                        "If you enable Remote AI Processing, the marked-page image, extraction instructions, and resulting text are sent through the BookQuotes service to Hugging Face Inference. The BookQuotes service does not write those image or prompt payloads to its application database; the provider handles request data under its own terms.",
+                        "If you enable Remote AI Processing, the marked-page image, extraction instructions, and resulting text are sent through the BookQuotes service and the Hugging Face Inference Providers router to the pinned Featherless AI inference provider. The BookQuotes service does not write those image or prompt payloads to its application database; these providers handle request data under their own terms.",
                         "When you scan a book, BookQuotes sends its ISBN directly to Google Books to find metadata and a canonical cover image. If the ISBN is not found there, it is sent to Open Library as a fallback. These catalogue requests do not include your BookQuotes account identifier or library.",
                         "The BookQuotes service stores account-linked subscription access records and extraction counts with last-updated timestamps. Short-lived rate-limit counters may use your account and network information to protect the service. After account deletion, a session-revocation record may remain for up to eight days solely to prevent use of already-issued session tokens. Your books, quotes, tags, collections, and locally retained images are otherwise stored on-device. Cloud sync is not enabled in this v1 release."
                     ]
@@ -49,7 +49,8 @@ enum LegalDocument: String, Identifiable {
                     title: "Third-Party Services",
                     bullets: [
                         "Hugging Face Inference for model-assisted quote extraction from marked quote pages when you enable Remote AI Processing",
-                        "Apple Vision for on-device OCR fallback of marked quote pages",
+                        "Featherless AI as the pinned inference provider for those consented requests",
+                        "Apple Vision for on-device OCR when Remote AI Processing is off or you explicitly choose the on-device option",
                         "Google Books for requested ISBN metadata lookups and cover images",
                         "Open Library as an ISBN metadata fallback when Google Books has no match",
                         "Sign in with Apple for secure authentication",

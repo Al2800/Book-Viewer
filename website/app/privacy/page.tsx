@@ -43,9 +43,10 @@ export default function PrivacyPage() {
             </p>
             <p>
               If you enable Remote AI Processing, the marked-page image, extraction instructions,
-              and resulting text are sent through the BookQuotes service to Hugging Face
-              Inference. The BookQuotes service does not write those image or prompt payloads to
-              its application database; the provider handles request data under its own terms.
+              and resulting text are sent through the BookQuotes service and the Hugging Face
+              Inference Providers router to the pinned Featherless AI inference provider. The
+              BookQuotes service does not write those image or prompt payloads to its application
+              database; these providers handle request data under their own terms.
             </p>
 
             <h3>Book Metadata Lookup</h3>
@@ -97,8 +98,12 @@ export default function PrivacyPage() {
                 is governed by its applicable terms.
               </li>
               <li>
-                <strong>Apple Vision</strong> &mdash; For on-device OCR fallback of marked quote
-                pages.
+                <strong>Featherless AI</strong> &mdash; The pinned inference provider that processes
+                those consented requests.
+              </li>
+              <li>
+                <strong>Apple Vision</strong> &mdash; For on-device OCR when Remote AI Processing is
+                off or you explicitly choose the on-device option.
               </li>
               <li>
                 <strong>Google Books</strong> &mdash; For requested ISBN metadata lookups and cover

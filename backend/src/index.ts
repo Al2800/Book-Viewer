@@ -433,6 +433,12 @@ export default {
       } catch (error) {
         await releaseFailedExtraction(userId, idempotencyKey!, env, path);
         if (error instanceof RequestValidationError) {
+          console.warn(JSON.stringify({
+            event: 'extraction_request_validation',
+            path,
+            outcome: 'rejected',
+            reason: error.message,
+          }));
           return respond(errorResponse(error.message, 'INVALID_REQUEST', 400));
         }
         console.error('Hugging Face quote extraction error:', error);

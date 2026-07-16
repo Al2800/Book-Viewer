@@ -203,7 +203,7 @@ describe('extraction access policy', () => {
       makeEnv({
         ALLOW_AUTHENTICATED_EXTRACTION: undefined,
         HF_API_TOKEN: 'hf-test-token',
-        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai',
       })
     );
     const body = await response.json() as { code: string };
@@ -223,7 +223,7 @@ describe('extraction access policy', () => {
       makeEnv({
         ALLOW_AUTHENTICATED_EXTRACTION: 'true',
         HF_API_TOKEN: 'hf-test-token',
-        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai',
         EXTRACTION_LIMITER: new RejectingRateLimiterNamespace() as unknown as DurableObjectNamespace,
       })
     );
@@ -280,7 +280,7 @@ describe('extraction access policy', () => {
       makeEnv({
         ALLOW_AUTHENTICATED_EXTRACTION: 'true',
         HF_API_TOKEN: 'hf-test-token',
-        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai',
       })
     );
     const body = await response.json() as {
@@ -310,7 +310,7 @@ describe('extraction access policy', () => {
       makeEnv({
         ALLOW_AUTHENTICATED_EXTRACTION: 'true',
         HF_API_TOKEN: 'hf-test-token',
-        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference',
+        HF_MODEL_ID: 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai',
         EXTRACTION_LIMITER: limiter as unknown as DurableObjectNamespace,
       })
     );

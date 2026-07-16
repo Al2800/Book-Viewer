@@ -1,7 +1,7 @@
 import type { GeminiRequest } from './types';
 
 const HUGGING_FACE_ROUTER_URL = 'https://router.huggingface.co/v1/chat/completions';
-export const DEFAULT_HUGGING_FACE_MODEL_ID = 'Qwen/Qwen2.5-VL-72B-Instruct:hf-inference';
+export const DEFAULT_HUGGING_FACE_MODEL_ID = 'Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai';
 const MAXIMUM_RESPONSE_BYTES = 128 * 1024;
 const MAXIMUM_CANDIDATE_COUNT = 30;
 const MAXIMUM_QUOTE_LENGTH = 2_000;
@@ -11,7 +11,7 @@ const MAXIMUM_PROCESSING_NOTES_LENGTH = 500;
 const MAXIMUM_PAGE_NUMBER = 10_000;
 
 // Changes to this list require a privacy and retention review before deployment.
-const APPROVED_HUGGING_FACE_PROVIDERS = new Set(['hf-inference']);
+const APPROVED_HUGGING_FACE_PROVIDERS = new Set(['featherless-ai']);
 
 const QUOTE_EXTRACTION_SYSTEM_PROMPT = [
   'You extract marked passages from photographed book pages.',
@@ -152,7 +152,16 @@ export async function normalizeHuggingFaceQuoteResponse(response: Response): Pro
   const responseText = await response.text();
 
   if (!response.ok) {
-    return new Response(responseText, {
+    const reason = providerErrorMessage(responseText);
+    console.warn(JSON.stringify({
+      event: 'huggingface_provider_error',
+      status: response.status,
+      reason,
+    }));
+    return new Response(JSON.stringify({
+      error: reason,
+      code: 'HF_PROVIDER_ERROR',
+    }), {
       status: response.status,
       headers: {
         'Content-Type': 'application/json',
@@ -194,6 +203,26 @@ export async function normalizeHuggingFaceQuoteResponse(response: Response): Pro
       'Content-Type': 'application/json',
     },
   });
+}
+
+function providerErrorMessage(responseText: string): string {
+  const fallback = 'The model provider rejected the extraction request';
+  try {
+    const body = JSON.parse(responseText) as unknown;
+    if (!isRecord(body)) {
+      return fallback;
+    }
+
+    const error = body.error;
+    const candidate = typeof error === 'string'
+      ? error
+      : isRecord(error) && typeof error.message === 'string'
+        ? error.message
+        : undefined;
+    return normalizeOptionalText(candidate, 300) ?? fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 /**

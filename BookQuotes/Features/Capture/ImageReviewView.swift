@@ -224,7 +224,7 @@ struct ImageReviewView: View {
             onConfirm()
             dismiss()
         } label: {
-            Label("Use Photo", systemImage: "checkmark")
+            Label(usePhotoButtonTitle, systemImage: "checkmark")
                 .font(.headline)
                 .frame(maxWidth: .infinity)
         }
@@ -269,9 +269,11 @@ struct ImageReviewView: View {
         }
     }
 
-    private var shouldShowWarning: Bool {
-        guard let result = qualityResult else { return false }
-        return !result.isAcceptable && result.overallScore < 0.4
+    private var usePhotoButtonTitle: String {
+        guard let result = qualityResult, !result.isAcceptable else {
+            return "Use Photo"
+        }
+        return "Use Anyway"
     }
 
     private func qualityColor(for score: Double) -> Color {

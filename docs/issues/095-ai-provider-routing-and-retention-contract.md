@@ -24,15 +24,14 @@ The Hugging Face model uses `:preferred`, which may route requests to external i
 
 ## Implementation Notes
 
-Quote-page extraction defaults to the explicitly routed `hf-inference` provider and rejects
+Quote-page extraction defaults to the explicitly routed `featherless-ai` provider and rejects
 dynamic-routing suffixes such as `:preferred`, `:fastest`, and `:cheapest` before image parsing
 or forwarding. The Worker allowlist is the deployment control point; changing it requires a
 privacy and retention review. The user-facing policy no longer makes provider-retention claims
 outside BookQuotes' control, and remote processing remains an explicit, revocable choice.
 
-This remains open until production deployment is confirmed with a supported `hf-inference` model
-route and the applicable provider terms (including Google Gemini's retention configuration) are
-recorded by the account owner.
+This remains open until the supported Featherless route and the corresponding user-facing privacy
+policy are confirmed in production.
 
 2026-07-15 route retirement follow-up:
 
@@ -82,3 +81,13 @@ recorded by the account owner.
 - No Zero Data Retention approval has been asserted for the BookQuotes Gemini project. The
   in-app policy and paywall now avoid unsupported "never shared" or provider-zero-retention
   promises. Deployment configuration review remains open.
+
+2026-07-16 supported-provider correction:
+
+- The Hugging Face live model catalogue showed that `Qwen/Qwen2.5-VL-72B-Instruct` was no longer
+  served by the pinned `hf-inference` provider and was available through `featherless-ai`.
+- A non-user-data probe against the exact `:featherless-ai` route returned a valid structured
+  response; the unsupported production pin explained Build 42's provider `400` responses.
+- Featherless's official API privacy documentation states that prompts and completions are
+  processed in real time and not stored. The privacy record and user-facing disclosures now name
+  Featherless explicitly, and the backend allowlist rejects the old and dynamic suffixes.

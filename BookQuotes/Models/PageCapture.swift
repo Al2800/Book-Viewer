@@ -175,12 +175,8 @@ final class PageCapture {
             confidenceValues.reduce(0, +) / Double(confidenceValues.count)
     }
 
-    /// Complete processing only when extraction found quote content.
+    /// Complete processing after a valid extraction response, including a valid empty result.
     func completeExtraction(with result: QuoteExtractionResult) throws {
-        guard result.isSuccessful else {
-            throw ExtractionError.noQuotesFound
-        }
-
         storeExtractedQuotes(result.quotes)
         completeProcessing(
             quoteCount: result.quoteCount,

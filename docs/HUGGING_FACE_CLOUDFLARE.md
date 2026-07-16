@@ -20,7 +20,9 @@ The iOS app never stores a Hugging Face token. It sends authenticated requests t
 1. The user captures a quote page in the iOS app.
 2. `ExtractionReviewView` processes pending page captures through `ModelAssistedQuoteExtractor`.
 3. `ModelAssistedQuoteExtractor` calls `RemoteModelQuoteExtractor` first. Model-assisted extraction is the primary path for quote capture because OCR-only selection misses real-page lines and margin/bracket spans.
-4. If the remote model fails or returns no usable quotes, `ModelAssistedQuoteExtractor` falls back to `OnDeviceQuoteExtractor` so the app can still offer local OCR/manual review when network/model extraction is unavailable.
+4. A valid remote response is authoritative, including an empty quote list. If the remote model
+   fails, the review screen keeps that failure visible and offers Retry AI, an explicit on-device
+   attempt, or manual entry; it does not silently replace the result with OCR.
 5. `RemoteModelQuoteExtractor` sends the same Gemini-shaped request body to:
 
 ```text
@@ -62,10 +64,11 @@ HF_MODEL_ID
 If `HF_MODEL_ID` is not set, the backend defaults to:
 
 ```text
-Qwen/Qwen2.5-VL-72B-Instruct:preferred
+Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai
 ```
 
-The `:preferred` suffix tells Hugging Face's OpenAI-compatible router to select the first available provider based on the account's provider preference order. Build 29 depends on `Qwen/Qwen2.5-VL-72B-Instruct:preferred` because the previous 7B default was not supported by the enabled Hugging Face providers and caused the app to fall back to local OCR.
+The explicit provider suffix prevents Hugging Face's router from dynamically selecting a different
+processor for page images. Provider changes require a privacy and retention review before deployment.
 
 ## Billing
 

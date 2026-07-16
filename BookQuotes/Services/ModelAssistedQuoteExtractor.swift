@@ -11,7 +11,6 @@ struct QuoteExtractionPipeline: QuoteExtracting {
     ) {
         self.extractor = isRemoteProcessingEnabled
             ? ModelAssistedQuoteExtractor(
-                localExtractor: localExtractor,
                 remoteExtractor: remoteExtractor
             )
             : localExtractor
@@ -126,14 +125,9 @@ private struct UITestQuoteExtractor: QuoteExtracting {
 }
 
 struct ModelAssistedQuoteExtractor: QuoteExtracting {
-    private let localExtractor: any QuoteExtracting
     private let remoteExtractor: any QuoteExtracting
 
-    init(
-        localExtractor: any QuoteExtracting,
-        remoteExtractor: any QuoteExtracting
-    ) {
-        self.localExtractor = localExtractor
+    init(remoteExtractor: any QuoteExtracting) {
         self.remoteExtractor = remoteExtractor
     }
 
@@ -141,15 +135,6 @@ struct ModelAssistedQuoteExtractor: QuoteExtracting {
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
-        let remoteResult: QuoteExtractionResult
-        do {
-            remoteResult = try await remoteExtractor.extractQuotes(from: image, markings: markings)
-        } catch let remoteError {
-            return try await localExtractor
-                .extractQuotes(from: image, markings: markings)
-                .withFallbackReason(.from(remoteError))
-        }
-
-        return remoteResult
+        try await remoteExtractor.extractQuotes(from: image, markings: markings)
     }
 }

@@ -42,6 +42,10 @@ struct QuoteCaptureView: View {
             // Camera preview / captured image
             cameraContent
 
+            if captureState == .qualityChecking {
+                qualityCheckingOverlay
+            }
+
             if captureState == .previewing {
                 VStack(spacing: 0) {
                     CaptureHeaderBar(
@@ -123,7 +127,15 @@ struct QuoteCaptureView: View {
 
     @ViewBuilder
     private var cameraContent: some View {
-        if cameraService.isAuthorized && cameraService.isSessionConfigured {
+        if captureState == .qualityChecking, let capturedImage {
+            Color.black
+                .ignoresSafeArea()
+                .overlay {
+                    Image(uiImage: capturedImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                }
+        } else if cameraService.isAuthorized && cameraService.isSessionConfigured {
             CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
@@ -139,6 +151,25 @@ struct QuoteCaptureView: View {
                 .environment(cameraPermission)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.permissionPrompt)
         }
+    }
+
+    private var qualityCheckingOverlay: some View {
+        VStack(spacing: Spacing.sm) {
+            ProgressView()
+                .tint(.white)
+
+            Text("Photo captured")
+                .font(.headline)
+
+            Text("Checking focus and lighting")
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.8))
+        }
+        .foregroundStyle(.white)
+        .padding(Spacing.lg)
+        .cameraChrome(cornerRadius: CornerRadius.lg)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Photo captured. Checking focus and lighting.")
     }
 
     // MARK: - Capture Controls
@@ -288,6 +319,7 @@ struct QuoteCaptureView: View {
             isAnalyzingQuality = true
             qualityResult = nil
             isQualityFeedbackUnavailable = false
+            captureState = .qualityChecking
         }
 
         let result = await imageProcessor.process(
@@ -362,6 +394,7 @@ struct QuoteCaptureView: View {
 extension QuoteCaptureView {
     enum CaptureState: Equatable {
         case previewing
+        case qualityChecking
         case reviewing
         case processing
         case completed(session: CaptureSession)
@@ -369,6 +402,7 @@ extension QuoteCaptureView {
         static func == (lhs: CaptureState, rhs: CaptureState) -> Bool {
             switch (lhs, rhs) {
             case (.previewing, .previewing),
+                 (.qualityChecking, .qualityChecking),
                  (.reviewing, .reviewing),
                  (.processing, .processing):
                 return true

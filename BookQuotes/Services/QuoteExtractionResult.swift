@@ -128,7 +128,7 @@ enum ExtractionFallbackReason: String, Codable, Sendable, Equatable {
             return .remoteSubscriptionRequired
         case .rateLimited:
             return .remoteRateLimited
-        case .invalidImage, .networkError, .parsingError, .noQuotesFound:
+        case .invalidImage, .networkError, .parsingError, .noQuotesFound, .remoteServiceRejected:
             return .remoteUnavailable
         }
     }
@@ -318,6 +318,7 @@ enum ExtractionError: LocalizedError {
     case subscriptionRequired
     case authenticationRequired
     case thirdPartyAIConsentRequired
+    case remoteServiceRejected(String)
 
     var errorDescription: String? {
         switch self {
@@ -337,6 +338,8 @@ enum ExtractionError: LocalizedError {
             return "Please sign in to continue"
         case .thirdPartyAIConsentRequired:
             return "Remote AI processing is disabled"
+        case .remoteServiceRejected(let message):
+            return "AI extraction was rejected: \(message)"
         }
     }
 
@@ -358,6 +361,8 @@ enum ExtractionError: LocalizedError {
             return "Sign in with your Apple ID to continue"
         case .thirdPartyAIConsentRequired:
             return "Enable Remote AI Processing in Settings, or continue with on-device extraction"
+        case .remoteServiceRejected:
+            return "Retake the photo and retry AI extraction"
         }
     }
 }

@@ -264,6 +264,8 @@ struct ExtractionReviewView: View {
     private var extractionFailureView: some View {
         ExtractionReviewFailureView(
             primaryFailureMessage: processingSummary.primaryFailureMessage,
+            onRetry: retryFailedExtractions,
+            onUseOnDevice: retryFailedExtractionsOnDevice,
             onAddManualQuote: addManualQuote,
             onClose: closeReview
         )
@@ -343,6 +345,25 @@ struct ExtractionReviewView: View {
         dismiss()
     }
 
+    private func retryFailedExtractions() {
+        HapticManager.medium()
+        session.retryFailedCaptures()
+        hasStartedProcessing = false
+        try? modelContext.save()
+        startProcessingIfNeeded()
+    }
+
+    private func retryFailedExtractionsOnDevice() {
+        HapticManager.medium()
+        session.retryFailedCaptures()
+        hasStartedProcessing = true
+        try? modelContext.save()
+
+        Task {
+            await processPendingCaptures(using: OnDeviceQuoteExtractor())
+        }
+    }
+
     private func loadExtractedQuotes() {
         let snapshots = session.captures
             .filter { $0.status == .completed }
@@ -378,11 +399,18 @@ struct ExtractionReviewView: View {
         }
     }
 
-    private func processPendingCaptures() async {
+    private func processPendingCaptures(using extractorOverride: (any QuoteExtracting)? = nil) async {
+        let effectiveExtractor: any QuoteExtracting
+        if let extractorOverride {
+            effectiveExtractor = extractorOverride
+        } else {
+            effectiveExtractor = quoteExtractor
+        }
+
         let processor = ExtractionReviewProcessor(
             modelContext: modelContext,
             session: session,
-            quoteExtractor: quoteExtractor
+            quoteExtractor: effectiveExtractor
         )
         await processor.processPendingCaptures(onCaptureChanged: loadExtractedQuotes)
     }
