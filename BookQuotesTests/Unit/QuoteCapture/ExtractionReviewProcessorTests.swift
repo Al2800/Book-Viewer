@@ -97,7 +97,7 @@ final class ExtractionReviewProcessorTests: SwiftDataTestCase {
         var editableQuote = try XCTUnwrap(reviewState.quotes(for: capture.id).first)
 
         XCTAssertEqual(editableQuote.text, "An on-device quote reaches review.")
-        XCTAssertEqual(editableQuote.marginNote, "Check this later.")
+        XCTAssertNil(editableQuote.marginNote)
         XCTAssertEqual(editableQuote.markingType, "underline")
         XCTAssertEqual(editableQuote.extractionSource, .onDevice)
         XCTAssertFalse(editableQuote.isManual)

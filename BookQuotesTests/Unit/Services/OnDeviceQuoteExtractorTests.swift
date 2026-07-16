@@ -84,7 +84,51 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(quote.customMarkingDisplayName, "Follow Up")
     }
 
-    func testOnDeviceExtractorCapturesNearbyMarginNoteSeparately() async throws {
+    func testOnDeviceExtractorIgnoresMarkFamiliesTheReaderDisabled() async throws {
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: [
+                RecognizedTextLine(
+                    text: "This underline should be ignored.",
+                    confidence: 0.96,
+                    boundingBox: CGRect(x: 120, y: 200, width: 520, height: 32)
+                ),
+                RecognizedTextLine(
+                    text: "This margin-lined passage should remain.",
+                    confidence: 0.96,
+                    boundingBox: CGRect(x: 120, y: 300, width: 620, height: 32)
+                )
+            ]),
+            markDetector: StubPageMarkDetector(marks: [
+                DetectedPageMark(
+                    type: .underline,
+                    boundingBox: CGRect(x: 120, y: 240, width: 520, height: 4),
+                    confidence: 0.84
+                ),
+                DetectedPageMark(
+                    type: .marginLine,
+                    boundingBox: CGRect(x: 80, y: 295, width: 4, height: 44),
+                    confidence: 0.84
+                )
+            ])
+        )
+        let marginLineOnly = [
+            QuoteExtractionPromptBuilder.MarkingPrompt(
+                name: "Margin Line",
+                visualDescription: "Vertical line in the margin",
+                meaning: "Marked passage"
+            )
+        ]
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: marginLineOnly
+        )
+
+        XCTAssertEqual(result.quotes.map(\.text), ["This margin-lined passage should remain."])
+        XCTAssertEqual(result.quotes.first?.markingType, MarkingType.marginLine.rawValue)
+    }
+
+    func testOnDeviceExtractorDoesNotExposeNearbyOCRAsAMarginNote() async throws {
         let image = OnDeviceQuoteExtractorTestImage.underlinedPageWithMarginNote()
         let scale = image.scale
         let extractor = OnDeviceQuoteExtractor(
@@ -115,7 +159,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         let quote = try XCTUnwrap(result.quotes.first)
         XCTAssertEqual(quote.text, "The marked passage remains the quote.")
-        XCTAssertEqual(quote.marginNote, "Return to this later.")
+        XCTAssertNil(quote.marginNote)
         XCTAssertEqual(quote.markingType, "underline")
         XCTAssertGreaterThanOrEqual(quote.confidence ?? 0, 0.65)
     }
@@ -155,6 +199,30 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertFalse(TestFlightAIBypassPolicy.isActive(
             receiptURL: sandboxReceipt,
             now: TestFlightAIBypassPolicy.expiresAt
+        ))
+    }
+
+    func testTestFlightCaptureOffersConsentOnlyToSignedInEligibleTester() {
+        let sandboxReceipt = URL(fileURLWithPath: "/StoreKit/sandboxReceipt")
+        let beforeExpiry = TestFlightAIBypassPolicy.expiresAt.addingTimeInterval(-1)
+
+        XCTAssertTrue(TestFlightAIBypassPolicy.shouldOfferConsent(
+            isAuthenticated: true,
+            hasCurrentConsent: false,
+            receiptURL: sandboxReceipt,
+            now: beforeExpiry
+        ))
+        XCTAssertFalse(TestFlightAIBypassPolicy.shouldOfferConsent(
+            isAuthenticated: false,
+            hasCurrentConsent: false,
+            receiptURL: sandboxReceipt,
+            now: beforeExpiry
+        ))
+        XCTAssertFalse(TestFlightAIBypassPolicy.shouldOfferConsent(
+            isAuthenticated: true,
+            hasCurrentConsent: true,
+            receiptURL: sandboxReceipt,
+            now: beforeExpiry
         ))
     }
 
@@ -304,6 +372,35 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         )
 
         XCTAssertTrue(result.quotes.isEmpty)
+    }
+
+    func testOnDeviceExtractorFailsClosedForImplausibleCandidateCount() async throws {
+        let lines = (0..<9).map { index in
+            RecognizedTextLine(
+                text: "Candidate \(index)",
+                confidence: 0.92,
+                boundingBox: CGRect(x: 260, y: CGFloat(200 + index * 70), width: 360, height: 24)
+            )
+        }
+        let marks = (0..<9).map { index in
+            DetectedPageMark(
+                type: .underline,
+                boundingBox: CGRect(x: 260, y: CGFloat(226 + index * 70), width: 320, height: 3),
+                confidence: 0.80
+            )
+        }
+        let extractor = OnDeviceQuoteExtractor(
+            textRecognizer: StubPageTextRecognizer(lines: lines),
+            markDetector: StubPageMarkDetector(marks: marks)
+        )
+
+        let result = try await extractor.extractQuotes(
+            from: OnDeviceQuoteExtractorTestImage.plainTextPage(),
+            markings: []
+        )
+
+        XCTAssertTrue(result.quotes.isEmpty)
+        XCTAssertEqual(result.processingNotes, "On-device extraction found too many ambiguous markings")
     }
 
     func testDoubleUnderlineRetainsItsMarkingFamily() throws {
@@ -532,6 +629,50 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         )
         XCTAssertEqual(candidates.first?.markingType, .marginLine)
         XCTAssertNil(candidates.first?.marginNote)
+    }
+
+    func testSelectorRejectsPrintedVerticalStrokeInsideBodyTextAsMarginMark() {
+        let lines = [
+            RecognizedTextLine(
+                text: "Printed body text must not become a quote",
+                confidence: 0.92,
+                boundingBox: CGRect(x: 260, y: 220, width: 460, height: 32)
+            )
+        ]
+        let marks = [
+            DetectedPageMark(
+                type: .bracket,
+                boundingBox: CGRect(x: 410, y: 214, width: 8, height: 48),
+                confidence: 0.84
+            )
+        ]
+
+        XCTAssertTrue(QuoteMarkTextSelector().selectCandidates(
+            textLines: lines,
+            marks: marks
+        ).isEmpty)
+    }
+
+    func testSelectorRejectsHorizontalGlyphStrokeInsidePrintedLineAsUnderline() {
+        let lines = [
+            RecognizedTextLine(
+                text: "Printed body text must not become a quote",
+                confidence: 0.92,
+                boundingBox: CGRect(x: 260, y: 220, width: 460, height: 32)
+            )
+        ]
+        let marks = [
+            DetectedPageMark(
+                type: .underline,
+                boundingBox: CGRect(x: 300, y: 232, width: 180, height: 3),
+                confidence: 0.80
+            )
+        ]
+
+        XCTAssertTrue(QuoteMarkTextSelector().selectCandidates(
+            textLines: lines,
+            marks: marks
+        ).isEmpty)
     }
 
     func testSelectorSplitsSeparateMarginLinesByParagraphGap() {
@@ -775,7 +916,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertEqual(remote.callCount, 1)
     }
 
-    func testQuoteExtractionPipelineUsesLocalOCRWhenRemoteModelFindsNoQuotes() async throws {
+    func testQuoteExtractionPipelineTrustsRemoteModelWhenItFindsNoQuotes() async throws {
         let local = SpyQuoteExtractor(result: QuoteExtractionResult(
             quotes: [
                 ExtractedQuoteData(
@@ -806,10 +947,10 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             markings: []
         )
 
-        XCTAssertEqual(result.quotes.first?.text, "local fallback quote")
-        XCTAssertEqual(result.processingNotes, "local OCR fallback")
-        XCTAssertEqual(result.fallbackReason, .remoteReturnedNoQuotes)
-        XCTAssertEqual(local.callCount, 1)
+        XCTAssertTrue(result.quotes.isEmpty)
+        XCTAssertEqual(result.processingNotes, "model found no quotes")
+        XCTAssertNil(result.fallbackReason)
+        XCTAssertEqual(local.callCount, 0)
         XCTAssertEqual(remote.callCount, 1)
     }
 
@@ -838,7 +979,7 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
 
         XCTAssertEqual(result.quotes.first?.text, "local quote while signed out")
         XCTAssertEqual(result.quotes.first?.extractionSource, .onDevice)
-        XCTAssertNil(result.fallbackReason)
+        XCTAssertEqual(result.fallbackReason, .remoteProcessingDisabled)
         XCTAssertEqual(local.callCount, 1)
         XCTAssertEqual(remote.callCount, 0)
     }

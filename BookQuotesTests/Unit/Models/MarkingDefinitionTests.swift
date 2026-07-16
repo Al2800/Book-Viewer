@@ -37,4 +37,16 @@ final class MarkingDefinitionTests: SwiftDataTestCase {
 
         logger.success("Custom definition defaults are correct")
     }
+
+    func testOnboardingChoicesConfigureSeededDefaults() throws {
+        MarkingDefinition.configureSystemDefaults(
+            in: modelContext,
+            enabledLocalFamilies: [.marginLine]
+        )
+
+        let definitions = try fetchAllMarkingDefinitions()
+        let enabled = definitions.filter(\.isEnabled)
+
+        XCTAssertEqual(enabled.map(\.name), ["Margin Line"])
+    }
 }

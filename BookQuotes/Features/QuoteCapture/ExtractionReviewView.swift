@@ -24,6 +24,7 @@ struct ExtractionReviewView: View {
     @State private var currentDuplicateCheck: DuplicateCheckItem?
     @State private var hasAppeared = false
     @State private var hasStartedProcessing = false
+    @State private var showingAIConsent = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -131,7 +132,7 @@ struct ExtractionReviewView: View {
                     )
                 }
             }
-        .sheet(item: $currentDuplicateCheck, onDismiss: advanceDuplicateReview) { item in
+            .sheet(item: $currentDuplicateCheck, onDismiss: advanceDuplicateReview) { item in
                 DuplicateWarningSheet(
                     duplicates: item.check.duplicates,
                     newQuoteText: item.check.extractedQuote.text,
@@ -142,6 +143,13 @@ struct ExtractionReviewView: View {
                     onCancel: {}
                 )
             }
+        }
+        .sheet(isPresented: $showingAIConsent) {
+            AIProcessingConsentView { _ in
+                showingAIConsent = false
+                startProcessingIfNeeded()
+            }
+            .interactiveDismissDisabled()
         }
         // Prevent swipe-to-dismiss. If the user dismisses this early (for example while processing),
         // the underlying capture view can be left in a "completed" state with no shutter controls.
@@ -354,6 +362,14 @@ struct ExtractionReviewView: View {
         guard !hasStartedProcessing else { return }
         let hasPending = session.captures.contains { $0.status == .pending }
         guard hasPending else { return }
+
+        if TestFlightAIBypassPolicy.shouldOfferConsent(
+            isAuthenticated: authService.isAuthenticated,
+            hasCurrentConsent: AIProcessingConsentStore.shared.hasCurrentConsent
+        ) {
+            showingAIConsent = true
+            return
+        }
 
         hasStartedProcessing = true
 

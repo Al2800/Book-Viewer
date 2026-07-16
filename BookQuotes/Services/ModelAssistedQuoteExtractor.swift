@@ -2,6 +2,7 @@ import UIKit
 
 struct QuoteExtractionPipeline: QuoteExtracting {
     private let extractor: any QuoteExtracting
+    private let localOnlyReason: ExtractionFallbackReason?
 
     init(
         localExtractor: any QuoteExtracting,
@@ -14,10 +15,15 @@ struct QuoteExtractionPipeline: QuoteExtracting {
                 remoteExtractor: remoteExtractor
             )
             : localExtractor
+        self.localOnlyReason = isRemoteProcessingEnabled ? nil : .remoteProcessingDisabled
     }
 
-    private init(extractor: any QuoteExtracting) {
+    private init(
+        extractor: any QuoteExtracting,
+        localOnlyReason: ExtractionFallbackReason? = nil
+    ) {
         self.extractor = extractor
+        self.localOnlyReason = localOnlyReason
     }
 
     static func live(authService: AuthService) -> QuoteExtractionPipeline {
@@ -27,7 +33,10 @@ struct QuoteExtractionPipeline: QuoteExtracting {
 
         let localExtractor = OnDeviceQuoteExtractor()
         guard AIProcessingConsentStore.shared.hasCurrentConsent else {
-            return QuoteExtractionPipeline(extractor: localExtractor)
+            return QuoteExtractionPipeline(
+                extractor: localExtractor,
+                localOnlyReason: .remoteProcessingDisabled
+            )
         }
 
         return QuoteExtractionPipeline(
@@ -41,7 +50,9 @@ struct QuoteExtractionPipeline: QuoteExtracting {
         from image: UIImage,
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
-        try await extractor.extractQuotes(from: image, markings: markings)
+        let result = try await extractor.extractQuotes(from: image, markings: markings)
+        guard let localOnlyReason else { return result }
+        return result.withFallbackReason(localOnlyReason)
     }
 }
 
@@ -139,10 +150,6 @@ struct ModelAssistedQuoteExtractor: QuoteExtracting {
                 .withFallbackReason(.from(remoteError))
         }
 
-        guard !remoteResult.isSuccessful else { return remoteResult }
-
-        return try await localExtractor
-            .extractQuotes(from: image, markings: markings)
-            .withFallbackReason(.remoteReturnedNoQuotes)
+        return remoteResult
     }
 }

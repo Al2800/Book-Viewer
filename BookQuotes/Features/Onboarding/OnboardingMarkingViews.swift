@@ -2,11 +2,11 @@ import SwiftUI
 
 struct MarkingTemplateSelector: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var selectionState = OnboardingMarkingSelectionState()
+    @Binding var selectionState: OnboardingMarkingSelectionState
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: Spacing.md) {
-            ForEach(MarkingType.allCases, id: \.self) { type in
+            ForEach(MarkingType.configurableCases, id: \.self) { type in
                 MarkingStyleOption(
                     type: type,
                     isSelected: selectionState.isSelected(type)

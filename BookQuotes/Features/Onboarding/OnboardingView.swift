@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Onboarding View
 
@@ -8,6 +9,7 @@ struct OnboardingView: View {
     // MARK: - Environment
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
 
     // MARK: - Services
 
@@ -124,7 +126,11 @@ struct OnboardingView: View {
         }
     }
 
-    private func advanceFromMarkingSetup() {
+    private func advanceFromMarkingSetup(selectedStyles: Set<MarkingType>?) {
+        MarkingDefinition.configureSystemDefaults(
+            in: modelContext,
+            enabledLocalFamilies: selectedStyles
+        )
         withAnimation {
             sessionState.advanceFromMarkingSetup()
         }

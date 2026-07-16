@@ -130,18 +130,39 @@ final class PageCaptureTests: SwiftDataTestCase {
             try captureDirectoryURL.resourceValues(forKeys: [.isExcludedFromBackupKey]).isExcludedFromBackup,
             true
         )
-        XCTAssertEqual(
-            try FileManager.default.attributesOfItem(atPath: imageURL.path)[.protectionKey] as? FileProtectionType,
-            .completeUntilFirstUserAuthentication
-        )
-        XCTAssertEqual(
-            try FileManager.default.attributesOfItem(atPath: captureDirectoryURL.path)[.protectionKey] as? FileProtectionType,
-            .completeUntilFirstUserAuthentication
-        )
+        assertFileProtectionWhenSupported(at: imageURL)
+        assertFileProtectionWhenSupported(at: captureDirectoryURL)
 
         XCTAssertTrue(capture.deleteImageFile())
         XCTAssertTrue(capture.imagePath.isEmpty)
         XCTAssertFalse(FileManager.default.fileExists(atPath: imageURL.path))
+    }
+
+    private func assertFileProtectionWhenSupported(
+        at url: URL,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let protection = try? FileManager.default
+            .attributesOfItem(atPath: url.path)[.protectionKey] as? FileProtectionType
+
+#if targetEnvironment(simulator)
+        if let protection {
+            XCTAssertEqual(
+                protection,
+                .completeUntilFirstUserAuthentication,
+                file: file,
+                line: line
+            )
+        }
+#else
+        XCTAssertEqual(
+            protection,
+            .completeUntilFirstUserAuthentication,
+            file: file,
+            line: line
+        )
+#endif
     }
 
     func testSessionImageCleanupPreservesResultsAndRemovesFullImages() throws {

@@ -29,8 +29,7 @@ struct QuoteMarkTextSelector: Sendable {
             return candidate(
                 from: selectedLines,
                 marks: [mark],
-                markingType: mark.type,
-                allTextLines: textLines
+                markingType: mark.type
             )
         }
 
@@ -79,8 +78,7 @@ struct QuoteMarkTextSelector: Sendable {
                 marks: group.map(\.mark),
                 markingType: group.contains(where: { $0.mark.type == .doubleUnderline })
                     ? .doubleUnderline
-                    : .underline,
-                allTextLines: textLines
+                    : .underline
             )
         }
     }
@@ -102,8 +100,7 @@ struct QuoteMarkTextSelector: Sendable {
             candidate(
                 from: group.map(\.line),
                 marks: group.map(\.mark),
-                markingType: .marginLine,
-                allTextLines: textLines
+                markingType: .marginLine
             )
         }
     }
@@ -125,8 +122,7 @@ struct QuoteMarkTextSelector: Sendable {
             candidate(
                 from: group.map(\.line),
                 marks: group.map(\.mark),
-                markingType: .highlight,
-                allTextLines: textLines
+                markingType: .highlight
             )
         }
     }
@@ -134,8 +130,7 @@ struct QuoteMarkTextSelector: Sendable {
     private func candidate(
         from selectedLines: [RecognizedTextLine],
         marks: [DetectedPageMark],
-        markingType: MarkingType,
-        allTextLines: [RecognizedTextLine]
+        markingType: MarkingType
     ) -> OnDeviceQuoteCandidate? {
         guard !selectedLines.isEmpty else { return nil }
 
@@ -165,7 +160,7 @@ struct QuoteMarkTextSelector: Sendable {
         return OnDeviceQuoteCandidate(
             text: text,
             markingType: markingType,
-            marginNote: marginNote(near: selectedLines, marks: marks, from: allTextLines),
+            marginNote: nil,
             confidence: confidence
         )
     }
@@ -248,48 +243,6 @@ struct QuoteMarkTextSelector: Sendable {
         return 0
     }
 
-    private func marginNote(
-        near selectedLines: [RecognizedTextLine],
-        marks: [DetectedPageMark],
-        from allTextLines: [RecognizedTextLine]
-    ) -> String? {
-        guard var quoteBounds = selectedLines.first?.boundingBox else { return nil }
-        for line in selectedLines.dropFirst() {
-            quoteBounds = quoteBounds.union(line.boundingBox)
-        }
-
-        let markedBounds = marks.reduce(quoteBounds) { bounds, mark in
-            bounds.union(mark.boundingBox)
-        }
-        let maximumNoteWidth = max(120, quoteBounds.width * 0.55)
-        let maximumHorizontalGap = max(180, quoteBounds.width * 0.45)
-
-        let notes = allTextLines.filter { line in
-            guard !selectedLines.contains(line) else { return false }
-            guard line.boundingBox.width <= maximumNoteWidth else { return false }
-
-            let verticalGap: CGFloat
-            if line.boundingBox.maxY < markedBounds.minY {
-                verticalGap = markedBounds.minY - line.boundingBox.maxY
-            } else if markedBounds.maxY < line.boundingBox.minY {
-                verticalGap = line.boundingBox.minY - markedBounds.maxY
-            } else {
-                verticalGap = 0
-            }
-            guard verticalGap <= max(80, line.boundingBox.height * 2) else { return false }
-
-            let lineHorizontalGap = horizontalGap(between: line.boundingBox, and: quoteBounds)
-            if lineHorizontalGap == 0 {
-                return false
-            }
-            return lineHorizontalGap <= maximumHorizontalGap
-        }
-        .sorted { $0.boundingBox.minY < $1.boundingBox.minY }
-
-        let note = notes.joinedOCRText()
-        return note.isEmpty ? nil : note
-    }
-
     private func closestLinesAboveUnderline(
         _ mark: DetectedPageMark,
         textLines: [RecognizedTextLine]
@@ -309,7 +262,8 @@ struct QuoteMarkTextSelector: Sendable {
             let overlap = horizontalOverlapRatio(line.boundingBox, mark.boundingBox)
             let verticalGap = mark.boundingBox.minY - line.boundingBox.maxY
             let allowedGap = max(80, line.boundingBox.height * 1.8)
-            return overlap >= 0.25 && verticalGap >= -line.boundingBox.height && verticalGap <= allowedGap
+            let maximumGlyphOverlap = max(3, line.boundingBox.height * 0.15)
+            return overlap >= 0.25 && verticalGap >= -maximumGlyphOverlap && verticalGap <= allowedGap
         }
 
         return candidates.min { lhs, rhs in
@@ -357,8 +311,11 @@ struct QuoteMarkTextSelector: Sendable {
         textLines.filter { line in
             let verticalOverlap = min(line.boundingBox.maxY, mark.boundingBox.maxY) - max(line.boundingBox.minY, mark.boundingBox.minY)
             let lineHorizontalGap = horizontalGap(between: line.boundingBox, and: mark.boundingBox)
+            let separationTolerance = max(2, line.boundingBox.height * 0.12)
+            let isOutsidePrintedText = mark.boundingBox.maxX <= line.boundingBox.minX + separationTolerance
+                || mark.boundingBox.minX >= line.boundingBox.maxX - separationTolerance
             let isAdjacent = lineHorizontalGap <= max(80, line.boundingBox.height * 2)
-            return verticalOverlap > 0 && isAdjacent
+            return verticalOverlap > 0 && isOutsidePrintedText && isAdjacent
         }
     }
 

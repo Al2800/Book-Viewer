@@ -31,7 +31,7 @@ commercial agreement, and the bypass variables must be removed before App Store 
 - Backend verification passed: 11 test files, 49 tests, and TypeScript type checking.
 - Build 42 focused iOS tests passed for consent persistence, TestFlight receipt and expiry
   enforcement, remote-model-first extraction, and on-device OCR fallback.
-- The signed Build 42 archive completed successfully at
-  `artifacts/release/BookQuotes-1.0-42.xcarchive`.
-- TestFlight export is pending restoration of Xcode's App Store Connect account session; the first
-  export attempt stopped before validation or upload with `Failed to Use Accounts`.
+- The first signed Build 42 archive completed successfully, but it predates the Build 41 extraction
+  feedback corrections and must be replaced before upload.
+- Xcode's App Store Connect account session was restored on 2026-07-16. A fresh archive and upload
+  from the post-feedback Build 42 sources remain pending.

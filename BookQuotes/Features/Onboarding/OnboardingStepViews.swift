@@ -173,7 +173,9 @@ struct OnboardingSubscriptionStepView: View {
 }
 
 struct OnboardingMarkingSetupStepView: View {
-    let onContinue: () -> Void
+    @State private var selectionState = OnboardingMarkingSelectionState()
+
+    let onContinue: (Set<MarkingType>?) -> Void
 
     var body: some View {
         OnboardingScrollableStep {
@@ -181,20 +183,24 @@ struct OnboardingMarkingSetupStepView: View {
                 Spacer(minLength: Spacing.lg)
                 header
 
-                MarkingTemplateSelector()
+                MarkingTemplateSelector(selectionState: $selectionState)
                     .padding(.horizontal, Spacing.lg)
 
                 Spacer(minLength: Spacing.lg)
 
-                Button(action: onContinue) {
+                Button {
+                    onContinue(selectionState.selectedStyles)
+                } label: {
                     Text("Continue")
                 }
                 .buttonStyle(.primary)
                 .padding(.horizontal, Spacing.lg)
 
-                Button("Use defaults", action: onContinue)
-                    .foregroundStyle(Color.textSecondary)
-                    .padding(.bottom, Spacing.xl)
+                Button("Use defaults") {
+                    onContinue(nil)
+                }
+                .foregroundStyle(Color.textSecondary)
+                .padding(.bottom, Spacing.xl)
             }
         }
     }

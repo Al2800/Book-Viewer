@@ -12,6 +12,17 @@ enum MarkingType: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// Concrete styles a reader can intentionally configure. `mixed` is an
+    /// extraction result, not a marking style someone can choose.
+    static let configurableCases: [MarkingType] = [
+        .underline,
+        .doubleUnderline,
+        .marginLine,
+        .highlight,
+        .marginNote,
+        .bracket
+    ]
+
     var displayName: String {
         switch self {
         case .underline: return "Underline"

@@ -163,4 +163,27 @@ extension MarkingDefinition {
             context.insert(definition)
         }
     }
+
+    /// Seeds defaults and applies the reader's onboarding choices. Passing nil
+    /// keeps every default enabled for the explicit "Use defaults" action.
+    @MainActor
+    static func configureSystemDefaults(
+        in context: ModelContext,
+        enabledLocalFamilies: Set<MarkingType>?
+    ) {
+        seedDefaults(in: context)
+
+        let descriptor = FetchDescriptor<MarkingDefinition>(
+            predicate: #Predicate { $0.isSystemDefault }
+        )
+        guard let definitions = try? context.fetch(descriptor) else { return }
+
+        for definition in definitions {
+            let family = QuoteExtractionPromptBuilder.MarkingPrompt(definition).localMarkingFamily
+            definition.isEnabled = enabledLocalFamilies.map { selectedFamilies in
+                family.map(selectedFamilies.contains) ?? false
+            } ?? true
+        }
+        try? context.save()
+    }
 }

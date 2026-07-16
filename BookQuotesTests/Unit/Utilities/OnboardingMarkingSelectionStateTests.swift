@@ -29,4 +29,8 @@ final class OnboardingMarkingSelectionStateTests: XCTestCase {
         XCTAssertTrue(state.isSelected(.underline))
         XCTAssertTrue(state.isSelected(.highlight))
     }
+
+    func testMixedExtractionResultIsNotAConfigurableStyle() {
+        XCTAssertFalse(MarkingType.configurableCases.contains(.mixed))
+    }
 }

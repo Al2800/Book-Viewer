@@ -10,6 +10,8 @@ final class QuoteExtractionPromptBuilderTests: XCTestCase {
         let prompt = QuoteExtractionPromptBuilder.buildPrompt(markings: [])
         XCTAssertTrue(prompt.contains("Underline"))
         XCTAssertTrue(prompt.contains("\"underline\""))
+        XCTAssertTrue(prompt.contains("\"double_underline\""))
+        XCTAssertTrue(prompt.contains("\"margin_line\""))
         XCTAssertTrue(prompt.contains("\"highlight\""))
     }
 
@@ -144,13 +146,13 @@ final class QuoteExtractionPromptBuilderTests: XCTestCase {
         XCTAssertNil(result.resolvingCustomMarkings(from: markings).quotes.first?.customMarkingDefinitionID)
     }
 
-    func testBuildPromptRequestsBestEffortMarkedTextWhenBoundariesAreUncertain() {
+    func testBuildPromptOmitsUncertainMarksInsteadOfOverExtracting() {
         let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: [])
             .lowercased()
 
-        XCTAssertTrue(prompt.contains("best-effort"))
-        XCTAssertTrue(prompt.contains("lower confidence"))
-        XCTAssertTrue(prompt.contains("do not return an empty quotes array"))
+        XCTAssertTrue(prompt.contains("prioritize precision over recall"))
+        XCTAssertTrue(prompt.contains("omit that candidate"))
+        XCTAssertTrue(prompt.contains("empty quotes array"))
     }
 
     func testBuildPromptTreatsBracketedParagraphsAsCompleteMarkedPassages() {
@@ -162,14 +164,13 @@ final class QuoteExtractionPromptBuilderTests: XCTestCase {
         XCTAssertTrue(prompt.contains("do not limit extraction to the underlined sentence"))
     }
 
-    func testBuildPromptTreatsSmallBracketsAndTicksAsIntentionalMarks() {
+    func testBuildPromptDistinguishesSmallMarksFromPrintedStrokes() {
         let prompt = QuoteExtractionPromptBuilder.buildPrompt(markingPrompts: [])
             .lowercased()
 
         XCTAssertTrue(prompt.contains("small brackets"))
-        XCTAssertTrue(prompt.contains("short side ticks"))
-        XCTAssertTrue(prompt.contains("partial bracket hooks"))
-        XCTAssertTrue(prompt.contains("even if the region is only a short phrase or one line"))
+        XCTAssertTrue(prompt.contains("visually distinct from printed letters"))
+        XCTAssertTrue(prompt.contains("do not guess"))
     }
 
     func testBuildPromptRequestsLineWrapHyphenationRepairWithoutInventingText() {

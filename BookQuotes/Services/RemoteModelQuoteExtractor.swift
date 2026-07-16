@@ -34,6 +34,17 @@ enum TestFlightAIBypassPolicy {
     ) -> Bool {
         receiptURL?.lastPathComponent == "sandboxReceipt" && now < expiresAt
     }
+
+    static func shouldOfferConsent(
+        isAuthenticated: Bool,
+        hasCurrentConsent: Bool,
+        receiptURL: URL? = Bundle.main.appStoreReceiptURL,
+        now: Date = Date()
+    ) -> Bool {
+        isAuthenticated
+            && !hasCurrentConsent
+            && isActive(receiptURL: receiptURL, now: now)
+    }
 }
 
 protocol RemoteQuoteImageCropping: Sendable {

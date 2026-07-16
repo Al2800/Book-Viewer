@@ -43,6 +43,8 @@ struct DetectedPageMark: Sendable, Equatable {
 }
 
 struct OnDeviceQuoteExtractor: Sendable {
+    private static let maximumReviewableCandidateCount = 8
+
     private let textRecognizer: any PageTextRecognizing
     private let markDetector: any PageMarkDetecting
     private let selector: QuoteMarkTextSelector
@@ -62,8 +64,16 @@ struct OnDeviceQuoteExtractor: Sendable {
         markings: [QuoteExtractionPromptBuilder.MarkingPrompt] = []
     ) async throws -> QuoteExtractionResult {
         let textLines = try await textRecognizer.recognizeText(in: image)
-        let marks = try markDetector.detectMarks(in: image)
-        let candidates = selector.selectCandidates(textLines: textLines, marks: marks)
+        let detectedMarks = try markDetector.detectMarks(in: image)
+        let enabledFamilies = Set(markings.compactMap(\.localMarkingFamily))
+        let marks = detectedMarks.filter { mark in
+            guard mark.type != .mixed else { return false }
+            return enabledFamilies.isEmpty || enabledFamilies.contains(mark.type)
+        }
+        let detectedCandidates = selector.selectCandidates(textLines: textLines, marks: marks)
+        let candidates = detectedCandidates.count <= Self.maximumReviewableCandidateCount
+            ? detectedCandidates
+            : []
 
         let quotes = candidates.map { candidate in
             let customMarking = markings.customMarking(
@@ -84,7 +94,9 @@ struct OnDeviceQuoteExtractor: Sendable {
         return QuoteExtractionResult(
             quotes: quotes,
             pageNumber: nil,
-            processingNotes: "On-device OCR extraction"
+            processingNotes: detectedCandidates.count <= Self.maximumReviewableCandidateCount
+                ? "On-device OCR extraction"
+                : "On-device extraction found too many ambiguous markings"
         )
     }
 }
