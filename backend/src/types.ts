@@ -18,6 +18,7 @@ export interface Env {
   // Variables
   ENVIRONMENT: string;
   ALLOW_AUTHENTICATED_EXTRACTION?: string;
+  AUTHENTICATED_EXTRACTION_BYPASS_UNTIL?: string;
   HF_MODEL_ID?: string;
 }
 

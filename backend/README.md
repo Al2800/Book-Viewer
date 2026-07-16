@@ -246,7 +246,7 @@ configured limit and confirm no provider calls occur after a rejected reservatio
 - Session tokens are signed with HS256 and expire after 7 days
 - Gemini API key is never exposed to clients
 - Subscription access is granted from App Store Server API state, not client-declared status
-- `ALLOW_AUTHENTICATED_EXTRACTION=true` is a temporary beta-only policy; production leaves it unset so subscription gating stays enforced
+- An authenticated beta bypass requires both `ALLOW_AUTHENTICATED_EXTRACTION=true` and a future ISO-8601 `AUTHENTICATED_EXTRACTION_BYPASS_UNTIL`; it fails closed when the expiry is absent, invalid, or elapsed
 - Subscription ownership is bound to a deterministic `appAccountToken`
 - App Store notifications trigger server-side reconciliation before entitlements are mutated
 - The worker stores the normalized entitlement cache in Cloudflare KV

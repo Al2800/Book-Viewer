@@ -35,12 +35,24 @@ export function decideExtractionAccess(
   };
 }
 
+export function isAuthenticatedExtractionBypassActive(
+  env: Env,
+  now = Date.now()
+): boolean {
+  if (env.ALLOW_AUTHENTICATED_EXTRACTION !== 'true') {
+    return false;
+  }
+
+  const bypassUntil = Date.parse(env.AUTHENTICATED_EXTRACTION_BYPASS_UNTIL ?? '');
+  return Number.isFinite(bypassUntil) && now < bypassUntil;
+}
+
 export async function evaluateExtractionAccess(
   userId: string,
   env: Env
 ): Promise<ExtractionAccessDecision> {
   return decideExtractionAccess(
     await hasActiveSubscription(userId, env),
-    env.ALLOW_AUTHENTICATED_EXTRACTION === 'true'
+    isAuthenticatedExtractionBypassActive(env)
   );
 }

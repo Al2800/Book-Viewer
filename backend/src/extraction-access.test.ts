@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { isAuthenticatedExtractionBypassActive } from './extraction-access-policy';
 import type { Env } from './types';
 
 vi.mock('./auth', () => ({
@@ -107,6 +108,7 @@ function makeEnv(overrides: Partial<Env> = {}): Env {
     APPLE_IAP_ISSUER_ID: 'test-issuer',
     APPLE_IAP_PRIVATE_KEY: 'test-private-key',
     ENVIRONMENT: 'production',
+    AUTHENTICATED_EXTRACTION_BYPASS_UNTIL: '2099-01-01T00:00:00Z',
     ...overrides,
   };
 }
@@ -140,6 +142,23 @@ function makeExtractionRequest(path = '/api/extract-quotes-hf'): Request {
 describe('extraction access policy', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it('requires a future expiry before enabling the authenticated tester bypass', () => {
+    expect(isAuthenticatedExtractionBypassActive(makeEnv({
+      ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+      AUTHENTICATED_EXTRACTION_BYPASS_UNTIL: undefined,
+    }))).toBe(false);
+
+    expect(isAuthenticatedExtractionBypassActive(makeEnv({
+      ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+      AUTHENTICATED_EXTRACTION_BYPASS_UNTIL: '2026-07-16T10:00:00Z',
+    }), Date.parse('2026-07-16T10:00:01Z'))).toBe(false);
+
+    expect(isAuthenticatedExtractionBypassActive(makeEnv({
+      ALLOW_AUTHENTICATED_EXTRACTION: 'true',
+      AUTHENTICATED_EXTRACTION_BYPASS_UNTIL: '2026-07-19T00:00:00Z',
+    }), Date.parse('2026-07-16T10:00:00Z'))).toBe(true);
   });
 
   it('retires the legacy Gemini quote route before parsing or forwarding a page image', async () => {

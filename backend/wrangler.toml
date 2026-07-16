@@ -34,10 +34,11 @@ new_sqlite_classes = ["ExtractionRateLimiter"]
 # - APPLE_APP_ID (optional)
 
 [env.production]
-# Production must preserve paid-feature gating and use the reviewed static provider route.
+# The authenticated TestFlight bypass expires automatically at the configured UTC instant.
+# Remove both bypass variables after the temporary QA window closes.
 # The model identifier is not secret; keeping it here prevents an opaque secret change from
 # silently switching page images to a different provider.
-vars = { ENVIRONMENT = "production", ALLOW_AUTHENTICATED_EXTRACTION = "false", HF_MODEL_ID = "Qwen/Qwen2.5-VL-72B-Instruct:hf-inference", APPLE_BUNDLE_ID = "com.acampbell.bookquotes" }
+vars = { ENVIRONMENT = "production", ALLOW_AUTHENTICATED_EXTRACTION = "true", AUTHENTICATED_EXTRACTION_BYPASS_UNTIL = "2026-07-19T00:00:00Z", HF_MODEL_ID = "Qwen/Qwen2.5-VL-72B-Instruct:hf-inference", APPLE_BUNDLE_ID = "com.acampbell.bookquotes" }
 routes = ["api.bookquotes.uk/*"]
 
 [[env.production.kv_namespaces]]
