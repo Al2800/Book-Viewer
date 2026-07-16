@@ -1,6 +1,6 @@
 # 095 - Make AI provider routing and retention claims enforceable
 
-Status: in_progress
+Status: complete
 Area: Backend / AI Providers / Privacy
 Priority: critical (release blocker 7)
 
@@ -19,7 +19,7 @@ The Hugging Face model uses `:preferred`, which may route requests to external i
 ## Verification
 
 - [x] Backend tests for provider selection and rejected providers.
-- [ ] Deployment configuration review.
+- [x] Deployment configuration review.
 - [x] Recorded evidence of provider retention terms or ZDR approval.
 
 ## Implementation Notes
@@ -30,8 +30,8 @@ or forwarding. The Worker allowlist is the deployment control point; changing it
 privacy and retention review. The user-facing policy no longer makes provider-retention claims
 outside BookQuotes' control, and remote processing remains an explicit, revocable choice.
 
-This remains open until the supported Featherless route and the corresponding user-facing privacy
-policy are confirmed in production.
+The supported Featherless route and corresponding user-facing privacy disclosures are confirmed in
+production.
 
 2026-07-15 route retirement follow-up:
 
@@ -91,3 +91,6 @@ policy are confirmed in production.
 - Featherless's official API privacy documentation states that prompts and completions are
   processed in real time and not stored. The privacy record and user-facing disclosures now name
   Featherless explicitly, and the backend allowlist rejects the old and dynamic suffixes.
+- Production Worker version `8ec979f7-d85a-44fb-a37a-8a36ffec3b86` was verified with the pinned
+  Featherless model, and TestFlight Build 43 completed a successful reader-reported real-page
+  extraction after the routing correction. This closes the provider-routing release blocker.

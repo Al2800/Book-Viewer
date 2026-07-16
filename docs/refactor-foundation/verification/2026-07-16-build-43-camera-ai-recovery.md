@@ -44,6 +44,20 @@ After Build 43 finishes TestFlight processing, verify on the connected iPhone th
 5. `Retry AI Extraction` succeeds after connectivity returns, and `Use On-Device Instead` only
    runs when deliberately selected.
 
+### Reader Result
+
+The reader completed a real-page extraction in TestFlight Build 43 after the production routing
+correction and reported that the page extracted cleanly overall. No silent on-device regression
+or extraction failure was reported. This accepts the remote-AI happy path for Build 43.
+
+One second quote used a vertical margin line intended to select two lines, while the model returned
+seven lines. This is tracked as a quote-boundary precision follow-up in issue 013. The reader
+accepted that isolated over-selection as non-blocking for this release; the tested Build 43 prompt
+and binary were not changed from a single example.
+
+The separate network-loss/retry and deliberately blurred-photo checks remain useful destructive
+smokes, but they are not represented as completed by this successful page extraction.
+
 ## TestFlight Delivery
 
 - Source commit: `ff352fd` on `main`.

@@ -258,6 +258,19 @@ Hosted-model acceptance criteria:
   capture flow. This is a transport safeguard, not evidence that the current Vision crop is the
   smallest useful crop for every real page, so that acceptance criterion remains open.
 
+2026-07-16 Build 43 real-page follow-up:
+
+- The reader confirmed that a real TestFlight page extracted cleanly overall after the production
+  provider-routing correction and removal of silent remote-to-local fallback.
+- A second quote marked by a vertical margin line intended to cover two lines was over-selected to
+  seven lines by the model.
+- This is a boundary-precision quality issue, not evidence of an on-device routing regression.
+  Build 43 now leaves remote failures explicit, so a successful extraction cannot silently switch
+  to local OCR after a provider error.
+- The reader accepted this isolated over-selection as non-blocking for the current release. Prompt
+  tuning remains open until representative margin-line fixtures can be compared together, avoiding
+  a production prompt change based on one page.
+
 2026-07-15 content-crop follow-up:
 
 - Before the explicitly consented remote fallback uploads an image, it now uses Vision text bounds
