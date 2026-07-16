@@ -31,7 +31,8 @@ commercial agreement, and the bypass variables must be removed before App Store 
 - Backend verification passed: 11 test files, 49 tests, and TypeScript type checking.
 - Build 42 focused iOS tests passed for consent persistence, TestFlight receipt and expiry
   enforcement, remote-model-first extraction, and on-device OCR fallback.
-- The first signed Build 42 archive completed successfully, but it predates the Build 41 extraction
-  feedback corrections and must be replaced before upload.
-- Xcode's App Store Connect account session was restored on 2026-07-16. A fresh archive and upload
-  from the post-feedback Build 42 sources remain pending.
+- The first signed Build 42 archive predated the Build 41 extraction feedback corrections and was
+  deleted before the corrected replacement archive was created.
+- Xcode's App Store Connect account session was restored on 2026-07-16.
+- The post-feedback Build 42 archive from commit `0dab41e` uploaded successfully, completed Apple
+  processing, and is assigned to the internal `Test v1` group without a compliance warning.
