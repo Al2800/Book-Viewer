@@ -139,6 +139,25 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertFalse(store.hasCurrentConsent)
     }
 
+    func testTestFlightAIBypassRequiresSandboxReceiptAndFutureExpiry() {
+        let sandboxReceipt = URL(fileURLWithPath: "/StoreKit/sandboxReceipt")
+        let appStoreReceipt = URL(fileURLWithPath: "/StoreKit/receipt")
+        let beforeExpiry = TestFlightAIBypassPolicy.expiresAt.addingTimeInterval(-1)
+
+        XCTAssertTrue(TestFlightAIBypassPolicy.isActive(
+            receiptURL: sandboxReceipt,
+            now: beforeExpiry
+        ))
+        XCTAssertFalse(TestFlightAIBypassPolicy.isActive(
+            receiptURL: appStoreReceipt,
+            now: beforeExpiry
+        ))
+        XCTAssertFalse(TestFlightAIBypassPolicy.isActive(
+            receiptURL: sandboxReceipt,
+            now: TestFlightAIBypassPolicy.expiresAt
+        ))
+    }
+
     func testExtractsGraphiteUnderlinedTextFromSyntheticPageWithoutNetwork() async throws {
         let image = OnDeviceQuoteExtractorTestImage.graphiteUnderlinedPage()
         let marks = try PageMarkDetector().detectMarks(in: image)

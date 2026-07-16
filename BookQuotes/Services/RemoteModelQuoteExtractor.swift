@@ -25,6 +25,17 @@ struct AIProcessingConsentStore {
     }
 }
 
+enum TestFlightAIBypassPolicy {
+    static let expiresAt = Date(timeIntervalSince1970: 1_784_419_200)
+
+    static func isActive(
+        receiptURL: URL? = Bundle.main.appStoreReceiptURL,
+        now: Date = Date()
+    ) -> Bool {
+        receiptURL?.lastPathComponent == "sandboxReceipt" && now < expiresAt
+    }
+}
+
 protocol RemoteQuoteImageCropping: Sendable {
     func crop(_ image: UIImage) async -> UIImage
 }

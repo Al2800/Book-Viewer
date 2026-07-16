@@ -13,7 +13,8 @@ TestFlight users to test the remote AI workflow independently from StoreKit avai
 - Production enables `ALLOW_AUTHENTICATED_EXTRACTION=true` only alongside
   `AUTHENTICATED_EXTRACTION_BYPASS_UNTIL=2026-07-19T00:00:00Z`.
 - Missing, invalid, or elapsed expiry values fail closed and require a verified subscription.
-- No iOS rebuild is required.
+- Build 42 recognizes TestFlight's sandbox receipt and allows a signed-in tester to grant the
+  required remote-processing consent during the same window. App Store receipts are not eligible.
 
 ## Remaining Release Gate
 
@@ -28,3 +29,9 @@ commercial agreement, and the bypass variables must be removed before App Store 
 - `GET /health` returned HTTP 200.
 - An unauthenticated `POST /api/extract-quotes-hf` returned HTTP 401 `AUTH_REQUIRED`.
 - Backend verification passed: 11 test files, 49 tests, and TypeScript type checking.
+- Build 42 focused iOS tests passed for consent persistence, TestFlight receipt and expiry
+  enforcement, remote-model-first extraction, and on-device OCR fallback.
+- The signed Build 42 archive completed successfully at
+  `artifacts/release/BookQuotes-1.0-42.xcarchive`.
+- TestFlight export is pending restoration of Xcode's App Store Connect account session; the first
+  export attempt stopped before validation or upload with `Failed to Use Accounts`.

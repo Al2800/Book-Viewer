@@ -227,7 +227,8 @@ struct AIProcessingSettingsView: View {
     }
 
     private var canEnableRemoteAI: Bool {
-        authService.isAuthenticated && subscriptionService.hasActiveSubscription
+        authService.isAuthenticated
+            && (subscriptionService.hasActiveSubscription || TestFlightAIBypassPolicy.isActive())
     }
 
     var body: some View {
@@ -291,6 +292,16 @@ struct AIProcessingSettingsView: View {
                         showingSignIn = true
                     }
                     .buttonStyle(.primary)
+                }
+            } else if TestFlightAIBypassPolicy.isActive(),
+                      !subscriptionService.hasActiveSubscription {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Label("TestFlight AI testing enabled", systemImage: "checkmark.seal.fill")
+                        .font(.headline)
+                        .foregroundStyle(Color.success)
+                    Text("Temporary tester access is active. Subscription purchase and restore still require a separate check before release.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.textSecondary)
                 }
             } else if !subscriptionService.hasActiveSubscription {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
