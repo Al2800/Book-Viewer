@@ -82,8 +82,9 @@ restore, entitlement-reconciliation, and post-purchase remote-extraction run.
 
 After this acceptance pass, production Worker version
 `ae5a598e-98e8-47c9-b48a-23d652aa697d` removed the temporary authenticated-TestFlight bypass.
-The next device pass must confirm that Build 44 remote extraction continues through the genuine
-subscription entitlement before submission.
+The same Build 44 then completed another remote-AI extraction successfully, confirming that the
+app continues through the genuine subscription entitlement without a replacement binary or the
+temporary access path.
 
 ## Verification
 

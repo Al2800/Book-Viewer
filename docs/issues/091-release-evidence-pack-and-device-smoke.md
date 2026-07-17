@@ -117,6 +117,7 @@ The evidence must cover both local verification and real-device TestFlight behav
   designed. Production Worker version `ae5a598e-98e8-47c9-b48a-23d652aa697d` then removed the
   temporary authenticated-TestFlight bypass; health returned HTTP 200 and unauthenticated
   extraction returned HTTP 401 `AUTH_REQUIRED`.
-- The final device evidence still needed is subscribed remote AI after bypass removal, Restore
-  Purchases and entitlement persistence, interrupted-network recovery, and queued/offline
-  processing.
+- The same Build 44 subsequently completed a subscribed remote-AI extraction with the bypass
+  absent, accepting the genuine entitlement route without another binary. The final device
+  evidence still needed is Restore Purchases and entitlement persistence, interrupted-network
+  recovery, and queued/offline processing.

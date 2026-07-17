@@ -157,8 +157,9 @@ device's local books remained, matching the documented local-library behavior.
 
 Production Worker version `ae5a598e-98e8-47c9-b48a-23d652aa697d` then removed the temporary
 authenticated-TestFlight AI bypass. Build 44 does not need a new binary for this server-side
-change. A final Build 44 pass must confirm subscribed remote AI with the bypass absent, Restore
-Purchases, entitlement persistence after relaunch, and network-loss recovery.
+change. The subscribed tester subsequently completed another remote-AI extraction in Build 44,
+accepting the real entitlement path with the bypass absent. Restore Purchases, entitlement
+persistence after a cold relaunch, and network-loss recovery remain to be accepted.
 
 ## Build 38 Verification
 

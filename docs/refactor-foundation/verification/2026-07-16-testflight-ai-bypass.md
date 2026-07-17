@@ -44,8 +44,10 @@ The bypass variables were removed from `backend/wrangler.toml` and production Wo
 health check returned HTTP 200, and unauthenticated extraction returned HTTP 401 `AUTH_REQUIRED`.
 Backend verification passed 11 test files, 50 tests, and TypeScript type checking.
 
-The final Build 44 device pass must confirm subscribed remote AI after this removal. Restore
-Purchases, entitlement persistence after relaunch, and interrupted-network recovery remain open.
+After deployment, the subscribed tester completed another remote-AI extraction using the same
+Build 44 binary. This accepts the genuine subscription path with the bypass absent and confirms
+that no replacement app build is required. Restore Purchases, entitlement persistence after a
+cold relaunch, and interrupted-network recovery remain open.
 
 ## Deployment Verification
 
