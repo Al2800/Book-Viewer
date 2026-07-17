@@ -109,3 +109,7 @@ The evidence must cover both local verification and real-device TestFlight behav
   GBP bank account, both submitted US tax forms, and compliance are all `Active`. The external
   commerce blocker is cleared; subscription purchase, restore, entitlement reconciliation, and
   post-purchase remote-AI access remain pending physical-device TestFlight acceptance.
+- After Apple propagation, Build 43 loaded the subscription options on the physical device,
+  localized the storefront price from USD to GBP, and completed a trial signup. Product loading,
+  localization, and trial purchase are accepted. Post-purchase remote-AI access, entitlement
+  persistence, network-loss recovery, and Restore Purchases remain open.

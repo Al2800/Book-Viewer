@@ -131,6 +131,12 @@ bank account, both submitted US tax forms, and Digital Services Act compliance a
 and entitlement reconciliation still require a fresh physical-device TestFlight acceptance run
 after Apple's sandbox propagation completes.
 
+Later on 2026-07-17, Build 43 successfully loaded the subscription products on the physical test
+device and completed a trial signup. StoreKit localized the displayed price from USD to GBP for
+the UK storefront. Product loading, storefront localization, and trial purchase are accepted.
+Post-purchase remote-AI access, entitlement persistence, network-loss recovery, and Restore
+Purchases remain to be accepted.
+
 ## Build 38 Verification
 
 Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect API:

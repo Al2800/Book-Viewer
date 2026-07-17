@@ -70,6 +70,15 @@ The external commerce-setup blocker is resolved. After allowing for Apple's sand
 the remaining release verification is a physical-device TestFlight product-load, purchase,
 restore, entitlement-reconciliation, and post-purchase remote-extraction run.
 
+2026-07-17 Build 43 physical-device acceptance:
+
+- [x] Subscription products load after the commerce agreement became active.
+- [x] StoreKit localizes the displayed price from USD to GBP for the UK storefront.
+- [x] A signed-in tester can start the subscription trial.
+- [ ] The trial entitlement is reflected by the backend and unlocks remote extraction.
+- [ ] Entitlement survives relaunch and can be recovered with Restore Purchases.
+- [ ] Interrupted reconciliation recovers after network connectivity returns.
+
 ## Verification
 
 - StoreKit tests for signed-out, signed-in, interrupted, restored, and family/shared ownership states.
