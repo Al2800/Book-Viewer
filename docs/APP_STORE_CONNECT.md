@@ -151,8 +151,14 @@ after Apple's sandbox propagation completes.
 Later on 2026-07-17, Build 43 successfully loaded the subscription products on the physical test
 device and completed a trial signup. StoreKit localized the displayed price from USD to GBP for
 the UK storefront. Product loading, storefront localization, and trial purchase are accepted.
-Post-purchase remote-AI access, entitlement persistence, network-loss recovery, and Restore
-Purchases remain to be accepted.
+The paid entitlement unlocked remote-AI extraction, and Apple's subscription-management flow was
+also accepted on device. Delete Account completed successfully; signing back in worked and the
+device's local books remained, matching the documented local-library behavior.
+
+Production Worker version `ae5a598e-98e8-47c9-b48a-23d652aa697d` then removed the temporary
+authenticated-TestFlight AI bypass. Build 44 does not need a new binary for this server-side
+change. A final Build 44 pass must confirm subscribed remote AI with the bypass absent, Restore
+Purchases, entitlement persistence after relaunch, and network-loss recovery.
 
 ## Build 38 Verification
 

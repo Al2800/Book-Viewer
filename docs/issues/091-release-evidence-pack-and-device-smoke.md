@@ -111,5 +111,12 @@ The evidence must cover both local verification and real-device TestFlight behav
   post-purchase remote-AI access remain pending physical-device TestFlight acceptance.
 - After Apple propagation, Build 43 loaded the subscription options on the physical device,
   localized the storefront price from USD to GBP, and completed a trial signup. Product loading,
-  localization, and trial purchase are accepted. Post-purchase remote-AI access, entitlement
-  persistence, network-loss recovery, and Restore Purchases remain open.
+  localization, and trial purchase are accepted.
+- The paid entitlement unlocked remote AI, Apple's subscription-management flow opened, and
+  Delete Account plus subsequent sign-in passed. The local book library remained on the device as
+  designed. Production Worker version `ae5a598e-98e8-47c9-b48a-23d652aa697d` then removed the
+  temporary authenticated-TestFlight bypass; health returned HTTP 200 and unauthenticated
+  extraction returned HTTP 401 `AUTH_REQUIRED`.
+- The final device evidence still needed is subscribed remote AI after bypass removal, Restore
+  Purchases and entitlement persistence, interrupted-network recovery, and queued/offline
+  processing.

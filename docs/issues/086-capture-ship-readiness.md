@@ -26,5 +26,9 @@ After the foundation refactor, the next natural work was product/ship readiness:
 
 - [x] Backend unit tests including account deletion KV cleanup
 - [ ] Device TestFlight: queue processing with model-assisted path
-- [ ] Device TestFlight: Delete Account end-to-end after Worker deploy
+- [x] Device TestFlight: Delete Account end-to-end after Worker deploy
 - [x] ASC App Privacy questionnaire publish (manual)
+
+2026-07-17 device acceptance confirmed Delete Account, subsequent sign-in, and preservation of the
+device-local book library. Production Worker version `ae5a598e-98e8-47c9-b48a-23d652aa697d`
+removed the temporary authenticated-TestFlight extraction bypass after paid AI access passed.

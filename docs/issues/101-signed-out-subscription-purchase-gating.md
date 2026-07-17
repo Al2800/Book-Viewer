@@ -75,9 +75,15 @@ restore, entitlement-reconciliation, and post-purchase remote-extraction run.
 - [x] Subscription products load after the commerce agreement became active.
 - [x] StoreKit localizes the displayed price from USD to GBP for the UK storefront.
 - [x] A signed-in tester can start the subscription trial.
-- [ ] The trial entitlement is reflected by the backend and unlocks remote extraction.
+- [x] The paid entitlement is reflected by the backend and unlocks remote extraction.
+- [x] The tester can open and use Apple's subscription-management flow.
 - [ ] Entitlement survives relaunch and can be recovered with Restore Purchases.
 - [ ] Interrupted reconciliation recovers after network connectivity returns.
+
+After this acceptance pass, production Worker version
+`ae5a598e-98e8-47c9-b48a-23d652aa697d` removed the temporary authenticated-TestFlight bypass.
+The next device pass must confirm that Build 44 remote extraction continues through the genuine
+subscription entitlement before submission.
 
 ## Verification
 

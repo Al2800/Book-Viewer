@@ -1,4 +1,6 @@
-# TestFlight AI Bypass Window
+# TestFlight AI Bypass Window (Closed)
+
+Status: closed on 2026-07-17 after paid-subscription acceptance.
 
 ## Purpose
 
@@ -27,6 +29,23 @@ On 2026-07-17, live App Store Connect Business inspection confirmed the Paid App
 account, tax forms, and compliance are all `Active`. The remaining gate is therefore the StoreKit
 and post-purchase TestFlight acceptance run after sandbox propagation, followed by removal of the
 temporary bypass.
+
+## Closure
+
+The physical-device acceptance pass successfully loaded the subscription products, completed the
+paid subscription, unlocked remote AI through the reconciled entitlement, and opened Apple's
+subscription-management flow. Delete Account and subsequent sign-in also passed; local books
+remained on device as designed because account deletion removes server identity and entitlement
+state, not the local library.
+
+The bypass variables were removed from `backend/wrangler.toml` and production Worker version
+`ae5a598e-98e8-47c9-b48a-23d652aa697d` was deployed. Its reported production bindings omit both
+`ALLOW_AUTHENTICATED_EXTRACTION` and `AUTHENTICATED_EXTRACTION_BYPASS_UNTIL`. The post-deployment
+health check returned HTTP 200, and unauthenticated extraction returned HTTP 401 `AUTH_REQUIRED`.
+Backend verification passed 11 test files, 50 tests, and TypeScript type checking.
+
+The final Build 44 device pass must confirm subscribed remote AI after this removal. Restore
+Purchases, entitlement persistence after relaunch, and interrupted-network recovery remain open.
 
 ## Deployment Verification
 
