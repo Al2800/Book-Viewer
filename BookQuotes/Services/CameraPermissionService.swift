@@ -11,7 +11,18 @@ final class CameraPermissionService {
     // MARK: - Permission Status
 
     /// Current camera permission status
-    private(set) var status: PermissionStatus = .notDetermined
+    private(set) var status: PermissionStatus
+
+    init(authorizationStatus: AVAuthorizationStatus? = nil) {
+        if UITestConfiguration.shouldMockCamera {
+            status = .authorized
+            return
+        }
+
+        let currentStatus = authorizationStatus
+            ?? AVCaptureDevice.authorizationStatus(for: .video)
+        status = CameraAuthorizationPolicy.permissionStatus(for: currentStatus)
+    }
 
     // MARK: - Status Check
 

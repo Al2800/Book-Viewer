@@ -58,3 +58,17 @@ Real permission prompting and camera hardware behaviour remain tied to simulator
 
 - Real camera permission UX still needs simulator/device validation when the simulator service is available.
 - Session start/stop concurrency warnings remain outside this slice.
+
+## 2026-07-17 Authorized-Launch Regression
+
+Build 43 briefly displayed the full `Enable Camera Access` screen when an already-authorized user
+opened capture, then replaced it with the live preview. Both `CameraPermissionService` and
+`CameraService` started from placeholder unauthorized state and only read AVFoundation status
+after SwiftUI's first render.
+
+- `CameraPermissionService` now initializes from the current AVFoundation authorization status.
+- `CameraService` now initializes `isAuthorized` from the same shared authorization policy.
+- First-time users still receive the explicit permission screen and must select Enable Camera
+  Access; already-authorized users proceed directly to camera setup without misleading UI.
+- Focused simulator verification passed 15 camera authorization, permission, and service tests
+  with no failures on iPhone 17 / iOS 26.5.

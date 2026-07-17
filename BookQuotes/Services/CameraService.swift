@@ -69,6 +69,9 @@ final class CameraService: NSObject {
             isAuthorized = true
             isSessionConfigured = true
             isSessionRunning = true
+        } else {
+            let status = AVCaptureDevice.authorizationStatus(for: .video)
+            isAuthorized = CameraAuthorizationPolicy.decision(for: status).isAuthorized
         }
     }
 

@@ -1,10 +1,22 @@
 import XCTest
+import AVFoundation
 
 @testable import BookQuotes
 
 // MARK: - CameraPermissionServiceTests
 
 final class CameraPermissionServiceTests: XCTestCase {
+
+    @MainActor
+    func testInitialStatusReflectsExistingAuthorizationBeforeFirstViewRender() {
+        let authorized = CameraPermissionService(authorizationStatus: .authorized)
+        let notDetermined = CameraPermissionService(authorizationStatus: .notDetermined)
+        let denied = CameraPermissionService(authorizationStatus: .denied)
+
+        XCTAssertEqual(authorized.status, .authorized)
+        XCTAssertEqual(notDetermined.status, .notDetermined)
+        XCTAssertEqual(denied.status, .denied)
+    }
 
     func testPermissionStatusDescriptions() {
         XCTAssertEqual(CameraPermissionService.PermissionStatus.notDetermined.description, "Camera permission not yet requested")
