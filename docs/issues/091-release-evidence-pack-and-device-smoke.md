@@ -131,3 +131,7 @@ The evidence must cover both local verification and real-device TestFlight behav
 - The legacy offline queue has automated engine coverage but no enqueue action in the current
   capture workflow. Build 44's supported offline UX is the accepted explicit failure, Retry AI,
   Use On-Device Instead, or manual entry path; the dormant queue is not a submission gate.
+- Build 45 was archived and uploaded from commit `8ef5aac`. App Store Connect build
+  `2ebf7662-8840-4d6c-b5b6-dc42281e75db` completed processing as `VALID`, reports
+  `usesNonExemptEncryption: false`, and is available to the one-tester internal `Test v1` group.
+  Only the focused cold-relaunch and Restore Purchases device acceptance remains.

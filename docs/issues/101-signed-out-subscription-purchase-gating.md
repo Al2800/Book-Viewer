@@ -107,6 +107,12 @@ simulator verification passed 14 tests with no failures. Build 45 device accepta
 the two remaining checks above. The complete iPhone 17 unit target also passed 656 tests with zero
 failures and one existing optional local-photo fixture skip.
 
+Build 45 delivery completed on 2026-07-17 from commit `8ef5aac`. App Store Connect build
+`2ebf7662-8840-4d6c-b5b6-dc42281e75db` is `VALID`, reports
+`usesNonExemptEncryption: false`, and is available to the internal `Test v1` group. Final device
+acceptance is limited to cold relaunch without another BookQuotes sign-in and Restore Purchases
+showing the success confirmation without Apple's failing account-sync prompt.
+
 ## Verification
 
 - StoreKit tests for signed-out, signed-in, interrupted, restored, and family/shared ownership states.
