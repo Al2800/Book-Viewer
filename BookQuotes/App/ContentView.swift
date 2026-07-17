@@ -266,6 +266,9 @@ struct ContentView: View {
         case .active:
             // App came to foreground - resume queue processing
             Task {
+                if !authService.isAuthenticated {
+                    _ = await authService.restoreSession()
+                }
                 if let subscriptionService {
                     await subscriptionService.updateSubscriptionStatus()
                 }
@@ -293,6 +296,9 @@ struct ContentView: View {
         if !wasConnected && isConnected {
             // Just came online - resume queue processing
             Task {
+                if !authService.isAuthenticated {
+                    _ = await authService.restoreSession()
+                }
                 if let queueManager = CaptureQueueManager.shared {
                     await queueManager.start()
                 }

@@ -232,9 +232,12 @@ final class AuthService: NSObject {
             let user = try await refreshSession(userId: userId, sessionToken: sessionToken)
             currentUser = user
             return true
-        } catch {
-            // Clear invalid session
+        } catch AuthError.sessionExpired {
+            // A definitive 401 invalidates the saved session.
             await signOut()
+            return false
+        } catch {
+            // Keep credentials for a later retry when launch-time connectivity is unavailable.
             return false
         }
     }

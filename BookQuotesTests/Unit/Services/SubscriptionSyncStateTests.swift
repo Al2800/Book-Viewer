@@ -4,6 +4,15 @@ import XCTest
 
 final class SubscriptionSyncStateTests: XCTestCase {
 
+    func testRestoreUsesExistingActiveEntitlementBeforeRequestingAppStoreSync() {
+        XCTAssertFalse(
+            SubscriptionRestorePolicy.shouldRequestAppStoreSync(hasActiveEntitlement: true)
+        )
+        XCTAssertTrue(
+            SubscriptionRestorePolicy.shouldRequestAppStoreSync(hasActiveEntitlement: false)
+        )
+    }
+
     func testReconciliationStatusRequiresUserActionOnlyAfterSyncFailure() {
         XCTAssertFalse(SubscriptionEntitlementReconciliationStatus.notStarted.requiresUserAction)
         XCTAssertFalse(SubscriptionEntitlementReconciliationStatus.synchronizing.requiresUserAction)

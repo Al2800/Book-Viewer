@@ -182,6 +182,19 @@ final class SubscriptionService {
         }
 
         do {
+            // StoreKit may already expose the entitlement (including after relaunch or account
+            // reauthentication). Reconcile that first and avoid an unnecessary Apple sign-in.
+            await updateSubscriptionStatus()
+            if entitlementReconciliationStatus.requiresUserAction {
+                throw SubscriptionError.entitlementReconciliationPending
+            }
+
+            guard SubscriptionRestorePolicy.shouldRequestAppStoreSync(
+                hasActiveEntitlement: hasActiveSubscription
+            ) else {
+                return
+            }
+
             try await AppStore.sync()
             await updateSubscriptionStatus()
             if entitlementReconciliationStatus.requiresUserAction {

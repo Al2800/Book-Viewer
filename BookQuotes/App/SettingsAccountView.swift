@@ -10,6 +10,7 @@ struct AccountView: View {
     @State private var showSignOutConfirmation = false
     @State private var showDeleteAccountConfirmation = false
     @State private var isRestoring = false
+    @State private var showRestoreSuccess = false
     @State private var isDeletingAccount = false
     @State private var showError = false
     @State private var errorMessage: String?
@@ -66,6 +67,11 @@ struct AccountView: View {
             Button("OK") {}
         } message: {
             Text(errorMessage ?? "An error occurred")
+        }
+        .alert("Purchases Restored", isPresented: $showRestoreSuccess) {
+            Button("OK") {}
+        } message: {
+            Text("Your BookQuotes subscription is active.")
         }
         .task {
             guard subscriptionsEnabled else { return }
@@ -323,6 +329,7 @@ struct AccountView: View {
 
         do {
             try await subscriptionService.restorePurchases()
+            showRestoreSuccess = true
         } catch {
             errorMessage = error.localizedDescription
             showError = true

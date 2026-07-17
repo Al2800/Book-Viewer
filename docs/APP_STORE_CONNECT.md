@@ -158,8 +158,22 @@ device's local books remained, matching the documented local-library behavior.
 Production Worker version `ae5a598e-98e8-47c9-b48a-23d652aa697d` then removed the temporary
 authenticated-TestFlight AI bypass. Build 44 does not need a new binary for this server-side
 change. The subscribed tester subsequently completed another remote-AI extraction in Build 44,
-accepting the real entitlement path with the bypass absent. Restore Purchases, entitlement
-persistence after a cold relaunch, and network-loss recovery remain to be accepted.
+accepting the real entitlement path with the bypass absent.
+
+The Build 44 recovery pass accepted network-loss behavior: Airplane Mode produced an explicit
+failure with an on-device option, and Retry AI succeeded after reconnection. StoreKit retained the
+active subscription across a cold relaunch and AI worked after reauthentication. The same pass
+found two app issues: the saved BookQuotes session was not restored at launch, and Restore
+Purchases forced an unnecessary App Store account sync that ended with “Unable to complete
+request” even though the entitlement was already visible.
+
+Build 45 restores the saved account session at launch, preserves credentials across transient
+launch-time failures, retries when the app foregrounds or reconnects, reconciles an existing
+entitlement before requesting `AppStore.sync()`, and shows a clear restore-success confirmation.
+It requires a focused TestFlight relaunch and Restore
+Purchases acceptance before submission. Focused restoration verification passed 14 tests, and the
+complete iPhone 17 unit target passed 656 tests with zero failures and one existing optional
+local-photo fixture skip.
 
 ## Build 38 Verification
 

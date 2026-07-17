@@ -6,6 +6,90 @@ import XCTest
 
 final class HermeticHTTPServerIntegrationTests: XCTestCase {
 
+    func testAuthService_RestoresSavedSessionAndPersistsSlidingToken() async throws {
+        let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
+        server.route(method: "GET", path: "/api/usage") { request in
+            XCTAssertEqual(request.headers["Authorization"], "Bearer saved-session")
+            return HermeticHTTPServer.Response(
+                statusCode: 200,
+                headers: [
+                    "Content-Type": "application/json",
+                    "X-Session-Token": "refreshed-session"
+                ],
+                body: Data(
+                    #"{"subscriptionStatus":"active","expiresAt":"2026-08-17T12:00:00Z"}"#.utf8
+                )
+            )
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let keychain = KeychainService(service: "com.bookquotes.auth.tests.\(UUID().uuidString)")
+        keychain.setUserId("reader-1")
+        keychain.setSessionToken("saved-session")
+        keychain.setUserEmail("reader@example.com")
+
+        let auth = await MainActor.run {
+            AuthService(keychainService: keychain, serverBaseURL: server.baseURL)
+        }
+
+        let restored = await auth.restoreSession()
+        let user = await auth.currentUser
+
+        XCTAssertTrue(restored)
+        XCTAssertEqual(user?.id, "reader-1")
+        XCTAssertEqual(user?.subscriptionStatus, .active)
+        XCTAssertEqual(user?.sessionToken, "refreshed-session")
+        XCTAssertEqual(keychain.getSessionToken(), "refreshed-session")
+    }
+
+    func testAuthService_ClearsDefinitivelyExpiredSavedSession() async throws {
+        let server = HermeticHTTPServer()
+        server.route(method: "GET", path: "/api/usage") { _ in
+            .json(401, Data(#"{"code":"AUTH_REQUIRED"}"#.utf8))
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let keychain = KeychainService(service: "com.bookquotes.auth.tests.\(UUID().uuidString)")
+        keychain.setUserId("reader-1")
+        keychain.setSessionToken("expired-session")
+
+        let auth = await MainActor.run {
+            AuthService(keychainService: keychain, serverBaseURL: server.baseURL)
+        }
+
+        let restored = await auth.restoreSession()
+        XCTAssertFalse(restored)
+        XCTAssertNil(keychain.getUserId())
+        XCTAssertNil(keychain.getSessionToken())
+    }
+
+    func testAuthService_RetainsSavedSessionAfterTemporaryServerFailure() async throws {
+        let server = HermeticHTTPServer()
+        server.route(method: "GET", path: "/api/usage") { _ in
+            .json(503, Data(#"{"code":"TEMPORARILY_UNAVAILABLE"}"#.utf8))
+        }
+
+        try await server.start()
+        defer { server.stop() }
+
+        let keychain = KeychainService(service: "com.bookquotes.auth.tests.\(UUID().uuidString)")
+        keychain.setUserId("reader-1")
+        keychain.setSessionToken("saved-session")
+
+        let auth = await MainActor.run {
+            AuthService(keychainService: keychain, serverBaseURL: server.baseURL)
+        }
+
+        let restored = await auth.restoreSession()
+        XCTAssertFalse(restored)
+        XCTAssertEqual(keychain.getUserId(), "reader-1")
+        XCTAssertEqual(keychain.getSessionToken(), "saved-session")
+    }
+
     func testServer_RoutesAndLogsRequests_WithHeaderRedaction() async throws {
         let server = HermeticHTTPServer(redactHeaderNames: ["authorization"])
         server.route(method: "GET", path: "/hello") { req in

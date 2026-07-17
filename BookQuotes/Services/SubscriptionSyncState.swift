@@ -15,6 +15,12 @@ enum SubscriptionEntitlementReconciliationStatus: Equatable {
     }
 }
 
+enum SubscriptionRestorePolicy {
+    static func shouldRequestAppStoreSync(hasActiveEntitlement: Bool) -> Bool {
+        !hasActiveEntitlement
+    }
+}
+
 struct SubscriptionSyncResponse: Decodable, Equatable {
     let status: String
     let rawStatus: String

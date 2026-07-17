@@ -77,14 +77,35 @@ restore, entitlement-reconciliation, and post-purchase remote-extraction run.
 - [x] A signed-in tester can start the subscription trial.
 - [x] The paid entitlement is reflected by the backend and unlocks remote extraction.
 - [x] The tester can open and use Apple's subscription-management flow.
-- [ ] Entitlement survives relaunch and can be recovered with Restore Purchases.
-- [ ] Interrupted reconciliation recovers after network connectivity returns.
+- [ ] The BookQuotes account session survives a cold relaunch without another sign-in.
+- [ ] An active entitlement can be reconciled through Restore Purchases without an unnecessary
+  App Store account-sync failure.
+- [x] Remote extraction fails explicitly while offline and succeeds through Retry AI after network
+  connectivity returns.
 
 After this acceptance pass, production Worker version
 `ae5a598e-98e8-47c9-b48a-23d652aa697d` removed the temporary authenticated-TestFlight bypass.
 The same Build 44 then completed another remote-AI extraction successfully, confirming that the
 app continues through the genuine subscription entitlement without a replacement binary or the
 temporary access path.
+
+2026-07-17 Build 44 recovery acceptance:
+
+- [x] StoreKit continued to show the subscription after a cold relaunch.
+- [x] Remote AI still processed a page after reauthentication.
+- [x] Airplane Mode produced the explicit extraction-failure screen and offered on-device recovery.
+- [x] Reconnecting and selecting Retry AI completed an accurate remote extraction.
+- [ ] The BookQuotes account session was not restored automatically after the cold relaunch.
+- [ ] Restore Purchases unnecessarily opened Apple's account sync and ended with “Unable to
+  complete request,” despite the active entitlement already being visible.
+
+Build 45 now invokes the existing secure session restore during launch, retains saved credentials
+after transient launch-time failures, retries restoration on foregrounding or reconnection,
+reconciles an already-active StoreKit entitlement before requesting a full App Store sync, and
+confirms successful restoration in the UI. Focused iPhone 17
+simulator verification passed 14 tests with no failures. Build 45 device acceptance is required for
+the two remaining checks above. The complete iPhone 17 unit target also passed 656 tests with zero
+failures and one existing optional local-photo fixture skip.
 
 ## Verification
 

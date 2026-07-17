@@ -46,8 +46,9 @@ Backend verification passed 11 test files, 50 tests, and TypeScript type checkin
 
 After deployment, the subscribed tester completed another remote-AI extraction using the same
 Build 44 binary. This accepts the genuine subscription path with the bypass absent and confirms
-that no replacement app build is required. Restore Purchases, entitlement persistence after a
-cold relaunch, and interrupted-network recovery remain open.
+that no replacement app build was required for the bypass removal itself. A subsequent recovery
+pass accepted network-loss and Retry AI behavior, but exposed separate launch-session restoration
+and Restore Purchases UX failures that are corrected in Build 45.
 
 ## Deployment Verification
 

@@ -223,6 +223,11 @@ struct BookQuotesApp: App {
                         // Start network monitoring
                         networkMonitor.startMonitoring()
 
+                        // Rehydrate the signed-in account before account-gated features are used.
+                        if !authService.isAuthenticated {
+                            _ = await authService.restoreSession()
+                        }
+
                         // Start queue processing
                         if let queueManager = CaptureQueueManager.shared {
                             await queueManager.start()

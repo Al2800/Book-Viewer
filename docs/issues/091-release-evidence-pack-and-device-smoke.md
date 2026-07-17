@@ -118,6 +118,16 @@ The evidence must cover both local verification and real-device TestFlight behav
   temporary authenticated-TestFlight bypass; health returned HTTP 200 and unauthenticated
   extraction returned HTTP 401 `AUTH_REQUIRED`.
 - The same Build 44 subsequently completed a subscribed remote-AI extraction with the bypass
-  absent, accepting the genuine entitlement route without another binary. The final device
-  evidence still needed is Restore Purchases and entitlement persistence, interrupted-network
-  recovery, and queued/offline processing.
+  absent, accepting the genuine entitlement route without another binary.
+- Build 44 Airplane Mode testing produced the explicit extraction failure and on-device recovery
+  option. After reconnection, Retry AI completed an accurate extraction. Network-loss recovery is
+  accepted.
+- The cold relaunch retained the StoreKit subscription and AI worked after reauthentication, but
+  the BookQuotes session itself did not restore. Restore Purchases unnecessarily opened Apple's
+  account sync and ended with “Unable to complete request.” Build 45 wires secure session restore
+  into launch and reconciles an entitlement already visible on-device before requesting a full
+  App Store sync. Fourteen focused tests pass; the full unit target also passes 656 tests with zero
+  failures and one existing optional local-photo fixture skip.
+- The legacy offline queue has automated engine coverage but no enqueue action in the current
+  capture workflow. Build 44's supported offline UX is the accepted explicit failure, Retry AI,
+  Use On-Device Instead, or manual entry path; the dormant queue is not a submission gate.

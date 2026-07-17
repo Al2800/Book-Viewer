@@ -48,7 +48,7 @@ final class KeychainService: Sendable {
 
     // MARK: - Constants
 
-    private let service = "com.bookquotes.auth"
+    private let service: String
 
     // MARK: - Singleton
 
@@ -57,7 +57,9 @@ final class KeychainService: Sendable {
 
     // MARK: - Initialization
 
-    init() {}
+    init(service: String = "com.bookquotes.auth") {
+        self.service = service
+    }
 
     // MARK: - Token Storage
 
