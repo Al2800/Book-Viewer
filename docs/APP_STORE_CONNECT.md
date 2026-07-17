@@ -91,6 +91,23 @@ signing out or deleting a server account does not delete the local library.
 
 ## Latest TestFlight Verification
 
+Build 44 was uploaded on 2026-07-17 and verified through Apple's build API:
+
+- App: `BookQuotes`
+- App ID: `6758091579`
+- Bundle ID: `com.acampbell.bookquotes`
+- Build ID: `eea39a35-556e-4b3b-9546-323e03020a13`
+- Uploaded date: `2026-07-17T06:52:00-07:00`
+- Processing state: `VALID`
+- Encryption status: `usesNonExemptEncryption: false`
+
+The internal `Test v1` group has `hasAccessToAllBuilds: true` and one tester, so Build 44 is
+available to that group without individual assignment. Build 44 retains the accepted Build 43
+extraction and subscription behavior and fixes the misleading camera-permission flash for users
+who already granted access.
+
+## Build 43 Verification
+
 Build 43 was uploaded on 2026-07-16 and verified through Apple's build API:
 
 - App: `BookQuotes`

@@ -24,5 +24,11 @@ configuration. It changes only camera authorization startup behavior:
 
 - Version: `1.0`.
 - Build: `44`.
-- Source commit: pending final release commit.
-- Archive, local distribution export, upload, and App Store Connect processing: pending.
+- Source commit: `737faaf` on `main`.
+- Signed archive: `artifacts/release/BookQuotes-1.0-44.xcarchive`, arm64.
+- Local App Store distribution export: passed.
+- TestFlight upload: succeeded on 2026-07-17.
+- App Store Connect build ID: `eea39a35-556e-4b3b-9546-323e03020a13`.
+- Processing state: `VALID`.
+- Encryption declaration: `usesNonExemptEncryption: false`.
+- Internal group: `Test v1`, with access to all builds and one tester.
