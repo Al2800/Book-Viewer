@@ -105,3 +105,7 @@ The evidence must cover both local verification and real-device TestFlight behav
   external blocker: the Paid Apps Agreement is `Pending User Info`, no bank account is configured,
   and the U.S. tax questionnaire is missing. Subscription and remote-AI TestFlight acceptance must
   resume after the Account Holder completes those items and Apple's sandbox data propagates.
+- On 2026-07-17, live App Store Connect Business inspection confirmed the Paid Apps Agreement,
+  GBP bank account, both submitted US tax forms, and compliance are all `Active`. The external
+  commerce blocker is cleared; subscription purchase, restore, entitlement reconciliation, and
+  post-purchase remote-AI access remain pending physical-device TestFlight acceptance.

@@ -23,6 +23,11 @@ does not validate StoreKit product loading, purchase, restore, backend entitleme
 or post-purchase AI access. Those checks remain mandatory after App Store Connect activates the
 commercial agreement, and the bypass variables must be removed before App Store submission.
 
+On 2026-07-17, live App Store Connect Business inspection confirmed the Paid Apps Agreement, bank
+account, tax forms, and compliance are all `Active`. The remaining gate is therefore the StoreKit
+and post-purchase TestFlight acceptance run after sandbox propagation, followed by removal of the
+temporary bypass.
+
 ## Deployment Verification
 
 - Production Worker version: `bb4eeb81-24eb-489e-8d79-6fa7984e01ea`.

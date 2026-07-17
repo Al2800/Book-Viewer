@@ -125,6 +125,12 @@ On 2026-07-16, both submitted US tax forms changed to `Active`. The bank account
 `Processing`, with App Store Connect warning that banking updates may take up to 24 hours. The
 Paid Apps Agreement remains `Pending User Info` until processing completes.
 
+On 2026-07-17, the App Store Connect Business page confirmed that the Paid Apps Agreement, GBP
+bank account, both submitted US tax forms, and Digital Services Act compliance all report
+`Active`. The commerce-account blocker is resolved. StoreKit product loading, purchase, restore,
+and entitlement reconciliation still require a fresh physical-device TestFlight acceptance run
+after Apple's sandbox propagation completes.
+
 ## Build 38 Verification
 
 Build 38 was uploaded on 2026-07-12 and verified through the App Store Connect API:

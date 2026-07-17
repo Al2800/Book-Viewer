@@ -59,6 +59,17 @@ No app binary change is required for this blocker.
 Retry Build 41 only becomes a meaningful acceptance check after both the bank account and Paid Apps
 Agreement report `Active`, followed by sandbox propagation time.
 
+2026-07-17 account update:
+
+- The Paid Apps Agreement is `Active`.
+- The GBP bank account is `Active`.
+- The Certificate of Foreign Status and W-8BEN remain `Active`.
+- Digital Services Act compliance is `Active`.
+
+The external commerce-setup blocker is resolved. After allowing for Apple's sandbox propagation,
+the remaining release verification is a physical-device TestFlight product-load, purchase,
+restore, entitlement-reconciliation, and post-purchase remote-extraction run.
+
 ## Verification
 
 - StoreKit tests for signed-out, signed-in, interrupted, restored, and family/shared ownership states.
