@@ -54,6 +54,20 @@ ASC_CONFIG_PATH=/path/to/config.json node scripts/appstoreconnect_status.js
 
 Status output intentionally omits local private-key paths and individual TestFlight tester data.
 
+## Submission Helper
+
+Inspect the App Store version, attached build, review metadata, subscriptions, and review
+submissions without changing App Store Connect:
+
+```bash
+node scripts/appstoreconnect_submission.js
+```
+
+The helper only changes App Store Connect when an explicit mutation flag is supplied. Its review
+submission path is idempotent once a version is already in review and will not select an unrelated
+empty draft. Apple's first-subscription rule still requires the app version, subscription group,
+and subscription products to be assembled into one review package in App Store Connect.
+
 ## App Privacy Questionnaire
 
 The checked-in privacy manifest is the source of truth for the data categories below. Before
@@ -89,6 +103,21 @@ processing or subscription purchase/restoration. Remote AI processing also requi
 revocable image-sharing consent. Books, quotes, and captured images remain local to the device;
 signing out or deleting a server account does not delete the local library.
 
+## App Review Submission
+
+Version 1.0 was submitted to App Review on 2026-07-20 at 09:21 BST as one complete review
+package:
+
+- Submission ID: `7a44e620-28b7-4ff2-b650-64d6a768d1d8`
+- iOS App 1.0, Build 45
+- Subscription group: `BookQuotes Premium`
+- Subscription: `BookQuotes Monthly` (`com.bookquotes.monthly`)
+- Subscription: `BookQuotes Yearly` (`com.bookquotes.yearly`)
+
+App Store Connect and the App Store Connect API both reported all four items as
+`WAITING_FOR_REVIEW` after submission. Version 1.0 is configured for automatic release after
+approval (`AFTER_APPROVAL`).
+
 ## Latest TestFlight Verification
 
 Build 45 was uploaded on 2026-07-17 and verified through Apple's build API:
@@ -102,10 +131,8 @@ Build 45 was uploaded on 2026-07-17 and verified through Apple's build API:
 - Encryption status: `usesNonExemptEncryption: false`
 
 The internal `Test v1` group has `hasAccessToAllBuilds: true` and one tester, so Build 45 is
-available without individual assignment. It is the replacement submission candidate for the
-Build 44 launch-session and Restore Purchases findings. The only remaining device acceptance is a
-cold relaunch without another BookQuotes sign-in and Restore Purchases completing with the new
-success confirmation.
+available without individual assignment. The focused session and purchase-restoration checks
+passed, and Build 45 was submitted as the version 1.0 App Review binary on 2026-07-20.
 
 ## Build 44 Verification
 
