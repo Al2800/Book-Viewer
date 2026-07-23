@@ -127,6 +127,11 @@ standard EULA link:
 
 `https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`
 
+The same four-item package was resubmitted on 2026-07-23 at 07:16 BST. App Store Connect and the
+API confirmed the app version, subscription group, monthly subscription, and yearly subscription
+are all `WAITING_FOR_REVIEW`. Build 45 remains attached and `VALID`; automatic release after
+approval remains enabled.
+
 ## Latest TestFlight Verification
 
 Build 45 was uploaded on 2026-07-17 and verified through Apple's build API:
