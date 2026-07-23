@@ -23,7 +23,9 @@ const APP_DESCRIPTION = `Capture marked book pages and build a searchable librar
 - Organise with collections, tags, and custom marking types
 - Export to Markdown, plain text, JSON, Obsidian, and Notion
 
-Remote AI extraction is optional, requires a subscription and explicit consent, and always provides an on-device fallback. No tracking or ads. Books, quotes, tags, collections, and captured images remain on your device.`;
+Remote AI extraction is optional, requires a subscription and explicit consent, and always provides an on-device fallback. No tracking or ads. Books, quotes, tags, collections, and captured images remain on your device.
+
+Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`;
 const APP_REVIEW_NOTES = `No account is required to use the app's core on-device features. Reviewers can choose Continue Without an Account during onboarding, then add and manage books, capture marked pages with on-device OCR, search the local library, export quotes, and change Settings. Eligible, consented subscribers use remote AI first for marked-page extraction. A remote failure is shown explicitly with Retry AI, Use On-Device Instead, and manual-entry recovery choices.
 
 Apple Sign In is requested only when the reviewer chooses an account-only feature: remote AI processing or subscription purchase/restoration. Remote AI processing also requires a separate, revocable image-sharing consent. Books, quotes, and captured images remain local to the device; signing out or deleting a server account does not delete the local library.

@@ -118,6 +118,15 @@ App Store Connect and the App Store Connect API both reported all four items as
 `WAITING_FOR_REVIEW` after submission. Version 1.0 is configured for automatic release after
 approval (`AFTER_APPROVAL`).
 
+On 2026-07-23, Apple rejected the app under an automated App Review guideline check because the
+App Store description did not contain a functional Terms of Use link for its auto-renewable
+subscriptions. The subscription group and both subscriptions were returned only because the
+associated app was rejected. The app already includes in-app Terms of Service and the website has
+a terms page, so no binary change is required. The App Store description now includes Apple's
+standard EULA link:
+
+`https://www.apple.com/legal/internet-services/itunes/dev/stdeula/`
+
 ## Latest TestFlight Verification
 
 Build 45 was uploaded on 2026-07-17 and verified through Apple's build API:
