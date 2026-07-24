@@ -8,11 +8,11 @@ const plans = [
   {
     name: 'Monthly',
     description: 'Flexible access for regular readers',
-    price: '$4.99',
-    period: '/month',
+    price: 'Monthly',
+    period: 'local App Store pricing',
     features: [
       '7-day free trial for eligible new subscribers',
-      'AI-powered cover and quote extraction',
+      'AI-assisted quote extraction',
       'Batch capture, search, tags, and collections',
       'Markdown, plain text, JSON, Notion, and Obsidian export',
     ],
@@ -23,8 +23,8 @@ const plans = [
   {
     name: 'Yearly',
     description: 'Best value for committed readers',
-    price: '$39.99',
-    period: '/year',
+    price: 'Yearly',
+    period: 'local App Store pricing',
     features: [
       '7-day free trial for eligible new subscribers',
       'Everything in Monthly',
@@ -71,8 +71,8 @@ export function Pricing() {
 
                 {/* Price */}
                 <div className="text-center mb-8">
-                  <span className="font-display text-4xl font-bold text-ink-black">{plan.price}</span>
-                  <span className="text-ink-medium font-ui">{plan.period}</span>
+                  <span className="block font-display text-3xl font-bold text-ink-black">{plan.price}</span>
+                  <span className="block mt-2 text-ink-medium font-ui text-sm">{plan.period}</span>
                 </div>
 
                 {/* Features */}

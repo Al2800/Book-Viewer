@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'BookQuotes — Turn Paper Highlights into a Digital Library',
-  description: 'Photograph your underlined passages and margin notes. AI extracts them instantly. Search, organize, and export your reading insights. Free for iOS.',
+  description: 'Photograph marked book pages, review extracted passages, and build a searchable personal quote library on iPhone and iPad.',
   keywords: ['book quotes', 'reading app', 'highlight capture', 'margin notes', 'book annotations', 'digital library', 'iOS app'],
   authors: [{ name: 'BookQuotes' }],
   creator: 'BookQuotes',
@@ -13,13 +13,22 @@ export const metadata: Metadata = {
     description: 'Transform underlined passages and margin notes from physical books into a searchable digital library.',
     url: 'https://bookquotes.app',
     siteName: 'BookQuotes',
-    locale: 'en_US',
+    locale: 'en_GB',
     type: 'website',
+    images: [
+      {
+        url: '/og.png',
+        width: 1730,
+        height: 909,
+        alt: 'BookQuotes — Keep the lines you underlined',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'BookQuotes — Your Paper Highlights, Digitized',
     description: 'Transform underlined passages and margin notes from physical books into a searchable digital library.',
+    images: ['/og.png'],
   },
   robots: {
     index: true,

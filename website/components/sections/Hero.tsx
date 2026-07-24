@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ArrowDown } from 'lucide-react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 import { DeviceMockup } from '@/components/ui/DeviceMockup'
 
@@ -28,8 +29,8 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-lg md:text-xl text-ink-dark max-w-prose mx-auto lg:mx-0 mb-8"
             >
-              Transform underlined passages and margin notes from physical books
-              into a searchable digital library. Powered by AI.
+              Photograph marked pages, review the extracted passage, and keep the
+              lines that matter in a searchable personal library.
             </motion.p>
 
             <motion.div
@@ -67,43 +68,15 @@ export function Hero() {
             className="relative"
           >
             <DeviceMockup className="w-64 md:w-72 lg:w-80">
-              {/* Placeholder app screen */}
-              <div className="w-full h-full bg-paper-cream p-4 flex flex-col">
-                {/* App header mockup */}
-                <div className="flex items-center justify-between mb-4 pt-8">
-                  <span className="font-display text-lg font-semibold text-ink-black">Library</span>
-                  <div className="w-8 h-8 bg-gold-primary/10 rounded-full" />
-                </div>
-
-                {/* Book grid mockup */}
-                <div className="grid grid-cols-2 gap-3 flex-1">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="bg-paper-aged rounded-lg aspect-[2/3] flex items-end p-2"
-                    >
-                      <div className="w-full">
-                        <div className="h-2 bg-ink-light/30 rounded mb-1" />
-                        <div className="h-1.5 bg-ink-light/20 rounded w-2/3" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Tab bar mockup */}
-                <div className="flex justify-around py-3 mt-4 border-t border-subtle">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className={`w-6 h-6 rounded-full ${i === 1 ? 'bg-gold-primary' : 'bg-ink-light/30'}`}
-                    />
-                  ))}
-                </div>
-              </div>
+              <Image
+                src="/screenshots/library.png"
+                alt="BookQuotes library showing saved books and quotes"
+                fill
+                priority
+                sizes="(max-width: 768px) 256px, 320px"
+                className="object-cover"
+              />
             </DeviceMockup>
-
-            {/* Decorative elements */}
-            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold-muted/20 rounded-full blur-3xl" />
           </motion.div>
         </div>
       </div>

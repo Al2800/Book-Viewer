@@ -2,11 +2,12 @@ import { BookOpen, Github, Mail } from 'lucide-react'
 
 const footerLinks = {
   product: [
-    { label: 'Features', href: '#features' },
-    { label: 'How It Works', href: '#how-it-works' },
+    { label: 'Features', href: '/#features' },
+    { label: 'How It Works', href: '/#how-it-works' },
     { label: 'App Store', href: 'https://apps.apple.com/app/id6758091579' },
   ],
   resources: [
+    { label: 'Journal', href: '/journal' },
     { label: 'Support', href: '/support' },
     { label: 'Contact', href: 'mailto:acampbell193@googlemail.com' },
     { label: 'GitHub', href: 'https://github.com/Al2800' },
