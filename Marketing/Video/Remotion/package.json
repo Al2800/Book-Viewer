@@ -1,0 +1,25 @@
+{
+  "name": "bookquotes-social-video",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts BookQuotesMarkedPage out/bookquotes-marked-page.mp4 --codec h264",
+    "cover": "remotion still src/index.ts BookQuotesMarkedPage out/bookquotes-marked-page-cover.png --frame 42",
+    "carousels": "npm run carousel:capture && npm run carousel:library && npm run carousel:choice",
+    "carousel:capture": "remotion still src/index.ts Capture-01 out/capture-01.png && remotion still src/index.ts Capture-02 out/capture-02.png && remotion still src/index.ts Capture-03 out/capture-03.png && remotion still src/index.ts Capture-04 out/capture-04.png",
+    "carousel:library": "remotion still src/index.ts Library-01 out/library-01.png && remotion still src/index.ts Library-02 out/library-02.png && remotion still src/index.ts Library-03 out/library-03.png && remotion still src/index.ts Library-04 out/library-04.png",
+    "carousel:choice": "remotion still src/index.ts Choice-01 out/choice-01.png && remotion still src/index.ts Choice-02 out/choice-02.png && remotion still src/index.ts Choice-03 out/choice-03.png && remotion still src/index.ts Choice-04 out/choice-04.png",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.498",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "remotion": "4.0.498"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "typescript": "5.9.3"
+  }
+}
