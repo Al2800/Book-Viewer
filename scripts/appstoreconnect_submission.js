@@ -8,6 +8,7 @@ const path = require("path");
 
 const DEFAULT_CONFIG_PATH = path.join(os.homedir(), ".appstoreconnect", "config.json");
 const DEFAULT_BUNDLE_ID = "com.acampbell.bookquotes";
+const DEFAULT_WEBSITE_URL = "https://bookquotes-by-al2800.jmc184.chatgpt.site";
 const SUBMITTED_REVIEW_STATES = new Set([
   "WAITING_FOR_REVIEW",
   "IN_REVIEW",
@@ -40,6 +41,7 @@ const bundleId = process.env.ASC_BUNDLE_ID || DEFAULT_BUNDLE_ID;
 const versionString = process.env.ASC_VERSION || "1.0";
 const buildNumber = process.env.BUILD_NUMBER || process.env.ASC_BUILD_NUMBER || "45";
 const appIdOverride = process.env.ASC_APP_ID;
+const websiteUrl = (process.env.BOOKQUOTES_WEBSITE_URL || DEFAULT_WEBSITE_URL).replace(/\/$/, "");
 
 function expandHomeDirectory(filePath) {
   if (filePath === "~") return os.homedir();
@@ -347,7 +349,26 @@ async function updateMetadata(config, localization) {
         id: localization.id,
         attributes: {
           description: APP_DESCRIPTION,
+          marketingUrl: websiteUrl,
           promotionalText: "Scan books by ISBN, capture marked pages, and keep your best lines organised.",
+          supportUrl: `${websiteUrl}/support`,
+        },
+      },
+    }
+  );
+}
+
+async function updatePrivacyPolicyUrl(config, localization) {
+  await requireResponse(
+    config,
+    "PATCH",
+    `/v1/appInfoLocalizations/${localization.id}`,
+    {
+      data: {
+        type: "appInfoLocalizations",
+        id: localization.id,
+        attributes: {
+          privacyPolicyUrl: `${websiteUrl}/privacy`,
         },
       },
     }
@@ -495,6 +516,15 @@ async function main() {
     const localization = status.localizations.find((item) => item.locale === "en-GB");
     if (!localization) throw new Error("No en-GB App Store version localization exists");
     await updateMetadata(config, localization);
+  }
+
+  if (args.has("--update-metadata") || args.has("--update-privacy-url")) {
+    const appInfoLocalization = status.appInfos.included?.find(
+      (item) =>
+        item.type === "appInfoLocalizations" && item.attributes?.locale === "en-GB"
+    );
+    if (!appInfoLocalization) throw new Error("No en-GB app info localization exists");
+    await updatePrivacyPolicyUrl(config, appInfoLocalization);
   }
 
   if (args.has("--prepare-review")) {

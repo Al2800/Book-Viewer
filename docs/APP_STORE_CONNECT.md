@@ -132,6 +132,15 @@ API confirmed the app version, subscription group, monthly subscription, and yea
 are all `WAITING_FOR_REVIEW`. Build 45 remains attached and `VALID`; automatic release after
 approval remains enabled.
 
+On 2026-07-24, version 1.0 reached `READY_FOR_SALE` / `READY_FOR_DISTRIBUTION`. Build 45 remains
+`VALID`, and both subscriptions are `APPROVED`. The public BookQuotes website is:
+
+`https://bookquotes-by-al2800.jmc184.chatgpt.site`
+
+Apple locks the live version's marketing, support, and privacy URLs after release, so version 1.0
+retains its approved GitHub URLs. The submission helper is configured to use the website home,
+`/support`, and `/privacy` for the next editable App Store version.
+
 ## Latest TestFlight Verification
 
 Build 45 was uploaded on 2026-07-17 and verified through Apple's build API:
