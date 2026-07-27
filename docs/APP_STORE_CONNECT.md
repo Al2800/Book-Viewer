@@ -68,6 +68,18 @@ submission path is idempotent once a version is already in review and will not s
 empty draft. Apple's first-subscription rule still requires the app version, subscription group,
 and subscription products to be assembled into one review package in App Store Connect.
 
+Create a new version, replace its inherited screenshots, and update its editable metadata:
+
+```bash
+ASC_VERSION=1.0.1 BUILD_NUMBER=46 node scripts/appstoreconnect_submission.js --create-version
+ASC_VERSION=1.0.1 BUILD_NUMBER=46 node scripts/appstoreconnect_submission.js --replace-screenshots --update-metadata --update-review-notes
+```
+
+The screenshot helper reads ordered PNG files from
+`Marketing/Video/Remotion/out/appstore/iphone` and
+`Marketing/Video/Remotion/out/appstore/ipad`. It removes inherited legacy screenshot sets before
+uploading the new iPhone and iPad sets.
+
 ## App Privacy Questionnaire
 
 The checked-in privacy manifest is the source of truth for the data categories below. Before
@@ -140,6 +152,19 @@ On 2026-07-24, version 1.0 reached `READY_FOR_SALE` / `READY_FOR_DISTRIBUTION`. 
 Apple locks the live version's marketing, support, and privacy URLs after release, so version 1.0
 retains its approved GitHub URLs. The submission helper is configured to use the website home,
 `/support`, and `/privacy` for the next editable App Store version.
+
+Version 1.0.1, Build 46 was submitted on 2026-07-27 at 11:42 BST:
+
+- Submission ID: `285b1772-efe2-4a1e-8beb-5a112b3be4f3`
+- Review state: `WAITING_FOR_REVIEW`
+- Build state: `VALID` and `APP_STORE_ELIGIBLE`
+- Encryption: `usesNonExemptEncryption: false`
+- Screenshots: seven iPhone and seven iPad images, all `COMPLETE`
+- Release: automatic after approval (`AFTER_APPROVAL`)
+
+The update replaces the original simulator-heavy screenshots with rights-safe, stylised images
+covering the complete flow: library, ISBN scan, capture, extraction, review, book detail, and
+search. The approved monthly and yearly subscriptions remain unchanged.
 
 ## Latest TestFlight Verification
 

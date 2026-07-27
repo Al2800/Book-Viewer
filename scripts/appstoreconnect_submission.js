@@ -34,6 +34,7 @@ Apple Sign In is requested only when the reviewer chooses an account-only featur
 Books are added by ISBN barcode catalogue lookup or manual entry. Book covers come from ISBN catalogue metadata and are not sent to an AI provider.
 
 The monthly and yearly auto-renewable subscriptions unlock remote AI processing. StoreKit sandbox may be used to purchase or restore. Account deletion is available at Settings > Account > Delete Account; Apple subscriptions remain managed by Apple.`;
+const WHATS_NEW = `Improved ISBN scanning guidance and refined the capture experience.`;
 
 const args = new Set(process.argv.slice(2));
 const configPath = expandHomeDirectory(process.env.ASC_CONFIG_PATH || DEFAULT_CONFIG_PATH);
@@ -42,6 +43,9 @@ const versionString = process.env.ASC_VERSION || "1.0";
 const buildNumber = process.env.BUILD_NUMBER || process.env.ASC_BUILD_NUMBER || "45";
 const appIdOverride = process.env.ASC_APP_ID;
 const websiteUrl = (process.env.BOOKQUOTES_WEBSITE_URL || DEFAULT_WEBSITE_URL).replace(/\/$/, "");
+const screenshotRoot = path.resolve(
+  process.env.ASC_SCREENSHOT_ROOT || "Marketing/Video/Remotion/out/appstore"
+);
 
 function expandHomeDirectory(filePath) {
   if (filePath === "~") return os.homedir();
@@ -121,6 +125,32 @@ function ascRequest(config, method, requestPath, body) {
   });
 }
 
+function uploadAsset(operation, bytes) {
+  return new Promise((resolve, reject) => {
+    const request = https.request(
+      operation.url,
+      {
+        method: operation.method,
+        headers: Object.fromEntries(
+          (operation.requestHeaders || []).map((header) => [header.name, header.value])
+        ),
+      },
+      (response) => {
+        response.resume();
+        response.on("end", () => {
+          if (response.statusCode >= 200 && response.statusCode < 300) {
+            resolve();
+          } else {
+            reject(new Error(`Asset upload failed (${response.statusCode})`));
+          }
+        });
+      }
+    );
+    request.on("error", reject);
+    request.end(bytes);
+  });
+}
+
 function query(params) {
   return new URLSearchParams(params).toString();
 }
@@ -161,6 +191,156 @@ async function getVersion(config, appId) {
   const candidates = body.data || [];
   const editable = candidates.find((item) => item.attributes?.appVersionState === "PREPARE_FOR_SUBMISSION");
   return editable || candidates[0] || null;
+}
+
+async function createVersion(config, appId) {
+  const body = await requireResponse(
+    config,
+    "POST",
+    "/v1/appStoreVersions",
+    {
+      data: {
+        type: "appStoreVersions",
+        attributes: {
+          platform: "IOS",
+          versionString,
+          releaseType: "AFTER_APPROVAL",
+          usesIdfa: false,
+        },
+        relationships: {
+          app: { data: { type: "apps", id: appId } },
+        },
+      },
+    },
+    [201]
+  );
+  return body.data;
+}
+
+async function deleteScreenshotSet(config, screenshotSetId) {
+  await requireResponse(
+    config,
+    "DELETE",
+    `/v1/appScreenshotSets/${screenshotSetId}`,
+    null,
+    [204]
+  );
+}
+
+async function createScreenshotSet(config, localizationId, displayType) {
+  const body = await requireResponse(
+    config,
+    "POST",
+    "/v1/appScreenshotSets",
+    {
+      data: {
+        type: "appScreenshotSets",
+        attributes: { screenshotDisplayType: displayType },
+        relationships: {
+          appStoreVersionLocalization: {
+            data: { type: "appStoreVersionLocalizations", id: localizationId },
+          },
+        },
+      },
+    },
+    [201]
+  );
+  return body.data;
+}
+
+async function uploadScreenshot(config, screenshotSetId, filePath) {
+  const fileBytes = fs.readFileSync(filePath);
+  const reservation = await requireResponse(
+    config,
+    "POST",
+    "/v1/appScreenshots",
+    {
+      data: {
+        type: "appScreenshots",
+        attributes: {
+          fileName: path.basename(filePath),
+          fileSize: fileBytes.length,
+        },
+        relationships: {
+          appScreenshotSet: {
+            data: { type: "appScreenshotSets", id: screenshotSetId },
+          },
+        },
+      },
+    },
+    [201]
+  );
+
+  for (const operation of reservation.data.attributes.uploadOperations || []) {
+    const start = operation.offset;
+    await uploadAsset(operation, fileBytes.subarray(start, start + operation.length));
+  }
+
+  const checksum = crypto.createHash("md5").update(fileBytes).digest("hex");
+  await requireResponse(config, "PATCH", `/v1/appScreenshots/${reservation.data.id}`, {
+    data: {
+      type: "appScreenshots",
+      id: reservation.data.id,
+      attributes: {
+        uploaded: true,
+        sourceFileChecksum: checksum,
+      },
+    },
+  });
+  return reservation.data.id;
+}
+
+async function replaceScreenshotOrder(config, screenshotSetId, screenshotIds) {
+  await requireResponse(
+    config,
+    "PATCH",
+    `/v1/appScreenshotSets/${screenshotSetId}/relationships/appScreenshots`,
+    {
+      data: screenshotIds.map((id) => ({ type: "appScreenshots", id })),
+    },
+    [200, 204]
+  );
+}
+
+async function replaceScreenshots(config, localization) {
+  const targets = [
+    { displayType: "APP_IPHONE_67", directory: "iphone" },
+    { displayType: "APP_IPAD_PRO_3GEN_129", directory: "ipad" },
+  ];
+  const replacedDisplayTypes = new Set([
+    ...targets.map((target) => target.displayType),
+    "APP_IPAD_PRO_129",
+  ]);
+
+  for (const screenshotSet of localization.screenshotSets) {
+    if (replacedDisplayTypes.has(screenshotSet.displayType)) {
+      await deleteScreenshotSet(config, screenshotSet.id);
+    }
+  }
+
+  for (const target of targets) {
+    const directory = path.join(screenshotRoot, target.directory);
+    const files = fs
+      .readdirSync(directory)
+      .filter((fileName) => fileName.toLowerCase().endsWith(".png"))
+      .sort()
+      .map((fileName) => path.join(directory, fileName));
+    if (files.length === 0 || files.length > 10) {
+      throw new Error(`${directory} must contain between 1 and 10 PNG screenshots`);
+    }
+
+    const screenshotSet = await createScreenshotSet(
+      config,
+      localization.id,
+      target.displayType
+    );
+    const screenshotIds = [];
+    for (const filePath of files) {
+      console.error(`Uploading ${target.displayType}: ${path.basename(filePath)}`);
+      screenshotIds.push(await uploadScreenshot(config, screenshotSet.id, filePath));
+    }
+    await replaceScreenshotOrder(config, screenshotSet.id, screenshotIds);
+  }
 }
 
 async function getBuild(config, appId) {
@@ -352,6 +532,7 @@ async function updateMetadata(config, localization) {
           marketingUrl: websiteUrl,
           promotionalText: "Scan books by ISBN, capture marked pages, and keep your best lines organised.",
           supportUrl: `${websiteUrl}/support`,
+          whatsNew: WHATS_NEW,
         },
       },
     }
@@ -393,7 +574,8 @@ function findReusableEmptyDraft(reviewSubmissions) {
   return reviewSubmissions.data.find(
     (submission) =>
       submission.attributes?.state === "READY_FOR_REVIEW" &&
-      (submission.relationships?.items?.data?.length || 0) === 0
+      (submission.relationships?.items?.data?.length || 0) === 0 &&
+      !submission.relationships?.appStoreVersionForReview?.data
   );
 }
 
@@ -497,7 +679,10 @@ async function loadStatus(config, app, version) {
 async function main() {
   const config = loadConfig();
   const app = await getApp(config);
-  const version = await getVersion(config, app.id);
+  let version = await getVersion(config, app.id);
+  if (!version && args.has("--create-version")) {
+    version = await createVersion(config, app.id);
+  }
   if (!version) throw new Error(`No iOS App Store version ${versionString} found`);
 
   let status = await loadStatus(config, app, version);
@@ -518,7 +703,13 @@ async function main() {
     await updateMetadata(config, localization);
   }
 
-  if (args.has("--update-metadata") || args.has("--update-privacy-url")) {
+  if (args.has("--replace-screenshots")) {
+    const localization = status.localizations.find((item) => item.locale === "en-GB");
+    if (!localization) throw new Error("No en-GB App Store version localization exists");
+    await replaceScreenshots(config, localization);
+  }
+
+  if (args.has("--update-privacy-url")) {
     const appInfoLocalization = status.appInfos.included?.find(
       (item) =>
         item.type === "appInfoLocalizations" && item.attributes?.locale === "en-GB"
