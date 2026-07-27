@@ -10,7 +10,7 @@ campaign.
 
 | Date | Time | Format | Topic | Status |
 | --- | --- | --- | --- | --- |
-| Mon 27 Jul | 18:30 | Reel | Marked-page product proof | Scheduled |
+| Mon 27 Jul | 18:30 | Reel | Marked-page product proof | Published |
 | Tue 28 Jul | 19:00 | Carousel | Annotation reader roll call | Scheduled |
 | Wed 29 Jul | 12:30 | Text | What happens to annotations? | Scheduled |
 | Thu 30 Jul | 18:30 | Reel | One book, one line | Scheduled |
@@ -26,6 +26,9 @@ All new Reel uploads passed Meta's automatic copyright check. Each new Reel uses
 custom cover from `Marketing/Video/Remotion/out/community/`.
 
 No paid boost or advertising was enabled.
+
+The 27 July launch Reel was confirmed in Published content at 19:29 Europe/London. Performance
+figures were still at zero immediately after publication and were too early to interpret.
 
 ## Instagram
 
