@@ -5,6 +5,18 @@ Updated: 27 July 2026
 Nothing in this plan should be scheduled or published until the account, profile, caption, cover,
 and final preview have been reviewed.
 
+## Current Status
+
+- Account created: `https://www.tiktok.com/@bookquotes.app`
+- Public display name: `BookQuotes`
+- Bio: `Keep the lines that mattered. Quotes from paper books, kept searchable.`
+- First video uploaded to TikTok Studio with its launch caption
+- High-quality upload enabled
+- TikTok Content Check Lite enabled and reporting no issues on the first video
+- First video not posted or scheduled
+- App icon upload attempted; TikTok's web profile has not yet displayed the image
+- Business Account conversion still required in the TikTok mobile app
+
 ## Account Setup
 
 - Display name: `BookQuotes`
@@ -68,4 +80,3 @@ For every clip:
 - After 24 hours, record two-second views, six-second views, completion rate, average watch time,
   shares, saves, profile visits, follows, and link taps.
 - Use the strongest audience language to revise the next hook before approving it.
-
