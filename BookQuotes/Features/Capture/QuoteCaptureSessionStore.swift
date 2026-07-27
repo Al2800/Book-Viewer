@@ -66,59 +66,72 @@ struct QuoteCaptureSessionStore {
         let primaryConfidence = UITestConfiguration.shouldMockLowConfidence ? 0.48 : 0.94
         let primaryMarginNote = UITestConfiguration.shouldMockLowConfidence ? "hard to read" : nil
         let quotes: [ExtractedQuoteData]
-        switch UITestConfiguration.mockExtractionScenario {
-        case "remote":
+        if UITestConfiguration.isAppStoreMediaMode {
             quotes = [
                 ExtractedQuoteData(
-                    text: "A model-assisted quote used for review testing.",
+                    text: "A marked page is a conversation with the person you were when you read it.",
                     pageNumber: 38,
-                    marginNote: primaryMarginNote,
+                    marginNote: nil,
                     markingType: "underline",
-                    confidence: primaryConfidence,
+                    confidence: 0.96,
                     extractionSource: .modelAssisted
                 )
             ]
-        case "local-fallback":
-            quotes = [
-                ExtractedQuoteData(
-                    text: "An on-device fallback quote used for review testing.",
-                    pageNumber: 38,
-                    marginNote: "review locally",
-                    markingType: "highlight",
-                    confidence: 0.74,
-                    extractionSource: .onDevice
-                )
-            ]
-            pageCapture.extractionFallbackReason = .remoteUnavailable
-        case "mixed":
-            quotes = [
-                ExtractedQuoteData(
-                    text: "A model-assisted quote used for review testing.",
-                    pageNumber: 38,
-                    marginNote: primaryMarginNote,
-                    markingType: "underline",
-                    confidence: primaryConfidence,
-                    extractionSource: .modelAssisted
-                ),
-                ExtractedQuoteData(
-                    text: "An on-device quote used for review testing.",
-                    pageNumber: 38,
-                    marginNote: "review locally",
-                    markingType: "highlight",
-                    confidence: 0.74,
-                    extractionSource: .onDevice
-                )
-            ]
-        default:
-            quotes = [
-                ExtractedQuoteData(
-                    text: "Test quote extracted for UI testing.",
-                    pageNumber: 12,
-                    marginNote: primaryMarginNote,
-                    markingType: "underline",
-                    confidence: UITestConfiguration.shouldMockLowConfidence ? 0.48 : 0.92
-                )
-            ]
+        } else {
+            switch UITestConfiguration.mockExtractionScenario {
+            case "remote":
+                quotes = [
+                    ExtractedQuoteData(
+                        text: "A model-assisted quote used for review testing.",
+                        pageNumber: 38,
+                        marginNote: primaryMarginNote,
+                        markingType: "underline",
+                        confidence: primaryConfidence,
+                        extractionSource: .modelAssisted
+                    )
+                ]
+            case "local-fallback":
+                quotes = [
+                    ExtractedQuoteData(
+                        text: "An on-device fallback quote used for review testing.",
+                        pageNumber: 38,
+                        marginNote: "review locally",
+                        markingType: "highlight",
+                        confidence: 0.74,
+                        extractionSource: .onDevice
+                    )
+                ]
+                pageCapture.extractionFallbackReason = .remoteUnavailable
+            case "mixed":
+                quotes = [
+                    ExtractedQuoteData(
+                        text: "A model-assisted quote used for review testing.",
+                        pageNumber: 38,
+                        marginNote: primaryMarginNote,
+                        markingType: "underline",
+                        confidence: primaryConfidence,
+                        extractionSource: .modelAssisted
+                    ),
+                    ExtractedQuoteData(
+                        text: "An on-device quote used for review testing.",
+                        pageNumber: 38,
+                        marginNote: "review locally",
+                        markingType: "highlight",
+                        confidence: 0.74,
+                        extractionSource: .onDevice
+                    )
+                ]
+            default:
+                quotes = [
+                    ExtractedQuoteData(
+                        text: "Test quote extracted for UI testing.",
+                        pageNumber: 12,
+                        marginNote: primaryMarginNote,
+                        markingType: "underline",
+                        confidence: UITestConfiguration.shouldMockLowConfidence ? 0.48 : 0.92
+                    )
+                ]
+            }
         }
 
         pageCapture.storeExtractedQuotes(quotes)

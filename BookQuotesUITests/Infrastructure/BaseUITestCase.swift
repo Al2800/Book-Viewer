@@ -206,6 +206,16 @@ class BaseUITestCase: XCTestCase {
     private func waitForSeedDataIfNeeded() {
         guard shouldWaitForSeedData else { return }
 
+        if app.launchArguments.contains("--app-store-media") {
+            let mediaBook = app.staticTexts["The Quiet Margin"]
+            if mediaBook.waitForExistence(timeout: 15) {
+                logger.info("App Store media data ready")
+            } else {
+                logger.warning("App Store media data not visible after timeout")
+            }
+            return
+        }
+
         let seedMarker = app.staticTexts[AccessibilityIdentifiers.Common.uiTestSeeded]
         if seedMarker.waitForExistence(timeout: 15) {
             logger.info("Seeded data ready")

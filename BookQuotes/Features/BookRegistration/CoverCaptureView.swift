@@ -63,7 +63,10 @@ struct CoverCaptureView: View {
 
     @ViewBuilder
     private var cameraContent: some View {
-        if cameraService.isAuthorized && cameraService.isSessionConfigured {
+        if UITestConfiguration.isAppStoreMediaMode {
+            AppStoreISBNScanPreview()
+                .ignoresSafeArea()
+        } else if cameraService.isAuthorized && cameraService.isSessionConfigured {
             CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)

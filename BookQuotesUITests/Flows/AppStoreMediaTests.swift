@@ -9,6 +9,8 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
         [
             "--preload-search-test-data",
             "--mock-camera",
+            "--mock-extraction-scenario",
+            "remote",
             "--app-store-media",
             "--disable-animations"
         ]
@@ -25,37 +27,32 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
         switchToGridViewIfPossible()
         captureScreenshot(named: "01_library_grid", description: "Library grid with seeded books")
 
-        logger.step(2, "Library list")
-        navigateToLibraryTabIfNeeded()
-        switchToListViewIfPossible()
-        captureScreenshot(named: "02_library_list", description: "Library list with seeded books")
-
-        logger.step(3, "Book detail")
-        switchToGridViewIfPossible()
+        logger.step(2, "Book detail")
         openFirstBookDetailForMedia()
-        captureScreenshot(named: "03_book_detail", description: "Book detail with quotes")
+        captureScreenshot(named: "02_book_detail", description: "Book detail with saved quotes")
 
-        logger.step(4, "Quote detail")
+        logger.step(3, "Quote detail")
         openFirstQuoteDetailForMedia()
-        captureScreenshot(named: "04_quote_detail", description: "Quote detail editor")
+        captureScreenshot(named: "03_quote_detail", description: "Quote review and editing")
 
-        logger.step(5, "Search results")
+        logger.step(4, "Search results")
         returnToLibraryRootForMedia()
-        showSearchResultsForMedia(query: UITestData.SearchTokens.habits)
-        captureScreenshot(named: "05_search_results", description: "Search results for seeded quotes")
+        showSearchResultsForMedia(query: "attention")
+        captureScreenshot(named: "04_search_results", description: "Search across books and quotes")
 
-        logger.step(6, "Capture")
+        logger.step(5, "Add Book")
         returnToLibraryRootForMedia()
-        showQuoteCaptureCameraForMedia()
-        captureScreenshot(named: "06_capture", description: "Quote capture camera")
+        showAddBookISBNForMedia()
+        captureScreenshot(named: "05_add_book_isbn", description: "Add a book by ISBN barcode")
 
-        logger.step(7, "Add Book")
-        openCoverCaptureForMedia()
-        captureScreenshot(named: "07_add_book", description: "Add Book ISBN scanning flow")
+        logger.step(6, "Captured page")
+        closePresentedMediaFlow()
+        showQuoteImageReviewForMedia()
+        captureScreenshot(named: "06_captured_page", description: "Captured marked page and quality review")
 
-        logger.step(8, "Settings")
-        showSettingsForMedia()
-        captureScreenshot(named: "08_settings", description: "Settings")
+        logger.step(7, "Extraction review")
+        showExtractionReviewForMedia()
+        captureScreenshot(named: "07_extraction_review", description: "Review the extracted marked passage")
     }
 }
 
@@ -425,10 +422,12 @@ fileprivate extension BaseUITestCase {
         assertExists(quoteMode, timeout: 5, "Capture options not visible")
     }
 
-    func openCoverCaptureForMedia() {
-        // Assumes we're already on the Capture landing screen.
+    func showAddBookISBNForMedia() {
+        dismissKeyboard()
+        _ = tapTab(.capture, timeout: 4)
+
         let coverMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
-        assertExists(coverMode, timeout: 5, "Cover capture option not visible")
+        assertExists(coverMode, timeout: 5, "Add New Book option not visible")
         coverMode.tap()
 
         let nav = app.navigationBars["Add Book"]
@@ -440,6 +439,50 @@ fileprivate extension BaseUITestCase {
             header.waitForExistence(timeout: 3) ||
             manualEntryButton.exists
         XCTAssertTrue(shown, "Add Book flow not shown")
+    }
+
+    func closePresentedMediaFlow() {
+        let close = app.buttons["Close"]
+        let cancel = app.buttons["Cancel"]
+        if close.waitForExistence(timeout: 2) && close.isHittable {
+            close.tap()
+        } else if cancel.waitForExistence(timeout: 2) && cancel.isHittable {
+            cancel.tap()
+        } else {
+            app.swipeDown()
+        }
+        navigateToLibraryTabIfNeeded()
+    }
+
+    func showQuoteImageReviewForMedia() {
+        _ = tapTab(.capture, timeout: 4)
+
+        let quoteMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
+        assertExists(quoteMode, timeout: 5, "Quote capture option not visible")
+        quoteMode.tap()
+
+        let book = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
+        assertExists(book, timeout: 5, "Media library should provide a book for quote capture")
+        book.tap()
+
+        let shutter = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        assertExists(shutter, timeout: 6, "Quote camera shutter not visible")
+        XCTAssertTrue(shutter.isEnabled, "Quote camera shutter should be enabled in media mode")
+        shutter.tap()
+
+        let usePhoto = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
+        assertExists(usePhoto, timeout: 10, "Captured-page review not shown")
+    }
+
+    func showExtractionReviewForMedia() {
+        let usePhoto = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
+        assertExists(usePhoto, timeout: 3, "Use Photo action not available")
+        usePhoto.tap()
+
+        let review = app.navigationBars["Review Extractions"]
+        let saveAll = app.buttons["Save All"]
+        assertExists(review, timeout: 15, "Extraction review not shown")
+        assertExists(saveAll, timeout: 5, "Extraction result did not provide a save action")
     }
 
     func openAddBookFlowForMedia() {

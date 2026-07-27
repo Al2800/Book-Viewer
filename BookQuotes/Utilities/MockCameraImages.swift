@@ -180,7 +180,7 @@ enum MockCameraImages {
 
             // Add underlines for some marked passages (second marking style)
             if !multipleQuotes {
-                let quoteText = "Every action you take is a vote for the type of person you wish to become."
+                let quoteText = "Attention grows where you choose to return."
                 let quoteTextRect = CGRect(
                     x: textArea.minX,
                     y: textArea.minY + lineHeight * 21 + lineSpacing * 21,

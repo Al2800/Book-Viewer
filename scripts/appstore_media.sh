@@ -386,13 +386,12 @@ run_screenshots_for_destination() {
       if [[ -f "$manifest" ]]; then
         local keys=(
           "01_library_grid"
-          "02_library_list"
-          "03_book_detail"
-          "04_quote_detail"
-          "05_search_results"
-          "06_capture"
-          "07_add_book"
-          "08_settings"
+          "02_book_detail"
+          "03_quote_detail"
+          "04_search_results"
+          "05_add_book_isbn"
+          "06_captured_page"
+          "07_extraction_review"
         )
 
         for key in "${keys[@]}"; do

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UIKit
 
 // MARK: - UITestDataSeeder
 
@@ -64,6 +65,13 @@ final class UITestDataSeeder {
         // Only seed in UI test mode
         guard UITestConfiguration.isUITesting else { return }
 
+        if UITestConfiguration.isAppStoreMediaMode {
+            try deleteAllData()
+            seedAppStoreMediaData()
+            try modelContext.save()
+            return
+        }
+
         // Empty library mode - delete all existing data
         if UITestConfiguration.shouldStartWithEmptyLibrary {
             try deleteAllData()
@@ -108,6 +116,97 @@ final class UITestDataSeeder {
 
         // Rebuild the search index
         await searchService.rebuildIndex(books: books)
+    }
+
+    // MARK: - App Store Media
+
+    private func seedAppStoreMediaData() {
+        let quietMargin = createBook(
+            id: TestIDs.atomicHabits,
+            title: "The Quiet Margin",
+            author: "Rowan Vale",
+            subtitle: "Notes on Reading With Attention",
+            status: .currentlyReading,
+            cover: AppStoreMediaCover.make(
+                title: "The Quiet Margin",
+                author: "Rowan Vale",
+                palette: .rust
+            )
+        )
+
+        createQuote(
+            id: TestIDs.quote1,
+            text: "A marked page is a conversation with the person you were when you read it.",
+            book: quietMargin,
+            pageNumber: 38,
+            markingType: .underline,
+            isFavorite: true
+        )
+        createQuote(
+            id: TestIDs.quote2,
+            text: "Attention gives an ordinary sentence somewhere new to live.",
+            book: quietMargin,
+            pageNumber: 64,
+            markingType: .marginLine,
+            marginNote: "Return to this"
+        )
+        createQuote(
+            id: TestIDs.quote3,
+            text: "The useful note is the one you can find when the book is back on the shelf.",
+            book: quietMargin,
+            pageNumber: 91,
+            markingType: .highlight
+        )
+
+        let attention = createBook(
+            id: TestIDs.deepWork,
+            title: "A Practice of Attention",
+            author: "Mira North",
+            subtitle: "Small Rituals for Deeper Reading",
+            status: .finished,
+            cover: AppStoreMediaCover.make(
+                title: "A Practice of Attention",
+                author: "Mira North",
+                palette: .navy
+            )
+        )
+
+        createQuote(
+            id: TestIDs.quote4,
+            text: "Reading slowly is not delay. It is a way of noticing what speed leaves behind.",
+            book: attention,
+            pageNumber: 17,
+            markingType: .underline
+        )
+        createQuote(
+            id: TestIDs.quote5,
+            text: "Keep the sentence that changes the question you were asking.",
+            book: attention,
+            pageNumber: 112,
+            markingType: .doubleUnderline,
+            isFavorite: true
+        )
+
+        let memory = createBook(
+            id: TestIDs.thinkingFastSlow,
+            title: "The Shape of Memory",
+            author: "Ellis Hart",
+            subtitle: "What We Carry From Books",
+            status: .wantToRead,
+            cover: AppStoreMediaCover.make(
+                title: "The Shape of Memory",
+                author: "Ellis Hart",
+                palette: .green
+            )
+        )
+
+        createQuote(
+            id: TestIDs.quote6,
+            text: "A library remembers titles. A collection of passages remembers why they mattered.",
+            book: memory,
+            pageNumber: 203,
+            markingType: .bracket
+        )
     }
 
     // MARK: - Library Test Data
@@ -302,12 +401,15 @@ final class UITestDataSeeder {
         title: String,
         author: String,
         subtitle: String? = nil,
-        status: ReadingStatus = .wantToRead
+        status: ReadingStatus = .wantToRead,
+        cover: Data? = nil
     ) -> Book {
         let book = Book(title: title, author: author, subtitle: subtitle)
         // Override the auto-generated UUID with our deterministic one
         book.id = id
         book.status = status
+        book.coverThumbnailData = cover
+        book.coverFullData = cover
         modelContext.insert(book)
         return book
     }
@@ -361,6 +463,78 @@ final class UITestDataSeeder {
         try modelContext.delete(model: Collection.self)
         try modelContext.delete(model: Tag.self)
         try modelContext.save()
+    }
+}
+
+private enum AppStoreMediaCover {
+    enum Palette {
+        case rust
+        case navy
+        case green
+
+        var background: UIColor {
+            switch self {
+            case .rust: return UIColor(red: 0.61, green: 0.22, blue: 0.16, alpha: 1)
+            case .navy: return UIColor(red: 0.11, green: 0.18, blue: 0.25, alpha: 1)
+            case .green: return UIColor(red: 0.14, green: 0.33, blue: 0.25, alpha: 1)
+            }
+        }
+
+        var accent: UIColor {
+            switch self {
+            case .rust: return UIColor(red: 0.92, green: 0.69, blue: 0.34, alpha: 1)
+            case .navy: return UIColor(red: 0.78, green: 0.42, blue: 0.28, alpha: 1)
+            case .green: return UIColor(red: 0.87, green: 0.72, blue: 0.39, alpha: 1)
+            }
+        }
+    }
+
+    static func make(title: String, author: String, palette: Palette) -> Data? {
+        let size = CGSize(width: 720, height: 1080)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let image = renderer.image { context in
+            let cg = context.cgContext
+            palette.background.setFill()
+            cg.fill(CGRect(origin: .zero, size: size))
+
+            UIColor.white.withAlphaComponent(0.08).setFill()
+            for index in 0..<7 {
+                let inset = CGFloat(index) * 34
+                cg.fillEllipse(in: CGRect(
+                    x: 110 + inset / 2,
+                    y: 126 + inset,
+                    width: 500 - inset,
+                    height: 500 - inset
+                ))
+            }
+
+            palette.accent.setFill()
+            cg.fill(CGRect(x: 54, y: 54, width: 14, height: size.height - 108))
+            cg.fill(CGRect(x: 54, y: 54, width: size.width - 108, height: 14))
+
+            let titleStyle = NSMutableParagraphStyle()
+            titleStyle.alignment = .left
+            let titleAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 74, weight: .bold),
+                .foregroundColor: UIColor.white,
+                .paragraphStyle: titleStyle
+            ]
+            title.draw(
+                in: CGRect(x: 92, y: 430, width: 536, height: 330),
+                withAttributes: titleAttributes
+            )
+
+            let authorAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 30, weight: .semibold),
+                .foregroundColor: palette.accent,
+                .paragraphStyle: titleStyle
+            ]
+            author.uppercased().draw(
+                in: CGRect(x: 94, y: 920, width: 532, height: 60),
+                withAttributes: authorAttributes
+            )
+        }
+        return image.jpegData(compressionQuality: 0.9)
     }
 }
 
