@@ -112,6 +112,159 @@ export const carouselSets: Array<{
       },
     ],
   },
+  {
+    id: 'Remember',
+    series: 'How to remember more of what you read',
+    slides: [
+      {
+        kicker: 'A useful reading habit',
+        title: 'Do not highlight everything.',
+        body: 'Mark the sentence that changes, clarifies or names something for you.',
+        accent: colours.rust,
+      },
+      {
+        kicker: 'After the chapter',
+        title: 'Write five words about why.',
+        body: 'A tiny note preserves the connection that made the passage matter.',
+        accent: colours.gold,
+      },
+      {
+        kicker: 'After the book',
+        title: 'Choose the five lines that survived.',
+        body: 'A smaller collection is easier to revisit than a complete archive.',
+        accent: colours.green,
+      },
+      {
+        kicker: 'Once a week',
+        title: 'Bring one old line back.',
+        body: 'Use it in a conversation, a journal entry, or something you are making.',
+        accent: colours.navy,
+      },
+    ],
+  },
+  {
+    id: 'OneLine',
+    series: 'The one-line summer reading challenge',
+    slides: [
+      {
+        kicker: 'National Year of Reading 2026',
+        title: 'One book. One line.',
+        body: 'This summer, keep one passage from every book you finish.',
+        accent: colours.gold,
+      },
+      {
+        kicker: 'Choose slowly',
+        title: 'Not the most impressive line.',
+        body: 'Choose the one you found yourself thinking about the next day.',
+        accent: colours.rust,
+      },
+      {
+        kicker: 'Keep the context',
+        title: 'Title, author, page, and why.',
+        body: 'Those four details turn a quotation into part of your reading memory.',
+        accent: colours.navy,
+      },
+      {
+        kicker: 'Your summer in words',
+        title: 'What will your collection say?',
+        body: 'Share the first line you would keep, or start a private library of your own.',
+        accent: colours.green,
+        screen: 'screens/appstore/iphone/03_quote_detail.png',
+      },
+    ],
+  },
+  {
+    id: 'BookClub',
+    series: 'A better book-club note',
+    slides: [
+      {
+        kicker: 'Before the meeting',
+        title: 'Bring three passages, not a plot summary.',
+        body: 'A specific line gives everyone something real to respond to.',
+        accent: colours.navy,
+      },
+      {
+        kicker: 'Passage one',
+        title: 'The line you loved.',
+        body: 'What did the language make you notice or feel?',
+        accent: colours.gold,
+      },
+      {
+        kicker: 'Passage two',
+        title: 'The line you resisted.',
+        body: 'Disagreement often opens a better conversation than consensus.',
+        accent: colours.rust,
+      },
+      {
+        kicker: 'Passage three',
+        title: 'The line you are still unsure about.',
+        body: 'A good book-club question does not need a finished answer.',
+        accent: colours.green,
+      },
+    ],
+  },
+  {
+    id: 'Annotation',
+    series: 'What does a loved book look like?',
+    slides: [
+      {
+        kicker: 'Reader roll call',
+        title: 'The underliner.',
+        body: 'Direct. Permanent. The sentence has been chosen.',
+        accent: colours.rust,
+      },
+      {
+        kicker: 'Reader roll call',
+        title: 'The tabber.',
+        body: 'Colour-coded feelings with a system nobody else fully understands.',
+        accent: colours.gold,
+      },
+      {
+        kicker: 'Reader roll call',
+        title: 'The margin writer.',
+        body: 'Part reader, part conversational partner, occasionally an editor.',
+        accent: colours.green,
+      },
+      {
+        kicker: 'Reader roll call',
+        title: 'The pristine-page protector.',
+        body: 'No marks. No folds. Notes kept safely somewhere else. Which are you?',
+        accent: colours.navy,
+      },
+    ],
+  },
+  {
+    id: 'Commonplace',
+    series: 'A ten-minute commonplace ritual',
+    slides: [
+      {
+        kicker: 'Once a week',
+        title: 'Choose three marked lines.',
+        body: 'Take only the passages that still feel useful, beautiful or unresolved.',
+        accent: colours.green,
+      },
+      {
+        kicker: 'Add context',
+        title: 'Write one sentence about each.',
+        body: 'Why did it matter then, and where might it matter again?',
+        accent: colours.rust,
+      },
+      {
+        kicker: 'Make it retrievable',
+        title: 'Keep the book and page with the words.',
+        body: 'Future you should be able to return to the source.',
+        accent: colours.navy,
+        screen: 'screens/appstore/iphone/02_book_detail.png',
+      },
+      {
+        kicker: 'Complete the loop',
+        title: 'Revisit one old passage.',
+        body: 'A commonplace book earns its value when an idea returns at the right moment.',
+        accent: colours.gold,
+        screen: 'screens/appstore/iphone/04_search_results.png',
+      },
+    ],
+  },
 ];
 
 export const CarouselSlide: React.FC<CarouselSlideProps> = ({
