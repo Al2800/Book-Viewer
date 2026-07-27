@@ -9,6 +9,8 @@ Reusable Remotion source for BookQuotes launch content.
 - `AnnotationDebate`: 1080 x 1920, 22 seconds, 30 fps
 - `CommonplaceRitual`: 1080 x 1920, 22 seconds, 30 fps
 - `FindTheLine`: 1080 x 1920, 22 seconds, 30 fps
+- `PresidentialBooksReel`: 1080 x 1920, 29 seconds, 30 fps
+- `PresidentialBooks-01` to `PresidentialBooks-07`: 1080 x 1920 TikTok photo carousel
 - `Capture-01` to `Capture-04`: 1080 x 1350 carousel
 - `Library-01` to `Library-04`: 1080 x 1350 carousel
 - `Choice-01` to `Choice-04`: 1080 x 1350 carousel
@@ -27,6 +29,7 @@ npm install
 npm run check
 npm run render
 npm run cover
+npm run presidents
 npm run carousels
 npm run community
 npm run appstore

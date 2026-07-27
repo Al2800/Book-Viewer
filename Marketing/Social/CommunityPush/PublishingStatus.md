@@ -42,6 +42,24 @@ Once the account is created or recovered and connected:
 3. Add daily Stories around annotation polls, current reads, and one-line challenge check-ins.
 4. Review native Instagram performance separately from Facebook after 24 hours and seven days.
 
+## TikTok
+
+The BookQuotes account is live at `@bookquotes.app`. The profile copy is in place, but the
+account still needs conversion to a Business Account in the mobile app.
+
+The first recommendation-led package is ready for approval:
+
+| Format | Topic | Status |
+| --- | --- | --- |
+| Photo carousel | Five presidential biographies | Rendered and visually checked; not uploaded |
+| Reel | Five presidential biographies | Rendered and visually checked; not uploaded |
+| Product Reel | Marked-page product proof | Uploaded draft; not published |
+
+The presidential-biographies carousel is the recommended first editorial post. Its caption,
+pinned comment, source notes and publishing checklist are in
+`PresidentialBiographiesPost.md`. Do not publish either version until the user has reviewed
+the creative and chosen the carousel or Reel.
+
 ## Daily Publishing Check
 
 On each scheduled publishing day:

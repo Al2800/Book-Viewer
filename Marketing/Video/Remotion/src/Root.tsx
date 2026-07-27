@@ -4,6 +4,11 @@ import {BookQuotesReel, type BookQuotesReelProps} from './BookQuotesReel';
 import {CommunityReel, type CommunityReelProps} from './CommunityReel';
 import {CarouselSlide, carouselSets} from './CarouselSlide';
 import {AppStoreScreenshot, appStoreScreenshots} from './AppStoreScreenshot';
+import {
+  PresidentialBookSlide,
+  PresidentialBooksReel,
+  presidentialBooks,
+} from './PresidentialBooks';
 import {colours} from './theme';
 
 const reelProps: BookQuotesReelProps = {
@@ -153,6 +158,44 @@ export const RemotionRoot: React.FC = () => (
       width={1080}
       height={1920}
       defaultProps={reelProps}
+    />
+    <Composition
+      id="PresidentialBooksReel"
+      component={PresidentialBooksReel}
+      durationInFrames={870}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="PresidentialBooks-01"
+      component={PresidentialBookSlide}
+      durationInFrames={1}
+      fps={30}
+      width={1080}
+      height={1920}
+      defaultProps={{kind: 'cover'}}
+    />
+    {presidentialBooks.map((_, index) => (
+      <Composition
+        key={`presidential-book-${index}`}
+        id={`PresidentialBooks-${String(index + 2).padStart(2, '0')}`}
+        component={PresidentialBookSlide}
+        durationInFrames={1}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{kind: 'book', bookIndex: index}}
+      />
+    ))}
+    <Composition
+      id="PresidentialBooks-07"
+      component={PresidentialBookSlide}
+      durationInFrames={1}
+      fps={30}
+      width={1080}
+      height={1920}
+      defaultProps={{kind: 'end'}}
     />
     {communityReels.map((reel) => (
       <Composition
