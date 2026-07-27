@@ -5,6 +5,9 @@ Updated: 27 July 2026
 Nothing in this plan should be scheduled or published until the account, profile, caption, cover,
 and final preview have been reviewed.
 
+The ongoing recommendation-led channel plan is documented in `TikTokEditorialStrategy.md` and
+tracked by bead `bd-tkrc`.
+
 ## Current Status
 
 - Account created: `https://www.tiktok.com/@bookquotes.app`
