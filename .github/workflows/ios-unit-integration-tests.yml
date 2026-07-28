@@ -3,7 +3,11 @@ name: iOS Unit + Integration Tests
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - "Marketing/**"
   pull_request:
+    paths-ignore:
+      - "Marketing/**"
 
 concurrency:
   group: ios-tests-${{ github.ref }}
