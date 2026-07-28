@@ -26,7 +26,9 @@ The goal is not to maximise raw views. Prefer downstream value:
 4. A publishing failure, rights issue or clearly harmful response can justify immediate action.
 5. Compare content by topic, format, hook, posting time and commercial intensity.
 6. Keep app-led content near 15% of output unless account evidence supports changing that prior.
-7. Propose changes for approval. Never alter or publish the schedule automatically.
+7. Routine organic Facebook content may be created, scheduled and published automatically when it
+   passes every gate in `AutomatedPublishingRunbook.md`. Sensitive, commercial, legal, ambiguous
+   or rights-uncertain content still requires approval.
 8. Preserve every historical entry. Correct errors with a dated note rather than rewriting history.
 
 ## Hypothesis Register
@@ -55,7 +57,8 @@ Each run should append:
 - routine replies made and drafts awaiting approval;
 - trend signals relevant to readers, BookTok, biographies, history, annotation or reading habits;
 - hypothesis updates with the evidence and confidence change;
-- one or two proposed next actions, clearly marked as requiring approval.
+- one or two next actions, clearly distinguishing automatic routine work from anything requiring
+  approval.
 
 Use `Not available` rather than zero when a platform does not expose a metric.
 
@@ -96,3 +99,25 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 - Keep tonight's scheduled carousel unchanged.
 - After 24 hours, compare its downstream engagement with the launch Reel while treating the
   different format and topic as confounding variables, not proof of causation.
+
+### 28 July 2026, live publishing audit
+
+**Facebook**
+
+- The latest published item is the 22-second `Keep the words. Find them again.` Reel, published
+  27 July at 18:31.
+- At this audit it showed 1 view, 0 engagement and insufficient retention data.
+- The Content Library also showed a 24 July item with 0 views.
+- The Planner displayed content at 19:00 on 28 July, 12:30 on 29 July, 18:30 on 30 July and 10:00
+  on 1 August.
+- The Content Library's Scheduled tab simultaneously reported no scheduled posts.
+- Opening the 28 July Planner item confirmed that it contains the annotation reader-roll-call
+  caption and attached media, so the Planner entries are substantive rather than empty reminders.
+
+**Process change**
+
+- The user authorised automatic routine publishing.
+- Facebook now follows `AutomatedPublishingRunbook.md`.
+- Automatic publishing remains disabled for TikTok and Instagram until their native flows are
+  verified.
+- The Planner/Content Library disagreement must be checked before relying on the queue.

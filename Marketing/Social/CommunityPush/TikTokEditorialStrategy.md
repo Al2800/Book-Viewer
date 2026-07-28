@@ -142,7 +142,8 @@ Before scheduling:
 5. Confirm captions are useful without the hashtags.
 6. Check that the post does not imply sponsorship, publisher approval, or personal reading that
    did not occur.
-7. Obtain approval before pressing Schedule or Post.
+7. TikTok remains manual until its native publishing flow is verified. Facebook may publish
+   automatically only under `AutomatedPublishingRunbook.md`.
 
 ## Measurement
 

@@ -1,6 +1,15 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 27 July 2026
+Updated: 28 July 2026
+
+## Automation
+
+Routine organic Facebook publishing is now authorised to run automatically under
+`AutomatedPublishingRunbook.md`. The daily automation maintains a seven-day queue, verifies
+publication, performs preflight and rights checks, and logs every action.
+
+TikTok and Instagram publishing remain manual until their account connections and native posting
+flows have been verified.
 
 ## Facebook
 
@@ -29,6 +38,14 @@ No paid boost or advertising was enabled.
 
 The 27 July launch Reel was confirmed in Published content at 19:29 Europe/London. Performance
 figures were still at zero immediately after publication and were too early to interpret.
+
+Live audit on 28 July:
+
+- The latest Reel was listed as published at 18:31 on 27 July with 1 view and 0 engagement.
+- The Planner contained substantive future entries for 28-30 July and 1 August.
+- The Content Library's Scheduled tab reported no scheduled posts at the same time.
+- The next daily run must reconcile that Meta discrepancy before assuming those entries will
+  publish.
 
 ## Instagram
 
@@ -60,15 +77,17 @@ pinned comment, source notes and publishing checklist are in
 `PresidentialBiographiesPost.md`. Do not publish either version until the user has reviewed
 the creative and chosen the carousel or Reel.
 
-## Daily Publishing Check
+## Daily Publishing Process
 
-On each scheduled publishing day:
+The automatic process is defined in `AutomatedPublishingRunbook.md`. At minimum, every daily run:
 
 1. Confirm the post moved from Scheduled to Published.
-2. Check the link preview and Reel cover on a phone.
-3. Reply to genuine comments within 24 hours.
-4. Record reach, meaningful comments, shares, saves, link clicks, and follows.
-5. Keep useful reader language for the next campaign iteration.
+2. Reconcile Planner and Content Library status.
+3. Check the link preview, attached media and Reel cover on a phone-sized view.
+4. Maintain the next seven days of routine Facebook content.
+5. Reply to low-risk genuine comments within 24 hours.
+6. Record reach, meaningful comments, shares, saves, link clicks and follows.
+7. Keep useful reader language for the next campaign iteration.
 
 The full campaign rationale, captions, remaining two-week calendar, and measurement rules are in
 `IntensiveCampaign.md`.
