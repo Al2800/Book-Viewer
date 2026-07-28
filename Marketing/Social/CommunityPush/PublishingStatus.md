@@ -8,8 +8,14 @@ Routine organic Facebook publishing is now authorised to run automatically under
 `AutomatedPublishingRunbook.md`. The daily automation maintains a seven-day queue, verifies
 publication, performs preflight and rights checks, and logs every action.
 
-TikTok and Instagram publishing remain manual until their account connections and native posting
-flows have been verified.
+TikTok research, briefing, quality control and learning may run automatically under
+`TikTokOperatingRunbook.md`. TikTok publishing and all Instagram activity remain manual until
+their account connections and native posting flows have been verified.
+
+The daily `bookquotes-daily-social-check` automation now coordinates both channels at 09:00
+Europe/London. Facebook retains its existing routine publishing authority. TikTok performs a
+daily evidence and creative-pattern scout, maintains a preparation queue and runs a deeper
+experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
 

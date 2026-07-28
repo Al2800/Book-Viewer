@@ -3,6 +3,9 @@
 Updated: 27 July 2026
 Bead: `bd-tkrc`
 
+The execution, evidence, style and experiment controls for this strategy are defined in
+`TikTokOperatingRunbook.md`.
+
 ## Channel Position
 
 BookQuotes should be a useful book-discovery and reading-culture account that happens to make an
@@ -144,6 +147,8 @@ Before scheduling:
    did not occur.
 7. TikTok remains manual until its native publishing flow is verified. Facebook may publish
    automatically only under `AutomatedPublishingRunbook.md`.
+8. Record evidence and rights in `TikTokEvidenceLedger.md`, select a named format from
+   `TikTokStyleCatalogue.md`, and preregister the test in `TikTokExperimentRegister.md`.
 
 ## Measurement
 
@@ -157,6 +162,8 @@ Compare recommendation territories separately from product posts:
 - link taps and App Store activity on product posts
 
 Review after seven days. Repeat formats that create saves, shares, and follows, not merely views.
+Use the decision rules in `TikTokOperatingRunbook.md` so one small result does not cause an
+unwarranted strategy change.
 
 ## Current Research Signals
 
