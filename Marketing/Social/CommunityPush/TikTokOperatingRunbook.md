@@ -24,17 +24,34 @@ The daily research, briefing, quality-control and learning stages may run automa
 These stages are active in the `bookquotes-daily-social-check` automation at 09:00
 Europe/London. The same coordinated run manages Facebook under its separate publishing authority.
 
+The user has authorised routine automatic TikTok publishing once the native validation below
+passes. The automation may record that activation without seeking another approval when every
+validation item is evidenced.
+
 TikTok publishing remains approval-only until all of the following have been verified:
 
 1. `@bookquotes.app` has the required Business Suite or Advanced Access.
 2. A private or low-risk test has been scheduled through TikTok's native scheduler.
 3. The scheduled item appears in the native content calendar with the correct local time.
 4. It publishes once, without duplication, with the intended cover, caption, audience and audio.
-5. Post analytics are accessible at 24 hours and can be attributed to the correct content ID.
+5. The post has an addressable analytics entry attributable to the correct content ID. The
+   measurements may continue to mature through the 24-hour checkpoint.
 
 After that test, this runbook can be revised to authorise automatic routine publishing. Paid
 promotion, partnerships, rights-uncertain material and sensitive community responses remain
 approval-only.
+
+### Validation In Progress
+
+- Scheduled item: `bookquotes-marked-page.mp4`
+- TikTok content ID: `7667570006032387350`
+- Scheduled time: 28 July 2026 at 19:30 Europe/London
+- Audience: Public
+- Upload: 1080p with high-quality uploads enabled
+- Content Check Lite: No issues found
+- Native Content table: item present with the correct scheduled time
+- Remaining checks: confirm one publication without duplication and confirm its attributable
+  analytics entry
 
 ## Editorial Principles
 
@@ -59,6 +76,30 @@ approval-only.
 6. Verify evidence and rights before production.
 7. Maintain three to five approved or near-approved pieces in the queue.
 8. Measure posts at the next available 24-hour and 72-hour checkpoints.
+
+## Publishing Ramp After Validation
+
+### Establishment Phase
+
+For the first seven successfully published posts:
+
+- publish one primary post daily;
+- use 19:30 Europe/London as the default baseline slot;
+- introduce a midday slot only as a controlled timing experiment;
+- keep the editorial mix close to 60% recommendations, 20% reader culture, 15% product proof and
+  5% company updates over the rolling period;
+- do not allow consecutive product-led posts.
+
+### Expansion Phase
+
+After at least seven posts have comparable data:
+
+- retain one strong daily post as the baseline;
+- test a second post on no more than two days in the following week;
+- separate the second post by at least six hours and give it a distinct reader purpose;
+- retain twice-daily publishing only when the second slot improves saves, meaningful comments,
+  follows or profile activity without weakening the primary slot;
+- return to one daily post when quality, rights clearance or topic distinctness deteriorates.
 
 ### Monday
 

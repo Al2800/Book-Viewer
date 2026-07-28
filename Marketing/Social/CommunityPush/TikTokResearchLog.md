@@ -64,6 +64,28 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
-No TikTok account results have been recorded yet. The first automated scout should establish the
-external-signal baseline and confirm account analytics access without changing or publishing
-content.
+### 2026-07-28, 14:30 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio native scheduling is available for `@bookquotes.app`.
+- `bookquotes-marked-page.mp4` was scheduled for 19:30 Europe/London.
+- Content ID: `7667570006032387350`.
+- Audience is Public; high-quality 1080p upload is enabled.
+- Content Check Lite reported no issues.
+- The native Content table displayed the item and intended time after a reload.
+- Publication, duplicate prevention and attributable analytics remain to be checked.
+
+**Learning**
+
+- There is no account-level timing evidence yet. The 19:30 slot is the preregistered evening
+  baseline, not a proven optimum.
+- Do not interpret the scheduler's transient `Video published` confirmation as proof of immediate
+  publication; the future time displayed in the Content table is the stronger status evidence.
+
+**Queue**
+
+- Keep one daily primary post as the establishment cadence after validation.
+- Do not schedule another item while the first post's publication state remains prospective.
+- The first automatic run after successful validation should choose an editorial item, because
+  this first execution is product-led.

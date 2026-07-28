@@ -83,6 +83,22 @@ pinned comment, source notes and publishing checklist are in
 `PresidentialBiographiesPost.md`. Do not publish either version until the user has reviewed
 the creative and chosen the carousel or Reel.
 
+### Native Scheduler Validation
+
+The first controlled TikTok post is now present in TikTok Studio:
+
+| Date | Time | Format | Topic | Content ID | Status |
+| --- | --- | --- | --- | --- | --- |
+| Tue 28 Jul | 19:30 | Reel | Marked-page product proof | `7667570006032387350` | Scheduled; publication and analytics validation pending |
+
+The upload is Public, 1080p, uses high-quality uploads and passed Content Check Lite with no
+issues. The Studio Content table shows the intended 19:30 time.
+
+After successful publication and an attributable analytics entry, the automation may activate
+routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.
+After seven comparable posts, test a distinct second daily slot on no more than two days in one
+week before considering any broader increase.
+
 ## Daily Publishing Process
 
 The automatic process is defined in `AutomatedPublishingRunbook.md`. At minimum, every daily run:

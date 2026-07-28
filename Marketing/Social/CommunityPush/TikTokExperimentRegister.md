@@ -33,6 +33,12 @@ Result labels:
 | TK-004 | Specific reader identities will generate more meaningful comments than broad engagement questions. | Reader culture | BQ-05 | Specificity of choice | Meaningful comments/1,000 | Shares/1,000 views | Medium prior | Pending | Use annotation debate as first execution. |
 | TK-005 | Reader-value-first product demonstrations will outperform feature-led promotion. | Product proof | BQ-06 | Problem-first opening | Profile visits/1,000 | Completion | Medium prior | Pending | Compare two product executions after editorial baseline exists. |
 
+## Scheduled Executions
+
+| Content ID | Experiment | Asset | Scheduled | Checkpoints | Status |
+| --- | --- | --- | --- | --- | --- |
+| `7667570006032387350` | TK-005 | `bookquotes-marked-page.mp4` | 28 Jul 2026, 19:30 Europe/London | Publication, 24h, 72h, 7d | Scheduled |
+
 ## Post Result Template
 
 | Field | Value |
