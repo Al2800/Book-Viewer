@@ -144,6 +144,14 @@ For each external example, capture the pattern rather than the content:
 Reject a trend when its audience relevance, BookQuotes interpretation, expected shelf life or
 rights position is weak.
 
+Treat creator revenue claims, screenshots and exceptional view counts as leads rather than proof.
+Record the missing denominator, commercial incentive and selection bias. A proposed format still
+has to succeed in controlled BookQuotes tests.
+
+Never buy or operate warmed accounts, spoof location, conceal the account's operating region,
+automate likes or comments, or create multiple accounts to manufacture distribution. These tactics
+undermine account integrity and produce unreliable audience evidence.
+
 ## Brief Requirements
 
 Every production brief must include:

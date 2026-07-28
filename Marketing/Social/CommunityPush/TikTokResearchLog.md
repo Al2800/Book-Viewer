@@ -89,3 +89,31 @@ with a dated note rather than rewriting history.
 - Do not schedule another item while the first post's publication state remains prospective.
 - The first automatic run after successful validation should choose an editorial item, because
   this first execution is product-led.
+
+### 2026-07-28, external five-slide automation article
+
+**Source assessment**
+
+- The article argues that automated four-to-five-slide TikToks can generate substantial reach and
+  app sales.
+- The strongest usable observation is structural: reader-first tension and progression appear
+  more promising than posts centred on the maker or product.
+- The article is promotional, relies on selected success stories and supplies no complete post
+  denominator, matched controls or independently verified conversion data.
+- Exceptional view counts are a research lead, not a BookQuotes prior strong enough to change
+  cadence.
+
+**Process changes**
+
+- Added BQ-07, `Five-Slide Reader Tension`, to the style catalogue.
+- Added TK-006 to compare tension-led slideshows with conventional reader-need lists across three
+  matched pairs.
+- Native music may be tested separately after rights and account availability are confirmed.
+- Explicitly excluded fabricated reactions, warmed accounts, VPN or GPS manipulation, automated
+  engagement, multi-account distribution and generic AI-generated lifestyle imagery.
+
+**BookQuotes interpretation**
+
+- Use real reader tensions found in comments, search language and research.
+- Deliver editorial value by slide two rather than withholding the answer.
+- Make slide five a useful selection rule or genuine question; do not force an app reveal.

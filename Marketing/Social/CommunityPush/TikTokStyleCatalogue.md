@@ -101,6 +101,38 @@ red text.
 
 **Avoid:** feature lists, unverified extraction claims and app promotion unrelated to the topic.
 
+### BQ-07: Five-Slide Reader Tension
+
+**Use for:** a recognisable reading problem, disagreement or expectation that can be resolved with
+specific editorial value.
+
+**Structure:**
+
+1. State a real reader tension in one sentence.
+2. Establish why the obvious answer is incomplete.
+3. Offer the first specific recommendation or distinction.
+4. Offer a contrasting recommendation, qualification or practical resolution.
+5. Conclude with a useful selection rule or genuine reader question.
+
+**Examples of appropriate tensions:**
+
+- `I want to read presidential biography, but I do not want to begin with 1,000 pages.`
+- `My book club loved the subject and struggled with the writing. What should we choose next?`
+- `I underline everything, then cannot find the one passage I wanted.`
+
+**Controls:**
+
+- Use a real reader problem or clearly labelled composite insight from observed comments.
+- Do not invent a landlord, friend, bookseller or family reaction for narrative effect.
+- Do not force an app reveal onto slide five.
+- Use original photography, rights-cleared covers or typography-led slides rather than generic
+  generated lifestyle imagery.
+- Keep each slide independently useful and visually distinct.
+- Add music natively only when its rights and account availability are confirmed.
+
+**Avoid:** fake confessionals, artificial conflict, withheld information, clickbait numbering and
+claims that the account possesses secret knowledge.
+
 ## External Pattern Catalogue
 
 Add external examples only after direct inspection.
@@ -118,6 +150,7 @@ Add external examples only after direct inspection.
 | Handwritten `Team of Rivals` prototype | Handwritten explanation | BQ-02 | Ensure every circle and annotation lands on meaningful content. |
 | Annotation debate Reel | Reader discussion | BQ-05 | Verify opening clarity and retain a genuine choice. |
 | Marked-page Reel | Product proof | BQ-06 | Use sparingly within the 15% product allocation. |
+| Five-slide automation article | Reader-tension slideshow | BQ-07 | Test the structure, not the article's mass-production or account-manipulation tactics. |
 
 ## Catalogue Maintenance
 

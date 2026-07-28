@@ -32,6 +32,7 @@ Result labels:
 | TK-003 | Naming an honest reservation will improve follows and comment quality without materially reducing completion. | Recommendation | BQ-04 | Reservation included | Follows/1,000 views | Meaningful comments/1,000 | Medium prior | Pending | Produce paired briefs across comparable books. |
 | TK-004 | Specific reader identities will generate more meaningful comments than broad engagement questions. | Reader culture | BQ-05 | Specificity of choice | Meaningful comments/1,000 | Shares/1,000 views | Medium prior | Pending | Use annotation debate as first execution. |
 | TK-005 | Reader-value-first product demonstrations will outperform feature-led promotion. | Product proof | BQ-06 | Problem-first opening | Profile visits/1,000 | Completion | Medium prior | Pending | Compare two product executions after editorial baseline exists. |
+| TK-006 | A five-slide reader-tension narrative will produce more completions and saves than a generic numbered recommendation list. | Recommendation | BQ-07 | Tension-led narrative | Slideshow completion | Saves/1,000 views | Low prior | Pending | Run three matched pairs without changing posting time and topic family simultaneously. |
 
 ## Scheduled Executions
 
@@ -73,3 +74,16 @@ Build each weekly queue from:
 
 Until the account has enough evidence, treat the editorial strategy's established series as
 `supported` rather than falsely labelling them proven.
+
+## Matched-Pair Rule
+
+For TK-006, produce three matched pairs:
+
+- one BQ-07 tension-led slideshow;
+- one conventional BQ-01 reader-need slideshow;
+- comparable topic breadth and production quality;
+- the same publishing slot where possible;
+- alternating format order to reduce timing and account-growth bias.
+
+Do not claim the format is a winner from one viral result. Record the median completion,
+saves per 1,000 views, meaningful comments and profile visits across all three pairs.
