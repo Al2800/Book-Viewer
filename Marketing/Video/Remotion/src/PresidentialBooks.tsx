@@ -1,9 +1,11 @@
 import React from 'react';
 import {
   AbsoluteFill,
+  Img,
   Sequence,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
@@ -13,10 +15,10 @@ type PresidentialBook = {
   title: string;
   author: string;
   subject: string;
-  monogram: string;
   readFor: string;
   description: string;
   commitment: string;
+  cover: string;
   accent: string;
   dark: string;
 };
@@ -26,10 +28,10 @@ export const presidentialBooks: PresidentialBook[] = [
     title: 'Team of Rivals',
     author: 'Doris Kearns Goodwin',
     subject: 'Abraham Lincoln',
-    monogram: 'AL',
     readFor: "Lincoln's political intelligence",
     description: 'A multiple biography of the rivals he brought into his cabinet.',
     commitment: 'Long, but powered by personalities and conflict.',
+    cover: 'assets/presidential-covers/team-of-rivals.jpg',
     accent: '#B75A44',
     dark: '#392622',
   },
@@ -37,10 +39,10 @@ export const presidentialBooks: PresidentialBook[] = [
     title: 'The Years of Lyndon Johnson',
     author: 'Robert A. Caro',
     subject: 'Lyndon B. Johnson',
-    monogram: 'LBJ',
     readFor: 'How political power is actually built',
     description: 'Four published volumes, from the Texas Hill Country to the presidency.',
     commitment: 'The true commitment. Begin with The Path to Power.',
+    cover: 'assets/presidential-covers/path-to-power.jpg',
     accent: '#C0923F',
     dark: '#3C321D',
   },
@@ -48,10 +50,10 @@ export const presidentialBooks: PresidentialBook[] = [
     title: 'Washington: A Life',
     author: 'Ron Chernow',
     subject: 'George Washington',
-    monogram: 'GW',
     readFor: 'The person behind the monument',
     description: "Chernow's sweeping, Pulitzer-winning one-volume life.",
     commitment: 'A big book, and a clear all-life entry point.',
+    cover: 'assets/presidential-covers/washington.jpg',
     accent: '#54768A',
     dark: '#24343D',
   },
@@ -59,10 +61,10 @@ export const presidentialBooks: PresidentialBook[] = [
     title: 'Grant',
     author: 'Ron Chernow',
     subject: 'Ulysses S. Grant',
-    monogram: 'USG',
     readFor: 'Reinvention, war and Reconstruction',
     description: 'A life that rises from obscurity through the Civil War and presidency.',
     commitment: 'Especially good if your image of Grant stops at Appomattox.',
+    cover: 'assets/presidential-covers/grant.jpg',
     accent: '#5D7A61',
     dark: '#27352A',
   },
@@ -70,10 +72,10 @@ export const presidentialBooks: PresidentialBook[] = [
     title: 'Truman',
     author: 'David McCullough',
     subject: 'Harry S. Truman',
-    monogram: 'HST',
     readFor: 'An ordinary background meeting enormous decisions',
     description: "A vivid, Pulitzer-winning portrait of America's 33rd president.",
     commitment: 'Narrative history on a grand scale, not a quick primer.',
+    cover: 'assets/presidential-covers/truman.jpg',
     accent: '#8D5C65',
     dark: '#38272B',
   },
@@ -162,68 +164,21 @@ const BookJacket: React.FC<{
         width,
         height,
         flexShrink: 0,
-        overflow: 'hidden',
-        backgroundColor: book.dark,
-        border: `5px solid ${book.dark}`,
+        backgroundColor: '#E5DED1',
+        border: '5px solid #FFFDF8',
         boxShadow: '0 32px 66px rgba(24, 27, 31, 0.22)',
         transform: `translateY(${interpolate(motion, [0, 1], [70, 0])}px) rotate(-2deg)`,
       }}
     >
-      <div
+      <Img
+        src={staticFile(book.cover)}
         style={{
-          position: 'absolute',
-          inset: 18,
-          border: `2px solid ${book.accent}`,
+          width: '100%',
+          height: '100%',
+          display: 'block',
+          objectFit: 'contain',
         }}
       />
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: -24,
-          fontFamily: serif,
-          fontSize: compact ? 150 : 180,
-          lineHeight: 0.86,
-          fontWeight: 700,
-          color: book.accent,
-          opacity: 0.22,
-        }}
-      >
-        {book.monogram}
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 44,
-          right: 38,
-          top: compact ? 112 : 132,
-          fontFamily: serif,
-          fontSize: compact ? 55 : 64,
-          lineHeight: 1.04,
-          fontWeight: 700,
-          color: '#FFFDF8',
-        }}
-      >
-        {book.title}
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 44,
-          right: 42,
-          bottom: 62,
-          paddingTop: 22,
-          borderTop: `8px solid ${book.accent}`,
-          fontFamily: sans,
-          fontSize: compact ? 23 : 27,
-          lineHeight: 1.28,
-          fontWeight: 800,
-          color: '#FFFDF8',
-          textTransform: 'uppercase',
-        }}
-      >
-        {book.author}
-      </div>
     </div>
   );
 };

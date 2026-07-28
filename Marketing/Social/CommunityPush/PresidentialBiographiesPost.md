@@ -33,7 +33,26 @@ Small but important correction people often make: The Years of Lyndon Johnson is
 
 ## Source and rights notes
 
-The creative uses original typographic book-jacket artwork. It does not reproduce publisher book covers, author photographs or third-party illustrations.
+The revised creative shows the books' official covers while each title is the direct subject of
+recommendation and commentary. It does not use author photographs, internal pages or long
+quotations. Each slide identifies the title and author, and the caption makes the review/list
+context clear.
+
+For Robert A. Caro's four published *Years of Lyndon Johnson* volumes, the visual is the cover of
+*The Path to Power*, explicitly described on-screen as the recommended starting volume.
+
+Official publisher cover sources:
+
+- *Team of Rivals*, Simon & Schuster high-resolution cover:
+  `https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9780743270755/team-of-rivals-9780743270755_hr.jpg`
+- *The Path to Power*, Penguin Random House ISBN 9780679729457:
+  `https://images3.penguinrandomhouse.com/cover/9780679729457`
+- *Washington: A Life*, Penguin Random House ISBN 9780143119968:
+  `https://images3.penguinrandomhouse.com/cover/9780143119968`
+- *Grant*, Penguin Random House ISBN 9780143110637:
+  `https://images2.penguinrandomhouse.com/cover/9780143110637`
+- *Truman*, Simon & Schuster high-resolution cover:
+  `https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9780671869205/truman-9780671869205_hr.jpg`
 
 Book facts were checked against official publisher pages:
 
