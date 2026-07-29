@@ -60,6 +60,17 @@ Live audit on 29 July at 10:20 Europe/London:
 - BookQuotes Facebook publication and queue status are therefore **Not verified** until the active
   Page identity is visibly switched to BookQuotes and the Planner and Content Library agree.
 
+Live audit on 29 July at 10:35 Europe/London:
+
+- Meta was switched from ShiftPro to the BookQuotes Page and confirmed the active BookQuotes
+  identity.
+- The `What happens to your annotations when you finish a book?` reader prompt is confirmed
+  Published at 12:30 today. Initial figures were 0 across visible measures, which is too early to
+  interpret.
+- The BookQuotes Content Library Scheduled tab is empty. The planned future queue did not persist
+  into the native scheduler and must be rebuilt from the verified campaign assets before relying
+  on automatic Facebook publishing.
+
 ## Instagram
 
 BookQuotes Instagram is not connected to the BookQuotes Meta Business Suite portfolio. The

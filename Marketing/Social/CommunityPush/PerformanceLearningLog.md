@@ -98,6 +98,29 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 - Switch Meta Business Suite to the BookQuotes Page before the next Facebook publishing action;
   then reconcile Planner and Scheduled Library against the same Page identity.
 
+### 29 July 2026, 10:35 BST
+
+**Platforms checked:** BookQuotes Facebook Content Library.
+
+**Publishing**
+
+- Meta identity was switched from ShiftPro to BookQuotes and the confirmation banner states that
+  the account is acting as BookQuotes.
+- The 12:30 reader-research prompt, `What happens to your annotations when you finish a book?`,
+  is confirmed Published on the BookQuotes Page.
+- The BookQuotes Scheduled tab reports `No scheduled posts`. The previously recorded future
+  Planner cards are therefore not a reliable queue.
+
+**Performance and community**
+
+- Today's prompt displayed 0 across the immediately visible metrics. No comments or messages
+  were visible; no replies were made.
+
+**Next actions**
+
+- Rebuild the seven-day BookQuotes Facebook queue from the approved, rights-cleared content pack,
+  starting with the 30 July `One book, one line` Reel after full native preflight.
+
 ### 29 July 2026, 08:25 BST
 
 **Platforms checked:** Facebook Planner and Content Library; TikTok Studio Content.
