@@ -19,7 +19,7 @@ Updated: 28 July 2026
 
 | ID | Subject | Claim or use | Stance | Sources | Checked | Rights status | Owner | Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| EV-001 | Presidential biography package | Titles, authors and recommendation framing | Researched | See `PresidentialBiographiesPost.md` | 27 Jul 2026 | Cover sources require final confirmation | BookQuotes | Partial | Do not imply all titles were personally read. |
+| EV-001 | Presidential biography package | Titles, authors and recommendation framing | Researched | See `PresidentialBiographiesPost.md` | 29 Jul 2026 | Publisher-supplied covers used only as necessary, proportionate review/list illustrations with title and author acknowledgement | BookQuotes | Verified | User approved this editorial-use basis; do not imply all titles were personally read or reuse covers as generic product advertising. |
 | EV-002 | BookQuotes app workflow | Capture, review and searchable retrieval | Product evidence | Current approved app build and project documentation | 27 Jul 2026 | BookQuotes-owned screen recordings | BookQuotes | Verified | Describe only demonstrated behaviour. |
 | EV-003 | BookTok platform scale | Current community and sales claims | Researched | Official TikTok Newsroom links in `TikTokEditorialStrategy.md` | 27 Jul 2026 | Factual reference only | BookQuotes | Verified | Recheck before using in public copy. |
 
@@ -28,7 +28,7 @@ Updated: 28 July 2026
 | Asset ID | Asset | Source | Permission basis | Commercial use | Expiry | Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | AR-001 | BookQuotes app icon and UI | BookQuotes project | Owned | Yes | None | Verified | Remove private account information from captures. |
-| AR-002 | Presidential book covers | Current local asset folder | Source notes require final review | Unconfirmed | - | Partial | Do not publish until each image source is documented. |
+| AR-002 | Presidential book covers | Official publisher sources in `PresidentialBiographiesPost.md` | Approved editorial review/list use; title and author shown on every slide | Limited to this editorial recommendation package | Reassess for a different use | Verified | User approved publisher covers for this genuine review/list context. Do not reuse as generic app advertising. |
 | AR-003 | Original physical-book photographs | Not yet captured | Photographer/owner release required | Pending | - | Partial | Record ownership for each shoot. |
 
 ## Entry Requirements

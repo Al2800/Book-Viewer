@@ -74,14 +74,15 @@ The first recommendation-led package is ready for approval:
 
 | Format | Topic | Status |
 | --- | --- | --- |
-| Photo carousel | Five presidential biographies | Rendered and visually checked; not uploaded |
-| Reel | Five presidential biographies | Rendered and visually checked; not uploaded |
+| Photo carousel | Five presidential biographies | Held for a later native mobile photo-mode comparison |
+| Reel | Five presidential biographies | Scheduled for 29 Jul 2026, 19:30 Europe/London; Public |
 | Product Reel | Marked-page product proof | Uploaded draft; not published |
 
-The presidential-biographies carousel is the recommended first editorial post. Its caption,
-pinned comment, source notes and publishing checklist are in
-`PresidentialBiographiesPost.md`. Do not publish either version until the user has reviewed
-the creative and chosen the carousel or Reel.
+The presidential-biographies Reel is the first scheduled editorial post. Its caption, pinned
+comment, source notes and publishing checklist are in `PresidentialBiographiesPost.md`. The user
+approved the official publisher covers for this proportionate recommendation and review context.
+TikTok Web Studio did not offer photo-mode upload, so the companion Reel was scheduled first and
+the carousel is retained for a later native mobile comparison.
 
 ### Native Scheduler Validation
 
@@ -90,6 +91,7 @@ The first controlled TikTok post is now present in TikTok Studio:
 | Date | Time | Format | Topic | Content ID | Status |
 | --- | --- | --- | --- | --- | --- |
 | Tue 28 Jul | 19:30 | Reel | Marked-page product proof | `7667570006032387350` | Scheduled; publication and analytics validation pending |
+| Wed 29 Jul | 19:30 | Reel | Five presidential biographies | `7667829238065646870` | Scheduled; publication and analytics validation pending |
 
 The upload is Public, 1080p, uses high-quality uploads and passed Content Check Lite with no
 issues. The Studio Content table shows the intended 19:30 time.
