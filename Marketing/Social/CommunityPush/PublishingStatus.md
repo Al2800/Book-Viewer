@@ -91,6 +91,7 @@ The first controlled TikTok post is now present in TikTok Studio:
 | Date | Time | Format | Topic | Content ID | Status |
 | --- | --- | --- | --- | --- | --- |
 | Tue 28 Jul | 19:30 | Reel | Marked-page product proof | `7667570006032387350` | Scheduled; publication and analytics validation pending |
+| Wed 29 Jul | 08:20 | Reel | Should you read *Team of Rivals*? | `7667846219120626966` | Submitted successfully; TikTok content review pending immediately after publication |
 | Wed 29 Jul | 19:30 | Reel | Five presidential biographies | `7667829238065646870` | Scheduled; publication and analytics validation pending |
 
 The upload is Public, 1080p, uses high-quality uploads and passed Content Check Lite with no
