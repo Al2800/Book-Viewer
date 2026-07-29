@@ -119,6 +119,34 @@ with a dated note rather than rewriting history.
   acquisition. Build BookQuotes' own recurring series around reader need, with no copied wording,
   artwork, creator identity or high-volume publisher cadence.
 
+### 2026-07-29, 09:35 Europe/London
+
+**Adjacent-community research**
+
+- Followed `@go_all_in_2026`, the National Year of Reading campaign. Its strongest portable idea is
+  passion-led discovery: begin with the interest a person already has, then make the reading route
+  concrete. This is directly relevant to history, biography and nonfiction recommendations.
+- Followed `@laurens.little.library`, a live BookTok-plus-technology account. It demonstrates that
+  a reader audience can credibly contain adjacent interests when the creator has a clear point of
+  view and labelled series. BookQuotes may learn from its navigation and audience bridges, not its
+  political advocacy, AI-safety claims or commercial partnerships.
+- Rejected `@englishheritage`: the live handle has two followers and no content, so it does not
+  match the official historic reference and is not a viable research source.
+
+**Audience bridges to develop**
+
+- History and heritage: biographies, archives, place-based stories and historic objects.
+- Literacy and learning: reading routes based on a person's existing hobby or curiosity.
+- Book-and-tech: annotation, retrieval, audiobooks and how people remember what they read.
+- Screen and culture: book-to-screen, adaptations and the reading behind a cultural moment.
+- Authors, bookshops and book clubs: real-world reader rituals and community prompts.
+
+**Guardrails**
+
+- Follow and study adjacent creators only where books, learning or cultural discovery are a genuine
+  overlap. Do not chase political commentary, health claims, personal-confession formats or sales
+  language simply because they attract views.
+
 ### 2026-07-28, 14:30 Europe/London
 
 **Account and publishing**
