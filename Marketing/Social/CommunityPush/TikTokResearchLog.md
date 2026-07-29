@@ -94,6 +94,31 @@ with a dated note rather than rewriting history.
 - Still required before routine TikTok automation: verified Business/Advanced Access and
   attributable account analytics.
 
+### 2026-07-29, 09:10 Europe/London
+
+**Community watchlist**
+
+- Followed from `@bookquotes.app`: `@britishlibrary`, `@samfallingbooks`,
+  `@whatbritreads`, `@readswithcee` and `@harpercollinsuk`.
+- Excluded `@jackedwards`: it currently resolves to an empty private account, despite older
+  official TikTok references. No account is followed solely on an historic name.
+
+**Creator-pattern observations**
+
+- British Library pairs a recognisable cultural object with a concise reader question.
+- Sam Falling Books makes recommendation series easy to navigate through playlists.
+- WhatBritReads uses native photo posts as reader-opinion and rating-system prompts.
+- Cee Reads demonstrates a community-led book-club rhythm; do not imitate Live gifting or battle
+  mechanics.
+- HarperCollinsUK maintains labelled recommendation playlists; its commercial urgency and
+  repeated sales language are explicitly excluded from BookQuotes.
+
+**Transferable response**
+
+- Maintain a small follow/watch list for research and genuine reader participation, not follow-back
+  acquisition. Build BookQuotes' own recurring series around reader need, with no copied wording,
+  artwork, creator identity or high-volume publisher cadence.
+
 ### 2026-07-28, 14:30 Europe/London
 
 **Account and publishing**

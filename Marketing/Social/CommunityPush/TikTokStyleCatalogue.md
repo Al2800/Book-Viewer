@@ -140,6 +140,9 @@ Add external examples only after direct inspection.
 | Ref | Creator/link | Date | Audience need | Hook pattern | Structure | Visual/audio grammar | Response signal | Transferable principle | Do not copy |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Pending | Pending first daily scout | - | - | - | - | - | - | - | - |
+| EXT-001 | `@britishlibrary` | 29 Jul 2026 | Accessible discovery and reader choice | Specific cultural object plus a reader question | One object, one surprising detail, one invitation | Collection object, clear text, native/original sound | Visible BookTok and classics posts range from low thousands to hundreds of thousands of views | Connect a concrete book object to a simple choice or question | Institutional archive, wording, assets or cultural authority |
+| EXT-002 | `@samfallingbooks` | 29 Jul 2026 | Easy browsing across recommendation needs | Clear recurring series names | Playlist-backed monthly reads, themed recommendations and TBR updates | Personal book-led footage, original voice or light music | Recent themed recommendations show several thousand to tens of thousands of visible views | Use recognisable BookQuotes series and consistent navigation | Personal reading claims, tone, titles or playlist design |
+| EXT-003 | `@whatbritreads` | 29 Jul 2026 | Reader identity and disagreement | A recognisable reading tension | Native photo post or short video, then a concrete question | Casual reader-life visual, concise statement | Recent rating and five-book posts show active visible view counts | Test reader-debate photo mode with an honest, non-manufactured tension | Her wording, humour, visual identity or review stance |
 
 ## Existing Asset Mapping
 
