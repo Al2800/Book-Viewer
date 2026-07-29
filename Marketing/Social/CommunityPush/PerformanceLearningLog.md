@@ -64,6 +64,46 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 29 July 2026, 08:25 BST
+
+**Platforms checked:** Facebook Planner and Content Library; TikTok Studio Content.
+
+**Publishing**
+
+- TikTok's 28 July controlled product Reel is Public and displayed once under content ID
+  `7667570006032387350`; it is therefore no longer merely scheduled.
+- The 29 July 08:19 *Team of Rivals* recommendation Reel is Public under content ID
+  `7667846219120626966` after TikTok's immediate content-review state cleared.
+- The five-presidential-biographies Reel remains scheduled for 19:30 under content ID
+  `7667829238065646870`.
+- Facebook Planner shows substantive entries, including today's 12:30 annotation question, but
+  the Content Library Scheduled tab reports no scheduled posts. Opening the Planner entry exposed
+  an editable post; Meta then reported an offline state before the final scheduler screen. The
+  draft was closed unchanged to avoid duplicate publication.
+
+**Performance and community**
+
+- TikTok Studio displayed 0 views, likes and comments for all three entries at this early check.
+  Watch time, completion, saves, shares, profile visits, follows, link taps and App Store signals:
+  Not available.
+- No comments or messages were visible in the checked surfaces. No replies were made.
+
+**Learning update**
+
+- No hypothesis confidence changed. Initial zeroes are too early and no deeper analytics were
+  exposed.
+- TikTok's native publish-once and public-visibility checks now have evidence, but Business or
+  Advanced Access and an attributable analytics view remain unverified. Routine automatic TikTok
+  publishing stays gated.
+- Facebook's Planner/Library disagreement is an active technical risk. Do not assume Planner
+  cards are scheduled until the Scheduled library confirms them.
+
+**Next actions**
+
+- Recheck TikTok at the 24-hour checkpoint for publication, analytics and audience response.
+- Recheck Facebook connectivity before 12:30; only schedule a replacement after the Content
+  Library and final scheduler agree on the saved item.
+
 ### 28 July 2026, 09:00 BST
 
 **Platforms checked:** Facebook; Instagram connection status.

@@ -64,6 +64,36 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-07-29, 08:25 Europe/London
+
+**Account and publishing**
+
+- The controlled product Reel `7667570006032387350` is Public and appears once in TikTok Studio.
+- The 08:19 *Team of Rivals* recommendation Reel `7667846219120626966` cleared initial content
+  review and is Public.
+- The five-presidential-biographies Reel `7667829238065646870` remains scheduled for 19:30.
+- The visible Content table provides addressable IDs and initial zero counts but not the account
+  analytics required to close the Advanced Access validation gate.
+
+**Performance**
+
+- 24-hour checkpoints: pending for both recommendation content and the controlled product post.
+- Missing measures: watch time, completion, saves, shares, profile visits, follows, link taps and
+  meaningful comment quality.
+
+**Learning**
+
+- The morning post is a deliberately distinct timing and format observation: a 15-second,
+  cover-led, single-book recommendation in the morning versus the 29-second five-book evening
+  recommendation. It is not evidence for twice-daily posting until downstream measures exist.
+
+**Queue**
+
+- Published: controlled product proof; *Team of Rivals* reading note.
+- Scheduled: five presidential biographies, 19:30.
+- Still required before routine TikTok automation: verified Business/Advanced Access and
+  attributable account analytics.
+
 ### 2026-07-28, 14:30 Europe/London
 
 **Account and publishing**

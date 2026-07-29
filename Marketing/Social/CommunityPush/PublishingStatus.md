@@ -91,11 +91,18 @@ The first controlled TikTok post is now present in TikTok Studio:
 | Date | Time | Format | Topic | Content ID | Status |
 | --- | --- | --- | --- | --- | --- |
 | Tue 28 Jul | 19:30 | Reel | Marked-page product proof | `7667570006032387350` | Scheduled; publication and analytics validation pending |
-| Wed 29 Jul | 08:20 | Reel | Should you read *Team of Rivals*? | `7667846219120626966` | Submitted successfully; TikTok content review pending immediately after publication |
+| Wed 29 Jul | 08:19 | Reel | Should you read *Team of Rivals*? | `7667846219120626966` | Published once; Public; initial metrics displayed as 0 and no account-level analytics yet available |
 | Wed 29 Jul | 19:30 | Reel | Five presidential biographies | `7667829238065646870` | Scheduled; publication and analytics validation pending |
 
 The upload is Public, 1080p, uses high-quality uploads and passed Content Check Lite with no
 issues. The Studio Content table shows the intended 19:30 time.
+
+Live audit on 29 July at 08:25 Europe/London: the 28 July controlled product Reel and the 29 July
+morning recommendation Reel were Public and addressable by distinct content IDs. The planned
+19:30 presidential-biographies Reel remained scheduled and Public. The Content table showed zero
+initial views, likes and comments for all items; no deeper account-level analytics were available.
+TikTok's Business/Advanced Access requirement remains unverified, so routine automated TikTok
+publishing remains gated despite the successful native publishing checks.
 
 After successful publication and an attributable analytics entry, the automation may activate
 routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.
