@@ -64,6 +64,40 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 29 July 2026, 10:20 BST
+
+**Platforms checked:** TikTok Studio Content; Meta Content Library.
+
+**Publishing**
+
+- TikTok lists the marked-page product proof (`7667570006032387350`, 28 Jul 19:30) and *Team of
+  Rivals* (`7667846219120626966`, 29 Jul 08:19) once and as Public. Five presidential biographies
+  (`7667829238065646870`) remains scheduled for 19:30 with a Public audience setting.
+- The available Meta Content Library was visibly in the ShiftPro identity and contained ShiftPro
+  posts. No BookQuotes Facebook publication or queue conclusion can be drawn from that surface.
+
+**Performance and community**
+
+- TikTok Studio Content displays 0 views, 0 likes and 0 comments for the two published Reels.
+  Watch time, completion, saves, shares, profile visits, follows, link taps and App Store signals:
+  Not available.
+- No BookQuotes Facebook metrics, comments or messages were available because the active Meta
+  identity did not match the BookQuotes Page. No replies were made.
+
+**Learning update**
+
+- No hypothesis confidence changed. The TikTok posts are too new and the available surface does
+  not supply quality or retention metrics.
+- Correct Meta Page identity is now a prerequisite for Facebook measurement and automatic queue
+  reconciliation. Do not interpret ShiftPro data as BookQuotes performance.
+
+**Next actions**
+
+- Recheck TikTok at the next 24-hour checkpoints, ideally from the analytics surface needed for
+  the native-validation gate.
+- Switch Meta Business Suite to the BookQuotes Page before the next Facebook publishing action;
+  then reconcile Planner and Scheduled Library against the same Page identity.
+
 ### 29 July 2026, 08:25 BST
 
 **Platforms checked:** Facebook Planner and Content Library; TikTok Studio Content.

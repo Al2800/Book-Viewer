@@ -53,6 +53,13 @@ Live audit on 28 July:
 - The next daily run must reconcile that Meta discrepancy before assuming those entries will
   publish.
 
+Live audit on 29 July at 10:20 Europe/London:
+
+- The available Meta Content Library showed ShiftPro posts and a ShiftPro content identity, not
+  BookQuotes. Its visible performance figures must not be used in BookQuotes reporting.
+- BookQuotes Facebook publication and queue status are therefore **Not verified** until the active
+  Page identity is visibly switched to BookQuotes and the Planner and Content Library agree.
+
 ## Instagram
 
 BookQuotes Instagram is not connected to the BookQuotes Meta Business Suite portfolio. The
@@ -90,9 +97,9 @@ The first controlled TikTok post is now present in TikTok Studio:
 
 | Date | Time | Format | Topic | Content ID | Status |
 | --- | --- | --- | --- | --- | --- |
-| Tue 28 Jul | 19:30 | Reel | Marked-page product proof | `7667570006032387350` | Scheduled; publication and analytics validation pending |
+| Tue 28 Jul | 19:30 | Reel | Marked-page product proof | `7667570006032387350` | Published once; Public; initial metrics displayed as 0 and no account-level analytics yet available |
 | Wed 29 Jul | 08:19 | Reel | Should you read *Team of Rivals*? | `7667846219120626966` | Published once; Public; initial metrics displayed as 0 and no account-level analytics yet available |
-| Wed 29 Jul | 19:30 | Reel | Five presidential biographies | `7667829238065646870` | Scheduled; publication and analytics validation pending |
+| Wed 29 Jul | 19:30 | Reel | Five presidential biographies | `7667829238065646870` | Scheduled for 19:30; Public audience; publication and analytics validation pending |
 
 The upload is Public, 1080p, uses high-quality uploads and passed Content Check Lite with no
 issues. The Studio Content table shows the intended 19:30 time.
@@ -103,6 +110,12 @@ morning recommendation Reel were Public and addressable by distinct content IDs.
 initial views, likes and comments for all items; no deeper account-level analytics were available.
 TikTok's Business/Advanced Access requirement remains unverified, so routine automated TikTok
 publishing remains gated despite the successful native publishing checks.
+
+Live audit on 29 July at 10:20 Europe/London: the first two TikTok Reels were Public and listed
+once in Studio. Their visible counts remained 0 views, 0 likes and 0 comments. The presidential
+biographies Reel remains scheduled for 19:30 with a Public audience setting. Watch time,
+completion, saves, shares, profile visits, follows and link taps were not available in the Content
+table.
 
 After successful publication and an attributable analytics entry, the automation may activate
 routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.
