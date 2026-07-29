@@ -64,6 +64,50 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-07-29, 10:05 Europe/London
+
+**Adjacent-community research**
+
+- Verified `@kengo_book` as a live, high-reach Japanese book-recommendation account (524.1K
+  followers; 21.1M likes visible on profile). Its recent work makes the reader's immediate
+  situation concrete before naming a title: a school reading response, a short available window,
+  a particular reading age or a specific feeling about a book. Several recent recommendations
+  show substantial visible reach. The account is international rather than a UK audience proxy,
+  so it is a structural reference only.
+- Verified `@sp3llb00k` (Dakota) as a live, large book-creator account (412.1K followers; 31.7M
+  likes visible on profile). It adds a useful international creator reference for book-led
+  explainers and community enthusiasm; BookQuotes must not copy its identity, tastes or
+  presentation.
+- Verified `@booksonthebedside` (Hana & Hali) as a live UK BookTok account (36.5K followers;
+  2.1M likes visible on profile). This is a more useful scale reference than only studying the
+  largest publishers: a smaller reader-led account can develop recognisable taste and a community
+  without turning every post into a sales prompt.
+
+**Creator-pattern observations**
+
+- A recommendation gains clarity when it begins with a use condition, not an abstract quality:
+  `for a long train journey`, `when you want political history without a doorstop`, or `for a
+  reread after the adaptation`.
+- Specificity should describe the reading need, not make unsupported emotional or therapeutic
+  promises. Avoid borrowing creator voice, personal reactions, artwork, titles or commercial
+  disclosures.
+- Add a deliberately small-account cohort to the watchlist. Large accounts reveal broad creative
+  grammar; smaller accounts better reveal repeatable community rhythm and production effort.
+
+**Queue and experiments**
+
+- Added TK-007: test a use-condition opening against a broad recommendation-list opening, with
+  matched topic and publishing slot. This is a low-confidence hypothesis, not a conclusion from
+  other accounts' visible views.
+
+**Sources checked**
+
+- TikTok's 2026 Discover List identifies `@kengo_book` as a book-loving educator whose enthusiasm
+  brings literary works to new audiences.
+- TikTok's BookTok Summer coverage identifies `@booksonthebedside` among UK and Ireland BookTok
+  creator finalists. Both sources are leads; live profile inspection confirmed the present
+  accounts before this entry was added.
+
 ### 2026-07-29, 08:25 Europe/London
 
 **Account and publishing**

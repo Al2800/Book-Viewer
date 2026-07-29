@@ -33,6 +33,7 @@ Result labels:
 | TK-004 | Specific reader identities will generate more meaningful comments than broad engagement questions. | Reader culture | BQ-05 | Specificity of choice | Meaningful comments/1,000 | Shares/1,000 views | Medium prior | Pending | Use annotation debate as first execution. |
 | TK-005 | Reader-value-first product demonstrations will outperform feature-led promotion. | Product proof | BQ-06 | Problem-first opening | Profile visits/1,000 | Completion | Medium prior | Pending | Compare two product executions after editorial baseline exists. |
 | TK-006 | A five-slide reader-tension narrative will produce more completions and saves than a generic numbered recommendation list. | Recommendation | BQ-07 | Tension-led narrative | Slideshow completion | Saves/1,000 views | Low prior | Pending | Run three matched pairs without changing posting time and topic family simultaneously. |
+| TK-007 | A specific reading use-condition will earn more saves and meaningful comments than a broad recommendation-list opening. | Recommendation | BQ-01 | Use-condition opening | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Compare two matched recommendation posts with the same topic breadth, visual treatment and evening slot. |
 
 ## Scheduled Executions
 
