@@ -116,6 +116,38 @@ with a dated note rather than rewriting history.
   views in the mobile app, then run one explicitly native, low-risk distribution test only after
   that validation gate is resolved.
 
+### 2026-07-30, 09:20 Europe/London
+
+**BookTok audio study**
+
+- `@samfallingbooks`: a recent 1:50 fantasy-favourites recommendation uses `original sound -
+  Sam` and shows 614 likes, 159 favourites and 16 shares after 16 hours. A recent bookshelf-
+  reorganisation post uses the gentle licensed track `Wes Anderson-esque Cute Acoustic - Kenji
+  Ueda`. The distinction is useful: spoken/editorial recommendation versus visual atmosphere.
+- `@whatbritreads`: a recent 1:33 bookish-things list uses `original sound - brittany | booktok`
+  and shows 140 likes, three comments and one favourite after one day. Its proposition is carried
+  by the creator's own spoken format rather than a trend sound.
+- `@harpercollinsuk`: a recent 23-second promotional book post uses `original sound -
+  HarperCollinsUK` and showed only two likes after 36 minutes. Audio alone does not solve
+  distribution or make a commercial post compelling.
+
+**Transferable audio policy**
+
+- Use a BookQuotes-owned voiceover or deliberately recorded natural sound for a recommendation,
+  reading route or reader question. Captions stay essential; the post must work muted.
+- Use quiet, commercially cleared ambient music only where physical book movement, shelves,
+  journalling or a visual reading ritual carries the main idea. Do not add music merely to fill
+  silence.
+- For BookQuotes business content, choose native Commercial Music Library tracks by UK region,
+  mood and duration when music is needed. Do not reuse another creator's original sound or general
+  library music without a separate licence.
+
+**Source and limitation**
+
+- TikTok's Commercial Music Library guidance says Business Accounts are limited to Commercial
+  Sounds and that they are cleared for organic and paid business content. The current observed
+  creator examples indicate style and structure, not a causal audio-performance claim.
+
 ### 2026-07-29, 10:05 Europe/London
 
 **Adjacent-community research**

@@ -133,6 +133,32 @@ specific editorial value.
 **Avoid:** fake confessionals, artificial conflict, withheld information, clickbait numbering and
 claims that the account possesses secret knowledge.
 
+### BQ-08: Sound With A Job
+
+**Use for:** setting an audio treatment that serves the reader proposition rather than disguising
+an underdeveloped post.
+
+**Choose one:**
+
+1. `Owned voice`: a calm BookQuotes voiceover or clearly recorded natural book sound for a
+   recommendation, reader route or product demonstration.
+2. `Cleared atmosphere`: low-volume UK Commercial Music Library music for physical-book movement,
+   shelves, journalling or a visual reading ritual.
+3. `Deliberate quiet`: no music when it improves focus and captions carry the meaning.
+
+**Controls:**
+
+- The visual proposition must be understandable muted.
+- Voice must introduce the reader need in the first two seconds; it cannot merely read the caption.
+- Keep music subordinate to the voice and avoid abrupt beat-drop edits that add no editorial
+  meaning.
+- Select Commercial Music Library tracks natively for BookQuotes business use. Do not rely on
+  other creators' original sounds, general-library music or a trend sound unless rights are
+  independently cleared.
+
+**Avoid:** borrowed creator catchphrases, unrelated lyrics, generic inspirational audio and
+music used as a substitute for a hook.
+
 ## External Pattern Catalogue
 
 Add external examples only after direct inspection.
@@ -148,6 +174,8 @@ Add external examples only after direct inspection.
 | EXT-006 | `@kengo_book` | 29 Jul 2026 | Finding the right book for an immediate circumstance | Reader situation before title | A precise condition, then a tightly matched title or short route | Direct book-led explanation with clear title and author attribution | Live profile shows repeated recent recommendation posts with visible reach from tens of thousands to over one million | Name a concrete reading use condition before recommendation | Japanese-language phrasing, creator voice, personal reading claims, titles, visual identity or PR framing |
 | EXT-007 | `@sp3llb00k` | 29 Jul 2026 | High-energy book discovery and belonging | Enthusiastic book-specific proposition | One book idea, context, then invitation into the wider reader conversation | Creator-led presentation and recognisable personal taste | Live account has 412.1K followers and 31.7M likes visible on 29 Jul 2026 | Let a clear book idea lead; reserve the BookQuotes brand for a quiet end-card or caption where relevant | Personal identity, review taste, language, appearance, artwork or creator relationship with followers |
 | EXT-008 | `@booksonthebedside` | 29 Jul 2026 | Reader-led discovery at a sustainable community scale | Consistent taste rather than publisher urgency | Recurring recommendations and reader conversation | Book-focused, creator-led posts | Live UK BookTok account has 36.5K followers and 2.1M likes visible on 29 Jul 2026 | Study sustainable series rhythm and specificity from a smaller community cohort | Their branding, wording, reading taste or relationship with audience |
+| EXT-009 | `@samfallingbooks` and `@whatbritreads` | 30 Jul 2026 | Clear editorial recommendation with useful watchability | Spoken proposition, then book-specific explanation | Long-form recommendation/list with an original creator sound | Owned spoken sound; captions and book visuals do the work | Recent examples have visible likes, favourites and shares without trend music | Use BookQuotes-owned voice plus captions for reader routes; use music only as ambience for visual rituals | Voice, personal reading claims, recommendations, sound, wording or visual identity |
+| EXT-010 | `@harpercollinsuk` | 30 Jul 2026 | Promotional book discovery | Sales-led proposition | Short promotional post | Account-owned original sound | Recent early post has only two visible likes, showing sound alone does not rescue commercial packaging | Do not confuse an audio choice with the reader value and distribution conditions required for reach | Promotional wording, reviews, sales urgency, publisher assets or account authority |
 
 ## Existing Asset Mapping
 
