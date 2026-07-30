@@ -71,6 +71,17 @@ Live audit on 29 July at 10:35 Europe/London:
   into the native scheduler and must be rebuilt from the verified campaign assets before relying
   on automatic Facebook publishing.
 
+Live audit on 30 July at 08:20 Europe/London:
+
+- The BookQuotes Scheduled Library still reported no scheduled items at the start of the run.
+- A preflighted `One book, one line` Reel was uploaded under the BookQuotes identity, passed
+  Meta's copyright check, remained Public, had AI labelling and Boost both off, and was scheduled
+  for 18:30 today. Meta displayed `Your post is scheduled`.
+- After a reload, the Scheduled Library still displayed no items. Treat the scheduler success
+  notice as evidence of intent but do not create a duplicate. This is a verified Meta
+  Planner/Library reconciliation failure; the rolling Facebook queue remains under three
+  confirmed items.
+
 ## Instagram
 
 BookQuotes Instagram is not connected to the BookQuotes Meta Business Suite portfolio. The
@@ -127,6 +138,11 @@ once in Studio. Their visible counts remained 0 views, 0 likes and 0 comments. T
 biographies Reel remains scheduled for 19:30 with a Public audience setting. Watch time,
 completion, saves, shares, profile visits, follows and link taps were not available in the Content
 table.
+
+Live audit on 30 July at 08:20 Europe/London: the three existing TikTok items remain listed once
+and Public in Studio. The Content table still displays 0 views, likes and comments for each item.
+The account-level analytics entry required to activate routine TikTok automation remains
+unavailable, so no further TikTok post was uploaded or scheduled.
 
 After successful publication and an attributable analytics entry, the automation may activate
 routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.

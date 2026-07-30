@@ -121,6 +121,53 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 - Rebuild the seven-day BookQuotes Facebook queue from the approved, rights-cleared content pack,
   starting with the 30 July `One book, one line` Reel after full native preflight.
 
+### 30 July 2026, 08:20 BST
+
+**Platforms checked:** BookQuotes Facebook Content Library and native Reel composer; TikTok
+Studio Content.
+
+**Publishing**
+
+- Facebook: `One book, one line` was uploaded to the BookQuotes Page, passed Meta's copyright
+  check, then scheduled for 18:30 today. The composer confirmed `Your post is scheduled`.
+  Visibility was Public, Boost and AI label were off, and group and Story sharing were not used.
+- Facebook: reloading the Scheduled Library immediately afterwards still returned `No scheduled
+  posts`. No duplicate retry was made because the scheduler confirmation and library are in
+  conflict.
+- TikTok: the 28 July marked-page Reel, 29 July *Team of Rivals* Reel and 29 July presidential
+  biographies Reel all remain listed once and Public. No further TikTok publishing was attempted
+  because the automation-validation analytics entry remains unavailable.
+
+**Performance and community**
+
+- TikTok Content table shows 0 views, 0 likes and 0 comments for each existing post. Watch time,
+  completion, saves, shares, profile activity, follows and link taps: Not available.
+- Facebook's previously published 29 July annotation prompt was not remeasured in this run. No
+  comments or messages were actioned.
+
+**Learning update**
+
+- No performance hypothesis changed. Three TikTok zero-count displays are an account-health and
+  measurement concern, not evidence that any particular topic or format failed.
+- The recurring Meta scheduling discrepancy is now the immediate operational blocker. It prevents
+  confirmation of a rolling queue and needs a direct Planner/Library reconciliation before more
+  Facebook uploads are created.
+
+**External research**
+
+- TikTok Creative Center guidance confirmed that UK trend research should use the Trends surface
+  with time-frame, industry and hashtag analytics. No current trend was adopted from search
+  snippets alone.
+- TikTok's July BookTok Late coverage continues to support reader community and shared discovery
+  as a durable context, rather than a reason to chase generic trends.
+
+**Next actions**
+
+- Verify whether the 18:30 Facebook Reel publishes exactly once; do not create a replacement
+  while its status is uncertain.
+- Resolve Meta's scheduler-versus-library discrepancy, then rebuild the seven-day Facebook queue.
+- Keep TikTok publishing gated; seek the attributable analytics entry before scheduling again.
+
 ### 29 July 2026, 08:25 BST
 
 **Platforms checked:** Facebook Planner and Content Library; TikTok Studio Content.

@@ -64,6 +64,30 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-07-30, 08:20 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio lists the three existing BookQuotes Reels once and as Public. The table continues
+  to display 0 views, 0 likes and 0 comments; deeper analytics are unavailable.
+- The controlled post has publication evidence but still lacks the attributable analytics entry
+  required by the native-validation gate. Routine TikTok publishing remains approval-only and no
+  new TikTok item was uploaded, scheduled, edited or deleted.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK trend method | TikTok Creative Center Trends guidance | TikTok directs creators to filter trend analytics by industry and time frame, then inspect related videos and audience information | Use Creative Center as a discovery input, not a substitute for BookQuotes account evidence | Short | Check direct UK Creative Center signals when account access allows; do not adopt a hashtag from search snippets alone. |
+| BookTok community | TikTok BookTok Late, July 2026 | TikTok continues to frame BookTok around collective discovery and reader conversation | Supports reader prompts, routes and discussion, not generic trend-chasing | Medium | Keep editorial content reader-first and make product posts occasional. |
+
+**Learning**
+
+- No experiment confidence changed. The visible zeroes identify a measurement or distribution
+  issue that must be understood before format learning can begin.
+- The active TikTok preparation queue remains below three viable next items because the native
+  automation gate is unresolved; this is reported rather than filled with low-quality work.
+
 ### 2026-07-29, 10:05 Europe/London
 
 **Adjacent-community research**
