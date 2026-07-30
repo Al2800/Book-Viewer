@@ -144,6 +144,13 @@ and Public in Studio. The Content table still displays 0 views, likes and commen
 The account-level analytics entry required to activate routine TikTok automation remains
 unavailable, so no further TikTok post was uploaded or scheduled.
 
+Public diagnosis on 30 July at 08:45 Europe/London: each TikTok Reel is directly watchable from
+its public URL and no violation, copyright or review warning is visible. The account is public,
+in the United Kingdom and allows comments, but has 0 followers and 0 total likes. The three
+posts still have literal zero counts. Treat this as a distribution or account-eligibility issue
+ahead of creative quality; TikTok automation remains paused until account status and analytics
+access are resolved.
+
 After successful publication and an attributable analytics entry, the automation may activate
 routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.
 After seven comparable posts, test a distinct second daily slot on no more than two days in one

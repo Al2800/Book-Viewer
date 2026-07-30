@@ -88,6 +88,34 @@ with a dated note rather than rewriting history.
 - The active TikTok preparation queue remains below three viable next items because the native
   automation gate is unresolved; this is reported rather than filled with low-quality work.
 
+### 2026-07-30, 08:45 Europe/London
+
+**Public-distribution diagnosis**
+
+- The presidential-biographies Reel is directly watchable at its public URL and its content is
+  visible without any copyright, moderation or review warning. It remains at 0 likes, 0 comments,
+  0 favourites and 0 shares after approximately 13 hours.
+- The public BookQuotes profile lists all three videos, but remains at 0 Following, 0 Followers
+  and 0 Likes. Account settings show United Kingdom region, a non-private account and comments
+  set to Everyone. This rules out the simple private-post or region-mismatch explanation.
+- Business verification is not completed in the visible settings. This is not proof that organic
+  reach is blocked, but it is a material setup difference to resolve while investigating access
+  and analytics.
+
+**Diagnosis and decision**
+
+- Three literal zero-count public videos indicate that BookQuotes has not received an initial
+  distribution test, or that a recommendation-eligibility/account-health issue exists. This is
+  not enough evidence to call the Reels bad.
+- The visible covers are legible and technically clean, but their typography-led openings are
+  slower and more editorial than a typical native BookTok first second. Creative improvements are
+  warranted for a later controlled test: physical-book movement in frame one, a shorter
+  use-condition hook, and one title per video. They cannot explain a complete absence of initial
+  views on their own.
+- Do not schedule another TikTok post. First obtain the account-status and attributable analytics
+  views in the mobile app, then run one explicitly native, low-risk distribution test only after
+  that validation gate is resolved.
+
 ### 2026-07-29, 10:05 Europe/London
 
 **Adjacent-community research**
