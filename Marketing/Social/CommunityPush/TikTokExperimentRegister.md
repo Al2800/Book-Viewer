@@ -36,6 +36,8 @@ Result labels:
 | TK-007 | A specific reading use-condition will earn more saves and meaningful comments than a broad recommendation-list opening. | Recommendation | BQ-01 | Use-condition opening | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Compare two matched recommendation posts with the same topic breadth, visual treatment and evening slot. |
 | TK-008 | A reader-fit recommendation with an explicit reservation will earn more saves and useful comments than a rank-style science-fiction list. | Recommendation | BQ-01 / BQ-04 | Reader-fit framing | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Compare SF-01 and SF-06 with later rank/list execution. |
 | TK-009 | A genuine reading-order question will attract more meaningful comments than a broad genre prompt. | Reader culture | BQ-05 | Specific reader decision | Meaningful comments/1,000 views | Shares/1,000 views | Low prior | Pending | Use SF-04, then compare SF-09 after comparable reach becomes available. |
+| TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
+| TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
 
 ## Scheduled Executions
 

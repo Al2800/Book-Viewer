@@ -38,6 +38,21 @@ TikTok's own organic guidance prioritises quality over raw frequency. Increasing
 every day should be earned by watch time, saves, shares, profile visits, and the ability to
 maintain genuinely useful recommendations.
 
+## Distribution Reset
+
+As of 1 August 2026, BookQuotes has four public TikTok posts with no visible reach or account-level
+analytics. The next test therefore changes the variable from animation volume to discoverability:
+
+- complete TikTok Account check and inspect any recommendation-eligibility notice;
+- use Creator Search Insights and Content gap topics where available;
+- test native-photo and typography-led posts with exact reader questions in the first frame;
+- ask the account owner to participate genuinely in relevant BookTok conversations, without
+  automated likes, comments, follow-back patterns or repeated replies;
+- stop after four controlled posts if literal zero distribution persists and escalate account or
+  analytics access instead of producing another batch.
+
+The detailed slate and decision rules are in `TikTokDistributionResetPack.md`.
+
 ## Repeatable Series
 
 ### Read This If

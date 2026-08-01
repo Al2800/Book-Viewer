@@ -93,6 +93,27 @@ with a dated note rather than rewriting history.
 - Preparation: continue the sci-fi queue, but keep routine TikTok automation gated pending the
   native validation requirements in `TikTokOperatingRunbook.md`.
 
+### 2026-08-01, distribution reset decision
+
+**External platform guidance**
+
+- TikTok's Help Center says Account check exposes posting, profile, comments and direct-message
+  restrictions. Its recommendation guidance says an account that is ineligible for recommendation
+  should receive an Inbox or Profile notice and can appeal.
+- TikTok's Creator Search Insights exposes popular searches, Content gap topics and search
+  analytics where available. This gives BookQuotes a stronger next test than relying on broad
+  hashtags or generic trend surfaces.
+- TikTok's recommendation guidance identifies user interactions, content information and user
+  information such as location, language and time as relevant signals. This supports genuine
+  owner-led community participation, not automated engagement.
+
+**Decision**
+
+- Added `TikTokDistributionResetPack.md`, TK-010 and TK-011.
+- Next slate uses search-led native-photo and typography posts before another animated batch.
+- If four controlled posts after a clear Account check still show literal zero distribution, stop
+  changing creative and escalate account or analytics access.
+
 ### 2026-07-31, 08:35 Europe/London
 
 **Publishing and review state**
