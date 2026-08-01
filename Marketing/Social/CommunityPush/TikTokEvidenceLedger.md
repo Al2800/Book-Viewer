@@ -22,6 +22,8 @@ Updated: 28 July 2026
 | EV-001 | Presidential biography package | Titles, authors and recommendation framing | Researched | See `PresidentialBiographiesPost.md` | 29 Jul 2026 | Publisher-supplied covers used only as necessary, proportionate review/list illustrations with title and author acknowledgement | BookQuotes | Verified | User approved this editorial-use basis; do not imply all titles were personally read or reuse covers as generic product advertising. |
 | EV-002 | BookQuotes app workflow | Capture, review and searchable retrieval | Product evidence | Current approved app build and project documentation | 27 Jul 2026 | BookQuotes-owned screen recordings | BookQuotes | Verified | Describe only demonstrated behaviour. |
 | EV-003 | BookTok platform scale | Current community and sales claims | Researched | Official TikTok Newsroom links in `TikTokEditorialStrategy.md` | 27 Jul 2026 | Factual reference only | BookQuotes | Verified | Recheck before using in public copy. |
+| EV-004 | Culture reading-routes package | The Culture title list, author and *The Player of Games* premise | Researched | [Hachette UK, *The Player of Games*](https://www.hachette.co.uk/titles/iain-m-banks-3/the-player-of-games/9780356521640/) | 30 Jul 2026 | Text-only production until specific publisher-cover record is completed | BookQuotes | Verified | Publisher lists *Consider Phlebas*, *The Player of Games*, *Use of Weapons*, *Excession* and *Look to Windward* in the Culture series. Do not call the five a definitive ranking. |
+| EV-005 | Three-Body reading-routes package | Trilogy order, author and translator credits | Researched | [Bloomsbury UK Three-Body series](https://www.bloomsbury.com/uk/series/the-threebody-problem/) | 30 Jul 2026 | Text-only production until specific publisher-cover record is completed | BookQuotes | Verified | The series page lists *The Three-Body Problem*, *The Dark Forest* and *Death's End*; it credits Cixin Liu, Ken Liu and Joel Martinsen on the relevant editions. |
 
 ## Asset Rights Register
 
@@ -30,6 +32,7 @@ Updated: 28 July 2026
 | AR-001 | BookQuotes app icon and UI | BookQuotes project | Owned | Yes | None | Verified | Remove private account information from captures. |
 | AR-002 | Presidential book covers | Official publisher sources in `PresidentialBiographiesPost.md` | Approved editorial review/list use; title and author shown on every slide | Limited to this editorial recommendation package | Reassess for a different use | Verified | User approved publisher covers for this genuine review/list context. Do not reuse as generic app advertising. |
 | AR-003 | Original physical-book photographs | Not yet captured | Photographer/owner release required | Pending | - | Partial | Record ownership for each shoot. |
+| AR-004 | Culture and Three-Body publisher cover assets | Not yet selected | Planned proportionate editorial illustration only; title and author must remain visible | Pending | Reassess per post | Partial | Do not download retailer covers. Record the exact publisher asset source before use. Text-only prototypes may be used without this asset. |
 
 ## Entry Requirements
 

@@ -64,6 +64,76 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-08-01, 08:01 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio lists `7668631665064938774`, *The Player of Games* Culture reading route, once as
+  the latest public post, dated 31 July at 11:07.
+- Visible account metrics remain 0 views, 0 likes and 0 comments. Watch time, completion, saves,
+  shares, profile visits, follows and link taps are not available.
+- The post's initial private-under-review state is no longer shown on the recent-post surface;
+  publication is now evidenced, but attributable analytics are still not.
+
+**External signals**
+
+- TikTok Inspiration displayed broad current topics, dominated by unrelated news and entertainment
+  examples. No trend was promoted into the BookQuotes queue because a relevant UK BookTok signal
+  was not evidenced on this surface.
+
+**Learning**
+
+- No confidence change. Treat the zero counts as a distribution or measurement observation until
+  the account produces an attributable analytics entry and comparable reach.
+
+**Queue**
+
+- Published: four TikTok posts are recorded in the publishing log; no new upload was made in this
+  run.
+- Preparation: continue the sci-fi queue, but keep routine TikTok automation gated pending the
+  native validation requirements in `TikTokOperatingRunbook.md`.
+
+### 2026-07-31, 08:35 Europe/London
+
+**Publishing and review state**
+
+- Published the first sci-fi reading-route Reel once: *The Player of Games*, content ID
+  `7668631665064938774`.
+- TikTok initially showed the upload as Private while `Content under review`; the audience was
+  changed to Public and Studio confirmed `Privacy setting has been updated`.
+- The item remains under review with initial visible metrics at zero. Do not interpret this as a
+  creative result until the review state clears and a recommendation/analytics entry exists.
+
+**Learning**
+
+- This is the first direct test of the new Culture sci-fi territory and reader-fit hook. The
+  planned comparison is TK-008; confidence remains Low until reach and downstream measures exist.
+
+### 2026-07-30, 10:20 Europe/London
+
+**Sci-fi content preparation**
+
+- Prepared a ten-item Culture and Three-Body reader-routes library in
+  `SciFiReadingRoutesPack.md`. The package deliberately varies entry route, reader-fit note,
+  reading order, paired-books comparison, slow-reading permission and reader debate rather than
+  producing ten interchangeable list videos.
+- Hachette UK's *The Player of Games* page verifies Iain M. Banks, the Culture setting and the
+  relevant Culture title list. Bloomsbury UK's series page verifies Cixin Liu's trilogy order and
+  credits Ken Liu and Joel Martinsen on relevant editions. These are recorded as EV-004 and
+  EV-005.
+- Text-led, original BookQuotes motion prototypes are ready. Publisher covers remain a separate
+  asset-rights gate: use only a specific publisher-supplied cover recorded for the particular
+  recommendation asset, with title and author visible. Retailer covers and adaptation footage are
+  excluded.
+
+**Queue**
+
+- Ready after native TikTok validation and final visual-rights check: SF-01, SF-02, SF-04,
+  SF-06, SF-07, SF-08 and SF-09.
+- Requires an original physical-book shoot or specifically recorded publisher cover: SF-03 and
+  SF-05.
+- Blocked pending owned page or licensed demonstration text: SF-10.
+
 ### 2026-07-30, 08:20 Europe/London
 
 **Account and publishing**

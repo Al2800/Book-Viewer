@@ -34,12 +34,15 @@ Result labels:
 | TK-005 | Reader-value-first product demonstrations will outperform feature-led promotion. | Product proof | BQ-06 | Problem-first opening | Profile visits/1,000 | Completion | Medium prior | Pending | Compare two product executions after editorial baseline exists. |
 | TK-006 | A five-slide reader-tension narrative will produce more completions and saves than a generic numbered recommendation list. | Recommendation | BQ-07 | Tension-led narrative | Slideshow completion | Saves/1,000 views | Low prior | Pending | Run three matched pairs without changing posting time and topic family simultaneously. |
 | TK-007 | A specific reading use-condition will earn more saves and meaningful comments than a broad recommendation-list opening. | Recommendation | BQ-01 | Use-condition opening | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Compare two matched recommendation posts with the same topic breadth, visual treatment and evening slot. |
+| TK-008 | A reader-fit recommendation with an explicit reservation will earn more saves and useful comments than a rank-style science-fiction list. | Recommendation | BQ-01 / BQ-04 | Reader-fit framing | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Compare SF-01 and SF-06 with later rank/list execution. |
+| TK-009 | A genuine reading-order question will attract more meaningful comments than a broad genre prompt. | Reader culture | BQ-05 | Specific reader decision | Meaningful comments/1,000 views | Shares/1,000 views | Low prior | Pending | Use SF-04, then compare SF-09 after comparable reach becomes available. |
 
 ## Scheduled Executions
 
 | Content ID | Experiment | Asset | Scheduled | Checkpoints | Status |
 | --- | --- | --- | --- | --- | --- |
 | `7667570006032387350` | TK-005 | `bookquotes-marked-page.mp4` | 28 Jul 2026, 19:30 Europe/London | Publication, 24h, 72h, 7d | Scheduled |
+| `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 
 ## Post Result Template
 

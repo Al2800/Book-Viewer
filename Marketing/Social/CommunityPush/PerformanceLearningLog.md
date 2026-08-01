@@ -64,6 +64,37 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 1 August 2026, 08:01 BST
+
+**Platforms checked:** TikTok Studio; Meta Content Library.
+
+**Publishing and account state**
+
+- TikTok lists the *The Player of Games* Culture reading-route Reel (`7668631665064938774`)
+  once as the latest public post, dated 31 July at 11:07. The earlier private-under-review state
+  has cleared from the visible recent-post surface.
+- TikTok visible account metrics remain 0 views, 0 likes, 0 comments. Watch time, completion,
+  saves, shares, profile visits, follows, link taps and attributable account analytics: Not
+  available.
+- TikTok Inspiration exposed broad current topics, but the visible set was dominated by unrelated
+  news and entertainment. No generic trend was adopted as a BookQuotes editorial signal.
+- Meta Content Library was showing the ShiftPro identity and ShiftPro posts. BookQuotes Facebook
+  publication, queue, metrics, comments and messages: Not verified in this run.
+
+**Community and learning**
+
+- No BookQuotes comments or messages were visible on the checked TikTok surface. No replies were
+  made.
+- No hypothesis confidence changed. The zero TikTok counts remain an account-distribution or
+  measurement issue until an attributable analytics entry and comparable reach exist.
+
+**Next actions**
+
+- Recheck TikTok at the 24-hour and 72-hour checkpoints, recording the first non-zero or still-zero
+  evidence without inferring a creative failure prematurely.
+- Restore and visibly confirm the BookQuotes Facebook Page identity before reconciling its queue or
+  reporting any Meta performance.
+
 ### 29 July 2026, 10:20 BST
 
 **Platforms checked:** TikTok Studio Content; Meta Content Library.

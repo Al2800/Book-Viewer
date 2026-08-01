@@ -122,6 +122,7 @@ The first controlled TikTok post is now present in TikTok Studio:
 | Tue 28 Jul | 19:30 | Reel | Marked-page product proof | `7667570006032387350` | Published once; Public; initial metrics displayed as 0 and no account-level analytics yet available |
 | Wed 29 Jul | 08:19 | Reel | Should you read *Team of Rivals*? | `7667846219120626966` | Published once; Public; initial metrics displayed as 0 and no account-level analytics yet available |
 | Wed 29 Jul | 19:30 | Reel | Five presidential biographies | `7667829238065646870` | Scheduled for 19:30; Public audience; publication and analytics validation pending |
+| Fri 31 Jul | Now | Reel | *The Player of Games* Culture reading route | `7668631665064938774` | Published once; Public audience; Content under review; initial metrics 0 |
 
 The upload is Public, 1080p, uses high-quality uploads and passed Content Check Lite with no
 issues. The Studio Content table shows the intended 19:30 time.
@@ -150,6 +151,22 @@ in the United Kingdom and allows comments, but has 0 followers and 0 total likes
 posts still have literal zero counts. Treat this as a distribution or account-eligibility issue
 ahead of creative quality; TikTok automation remains paused until account status and analytics
 access are resolved.
+
+Live audit on 31 July: the first sci-fi reading-route Reel was uploaded once through TikTok Web
+Studio with content ID `7668631665064938774`. It was initially marked Private while under review;
+the audience was changed to Public and Studio confirmed `Privacy setting has been updated`. The
+item remains marked `Content under review`, so recommendation distribution and analytics are not
+yet evidenced.
+
+Live audit on 1 August at 08:01 Europe/London: TikTok Studio now lists `7668631665064938774` once
+as the latest public post, dated 31 July at 11:07. Visible account metrics remain 0 views, 0
+likes, 0 comments, with no deeper retention, saves, shares, profile or link data exposed. This
+is a distribution/measurement observation, not a creative verdict.
+
+Live audit on 1 August at 08:01 Europe/London: the Facebook Content Library is currently showing
+the ShiftPro identity and ShiftPro posts. BookQuotes Facebook metrics, comments, messages and
+queue status are therefore not verified in this run. Do not use the visible ShiftPro figures as
+BookQuotes evidence; restore the BookQuotes Page identity before the next Facebook reconciliation.
 
 After successful publication and an attributable analytics entry, the automation may activate
 routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.
