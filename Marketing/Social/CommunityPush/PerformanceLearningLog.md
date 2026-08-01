@@ -95,6 +95,30 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 - Restore and visibly confirm the BookQuotes Facebook Page identity before reconciling its queue or
   reporting any Meta performance.
 
+### 1 August 2026, 09:50 BST
+
+**Platforms checked:** TikTok Studio; Facebook Content Library; Meta Business Suite; public
+Instagram route.
+
+**Account progress**
+
+- TikTok remains at 0 followers, 0 following and 0 likes. The latest public *The Player of Games*
+  Reel is listed once; visible account metrics remain 0 views, 0 likes and 0 comments. No comments
+  are visible and no reply was made.
+- Facebook remains on the ShiftPro identity. The visible content and notifications are ShiftPro
+  activity, so they are excluded from BookQuotes reporting. The Meta Business Suite inbox surface
+  also returned `Sorry, something went wrong`.
+- Instagram's public `bookquotes.app` route reached Meta's UK ads-choice screen before the profile
+  could be inspected. No consent option was selected, so Instagram progress remains unverified.
+
+**Learning and next actions**
+
+- There is no new BookQuotes performance signal yet. The immediate blockers are account identity and
+  access verification, not evidence that the TikTok creative has failed.
+- Restore BookQuotes in Meta before interpreting Facebook data or relying on its queue. Complete the
+  Instagram ads choice in the browser if you want the profile and connection status checked; then
+  verify Instagram natively rather than inferring it from the public route.
+
 ### 29 July 2026, 10:20 BST
 
 **Platforms checked:** TikTok Studio Content; Meta Content Library.

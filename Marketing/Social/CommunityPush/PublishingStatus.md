@@ -168,6 +168,11 @@ the ShiftPro identity and ShiftPro posts. BookQuotes Facebook metrics, comments,
 queue status are therefore not verified in this run. Do not use the visible ShiftPro figures as
 BookQuotes evidence; restore the BookQuotes Page identity before the next Facebook reconciliation.
 
+Live audit on 1 August at 09:50 Europe/London: the direct `bookquotes.app` Instagram route is
+available but is blocked by Meta's UK ads-choice screen before the public profile can be inspected.
+No consent choice was made. Instagram connection, posts, metrics, comments and messages remain
+unverified.
+
 After successful publication and an attributable analytics entry, the automation may activate
 routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.
 After seven comparable posts, test a distinct second daily slot on no more than two days in one
