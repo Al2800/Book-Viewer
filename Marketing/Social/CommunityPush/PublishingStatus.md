@@ -173,6 +173,13 @@ available but is blocked by Meta's UK ads-choice screen before the public profil
 No consent choice was made. Instagram connection, posts, metrics, comments and messages remain
 unverified.
 
+Live audit on 2 August at 20:39 Europe/London: TikTok Studio still shows the BookQuotes account at
+0 followers, 0 likes and 0 following. The latest public sci-fi Reel remains listed once with 0
+views, 0 likes and 0 comments; no comments or deeper analytics are available. Meta Business Suite
+returned `Sorry, something went wrong` after reporting that the internet connection was restored,
+so Facebook and Instagram identity, queue and performance remain unverified. No new post was
+created or scheduled.
+
 After successful publication and an attributable analytics entry, the automation may activate
 routine TikTok scheduling under `TikTokOperatingRunbook.md`. Start with one post daily at 19:30.
 After seven comparable posts, test a distinct second daily slot on no more than two days in one

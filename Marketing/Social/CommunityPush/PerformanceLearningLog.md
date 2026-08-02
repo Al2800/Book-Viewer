@@ -64,6 +64,31 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 2 August 2026, 20:39 BST
+
+**Platforms checked:** TikTok Studio; Meta Business Suite.
+
+**Publishing and measurement**
+
+- TikTok still shows 0 followers, 0 likes and 0 following. The latest public *The Player of Games*
+  Reel remains listed once with 0 views, 0 likes and 0 comments. Watch time, completion, saves,
+  shares, profile visits, follows, link taps and attributable account analytics: Not available.
+- TikTok's currently visible Inspiration surface remains dominated by unrelated news and
+  entertainment topics; no UK BookTok signal was adopted from it.
+- Meta Business Suite returned `Sorry, something went wrong` after an `Internet connection was
+  restored` alert. Facebook and Instagram identity, queue, posts, metrics, comments and messages:
+  Not verified.
+- No post was uploaded, scheduled, edited, deleted or replied to in this run.
+
+**Learning and decision**
+
+- No hypothesis confidence changed. Literal zero TikTok distribution remains an account-health or
+  measurement blocker until Account Check and an attributable analytics entry are evidenced.
+- Keep the TikTok Distribution Reset gate active. Do not bulk-publish the prepared sci-fi queue
+  while account status and analytics remain unresolved.
+- Facebook automation is paused for this run because the active Meta identity and scheduler cannot
+  be verified. Retry only after the BookQuotes identity and Content Library are visible together.
+
 ### 1 August 2026, 08:01 BST
 
 **Platforms checked:** TikTok Studio; Meta Content Library.

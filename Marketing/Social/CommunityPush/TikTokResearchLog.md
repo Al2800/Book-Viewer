@@ -93,6 +93,29 @@ with a dated note rather than rewriting history.
 - Preparation: continue the sci-fi queue, but keep routine TikTok automation gated pending the
   native validation requirements in `TikTokOperatingRunbook.md`.
 
+### 2026-08-02, 20:39 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio still exposes the BookQuotes profile, but the visible account totals remain 0
+  followers, 0 likes and 0 following. The latest public sci-fi Reel remains listed once with 0
+  visible views, likes and comments.
+- No new upload or schedule was attempted. Account Check, recommendation eligibility and an
+  attributable analytics entry remain unverified.
+
+**Research**
+
+- The accessible Inspiration surface was refreshed, but the visible topics were dominated by
+  unrelated news and entertainment. No pattern was relevant enough to add to the style catalogue.
+- Meta Business Suite returned an error after an internet-restored alert. Facebook and Instagram
+  signals are unavailable for this run.
+
+**Learning**
+
+- No confidence change. The account-health gate takes priority over another creative iteration.
+- The Distribution Reset Pack remains the next controlled path: Account Check, Creator Search
+  Insights, then search-led native posts. Do not infer a topic failure from zero reach.
+
 ### 2026-08-01, distribution reset decision
 
 **External platform guidance**
