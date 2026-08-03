@@ -8,6 +8,7 @@ const footerLinks = {
   ],
   resources: [
     { label: 'Journal', href: '/journal' },
+    { label: 'Reading guides', href: '/guides' },
     { label: 'Support', href: '/support' },
     { label: 'Contact', href: 'mailto:acampbell193@googlemail.com' },
     { label: 'GitHub', href: 'https://github.com/Al2800' },

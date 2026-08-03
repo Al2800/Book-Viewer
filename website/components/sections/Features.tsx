@@ -14,8 +14,8 @@ import {
 const features = [
   {
     icon: Layers,
-    title: 'Batch Capture Mode',
-    description: 'Photograph 20 pages in a session. AI processes them all in the background while you make tea.',
+    title: 'Capture a Reading Session',
+    description: 'Photograph marked pages in a session and keep them together while you review the passages worth saving.',
     mockupContent: (
       <div className="w-full h-full bg-paper-cream p-3 flex flex-col pt-10">
         <div className="text-center mb-4">
@@ -41,8 +41,8 @@ const features = [
   },
   {
     icon: Search,
-    title: 'Instant Smart Search',
-    description: 'Full-text search across all your quotes. Find that passage about "atomic habits" in milliseconds.',
+    title: 'Search Your Book Notes',
+    description: 'Search across the text you have saved so a passage can come back when you need it, not only when you remember the page.',
     mockupContent: (
       <div className="w-full h-full bg-paper-cream p-3 flex flex-col pt-10">
         <div className="bg-paper-aged rounded-lg px-3 py-2 mb-4 flex items-center gap-2">
@@ -86,8 +86,8 @@ const features = [
   },
   {
     icon: WifiOff,
-    title: 'Offline Capture',
-    description: 'Capture quotes anywhere - on a plane, at the beach, in the mountains. Process when you are back online.',
+    title: 'Capture Without Interrupting Reading',
+    description: 'Keep capture separate from processing. Queue pages when a connection is unavailable and choose how to recover when you are back online.',
     mockupContent: (
       <div className="w-full h-full bg-paper-cream p-3 flex flex-col pt-10">
         <div className="flex items-center justify-center gap-2 mb-4">
@@ -106,8 +106,8 @@ const features = [
   },
   {
     icon: FileOutput,
-    title: 'Rich Export Options',
-    description: 'Export to Markdown, Obsidian, or Notion. Your quotes, your way, wherever you work.',
+    title: 'Export Your Library',
+    description: 'Take your saved passages into Markdown, plain text, JSON, Notion, or Obsidian when you want to work with them elsewhere.',
     mockupContent: (
       <div className="w-full h-full bg-paper-cream p-3 flex flex-col pt-10">
         <span className="font-ui text-xs text-ink-medium mb-3">Export to</span>
@@ -124,8 +124,8 @@ const features = [
   },
   {
     icon: BarChart3,
-    title: 'Confidence Scoring',
-    description: 'See how confident the AI is about each extraction. Edit with full context of what might need review.',
+    title: 'Review Before You Trust the Text',
+    description: 'Extraction is a first pass. Check the wording, boundaries, page details, and notes before a passage becomes part of your library.',
     mockupContent: (
       <div className="w-full h-full bg-paper-cream p-3 flex flex-col pt-10">
         <span className="font-ui text-xs text-ink-medium mb-3">Extraction Review</span>

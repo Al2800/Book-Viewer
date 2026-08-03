@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Privacy Policy — BookQuotes',
   description: 'How BookQuotes handles your data with privacy-first principles.',
+  alternates: { canonical: '/privacy' },
 }
 
 export default function PrivacyPage() {

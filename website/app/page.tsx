@@ -6,6 +6,7 @@ import { HowItWorks } from '@/components/sections/HowItWorks'
 import { Features } from '@/components/sections/Features'
 import { JournalPreview } from '@/components/sections/JournalPreview'
 import { Pricing } from '@/components/sections/Pricing'
+import { SearchGuidesPreview } from '@/components/sections/SearchGuidesPreview'
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <Problem />
         <HowItWorks />
         <Features />
+        <SearchGuidesPreview />
         <JournalPreview />
         <Pricing />
       </main>

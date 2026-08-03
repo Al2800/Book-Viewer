@@ -8,6 +8,7 @@ import { journalArticles } from '@/lib/journal'
 export const metadata: Metadata = {
   title: 'Journal | BookQuotes',
   description: 'Practical ideas for book annotation, commonplace books, and remembering what you read.',
+  alternates: { canonical: '/journal' },
 }
 
 export default function JournalPage() {

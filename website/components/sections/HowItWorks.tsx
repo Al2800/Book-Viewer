@@ -14,7 +14,7 @@ const steps = [
     icon: Wand2,
     number: '2',
     title: 'Extract',
-    description: 'AI identifies your underlines, highlights, and margin notes. Review and edit with confidence scores.',
+    description: 'Use the available extraction route, then review and edit the passage before it enters your library.',
   },
   {
     icon: Library,

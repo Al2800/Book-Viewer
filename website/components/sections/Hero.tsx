@@ -19,8 +19,8 @@ export function Hero() {
               transition={{ duration: 0.6 }}
               className="text-balance mb-6"
             >
-              Your Paper Highlights,{' '}
-              <span className="text-gradient">Digitized Beautifully</span>
+              Save the lines you{' '}
+              <span className="text-gradient">underlined</span>
             </motion.h1>
 
             <motion.p
@@ -29,8 +29,9 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-lg md:text-xl text-ink-dark max-w-prose mx-auto lg:mx-0 mb-8"
             >
-              Photograph marked pages, review the extracted passage, and keep the
-              lines that matter in a searchable personal library.
+              BookQuotes is a book quote app for turning marked pages from physical
+              books into a searchable personal library. Capture, review, and keep
+              the passages you want to find again.
             </motion.p>
 
             <motion.div

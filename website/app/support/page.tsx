@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Support — BookQuotes',
   description: 'Help, contact information, and troubleshooting guidance for BookQuotes.',
+  alternates: { canonical: '/support' },
 }
 
 const supportTopics = [

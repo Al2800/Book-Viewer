@@ -31,6 +31,12 @@ claims, or invented reviews. Those would create rights, trust and thin-content p
 
 ## First Search Clusters
 
+The initial keyword set is now documented with qualitative SERP and competitor evidence in
+[KeywordResearch.md](./KeywordResearch.md). Numeric search volume is intentionally marked as
+unknown until Google Keyword Planner, a comparable SEO tool, or Search Console data is available.
+The first release should optimise for clear search intent and qualified App Store visits rather
+than pretending that unverified volume estimates are precise.
+
 | Cluster | Search intent | Proposed page | Evidence needed |
 | --- | --- | --- | --- |
 | Save quotes from books | How-to | `/how-to-save-quotes-from-physical-books/` | Real BookQuotes capture and review flow |

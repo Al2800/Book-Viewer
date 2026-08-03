@@ -64,7 +64,7 @@ export function Problem() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-gold-primary mt-1">+</span>
-                  <span>AI extracts your underlines and notes instantly</span>
+                  <span>Extract the marked passage, then review it before saving</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-gold-primary mt-1">+</span>
