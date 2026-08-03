@@ -19,6 +19,13 @@ experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
 
+### Live audit: 3 August 2026, 08:01 Europe/London
+
+- Meta Business Suite loads, but the active selector is `ShiftPro, shiftpro.app`; the BookQuotes Page is
+  not visibly active. Facebook and Instagram queue, publication, metrics, comments and messages are
+  therefore Not verified.
+- No Facebook item was created, scheduled, rescheduled or published while the identity remained ambiguous.
+
 The following content is confirmed in Meta Business Suite Planner for the BookQuotes Facebook
 Page. Times use the account's Atlantic/Canary setting, which matches Europe/London during this
 campaign.
@@ -95,6 +102,16 @@ Once the account is created or recovered and connected:
 4. Review native Instagram performance separately from Facebook after 24 hours and seven days.
 
 ## TikTok
+
+### Live audit: 3 August 2026, 08:01 Europe/London
+
+- TikTok Studio Content lists four BookQuotes posts once and Public: content IDs `7667570006032387350`,
+  `7667846219120626966`, `7667829238065646870` and `7668631665064938774`.
+- The visible Content table reports 0 views, 0 likes and 0 comments for every item. The account dashboard
+  reports 0 followers, 0 likes and 0 following. Deeper retention and attribution data are Not available.
+- No comments or messages were visible and no replies were made.
+- Routine TikTok publishing remains gated because publication is evidenced but attributable analytics and
+  account-status validation are still missing.
 
 The BookQuotes account is live at `@bookquotes.app`. The profile copy is in place, but the
 account still needs conversion to a Business Account in the mobile app.

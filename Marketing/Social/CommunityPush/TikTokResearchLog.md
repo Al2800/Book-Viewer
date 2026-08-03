@@ -64,6 +64,34 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-08-03, 08:01 Europe/London
+
+**Live account and content check**
+
+- TikTok Studio Content resolves four public BookQuotes posts, each listed once: the marked-page product
+  proof, *Team of Rivals*, presidential biographies and the *Player of Games* Culture route.
+- All four visible view, like and comment counts are 0. The account dashboard also shows 0 followers, 0 likes
+  and 0 following. Watch time, completion, saves, shares, profile visits, follows, link taps and account-level
+  attribution are Not available.
+- The dashboard's Recent posts module exposes only two items, while the Content table exposes all four. Use
+  the Content table as the source of truth for post count.
+- No comments were visible; no routine replies were made.
+
+**Research surface**
+
+- The current Inspiration surface was dominated by unrelated news, entertainment and sports topics. No trend
+  was adopted from that surface.
+- TikTok's official Creative Centre describes Trends, Top Ads, keyword insights and regional inspiration as
+  discovery tools, so the research loop continues there without treating broad platform signals as BookQuotes
+  account evidence.
+
+**Decision**
+
+- Do not upload, schedule or edit another TikTok item. The account-distribution and analytics gate remains open.
+- Keep the 60/20/15/5 mix as a prior, but do not infer a winning format, audio treatment or timing from four
+  zero-count posts.
+- Meta is currently acting as ShiftPro, so no Facebook or Instagram learning was added from that surface.
+
 ### 2026-08-01, 08:01 Europe/London
 
 **Account and publishing**

@@ -64,6 +64,45 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 3 August 2026, 08:01 BST
+
+**Platforms checked:** TikTok Studio Content and dashboard; Meta Business Suite.
+
+**Publishing and measurement**
+
+- TikTok Studio Content lists four BookQuotes posts once, all Public: the marked-page product proof
+  (`7667570006032387350`, 28 Jul), the *Team of Rivals* reading note (`7667846219120626966`, 29 Jul),
+  the presidential-biographies Reel (`7667829238065646870`, 29 Jul) and the *Player of Games* reading
+  route (`7668631665064938774`, 31 Jul).
+- The Content table displays 0 views, 0 likes and 0 comments for all four posts. The account dashboard
+  displays 0 followers, 0 likes and 0 following. Watch time, completion, saves, shares, profile visits,
+  follows, link taps and attributable account analytics: Not available.
+- The dashboard's Recent posts card displays only the two newest items; the full Content table resolves
+  all four. The earlier impression that only two posts existed was a dashboard-scope issue, not evidence
+  that the other posts had been deleted.
+- TikTok shows no comments yet. No replies were made.
+- Meta Business Suite now loads, but the active identity is visibly `ShiftPro, shiftpro.app` with Facebook
+  and Instagram follower counts of 0. BookQuotes Facebook and Instagram identity, queue, posts, metrics,
+  comments and messages remain Not verified.
+- No post was uploaded, scheduled, edited, deleted or replied to in this run.
+
+**Learning and decision**
+
+- No hypothesis confidence changed. Four literal zero-count public posts still indicate an account
+  distribution or measurement blocker; they are not evidence that the topics or Reels have failed.
+- Keep the TikTok Distribution Reset gate active. Do not schedule the prepared queue until Account Check
+  and attributable analytics are available.
+- Keep Facebook automation paused until Meta visibly switches to BookQuotes and the Planner and Content
+  Library agree on the same Page identity.
+- TikTok's official Creative Centre remains the correct research surface for UK trends, Top Ads and keyword
+  signals, but no unrelated trend was promoted into the BookQuotes queue. See the [Creative Centre guidance](https://ads.tiktok.com/help/article/creative-center?lang=en-GB).
+
+**Next actions**
+
+- Resolve the Meta identity selector and recheck BookQuotes Content Library before any Facebook queue action.
+- Obtain TikTok Account Check and an attributable analytics view in Studio or the mobile app.
+- Continue research and production planning only; no further TikTok publishing until the gate is closed.
+
 ### 2 August 2026, 20:39 BST
 
 **Platforms checked:** TikTok Studio; Meta Business Suite.

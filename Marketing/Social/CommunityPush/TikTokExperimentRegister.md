@@ -46,6 +46,19 @@ Result labels:
 | `7667570006032387350` | TK-005 | `bookquotes-marked-page.mp4` | 28 Jul 2026, 19:30 Europe/London | Publication, 24h, 72h, 7d | Scheduled |
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 
+## Measurement Checkpoints
+
+### 3 August 2026, 08:01 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7667570006032387350` | TK-005 | Pre-7-day check | 0 views, 0 likes, 0 comments | Not available | Distribution/measurement blocker; not a creative verdict. |
+| `7667846219120626966` | Not yet checkpointed | Public audit | 0 views, 0 likes, 0 comments | Not available | Do not compare until attributable analytics are available. |
+| `7667829238065646870` | TK-001 | Public audit | 0 views, 0 likes, 0 comments | Not available | Do not classify the recommendation topic as a failure. |
+| `7668631665064938774` | TK-008 | 72-hour-plus check | 0 views, 0 likes, 0 comments | Not available | Distribution/measurement blocker; keep the reset gate active. |
+
+No confidence or result label changed. The visible zeroes are recorded as zeroes; unavailable analytics are not converted into zeroes.
+
 ## Post Result Template
 
 | Field | Value |
