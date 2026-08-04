@@ -101,6 +101,28 @@ BookTok search and official Creative Centre.
 - Resolve the Meta identity selector, then recheck the BookQuotes Content Library and Planner.
 - Continue research and production planning only; no new social publishing was authorised by the evidence.
 
+### 4 August 2026, Meta identity resolution
+
+**Platforms checked:** Meta Business Suite BookQuotes Content Library and Scheduled tab.
+
+**Identity and publishing**
+
+- Following the user's explicit authorisation, Meta Business Suite was switched from `ShiftPro,
+  shiftpro.app` to the `BookQuotes` Facebook Page.
+- The BookQuotes Published library is now visible. The latest item is the annotation-debate Reel,
+  published 3 August at 19:00, with visible reach 1, view 1 and viewer 1; visible likes, comments,
+  shares, saves and follows are 0.
+- The Scheduled tab now shows four Public BookQuotes items: 4 August 12:30 text prompt, 5 August
+  18:30 commonplace-book photo, 7 August 18:30 product-proof Reel, and 9 August 10:00 book-club
+  photo. No duplicate was created during the identity switch.
+- BookQuotes Instagram is still not connected to the Meta portfolio. The current queue is Facebook-only.
+
+**Decision**
+
+- The Facebook identity gate is now resolved and the existing queue can be monitored under BookQuotes.
+- Keep Instagram publishing paused until a BookQuotes Instagram asset is connected.
+- No post was created, edited, rescheduled or published during this verification.
+
 ### 3 August 2026, 08:01 BST
 
 **Platforms checked:** TikTok Studio Content and dashboard; Meta Business Suite.

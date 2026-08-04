@@ -25,6 +25,17 @@ experiment and 70/20/10 portfolio review on Mondays.
   Instagram follower counts of 0. BookQuotes publishing and performance remain Not verified.
 - No Facebook item was created, scheduled, rescheduled or published while the identity was ambiguous.
 
+### Identity resolution: 4 August 2026
+
+- Following the user's explicit authorisation, Meta Business Suite was switched to the `BookQuotes`
+  Facebook Page. The BookQuotes Content Library and Scheduled tab are now visible.
+- The latest published item is the annotation-debate Reel from 3 August at 19:00. The visible library
+  reports reach 1, views 1 and viewers 1, with visible likes, comments, shares, saves and follows at 0.
+- The confirmed Public Facebook queue is: 4 August 12:30 text prompt; 5 August 18:30 commonplace-book
+  photo; 7 August 18:30 product-proof Reel; 9 August 10:00 book-club photo.
+- BookQuotes Instagram remains disconnected, so these scheduled items are Facebook-only.
+- No item was created, edited, rescheduled or published during the identity switch.
+
 ### Live audit: 3 August 2026, 08:01 Europe/London
 
 - Meta Business Suite loads, but the active selector is `ShiftPro, shiftpro.app`; the BookQuotes Page is
