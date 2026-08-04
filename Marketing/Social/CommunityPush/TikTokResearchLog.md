@@ -64,6 +64,49 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-08-04, 08:00 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio Content still resolves four public BookQuotes posts, each listed once: the marked-page
+  product proof, *Team of Rivals*, presidential biographies and the *Player of Games* Culture route.
+- No new post has appeared since 31 July at 11:07. The four visible rows show 0 views, 0 likes and 0
+  comments. The dashboard shows 0 likes, 0 followers and 0 following, with seven-day video views,
+  profile views, likes, comments and shares all at 0.
+- Latest comments says `No comments yet`. Watch time, completion, saves, profile visits, follows, link
+  taps, Account Check and Creator Search Insights are Not available from the accessible web surfaces.
+- No upload, schedule, edit, deletion or reply was made.
+
+**External signals**
+
+- The signed-in Inspiration surface remains dominated by unrelated news, entertainment and sports topics;
+  no trend was promoted into the BookQuotes queue.
+- The official Creative Centre exposes current Trends, Top Ads and creative tools. Its 2026 signals favour
+  search-led curiosity, shared experiences, comment participation and honest value. We record these as
+  broad platform guidance, not BookQuotes performance evidence. See the [Creative Centre](https://ads.tiktok.com/creative/creativeCenter/trends)
+  and [TikTok Next 2026 report](https://ads.tiktok.com/business/en-GB/next).
+- A live `booktok` search was sampled across 20 public posts from 11 creator accounts, including
+  `@the_romantasy_society`, `@carlyaclements`, `@chasing.tbrs`, `@just.one.more.paige`,
+  `@kindleunlimitedthrillers`, `@nehirreadss`, `@ambs_reads`, `@bookswith.grace`, `@cassiesbooktok`,
+  `@booktokromancerecs` and `@makkiverse`.
+
+**Creator-pattern observations**
+
+- The strongest transferable structures were direct reader questions, a named stack or recurring series,
+  what-I-am-reading-now prompts, comfort-read framing, humour or relatable identity, and a clear book-fit
+  proposition. Several examples use creator-owned voice and concise captions rather than generic trend audio.
+- The sample included large accounts and smaller specialist accounts, but its visible results are not a
+  controlled comparison. No BookQuotes hypothesis confidence changed.
+
+**Decision**
+
+- Keep the 60/20/15/5 mix and the distribution-reset gate. Do not infer a winning topic, audio treatment,
+  timing or Reel style from four zero-count posts.
+- Use the research to refine briefs after Account Check is clear: exact reader question in frame one,
+  title and author named, one useful answer, muted legibility, and a real comment invitation.
+- The preparation queue remains viable; publishing does not resume until native account status and
+  attributable analytics are evidenced.
+
 ### 2026-08-03, 08:01 Europe/London
 
 **Live account and content check**

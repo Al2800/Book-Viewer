@@ -64,6 +64,43 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 4 August 2026, 08:00 BST
+
+**Platforms checked:** TikTok Studio Content and dashboard; Meta Business Suite; current TikTok
+BookTok search and official Creative Centre.
+
+**Publishing and measurement**
+
+- TikTok Studio Content still lists four BookQuotes posts once, all Public. The newest is *The Player
+  of Games*, published 31 July at 11:07. No new BookQuotes post has appeared since then.
+- The four visible Content-table rows remain at 0 views, 0 likes and 0 comments. The dashboard reports
+  0 likes, 0 followers and 0 following; its seven-day key metrics show 0 video views, 0 profile views,
+  0 likes, 0 comments and 0 shares. Latest comments says `No comments yet`.
+- Watch time, completion, saves, shares beyond the visible counters, profile visits, follows, link taps,
+  Account Check and attributable account analytics: Not available from the accessible web surfaces.
+- Meta Business Suite remains active as `ShiftPro, shiftpro.app`, with Facebook and Instagram followers
+  displayed as 0. BookQuotes Facebook and Instagram queue, posts, metrics, comments and messages remain
+  Not verified.
+- No post was uploaded, scheduled, edited, deleted or replied to in this run.
+
+**Learning and decision**
+
+- No hypothesis confidence changed. The zero-count TikTok account is still a distribution or measurement
+  blocker, not a creative verdict.
+- Current BookTok search examples reinforce specific reader situations, direct questions, recognisable
+  recurring series, comfort or humour framing, and creator-owned voice. These are transferable structures,
+  not evidence that any one trend or audio should be copied.
+- Do not bulk-publish the prepared sci-fi or recommendation queue. Account Check and attributable
+  analytics must be evidenced first.
+- Facebook automation remains paused until Meta visibly switches to BookQuotes and Planner and Content
+  Library reconcile under that identity.
+
+**Next actions**
+
+- Complete TikTok Account Check and Creator Search Insights in the mobile app before the next upload.
+- Resolve the Meta identity selector, then recheck the BookQuotes Content Library and Planner.
+- Continue research and production planning only; no new social publishing was authorised by the evidence.
+
 ### 3 August 2026, 08:01 BST
 
 **Platforms checked:** TikTok Studio Content and dashboard; Meta Business Suite.
