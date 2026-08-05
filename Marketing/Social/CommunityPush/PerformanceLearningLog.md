@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 28 July 2026
+Updated: 5 August 2026
 
 ## Purpose
 
@@ -63,6 +63,36 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 5 August 2026, 08:00 BST
+
+**Platforms checked:** BookQuotes Facebook Content Library, Scheduled tab, Inbox and Facebook
+comments; TikTok Studio Content and dashboard.
+
+**Publishing and measurement**
+
+- Facebook is confirmed under the `BookQuotes` identity. The 4 August hand-copied-lines text post
+  is Published at visible reach 0 and views 0. The 3 August annotation-debate Reel remains at reach
+  1 and views 1, with visible likes, comments, shares, saves and follows at 0; some secondary cells
+  were still loading.
+- Facebook has three confirmed future Public items: commonplace carousel on 5 August at 18:30,
+  `Find the line` product Reel on 7 August at 18:30, and book-club carousel on 9 August at 10:00.
+  The queue has gaps on 6 and 8 August and does not yet represent a full rolling daily queue.
+- Facebook Inbox shows no messages and Facebook comments shows no comments. No replies were made.
+- TikTok still lists four Public posts once. All visible post counts remain 0 views, 0 likes and 0
+  comments; the dashboard remains 0 followers, 0 likes and 0 following. Deeper retention and
+  attributable analytics are Not available.
+
+**Learning and decision**
+
+- No confidence changed. Facebook has too little downstream signal to distinguish format or timing;
+  TikTok's literal zero distribution remains an account-health or measurement blocker rather than a
+  creative verdict.
+- The current TikTok Inspiration surface is dominated by unrelated news, entertainment and sports.
+  No trend was adopted. Continue the reader-first queue only after native Account Check and
+  attributable analytics are evidenced.
+- No external publishing action was taken on TikTok. Keep the Facebook queue under review and fill
+  the 6 and 8 August gaps only with a fully preflighted, rights-cleared item.
 
 ### 4 August 2026, 08:00 BST
 

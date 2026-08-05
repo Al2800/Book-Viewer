@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 28 July 2026
+Updated: 5 August 2026
 
 ## Automation
 
@@ -18,6 +18,21 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 5 August 2026, 08:00 Europe/London
+
+- Meta Business Suite is visibly operating as the `BookQuotes` Facebook Page. The Page shows 0
+  followers and the Content Library is available under the correct identity.
+- The 4 August hand-copied-lines text post is Published with visible reach 0 and views 0. The
+  3 August annotation-debate Reel remains Published with reach 1 and views 1; visible likes,
+  comments, shares, saves and follows are 0. Some secondary metrics were still loading.
+- The 5 August commonplace-book carousel is confirmed Scheduled for 18:30 Public. The 7 August
+  `Find the line` Reel is confirmed Scheduled for 18:30 Public and the 9 August book-club carousel
+  is confirmed Scheduled for 10:00 Public. No boost or paid promotion is enabled.
+- The confirmed queue contains three future items but has gaps on 6 and 8 August. This is below the
+  intended rolling daily cadence; no duplicate or unverified replacement was created in this run.
+- Facebook Inbox reports no messages and Facebook comments reports no comments. No routine replies
+  were made and no approval-required drafts are outstanding.
 
 ### Live audit: 4 August 2026, 08:00 Europe/London
 
@@ -119,6 +134,20 @@ Once the account is created or recovered and connected:
 4. Review native Instagram performance separately from Facebook after 24 hours and seven days.
 
 ## TikTok
+
+### Live audit: 5 August 2026, 08:00 Europe/London
+
+- TikTok Studio Content lists four BookQuotes posts once and Public: `7667570006032387350`,
+  `7667846219120626966`, `7667829238065646870` and `7668631665064938774`.
+- No new post has appeared since `7668631665064938774` on 31 July at 11:07. Every visible Content
+  row reports 0 views, 0 likes and 0 comments. The dashboard reports 0 followers, 0 likes and 0
+  following; seven-day video views, profile views, likes, comments and shares are all 0.
+- Latest comments says `No comments yet`. Watch time, completion, saves, profile visits, follows,
+  link taps, Account Check and attributable analytics remain Not available from the accessible web
+  surfaces.
+- The Inspiration surface is dominated by unrelated news, entertainment and sports topics. No trend
+  was promoted into the BookQuotes queue. Routine TikTok publishing remains gated; no upload,
+  schedule, edit, deletion or reply was made.
 
 ### Live audit: 4 August 2026, 08:00 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 28 July 2026
+Updated: 5 August 2026
 
 ## Purpose
 
@@ -63,6 +63,46 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-05, 08:00 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio is signed in as `@bookquotes.app`. Content lists four posts once and Public; the
+  latest is the Culture reading route published 31 July at 11:07.
+- All four visible rows show 0 views, 0 likes and 0 comments. The dashboard shows 0 followers, 0
+  likes and 0 following, with seven-day video views, profile views, likes, comments and shares all
+  at 0. No new post has been published since 31 July.
+- Latest comments says `No comments yet`. Account Check, Creator Search Insights, retention,
+  completion, saves, profile visits, follows, link taps and attributable analytics are Not available
+  from the accessible web surfaces.
+
+**External signals**
+
+- The signed-in Inspiration surface is currently dominated by unrelated news, entertainment and
+  sports topics. No signal met the BookQuotes relevance and evidence gates, so nothing was added to
+  the queue or style catalogue.
+- The existing research remains the usable basis for production: precise reader situations, named
+  recurring series, creator-owned voice, concise captions and a specific invitation to discuss a
+  book. These are transferable structures, not proof of performance for BookQuotes.
+
+**Evidence and rights**
+
+- No evidence-ledger change. The existing recommendation and sci-fi entries remain valid, while
+  cover-led sci-fi assets still require post-specific publisher-source records before use.
+- No rights or safety issue was found in the existing queue. No asset was uploaded or scheduled.
+
+**Performance and learning**
+
+- 24-hour, 72-hour and seven-day measures: Not available for meaningful comparison. The visible
+  zeroes are recorded as zeroes, not treated as missing data.
+- No experiment result or confidence changed. The distribution-reset gate remains active.
+
+**Queue**
+
+- Approved or near-approved: presidential biography, Culture and Three-Body reader routes; the
+  three-to-five-item preparation queue remains viable.
+- Requires native validation: any further TikTok upload, schedule, or automated publishing.
 
 ### 2026-08-04, 08:00 Europe/London
 
