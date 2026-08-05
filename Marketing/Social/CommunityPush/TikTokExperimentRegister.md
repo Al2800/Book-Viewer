@@ -45,8 +45,17 @@ Result labels:
 | --- | --- | --- | --- | --- | --- |
 | `7667570006032387350` | TK-005 | `bookquotes-marked-page.mp4` | 28 Jul 2026, 19:30 Europe/London | Publication, 24h, 72h, 7d | Scheduled |
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
+| `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 5 August 2026, 22:02 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7670655931193068823` | TK-008 | Initial publication | 0 views, 0 likes, 0 comments | Not available | Too early to interpret; measure at 24 hours and 72 hours. |
+
+No confidence or result label changed.
 
 ### 5 August 2026, 08:00 Europe/London
 

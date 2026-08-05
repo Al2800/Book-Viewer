@@ -64,6 +64,30 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-08-05, 22:02 Europe/London
+
+**Account and publishing**
+
+- Following an explicit user request, SF-06 `The Three-Body Problem` reader-fit Reel was published
+  once through TikTok Web Studio under content ID `7670655931193068823`.
+- Content Check Lite reported no issues. TikTok initially placed the post under review and Private;
+  the audience was changed once to Public and the privacy update was confirmed.
+- The Content table lists the post once as Public at 22:02. Initial visible metrics are 0 views,
+  0 likes and 0 comments; deeper analytics remain Not available.
+
+**Learning**
+
+- No confidence changed. This is an initial publication checkpoint, not evidence that the reader-fit
+  topic has failed.
+- Keep the distribution-reset interpretation active and measure the post at 24 hours and 72 hours.
+  Do not create a second post merely to compensate for the initial zeroes.
+
+**Queue and gate**
+
+- The prepared queue remains viable, including Culture and Three-Body reading routes.
+- The post was a one-off manual publication; routine automated scheduling remains gated by native
+  Account Check and attributable analytics.
+
 ### 2026-08-05, 08:00 Europe/London
 
 **Account and publishing**

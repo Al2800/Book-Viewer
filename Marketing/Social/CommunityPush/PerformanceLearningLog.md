@@ -64,6 +64,27 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 5 August 2026, 22:02 BST
+
+**Platforms checked:** TikTok Studio Content after an explicit one-off user request to publish.
+
+**Publishing and measurement**
+
+- The prepared SF-06 `The Three-Body Problem` reader-fit Reel was uploaded once under
+  `@bookquotes.app` with content ID `7670655931193068823`.
+- Content Check Lite reported no issues. The post entered review as Private, was changed once to
+  Public, and TikTok confirmed the privacy update. The Content table lists it once as Public at
+  22:02.
+- Initial visible metrics are 0 views, 0 likes and 0 comments. Watch time, completion, saves,
+  shares, profile visits, follows, link taps and attributable analytics are Not available.
+
+**Learning and decision**
+
+- No experiment confidence changed. The initial zeroes are an immediate post-publication checkpoint,
+  not a creative verdict.
+- This was an explicit one-off manual publication. Routine two-per-day TikTok scheduling remains
+  paused until Account Check and attributable analytics are available.
+
 ### 5 August 2026, 08:00 BST
 
 **Platforms checked:** BookQuotes Facebook Content Library, Scheduled tab, Inbox and Facebook

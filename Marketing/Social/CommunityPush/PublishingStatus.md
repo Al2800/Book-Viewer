@@ -135,6 +135,19 @@ Once the account is created or recovered and connected:
 
 ## TikTok
 
+### Manual publication: 5 August 2026, 22:02 Europe/London
+
+- Following the user's explicit request, the prepared SF-06 `The Three-Body Problem` reader-fit
+  Reel was uploaded once through TikTok Web Studio.
+- Content ID: `7670655931193068823`.
+- Content Check Lite reported no issues. The post was initially under review and Private; its
+  audience was changed once to Public after upload, and TikTok confirmed `Privacy setting has been
+  updated`.
+- The Content table now lists the post once as Public at 5 August, 22:02. Initial visible metrics
+  are 0 views, 0 likes and 0 comments; deeper analytics are not yet available.
+- No second TikTok post was created. This was a one-off manual publication and does not activate
+  routine automatic TikTok scheduling while the account-health and analytics gate remains unresolved.
+
 ### Live audit: 5 August 2026, 08:00 Europe/London
 
 - TikTok Studio Content lists four BookQuotes posts once and Public: `7667570006032387350`,
