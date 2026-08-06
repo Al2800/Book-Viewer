@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 5 August 2026
+Updated: 6 August 2026
 
 ## Purpose
 
@@ -63,6 +63,42 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 6 August 2026, 08:02 BST
+
+**Platforms checked:** Meta Business Suite BookQuotes Planner, Scheduled and Published content,
+Inbox and Facebook comments; TikTok Studio Content, Analytics and Settings; official TikTok Creative
+Center and TikTok Next 2026 sources.
+
+**Publishing and measurement**
+
+- Facebook's 5 August commonplace carousel is Published with visible reach 0 and views 0. The
+  missing 6 August slot was scheduled once as the Public text prompt `A reading habit you abandoned?`
+  for 13:00 Europe/London. The 7 August product Reel at 18:30 and 9 August book-club carousel at
+  10:00 remain Scheduled and Public. No boost, story share or cross-post was enabled.
+- Facebook comments and Inbox show no comments or messages. No replies were made.
+- TikTok lists five Public posts once. The 5 August `The Three-Body Problem` post
+  (`7670655931193068823`) is approximately 10 hours old and remains at 0 visible views, likes and
+  comments. TikTok Analytics remains at 0 for the last seven days, with deeper measures unavailable.
+- TikTok Settings confirms the account is public. Account Check, search-query data, retention,
+  completion, saves, profile visits, follows, link taps and attributable analytics remain Not
+  available. No further TikTok publication was attempted.
+
+**External signals and learning**
+
+- TikTok's official 2026 trend report emphasises unfiltered process and shared experience, search-led
+  curiosity journeys, comments as a creative surface and honest reviews that explain why something is
+  worth attention. These are useful packaging priors for reader-fit checks, behind-the-scenes capture
+  demonstrations and specific book questions, not evidence of BookQuotes performance.
+- No hypothesis confidence changed. TikTok's zero distribution remains a measurement or account-state
+  blocker, not a creative verdict. Instagram remains unconnected to the BookQuotes Meta portfolio.
+
+**Next actions**
+
+- Recheck TikTok at the actual 24-hour point for `7670655931193068823`; do not compensate for early
+  zeroes by creating a second post.
+- Keep the Facebook queue under native reconciliation and continue the evidence-led TikTok research
+  queue without routine publication until Account Check and attributable analytics are available.
 
 ### 5 August 2026, 22:02 BST
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 5 August 2026
+Updated: 6 August 2026
 
 ## Method
 
@@ -48,6 +48,15 @@ Result labels:
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 6 August 2026, 08:02 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7670655931193068823` | TK-008 | Early approximately 10-hour check | 0 views, 0 likes, 0 comments | Not available | Too early to interpret; the 24-hour checkpoint is due at 5 August 22:02 plus 24 hours. |
+
+No confidence or result label changed. The account is public, but the accessible Analytics surface still
+provides no attributable post-level distribution or retention data.
 
 ### 5 August 2026, 22:02 Europe/London
 

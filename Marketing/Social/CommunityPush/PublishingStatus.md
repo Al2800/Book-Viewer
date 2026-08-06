@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 5 August 2026
+Updated: 6 August 2026
 
 ## Automation
 
@@ -18,6 +18,21 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 6 August 2026, 08:02 Europe/London
+
+- Meta Business Suite is operating as the `BookQuotes` Facebook Page. The 5 August commonplace
+  carousel is Published at visible reach 0 and views 0; the 3 August annotation-debate Reel remains
+  at reach 1 and views 1 with visible likes, comments, shares, saves and follows at 0.
+- The missing 6 August slot was filled once with the verified reader prompt `A reading habit you
+  abandoned?`. It is scheduled for 6 August at 13:00 Europe/London, Public, Facebook-only, with no
+  media, link, boost, story share or cross-post. Meta's active-time recommendation selected 13:00;
+  the usual 12:30 text slot was not available in the native picker.
+- The 7 August `Find the line` Reel remains Scheduled for 18:30 Public and the 9 August book-club
+  carousel remains Scheduled for 10:00 Public. The queue now has three confirmed future items and
+  no duplicate was created.
+- Facebook Inbox reports no comments. No messages, routine replies or approval-required drafts are
+  outstanding.
 
 ### Live audit: 5 August 2026, 08:00 Europe/London
 
@@ -134,6 +149,20 @@ Once the account is created or recovered and connected:
 4. Review native Instagram performance separately from Facebook after 24 hours and seven days.
 
 ## TikTok
+
+### Live audit: 6 August 2026, 08:02 Europe/London
+
+- TikTok Studio Content lists five BookQuotes posts once and Public, including the manual
+  `The Three-Body Problem` reader-fit Reel `7670655931193068823`, published 5 August at 22:02.
+- The new post is approximately 10 hours old and still shows 0 views, 0 likes and 0 comments. The
+  four earlier posts also remain at visible 0 views, 0 likes and 0 comments. Do not treat this as a
+  creative verdict or as a 24-hour checkpoint.
+- TikTok Analytics still reports 0 video views, profile views, likes, comments and shares for the
+  last seven days. Search queries, retention, completion, saves, profile visits, follows, link taps,
+  Account Check and attributable analytics remain Not available from the accessible web surfaces.
+- Settings confirms the account is public (the Private account control is off). No additional TikTok
+  upload, schedule, edit, deletion or reply was made because the native validation gate remains
+  unresolved.
 
 ### Manual publication: 5 August 2026, 22:02 Europe/London
 

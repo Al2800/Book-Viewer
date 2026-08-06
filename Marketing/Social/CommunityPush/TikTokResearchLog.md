@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 5 August 2026
+Updated: 6 August 2026
 
 ## Purpose
 
@@ -63,6 +63,48 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-06, 08:02 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio is signed in as `@bookquotes.app`; Content lists five posts once and Public. The
+  latest is `7670655931193068823`, the `The Three-Body Problem` reader-fit Reel published 5 August
+  at 22:02.
+- The account is public in Settings. Analytics reports 0 video views, profile views, likes,
+  comments and shares for the last seven days. The new post is approximately 10 hours old and is
+  not yet at its 24-hour checkpoint.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| TikTok Creative Center is the official public hub for trends, top ads, keywords and creative patterns. | https://ads.tiktok.com/help/article/creative-center?lang=en-GB | TikTok says Trends and Inspiration can be filtered and inspected for trendlines, related videos and audience insights. | Keep the daily scout grounded in native evidence rather than generic social advice. | Medium | Record source date and only promote signals that fit reader needs and rights gates. |
+| 2026 audiences are moving through search-led curiosity journeys and comments are part of the creative surface. | https://ads.tiktok.com/business/uk-UA/next?redirected=1&tt4b_lang_redirect=1 | TikTok's official Next report describes Curiosity Detours, search journeys and comment participation. | Use exact reader questions, invitation-to-choose prompts and comment-led follow-ups. | Medium | Test one search-shaped hook against a comparable reader-culture hook after distribution is measurable. |
+| Honest, useful explanations and community-led recommendations are gaining value over polished promotion. | https://ads.tiktok.com/business/uk-UA/next?redirected=1&tt4b_lang_redirect=1 | The same report frames an evidence economy and cites community-led book recommendation behavior. | Fits BookQuotes' reader-fit plus reservation format and product demonstrations that show the problem first. | Medium | Keep recommendation stance explicit and avoid pretending to have read books not personally read. |
+| `#reading` is associated with `#bookworm`, `#books`, `#bookish` and `#bookrecommendations`, with the indexed Creative Center result showing the UK among regional audiences. | https://ads.tiktok.com/business/creativecenter/hashtag/reading/pc/en?countryCode=TR&period=7 | Indexed Creative Center result; the page is region/time-sensitive and was not treated as a current performance benchmark. | Candidate vocabulary for search-led metadata, not a reason to hashtag-stuff captions. | Low | Recheck in the signed-in UK Creative Center before using any term in a scheduled post. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. The official sources provide strategic patterns, not a
+  sufficiently specific set of 15-20 comparable reader posts to add as a creator-style entry.
+- Transferable patterns: grounded process, exact search question, one honest reservation, and a clear
+  comment choice.
+- Elements explicitly excluded from imitation: creator wording, distinctive artwork, account identity,
+  unrelated trending audio and unverified claims about reach.
+
+**Performance**
+
+- 24-hour checkpoints: Not yet due for `7670655931193068823`.
+- 72-hour and seven-day checkpoints: Not due for the new post.
+- Missing measures: retention, completion, saves, profile visits, follows, link taps, Account Check and
+  attributable analytics remain Not available.
+
+**Learning and queue**
+
+- No confidence changes. The prepared reader-fit and sci-fi queue remains viable, but publication is
+  still gated by native account validation and attributable measurement.
+- No upload, schedule, edit, deletion or reply was made in this automated run.
 
 ### 2026-08-05, 22:02 Europe/London
 
