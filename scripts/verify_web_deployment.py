@@ -96,10 +96,24 @@ def check_sitemap(timeout: float) -> Check:
         return Check(url, None, None, False, str(error))
 
 
+def check_deployment(expected_revision: str, timeout: float) -> Check:
+    url = f"{CANONICAL_ORIGIN}/deployment.json"
+    try:
+        status, final_url, body, _ = fetch(url, timeout)
+        document = json.loads(body)
+        actual_revision = document.get("sourceRevision")
+        ok = status == 200 and final_url == url and actual_revision == expected_revision
+        detail = f"sourceRevision={actual_revision!r}; expected={expected_revision!r}"
+        return Check(url, status, final_url, ok, detail)
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, TypeError) as error:
+        return Check(url, None, None, False, str(error))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--timeout", type=float, default=20)
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--expect-revision")
     args = parser.parse_args()
 
     checks = [
@@ -110,6 +124,8 @@ def main() -> int:
         check_text(f"{CANONICAL_ORIGIN}/robots.txt", [b"Sitemap: https://bookquotes.uk/sitemap.xml"], args.timeout),
         check_sitemap(args.timeout),
     ]
+    if args.expect_revision:
+        checks.append(check_deployment(args.expect_revision, args.timeout))
 
     if args.json:
         print(json.dumps([asdict(check) for check in checks], indent=2))

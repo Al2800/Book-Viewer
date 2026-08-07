@@ -16,6 +16,9 @@ on:
     - cron: "17 7 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: website-verification-${{ github.ref }}
   cancel-in-progress: true
@@ -85,4 +88,6 @@ jobs:
           test "$live" = "$expected"
 
       - name: Verify canonical host, robots and sitemap
-        run: python3 scripts/verify_web_deployment.py --json
+        env:
+          EXPECTED_REVISION: ${{ github.sha }}
+        run: python3 scripts/verify_web_deployment.py --expect-revision "${EXPECTED_REVISION::12}" --json
