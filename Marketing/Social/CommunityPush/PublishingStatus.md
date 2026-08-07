@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 6 August 2026
+Updated: 7 August 2026
 
 ## Automation
 
@@ -18,6 +18,19 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 7 August 2026, 08:01 Europe/London
+
+- Meta Business Suite remains on the `BookQuotes` Facebook Page. The 6 August reader prompt is
+  Published once at 13:00 with content ID `122105430807415831`; visible reach, views, viewers,
+  follows, interactions, likes, comments, shares, saves and link clicks are all 0. Watch-time and
+  other unavailable cells remain Not available.
+- The confirmed Facebook queue is now three future Public items: the `Find the line` Reel on 7 August
+  at 18:30, the new reader prompt `Do you remember books by their stories, or by the lines you marked?`
+  on 8 August at 13:00, and the book-club carousel on 9 August at 10:00. The 8 August item was created
+  once, Facebook-only, with no media, link, boost, story share or cross-post.
+- Facebook comments and Inbox remain empty. No routine replies were made and no approval-required
+  drafts are outstanding.
 
 ### Live audit: 6 August 2026, 08:02 Europe/London
 
@@ -149,6 +162,20 @@ Once the account is created or recovered and connected:
 4. Review native Instagram performance separately from Facebook after 24 hours and seven days.
 
 ## TikTok
+
+### Live audit: 7 August 2026, 08:01 Europe/London
+
+- TikTok Studio Content lists five BookQuotes posts once and Public. The manual `The Three-Body
+  Problem` reader-fit Reel `7670655931193068823` is now approximately 34 hours old and remains at
+  0 views, 0 likes and 0 comments. The four earlier posts also remain at visible 0 views, 0 likes
+  and 0 comments.
+- TikTok Analytics reports 0 video views, profile views, likes, comments and shares for the last
+  seven days. Traffic source and search-query data say there is not enough data; retention,
+  completion, saves, profile visits, follows, link taps, Account Check and attributable analytics
+  remain Not available.
+- Settings confirms the account is public. The TikTok Studio comments route returned Access Denied in
+  this run, so no comment or message review was possible there. No upload, schedule, edit, deletion or
+  reply was made while the native validation gate remains unresolved.
 
 ### Live audit: 6 August 2026, 08:02 Europe/London
 

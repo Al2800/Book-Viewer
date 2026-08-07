@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 6 August 2026
+Updated: 7 August 2026
 
 ## Purpose
 
@@ -63,6 +63,52 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-07, 08:01 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio Content lists five posts once under `@bookquotes.app`, all Public. The latest
+  `7670655931193068823` `The Three-Body Problem` reader-fit Reel is approximately 34 hours old and
+  remains at 0 views, 0 likes and 0 comments.
+- Analytics reports 0 video views, profile views, likes, comments and shares for the last seven days.
+  Traffic source and search-query panels report insufficient data. Settings confirms the account is
+  public. The comments route returned Access Denied, so TikTok comments and messages are Not available.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Center is the official place to filter Trends by industry or time and inspect trendlines, related videos and audience insights. | https://ads.tiktok.com/help/article/how-to-use-trends | TikTok's current help guidance describes the native research workflow. | Keep future daily research tied to native UK filters rather than generic trend lists. | Medium | Record exact region, window and query before promoting a signal. |
+| The indexed `#reading` Creative Center result shows book-adjacent related hashtags and the United Kingdom among regional audiences, but the result is stale and not a UK-specific current benchmark. | https://ads.tiktok.com/business/creativecenter/hashtag/reading/pc/en?countryCode=MY&period=7 | Search-indexed result crawled months ago; it exposes related terms such as `#bookworm`, `#books`, `#bookish` and `#bookrecommendations`. | Useful candidate vocabulary for search-shaped hooks, not evidence that any hashtag will distribute a BookQuotes post. | Low | Recheck in the signed-in UK Creative Center before use. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. The accessible official material does not provide a
+  verified, comparable 15-20-post UK reader sample in this run.
+- Transferable patterns: exact reader question, practical explanation, honest reservation, and a
+  comment choice that can become the next brief.
+- Elements explicitly excluded from imitation: creator wording, distinctive artwork, account identity,
+  unverified audio and stale trend counts.
+
+**Evidence and rights**
+
+- No TikTok Evidence Ledger changes. Existing reader-fit and science-fiction entries remain valid.
+- No rights or safety blocker was found in the prepared queue; routine publication remains blocked by
+  account-state and measurement evidence rather than content rights.
+
+**Performance and learning**
+
+- 24-hour-plus checkpoint: `7670655931193068823` at approximately 34 hours, 0 visible views, likes
+  and comments; deeper analytics Not available.
+- 72-hour and seven-day checkpoints: not yet due.
+- No confidence changes. Do not interpret the zero as a topic or packaging failure.
+
+**Queue**
+
+- Approved/in production: the existing Culture and science-fiction reader-fit queue remains viable.
+- Requires validation: every new TikTok publication remains held until Account Check and attributable
+  analytics are evidenced.
 
 ### 2026-08-06, 08:02 Europe/London
 

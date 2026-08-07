@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 6 August 2026
+Updated: 7 August 2026
 
 ## Purpose
 
@@ -63,6 +63,44 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 7 August 2026, 08:01 BST
+
+**Platforms checked:** Meta Business Suite BookQuotes Published, Scheduled, Planner and Facebook
+Inbox/comments; TikTok Studio Content, Analytics, Settings and comments route; official TikTok
+Creative Center sources.
+
+**Publishing and measurement**
+
+- Facebook's 6 August reader prompt is Published once at 13:00 with content ID
+  `122105430807415831`. Visible reach, views, viewers, follows, interactions, likes, comments,
+  shares, saves and link clicks are all 0; watch-time and other unavailable cells remain Not
+  available.
+- The confirmed Facebook queue now covers 7 August 18:30 (`Find the line` Reel), 8 August 13:00
+  (new text prompt) and 9 August 10:00 (book-club carousel). All three are Public, Facebook-only,
+  and visible in the native Scheduled Library. No boost, story share or cross-post is enabled.
+- Facebook Inbox and Facebook comments show no comments or messages. No replies were made.
+- TikTok's `7670655931193068823` is approximately 34 hours old and remains at 0 views, likes and
+  comments. The four older posts remain at visible zeroes. Analytics still shows 0 video views,
+  profile views, likes, comments and shares, with no traffic-source or search-query data.
+- TikTok Settings confirms the account is public. The TikTok Studio comments route returned Access
+  Denied, so comments and messages are Not available rather than zero. No further TikTok publication
+  was attempted.
+
+**Learning and decision**
+
+- The new post has now passed the 24-hour-plus checkpoint without attributable distribution. This
+  strengthens the account-state or measurement-blocker interpretation, but still does not establish
+  that the reader-fit creative failed. No hypothesis confidence or experiment result label changed.
+- Official Creative Center material continues to support search-shaped reader questions, useful
+  explanations and comment-led participation as the next packaging priors. The indexed `#reading`
+  result is region- and time-sensitive and was not treated as current UK performance evidence.
+
+**Next actions**
+
+- Do not publish, schedule, edit or delete another TikTok post until Account Check and attributable
+  analytics are available. Recheck the 72-hour checkpoint after 8 August 22:02 BST.
+- Monitor the Facebook 7-9 August queue and record live URLs and metrics after publication.
 
 ### 6 August 2026, 08:02 BST
 

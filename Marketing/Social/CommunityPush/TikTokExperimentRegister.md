@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 6 August 2026
+Updated: 7 August 2026
 
 ## Method
 
@@ -43,11 +43,20 @@ Result labels:
 
 | Content ID | Experiment | Asset | Scheduled | Checkpoints | Status |
 | --- | --- | --- | --- | --- | --- |
-| `7667570006032387350` | TK-005 | `bookquotes-marked-page.mp4` | 28 Jul 2026, 19:30 Europe/London | Publication, 24h, 72h, 7d | Scheduled |
+| `7667570006032387350` | TK-005 | `bookquotes-marked-page.mp4` | 28 Jul 2026, 19:30 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 7 August 2026, 08:01 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7670655931193068823` | TK-008 | 24-hour-plus check, approximately 34 hours | 0 views, 0 likes, 0 comments | Analytics account totals 0; traffic source, search queries, retention, completion, saves, profile visits, follows and link taps Not available | Distribution/measurement blocker persists; do not classify the reader-fit topic or creative as a failure. |
+
+No confidence or result label changed. The account is public, but the comments route returned Access Denied
+and attributable post analytics remain unavailable.
 
 ### 6 August 2026, 08:02 Europe/London
 
