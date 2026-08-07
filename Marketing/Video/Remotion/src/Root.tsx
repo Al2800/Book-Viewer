@@ -9,6 +9,8 @@ import {
   PresidentialBooksReel,
   presidentialBooks,
 } from './PresidentialBooks';
+import {HandwrittenBookReview} from './HandwrittenBookReview';
+import {SciFiReadingRouteReel, sciFiPosts} from './SciFiReadingRoutes';
 import {colours} from './theme';
 
 const reelProps: BookQuotesReelProps = {
@@ -167,6 +169,26 @@ export const RemotionRoot: React.FC = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="HandwrittenBookReview"
+      component={HandwrittenBookReview}
+      durationInFrames={450}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+    {sciFiPosts.map((post) => (
+      <Composition
+        key={post.id}
+        id={post.id}
+        component={SciFiReadingRouteReel}
+        durationInFrames={450}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{post}}
+      />
+    ))}
     <Composition
       id="PresidentialBooks-01"
       component={PresidentialBookSlide}
