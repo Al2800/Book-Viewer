@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { guides } from '@/lib/guides'
 import { journalArticles } from '@/lib/journal'
 
-const baseUrl = 'https://bookquotes.app'
+const baseUrl = 'https://bookquotes.uk'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = ['', '/guides', '/journal', '/support', '/privacy', '/terms']

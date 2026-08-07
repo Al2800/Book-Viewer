@@ -50,18 +50,18 @@ export default async function GuidePage({ params }: GuidePageProps) {
     description: guide.description,
     dateModified: '2026-08-03',
     datePublished: '2026-08-03',
-    author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.app' },
-    publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.app' },
-    mainEntityOfPage: `https://bookquotes.app/guides/${guide.slug}`,
+    author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
+    publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
+    mainEntityOfPage: `https://bookquotes.uk/guides/${guide.slug}`,
   }
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bookquotes.app' },
-      { '@type': 'ListItem', position: 2, name: 'Guides', item: 'https://bookquotes.app/guides' },
-      { '@type': 'ListItem', position: 3, name: guide.title, item: `https://bookquotes.app/guides/${guide.slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bookquotes.uk' },
+      { '@type': 'ListItem', position: 2, name: 'Guides', item: 'https://bookquotes.uk/guides' },
+      { '@type': 'ListItem', position: 3, name: guide.title, item: `https://bookquotes.uk/guides/${guide.slug}` },
     ],
   }
 
