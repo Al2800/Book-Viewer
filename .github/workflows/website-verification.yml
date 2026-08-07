@@ -1,0 +1,88 @@
+name: Website Build and Deployment Verification
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "website/**"
+      - "scripts/verify_web_deployment.py"
+      - ".github/workflows/website-verification.yml"
+  pull_request:
+    paths:
+      - "website/**"
+      - "scripts/verify_web_deployment.py"
+      - ".github/workflows/website-verification.yml"
+  schedule:
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: website-verification-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build OpenAI Sites artifact
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: npm run sites:build
+
+      - name: Verify hosting manifest and deployment endpoint
+        run: |
+          test -f dist/.openai/hosting.json
+          grep -q 'bookquotes-website' dist/server/index.js
+          grep -q "${GITHUB_SHA::12}" dist/server/index.js
+
+  live-smoke:
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Wait for connected-host deployment read-back
+        if: github.event_name == 'push'
+        env:
+          EXPECTED_REVISION: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          expected="${EXPECTED_REVISION::12}"
+          live=""
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error https://bookquotes.uk/deployment.json > /tmp/bookquotes-deployment.json; then
+              live=$(python3 -c 'import json; print(json.load(open("/tmp/bookquotes-deployment.json"))["sourceRevision"])')
+            fi
+            if [[ "$live" == "$expected" ]]; then
+              echo "Live deployment matches source revision $expected"
+              break
+            fi
+            echo "Attempt $attempt/30: live revision '${live:-unavailable}', expected '$expected'"
+            sleep 20
+          done
+          test "$live" = "$expected"
+
+      - name: Verify canonical host, robots and sitemap
+        run: python3 scripts/verify_web_deployment.py --json

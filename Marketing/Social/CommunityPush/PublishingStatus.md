@@ -19,6 +19,22 @@ experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
 
+### Live audit: 7 August 2026, 21:45 Europe/London
+
+- Meta Business Suite is visibly operating as the `BookQuotes` Page. The Page has 0 followers and
+  BookQuotes Instagram remains unconnected.
+- The 28-day Insights overview (10 July-6 August) reports 19 views and 3 new viewers; the visible
+  audience is 100% non-followers. This is instrumentation evidence, not enough volume for a creative
+  or timing decision.
+- Content insights lists the 7 August `Find the line` Reel once as Published after its intended 18:30
+  slot. Its initial visible reach/views are 0. The 3 August annotation-debate Reel remains at reach 1,
+  view 1 and viewer 1; inspected 4-6 August items remain at visible zeroes.
+- Planner/Scheduled Library reconciliation was not completed in this audit, so the previously
+  recorded 8-9 August queue is not promoted to newly verified status here.
+- No post was created, scheduled, edited, deleted or replied to. The next original, text-only
+  execution is preflighted in `FB001HighlightTest.md` and intentionally remains a draft until native
+  scheduling and read-back can be completed once.
+
 ### Live audit: 7 August 2026, 08:01 Europe/London
 
 - Meta Business Suite remains on the `BookQuotes` Facebook Page. The 6 August reader prompt is

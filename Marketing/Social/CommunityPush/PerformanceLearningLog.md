@@ -64,6 +64,51 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 7 August 2026, 21:45 BST
+
+**Platforms checked:** Meta Business Suite BookQuotes Page, Content and Insights; Google Search
+Console `bookquotes.uk` Sitemaps; public domain/SEO endpoints.
+
+**Publishing and measurement**
+
+- Meta is visibly operating as the `BookQuotes` Page, which has 0 followers. Instagram remains
+  unconnected.
+- The 28-day Insights overview (10 July-6 August) reports 19 views, 3 new viewers and 100% of the
+  visible audience as non-followers. The account sample remains too small for format or timing
+  conclusions.
+- The Content insights table shows the 3 August annotation-debate Reel at reach 1, view 1 and viewer
+  1. The 4-7 August items display zero visible reach/views at the inspected checkpoints. The
+  7 August `Find the line` Reel is present once as Published after its 18:30 slot.
+- Google Search Console already contains `https://bookquotes.uk/sitemap.xml`, submitted and last read
+  on 7 August with status `Success`, 15 discovered pages and 0 discovered videos. It was not
+  submitted again. Before the approved action, URL Inspection reported the homepage as unknown to
+  Google. The homepage indexing request then completed once and Google added it to the priority
+  crawl queue; this is a request state, not evidence that indexing has completed. Performance is
+  still processing and shows no clicks or impressions.
+- The live canonical HTTPS homepage, robots file and all 15 sitemap URLs pass. HTTP currently serves
+  200 without a redirect and `www.bookquotes.uk` does not resolve; these are deployment/domain
+  defects, not search-content results.
+- No Meta post was created, scheduled, edited, deleted or replied to in this audit. The next
+  rights-safe Facebook execution is preflighted in `FB001HighlightTest.md` but remains a draft until
+  the native Scheduled Library can be read back.
+
+**Learning and decision**
+
+- There is still insufficient distribution to classify any content treatment. Do not raise cadence
+  or label a creative winner/loser.
+- Search instrumentation is active enough to begin collecting evidence, but no query/page
+  performance claim should be made until Search Console exposes it.
+- Structured evidence and deterministic scorecard generation now live in `GrowthEvidence.json`,
+  `GrowthOperatingSystem.md` and `GrowthScorecard.md`. Narrative logs remain the audit trail.
+
+**Next actions**
+
+- Deploy and verify canonical HTTP/`www` redirects, then rerun the host matrix.
+- Schedule FB-001 once only after BookQuotes identity, Planner and Scheduled Library are available
+  together; read back the native entry before changing its structured status from `draft`.
+- Record the 24-hour and 72-hour `Find the line` checkpoints without treating zero reach as a
+  creative verdict.
+
 ### 7 August 2026, 08:01 BST
 
 **Platforms checked:** Meta Business Suite BookQuotes Published, Scheduled, Planner and Facebook

@@ -27,3 +27,9 @@ backend/node_modules/
 
 # Local-only real book/photo fixtures. Keep copyrighted pages out of the public repo.
 local-fixtures/
+
+# macOS metadata
+.DS_Store
+
+# TypeScript incremental build state
+*.tsbuildinfo

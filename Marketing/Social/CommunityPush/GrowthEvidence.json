@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-07T21:45:00+01:00",
+  "experiments": [
+    {
+      "id": "FB-001",
+      "hypothesis": "A practical next-day highlight review ritual will produce more saves and meaningful comments than a feature-led product post.",
+      "primary_metric": "saves_per_1000_reach",
+      "secondary_metric": "meaningful_comments_per_1000_reach",
+      "variable": "reader ritual versus product explanation",
+      "minimum_executions_per_treatment": 3,
+      "status": "Pending"
+    }
+  ],
+  "social_observations": [
+    {
+      "observation_id": "fb-2026-08-03-annotation-debate-7d-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": null,
+      "title": "Annotation debate",
+      "format": "reel",
+      "published_at": "2026-08-03T19:00:00+01:00",
+      "checkpoint": "7d-audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes Remotion composition; Meta copyright check passed.",
+      "metrics": {
+        "views": 1,
+        "reach": 1,
+        "viewers": 1,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": 0,
+        "follows": 0
+      },
+      "notes": "Near-zero distribution; not a creative verdict."
+    },
+    {
+      "observation_id": "fb-2026-08-04-hand-copied-lines-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": null,
+      "title": "The last line copied by hand",
+      "format": "text",
+      "published_at": "2026-08-04T12:30:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": 0,
+        "reach": 0,
+        "viewers": 0,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": 0,
+        "follows": 0
+      },
+      "notes": "Visible native metrics were zero."
+    },
+    {
+      "observation_id": "fb-2026-08-05-commonplace-ritual-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": null,
+      "title": "Ten-minute commonplace ritual",
+      "format": "carousel",
+      "published_at": "2026-08-05T18:30:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes carousel composition.",
+      "metrics": {
+        "views": 0,
+        "reach": 0,
+        "viewers": 0,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": 0,
+        "follows": 0
+      },
+      "notes": "Visible native metrics were zero."
+    },
+    {
+      "observation_id": "fb-122105430807415831-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122105430807415831",
+      "title": "A reading habit you abandoned?",
+      "format": "text",
+      "published_at": "2026-08-06T13:00:00+01:00",
+      "checkpoint": "24h-plus",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": 0,
+        "reach": 0,
+        "viewers": 0,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": 0,
+        "follows": 0
+      },
+      "notes": "Published once; visible native metrics were zero."
+    },
+    {
+      "observation_id": "fb-2026-08-07-find-the-line-initial",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": null,
+      "title": "Find the line",
+      "format": "reel",
+      "published_at": "2026-08-07T18:30:00+01:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes product Reel and custom cover; Meta copyright check passed.",
+      "metrics": {
+        "views": 0,
+        "reach": 0,
+        "viewers": 0,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": 0,
+        "follows": 0
+      },
+      "notes": "Initial checkpoint only; do not interpret as a creative result."
+    },
+    {
+      "observation_id": "fb-001-highlight-test-draft",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": null,
+      "title": "The 24-hour highlight test",
+      "format": "text",
+      "published_at": "2026-08-10T13:00:00+01:00",
+      "checkpoint": "preflight",
+      "status": "draft",
+      "experiment_id": "FB-001",
+      "treatment": "practical_reader_ritual",
+      "rights_basis": "Original BookQuotes text; no third-party visual, cover or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "notes": "Preflighted in FB001HighlightTest.md. Do not mark scheduled until Meta Scheduled Library read-back succeeds."
+    }
+  ],
+  "search_snapshots": [
+    {
+      "observed_at": "2026-08-07T21:20:00+01:00",
+      "property": "bookquotes.uk",
+      "sitemap_url": "https://bookquotes.uk/sitemap.xml",
+      "sitemap_status": "Success",
+      "submitted_at": "2026-08-07",
+      "last_read_at": "2026-08-07",
+      "discovered_pages": 15,
+      "discovered_videos": 0,
+      "indexed_homepage": false,
+      "indexing_request_status": "Indexing requested; added to Google's priority crawl queue",
+      "performance_available": false,
+      "performance_status": "Processing; no clicks or impressions shown",
+      "cloudflare_http_traffic_24h": {
+        "unique_visitors": 53,
+        "total_requests": 1200,
+        "cached_requests": 75,
+        "uncached_requests": 1120,
+        "caveat": "HTTP traffic may include crawlers or AI agents; Web Analytics RUM is not enabled."
+      },
+      "notes": "Verified in Google Search Console. The sitemap was already submitted and the homepage indexing request already completed once; neither action was duplicated."
+    }
+  ]
+}

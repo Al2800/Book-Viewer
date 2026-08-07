@@ -71,10 +71,15 @@ At 09:00 Europe/London:
    new ones.
 7. Inspect comments and messages. Routine acknowledgements and verified factual answers may be
    posted automatically; sensitive or ambiguous replies must be drafted for review.
-8. Append the actions and evidence to `PerformanceLearningLog.md` and update
-   `PublishingStatus.md`.
-9. Report publishing failures, rights concerns, sensitive replies or a queue shorter than three
-   days. Routine successful runs need only a concise status.
+8. Append the actions and evidence to `PerformanceLearningLog.md`, update `PublishingStatus.md`,
+   and write the native checkpoint values to `GrowthEvidence.json`. Preserve unavailable fields as
+   `null`; never convert missing data to zero.
+9. Run `python3 scripts/growth_scorecard.py Marketing/Social/CommunityPush/GrowthEvidence.json
+   --output Marketing/Social/CommunityPush/GrowthScorecard.md` from the repository root. The daily
+   marketing control plane ingests this versioned ledger read-only, and the Monday job includes it
+   in the cross-product experiment inventory.
+10. Report publishing failures, rights concerns, sensitive replies or a queue shorter than three
+    days. Routine successful runs need only a concise status.
 
 ## Content Gate
 
