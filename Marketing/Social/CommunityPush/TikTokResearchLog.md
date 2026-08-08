@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 7 August 2026
+Updated: 8 August 2026
 
 ## Purpose
 
@@ -63,6 +63,56 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-08, 08:09 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio is signed in as `@bookquotes.app`. Content lists five posts once and Public:
+  `7667570006032387350`, `7667846219120626966`, `7667829238065646870`, `7668631665064938774`
+  and `7670655931193068823`.
+- No post was uploaded, scheduled, edited, deleted or replied to in this run. The controlled
+  TikTok publication gate remains held until native account validation and attributable analytics
+  are evidenced.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Center Trends should be filtered by industry and time, then inspected for trendlines, related videos, audience insights and regional popularity. | https://ads.tiktok.com/help/article/how-to-use-trends | Official TikTok help page updated June/July 2026. | Use a UK reader/BookTok filter and record the exact query and window before promoting a trend. | Medium | Recheck when the native Creative Center view exposes a comparable sample. |
+| Creative Center is the official public hub for trends, Top Ads, keywords, creative patterns and best practices. | https://ads.tiktok.com/help/article/creative-center | Official TikTok for Business guidance. | Keep research native and evidence-led rather than relying on generic trend summaries. | Medium | No current performance claim until the account can be compared with like-for-like posts. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. No verified comparable 15-20-post UK reader sample was
+  accessible in this run.
+- Transferable patterns remain: exact reader question, practical explanation, honest reservation and
+  a clear comment choice. Do not copy creator wording, distinctive artwork, account identity or
+  unverified audio.
+
+**Audience language**
+
+- TikTok comments reports `No comments yet`; search-query data is insufficient. No new BookQuotes
+  audience language was promoted into a brief.
+
+**Evidence and rights**
+
+- No Evidence Ledger changes. No rights blocker was found in the prepared queue; publication remains
+  held by native distribution and measurement validation.
+
+**Performance and learning**
+
+- `7670655931193068823` is approximately 58 hours old: 0 visible views, 0 likes and 0 comments.
+  Account Analytics is 0 for video views, profile views, likes, comments and shares over the last
+  seven days; deeper measures are Not available.
+- The 72-hour checkpoint is due at 22:02 Europe/London tonight. No confidence or result label
+  changed, and the zero is not classified as a topic or packaging failure.
+
+**Queue**
+
+- Approved/in production: existing Culture and science-fiction reader-fit queue remains viable.
+- Awaiting evidence or review: all new TikTok publication remains held until Account Check and
+  attributable analytics are evidenced.
 
 ### 2026-08-07, 08:01 Europe/London
 

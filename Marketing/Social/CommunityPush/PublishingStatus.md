@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 7 August 2026
+Updated: 8 August 2026
 
 ## Automation
 
@@ -18,6 +18,21 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 8 August 2026, 08:09 Europe/London
+
+- Meta Business Suite is operating as the `BookQuotes` Facebook Page. The 7 August `Find the line`
+  Reel is listed once as Published at 18:30 with content ID `122105782647415831`; its visible
+  reach, views, viewers, follows, interactions, likes, comments, shares, saves and link clicks are
+  all 0. Watch-time cells are 0 or Not available in the native table.
+- The 8 August reader prompt is present in the native Published table at 13:00 with visible metrics
+  at 0. The Scheduled Library now reads back three future Public Facebook-only items once each:
+  9 August 10:00 book-club carousel, 10 August 13:00 `A book can be good and still be wrong for
+  this week` text prompt, and 11 August 13:00 `A reading life is not measured only by the books
+  you finish` text prompt. No media, boost, story share or cross-post was enabled on the two new
+  text items.
+- Facebook Inbox was checked under the BookQuotes identity. No new message or comment requiring
+  action was visible; no routine reply was made and no approval-required draft is outstanding.
 
 ### Live audit: 7 August 2026, 21:45 Europe/London
 
@@ -178,6 +193,20 @@ Once the account is created or recovered and connected:
 4. Review native Instagram performance separately from Facebook after 24 hours and seven days.
 
 ## TikTok
+
+### Live audit: 8 August 2026, 08:09 Europe/London
+
+- TikTok Studio Content lists five `@bookquotes.app` posts once and Public. The latest
+  `The Three-Body Problem` reader-fit Reel `7670655931193068823` is approximately 58 hours old
+  and remains at 0 views, 0 likes and 0 comments. The four earlier posts also show 0 visible views,
+  likes and comments.
+- TikTok Analytics, Last 7 days, reports 0 video views, profile views, likes, comments and shares;
+  traffic source and search-query panels do not have enough data. Settings confirms the account is
+  public because the Private account checkbox is off. TikTok Studio comments reports `No comments
+  yet`; no replies were made.
+- The 72-hour checkpoint for `7670655931193068823` is due at 22:02 Europe/London tonight. No TikTok
+  upload, schedule, edit, deletion or reply was made. The native distribution/attributable-analytics
+  gate remains unresolved, so no additional post was created to compensate for the zeroes.
 
 ### Live audit: 7 August 2026, 08:01 Europe/London
 

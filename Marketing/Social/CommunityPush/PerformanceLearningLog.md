@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 7 August 2026
+Updated: 8 August 2026
 
 ## Purpose
 
@@ -63,6 +63,44 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 8 August 2026, 08:09 BST
+
+**Platforms checked:** Meta Business Suite BookQuotes Page, Content Library, Scheduled Library and
+Inbox; TikTok Studio Content, Analytics, Settings and comments; official TikTok Creative Center
+guidance.
+
+**Publishing and measurement**
+
+- Facebook identity is confirmed as BookQuotes. The 7 August `Find the line` Reel is published once
+  at 18:30 with content ID `122105782647415831`; visible metrics remain 0. The 8 August reader
+  prompt is listed in Published at 13:00 with visible metrics 0. Native Scheduled Library read-back
+  confirms three future Public items: 9 August 10:00 book-club carousel, 10 August 13:00 text prompt,
+  and 11 August 13:00 text prompt. Facebook Inbox showed no new messages or comments.
+- TikTok lists five Public posts once. `7670655931193068823` is approximately 58 hours old with
+  0 views, 0 likes and 0 comments. Last-7-days Analytics is 0 for video views, profile views, likes,
+  comments and shares; traffic source and search queries have insufficient data. Settings is public
+  and comments reports `No comments yet`.
+- TikTok's 72-hour checkpoint is due at 22:02 tonight. Deeper retention, completion, saves, profile
+  visits, follows, link taps and attributable post analytics remain Not available.
+
+**Learning and decision**
+
+- No hypothesis or result label changed. The zeroes are account evidence, but without attributable
+  analytics they remain a distribution/measurement blocker rather than evidence that the Reel,
+  science-fiction topic or packaging has failed.
+- TikTok native research remains constrained: current official guidance explains that Creative Center
+  Trends can be filtered by industry/time and inspected for trendlines, related videos, audience
+  insights and regional popularity, but no comparable current UK BookTok sample was accessible in
+  this run. No style-catalogue entry was added. Sources: `https://ads.tiktok.com/help/article/how-to-use-trends`
+  and `https://ads.tiktok.com/help/article/creative-center`.
+
+**Next actions**
+
+- Read the TikTok 72-hour checkpoint tonight, then keep or change the gate based on attributable
+  evidence rather than posting volume.
+- Let the Facebook queue run through 11 August and compare downstream actions when non-zero data
+  arrives. Instagram remains unconnected and has no verified publishing or measurement state.
 
 ### 7 August 2026, 21:45 BST
 
