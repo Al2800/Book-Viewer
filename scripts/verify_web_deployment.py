@@ -11,6 +11,7 @@ import urllib.request
 from dataclasses import asdict, dataclass
 from html.parser import HTMLParser
 from typing import Iterable
+from urllib.parse import urljoin, urlparse
 from xml.etree import ElementTree
 
 CANONICAL_ORIGIN = "https://bookquotes.uk"
@@ -42,15 +43,49 @@ class CanonicalParser(HTMLParser):
 def fetch(url: str, timeout: float) -> tuple[int, str, bytes, dict[str, str]]:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        return response.status, response.geturl(), response.read(), dict(response.headers.items())
+        headers = {key.lower(): value for key, value in response.headers.items()}
+        return response.status, response.geturl(), response.read(), headers
+
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[no-untyped-def]
+        return None
+
+
+def fetch_no_redirect(url: str, timeout: float) -> tuple[int, str]:
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    opener = urllib.request.build_opener(NoRedirect)
+    try:
+        with opener.open(request, timeout=timeout) as response:
+            return response.status, response.geturl()
+    except urllib.error.HTTPError as error:
+        location = error.headers.get("Location")
+        if 300 <= error.code < 400 and location:
+            return error.code, urljoin(url, location)
+        raise
+
+
+def is_canonical_url(url: str) -> bool:
+    parsed = urlparse(url)
+    canonical = urlparse(CANONICAL_ORIGIN)
+    return parsed.scheme == canonical.scheme and parsed.netloc == canonical.netloc
 
 
 def check_redirect(url: str, expected_final: str, timeout: float) -> Check:
     try:
-        status, final_url, _, _ = fetch(url, timeout)
-        ok = status == 200 and final_url.rstrip("/") == expected_final.rstrip("/")
-        detail = f"resolved to {final_url} with HTTP {status}"
-        return Check(url, status, final_url, ok, detail)
+        redirect_status, location = fetch_no_redirect(url, timeout)
+        final_status, final_url, _, _ = fetch(url, timeout)
+        ok = (
+            redirect_status == 308
+            and location == expected_final
+            and final_status == 200
+            and final_url == expected_final
+        )
+        detail = (
+            f"HTTP {redirect_status} Location {location}; "
+            f"resolved to {final_url} with HTTP {final_status}"
+        )
+        return Check(url, redirect_status, final_url, ok, detail)
     except (urllib.error.URLError, TimeoutError) as error:
         return Check(url, None, None, False, str(error))
 
@@ -62,9 +97,10 @@ def check_homepage(timeout: float) -> Check:
         parser = CanonicalParser()
         parser.feed(body.decode("utf-8", errors="replace"))
         canonical_ok = parser.canonical in {CANONICAL_ORIGIN, f"{CANONICAL_ORIGIN}/"}
-        robots_ok = "noindex" not in headers.get("X-Robots-Tag", "").lower()
+        robots_header = headers.get("x-robots-tag", "")
+        robots_ok = "noindex" not in robots_header.lower()
         ok = status == 200 and final_url == url and canonical_ok and robots_ok
-        detail = f"canonical={parser.canonical!r}; x-robots-tag={headers.get('X-Robots-Tag', 'absent')!r}"
+        detail = f"canonical={parser.canonical!r}; x-robots-tag={robots_header or 'absent'!r}"
         return Check(url, status, final_url, ok, detail)
     except (urllib.error.URLError, TimeoutError) as error:
         return Check(url, None, None, False, str(error))
@@ -74,8 +110,12 @@ def check_text(url: str, required: Iterable[bytes], timeout: float) -> Check:
     try:
         status, final_url, body, _ = fetch(url, timeout)
         missing = [item.decode("utf-8", errors="replace") for item in required if item not in body]
-        ok = status == 200 and not missing
-        detail = "required markers present" if ok else f"missing markers: {missing}"
+        ok = status == 200 and final_url == url and not missing
+        detail = (
+            "required markers present on canonical endpoint"
+            if ok
+            else f"final_url={final_url}; missing markers: {missing}"
+        )
         return Check(url, status, final_url, ok, detail)
     except (urllib.error.URLError, TimeoutError) as error:
         return Check(url, None, None, False, str(error))
@@ -88,9 +128,9 @@ def check_sitemap(timeout: float) -> Check:
         root = ElementTree.fromstring(body)
         namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
         locations = [node.text or "" for node in root.findall("sm:url/sm:loc", namespace)]
-        foreign = [location for location in locations if not location.startswith(CANONICAL_ORIGIN)]
-        ok = status == 200 and len(locations) >= 15 and not foreign
-        detail = f"{len(locations)} canonical URLs; foreign={foreign}"
+        foreign = [location for location in locations if not is_canonical_url(location)]
+        ok = status == 200 and final_url == url and len(locations) >= 15 and not foreign
+        detail = f"final_url={final_url}; {len(locations)} canonical URLs; foreign={foreign}"
         return Check(url, status, final_url, ok, detail)
     except (urllib.error.URLError, TimeoutError, ElementTree.ParseError) as error:
         return Check(url, None, None, False, str(error))

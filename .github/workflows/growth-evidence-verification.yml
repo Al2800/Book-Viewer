@@ -1,0 +1,44 @@
+name: Growth evidence verification
+
+on:
+  pull_request:
+    paths:
+      - "Marketing/Social/CommunityPush/GrowthEvidence.json"
+      - "Marketing/Social/CommunityPush/GrowthScorecard.md"
+      - "scripts/growth_scorecard.py"
+      - "tests/test_growth_scorecard.py"
+      - ".github/workflows/growth-evidence-verification.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Marketing/Social/CommunityPush/GrowthEvidence.json"
+      - "Marketing/Social/CommunityPush/GrowthScorecard.md"
+      - "scripts/growth_scorecard.py"
+      - "tests/test_growth_scorecard.py"
+      - ".github/workflows/growth-evidence-verification.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate evidence semantics
+        run: python3 -m unittest tests.test_growth_scorecard -v
+
+      - name: Verify deterministic scorecard
+        run: |
+          set -euo pipefail
+          python3 scripts/growth_scorecard.py \
+            Marketing/Social/CommunityPush/GrowthEvidence.json \
+            --output /tmp/GrowthScorecard.md
+          diff --unified \
+            Marketing/Social/CommunityPush/GrowthScorecard.md \
+            /tmp/GrowthScorecard.md

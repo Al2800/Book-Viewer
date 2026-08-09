@@ -6,11 +6,13 @@ on:
     paths:
       - "website/**"
       - "scripts/verify_web_deployment.py"
+      - "tests/test_verify_web_deployment.py"
       - ".github/workflows/website-verification.yml"
   pull_request:
     paths:
       - "website/**"
       - "scripts/verify_web_deployment.py"
+      - "tests/test_verify_web_deployment.py"
       - ".github/workflows/website-verification.yml"
   schedule:
     - cron: "17 7 * * *"
@@ -36,6 +38,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Run deployment verifier regression tests
+        working-directory: ..
+        run: python3 -m unittest tests.test_verify_web_deployment -v
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -52,10 +58,28 @@ jobs:
         run: npm run sites:build
 
       - name: Verify hosting manifest and deployment endpoint
+        env:
+          GITHUB_SHA: ${{ github.sha }}
         run: |
+          set -euo pipefail
           test -f dist/.openai/hosting.json
           grep -q 'bookquotes-website' dist/server/index.js
           grep -q "${GITHUB_SHA::12}" dist/server/index.js
+
+          npx vinext start --host 127.0.0.1 --port 4173 > /tmp/bookquotes-vinext.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error http://127.0.0.1:4173/deployment.json > /tmp/bookquotes-local-deployment.json; then
+              break
+            fi
+            if [[ "$attempt" == "30" ]]; then
+              cat /tmp/bookquotes-vinext.log
+              exit 1
+            fi
+            sleep 1
+          done
+          python3 -c 'import json, os; document=json.load(open("/tmp/bookquotes-local-deployment.json")); expected=os.environ["GITHUB_SHA"][:12]; assert document["service"] == "bookquotes-website"; assert document["canonicalOrigin"] == "https://bookquotes.uk"; assert document["sourceRevision"] == expected'
 
   live-smoke:
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

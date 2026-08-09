@@ -1,6 +1,6 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated `2026-08-07T21:45:00+01:00`.
+Generated from structured evidence updated `2026-08-08T21:53:05+01:00`.
 
 ## Current signal
 
@@ -20,7 +20,7 @@ Generated from structured evidence updated `2026-08-07T21:45:00+01:00`.
 | 2026-08-06 | published | facebook | A reading habit you abandoned? | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-05 | published | facebook | Ten-minute commonplace ritual | carousel | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-04 | published | facebook | The last line copied by hand | text | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
-| 2026-08-03 | published | facebook | Annotation debate | reel | 7d-audit | 1 | 1 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-08-03 | published | facebook | Annotation debate | reel | audit | 1 | 1 | 0.0 | 0.0 | Insufficient distribution |
 
 ## Experiment readiness
 
@@ -29,7 +29,7 @@ Generated from structured evidence updated `2026-08-07T21:45:00+01:00`.
 A practical next-day highlight review ritual will produce more saves and meaningful comments than a feature-led product post.
 
 - Primary metric: `saves_per_1000_reach`
-- Executions by treatment: none
+- Executions by treatment: {"feature_led_product": 0, "practical_reader_ritual": 0}
 - Minimum per treatment: 3
 - Comparison ready: no
 
