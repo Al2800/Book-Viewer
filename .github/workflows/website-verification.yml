@@ -39,7 +39,7 @@ jobs:
           fetch-depth: 1
 
       - name: Run deployment verifier regression tests
-        working-directory: ..
+        working-directory: ${{ github.workspace }}
         run: python3 -m unittest tests.test_verify_web_deployment -v
 
       - name: Set up Node

@@ -77,6 +77,7 @@ class DeploymentVerificationTests(unittest.TestCase):
     def test_workflow_exercises_built_deployment_endpoint(self):
         workflow = (ROOT / ".github/workflows/website-verification.yml").read_text()
         self.assertIn('"tests/test_verify_web_deployment.py"', workflow)
+        self.assertIn("working-directory: ${{ github.workspace }}", workflow)
         self.assertIn("python3 -m unittest tests.test_verify_web_deployment -v", workflow)
         self.assertIn("http://127.0.0.1:4173/deployment.json", workflow)
         self.assertIn('document["sourceRevision"] == expected', workflow)
