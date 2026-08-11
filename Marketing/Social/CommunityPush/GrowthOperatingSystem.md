@@ -1,6 +1,6 @@
 # BookQuotes Growth Operating System
 
-Updated: 7 August 2026
+Updated: 11 August 2026
 
 ## Purpose
 
@@ -32,6 +32,46 @@ Measure the closest available rung without pretending that it proves the next on
 5. Outcome: qualified installs, retained users and useful product feedback.
 
 Raw views are a diagnostic input, not the objective.
+
+## Attribution and App Store outcome rules
+
+The weekly primary metric is `first_time_downloads`. Secondary metrics are qualified website sessions, App Store product-page views, downloads, activations, sales and proceeds. The live-app activation definition is: the reader adds a first book and saves or confirms a first extracted quote.
+
+Use a seven-day pre-experiment baseline and inspect 24-hour, 72-hour and seven-day checkpoints. A social checkpoint and an App Store reporting window are separate observations; align their timestamps before drawing a comparison.
+
+### Website campaign parameters
+
+Links to `https://bookquotes.uk` use these ordered parameters:
+
+```text
+utm_source
+utm_medium
+utm_campaign
+utm_content
+```
+
+The campaign convention is `bq-{experiment_id}-{yyyy_mm}`. The content value must identify the durable publication/content ID and treatment; SEO and owned-web links use the landing-page slug or CTA location instead. Channel sources are fixed in `GrowthEvidence.json`: `facebook`, `instagram`, `tiktok`, `google` and `bookquotes_website`.
+
+Do not add ordinary UTM parameters to direct App Store links and call them install attribution. Direct store attribution requires a generated App Store Connect campaign link or another Apple-supported, read-tested path. No generated BookQuotes campaign link is currently available, so downstream store attribution remains `none`; website UTMs can prove only attributed website traffic.
+
+### Apple evidence boundary
+
+Probe these App Store Connect surfaces separately:
+
+1. Metadata/version and IAP state.
+2. App Analytics reports.
+3. Sales reports.
+4. Finance reports.
+
+The 11 August 2026 read-only probe returned HTTP 200 for metadata/version and IAP reads, and HTTP 403 `FORBIDDEN_ERROR` separately for Analytics, daily Sales and monthly Finance. BookQuotes version 1.0.1 was `READY_FOR_SALE`, `READY_FOR_DISTRIBUTION` and downloadable. Downloads, first-time downloads, sales and proceeds are therefore `null`/Not available—not zero.
+
+Only report these outcomes from their authoritative Apple surfaces:
+
+- Downloads and first-time downloads: App Store Connect Analytics or Sales reports.
+- Sales units: App Store Connect Sales reports.
+- Proceeds and currency: App Store Connect Finance or Sales reports.
+
+Every unavailable outcome requires a reason and next action. Every available outcome requires a non-negative value and an authoritative source. The deterministic validator rejects false zeros for unavailable values and rejects guessed/manual sources for available store outcomes.
 
 ## Content-to-search flywheel
 

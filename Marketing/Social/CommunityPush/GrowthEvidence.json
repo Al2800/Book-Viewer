@@ -1,6 +1,80 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-08T21:53:05+01:00",
+  "updated_at": "2026-08-11T17:15:10+01:00",
+  "attribution": {
+    "canonical_website_origin": "https://bookquotes.uk",
+    "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
+    "utm_parameters": [
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_content"
+    ],
+    "channel_conventions": [
+      {
+        "channel": "facebook",
+        "utm_source": "facebook",
+        "utm_medium": "organic_social",
+        "utm_campaign_template": "bq-{experiment_id}-{yyyy_mm}",
+        "utm_content_template": "{content_id}-{treatment}"
+      },
+      {
+        "channel": "instagram",
+        "utm_source": "instagram",
+        "utm_medium": "organic_social",
+        "utm_campaign_template": "bq-{experiment_id}-{yyyy_mm}",
+        "utm_content_template": "{content_id}-{treatment}"
+      },
+      {
+        "channel": "tiktok",
+        "utm_source": "tiktok",
+        "utm_medium": "organic_social",
+        "utm_campaign_template": "bq-{experiment_id}-{yyyy_mm}",
+        "utm_content_template": "{content_id}-{treatment}"
+      },
+      {
+        "channel": "google_search",
+        "utm_source": "google",
+        "utm_medium": "organic_search",
+        "utm_campaign_template": "bq-{experiment_id}-{yyyy_mm}",
+        "utm_content_template": "{landing_page_slug}-{treatment}"
+      },
+      {
+        "channel": "bookquotes_website",
+        "utm_source": "bookquotes_website",
+        "utm_medium": "owned_web",
+        "utm_campaign_template": "bq-{experiment_id}-{yyyy_mm}",
+        "utm_content_template": "{cta_location}-{treatment}"
+      }
+    ],
+    "weekly_metrics": {
+      "primary": "first_time_downloads",
+      "secondary": [
+        "qualified_website_sessions",
+        "app_store_product_page_views",
+        "downloads",
+        "activations",
+        "sales",
+        "proceeds"
+      ]
+    },
+    "reporting_window_days": 7,
+    "checkpoints": {
+      "baseline": "7d_pre_experiment",
+      "reviews": [
+        "24h",
+        "72h",
+        "7d"
+      ]
+    },
+    "activation_definition": "The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.",
+    "app_store_campaign_links": {
+      "available": false,
+      "value": null,
+      "reason": "No generated App Store Connect campaign link has been read back, and the public App Store Connect API does not create campaign links.",
+      "next_action": "Create channel-specific campaign links in App Store Connect through an explicitly approved UI step, then record only the generated URLs and identifiers."
+    }
+  },
   "experiments": [
     {
       "id": "FB-001",
@@ -202,6 +276,73 @@
         "caveat": "HTTP traffic may include crawlers or AI agents; Web Analytics RUM is not enabled."
       },
       "notes": "Verified in Google Search Console. The sitemap was already submitted and the homepage indexing request already completed once; neither action was duplicated."
+    }
+  ],
+  "app_store_snapshots": [
+    {
+      "observed_at": "2026-08-11T17:15:10+01:00",
+      "source": "app_store_connect_api_read_only",
+      "app_id": "6758091579",
+      "live_version": "1.0.1",
+      "live_state": "READY_FOR_SALE",
+      "downloadable": true,
+      "access": {
+        "metadata": {
+          "available": true,
+          "http_status": 200,
+          "reason": null,
+          "next_action": "Continue read-only version and metadata polling."
+        },
+        "analytics": {
+          "available": false,
+          "http_status": 403,
+          "reason": "The configured Individual API key returned FORBIDDEN_ERROR for the app analytics report endpoint.",
+          "next_action": "Create or authorize a least-privilege Team API key with App Analytics report access, then repeat the read-only probe."
+        },
+        "sales": {
+          "available": false,
+          "http_status": 403,
+          "reason": "The configured Individual API key returned FORBIDDEN_ERROR for the daily Sales report.",
+          "next_action": "Create or authorize a least-privilege Team API key with Sales report access for vendor 93932031, then repeat the read-only probe."
+        },
+        "finance": {
+          "available": false,
+          "http_status": 403,
+          "reason": "The configured Individual API key returned FORBIDDEN_ERROR for the monthly Finance report.",
+          "next_action": "Create or authorize a least-privilege Team API key with Finance report access for vendor 93932031, then repeat the read-only probe."
+        }
+      },
+      "outcomes": {
+        "downloads": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "reason": "App Analytics and Sales reports are not authorized for the configured key.",
+          "next_action": "Read downloads from an authorized App Store Connect Analytics or Sales report."
+        },
+        "first_time_downloads": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "reason": "App Analytics and Sales reports are not authorized for the configured key.",
+          "next_action": "Read first-time downloads from an authorized App Store Connect Analytics or Sales report."
+        },
+        "sales": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "reason": "The daily Sales report returned HTTP 403.",
+          "next_action": "Read sales units from an authorized App Store Connect Sales report."
+        },
+        "proceeds": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "currency": null,
+          "reason": "The monthly Finance report returned HTTP 403.",
+          "next_action": "Read proceeds and currency from an authorized App Store Connect Finance or Sales report."
+        }
+      }
     }
   ]
 }

@@ -30,10 +30,89 @@ METRICS = {
 }
 
 
+def attribution() -> dict:
+    return {
+        "canonical_website_origin": "https://bookquotes.uk",
+        "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
+        "utm_parameters": ["utm_source", "utm_medium", "utm_campaign", "utm_content"],
+        "channel_conventions": [
+            {
+                "channel": "facebook",
+                "utm_source": "facebook",
+                "utm_medium": "organic_social",
+                "utm_campaign_template": "bq-{experiment_id}-{yyyy_mm}",
+                "utm_content_template": "{content_id}-{treatment}",
+            },
+            {
+                "channel": "google_search",
+                "utm_source": "google",
+                "utm_medium": "organic_search",
+                "utm_campaign_template": "bq-{experiment_id}-{yyyy_mm}",
+                "utm_content_template": "{landing_page_slug}-{treatment}",
+            },
+        ],
+        "weekly_metrics": {
+            "primary": "first_time_downloads",
+            "secondary": ["downloads", "activations", "sales", "proceeds"],
+        },
+        "reporting_window_days": 7,
+        "checkpoints": {"baseline": "7d_pre_experiment", "reviews": ["24h", "72h", "7d"]},
+        "activation_definition": "Add a first book and save a first quote.",
+        "app_store_campaign_links": {
+            "available": False,
+            "value": None,
+            "reason": "No generated link has been read back.",
+            "next_action": "Create and read back an approved campaign link.",
+        },
+    }
+
+
+def app_store_snapshot() -> dict:
+    unavailable = {
+        "available": False,
+        "http_status": 403,
+        "reason": "FORBIDDEN_ERROR",
+        "next_action": "Authorize the required Team API report access.",
+    }
+    outcome = {
+        "value": None,
+        "available": False,
+        "source": None,
+        "reason": "Report access unavailable.",
+        "next_action": "Read an authorized Apple report.",
+    }
+    return {
+        "observed_at": "2026-08-10T21:45:00+01:00",
+        "source": "app_store_connect_api_read_only",
+        "app_id": "6758091579",
+        "live_version": "1.0.1",
+        "live_state": "READY_FOR_SALE",
+        "downloadable": True,
+        "access": {
+            "metadata": {
+                "available": True,
+                "http_status": 200,
+                "reason": None,
+                "next_action": "Continue polling.",
+            },
+            "analytics": dict(unavailable),
+            "sales": dict(unavailable),
+            "finance": dict(unavailable),
+        },
+        "outcomes": {
+            "downloads": dict(outcome),
+            "first_time_downloads": dict(outcome),
+            "sales": dict(outcome),
+            "proceeds": dict(outcome, currency=None),
+        },
+    }
+
+
 def evidence() -> dict:
     return {
         "schema_version": 1,
         "updated_at": "2026-08-10T21:45:00+01:00",
+        "attribution": attribution(),
         "experiments": [
             {
                 "id": "FB-001",
@@ -73,6 +152,7 @@ def evidence() -> dict:
                 "discovered_pages": 15,
             }
         ],
+        "app_store_snapshots": [app_store_snapshot()],
     }
 
 
@@ -92,8 +172,230 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         data["experiments"] = []
         data["social_observations"] = []
         data["search_snapshots"] = []
+        data["app_store_snapshots"] = []
         with self.assertRaisesRegex(ValueError, "must be a non-empty list"):
             module.validate(data)
+
+    def test_rejects_duplicate_channel_sources_and_malformed_checkpoint_plan(self):
+        data = evidence()
+        data["attribution"]["channel_conventions"][1]["utm_source"] = "facebook"
+        data["attribution"]["checkpoints"]["reviews"] = ["24h", "7d"]
+        data["attribution"]["weekly_metrics"]["primary"] = "views"
+        data["attribution"]["reporting_window_days"] = 30
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data)
+        message = str(raised.exception)
+        self.assertIn("utm_source must be non-empty and unique", message)
+        self.assertIn("reviews must be 24h, 72h and 7d", message)
+        self.assertIn("primary must be first_time_downloads", message)
+        self.assertIn("reporting_window_days must be 7", message)
+
+        data = evidence()
+        data["attribution"]["channel_conventions"][0]["utm_campaign_template"] = "static"
+        data["attribution"]["channel_conventions"][0]["utm_content_template"] = "static"
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data)
+        message = str(raised.exception)
+        self.assertIn("must bind experiment_id and yyyy_mm", message)
+        self.assertIn("must bind treatment and a durable content identifier", message)
+
+    def test_verified_app_store_campaign_links_are_supported_and_validated(self):
+        data = evidence()
+        data["attribution"]["app_store_campaign_links"] = {
+            "available": True,
+            "value": [
+                {
+                    "channel": "facebook",
+                    "campaign_id": "fb-001",
+                    "url": "https://apps.apple.com/app/id6758091579?ct=fb-001",
+                }
+            ],
+            "reason": None,
+            "next_action": "Measure the generated campaign link.",
+        }
+        module.validate(data)
+
+        data["attribution"]["app_store_campaign_links"]["value"][0]["url"] = "https://apps.apple.com/attacker?id6758091579"
+        with self.assertRaisesRegex(ValueError, "must be the BookQuotes App Store URL"):
+            module.validate(data)
+
+    def test_social_store_attribution_requires_a_verified_campaign_id(self):
+        data = evidence()
+        data["social_observations"][0]["campaign"] = {
+            "campaign_id": "bq-fb-001-2026-08",
+            "destination_url": "https://apps.apple.com/app/id6758091579?ct=unverified",
+            "utm_source": "facebook",
+            "utm_medium": "organic_social",
+            "utm_campaign": "bq-fb-001-2026-08",
+            "utm_content": "content-1-ritual",
+            "app_store_campaign_id": "unverified",
+        }
+        with self.assertRaisesRegex(ValueError, "app_store_campaign_id is not verified"):
+            module.validate(data)
+
+        data["attribution"]["app_store_campaign_links"] = {
+            "available": True,
+            "value": [
+                {
+                    "channel": "facebook",
+                    "campaign_id": "unverified",
+                    "url": "https://apps.apple.com/app/id6758091579?ct=unverified",
+                }
+            ],
+            "reason": None,
+            "next_action": "Measure the generated campaign link.",
+        }
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("App Store campaign-linked items: 1", report)
+
+        data["social_observations"][0]["campaign"]["destination_url"] = (
+            "https://apps.apple.com/app/id6758091579?ct=wrong"
+        )
+        with self.assertRaisesRegex(ValueError, "ct parameter must equal"):
+            module.validate(data)
+
+        data["social_observations"][0]["campaign"]["destination_url"] = (
+            "https://apps.apple.com/app/id6758091579?ct=unverified"
+        )
+        data["attribution"]["app_store_campaign_links"]["value"][0]["channel"] = "google_search"
+        with self.assertRaisesRegex(ValueError, "must match the platform channel"):
+            module.validate(data)
+
+    def test_website_campaign_requires_declared_convention_and_url_parameters(self):
+        data = evidence()
+        data["social_observations"][0]["campaign"] = {
+            "campaign_id": "bq-fb-001-2026-08",
+            "destination_url": (
+                "https://bookquotes.uk/?utm_source=facebook&utm_medium=organic_social&"
+                "utm_campaign=bq-fb-001-2026-08&utm_content=content-1-ritual"
+            ),
+            "utm_source": "facebook",
+            "utm_medium": "organic_social",
+            "utm_campaign": "bq-fb-001-2026-08",
+            "utm_content": "content-1-ritual",
+            "app_store_campaign_id": None,
+        }
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("Website campaign-linked items: 1", report)
+
+        data["social_observations"][0]["campaign"]["utm_medium"] = "spam"
+        with self.assertRaisesRegex(ValueError, "utm_medium must match"):
+            module.validate(data)
+
+        data = evidence()
+        campaign = {
+            "campaign_id": "bq-other-2026-08",
+            "destination_url": (
+                "https://bookquotes.uk/?utm_source=facebook&utm_medium=organic_social&"
+                "utm_campaign=bq-other-2026-08&utm_content=content-1-ritual"
+            ),
+            "utm_source": "facebook",
+            "utm_medium": "organic_social",
+            "utm_campaign": "bq-other-2026-08",
+            "utm_content": "content-1-ritual",
+            "app_store_campaign_id": None,
+        }
+        data["social_observations"][0]["campaign"] = campaign
+        with self.assertRaisesRegex(ValueError, "must match the channel experiment template"):
+            module.validate(data)
+
+        data = evidence()
+        data["social_observations"][0]["platform"] = "undeclared_channel"
+        with self.assertRaisesRegex(ValueError, "must have a declared channel convention"):
+            module.validate(data)
+
+    def test_unavailable_app_store_metrics_must_be_null_with_next_action(self):
+        data = evidence()
+        data["app_store_snapshots"][0]["outcomes"]["downloads"]["value"] = 0
+        del data["app_store_snapshots"][0]["outcomes"]["downloads"]["source"]
+        del data["app_store_snapshots"][0]["outcomes"]["proceeds"]["currency"]
+        del data["app_store_snapshots"][0]["outcomes"]["sales"]["next_action"]
+        del data["app_store_snapshots"][0]["access"]["finance"]["reason"]
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data)
+        message = str(raised.exception)
+        self.assertIn("downloads.value must be null when unavailable", message)
+        self.assertIn("downloads.source must be explicitly null when unavailable", message)
+        self.assertIn("proceeds.currency must be explicitly null when unavailable", message)
+        self.assertIn("sales requires reason and next_action", message)
+        self.assertIn("access.finance requires reason and next_action", message)
+
+    def test_available_outcome_requires_authoritative_source(self):
+        data = evidence()
+        downloads = data["app_store_snapshots"][0]["outcomes"]["downloads"]
+        downloads.update(value=4, available=True, source="manual_guess")
+        with self.assertRaisesRegex(ValueError, "source is not authoritative"):
+            module.validate(data)
+
+    def test_available_outcome_requires_matching_available_surface(self):
+        data = evidence()
+        downloads = data["app_store_snapshots"][0]["outcomes"]["downloads"]
+        downloads.update(value=4, available=True, source="app_store_connect_analytics")
+        with self.assertRaisesRegex(ValueError, "requires available analytics access"):
+            module.validate(data)
+
+        data["app_store_snapshots"][0]["access"]["analytics"].update(
+            available=True, http_status=200, reason=None
+        )
+        module.validate(data)
+
+        data["app_store_snapshots"][0]["access"]["analytics"] = []
+        with self.assertRaisesRegex(ValueError, "requires available analytics access"):
+            module.validate(data)
+
+    def test_available_access_requires_2xx_and_proceeds_require_currency(self):
+        data = evidence()
+        data["app_store_snapshots"][0]["access"]["finance"]["available"] = True
+        proceeds = data["app_store_snapshots"][0]["outcomes"]["proceeds"]
+        proceeds.update(value=2.5, available=True, source="app_store_connect_finance")
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data)
+        message = str(raised.exception)
+        self.assertIn("available true requires a 2xx HTTP status", message)
+        self.assertIn("currency must be a three-letter code", message)
+
+    def test_app_store_snapshot_requires_renderable_source_and_metadata(self):
+        data = evidence()
+        snapshot = data["app_store_snapshots"][0]
+        del snapshot["source"]
+        snapshot["live_version"] = None
+        snapshot["live_state"] = ""
+        snapshot["downloadable"] = "yes"
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data)
+        message = str(raised.exception)
+        self.assertIn("source must be app_store_connect_api_read_only", message)
+        self.assertIn("live_version must be non-empty", message)
+        self.assertIn("live_state must be non-empty", message)
+        self.assertIn("downloadable must be boolean", message)
+
+    def test_latest_app_store_snapshot_uses_absolute_time_not_timestamp_text(self):
+        data = evidence()
+        older = data["app_store_snapshots"][0]
+        older["observed_at"] = "2026-08-10T18:00:00+02:00"
+        older["live_version"] = "OLDER"
+        newer = copy.deepcopy(older)
+        newer["observed_at"] = "2026-08-10T17:30:00+01:00"
+        newer["live_version"] = "NEWER"
+        data["app_store_snapshots"].append(newer)
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("Live version `NEWER`", report)
+
+    def test_render_reports_separate_surfaces_null_outcomes_and_attribution_quality(self):
+        data = evidence()
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("## Weekly funnel and attribution", report)
+        self.assertIn("Reporting window: 2026-08-03T21:45:00+01:00", report)
+        self.assertIn("Channel-only items: 1", report)
+        self.assertIn("## App Store performance", report)
+        self.assertIn("| metadata | True | 200 |", report)
+        self.assertIn("| analytics | False | 403 |", report)
+        self.assertIn("| downloads | Not available | False |", report)
+        self.assertIn("HTTP 403 or missing access is `Not available`, never zero", report)
 
     def test_rejects_invalid_updated_at_checkpoint_and_boolean_metric(self):
         data = evidence()
