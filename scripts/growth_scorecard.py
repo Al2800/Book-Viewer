@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import math
 import statistics
@@ -80,6 +81,17 @@ AUTHORITATIVE_APP_STORE_SOURCES = {
     "proceeds": {"app_store_connect_finance", "app_store_connect_sales"},
 }
 UTM_PARAMETERS = ["utm_source", "utm_medium", "utm_campaign", "utm_content"]
+CHECKPOINT_ORDER = {
+    "preflight": 0,
+    "initial": 1,
+    "audit": 2,
+    "24h": 3,
+    "24h-plus": 4,
+    "72h": 5,
+    "7d": 6,
+    "7d-audit": 7,
+}
+STATUS_ORDER = {"draft": 0, "scheduled": 1, "published": 2, "failed": 3, "stopped": 4}
 
 
 def is_bookquotes_app_store_url(value: str) -> bool:
@@ -114,10 +126,19 @@ def parse_timestamp(value: Any, field: str) -> datetime:
     return parsed
 
 
-def is_later_observation(candidate: dict[str, Any], current: dict[str, Any]) -> bool:
-    return parse_timestamp(candidate.get("observed_at"), "observed_at") >= parse_timestamp(
-        current.get("observed_at"), "observed_at"
+def observation_order_key(observation: dict[str, Any]) -> tuple[datetime, int, int, str]:
+    status = observation.get("status")
+    checkpoint = observation.get("checkpoint")
+    return (
+        parse_timestamp(observation.get("observed_at"), "observed_at"),
+        STATUS_ORDER.get(status, -1) if isinstance(status, str) else -1,
+        CHECKPOINT_ORDER.get(checkpoint, -1) if isinstance(checkpoint, str) else -1,
+        str(observation.get("observation_id", "")),
     )
+
+
+def is_later_observation(candidate: dict[str, Any], current: dict[str, Any]) -> bool:
+    return observation_order_key(candidate) > observation_order_key(current)
 
 
 def latest_content_observations(
@@ -754,6 +775,37 @@ def display(value: Any) -> str:
     return "Not available" if value is None else str(value)
 
 
+def markdown_text(value: Any) -> str:
+    text = html.escape(display(value), quote=False)
+    text = text.replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>")
+    for character, entity in (
+        ("\\", "&#92;"),
+        ("`", "&#96;"),
+        ("*", "&#42;"),
+        ("_", "&#95;"),
+        ("{", "&#123;"),
+        ("}", "&#125;"),
+        ("[", "&#91;"),
+        ("]", "&#93;"),
+        ("(", "&#40;"),
+        (")", "&#41;"),
+        ("!", "&#33;"),
+        ("|", "&#124;"),
+        ("~", "&#126;"),
+    ):
+        text = text.replace(character, entity)
+    return text
+
+
+def markdown_cell(value: Any) -> str:
+    return markdown_text(value)
+
+
+def markdown_code(value: Any) -> str:
+    text = markdown_text(value).replace("<br>", "&#10;")
+    return f"<code>{text}</code>"
+
+
 def rate(count: float | int | None, denominator: float | int | None) -> str:
     if count is None or denominator in (None, 0):
         return "Not available"
@@ -807,11 +859,12 @@ def render(data: dict[str, Any]) -> str:
     lines = [
         "# BookQuotes Growth Scorecard",
         "",
-        f"Generated from structured evidence updated `{data['updated_at']}`.",
+        f"Generated from structured evidence updated {markdown_code(data['updated_at'])}.",
         "",
         "## Current signal",
         "",
-        f"- Reporting window: {report_start.isoformat()} to {report_end.isoformat()}",
+        f"- Reporting window: {markdown_code(report_start.isoformat())} to "
+        f"{markdown_code(report_end.isoformat())}",
         f"- Published Facebook items represented: {sum(1 for item in weekly_latest.values() if item['platform'] == 'facebook' and item['status'] == 'published')}",
         f"- Visible views: {totals['views']}",
         f"- Visible reach: {totals['reach']}",
@@ -836,17 +889,17 @@ def render(data: dict[str, Any]) -> str:
             )
         lines.append(
             "| {date} | {status} | {platform} | {title} | {format} | {checkpoint} | {views} | {reach} | {saves} | {comments} | {decision} |".format(
-                date=observation["published_at"][:10],
-                status=observation["status"],
-                platform=observation["platform"],
-                title=observation["title"].replace("|", "\\|"),
-                format=observation["format"],
-                checkpoint=observation["checkpoint"],
-                views=display(observation["metrics"].get("views")),
-                reach=display(observation["metrics"].get("reach")),
-                saves=rate(metrics.get("saves"), metrics.get("reach")),
-                comments=rate(metrics.get("comments"), metrics.get("reach")),
-                decision=decision,
+                date=markdown_cell(observation["published_at"][:10]),
+                status=markdown_cell(observation["status"]),
+                platform=markdown_cell(observation["platform"]),
+                title=markdown_cell(observation["title"]),
+                format=markdown_cell(observation["format"]),
+                checkpoint=markdown_cell(observation["checkpoint"]),
+                views=markdown_cell(observation["metrics"].get("views")),
+                reach=markdown_cell(observation["metrics"].get("reach")),
+                saves=markdown_cell(rate(metrics.get("saves"), metrics.get("reach"))),
+                comments=markdown_cell(rate(metrics.get("comments"), metrics.get("reach"))),
+                decision=markdown_cell(decision),
             )
         )
 
@@ -863,12 +916,13 @@ def render(data: dict[str, Any]) -> str:
 
         lines.extend(
             [
-                f"### {experiment['id']}: {experiment['status']}",
+                f"### {markdown_text(experiment['id'])}: {markdown_text(experiment['status'])}",
                 "",
-                experiment["hypothesis"],
+                markdown_text(experiment["hypothesis"]),
                 "",
-                f"- Primary metric: `{experiment['primary_metric']}`",
-                f"- Executions by treatment: {json.dumps(counts, sort_keys=True) if counts else 'none'}",
+                f"- Primary metric: {markdown_code(experiment['primary_metric'])}",
+                f"- Executions by treatment: "
+                f"{markdown_code(json.dumps(counts, sort_keys=True) if counts else 'none')}",
                 f"- Minimum per treatment: {minimum}",
                 f"- Comparison ready: {'yes' if ready else 'no'}",
                 "",
@@ -879,7 +933,9 @@ def render(data: dict[str, Any]) -> str:
             for treatment, values in sorted(metric_values.items()):
                 numeric_values = [value for value in values if value is not None]
                 median = statistics.median(numeric_values)
-                lines.append(f"- {treatment} median {metric_label}: {median:.1f}")
+                lines.append(
+                    f"- {markdown_text(treatment)} median {markdown_text(metric_label)}: {median:.1f}"
+                )
             lines.append("")
 
     published_latest = [item for item in weekly_latest.values() if item.get("status") == "published"]
@@ -896,11 +952,14 @@ def render(data: dict[str, Any]) -> str:
         [
             "## Weekly funnel and attribution",
             "",
-            f"- Baseline window: `{data['attribution']['checkpoints']['baseline']}`",
-            f"- Review checkpoints: `{', '.join(data['attribution']['checkpoints']['reviews'])}`",
-            f"- Primary weekly metric: `{data['attribution']['weekly_metrics']['primary']}`",
-            f"- Secondary weekly metrics: `{', '.join(data['attribution']['weekly_metrics']['secondary'])}`",
-            f"- Activation: {data['attribution']['activation_definition']}",
+            f"- Baseline window: {markdown_code(data['attribution']['checkpoints']['baseline'])}",
+            f"- Review checkpoints: "
+            f"{markdown_code(', '.join(data['attribution']['checkpoints']['reviews']))}",
+            f"- Primary weekly metric: "
+            f"{markdown_code(data['attribution']['weekly_metrics']['primary'])}",
+            f"- Secondary weekly metrics: "
+            f"{markdown_code(', '.join(data['attribution']['weekly_metrics']['secondary']))}",
+            f"- Activation: {markdown_text(data['attribution']['activation_definition'])}",
             f"- Durable published items: {len(published_latest)}",
             f"- Channel-only items: {attribution_counts['channel_only']}",
             f"- Website campaign-linked items: {attribution_counts['website_campaign_linked']}",
@@ -915,8 +974,10 @@ def render(data: dict[str, Any]) -> str:
     )
     for convention in data["attribution"]["channel_conventions"]:
         lines.append(
-            f"| {convention['channel']} | `{convention['utm_source']}` | `{convention['utm_medium']}` | "
-            f"`{convention['utm_campaign_template']}` / `{convention['utm_content_template']}` |"
+            f"| {markdown_cell(convention['channel'])} | {markdown_cell(convention['utm_source'])} | "
+            f"{markdown_cell(convention['utm_medium'])} | "
+            f"{markdown_cell(convention['utm_campaign_template'])} / "
+            f"{markdown_cell(convention['utm_content_template'])} |"
         )
 
     lines.extend(["", "## App Store performance", ""])
@@ -925,12 +986,13 @@ def render(data: dict[str, Any]) -> str:
         key=lambda item: parse_timestamp(item["observed_at"], "app_store_snapshots.observed_at"),
     )
     lines.append(
-        f"Observed `{latest_store['observed_at']}` from `{latest_store['source']}` for app `{latest_store['app_id']}`."
+        f"Observed {markdown_code(latest_store['observed_at'])} from "
+        f"{markdown_code(latest_store['source'])} for app {markdown_code(latest_store['app_id'])}."
     )
     lines.append(
-        f"Live version `{latest_store.get('live_version', 'Not available')}`; state "
-        f"`{latest_store.get('live_state', 'Not available')}`; downloadable "
-        f"`{latest_store.get('downloadable', 'Not available')}`."
+        f"Live version {markdown_code(latest_store.get('live_version'))}; state "
+        f"{markdown_code(latest_store.get('live_state'))}; downloadable "
+        f"{markdown_code(latest_store.get('downloadable'))}."
     )
     lines.extend(
         [
@@ -942,22 +1004,24 @@ def render(data: dict[str, Any]) -> str:
     for surface in ("metadata", "analytics", "sales", "finance"):
         state = latest_store["access"][surface]
         lines.append(
-            f"| {surface} | {state['available']} | {state['http_status']} | "
-            f"{display(state.get('reason'))} | {display(state.get('next_action'))} |"
+            f"| {markdown_cell(surface)} | {markdown_cell(state['available'])} | "
+            f"{markdown_cell(state['http_status'])} | {markdown_cell(state.get('reason'))} | "
+            f"{markdown_cell(state.get('next_action'))} |"
         )
     lines.extend(
         [
             "",
-            "| Outcome | Value | Available | Authoritative source | Reason | Next action |",
-            "| --- | ---: | --- | --- | --- | --- |",
+            "| Outcome | Value | Currency | Available | Authoritative source | Reason | Next action |",
+            "| --- | ---: | --- | --- | --- | --- | --- |",
         ]
     )
     for metric in ("downloads", "first_time_downloads", "sales", "proceeds"):
         record = latest_store["outcomes"][metric]
         lines.append(
-            f"| {metric} | {display(record.get('value'))} | {record['available']} | "
-            f"{display(record.get('source'))} | {display(record.get('reason'))} | "
-            f"{display(record.get('next_action'))} |"
+            f"| {markdown_cell(metric)} | {markdown_cell(record.get('value'))} | "
+            f"{markdown_cell(record.get('currency'))} | {markdown_cell(record['available'])} | "
+            f"{markdown_cell(record.get('source'))} | {markdown_cell(record.get('reason'))} | "
+            f"{markdown_cell(record.get('next_action'))} |"
         )
     lines.extend(
         [
@@ -971,7 +1035,12 @@ def render(data: dict[str, Any]) -> str:
     for snapshot in sorted(data.get("search_snapshots", []), key=lambda item: item["observed_at"], reverse=True):
         lines.extend(
             [
-                f"- {snapshot['observed_at'][:10]}: sitemap `{snapshot['sitemap_status']}`, {snapshot['discovered_pages']} pages discovered; homepage indexed={display(snapshot.get('indexed_homepage'))}; request `{snapshot.get('indexing_request_status', 'Not available')}`; performance `{snapshot.get('performance_status', display(snapshot.get('performance_available')))}`.",
+                f"- {markdown_text(snapshot['observed_at'][:10])}: sitemap "
+                f"{markdown_code(snapshot['sitemap_status'])}, "
+                f"{markdown_text(snapshot['discovered_pages'])} pages discovered; homepage "
+                f"indexed={markdown_text(snapshot.get('indexed_homepage'))}; request "
+                f"{markdown_code(snapshot.get('indexing_request_status'))}; performance "
+                f"{markdown_code(snapshot.get('performance_status', snapshot.get('performance_available')))}.",
             ]
         )
 

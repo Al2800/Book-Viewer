@@ -356,6 +356,25 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         self.assertIn("available true requires a 2xx HTTP status", message)
         self.assertIn("currency must be a three-letter code", message)
 
+    def test_available_proceeds_render_the_authoritative_currency(self):
+        data = evidence()
+        data["app_store_snapshots"][0]["access"]["finance"].update(
+            available=True,
+            http_status=200,
+            reason=None,
+        )
+        data["app_store_snapshots"][0]["outcomes"]["proceeds"].update(
+            value=2.5,
+            available=True,
+            source="app_store_connect_finance",
+            currency="GBP",
+            reason=None,
+        )
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("| Outcome | Value | Currency | Available |", report)
+        self.assertIn("| proceeds | 2.5 | GBP | True |", report)
+
     def test_app_store_snapshot_requires_renderable_source_and_metadata(self):
         data = evidence()
         snapshot = data["app_store_snapshots"][0]
@@ -382,19 +401,21 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         data["app_store_snapshots"].append(newer)
         module.validate(data)
         report = module.render(data)
-        self.assertIn("Live version `NEWER`", report)
+        self.assertIn("Live version <code>NEWER</code>", report)
 
     def test_render_reports_separate_surfaces_null_outcomes_and_attribution_quality(self):
         data = evidence()
         module.validate(data)
         report = module.render(data)
         self.assertIn("## Weekly funnel and attribution", report)
-        self.assertIn("Reporting window: 2026-08-03T21:45:00+01:00", report)
+        self.assertIn(
+            "Reporting window: <code>2026-08-03T21:45:00+01:00</code>", report
+        )
         self.assertIn("Channel-only items: 1", report)
         self.assertIn("## App Store performance", report)
         self.assertIn("| metadata | True | 200 |", report)
         self.assertIn("| analytics | False | 403 |", report)
-        self.assertIn("| downloads | Not available | False |", report)
+        self.assertIn("| downloads | Not available | Not available | False |", report)
         self.assertIn("HTTP 403 or missing access is `Not available`, never zero", report)
 
     def test_rejects_invalid_updated_at_checkpoint_and_boolean_metric(self):
@@ -497,6 +518,80 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         self.assertIn("metrics_unavailable_reason", message)
         self.assertIn("Winner requires comparison-ready evidence", message)
 
+    def test_equal_observation_timestamps_have_a_stable_semantic_tie_break(self):
+        initial = copy.deepcopy(evidence()["social_observations"][0])
+        initial.update(
+            observation_id="same-time-initial",
+            content_id="same-time-content",
+            checkpoint="initial",
+            published_at="2026-08-06T12:00:00+01:00",
+            observed_at="2026-08-07T12:05:00+01:00",
+        )
+        later = copy.deepcopy(initial)
+        later.update(observation_id="same-time-24h", checkpoint="24h")
+
+        forward = module.latest_content_observations([initial, later])
+        reverse = module.latest_content_observations([later, initial])
+        self.assertEqual(forward["same-time-content"]["checkpoint"], "24h")
+        self.assertEqual(reverse["same-time-content"]["checkpoint"], "24h")
+
+        stopped = copy.deepcopy(initial)
+        stopped.update(observation_id="same-time-stopped", status="stopped", checkpoint="audit")
+        for observations in ([later, stopped], [stopped, later]):
+            latest = module.latest_content_observations(observations)
+            self.assertEqual(latest["same-time-content"]["status"], "stopped")
+
+    def test_markdown_table_cells_escape_structure_and_html(self):
+        self.assertEqual(
+            module.markdown_cell("a|b\n<c>`d`"),
+            "a&#124;b<br>&lt;c&gt;&#96;d&#96;",
+        )
+        active_markdown = r"a\|b ![pixel](https://tracker.invalid/p) [link](https://example.invalid) *em* _em_"
+        escaped = module.markdown_cell(active_markdown)
+        self.assertNotIn(r"\|", escaped)
+        self.assertNotIn("![", escaped)
+        self.assertNotIn("](", escaped)
+        self.assertNotIn("*em*", escaped)
+        self.assertNotIn("_em_", escaped)
+        self.assertIn("a&#92;&#124;b", escaped)
+        self.assertIn("&#33;&#91;pixel&#93;&#40;https://tracker.invalid/p&#41;", escaped)
+
+        data = evidence()
+        data["social_observations"][0]["title"] = "Title | split\n<script>"
+        data["social_observations"][0]["format"] = "image|carousel"
+        data["attribution"]["channel_conventions"][0]["utm_source"] = "face|book\nsource"
+        data["app_store_snapshots"][0]["access"]["finance"]["reason"] = "No | role\n<unsafe>"
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("Title &#124; split<br>&lt;script&gt;", report)
+        self.assertIn("image&#124;carousel", report)
+        self.assertIn("face&#124;book<br>source", report)
+        self.assertIn("No &#124; role<br>&lt;unsafe&gt;", report)
+        self.assertNotIn("<script>", report)
+
+    def test_non_table_markdown_contexts_neutralize_active_content(self):
+        payload = "<img src=x onerror=alert(1)> [track](https://tracker.invalid/pixel)"
+        data = evidence()
+        data["experiments"][0]["id"] = f"FB-001 {payload}"
+        data["experiments"][0]["hypothesis"] = payload
+        data["social_observations"][0]["experiment_id"] = f"FB-001 {payload}"
+        data["attribution"]["activation_definition"] = payload
+        data["app_store_snapshots"][0]["live_version"] = f"`{payload}`"
+        data["search_snapshots"][0]["sitemap_status"] = payload
+        module.validate(data)
+        report = module.render(data)
+
+        self.assertNotIn("<img", report)
+        self.assertNotIn("[track](", report)
+        self.assertNotIn("`<img", report)
+        self.assertIn("&lt;img src=x onerror=alert&#40;1&#41;&gt;", report)
+        self.assertIn("&#91;track&#93;&#40;https://tracker.invalid/pixel&#41;", report)
+        self.assertEqual(
+            module.markdown_code(payload),
+            "<code>&lt;img src=x onerror=alert&#40;1&#41;&gt; "
+            "&#91;track&#93;&#40;https://tracker.invalid/pixel&#41;</code>",
+        )
+
 
 class ExperimentReadinessTests(unittest.TestCase):
     def test_unique_content_counts_once_and_compares_declared_rate(self):
@@ -524,7 +619,10 @@ class ExperimentReadinessTests(unittest.TestCase):
 
         module.validate(data)
         report = module.render(data)
-        self.assertIn('Executions by treatment: {"feature": 3, "ritual": 3}', report)
+        self.assertIn(
+            'Executions by treatment: <code>&#123;"feature": 3, "ritual": 3&#125;</code>',
+            report,
+        )
         self.assertIn("Comparison ready: yes", report)
         self.assertIn("ritual median saves/1k reach: 100.0", report)
         self.assertIn("feature median saves/1k reach: 50.0", report)

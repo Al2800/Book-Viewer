@@ -1,10 +1,10 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated `2026-08-11T17:15:10+01:00`.
+Generated from structured evidence updated <code>2026-08-11T17:15:10+01:00</code>.
 
 ## Current signal
 
-- Reporting window: 2026-08-04T17:15:10+01:00 to 2026-08-11T17:15:10+01:00
+- Reporting window: <code>2026-08-04T17:15:10+01:00</code> to <code>2026-08-11T17:15:10+01:00</code>
 - Published Facebook items represented: 3
 - Visible views: 0
 - Visible reach: 0
@@ -29,17 +29,17 @@ Generated from structured evidence updated `2026-08-11T17:15:10+01:00`.
 
 A practical next-day highlight review ritual will produce more saves and meaningful comments than a feature-led product post.
 
-- Primary metric: `saves_per_1000_reach`
-- Executions by treatment: {"feature_led_product": 0, "practical_reader_ritual": 0}
+- Primary metric: <code>saves&#95;per&#95;1000&#95;reach</code>
+- Executions by treatment: <code>&#123;"feature&#95;led&#95;product": 0, "practical&#95;reader&#95;ritual": 0&#125;</code>
 - Minimum per treatment: 3
 - Comparison ready: no
 
 ## Weekly funnel and attribution
 
-- Baseline window: `7d_pre_experiment`
-- Review checkpoints: `24h, 72h, 7d`
-- Primary weekly metric: `first_time_downloads`
-- Secondary weekly metrics: `qualified_website_sessions, app_store_product_page_views, downloads, activations, sales, proceeds`
+- Baseline window: <code>7d&#95;pre&#95;experiment</code>
+- Review checkpoints: <code>24h, 72h, 7d</code>
+- Primary weekly metric: <code>first&#95;time&#95;downloads</code>
+- Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
 - Durable published items: 3
 - Channel-only items: 3
@@ -51,36 +51,36 @@ A practical next-day highlight review ritual will produce more saves and meaning
 
 | Channel | utm_source | utm_medium | Campaign/content convention |
 | --- | --- | --- | --- |
-| facebook | `facebook` | `organic_social` | `bq-{experiment_id}-{yyyy_mm}` / `{content_id}-{treatment}` |
-| instagram | `instagram` | `organic_social` | `bq-{experiment_id}-{yyyy_mm}` / `{content_id}-{treatment}` |
-| tiktok | `tiktok` | `organic_social` | `bq-{experiment_id}-{yyyy_mm}` / `{content_id}-{treatment}` |
-| google_search | `google` | `organic_search` | `bq-{experiment_id}-{yyyy_mm}` / `{landing_page_slug}-{treatment}` |
-| bookquotes_website | `bookquotes_website` | `owned_web` | `bq-{experiment_id}-{yyyy_mm}` / `{cta_location}-{treatment}` |
+| facebook | facebook | organic&#95;social | bq-&#123;experiment&#95;id&#125;-&#123;yyyy&#95;mm&#125; / &#123;content&#95;id&#125;-&#123;treatment&#125; |
+| instagram | instagram | organic&#95;social | bq-&#123;experiment&#95;id&#125;-&#123;yyyy&#95;mm&#125; / &#123;content&#95;id&#125;-&#123;treatment&#125; |
+| tiktok | tiktok | organic&#95;social | bq-&#123;experiment&#95;id&#125;-&#123;yyyy&#95;mm&#125; / &#123;content&#95;id&#125;-&#123;treatment&#125; |
+| google&#95;search | google | organic&#95;search | bq-&#123;experiment&#95;id&#125;-&#123;yyyy&#95;mm&#125; / &#123;landing&#95;page&#95;slug&#125;-&#123;treatment&#125; |
+| bookquotes&#95;website | bookquotes&#95;website | owned&#95;web | bq-&#123;experiment&#95;id&#125;-&#123;yyyy&#95;mm&#125; / &#123;cta&#95;location&#125;-&#123;treatment&#125; |
 
 ## App Store performance
 
-Observed `2026-08-11T17:15:10+01:00` from `app_store_connect_api_read_only` for app `6758091579`.
-Live version `1.0.1`; state `READY_FOR_SALE`; downloadable `True`.
+Observed <code>2026-08-11T17:15:10+01:00</code> from <code>app&#95;store&#95;connect&#95;api&#95;read&#95;only</code> for app <code>6758091579</code>.
+Live version <code>1.0.1</code>; state <code>READY&#95;FOR&#95;SALE</code>; downloadable <code>True</code>.
 
 | Surface | Available | HTTP | Reason | Next action |
 | --- | --- | ---: | --- | --- |
 | metadata | True | 200 | Not available | Continue read-only version and metadata polling. |
-| analytics | False | 403 | The configured Individual API key returned FORBIDDEN_ERROR for the app analytics report endpoint. | Create or authorize a least-privilege Team API key with App Analytics report access, then repeat the read-only probe. |
-| sales | False | 403 | The configured Individual API key returned FORBIDDEN_ERROR for the daily Sales report. | Create or authorize a least-privilege Team API key with Sales report access for vendor 93932031, then repeat the read-only probe. |
-| finance | False | 403 | The configured Individual API key returned FORBIDDEN_ERROR for the monthly Finance report. | Create or authorize a least-privilege Team API key with Finance report access for vendor 93932031, then repeat the read-only probe. |
+| analytics | False | 403 | The configured Individual API key returned FORBIDDEN&#95;ERROR for the app analytics report endpoint. | Create or authorize a least-privilege Team API key with App Analytics report access, then repeat the read-only probe. |
+| sales | False | 403 | The configured Individual API key returned FORBIDDEN&#95;ERROR for the daily Sales report. | Create or authorize a least-privilege Team API key with Sales report access for vendor 93932031, then repeat the read-only probe. |
+| finance | False | 403 | The configured Individual API key returned FORBIDDEN&#95;ERROR for the monthly Finance report. | Create or authorize a least-privilege Team API key with Finance report access for vendor 93932031, then repeat the read-only probe. |
 
-| Outcome | Value | Available | Authoritative source | Reason | Next action |
-| --- | ---: | --- | --- | --- | --- |
-| downloads | Not available | False | Not available | App Analytics and Sales reports are not authorized for the configured key. | Read downloads from an authorized App Store Connect Analytics or Sales report. |
-| first_time_downloads | Not available | False | Not available | App Analytics and Sales reports are not authorized for the configured key. | Read first-time downloads from an authorized App Store Connect Analytics or Sales report. |
-| sales | Not available | False | Not available | The daily Sales report returned HTTP 403. | Read sales units from an authorized App Store Connect Sales report. |
-| proceeds | Not available | False | Not available | The monthly Finance report returned HTTP 403. | Read proceeds and currency from an authorized App Store Connect Finance or Sales report. |
+| Outcome | Value | Currency | Available | Authoritative source | Reason | Next action |
+| --- | ---: | --- | --- | --- | --- | --- |
+| downloads | Not available | Not available | False | Not available | App Analytics and Sales reports are not authorized for the configured key. | Read downloads from an authorized App Store Connect Analytics or Sales report. |
+| first&#95;time&#95;downloads | Not available | Not available | False | Not available | App Analytics and Sales reports are not authorized for the configured key. | Read first-time downloads from an authorized App Store Connect Analytics or Sales report. |
+| sales | Not available | Not available | False | Not available | The daily Sales report returned HTTP 403. | Read sales units from an authorized App Store Connect Sales report. |
+| proceeds | Not available | Not available | False | Not available | The monthly Finance report returned HTTP 403. | Read proceeds and currency from an authorized App Store Connect Finance or Sales report. |
 
 Downloads, sales and proceeds are reported only from authoritative Apple evidence. HTTP 403 or missing access is `Not available`, never zero.
 
 ## Search state
 
-- 2026-08-07: sitemap `Success`, 15 pages discovered; homepage indexed=False; request `Indexing requested; added to Google's priority crawl queue`; performance `Processing; no clicks or impressions shown`.
+- 2026-08-07: sitemap <code>Success</code>, 15 pages discovered; homepage indexed=False; request <code>Indexing requested; added to Google's priority crawl queue</code>; performance <code>Processing; no clicks or impressions shown</code>.
 
 ## Next controlled actions
 
