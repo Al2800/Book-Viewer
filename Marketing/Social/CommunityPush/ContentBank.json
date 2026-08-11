@@ -1,0 +1,951 @@
+{
+  "schema_version": 1,
+  "bank_id": "bookquotes-2026-08-a",
+  "period": {
+    "start_date": "2026-08-19",
+    "end_date": "2026-09-01",
+    "timezone": "Europe/London"
+  },
+  "sources": [
+    {
+      "id": "S0",
+      "kind": "editorial",
+      "locator": "internal://bookquotes/original-editorial",
+      "checked_at": "2026-08-11T16:00:00+01:00"
+    },
+    {
+      "id": "S1",
+      "kind": "app_store_public",
+      "locator": "https://itunes.apple.com/lookup?id=6758091579&country=gb",
+      "checked_at": "2026-08-11T16:00:00+01:00"
+    }
+  ],
+  "assets": [
+    {
+      "id": "bq14-01",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-01.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-02",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-02.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-03",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-03.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-04",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-04.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-05",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-05.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-06",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-06.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-07",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-07.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-08",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-08.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-09",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-09.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-10",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-10.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-11",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-11.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-12",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-12.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-13",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-13.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    },
+    {
+      "id": "bq14-14",
+      "path": "Marketing/Social/CommunityPush/assets/content-bank/bq14-14.png",
+      "media_type": "image/png",
+      "width": 1080,
+      "height": 1920,
+      "rights": {
+        "status": "verified",
+        "basis": "original",
+        "source": "Original BookQuotes typography generated for this bank; no third-party art, book pages, quotations, audio, or borrowed creator wording."
+      },
+      "checks": {
+        "safe_area": {
+          "status": "passed",
+          "evidence": "Generated with 140px side margins, 170px top band, and all essential content above y=1500; verified in the rendered 1080x1920 master."
+        },
+        "readability": {
+          "status": "passed",
+          "evidence": "Rendered with high-contrast 78px hook and 48px body type; checked at native dimensions with muted playback irrelevant for still image."
+        }
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "bq14-01",
+      "date": "2026-08-19",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Mood-led readers stuck choosing their next book",
+      "hook": "Choose your next read with 3 adjectives—not a genre.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-01",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Choose your next read with 3 adjectives—not a genre. Choose pace, atmosphere, and aftertaste. Then let the three words narrow the field. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-01",
+          "alt_text": "Original BookQuotes typography card: Choose your next read with 3 adjectives—not a genre. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Choose your next read with 3 adjectives—not a genre. Save this prompt for your next reading session. Choose pace, atmosphere, and aftertaste. Then let the three words narrow the field. #reading #bookquotes",
+          "asset_id": "bq14-01",
+          "alt_text": "Original BookQuotes typography card: Choose your next read with 3 adjectives—not a genre. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Choose your next read with 3 adjectives—not a genre. What would you add? Choose pace, atmosphere, and aftertaste. Then let the three words narrow the field. Share your version in the comments.",
+          "asset_id": "bq14-01",
+          "alt_text": "Original BookQuotes typography card: Choose your next read with 3 adjectives—not a genre. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-02",
+      "date": "2026-08-20",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Readers with variable time or concentration",
+      "hook": "Build a reading menu, not one impossible TBR.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-02",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Build a reading menu, not one impossible TBR. Make room for quick, steady, and immersive reading. A menu can flex when the day changes. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-02",
+          "alt_text": "Original BookQuotes typography card: Build a reading menu, not one impossible TBR. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Build a reading menu, not one impossible TBR. Save this prompt for your next reading session. Make room for quick, steady, and immersive reading. A menu can flex when the day changes. #reading #bookquotes",
+          "asset_id": "bq14-02",
+          "alt_text": "Original BookQuotes typography card: Build a reading menu, not one impossible TBR. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Build a reading menu, not one impossible TBR. What would you add? Make room for quick, steady, and immersive reading. A menu can flex when the day changes. Share your version in the comments.",
+          "asset_id": "bq14-02",
+          "alt_text": "Original BookQuotes typography card: Build a reading menu, not one impossible TBR. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-03",
+      "date": "2026-08-21",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Readers recommending books without spoilers",
+      "hook": "Describe a book without giving the plot away.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-03",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Describe a book without giving the plot away. Try five labels: voice, pace, structure, difficulty, and aftertaste. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-03",
+          "alt_text": "Original BookQuotes typography card: Describe a book without giving the plot away. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Describe a book without giving the plot away. Save this prompt for your next reading session. Try five labels: voice, pace, structure, difficulty, and aftertaste. #reading #bookquotes",
+          "asset_id": "bq14-03",
+          "alt_text": "Original BookQuotes typography card: Describe a book without giving the plot away. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Describe a book without giving the plot away. What would you add? Try five labels: voice, pace, structure, difficulty, and aftertaste. Share your version in the comments.",
+          "asset_id": "bq14-03",
+          "alt_text": "Original BookQuotes typography card: Describe a book without giving the plot away. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-04",
+      "date": "2026-08-22",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Readers with an overfilled TBR",
+      "hook": "Give your TBR an eight-book knockout round.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-04",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Give your TBR an eight-book knockout round. Choose by what you want now, what fits your current energy, and what is easy to obtain. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-04",
+          "alt_text": "Original BookQuotes typography card: Give your TBR an eight-book knockout round. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Give your TBR an eight-book knockout round. Save this prompt for your next reading session. Choose by what you want now, what fits your current energy, and what is easy to obtain. #reading #bookquotes",
+          "asset_id": "bq14-04",
+          "alt_text": "Original BookQuotes typography card: Give your TBR an eight-book knockout round. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Give your TBR an eight-book knockout round. What would you add? Choose by what you want now, what fits your current energy, and what is easy to obtain. Share your version in the comments.",
+          "asset_id": "bq14-04",
+          "alt_text": "Original BookQuotes typography card: Give your TBR an eight-book knockout round. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-05",
+      "date": "2026-08-23",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Readers deciding what deserves a reread",
+      "hook": "Not every reread has the same job.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-05",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Not every reread has the same job. Are you returning for comfort, craft, a changed perspective, or an unfinished question? Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-05",
+          "alt_text": "Original BookQuotes typography card: Not every reread has the same job. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Not every reread has the same job. Save this prompt for your next reading session. Are you returning for comfort, craft, a changed perspective, or an unfinished question? #reading #bookquotes",
+          "asset_id": "bq14-05",
+          "alt_text": "Original BookQuotes typography card: Not every reread has the same job. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Not every reread has the same job. What would you add? Are you returning for comfort, craft, a changed perspective, or an unfinished question? Share your version in the comments.",
+          "asset_id": "bq14-05",
+          "alt_text": "Original BookQuotes typography card: Not every reread has the same job. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-06",
+      "date": "2026-08-24",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Readers giving recommendations to friends",
+      "hook": "A useful recommendation includes one honest reservation.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-06",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "A useful recommendation includes one honest reservation. Say who it suits, what is distinctive, what might not land, and the mood it needs. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-06",
+          "alt_text": "Original BookQuotes typography card: A useful recommendation includes one honest reservation. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "A useful recommendation includes one honest reservation. Save this prompt for your next reading session. Say who it suits, what is distinctive, what might not land, and the mood it needs. #reading #bookquotes",
+          "asset_id": "bq14-06",
+          "alt_text": "Original BookQuotes typography card: A useful recommendation includes one honest reservation. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "A useful recommendation includes one honest reservation. What would you add? Say who it suits, what is distinctive, what might not land, and the mood it needs. Share your version in the comments.",
+          "asset_id": "bq14-06",
+          "alt_text": "Original BookQuotes typography card: A useful recommendation includes one honest reservation. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-07",
+      "date": "2026-08-25",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Book-club hosts who want discussion beyond plot recap",
+      "hook": "Replace “Did you like it?” with a choice the book forces.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-07",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Replace “Did you like it?” with a choice the book forces. Ask about a trade-off, a changed mind, a missing voice, or an unresolved tension. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-07",
+          "alt_text": "Original BookQuotes typography card: Replace “Did you like it?” with a choice the book forces. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Replace “Did you like it?” with a choice the book forces. Save this prompt for your next reading session. Ask about a trade-off, a changed mind, a missing voice, or an unresolved tension. #reading #bookquotes",
+          "asset_id": "bq14-07",
+          "alt_text": "Original BookQuotes typography card: Replace “Did you like it?” with a choice the book forces. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Replace “Did you like it?” with a choice the book forces. What would you add? Ask about a trade-off, a changed mind, a missing voice, or an unresolved tension. Share your version in the comments.",
+          "asset_id": "bq14-07",
+          "alt_text": "Original BookQuotes typography card: Replace “Did you like it?” with a choice the book forces. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-08",
+      "date": "2026-08-26",
+      "territory": "discovery",
+      "product_led": false,
+      "audience": "Readers seeking meaningful book pairings",
+      "hook": "Pair two books that disagree—not two that merely look alike.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-08",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Pair two books that disagree—not two that merely look alike. Find a shared question, then compare the answers and choose a reading order. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-08",
+          "alt_text": "Original BookQuotes typography card: Pair two books that disagree—not two that merely look alike. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Pair two books that disagree—not two that merely look alike. Save this prompt for your next reading session. Find a shared question, then compare the answers and choose a reading order. #reading #bookquotes",
+          "asset_id": "bq14-08",
+          "alt_text": "Original BookQuotes typography card: Pair two books that disagree—not two that merely look alike. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Pair two books that disagree—not two that merely look alike. What would you add? Find a shared question, then compare the answers and choose a reading order. Share your version in the comments.",
+          "asset_id": "bq14-08",
+          "alt_text": "Original BookQuotes typography card: Pair two books that disagree—not two that merely look alike. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-09",
+      "date": "2026-08-27",
+      "territory": "reader_practice",
+      "product_led": false,
+      "audience": "Readers dissatisfied with star ratings",
+      "hook": "Rate the reading experience, not the book.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-09",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Rate the reading experience, not the book. Try three subjective axes: pace, clarity, and emotional distance. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-09",
+          "alt_text": "Original BookQuotes typography card: Rate the reading experience, not the book. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Rate the reading experience, not the book. Save this prompt for your next reading session. Try three subjective axes: pace, clarity, and emotional distance. #reading #bookquotes",
+          "asset_id": "bq14-09",
+          "alt_text": "Original BookQuotes typography card: Rate the reading experience, not the book. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Rate the reading experience, not the book. What would you add? Try three subjective axes: pace, clarity, and emotional distance. Share your version in the comments.",
+          "asset_id": "bq14-09",
+          "alt_text": "Original BookQuotes typography card: Rate the reading experience, not the book. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-10",
+      "date": "2026-08-28",
+      "territory": "reader_practice",
+      "product_led": false,
+      "audience": "Readers beginning a dense nonfiction book",
+      "hook": "Write the questions first; let the book earn the answers.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-10",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Write the questions first; let the book earn the answers. Before dense nonfiction, note what you expect, what evidence matters, and what could change your mind. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-10",
+          "alt_text": "Original BookQuotes typography card: Write the questions first; let the book earn the answers. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Write the questions first; let the book earn the answers. Save this prompt for your next reading session. Before dense nonfiction, note what you expect, what evidence matters, and what could change your mind. #reading #bookquotes",
+          "asset_id": "bq14-10",
+          "alt_text": "Original BookQuotes typography card: Write the questions first; let the book earn the answers. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Write the questions first; let the book earn the answers. What would you add? Before dense nonfiction, note what you expect, what evidence matters, and what could change your mind. Share your version in the comments.",
+          "asset_id": "bq14-10",
+          "alt_text": "Original BookQuotes typography card: Write the questions first; let the book earn the answers. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-11",
+      "date": "2026-08-29",
+      "territory": "reader_practice",
+      "product_led": false,
+      "audience": "Readers who want useful notes without copying passages",
+      "hook": "Keep the context without reposting the sentence.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-11",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Keep the context without reposting the sentence. Write the idea in your own words, where it appears, why it matters, and what it raises. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-11",
+          "alt_text": "Original BookQuotes typography card: Keep the context without reposting the sentence. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Keep the context without reposting the sentence. Save this prompt for your next reading session. Write the idea in your own words, where it appears, why it matters, and what it raises. #reading #bookquotes",
+          "asset_id": "bq14-11",
+          "alt_text": "Original BookQuotes typography card: Keep the context without reposting the sentence. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Keep the context without reposting the sentence. What would you add? Write the idea in your own words, where it appears, why it matters, and what it raises. Share your version in the comments.",
+          "asset_id": "bq14-11",
+          "alt_text": "Original BookQuotes typography card: Keep the context without reposting the sentence. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-12",
+      "date": "2026-08-30",
+      "territory": "reader_practice",
+      "product_led": false,
+      "audience": "Readers finishing a complex book",
+      "hook": "Close the book with 3 concepts, 2 questions, 1 disagreement.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "Original optional reading prompt; no empirical performance claim is made.",
+          "source_ids": [
+            "S0"
+          ]
+        }
+      ],
+      "asset_id": "bq14-12",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Close the book with 3 concepts, 2 questions, 1 disagreement. A compact reflection for the last page—or the last chapter you finished today. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-12",
+          "alt_text": "Original BookQuotes typography card: Close the book with 3 concepts, 2 questions, 1 disagreement. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Close the book with 3 concepts, 2 questions, 1 disagreement. Save this prompt for your next reading session. A compact reflection for the last page—or the last chapter you finished today. #reading #bookquotes",
+          "asset_id": "bq14-12",
+          "alt_text": "Original BookQuotes typography card: Close the book with 3 concepts, 2 questions, 1 disagreement. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Close the book with 3 concepts, 2 questions, 1 disagreement. What would you add? A compact reflection for the last page—or the last chapter you finished today. Share your version in the comments.",
+          "asset_id": "bq14-12",
+          "alt_text": "Original BookQuotes typography card: Close the book with 3 concepts, 2 questions, 1 disagreement. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-13",
+      "date": "2026-08-31",
+      "territory": "bookquotes_proof",
+      "product_led": true,
+      "audience": "Readers whose saved ideas cross several books",
+      "hook": "One idea can belong to more than one shelf.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "BookQuotes supports collections and tags for organising saved reading notes across your library.",
+          "source_ids": [
+            "S1"
+          ]
+        }
+      ],
+      "asset_id": "bq14-13",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "One idea can belong to more than one shelf. BookQuotes supports collections and tags for organising saved reading notes across your library. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-13",
+          "alt_text": "Original BookQuotes typography card: One idea can belong to more than one shelf. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "One idea can belong to more than one shelf. Save this prompt for your next reading session. BookQuotes supports collections and tags for organising saved reading notes across your library. #reading #bookquotes",
+          "asset_id": "bq14-13",
+          "alt_text": "Original BookQuotes typography card: One idea can belong to more than one shelf. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "One idea can belong to more than one shelf. What would you add? BookQuotes supports collections and tags for organising saved reading notes across your library. Share your version in the comments.",
+          "asset_id": "bq14-13",
+          "alt_text": "Original BookQuotes typography card: One idea can belong to more than one shelf. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    },
+    {
+      "id": "bq14-14",
+      "date": "2026-09-01",
+      "territory": "bookquotes_proof",
+      "product_led": true,
+      "audience": "Readers who want control over their own notes",
+      "hook": "Your reading notes should have an exit.",
+      "format": "typography_card",
+      "cta": "Try the prompt on your next read and share what you notice.",
+      "metric_hypothesis": "Specific reusable reader prompts will earn saves or meaningful comments per 1,000 reach.",
+      "claims": [
+        {
+          "text": "BookQuotes supports export to Markdown, plain text, JSON, Obsidian, and Notion.",
+          "source_ids": [
+            "S1"
+          ]
+        }
+      ],
+      "asset_id": "bq14-14",
+      "channels": {
+        "tiktok": {
+          "format": "image",
+          "caption": "Your reading notes should have an exit. BookQuotes supports export to Markdown, plain text, JSON, Obsidian, and Notion. Try it with your current read. #readingpractice #bookquotes",
+          "asset_id": "bq14-14",
+          "alt_text": "Original BookQuotes typography card: Your reading notes should have an exit. The card offers a reader practice and a short prompt."
+        },
+        "instagram": {
+          "format": "image",
+          "caption": "Your reading notes should have an exit. Save this prompt for your next reading session. BookQuotes supports export to Markdown, plain text, JSON, Obsidian, and Notion. #reading #bookquotes",
+          "asset_id": "bq14-14",
+          "alt_text": "Original BookQuotes typography card: Your reading notes should have an exit. The card offers a reader practice and a short prompt."
+        },
+        "facebook": {
+          "format": "image",
+          "caption": "Your reading notes should have an exit. What would you add? BookQuotes supports export to Markdown, plain text, JSON, Obsidian, and Notion. Share your version in the comments.",
+          "asset_id": "bq14-14",
+          "alt_text": "Original BookQuotes typography card: Your reading notes should have an exit. The card offers a reader practice and a short prompt."
+        }
+      },
+      "approval": {
+        "state": "draft",
+        "record": null
+      }
+    }
+  ]
+}
