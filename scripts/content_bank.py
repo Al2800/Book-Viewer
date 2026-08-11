@@ -579,7 +579,7 @@ def validate(
         _add_error(errors, "items", "must contain exactly 14 primary records")
     ids: set[str] = set()
     hooks: dict[str, str] = {}
-    captions: dict[tuple[str, str], str] = {}
+    captions: dict[str, str] = {}
     asset_owners: dict[str, str] = {}
     product_count = 0
     for index, item in enumerate(raw_items):
@@ -643,13 +643,11 @@ def validate(
                 )
                 if not valid_source_ids:
                     _add_error(errors, f"{claim_path}.source_ids", "must be a list of audited source IDs")
-            if product_led and not any(
-                isinstance(claim, dict)
-                and isinstance(claim.get("source_ids"), list)
-                and "S1" in claim["source_ids"]
-                for claim in claims
-            ):
-                _add_error(errors, f"{path}.claims", "product-led app claims require the audited App Store source")
+            if product_led:
+                for claim_index, claim in enumerate(claims):
+                    source_ids = claim.get("source_ids") if isinstance(claim, dict) else None
+                    if not isinstance(source_ids, list) or "S1" not in source_ids:
+                        _add_error(errors, f"{path}.claims[{claim_index}].source_ids", "each product-led claim requires the audited App Store source S1")
         channels = item.get("channels")
         if not isinstance(channels, dict) or set(channels) != set(CHANNELS):
             _add_error(errors, f"{path}.channels", "must contain exactly TikTok, Instagram, and Facebook")
@@ -671,7 +669,7 @@ def validate(
                 _add_error(errors, f"{adaptation_path}.alt_text", "must be meaningful accessibility text")
             caption = adaptation.get("caption")
             if isinstance(caption, str):
-                key = (channel, _normalise(caption))
+                key = _normalise(caption)
                 if key in captions:
                     _add_error(errors, f"{adaptation_path}.caption", f"duplicates {captions[key]}")
                 captions[key] = item_id or path

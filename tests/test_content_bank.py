@@ -65,7 +65,7 @@ def draft_bank() -> dict:
                 "channels": {
                     channel: {
                         "format": "image",
-                        "caption": f"Prompt {index + 1}: try this reading practice.",
+                        "caption": f"{channel.title()} prompt {index + 1}: try this reading practice.",
                         "asset_id": item_id,
                         "alt_text": f"Original BookQuotes typography card for reader prompt {index + 1}.",
                     }
@@ -156,6 +156,22 @@ class ContentBankTests(unittest.TestCase):
         message = str(raised.exception)
         self.assertIn("consecutive", message)
         self.assertIn("product-led", message)
+
+    def test_product_led_requires_every_claim_to_cite_s1(self):
+        data = draft_bank()
+        data["items"][12]["claims"].append(
+            {"text": "A second app claim with the wrong source.", "source_ids": ["S0"]}
+        )
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data, repo_root=self.repo)
+        self.assertIn("each product-led claim", str(raised.exception))
+
+    def test_channel_captions_must_be_distinct_within_item(self):
+        data = draft_bank()
+        data["items"][0]["channels"]["instagram"]["caption"] = data["items"][0]["channels"]["tiktok"]["caption"]
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data, repo_root=self.repo)
+        self.assertIn("caption", str(raised.exception))
 
     def test_approved_item_requires_verified_asset_checks_and_hashes(self):
         data = draft_bank()
