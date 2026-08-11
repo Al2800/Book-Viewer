@@ -112,16 +112,16 @@ The bar for adding files is very high.
 
 ## Beads Workflow
 
-This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
+This project uses **br** from `beads_rust` for issue tracking, with **bv** (`beads_viewer`) for graph-aware triage. The tracked ledger intentionally contains legacy mixed prefixes, so invoke `br` with `--no-db` to preserve existing IDs.
 
 ## Quick Reference
 
 ```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --status in_progress  # Claim work
-bd close <id>         # Complete work
-bd sync               # Sync with git
+br --no-db ready                         # Find available work
+br --no-db show <id>                     # View issue details
+br --no-db update <id> --status in_progress  # Claim work
+br --no-db close <id> --reason "Completed"  # Complete work
+bv --robot-triage --brief                # Dependency-aware triage
 ```
 
 ## Landing the Plane (Session Completion)
@@ -135,8 +135,9 @@ bd sync               # Sync with git
 3. **Update issue status** - Close finished work, update in-progress items
 4. **PUSH TO REMOTE** - This is MANDATORY:
    ```bash
+   git add <files> .beads/
+   git commit -m "..."
    git pull --rebase
-   bd sync
    git push
    git status  # MUST show "up to date with origin"
    ```
@@ -155,28 +156,29 @@ bd sync               # Sync with git
 
 ---
 
-### Issue Tracking with bd (beads)
-All issue tracking goes through bd. No other TODO systems.
+### Issue Tracking with br (beads_rust)
+All issue tracking goes through `br --no-db`. No other TODO systems.
 
 Key invariants:
 
 .beads/ is authoritative state and must always be committed with code changes.
-Do not edit .beads/*.jsonl directly; only via bd.
+Do not edit .beads/*.jsonl directly; only via `br --no-db`.
+The `--no-db` flag is mandatory here: the historical ledger mixes `bd-*` and `book-quote-*` IDs, and rewriting those durable IDs is forbidden.
 Basics
 Check ready work:
 
-bd ready --json
+br --no-db ready --json
 Create issues:
 
-bd create "Issue title" -t bug|feature|task -p 0-4 --json
-bd create "Issue title" -p 1 --deps discovered-from:bd-123 --json
+br --no-db create "Issue title" -t bug|feature|task -p 0-4 --json
+br --no-db create "Issue title" -p 1 --deps discovered-from:bd-123 --json
 Update:
 
-bd update bd-42 --status in_progress --json
-bd update bd-42 --priority 1 --json
+br --no-db update bd-42 --status in_progress --json
+br --no-db update bd-42 --priority 1 --json
 Complete:
 
-bd close bd-42 --reason "Completed" --json
+br --no-db close bd-42 --reason "Completed" --json
 Types:
 
 bug, feature, task, epic, chore
@@ -189,23 +191,23 @@ Priorities:
 4 backlog
 Agent workflow:
 
-bd ready to find unblocked work.
-Claim: bd update <id> --status in_progress.
+`br --no-db ready` to find unblocked work.
+Claim: `br --no-db update <id> --status in_progress`.
 Implement + test.
 If you discover new work, create a new bead with discovered-from:<parent-id>.
 Close when done.
 Commit .beads/ in the same commit as code changes.
 Auto-sync:
 
-bd exports to .beads/issues.jsonl after changes (debounced).
-It imports from JSONL when newer (e.g. after git pull).
+In JSONL-only mode, `br` writes `.beads/issues.jsonl` directly and atomically.
+After `git pull`, run `br --no-db list --json` and `bv --robot-triage --brief` to validate the merged ledger.
 Never:
 
 Use markdown TODO lists.
 Use other trackers.
 Duplicate tracking.
 Using bv as an AI sidecar
-bv is a graph-aware triage engine for Beads projects (.beads/beads.jsonl). Instead of parsing JSONL or hallucinating graph traversal, use robot flags for deterministic, dependency-aware outputs with precomputed metrics (PageRank, betweenness, critical path, cycles, HITS, eigenvector, k-core).
+bv is a graph-aware triage engine for Beads projects (`.beads/issues.jsonl`). Instead of parsing JSONL or hallucinating graph traversal, use robot flags for deterministic, dependency-aware outputs with precomputed metrics (PageRank, betweenness, critical path, cycles, HITS, eigenvector, k-core).
 
 Scope boundary: bv handles what to work on (triage, priority, planning). For agent-to-agent coordination (messaging, work claiming, file reservations), use MCP Agent Mail, which should be available to you as an an MCP server (if it's not, then flag to the user; they might need to start Agent Mail using the am alias or by running `cd "<directory_where_they_installed_agent_mail>/mcp_agent_mail" && bash scripts/run_server_with_token.sh)' if the alias isn't available or isn't working.
 
@@ -255,7 +257,7 @@ bv --robot-plan --label backend # Scope to label's subgraph bv --robot-insights 
 Understanding Robot Output
 All robot JSON includes:
 
-data_hash — Fingerprint of source beads.jsonl (verify consistency across calls)
+data_hash — Fingerprint of source `.beads/issues.jsonl` (verify consistency across calls)
 status — Per-metric state: computed|approx|timeout|skipped + elapsed ms
 as_of / as_of_commit — Present when using --as-of; contains ref and resolved SHA
 Two-phase analysis:
@@ -269,27 +271,27 @@ bv --robot-triage | jq '.quick_ref' # At-a-glance summary bv --robot-triage | jq
 
 Performance: Phase 1 instant, Phase 2 async (500ms timeout). Prefer --robot-plan over --robot-insights when speed matters. Results cached by data hash.
 
-Use bv instead of parsing beads.jsonl—it computes PageRank, critical paths, cycles, and parallel tracks deterministically.
+Use bv instead of parsing `.beads/issues.jsonl`—it computes PageRank, critical paths, cycles, and parallel tracks deterministically.
 ### Session Protocol
 
 **Before ending any session, run this checklist:**
 
 ```bash
 git status              # Check what changed
-git add <files>         # Stage code changes
-bd sync                 # Commit beads changes
-git commit -m "..."     # Commit code
-bd sync                 # Commit any new beads changes
+br --no-db list --json  # Validate the authoritative ledger
+bv --robot-triage --brief  # Validate graph/triage
+git add <files> .beads/ # Stage code and beads changes
+git commit -m "..."     # Commit code and beads together
 git push                # Push to remote
 ```
 
 ### Best Practices
 
-- Check `bd ready` at session start to find available work
+- Check `br --no-db ready` and `bv --robot-triage --brief` at session start to find available work
 - Update status as you work (in_progress → closed)
-- Create new issues with `bd create` when you discover tasks
+- Create new issues with `br --no-db create` when you discover tasks
 - Use descriptive titles and set appropriate priority/type
-- Always `bd sync` before ending session
+- Always validate and commit `.beads/issues.jsonl` before ending a session
 
 <!-- end-bv-agent-instructions -->
 

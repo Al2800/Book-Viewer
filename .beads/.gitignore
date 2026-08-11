@@ -11,6 +11,9 @@ daemon.log
 daemon.pid
 bd.sock
 last-touched
+.write.lock
+.br-*-write-*.lock
+*.tmp
 
 # Local history backups
 .br_history/

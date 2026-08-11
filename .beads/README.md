@@ -1,81 +1,63 @@
-# Beads - AI-Native Issue Tracking
+# BookQuotes Beads Tracker
 
-Welcome to Beads! This repository uses **Beads** for issue tracking - a modern, AI-native tool designed to live directly in your codebase alongside your code.
+This repository uses:
 
-## What is Beads?
+- [`beads_rust`](https://github.com/Dicklesworthstone/beads_rust) via the `br` CLI for issue mutations.
+- [`beads_viewer`](https://github.com/Dicklesworthstone/beads_viewer) via the `bv` CLI for dependency-aware triage and planning.
+- `.beads/issues.jsonl` as the authoritative, Git-tracked issue ledger.
 
-Beads is issue tracking that lives in your repo, making it perfect for AI coding agents and developers who want their issues close to their code. No web UI required - everything works through the CLI and integrates seamlessly with git.
+## Required operating mode
 
-**Learn more:** [github.com/steveyegge/beads](https://github.com/steveyegge/beads)
-
-## Quick Start
-
-### Essential Commands
+The historical ledger intentionally contains both `bd-*` and `book-quote-*` issue IDs. Preserve those durable references by running `br` in JSONL-only mode:
 
 ```bash
-# Create new issues
-bd create "Add user authentication"
-
-# View all issues
-bd list
-
-# View issue details
-bd show <issue-id>
-
-# Update issue status
-bd update <issue-id> --status in_progress
-bd update <issue-id> --status done
-
-# Sync with git remote
-bd sync
+br --no-db ready --json
+br --no-db list --status open --json
+br --no-db show <issue-id> --json
+br --no-db create "Issue title" --type task --priority 1 --json
+br --no-db update <issue-id> --status in_progress --json
+br --no-db close <issue-id> --reason "Completed" --json
 ```
 
-### Working with Issues
+Do not initialize a replacement database, rename issue prefixes, or edit `issues.jsonl` directly. `br --no-db` performs atomic JSONL writes while preserving mixed IDs.
 
-Issues in Beads are:
-- **Git-native**: Stored in `.beads/issues.jsonl` and synced like code
-- **AI-friendly**: CLI-first design works perfectly with AI coding agents
-- **Branch-aware**: Issues can follow your branch workflow
-- **Always in sync**: Auto-syncs with your commits
+## Viewer workflow
 
-## Why Beads?
-
-✨ **AI-Native Design**
-- Built specifically for AI-assisted development workflows
-- CLI-first interface works seamlessly with AI coding agents
-- No context switching to web UIs
-
-🚀 **Developer Focused**
-- Issues live in your repo, right next to your code
-- Works offline, syncs when you push
-- Fast, lightweight, and stays out of your way
-
-🔧 **Git Integration**
-- Automatic sync with git commits
-- Branch-aware issue tracking
-- Intelligent JSONL merge resolution
-
-## Get Started with Beads
-
-Try Beads in your own projects:
+Use only robot flags in agent/non-interactive sessions; bare `bv` launches the interactive TUI.
 
 ```bash
-# Install Beads
-curl -sSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
-
-# Initialize in your repo
-bd init
-
-# Create your first issue
-bd create "Try out Beads"
+bv --robot-triage --brief
+bv --robot-next
+bv --robot-plan
+bv --robot-insights
 ```
 
-## Learn More
+Start with `bv --robot-triage --brief`. The viewer reads `.beads/issues.jsonl` and computes graph metrics without becoming a second source of truth.
 
-- **Documentation**: [github.com/steveyegge/beads/docs](https://github.com/steveyegge/beads/tree/main/docs)
-- **Quick Start Guide**: Run `bd quickstart`
-- **Examples**: [github.com/steveyegge/beads/examples](https://github.com/steveyegge/beads/tree/main/examples)
+## Git workflow
 
----
+Beads state is committed and pushed with the work it describes:
 
-*Beads: Issue tracking that moves at the speed of thought* ⚡
+```bash
+br --no-db list --json
+bv --robot-triage --brief
+git add .beads/ <related-files>
+git commit -m "..."
+git push
+git status --short --branch
+```
+
+Do not maintain a duplicate Markdown or GitHub-Issues backlog.
+
+## Legacy migration record
+
+On 2026-08-11, the tracked legacy JSONL was made compatible with `beads_rust` 0.2.22. Only comment-ID JSON types changed; issue IDs, issue text, dependencies, timestamps, labels, and comments were preserved.
+
+- 204 quoted numeric comment IDs were converted to JSON integers.
+- Three UUID comment IDs, which the current `br` schema cannot represent, were mapped to the next unused integers:
+  - `019e9d55-8a28-7509-9272-50c66870df82` → `503`
+  - `019e9d55-8a68-7b13-917f-f1059905d5d0` → `504`
+  - `019e9d55-8a49-78aa-ac26-e052acb6a8ae` → `505`
+- The pre-migration ledger SHA-256 was `395875efada5d4655c94ce4852a1db1ba8fc824adeb88cf044ed1a130406ccfa`.
+
+Future issue changes must go through `br --no-db`.
