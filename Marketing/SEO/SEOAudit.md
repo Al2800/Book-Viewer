@@ -8,7 +8,7 @@ Status: source remediation is complete for the current audit findings; productio
 
 This audit covers the public BookQuotes acquisition site at `https://bookquotes.uk`, the tracked source under `website/`, and the current Cloudflare Worker deployment marker. Repository source, live HTML, hosting control-plane state, and Search Console state are separate evidence surfaces. A source fix is not described as live until the public route is read back.
 
-The public origin currently identifies the service as `bookquotes-website` and reports source revision `c4c6fe87f7d9` from `/deployment.json`.[4] Read-only Wrangler deployment evidence identifies the production Worker as `bookquotes-website` with the `c4c6fe87f7d9` revision at 100% traffic. The repository `main` tip is `2e0478b`, so the deployed site is behind the current source and must be redeployed before the journal remediation can be called live.
+The public origin currently identifies the service as `bookquotes-website` and reports source revision `c4c6fe87f7d9` from `/deployment.json`.[4] Read-only Wrangler deployment evidence identifies the production Worker as `bookquotes-website` with the `c4c6fe87f7d9` revision at 100% traffic. The repository `main` tip is `fdc17385a4695bed57a320558e8d4f1d10102d94`, so the deployed site is behind the current source and must be redeployed before the journal remediation can be called live.
 
 ## Technical audit
 
@@ -34,6 +34,14 @@ The public origin currently identifies the service as `bookquotes-website` and r
 5. `/deployment.json` now works under both the Vite/Worker build and a plain `next build`; it falls back to the process revision or `unknown` instead of throwing when the Vite compile-time define is absent.
 
 The initial source regression contract covers self-canonical journal metadata, Article/BreadcrumbList JSON-LD, ISO dates, first-party evidence, and the tagged CTA. The website production build also completes all 20 generated routes.
+
+## Read-only recheck — 12 August 2026
+
+The current repository tip is `fdc17385a4695bed57a320558e8d4f1d10102d94` and the source/SEO tests pass. `npm run build` and `npm run sites:build` both completed successfully; `npx vinext deploy --dry-run` completed without building or uploading. The current live Worker still reports `c4c6fe87f7d9` from `/deployment.json`, so the source remediation remains unpublished.
+
+The live sitemap contains 15 apex URLs. A normal-TLS route probe returned HTTP 200 for every sitemap URL, including `/guides`, `/journal`, `/support`, `/privacy` and `/terms`; the clean routes are the production policy and legacy `.html` paths are not linked or required. `robots.txt` remains available and names the apex sitemap.
+
+Live HTML confirms the stale-deployment distinction: the homepage is self-canonical and exposes `SoftwareApplication`; the sampled guide is self-canonical and exposes `Article`, `BreadcrumbList` and `FAQPage`; but the sampled journal detail still canonicalises to `https://bookquotes.uk/` and exposes only the older global `SoftwareApplication` schema. The live legal/support pages return 200 and self-canonicalise to their clean routes. No Search Console submission, indexing request, DNS change, Worker deployment, or other production mutation was performed. The authenticated Cloudflare read path can list Worker deployments, while the unrelated Pages project read returned API error `10000`; this is not evidence that the existing Worker is unavailable.
 
 ## Keyword and intent map
 
