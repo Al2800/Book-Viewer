@@ -12,6 +12,7 @@ import unittest
 import zlib
 from datetime import date, timedelta
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/content_bank.py"
@@ -195,6 +196,118 @@ class ContentBankTests(unittest.TestCase):
             "record": module.build_approval_record(item, asset, self.repo, "owner", "2026-08-11T17:00:00+01:00"),
         }
         module.validate(data, repo_root=self.repo)
+
+    def test_malformed_approved_asset_checks_fail_as_validation_errors(self):
+        data = draft_bank()
+        data["assets"][0]["rights"] = []
+        data["items"][0]["approval"] = {"state": "approved", "record": {}}
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data, repo_root=self.repo)
+        self.assertIn("rights", str(raised.exception))
+
+    def test_malformed_approved_caption_fails_as_validation_error(self):
+        data = draft_bank()
+        approve_first(data, self.repo)
+        data["items"][0]["channels"]["tiktok"]["caption"] = None
+        with self.assertRaises(ValueError) as raised:
+            module.validate(data, repo_root=self.repo)
+        self.assertIn("caption", str(raised.exception))
+
+    def test_malformed_baseline_ids_fail_as_validation_errors(self):
+        baseline = draft_bank()
+        approve_first(baseline, self.repo)
+        baseline["items"][0]["id"] = []
+        with self.assertRaises(ValueError) as raised:
+            module.validate(draft_bank(), repo_root=self.repo, baseline_data=baseline)
+        self.assertIn("baseline", str(raised.exception))
+
+    def test_malformed_baseline_nested_values_fail_as_validation_errors(self):
+        cases = ("asset_id", "channel_asset_id", "claims", "approval", "approval_state", "root", "root_none", "empty_items")
+        for case in cases:
+            with self.subTest(case=case):
+                baseline = draft_bank()
+                approve_first(baseline, self.repo)
+                if case == "asset_id":
+                    baseline["items"][0]["asset_id"] = []
+                elif case == "channel_asset_id":
+                    baseline["items"][0]["channels"]["tiktok"]["asset_id"] = []
+                elif case == "claims":
+                    baseline["items"][0]["claims"] = None
+                elif case == "approval":
+                    baseline["items"][0]["approval"] = []
+                elif case == "approval_state":
+                    baseline["items"][0]["approval"]["state"] = []
+                elif case == "root":
+                    baseline = []
+                elif case == "root_none":
+                    baseline = None
+                else:
+                    baseline["items"] = []
+                with self.assertRaises(ValueError) as raised:
+                    module.validate(draft_bank(), repo_root=self.repo, baseline_data=baseline)
+                self.assertIn("baseline", str(raised.exception))
+
+    def test_malformed_enum_values_fail_as_validation_errors(self):
+        cases = ("territory_list", "territory_dict", "media_type", "rights_status", "rights_basis", "safe_area_status", "readability_status", "approval_state")
+        for case in cases:
+            with self.subTest(case=case):
+                data = draft_bank()
+                if case == "territory_list":
+                    data["items"][0]["territory"] = []
+                elif case == "territory_dict":
+                    data["items"][0]["territory"] = {}
+                elif case == "media_type":
+                    data["assets"][0]["media_type"] = []
+                elif case == "rights_status":
+                    data["assets"][0]["rights"]["status"] = []
+                elif case == "rights_basis":
+                    data["assets"][0]["rights"]["basis"] = {}
+                elif case == "safe_area_status":
+                    data["assets"][0]["checks"]["safe_area"]["status"] = []
+                elif case == "readability_status":
+                    data["assets"][0]["checks"]["readability"]["status"] = {}
+                else:
+                    data["items"][0]["approval"]["state"] = []
+                with self.assertRaises(ValueError) as raised:
+                    module.validate(data, repo_root=self.repo)
+                self.assertIn("validation failed", str(raised.exception))
+
+    def test_malformed_bank_roots_fail_as_validation_errors(self):
+        for value in (None, [], "not-an-object"):
+            with self.subTest(value=repr(value)):
+                with self.assertRaises(ValueError) as raised:
+                    module.validate(value, repo_root=self.repo)
+                self.assertIn("bank", str(raised.exception))
+
+    def test_approve_cli_regenerates_sibling_markdown(self):
+        data = draft_bank()
+        asset = data["assets"][0]
+        asset["rights"]["status"] = "verified"
+        asset["checks"]["safe_area"] = {"status": "passed", "evidence": "Reviewed in a 9:16 phone preview."}
+        asset["checks"]["readability"] = {"status": "passed", "evidence": "Read at normal phone size with muted playback."}
+        bank_path = self.repo / "ContentBank.json"
+        markdown_path = bank_path.with_suffix(".md")
+        bank_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+        markdown_path.write_text("stale generated output\n", encoding="utf-8")
+        script_path = self.repo / "scripts" / "content_bank.py"
+        script_path.parent.mkdir(parents=True, exist_ok=True)
+        with patch.object(module, "__file__", str(script_path)):
+            result = module.main(
+                [
+                    "approve",
+                    str(bank_path),
+                    "bq14-01",
+                    "--approved-by",
+                    "owner",
+                    "--approved-at",
+                    "2026-08-11T17:00:00+01:00",
+                    "--native-queue-confirmed",
+                ]
+            )
+        self.assertEqual(result, 0)
+        approved = module.load_json(bank_path)
+        self.assertEqual(approved["items"][0]["approval"]["state"], "approved")
+        self.assertEqual(markdown_path.read_text(encoding="utf-8"), module.render(approved))
 
     def test_approve_cli_parser_requires_confirmation_and_handles_unknown_id(self):
         with contextlib.redirect_stderr(io.StringIO()) as stderr:

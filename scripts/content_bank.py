@@ -37,6 +37,7 @@ SAFE_LEFT = 140
 SAFE_RIGHT = 940
 SAFE_TOP = 170
 SAFE_BOTTOM = 1500
+_BASELINE_UNSET = object()
 
 
 
@@ -350,7 +351,7 @@ def _validate_assets(data: dict[str, Any], errors: list[str], repo_root: Path) -
         if path_error:
             _add_error(errors, f"{path}.path", path_error)
         media_type = asset.get("media_type")
-        if media_type not in {"image/png", "image/jpeg"}:
+        if not isinstance(media_type, str) or media_type not in {"image/png", "image/jpeg"}:
             _add_error(errors, f"{path}.media_type", "must be image/png or image/jpeg")
         if not isinstance(asset.get("width"), int) or not isinstance(asset.get("height"), int):
             _add_error(errors, path, "width and height must be integers")
@@ -381,9 +382,9 @@ def _validate_assets(data: dict[str, Any], errors: list[str], repo_root: Path) -
         rights = asset.get("rights")
         _check_keys(rights, {"status", "basis", "source"}, f"{path}.rights", errors)
         if isinstance(rights, dict):
-            if rights.get("status") not in {"pending", "verified", "rejected"}:
+            if not isinstance(rights.get("status"), str) or rights.get("status") not in {"pending", "verified", "rejected"}:
                 _add_error(errors, f"{path}.rights.status", "must be pending, verified, or rejected")
-            if rights.get("basis") not in {"original", "licensed", "permission_granted", "public_domain"}:
+            if not isinstance(rights.get("basis"), str) or rights.get("basis") not in {"original", "licensed", "permission_granted", "public_domain"}:
                 _add_error(errors, f"{path}.rights.basis", "has an unsupported rights basis")
             if not isinstance(rights.get("source"), str) or not rights["source"].strip():
                 _add_error(errors, f"{path}.rights.source", "must be non-empty")
@@ -394,7 +395,7 @@ def _validate_assets(data: dict[str, Any], errors: list[str], repo_root: Path) -
                 check = checks.get(check_name)
                 _check_keys(check, {"status", "evidence"}, f"{path}.checks.{check_name}", errors)
                 if isinstance(check, dict):
-                    if check.get("status") not in {"pending", "passed", "failed"}:
+                    if not isinstance(check.get("status"), str) or check.get("status") not in {"pending", "passed", "failed"}:
                         _add_error(errors, f"{path}.checks.{check_name}.status", "has an unsupported status")
                     if not isinstance(check.get("evidence"), str) or not check["evidence"].strip():
                         _add_error(errors, f"{path}.checks.{check_name}.evidence", "must be non-empty")
@@ -421,7 +422,7 @@ def _validate_approval(
         return
     state = approval.get("state")
     record = approval.get("record")
-    if state not in ALLOWED_APPROVAL_STATES:
+    if not isinstance(state, str) or state not in ALLOWED_APPROVAL_STATES:
         _add_error(errors, f"{item_path}.approval.state", "must be draft, in_review, or approved")
         return
     if state in {"draft", "in_review"}:
@@ -441,12 +442,21 @@ def _validate_approval(
         _add_error(errors, f"{item_path}.approval.record.native_queue_confirmed", "must be true for approved items")
     if _parse_aware_datetime(record.get("approved_at")) is None:
         _add_error(errors, f"{item_path}.approval.record.approved_at", "must be timezone-aware ISO-8601")
-    rights = asset.get("rights", {})
-    checks = asset.get("checks", {})
+    rights = asset.get("rights")
+    if not isinstance(rights, dict):
+        _add_error(errors, f"{item_path}.asset.rights", "must be an object before approval")
+        rights = {}
+    checks = asset.get("checks")
+    if not isinstance(checks, dict):
+        _add_error(errors, f"{item_path}.asset.checks", "must be an object before approval")
+        checks = {}
     if rights.get("status") != "verified":
         _add_error(errors, f"{item_path}.asset", "rights.status must be verified before approval")
     for check_name in ("safe_area", "readability"):
-        if checks.get(check_name, {}).get("status") != "passed":
+        check = checks.get(check_name)
+        if not isinstance(check, dict):
+            _add_error(errors, f"{item_path}.asset.checks.{check_name}", "must be an object before approval")
+        elif check.get("status") != "passed":
             _add_error(errors, f"{item_path}.asset", f"{check_name} must be passed before approval")
     candidate, path_error = _safe_asset_path(repo_root, asset.get("path"))
     if candidate is None or path_error:
@@ -459,8 +469,19 @@ def _validate_approval(
     if not isinstance(captions, dict) or set(captions) != set(CHANNELS):
         _add_error(errors, f"{item_path}.approval.record.caption_sha256", "must exactly map TikTok, Instagram, and Facebook")
     else:
-        for channel, adaptation in item.get("channels", {}).items():
-            if captions.get(channel) != _sha256_bytes(adaptation.get("caption", "").encode("utf-8")):
+        channels = item.get("channels")
+        if not isinstance(channels, dict):
+            _add_error(errors, f"{item_path}.channels", "must be an object before approval")
+            channels = {}
+        for channel, adaptation in channels.items():
+            if not isinstance(adaptation, dict):
+                _add_error(errors, f"{item_path}.channels.{channel}", "must be an object before approval")
+                continue
+            caption = adaptation.get("caption")
+            if not isinstance(caption, str):
+                _add_error(errors, f"{item_path}.channels.{channel}.caption", "must be a string before approval")
+                continue
+            if captions.get(channel) != _sha256_bytes(caption.encode("utf-8")):
                 _add_error(errors, f"{item_path}.approval.record.caption_sha256.{channel}", "does not match exact caption bytes")
     expected_content = _sha256_bytes(_canonical({key: value for key, value in item.items() if key != "approval"}))
     if record.get("content_sha256") != expected_content:
@@ -506,49 +527,108 @@ def build_approval_record(
     }
 
 
-def _validate_baseline(data: dict[str, Any], baseline: dict[str, Any], errors: list[str]) -> None:
-    baseline_items = {
-        item.get("id"): item
-        for item in baseline.get("items", [])
-        if isinstance(item, dict) and isinstance(item.get("approval"), dict) and item["approval"].get("state") == "approved"
-    }
-    current_items = {item.get("id"): item for item in data.get("items", []) if isinstance(item, dict)}
-    baseline_assets = {asset.get("id"): asset for asset in baseline.get("assets", []) if isinstance(asset, dict)}
-    current_assets = {asset.get("id"): asset for asset in data.get("assets", []) if isinstance(asset, dict)}
-    baseline_sources = {source.get("id"): source for source in baseline.get("sources", []) if isinstance(source, dict)}
-    current_sources = {source.get("id"): source for source in data.get("sources", []) if isinstance(source, dict)}
+def _validate_baseline(data: dict[str, Any], baseline: Any, errors: list[str]) -> None:
+    if not isinstance(baseline, dict):
+        _add_error(errors, "baseline", "must be an object")
+        return
+
+    def index_objects(value: Any, path: str) -> dict[str, dict[str, Any]]:
+        if not isinstance(value, list):
+            _add_error(errors, path, "must be a list")
+            return {}
+        result: dict[str, dict[str, Any]] = {}
+        for index, entry in enumerate(value):
+            entry_path = f"{path}[{index}]"
+            if not isinstance(entry, dict):
+                _add_error(errors, entry_path, "must be an object")
+                continue
+            entry_id = entry.get("id")
+            if not isinstance(entry_id, str) or not entry_id.strip():
+                _add_error(errors, f"{entry_path}.id", "must be a non-empty string")
+                continue
+            if entry_id in result:
+                _add_error(errors, f"{entry_path}.id", "must be unique")
+                continue
+            result[entry_id] = entry
+        return result
+
+    baseline_items_value = baseline.get("items")
+    baseline_items_all = index_objects(baseline_items_value, "baseline.items")
+    if isinstance(baseline_items_value, list) and len(baseline_items_value) != 14:
+        _add_error(errors, "baseline.items", "must contain exactly 14 primary records")
+    baseline_items: dict[str, dict[str, Any]] = {}
+    for item_id, item in baseline_items_all.items():
+        approval = item.get("approval")
+        if not isinstance(approval, dict):
+            _add_error(errors, f"baseline.items[{item_id}].approval", "must be an object")
+            continue
+        approval_state = approval.get("state")
+        if not isinstance(approval_state, str) or approval_state not in ALLOWED_APPROVAL_STATES:
+            _add_error(errors, f"baseline.items[{item_id}].approval.state", "must be a valid approval state")
+            continue
+        if approval_state == "approved":
+            baseline_items[item_id] = item
+    current_items = index_objects(data.get("items"), "items")
+    baseline_assets = index_objects(baseline.get("assets"), "baseline.assets")
+    current_assets = index_objects(data.get("assets"), "assets")
+    baseline_sources = index_objects(baseline.get("sources"), "baseline.sources")
+    current_sources = index_objects(data.get("sources"), "sources")
     for item_id, baseline_item in baseline_items.items():
         current_item = current_items.get(item_id)
         if current_item is None or _canonical(current_item) != _canonical(baseline_item):
             _add_error(errors, f"items[{item_id}]", "baseline approved item cannot be mutated or deleted")
-        asset_ids = {baseline_item.get("asset_id")}
+        asset_ids: set[str] = set()
+        primary_asset_id = baseline_item.get("asset_id")
+        if isinstance(primary_asset_id, str):
+            asset_ids.add(primary_asset_id)
+        else:
+            _add_error(errors, f"baseline.items[{item_id}].asset_id", "must be a string")
         channels = baseline_item.get("channels")
         if isinstance(channels, dict):
-            asset_ids.update(
-                adaptation.get("asset_id")
-                for adaptation in channels.values()
-                if isinstance(adaptation, dict)
-            )
+            for channel, adaptation in channels.items():
+                if not isinstance(adaptation, dict):
+                    _add_error(errors, f"baseline.items[{item_id}].channels.{channel}", "must be an object")
+                    continue
+                channel_asset_id = adaptation.get("asset_id")
+                if isinstance(channel_asset_id, str):
+                    asset_ids.add(channel_asset_id)
+                elif channel_asset_id is not None:
+                    _add_error(errors, f"baseline.items[{item_id}].channels.{channel}.asset_id", "must be a string")
+        elif channels is not None:
+            _add_error(errors, f"baseline.items[{item_id}].channels", "must be an object")
         for asset_id in asset_ids - {None}:
             if asset_id not in current_assets or _canonical(current_assets[asset_id]) != _canonical(baseline_assets.get(asset_id)):
                 _add_error(errors, f"assets[{asset_id}]", "asset metadata referenced by a baseline approved item cannot be mutated or deleted")
-        source_ids = {
-            source_id
-            for claim in baseline_item.get("claims", [])
-            if isinstance(claim, dict)
-            for source_id in claim.get("source_ids", [])
-            if isinstance(source_id, str)
-        }
+        claims = baseline_item.get("claims")
+        source_ids: set[str] = set()
+        if not isinstance(claims, list):
+            _add_error(errors, f"baseline.items[{item_id}].claims", "must be a list")
+            claims = []
+        for claim_index, claim in enumerate(claims):
+            if not isinstance(claim, dict):
+                _add_error(errors, f"baseline.items[{item_id}].claims[{claim_index}]", "must be an object")
+                continue
+            claim_source_ids = claim.get("source_ids")
+            if not isinstance(claim_source_ids, list):
+                _add_error(errors, f"baseline.items[{item_id}].claims[{claim_index}].source_ids", "must be a list")
+                continue
+            for source_id in claim_source_ids:
+                if isinstance(source_id, str):
+                    source_ids.add(source_id)
+                else:
+                    _add_error(errors, f"baseline.items[{item_id}].claims[{claim_index}].source_ids", "must contain strings")
         for source_id in source_ids:
             if source_id not in current_sources or _canonical(current_sources[source_id]) != _canonical(baseline_sources.get(source_id)):
                 _add_error(errors, f"sources[{source_id}]", "source metadata referenced by a baseline approved item cannot be mutated or deleted")
 
 
 def validate(
-    data: dict[str, Any],
+    data: Any,
     repo_root: Path | None = None,
-    baseline_data: dict[str, Any] | None = None,
+    baseline_data: Any = _BASELINE_UNSET,
 ) -> None:
+    if not isinstance(data, dict):
+        raise ValueError("Content bank validation failed:\n- bank: must be an object")
     errors: list[str] = []
     repo_root = (repo_root or Path.cwd()).resolve()
     _check_keys(data, {"schema_version", "bank_id", "period", "sources", "assets", "items"}, "bank", errors)
@@ -599,7 +679,7 @@ def validate(
             _add_error(errors, f"{path}.date", "must be an ISO date")
         territory = item.get("territory")
         product_led = item.get("product_led")
-        if territory not in ALLOWED_TERRITORIES:
+        if not isinstance(territory, str) or territory not in ALLOWED_TERRITORIES:
             _add_error(errors, f"{path}.territory", "is unsupported")
         if not isinstance(product_led, bool):
             _add_error(errors, f"{path}.product_led", "must be boolean")
@@ -677,7 +757,7 @@ def validate(
             _validate_approval(item, path, asset, repo_root, errors)
     if raw_items and product_count / len(raw_items) > 0.20:
         _add_error(errors, "items", "product-led share must be at most 20%")
-    if baseline_data is not None:
+    if baseline_data is not _BASELINE_UNSET:
         _validate_baseline(data, baseline_data, errors)
     if errors:
         raise ValueError("Content bank validation failed:\n- " + "\n- ".join(errors))
@@ -830,7 +910,10 @@ def main(argv: list[str] | None = None) -> int:
         data = load_json(args.bank)
         repo_root = Path(__file__).resolve().parents[1]
         baseline = _load_baseline_ref(args.bank, repo_root, args.baseline_ref) if args.baseline_ref else None
-        validate(data, repo_root=repo_root, baseline_data=baseline)
+        if baseline is None:
+            validate(data, repo_root=repo_root)
+        else:
+            validate(data, repo_root=repo_root, baseline_data=baseline)
         if args.command == "approve":
             item = next((entry for entry in data["items"] if entry.get("id") == args.item_id), None)
             if item is None:
@@ -846,8 +929,13 @@ def main(argv: list[str] | None = None) -> int:
                 "state": "approved",
                 "record": build_approval_record(item, asset, repo_root, args.approved_by, args.approved_at),
             }
-            validate(data, repo_root=repo_root, baseline_data=baseline)
+            if baseline is None:
+                validate(data, repo_root=repo_root)
+            else:
+                validate(data, repo_root=repo_root, baseline_data=baseline)
+            rendered = render(data)
             _write_if_changed(args.bank, json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+            _write_if_changed(args.bank.with_suffix(".md"), rendered)
             print(f"approved {args.item_id} in {args.bank}")
             return 0
         if args.command == "render":
