@@ -329,6 +329,20 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source is not authoritative"):
             module.validate(data)
 
+    def test_available_outcome_rejects_unhashable_source_types_as_validation_errors(self):
+        for malformed_source in ([], {}):
+            with self.subTest(malformed_source=malformed_source):
+                data = evidence()
+                data["app_store_snapshots"][0]["access"]["analytics"].update(
+                    available=True,
+                    http_status=200,
+                    reason=None,
+                )
+                downloads = data["app_store_snapshots"][0]["outcomes"]["downloads"]
+                downloads.update(value=4, available=True, source=malformed_source)
+                with self.assertRaisesRegex(ValueError, "source is not authoritative"):
+                    module.validate(data)
+
     def test_available_outcome_requires_matching_available_surface(self):
         data = evidence()
         downloads = data["app_store_snapshots"][0]["outcomes"]["downloads"]
@@ -501,6 +515,107 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         self.assertIn("content_id", message)
         self.assertIn("sitemap_status", message)
         self.assertIn("discovered_pages", message)
+
+    def test_search_console_api_snapshot_renders_indexing_sitemap_and_performance_evidence(self):
+        data = evidence()
+        snapshot = data["search_snapshots"][0]
+        snapshot["search_console"] = {
+            "property": "sc-domain:bookquotes.uk",
+            "permission_level": "siteOwner",
+            "auth_method": "application_default_credentials",
+            "read_tested": True,
+            "sitemap": {
+                "url": "https://bookquotes.uk/sitemap.xml",
+                "status": "Success",
+                "last_submitted": "2026-08-07T06:52:13.248Z",
+                "last_downloaded": "2026-08-10T09:09:30.939Z",
+                "is_pending": False,
+                "warnings": 0,
+                "errors": 0,
+                "contents": [{"type": "web", "submitted": 15, "indexed": 0}],
+            },
+            "url_inspection": {
+                "inspection_url": "https://bookquotes.uk/",
+                "verdict": "PASS",
+                "coverage_state": "Submitted and indexed",
+                "indexing_state": "INDEXING_ALLOWED",
+                "page_fetch_state": "SUCCESSFUL",
+                "google_canonical": "https://bookquotes.uk/",
+                "user_canonical": "https://bookquotes.uk/",
+                "last_crawl_time": "2026-08-07T06:53:14Z",
+            },
+            "performance": {
+                "processing_delay_note": "Search Analytics was queried through the latest lagged final date; Google data remains subject to reporting delay.",
+                "windows": {
+                    "28d": {
+                        "start_date": "2026-07-14",
+                        "end_date": "2026-08-10",
+                        "data_state": "final",
+                        "dimensions": {
+                            "query": {"row_count": 0, "rows": []},
+                            "page": {"row_count": 1, "rows": [{"keys": ["https://bookquotes.uk/"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                            "country": {"row_count": 1, "rows": [{"keys": ["gbr"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                            "device": {"row_count": 1, "rows": [{"keys": ["MOBILE"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                        },
+                    },
+                    "90d": {
+                        "start_date": "2026-05-13",
+                        "end_date": "2026-08-10",
+                        "data_state": "final",
+                        "dimensions": {
+                            "query": {"row_count": 0, "rows": []},
+                            "page": {"row_count": 1, "rows": [{"keys": ["https://bookquotes.uk/"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                            "country": {"row_count": 1, "rows": [{"keys": ["gbr"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                            "device": {"row_count": 1, "rows": [{"keys": ["MOBILE"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                        },
+                    },
+                },
+            },
+        }
+        snapshot["cloudflare_http_traffic"] = {
+            "available": False,
+            "source": "cloudflare_graphql_api_read_only",
+            "window": "2026-08-11T06:00:00Z/2026-08-12T06:00:00Z",
+            "value": None,
+            "reason": "CLOUDFLARE_API_TOKEN is not present in the read environment.",
+            "next_action": "Provide an approved Cloudflare API token through the protected environment before the next read-only edge-traffic probe.",
+        }
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("Search Console API access: read-tested (siteOwner)", report)
+        self.assertIn("Sitemap API state: Success; submitted 15; indexed 0; pending False; warnings 0; errors 0", report)
+        self.assertIn("URL Inspection: PASS; Submitted and indexed; canonical https://bookquotes.uk/", report)
+        self.assertIn("28d (2026-07-14 to 2026-08-10): 1 clicks, 1 impressions", report)
+        self.assertIn("queries 0 rows; pages 1 rows; countries 1 rows; devices 1 rows", report)
+        self.assertIn("Cloudflare HTTP traffic: unavailable", report)
+        self.assertIn("not a Search Console metric", report)
+
+    def test_rejects_malformed_search_console_api_records(self):
+        data = evidence()
+        data["search_snapshots"][0]["search_console"] = {
+            "property": "sc-domain:bookquotes.uk",
+            "permission_level": "siteOwner",
+            "auth_method": "application_default_credentials",
+            "read_tested": True,
+            "sitemap": {"contents": "not-a-list"},
+            "url_inspection": {},
+            "performance": {"windows": []},
+        }
+        with self.assertRaisesRegex(ValueError, "search_console"):
+            module.validate(data)
+
+    def test_rejects_cloudflare_traffic_records_that_collapse_unavailable_into_zero(self):
+        data = evidence()
+        data["search_snapshots"][0]["cloudflare_http_traffic"] = {
+            "available": False,
+            "source": "cloudflare_graphql_api_read_only",
+            "window": "2026-08-11T06:00:00Z/2026-08-12T06:00:00Z",
+            "value": 0,
+            "reason": "Not connected.",
+            "next_action": "Connect the API.",
+        }
+        with self.assertRaisesRegex(ValueError, "cloudflare_http_traffic.*value must be null"):
+            module.validate(data)
 
     def test_rejects_impossible_checkpoint_and_status_semantics(self):
         data = evidence()

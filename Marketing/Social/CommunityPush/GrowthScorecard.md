@@ -1,10 +1,10 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-11T17:15:10+01:00</code>.
+Generated from structured evidence updated <code>2026-08-12T07:39:59+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-04T17:15:10+01:00</code> to <code>2026-08-11T17:15:10+01:00</code>
+- Reporting window: <code>2026-08-05T07:39:59+01:00</code> to <code>2026-08-12T07:39:59+01:00</code>
 - Published Facebook items represented: 3
 - Visible views: 0
 - Visible reach: 0
@@ -80,6 +80,11 @@ Downloads, sales and proceeds are reported only from authoritative Apple evidenc
 
 ## Search state
 
+- 2026-08-12: Search Console API access: read-tested (siteOwner); Sitemap API state: Success; submitted 15; indexed 0; pending False; warnings 0; errors 0.
+  URL Inspection: PASS; Submitted and indexed; canonical https://bookquotes.uk/; last crawl 2026-08-07T06:53:14Z.
+  28d (2026-07-14 to 2026-08-10): 1 clicks, 1 impressions; queries 0 rows; pages 1 rows; countries 1 rows; devices 1 rows.
+  90d (2026-05-13 to 2026-08-10): 1 clicks, 1 impressions; queries 0 rows; pages 1 rows; countries 1 rows; devices 1 rows.
+  Cloudflare HTTP traffic: unavailable (CLOUDFLARE&#95;API&#95;TOKEN is not present in the read environment.); not a Search Console metric.
 - 2026-08-07: sitemap <code>Success</code>, 15 pages discovered; homepage indexed=False; request <code>Indexing requested; added to Google's priority crawl queue</code>; performance <code>Processing; no clicks or impressions shown</code>.
 
 ## Next controlled actions
@@ -88,5 +93,5 @@ Downloads, sales and proceeds are reported only from authoritative Apple evidenc
 2. Execute FB-001 only with a rights-safe original treatment and a declared comparable product baseline.
 3. Obtain a Team API key or equivalent authorized Apple report path before reporting downloads, sales or proceeds; keep unavailable values null.
 4. Create/read-test App Store campaign links before claiming install attribution; website UTMs alone prove only attributed web visits.
-5. Verify homepage indexing and Search Console performance when the inspection surface is available; do not duplicate-submit the sitemap.
+5. Continue read-only monitoring of homepage indexing and Search Console performance; do not duplicate-submit the existing sitemap or repeat an indexing request during routine evidence refresh.
 6. Promote recurring reader language into a search brief only after three independent occurrences.

@@ -92,6 +92,14 @@ CHECKPOINT_ORDER = {
     "7d-audit": 7,
 }
 STATUS_ORDER = {"draft": 0, "scheduled": 1, "published": 2, "failed": 3, "stopped": 4}
+SEARCH_DIMENSIONS = ("query", "page", "country", "device")
+SEARCH_ROW_METRICS = ("clicks", "impressions", "ctr", "position")
+CLOUDFLARE_TRAFFIC_METRICS = (
+    "unique_visitors",
+    "total_requests",
+    "cached_requests",
+    "uncached_requests",
+)
 
 
 def is_bookquotes_app_store_url(value: str) -> bool:
@@ -652,6 +660,163 @@ def validate(data: dict[str, Any]) -> None:
         ):
             errors.append(f"{prefix}.discovered_pages must be a non-negative integer")
 
+        search_console = snapshot.get("search_console")
+        if search_console is not None:
+            if not isinstance(search_console, dict):
+                errors.append(f"{prefix}.search_console must be null or an object")
+            else:
+                if search_console.get("property") != "sc-domain:bookquotes.uk":
+                    errors.append(f"{prefix}.search_console.property must be sc-domain:bookquotes.uk")
+                if search_console.get("permission_level") != "siteOwner":
+                    errors.append(f"{prefix}.search_console.permission_level must be siteOwner")
+                if search_console.get("auth_method") != "application_default_credentials":
+                    errors.append(
+                        f"{prefix}.search_console.auth_method must be application_default_credentials"
+                    )
+                if search_console.get("read_tested") is not True:
+                    errors.append(f"{prefix}.search_console.read_tested must be true")
+                sitemap = search_console.get("sitemap")
+                if not isinstance(sitemap, dict):
+                    errors.append(f"{prefix}.search_console.sitemap must be an object")
+                else:
+                    if sitemap.get("url") != "https://bookquotes.uk/sitemap.xml":
+                        errors.append(f"{prefix}.search_console.sitemap.url must use the canonical sitemap")
+                    if not isinstance(sitemap.get("status"), str) or not sitemap.get("status"):
+                        errors.append(f"{prefix}.search_console.sitemap.status must be non-empty")
+                    if not isinstance(sitemap.get("is_pending"), bool):
+                        errors.append(f"{prefix}.search_console.sitemap.is_pending must be boolean")
+                    for field in ("warnings", "errors"):
+                        value = sitemap.get(field)
+                        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                            errors.append(f"{prefix}.search_console.sitemap.{field} must be non-negative integer")
+                    contents = sitemap.get("contents")
+                    if not isinstance(contents, list) or not contents:
+                        errors.append(f"{prefix}.search_console.sitemap.contents must be a non-empty list")
+                    else:
+                        for content_index, content in enumerate(contents):
+                            content_prefix = f"{prefix}.search_console.sitemap.contents[{content_index}]"
+                            if not isinstance(content, dict):
+                                errors.append(f"{content_prefix} must be an object")
+                                continue
+                            if not isinstance(content.get("type"), str) or not content.get("type"):
+                                errors.append(f"{content_prefix}.type must be non-empty")
+                            for field in ("submitted", "indexed"):
+                                value = content.get(field)
+                                if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                                    errors.append(f"{content_prefix}.{field} must be non-negative integer")
+                inspection = search_console.get("url_inspection")
+                if not isinstance(inspection, dict):
+                    errors.append(f"{prefix}.search_console.url_inspection must be an object")
+                else:
+                    required_inspection = {
+                        "inspection_url": "https://bookquotes.uk/",
+                        "google_canonical": "https://bookquotes.uk/",
+                        "user_canonical": "https://bookquotes.uk/",
+                    }
+                    for field, expected in required_inspection.items():
+                        if inspection.get(field) != expected:
+                            errors.append(
+                                f"{prefix}.search_console.url_inspection.{field} must be {expected}"
+                            )
+                    for field in ("verdict", "coverage_state", "indexing_state", "page_fetch_state"):
+                        if not isinstance(inspection.get(field), str) or not inspection.get(field):
+                            errors.append(
+                                f"{prefix}.search_console.url_inspection.{field} must be non-empty"
+                            )
+                    try:
+                        parse_timestamp(
+                            inspection.get("last_crawl_time"),
+                            f"{prefix}.search_console.url_inspection.last_crawl_time",
+                        )
+                    except ValueError as error:
+                        errors.append(str(error))
+                performance = search_console.get("performance")
+                if not isinstance(performance, dict):
+                    errors.append(f"{prefix}.search_console.performance must be an object")
+                else:
+                    note = performance.get("processing_delay_note")
+                    if not isinstance(note, str) or not note:
+                        errors.append(f"{prefix}.search_console.performance.processing_delay_note must be non-empty")
+                    windows = performance.get("windows")
+                    if not isinstance(windows, dict) or set(windows) != {"28d", "90d"}:
+                        errors.append(f"{prefix}.search_console.performance.windows must contain 28d and 90d")
+                    else:
+                        for window_name, window in windows.items():
+                            window_prefix = f"{prefix}.search_console.performance.windows.{window_name}"
+                            if not isinstance(window, dict):
+                                errors.append(f"{window_prefix} must be an object")
+                                continue
+                            if window.get("data_state") != "final":
+                                errors.append(f"{window_prefix}.data_state must be final")
+                            for field in ("start_date", "end_date"):
+                                if not isinstance(window.get(field), str) or not window.get(field):
+                                    errors.append(f"{window_prefix}.{field} must be non-empty")
+                            dimensions = window.get("dimensions")
+                            if not isinstance(dimensions, dict) or set(dimensions) != set(SEARCH_DIMENSIONS):
+                                errors.append(f"{window_prefix}.dimensions must contain query, page, country and device")
+                                continue
+                            for dimension in SEARCH_DIMENSIONS:
+                                dimension_prefix = f"{window_prefix}.dimensions.{dimension}"
+                                record = dimensions[dimension]
+                                if not isinstance(record, dict):
+                                    errors.append(f"{dimension_prefix} must be an object")
+                                    continue
+                                row_count = record.get("row_count")
+                                rows = record.get("rows")
+                                if isinstance(row_count, bool) or not isinstance(row_count, int) or row_count < 0:
+                                    errors.append(f"{dimension_prefix}.row_count must be non-negative integer")
+                                if not isinstance(rows, list):
+                                    errors.append(f"{dimension_prefix}.rows must be a list")
+                                    continue
+                                if (
+                                    isinstance(row_count, bool)
+                                    or not isinstance(row_count, int)
+                                    or row_count != len(rows)
+                                ):
+                                    errors.append(f"{dimension_prefix}.rows must match row_count")
+                                    continue
+                                for row_index, row in enumerate(rows):
+                                    row_prefix = f"{dimension_prefix}.rows[{row_index}]"
+                                    if not isinstance(row, dict) or not isinstance(row.get("keys"), list) or not row.get("keys"):
+                                        errors.append(f"{row_prefix} must contain a non-empty keys list")
+                                        continue
+                                    for metric in SEARCH_ROW_METRICS:
+                                        value = row.get(metric)
+                                        if (
+                                            isinstance(value, bool)
+                                            or not isinstance(value, (int, float))
+                                            or not math.isfinite(value)
+                                            or value < 0
+                                        ):
+                                            errors.append(f"{row_prefix}.{metric} must be finite and non-negative")
+
+        cloudflare = snapshot.get("cloudflare_http_traffic")
+        if cloudflare is not None:
+            if not isinstance(cloudflare, dict):
+                errors.append(f"{prefix}.cloudflare_http_traffic must be null or an object")
+            else:
+                if cloudflare.get("source") != "cloudflare_graphql_api_read_only":
+                    errors.append(f"{prefix}.cloudflare_http_traffic.source must identify the read-only API")
+                if not isinstance(cloudflare.get("available"), bool):
+                    errors.append(f"{prefix}.cloudflare_http_traffic.available must be boolean")
+                if not isinstance(cloudflare.get("window"), str) or not cloudflare.get("window"):
+                    errors.append(f"{prefix}.cloudflare_http_traffic.window must be non-empty")
+                value = cloudflare.get("value")
+                if cloudflare.get("available") is False:
+                    if value is not None:
+                        errors.append(f"{prefix}.cloudflare_http_traffic.value must be null when unavailable")
+                    if not isinstance(cloudflare.get("reason"), str) or not cloudflare.get("reason"):
+                        errors.append(f"{prefix}.cloudflare_http_traffic.reason is required when unavailable")
+                    if not isinstance(cloudflare.get("next_action"), str) or not cloudflare.get("next_action"):
+                        errors.append(f"{prefix}.cloudflare_http_traffic.next_action is required when unavailable")
+                elif not isinstance(value, dict):
+                    errors.append(f"{prefix}.cloudflare_http_traffic.value must be an object when available")
+                else:
+                    for metric in CLOUDFLARE_TRAFFIC_METRICS:
+                        metric_value = value.get(metric)
+                        if isinstance(metric_value, bool) or not isinstance(metric_value, (int, float)) or not math.isfinite(metric_value) or metric_value < 0:
+                            errors.append(f"{prefix}.cloudflare_http_traffic.value.{metric} must be finite and non-negative")
+
     for index, snapshot in enumerate(collections["app_store_snapshots"]):
         prefix = f"app_store_snapshots[{index}]"
         if not isinstance(snapshot, dict):
@@ -730,8 +895,10 @@ def validate(data: dict[str, Any]) -> None:
                         errors.append(f"{metric_prefix} requires reason and next_action when unavailable")
                 elif value is None:
                     errors.append(f"{metric_prefix}.value is required when available")
-                if available is True and record.get("source") not in AUTHORITATIVE_APP_STORE_SOURCES[metric]:
-                    errors.append(f"{metric_prefix}.source is not authoritative for {metric}")
+                if available is True:
+                    source = record.get("source")
+                    if not isinstance(source, str) or source not in AUTHORITATIVE_APP_STORE_SOURCES[metric]:
+                        errors.append(f"{metric_prefix}.source is not authoritative for {metric}")
                 if available is True and isinstance(access, dict) and set(access) == APP_STORE_SURFACES:
                     source = record.get("source")
                     source_surface = {
@@ -834,6 +1001,61 @@ def attribution_quality(
     if campaign.get("app_store_campaign_id") in verified_app_store_campaign_ids:
         return "store_campaign_linked"
     return "website_campaign_linked"
+
+
+def render_search_snapshot(snapshot: dict[str, Any]) -> list[str]:
+    search_console = snapshot.get("search_console")
+    cloudflare = snapshot.get("cloudflare_http_traffic")
+    if not isinstance(search_console, dict):
+        return [
+            f"- {markdown_text(snapshot['observed_at'][:10])}: sitemap "
+            f"{markdown_code(snapshot['sitemap_status'])}, "
+            f"{markdown_text(snapshot['discovered_pages'])} pages discovered; homepage "
+            f"indexed={markdown_text(snapshot.get('indexed_homepage'))}; request "
+            f"{markdown_code(snapshot.get('indexing_request_status'))}; performance "
+            f"{markdown_code(snapshot.get('performance_status', snapshot.get('performance_available')))}.",
+        ]
+
+    sitemap = search_console["sitemap"]
+    content = sitemap["contents"][0]
+    inspection = search_console["url_inspection"]
+    performance = search_console["performance"]
+    lines = [
+        f"- {markdown_text(snapshot['observed_at'][:10])}: Search Console API access: "
+        f"read-tested ({markdown_text(search_console['permission_level'])}); Sitemap API state: "
+        f"{markdown_text(sitemap['status'])}; submitted {markdown_text(content['submitted'])}; "
+        f"indexed {markdown_text(content['indexed'])}; pending {markdown_text(sitemap['is_pending'])}; "
+        f"warnings {markdown_text(sitemap['warnings'])}; errors {markdown_text(sitemap['errors'])}.",
+        f"  URL Inspection: {markdown_text(inspection['verdict'])}; "
+        f"{markdown_text(inspection['coverage_state'])}; canonical {markdown_text(inspection['google_canonical'])}; "
+        f"last crawl {markdown_text(inspection['last_crawl_time'])}.",
+    ]
+    for window_name in ("28d", "90d"):
+        window = performance["windows"][window_name]
+        dimensions = window["dimensions"]
+        totals = dimensions["page"]["rows"]
+        clicks = sum(row["clicks"] for row in totals)
+        impressions = sum(row["impressions"] for row in totals)
+        lines.append(
+            f"  {window_name} ({markdown_text(window['start_date'])} to {markdown_text(window['end_date'])}): "
+            f"{markdown_text(clicks)} clicks, {markdown_text(impressions)} impressions; "
+            f"queries {markdown_text(dimensions['query']['row_count'])} rows; "
+            f"pages {markdown_text(dimensions['page']['row_count'])} rows; "
+            f"countries {markdown_text(dimensions['country']['row_count'])} rows; "
+            f"devices {markdown_text(dimensions['device']['row_count'])} rows."
+        )
+    if isinstance(cloudflare, dict) and cloudflare.get("available") is False:
+        lines.append(
+            f"  Cloudflare HTTP traffic: unavailable ({markdown_text(cloudflare['reason'])}); "
+            "not a Search Console metric."
+        )
+    elif isinstance(cloudflare, dict) and cloudflare.get("available") is True:
+        value = cloudflare["value"]
+        lines.append(
+            f"  Cloudflare HTTP traffic: {markdown_text(value['unique_visitors'])} unique visitors, "
+            f"{markdown_text(value['total_requests'])} requests; not a Search Console metric."
+        )
+    return lines
 
 
 def render(data: dict[str, Any]) -> str:
@@ -1033,16 +1255,7 @@ def render(data: dict[str, Any]) -> str:
 
     lines.extend(["## Search state", ""])
     for snapshot in sorted(data.get("search_snapshots", []), key=lambda item: item["observed_at"], reverse=True):
-        lines.extend(
-            [
-                f"- {markdown_text(snapshot['observed_at'][:10])}: sitemap "
-                f"{markdown_code(snapshot['sitemap_status'])}, "
-                f"{markdown_text(snapshot['discovered_pages'])} pages discovered; homepage "
-                f"indexed={markdown_text(snapshot.get('indexed_homepage'))}; request "
-                f"{markdown_code(snapshot.get('indexing_request_status'))}; performance "
-                f"{markdown_code(snapshot.get('performance_status', snapshot.get('performance_available')))}.",
-            ]
-        )
+        lines.extend(render_search_snapshot(snapshot))
 
     lines.extend(
         [
@@ -1053,7 +1266,7 @@ def render(data: dict[str, Any]) -> str:
             "2. Execute FB-001 only with a rights-safe original treatment and a declared comparable product baseline.",
             "3. Obtain a Team API key or equivalent authorized Apple report path before reporting downloads, sales or proceeds; keep unavailable values null.",
             "4. Create/read-test App Store campaign links before claiming install attribution; website UTMs alone prove only attributed web visits.",
-            "5. Verify homepage indexing and Search Console performance when the inspection surface is available; do not duplicate-submit the sitemap.",
+            "5. Continue read-only monitoring of homepage indexing and Search Console performance; do not duplicate-submit the existing sitemap or repeat an indexing request during routine evidence refresh.",
             "6. Promote recurring reader language into a search brief only after three independent occurrences.",
             "",
         ]

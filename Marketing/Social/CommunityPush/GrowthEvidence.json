@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-11T17:15:10+01:00",
+  "updated_at": "2026-08-12T07:39:59+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -275,7 +275,90 @@
         "uncached_requests": 1120,
         "caveat": "HTTP traffic may include crawlers or AI agents; Web Analytics RUM is not enabled."
       },
-      "notes": "Verified in Google Search Console. The sitemap was already submitted and the homepage indexing request already completed once; neither action was duplicated."
+      "notes": "Historical snapshot retained. A later read-only API snapshot supersedes its Search Console state."
+    },
+    {
+      "observed_at": "2026-08-12T07:39:59+01:00",
+      "property": "bookquotes.uk",
+      "sitemap_url": "https://bookquotes.uk/sitemap.xml",
+      "sitemap_status": "Success",
+      "submitted_at": "2026-08-07",
+      "last_read_at": "2026-08-12",
+      "discovered_pages": 15,
+      "discovered_videos": 0,
+      "indexed_homepage": true,
+      "indexing_request_status": "No duplicate indexing request performed; URL Inspection is read-only",
+      "performance_available": true,
+      "performance_status": "Final Search Analytics queried through 2026-08-10; reporting delay applies",
+      "cloudflare_http_traffic_24h": null,
+      "search_console": {
+        "property": "sc-domain:bookquotes.uk",
+        "permission_level": "siteOwner",
+        "auth_method": "application_default_credentials",
+        "read_tested": true,
+        "sitemap": {
+          "url": "https://bookquotes.uk/sitemap.xml",
+          "status": "Success",
+          "last_submitted": "2026-08-07T06:52:13.248Z",
+          "last_downloaded": "2026-08-10T09:09:30.939Z",
+          "is_pending": false,
+          "warnings": 0,
+          "errors": 0,
+          "contents": [
+            {"type": "web", "submitted": 15, "indexed": 0}
+          ]
+        },
+        "url_inspection": {
+          "inspection_url": "https://bookquotes.uk/",
+          "verdict": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://bookquotes.uk/",
+          "user_canonical": "https://bookquotes.uk/",
+          "last_crawl_time": "2026-08-07T06:53:14Z",
+          "referring_urls": [
+            "http://bookquotes.uk/journal/what-to-do-with-book-highlights",
+            "http://bookquotes.uk/"
+          ]
+        },
+        "performance": {
+          "processing_delay_note": "Search Analytics was queried through the latest lagged final date (2026-08-10); Google data remains subject to reporting delay.",
+          "windows": {
+            "28d": {
+              "start_date": "2026-07-14",
+              "end_date": "2026-08-10",
+              "data_state": "final",
+              "dimensions": {
+                "query": {"row_count": 0, "rows": []},
+                "page": {"row_count": 1, "rows": [{"keys": ["https://bookquotes.uk/"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                "country": {"row_count": 1, "rows": [{"keys": ["gbr"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                "device": {"row_count": 1, "rows": [{"keys": ["MOBILE"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]}
+              }
+            },
+            "90d": {
+              "start_date": "2026-05-13",
+              "end_date": "2026-08-10",
+              "data_state": "final",
+              "dimensions": {
+                "query": {"row_count": 0, "rows": []},
+                "page": {"row_count": 1, "rows": [{"keys": ["https://bookquotes.uk/"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                "country": {"row_count": 1, "rows": [{"keys": ["gbr"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
+                "device": {"row_count": 1, "rows": [{"keys": ["MOBILE"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]}
+              }
+            }
+          }
+        }
+      },
+      "cloudflare_http_traffic": {
+        "available": false,
+        "source": "cloudflare_graphql_api_read_only",
+        "window": "2026-08-11T06:00:00Z/2026-08-12T06:00:00Z",
+        "value": null,
+        "reason": "CLOUDFLARE_API_TOKEN is not present in the read environment.",
+        "next_action": "Provide an approved Cloudflare API token through the protected environment before the next read-only edge-traffic probe."
+      },
+      "notes": "Read-only Search Console API snapshot. Existing sitemap submission was read before any mutation; no sitemap submission or indexing request was performed. Cloudflare HTTP traffic is unavailable and is not inferred from Search Console."
     }
   ],
   "app_store_snapshots": [
