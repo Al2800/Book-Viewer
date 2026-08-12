@@ -5,7 +5,9 @@ import { notFound } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
+import { ProductEvidence } from '@/components/sections/ProductEvidence'
 import { getGuide, guides } from '@/lib/guides'
+import { seoAppStoreUrl } from '@/lib/seo'
 
 type GuidePageProps = {
   params: Promise<{ slug: string }>
@@ -95,6 +97,10 @@ export default async function GuidePage({ params }: GuidePageProps) {
             </div>
           </header>
 
+          <ProductEvidence
+            alt="BookQuotes library screen showing search, saved-quote counts, book cards, and grid/list controls without a visible quote passage."
+          />
+
           <div className="bg-paper-warm border-y border-subtle">
             <div className="container-narrow py-12 md:py-16">
               {guide.sections.map((section) => (
@@ -129,7 +135,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
         <section className="container-standard py-14 md:py-20 text-center">
           <h2 className="mb-4">Keep the lines that matter</h2>
           <p className="text-ink-medium text-lg mb-7">BookQuotes is available on iPhone and iPad.</p>
-          <a href="https://apps.apple.com/app/id6758091579" target="_blank" rel="noopener noreferrer">
+          <a href={seoAppStoreUrl} target="_blank" rel="noopener noreferrer">
             <Button size="lg">
               View BookQuotes on the App Store
               <ExternalLink className="w-4 h-4 ml-2" />

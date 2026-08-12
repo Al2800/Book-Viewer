@@ -5,7 +5,9 @@ import { ArrowLeft, ExternalLink } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
+import { ProductEvidence } from '@/components/sections/ProductEvidence'
 import { getJournalArticle, journalArticles } from '@/lib/journal'
+import { seoAppStoreUrl } from '@/lib/seo'
 
 type ArticlePageProps = {
   params: Promise<{ slug: string }>
@@ -26,6 +28,16 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   return {
     title: `${article.title} | BookQuotes`,
     description: article.summary,
+    alternates: { canonical: `/journal/${article.slug}` },
+    openGraph: {
+      title: `${article.title} | BookQuotes`,
+      description: article.summary,
+      url: `https://bookquotes.uk/journal/${article.slug}`,
+      type: 'article',
+      publishedTime: `${article.publishedISO}T00:00:00.000Z`,
+      modifiedTime: `${article.publishedISO}T00:00:00.000Z`,
+      section: article.category,
+    },
   }
 }
 
@@ -35,6 +47,28 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   if (!article) {
     notFound()
+  }
+
+  const canonicalUrl = `https://bookquotes.uk/journal/${article.slug}`
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.summary,
+    datePublished: article.publishedISO,
+    dateModified: article.publishedISO,
+    author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
+    publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
+    mainEntityOfPage: canonicalUrl,
+  }
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bookquotes.uk' },
+      { '@type': 'ListItem', position: 2, name: 'Journal', item: 'https://bookquotes.uk/journal' },
+      { '@type': 'ListItem', position: 3, name: article.title, item: canonicalUrl },
+    ],
   }
 
   return (
@@ -60,6 +94,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </p>
           </header>
 
+          <ProductEvidence
+            alt="BookQuotes library screen showing search, saved-quote counts, book cards, and grid/list controls without a visible quote passage."
+          />
+
           <div className="bg-paper-warm border-y border-subtle">
             <div className="container-narrow py-12 md:py-16">
               {article.sections.map((section) => (
@@ -82,7 +120,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             BookQuotes is available now on iPhone and iPad.
           </p>
           <a
-            href="https://apps.apple.com/app/id6758091579"
+            href={seoAppStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -93,6 +131,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </a>
         </section>
       </main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Footer />
     </>
   )

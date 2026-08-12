@@ -10,6 +10,7 @@ export type JournalArticle = {
   category: string
   readingTime: string
   published: string
+  publishedISO: string
   sections: JournalSection[]
 }
 
@@ -22,6 +23,7 @@ export const journalArticles: JournalArticle[] = [
     category: 'Reading practice',
     readingTime: '5 min read',
     published: '24 July 2026',
+    publishedISO: '2026-07-24',
     sections: [
       {
         heading: 'Start with a reason to keep the line',
@@ -54,6 +56,7 @@ export const journalArticles: JournalArticle[] = [
     category: 'Annotation',
     readingTime: '4 min read',
     published: '24 July 2026',
+    publishedISO: '2026-07-24',
     sections: [
       {
         heading: 'Wait a day before reviewing',
@@ -86,6 +89,7 @@ export const journalArticles: JournalArticle[] = [
     category: 'Product and privacy',
     readingTime: '4 min read',
     published: '24 July 2026',
+    publishedISO: '2026-07-24',
     sections: [
       {
         heading: 'Remote AI is optional',

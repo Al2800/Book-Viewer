@@ -50,29 +50,6 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen">
         {children}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'SoftwareApplication',
-              name: 'BookQuotes',
-              applicationCategory: 'BooksApplication',
-              operatingSystem: 'iOS, iPadOS',
-              description: 'Capture marked pages from physical books, review extracted passages, and build a searchable personal quote library.',
-              url: 'https://bookquotes.uk',
-              downloadUrl: 'https://apps.apple.com/app/id6758091579',
-              publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
-              featureList: [
-                'Capture marked book pages',
-                'Review and edit extracted passages',
-                'Search a personal quote library',
-                'Organize books, tags and collections',
-                'Export saved reading notes',
-              ],
-            }),
-          }}
-        />
       </body>
     </html>
   )

@@ -1,8 +1,10 @@
 # BookQuotes Organic SEO Content Briefs
 
-Updated: 3 August 2026
+Updated: 11 August 2026
 
-## Publishing Rules
+The initial seven intent briefs now map to the implemented guides, journal workflows and product
+homepage described in [SEOAudit.md](./SEOAudit.md). Keep each page reader-first and recheck
+capabilities against the current build before material edits.
 
 Write from the shipped product and the team's actual reading practice. Do not claim firsthand
 reading of books that were only researched for social content. Each brief becomes one strong page,

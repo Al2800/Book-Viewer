@@ -26,20 +26,24 @@ npm run build
 npm start
 ```
 
-## Deployment to Vercel
+## Deployment to Cloudflare Workers
 
-1. Push the `website` folder to a GitHub repository (or subfolder)
-2. Connect to Vercel
-3. Set the root directory to `website` if it's a subfolder
-4. Vercel auto-detects Next.js and deploys
+The production website is the `bookquotes-website` Cloudflare Worker serving
+`https://bookquotes.uk`. The checked-in `wrangler.jsonc` is the generated Vinext deployment
+manifest; keep it aligned with `vite.config.ts` and the public route read-back.
 
-Or use the Vercel CLI:
+Use a least-privilege `CLOUDFLARE_API_TOKEN` from the local environment. Never commit or print the
+token. Read the account first, then build and deploy from this directory:
 
 ```bash
-npm i -g vercel
-cd website
-vercel
+npx wrangler whoami
+npx vinext deploy --name bookquotes-website
 ```
+
+For a build-only check, use `npm run sites:build`. For a no-upload deployment check, use
+`npx vinext deploy --dry-run`. After a real deployment, read back `/deployment.json`, the sitemap,
+the canonical route matrix, representative guide/journal pages, legal/support routes and normal
+TLS before calling the website live.
 
 ## Project Structure
 
@@ -84,14 +88,14 @@ The site uses a warm, literary color palette:
 | `ink-dark` | #3D3A33 | Body text |
 | `gold-primary` | #B8860B | CTAs, accents |
 
-## Assets Needed
+## Current Assets
 
-Before deploying, add:
+The reviewed website includes:
 
-- [ ] `public/icons/favicon.ico` - Browser favicon
-- [ ] `public/icons/apple-touch-icon.png` - iOS icon
-- [ ] `public/screenshots/*.png` - App screenshots for mockups
-- [ ] `public/og-image.jpg` - Open Graph image (1200x630)
+- [x] `public/icons/favicon.ico` - Browser favicon
+- [x] `public/icons/apple-touch-icon.png` - iOS icon
+- [x] `public/screenshots/library.png` - First-party library evidence figure
+- [x] `public/og.png` - Open Graph image
 
 ## Customization
 

@@ -1,6 +1,6 @@
 # BookQuotes Organic SEO Plan
 
-Updated: 3 August 2026
+Updated: 11 August 2026
 
 ## Purpose
 
@@ -8,8 +8,10 @@ Build a durable search channel for people who already have a reading, annotation
 problem. SEO should support the app and the social channels, not become a second stream of generic
 book content.
 
-There is currently no public website implementation in this repository. This document defines the
-information architecture, content standard and measurement plan before a site is built or hosted.
+The public website implementation lives under `website/` and is served at `https://bookquotes.uk`.
+The current technical baseline, intent map, live read-back and unresolved deployment/host gates are
+tracked in [SEOAudit.md](./SEOAudit.md). Keep source, Worker deployment, public routes and Search
+Console evidence as separate states.
 
 ## Positioning
 
@@ -39,14 +41,14 @@ than pretending that unverified volume estimates are precise.
 
 | Cluster | Search intent | Proposed page | Evidence needed |
 | --- | --- | --- | --- |
-| Save quotes from books | How-to | `/how-to-save-quotes-from-physical-books/` | Real BookQuotes capture and review flow |
-| Digitise book notes | Problem solving | `/how-to-digitise-book-notes/` | Before/after workflow, export options |
-| Digital commonplace book | Concept and workflow | `/digital-commonplace-book/` | Clear definition, practical setup and product fit |
-| Searchable book notes | Product/problem | `/searchable-book-notes/` | Search UI and local-library behaviour |
-| Scan highlighted pages | How-to | `/scan-underlined-book-pages/` | Camera, crop, OCR and review limitations |
-| Book quote organiser for iPhone | Product discovery | `/book-quote-organiser-iphone/` | Current App Store listing, device support and pricing |
-| Remember what you read | Reading practice | `/remember-what-you-read/` | Original reading workflow, not generic productivity claims |
-| Privacy-first reading notes | Trust | `/privacy-first-book-notes/` | Current privacy policy and network behaviour |
+| Save quotes from books | How-to | `/guides/how-to-save-quotes-from-physical-books` | Real BookQuotes capture and review flow |
+| Digitise book notes | Problem solving | `/guides/how-to-digitise-book-notes` | Context, correction and export workflow |
+| Digital commonplace book | Concept and workflow | `/guides/digital-commonplace-book` | Clear definition, practical setup and product fit |
+| Searchable book notes | Product/problem | `/` and related guides | Search UI and local-library behaviour |
+| Scan highlighted pages | How-to | `/guides/scan-underlined-book-pages` | Camera, crop, OCR and review limitations |
+| Book quote organiser for iPhone | Product discovery | `/guides/organise-book-quotes-on-iphone` | Current workflow, device support and App Store CTA |
+| Remember what you read | Reading practice | `/journal/what-to-do-with-book-highlights` | Original reading workflow, not generic productivity claims |
+| Privacy-first reading notes | Trust | `/guides/private-book-notes-app-iphone` | Current privacy policy and network behaviour |
 
 The product page should be the conversion hub. The how-to pages should be useful even to visitors
 who do not install the app, then link naturally to the relevant workflow.
@@ -76,7 +78,8 @@ Before publishing:
 - accessible headings, alt text and visible text equivalents for screenshots;
 - fast mobile pages with compressed images and no app-store-only dead ends;
 - `robots.txt` and an XML sitemap;
-- Google Search Console with sitemap submission and URL Inspection;
+- Google Search Console with sitemap submission and URL Inspection (the `.8.1` child owns the
+  authenticated read-back and must not turn delayed data into zeroes);
 - JSON-LD for `SoftwareApplication` on the product page, `Article` on editorial pages and
   `BreadcrumbList` where appropriate;
 - no review or rating structured data unless genuine, visible, policy-compliant reviews exist;
@@ -99,10 +102,10 @@ accurately.
 
 ### Days 1-14: Foundation
 
-- Choose and configure the public domain.
-- Build the product, About, Privacy, Contact and one how-to page.
-- Add Search Console, sitemap, analytics and UTM conventions.
-- Capture new screenshots from the approved App Store build.
+- Reconcile the public Worker, canonical domain and route matrix.
+- Keep the product, support, privacy, terms, guides and journal routes useful and crawlable.
+- Add Search Console evidence and maintain the sitemap/UTM conventions.
+- Reuse only approved first-party product evidence with meaningful alt text.
 
 ### Days 15-45: Useful search coverage
 

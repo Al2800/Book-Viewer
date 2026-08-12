@@ -1,13 +1,14 @@
 # BookQuotes Keyword Research
 
-Updated: 3 August 2026
+Updated: 11 August 2026
 
 ## Status
 
-This is the first evidence-led keyword pass for the BookQuotes website. It combines live qualitative
+This is the first evidence-led keyword pass for the BookQuotes website. It combines qualitative
 search-result review, competitor language, the shipped product workflow, and likely reader questions.
 It does not claim exact monthly search volume, CPC, or difficulty. Those figures require access to
-Google Keyword Planner, a comparable SEO tool, or first-party Search Console data after launch.
+Google Keyword Planner, a comparable SEO tool, or first-party Search Console data after Search
+Console has accumulated enough first-party evidence.
 
 The working rule is to prioritise search intent that maps to a real BookQuotes workflow. The site
 should answer the reader's problem first and introduce the app where it genuinely helps. It should
@@ -17,14 +18,14 @@ not become a large set of near-duplicate pages built around slightly different k
 
 | Priority | Working query | Intent | SERP evidence | Planned destination | Primary measure |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `how to save quotes from physical books` | How-to / product discovery | Bookly and multiple dedicated quote tools explain camera-to-library workflows | `/guides/how-to-save-quotes-from-physical-books/` | App Store clicks |
-| 1 | `scan underlined book pages` | How-to / OCR | BookLeaf and competing quote scanners lead with photographing printed pages and extracting text | `/guides/scan-underlined-book-pages/` | Guide engagement, App Store clicks |
+| 1 | `how to save quotes from physical books` | How-to / product discovery | Bookly and multiple dedicated quote tools explain camera-to-library workflows | `/guides/how-to-save-quotes-from-physical-books` | App Store clicks |
+| 1 | `scan underlined book pages` | How-to / OCR | BookLeaf and competing quote scanners lead with photographing printed pages and extracting text | `/guides/scan-underlined-book-pages` | Guide engagement, App Store clicks |
 | 1 | `book quote app` | Product discovery | QuoteCache, QuoteMark, Citez and other tools use the category phrase directly | Home page | App Store clicks and branded queries |
-| 1 | `book notes app iPhone` | Product comparison | BookNote and Library Notes show clear iPhone search intent around book-linked notes | `/guides/organise-book-quotes-on-iphone/` | App Store clicks |
-| 2 | `how to digitise book notes` | Problem solving | Results focus on preserving book context, search and retrieval | `/guides/how-to-digitise-book-notes/` | Scroll depth, App Store clicks |
-| 2 | `digital commonplace book` | Concept / workflow | GoodForms, Commonplace and community discussions validate the phrase as a reading and idea-keeping practice | `/guides/digital-commonplace-book/` | Saves, shares, assisted installs |
-| 2 | `organise book quotes on iPhone` | Product comparison | Existing apps emphasise quote capture, book records, tags and search | `/guides/organise-book-quotes-on-iphone/` | App Store clicks |
-| 2 | `private book notes app iPhone` | Trust / product discovery | Privacy and offline-first competitors make local storage and processing boundaries part of the category | `/guides/private-book-notes-app-iphone/` | Privacy-page visits, App Store clicks |
+| 1 | `book notes app iPhone` | Product comparison | BookNote and Library Notes show clear iPhone search intent around book-linked notes | `/guides/organise-book-quotes-on-iphone` | App Store clicks |
+| 2 | `how to digitise book notes` | Problem solving | Results focus on preserving book context, search and retrieval | `/guides/how-to-digitise-book-notes` | Scroll depth, App Store clicks |
+| 2 | `digital commonplace book` | Concept / workflow | GoodForms, Commonplace and community discussions validate the phrase as a reading and idea-keeping practice | `/guides/digital-commonplace-book` | Saves, shares, assisted installs |
+| 2 | `organise book quotes on iPhone` | Product comparison | Existing apps emphasise quote capture, book records, tags and search | `/guides/organise-book-quotes-on-iphone` | App Store clicks |
+| 2 | `private book notes app iPhone` | Trust / product discovery | Privacy and offline-first competitors make local storage and processing boundaries part of the category | `/guides/private-book-notes-app-iphone` | Privacy-page visits, App Store clicks |
 | 3 | `searchable book notes` | Problem solving | BookLeaf, MindNest and quote tools use searchable library language | Home page and internal links | Non-branded impressions |
 | 3 | `save book highlights` | How-to | Bookly and quote apps use highlight-saving language for the same user need | Save-quotes guide | Non-branded impressions |
 | 3 | `book annotation app` | Product discovery | Broader category language around marking, notes and retrieval | Home page and future comparison guide | Search impressions |
@@ -84,9 +85,9 @@ retrieval habit.
 
 ## Measurement Plan
 
-When the domain is live:
+The domain is live, but the following first-party evidence remains a separate operational step:
 
-1. Verify the domain in Google Search Console and submit `/sitemap.xml`.
+1. Verify the domain in Google Search Console and submit `/sitemap.xml` only through the approved `.8.1` workflow.
 2. Group queries into capture, organisation, commonplace, privacy and branded buckets.
 3. Record impressions, clicks, CTR and average position by page and bucket.
 4. Add App Store links with UTM parameters and compare qualified visits, installs and trial starts where attribution is available.
