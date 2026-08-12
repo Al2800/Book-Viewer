@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 8 August 2026
+Updated: 12 August 2026
 
 ## Automation
 
@@ -18,6 +18,46 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 12 August 2026
+
+- Meta Business Suite remains on the `BookQuotes` Facebook Page. The 11 August reading-life
+  prompt is Published once at 13:00 with native reach, views, viewers, follows, interactions,
+  likes, comments, shares, saves and link clicks all displaying 0; watch-time fields are not
+  available. The Scheduled Library reads back one Public item per day from 12 through 18 August
+  at 13:00 Europe/London, Facebook-only and unboosted.
+- Facebook comments reports `No comments`. No routine reply was made and no approval-required
+  draft is outstanding.
+
+### Live audit: 11 August 2026
+
+- Meta Business Suite is operating as the `BookQuotes` Facebook Page. Native Scheduled Library
+  read-back now shows one Public, Facebook-only, unboosted item on each day from 11 to 18 August
+  at 13:00 Europe/London. The queue contains the original 11 August reading-life prompt, the
+  12 August 24-hour highlight test, the 13 August margin-notes prompt, the 14 August marked-line
+  prompt, the 15 August accidental-discovery reading-list prompt, the 16 August reading-reset
+  prompt, the 17 August book-conversation prompt and the 18 August unfinished-book prompt.
+- A duplicate 11 August copy of the 13 August margin-notes prompt was found during native
+  reconciliation and permanently deleted. The valid 13 August item remains present once. No
+  duplicate retry was made while the earlier scheduler state was uncertain.
+- Facebook comments reports `No comments`; Inbox shows no message requiring action. No routine
+  reply was made and no approval-required draft is outstanding.
+
+### Live audit: 11 August 2026, TikTok and Instagram
+
+- TikTok Studio confirms the account username is `@bookquotes.app`. Content lists five Public
+  posts once; the latest is `The Three-Body Problem` reader-fit Reel, content ID
+  `7670655931193068823`, published 5 August 2026 at 22:02 Europe/London. The four earlier posts
+  are dated 28, 29 and 31 July. No TikTok post has been published since 5 August.
+- TikTok Analytics, Last 7 days, reports 0 video views, profile views, likes, comments and
+  shares. Each of the five visible content rows also reports 0 views, 0 likes and 0 comments;
+  comments reports `No comments yet`. Retention, completion, saves, profile visits, follows,
+  link taps and attributable post analytics remain Not available. The account is public: the
+  Private account checkbox is off in Settings.
+- TikTok remains held against the native publishing gate until an attributable analytics entry
+  and normal distribution are evidenced. No second daily slot or catch-up uploads were made.
+- BookQuotes Instagram remains disconnected from Meta Business Suite, so Instagram publication,
+  reach, comments and messages remain Not verified.
 
 ### Live audit: 8 August 2026, 08:09 Europe/London
 

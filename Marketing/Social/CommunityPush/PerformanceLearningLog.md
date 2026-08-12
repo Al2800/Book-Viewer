@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 8 August 2026
+Updated: 12 August 2026
 
 ## Purpose
 
@@ -63,6 +63,74 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 12 August 2026
+
+**Platforms checked:** Meta Business Suite BookQuotes Page, Published and Scheduled Content
+Library, and Facebook comments; TikTok Studio Content, Analytics, Settings and comments.
+
+**Observation**
+
+- Facebook's 11 August reading-life prompt published once at 13:00. Native visible metrics remain
+  0 for reach, views, viewers, follows, interactions, likes, comments, shares, saves and link
+  clicks; watch-time fields are Not available. The future queue reads back one Public,
+  Facebook-only, unboosted item per day from 12 to 18 August at 13:00.
+- TikTok `@bookquotes.app` still has five Public posts, latest 5 August at 22:02. All visible
+  post-level counts and the Last-7-days account analytics remain 0; retention, completion, saves,
+  profile visits, follows, link taps and attributable post analytics are Not available. Comments
+  reports `No comments yet`. Settings confirms the account is public, but the available web Creator
+  Tools menu exposes Analytics only and does not expose Account Check.
+- Instagram remains disconnected. Facebook comments remains empty.
+
+**Interpretation and decision**
+
+- No Facebook creative conclusion is possible from zeroes at this volume. Continue the verified
+  queue and wait for comparable downstream signals.
+- TikTok remains a distribution and measurement blocker, not a verdict on the science-fiction or
+  biography creative. Do not upload, schedule, or increase to two daily posts until a controlled
+  post has attributable views and normal analytics.
+- No hypothesis confidence or experiment result label changed.
+
+**Next actions**
+
+- Reconcile the 12 August Facebook publication and collect its 24-hour metrics on the next run.
+- Keep TikTok publishing paused; check Account Check from the native mobile/creator surface if the
+  user can access it, then retry one controlled post only after analytics attribution is visible.
+
+### 11 August 2026
+
+**Platforms checked:** Meta Business Suite BookQuotes Page, native Scheduled Library and Facebook
+Inbox/comments; TikTok Studio Content, Analytics, Settings and comments.
+
+**Observation**
+
+- Facebook native reconciliation caught and corrected a date-placement error. The repaired queue
+  now reads back one Public, Facebook-only, unboosted item per day from 11 to 18 August at 13:00
+  Europe/London. A duplicate copy of the 13 August margin-notes prompt was deleted; the valid item
+  remains once.
+- TikTok account `@bookquotes.app` lists five Public posts once. The latest is the
+  `The Three-Body Problem` reader-fit Reel, content ID `7670655931193068823`, published 5 August
+  at 22:02. Visible post and Last-7-days account metrics are all 0; deeper distribution and
+  retention measures are Not available. TikTok comments reports no comments.
+- Instagram is still disconnected. Facebook comments reports no comments and Inbox shows no
+  message requiring action.
+
+**Interpretation and decision**
+
+- The Facebook issue was operational and is resolved for the current queue; future runs must always
+  verify native row date, privacy, identity and duplication after each reschedule or delete.
+- TikTok zeroes cannot distinguish failed distribution from an empty account signal because the
+  attributable analytics surface is still unavailable. Do not classify the science-fiction topic,
+  Reel packaging or cadence as a creative failure and do not start two-a-day publishing yet.
+- No hypothesis confidence or experiment result label changed. Instagram has no measurable data.
+
+**Next actions**
+
+- Keep the verified Facebook queue running and collect the first 24-hour reach, views, comments,
+  shares, saves, profile visits, link clicks and follows for each published item.
+- Resolve TikTok account-health/analytics attribution before another upload or schedule action;
+  inspect the native Account Check surface and verify that a new post receives non-zero attributable
+  views before increasing cadence.
 
 ### 8 August 2026, 08:09 BST
 

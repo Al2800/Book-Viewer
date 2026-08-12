@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 8 August 2026
+Updated: 12 August 2026
 
 ## Purpose
 
@@ -63,6 +63,134 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-12, 08:00 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio is signed in as `@bookquotes.app`; the account is public and the
+  account region is United Kingdom.
+- Expected posts: no new TikTok post was released because the native attributable-analytics gate
+  remains unresolved.
+- Published: five Public posts listed once; latest content ID `7670655931193068823`, the
+  `The Three-Body Problem` reader-fit Reel, dated 5 August at 22:02. No post has gone out since.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| TikTok Trends workflow | https://ads.tiktok.com/help/article/how-to-use-trends | Official guidance points creators to current trend surfaces and filters rather than isolated viral examples. | Useful once BookQuotes distribution is measurable. | Short | Continue evidence-led scouting; reject unrelated trends. |
+| TikTok Creative Center | https://ads.tiktok.com/help/article/creative-center | Official Creative Center remains the authoritative source for current creative/trend signals. | Supports UK reader and culture research. | Short | Keep current reader-fit and use-condition briefs ready, without publishing around missing data. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. The account has no attributable distribution evidence.
+- Transferable patterns: retain reader-fit, use-condition and specific-question formats for a later
+  controlled test.
+- Elements explicitly excluded from imitation: unrelated trend bait, copied hooks, automated
+  engagement and follower-acquisition tactics.
+
+**Audience language**
+
+- Comments, searches or questions: no comments; search-query panel reports insufficient traffic.
+- Potential reader-need hooks: existing verified science-fiction reading-route questions remain
+  hypotheses, not validated winners.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: no attributable analytics and no normal distribution signal; Account Check is not
+  exposed in the available web Creator Tools menu.
+
+**Performance**
+
+- 24-hour, 72-hour and seven-day checkpoints: visible views, likes and comments remain 0; deeper
+  measures are Not available and are not converted into zeroes.
+- Missing measures: retention, completion, saves, shares, profile visits, follows, link taps and
+  search attribution.
+
+**Learning**
+
+- Experiment updates: none.
+- Confidence changes: none.
+- Repeat: reader-fit and use-condition briefs after the native gate clears.
+- Modify: verify Account Check and analytics attribution from the native account surface.
+- Pause: two-a-day cadence and further TikTok publishing until one controlled post has measurable
+  distribution.
+
+**Queue**
+
+- Approved: no new post advanced to publishing.
+- In production: maintain the existing three-to-five-item preparation queue.
+- Awaiting evidence or review: native distribution and analytics gate.
+- Requires user approval: none for routine research.
+
+### 2026-08-11, 11:00 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio is signed in as `@bookquotes.app`; Settings shows United Kingdom
+  account region, Public account and comments allowed for Everyone.
+- Expected posts: no new TikTok publication was authorised while the native analytics gate remains
+  unresolved.
+- Published: five Public posts listed once. Latest content ID `7670655931193068823` is the
+  `The Three-Body Problem` reader-fit Reel, dated 5 August at 22:02. There has been no publication
+  since 5 August.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| TikTok trend research workflow | https://ads.tiktok.com/help/article/how-to-use-trends | TikTok's official Trends guidance recommends using current trend surfaces and filters rather than guessing from isolated viral posts. | Use as a research input once account distribution is measurable. | Short | Continue monitoring; do not copy unrelated trends. |
+| TikTok Creative Center | https://ads.tiktok.com/help/article/creative-center | Official Creative Center remains the authoritative place to inspect current UK creative and trend signals. | Supports evidence-first trend scouting. | Short | Record only relevant reader, history, annotation or discovery patterns. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none in this run. No new style claim is warranted from an
+  account with zero attributable distribution.
+- Transferable patterns: keep the existing reader-fit, use-condition and specific-question styles
+  available for the next controlled test.
+- Elements explicitly excluded from imitation: unrelated trending topics, urgency-bait, copied
+  hooks, automated engagement and follower acquisition.
+
+**Audience language**
+
+- Comments and search queries: no comments; TikTok reports insufficient search-query traffic.
+- Potential reader-need hooks: retain the existing verified science-fiction and reading-route
+  questions, but do not treat them as validated winners.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: attributable analytics/distribution remains unresolved; no new upload can pass the
+  current publishing gate.
+
+**Performance**
+
+- 24-hour checkpoints: latest post is beyond 24 hours; visible views, likes and comments remain 0,
+  while deeper measures are Not available.
+- 72-hour checkpoints: due/past for the latest post; visible counts remain 0 and attributable
+  analytics remain Not available.
+- Seven-day checkpoints: not treated as a creative result without attributable analytics.
+- Missing measures: retention, completion, saves, shares, profile visits, follows, link taps and
+  search attribution.
+
+**Learning**
+
+- Experiment updates: no result label or confidence change.
+- Confidence changes: none.
+- Repeat: existing reader-fit and use-condition briefs after the gate clears.
+- Modify: verify Account Check and analytics attribution before changing cadence.
+- Pause: further TikTok publishing and the proposed two-a-day increase until a controlled post has
+  measurable distribution.
+
+**Queue**
+
+- Approved: no new post advanced to publishing.
+- In production: existing three-to-five-item preparation queue remains the appropriate target.
+- Awaiting evidence or review: TikTok native analytics/account-health gate.
+- Requires user approval: none for routine research; any account, billing or platform-status
+  intervention remains manual.
 
 ### 2026-08-08, 08:09 Europe/London
 

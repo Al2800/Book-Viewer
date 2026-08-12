@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 8 August 2026
+Updated: 12 August 2026
 
 ## Method
 
@@ -48,6 +48,28 @@ Result labels:
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 12 August 2026
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7670655931193068823` | TK-008 | 7-day-plus check | 0 views, 0 likes, 0 comments | Last-7-days account totals are 0 for video views, profile views, likes, comments and shares; retention, completion, saves, profile visits, follows, link taps and attributable post analytics Not available | Distribution/measurement blocker persists; do not classify the reader-fit science-fiction execution. |
+| `7668631665064938774` | TK-008 | 12-day-plus check | 0 views, 0 likes, 0 comments | Not available | No like-for-like comparison is valid. |
+
+No confidence or result label changed. Five Public posts and a public account are evidenced, but
+normal attributable analytics are not. The proposed two-a-day cadence remains paused.
+
+### 11 August 2026
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7670655931193068823` | TK-008 | 6-day-plus check | 0 views, 0 likes, 0 comments | Last-7-days account totals are 0 for video views, profile views, likes, comments and shares; retention, completion, saves, profile visits, follows, link taps and attributable post analytics Not available | Distribution/measurement blocker persists; do not classify the reader-fit science-fiction execution. |
+| `7668631665064938774` | TK-008 | 11-day-plus check | 0 views, 0 likes, 0 comments | Not available | Distribution/measurement blocker; no like-for-like comparison is valid. |
+| `7667570006032387350` | TK-005 | 14-day-plus check | 0 views, 0 likes, 0 comments | Not available | Distribution/measurement blocker; no creative verdict. |
+
+No confidence or result label changed. TikTok's public account and five Public rows are evidenced,
+but attributable analytics are not. The two-a-day request remains paused until a controlled post
+produces a normal, attributable analytics entry.
 
 ### 8 August 2026, 08:09 Europe/London
 
