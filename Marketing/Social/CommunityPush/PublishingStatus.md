@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 12 August 2026
+Updated: 14 August 2026
 
 ## Automation
 
@@ -18,6 +18,77 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 14 August 2026, 08:09 Europe/London
+
+- Meta Business Suite is operating as the `BookQuotes` Facebook Page. The 13 August 13:00
+  scheduled item published once, but the native Published table now displays the placeholder
+  caption `dry-run-only` for content ID `122107333143415831`. Visible native metrics are reach 2,
+  views 2 and viewers 2; interactions, likes, comments, shares, saves, follows and link clicks are
+  0, with watch-time fields Not available. This is a content-integrity incident, not a creative
+  result.
+- The Scheduled Library reads back five future Public, Facebook-only, unboosted items on 14, 15,
+  16, 17 and 18 August at 13:00 Europe/London. No duplicate is present in the read-back.
+- Facebook Inbox/comments reports no comments or messages requiring action. No routine reply was
+  made. The placeholder caption was not edited automatically; restoring the intended caption is an
+  approval-required Business Suite mutation.
+
+### Live audit: 14 August 2026, TikTok and Instagram
+
+- TikTok Studio is signed in as `@bookquotes.app`. The initial dashboard read-back showed 1
+  account-level video view in the last seven days and 0 profile views, likes, comments and shares;
+  the value is not attributable to a content ID. The account-check route redirected to the main
+  dashboard and exposed placeholders rather than an account-health result. The recent-post surface
+  still shows the Three-Body Problem and Player of Games BookQuotes posts; no new post has been
+  verified since 5 August.
+- No TikTok upload, schedule, edit, deletion or reply was made. Publishing and the proposed
+  two-a-day cadence remain paused until Content/Account Check access and an attributable analytics
+  entry are available.
+- Meta Business Suite settings shows the connected Instagram accounts `@bookquotes.app` and
+  `@shiftpro.app`. BookQuotes profile editing remains verification-gated; no Instagram post or
+  native performance metric was verified.
+
+### Incident: 13 August 2026, token-write probe
+
+- Graph now grants `pages_manage_posts` and `instagram_content_publish` in addition to the
+  existing read scopes. Identity remains Page `1246405755221229` / Instagram `bookquotes.app`.
+- A CLI permission probe accidentally replaced the published 13 August 13:00 Facebook
+  margin-notes prompt (`1246405755221229_122107333143415831`) with the placeholder
+  `dry-run-only`. No other post was changed. Instagram was not mutated.
+- The original caption is not stored in the repository. Restore it from Meta Business Suite
+  edit history before treating today's item as the intended reader prompt.
+- The BookQuotes CLI now refuses updates while `writes_enabled` is false and refuses probe
+  placeholder messages. `--approve` must not be used to test token scope.
+- `bin/meta_cli.py publish` is the intended scheduler. Facebook can schedule or post now.
+  Instagram can post now from a public JPEG URL and has no native Graph schedule. TikTok
+  remains refused. Bank items must be approved. `writes_enabled` stays false so live
+  caption edits remain locked.
+
+### Live audit: 13 August 2026, 08:00 Europe/London
+
+- Meta Business Suite is operating as the `BookQuotes` Facebook Page. The 12 August `Try the
+  24-hour highlight test` prompt is Published once at 13:00 with visible reach 1 and the other
+  exposed interaction, view, viewer, follow, comment, share, save and link-click values at 0;
+  watch-time fields are Not available. This is an initial under-24-hour read-back, not a creative
+  verdict.
+- The Scheduled Library reads back one Public, Facebook-only, unboosted item per day on 13, 14,
+  15, 16, 17 and 18 August at 13:00 Europe/London. Planner and Scheduled Library agree on the
+  visible queue; no duplicate is present in the read-back.
+- Facebook comments reports `No comments`. Inbox shows no message requiring action. No routine
+  reply was made and no approval-required draft is outstanding.
+
+### Live audit: 13 August 2026, TikTok and Instagram
+
+- TikTok Studio was initially readable as `@bookquotes.app`. The dashboard showed 1 account-level
+  video view in the last seven days, with profile views, likes, comments and shares at 0. The
+  single view is not attributable to a post, so it cannot close the native analytics gate.
+- The TikTok Studio Content and Account Check routes returned `Access Denied` during the same run.
+  No new post has been published since the 5 August `The Three-Body Problem` Reel, and no upload,
+  schedule, edit, deletion or reply was made. Publishing remains paused.
+- Meta Business Suite now visibly includes the connected Instagram asset `@bookquotes.app` under
+  the combined BookQuotes asset. The Instagram profile editor still requires account verification;
+  no Instagram post, reach, comment or message metric was verified. Facebook scheduling remains
+  Facebook-only.
 
 ### Live audit: 12 August 2026
 
@@ -222,8 +293,10 @@ Live audit on 30 July at 08:20 Europe/London:
 
 ## Instagram
 
-BookQuotes Instagram is not connected to the BookQuotes Meta Business Suite portfolio. The
-Facebook schedule therefore does not publish to Instagram.
+The `@bookquotes.app` Instagram asset is now visible in the BookQuotes Meta Business Suite
+portfolio, but the profile editor is gated by Meta's account-verification prompt. No Instagram
+publication or native performance data is verified, and the Facebook schedule remains
+Facebook-only until Instagram publishing is explicitly completed and checked.
 
 Once the account is created or recovered and connected:
 

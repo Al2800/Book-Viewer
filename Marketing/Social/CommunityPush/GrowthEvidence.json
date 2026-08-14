@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-12T07:39:59+01:00",
+  "updated_at": "2026-08-14T08:09:11+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -252,6 +252,60 @@
         "follows": null
       },
       "notes": "Preflighted in FB001HighlightTest.md. Do not mark scheduled until Meta Scheduled Library read-back succeeds."
+    },
+    {
+      "observation_id": "fb-2026-08-13-highlight-test-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122107058703415831",
+      "title": "Try the 24-hour highlight test",
+      "format": "text",
+      "published_at": "2026-08-12T13:00:00+01:00",
+      "observed_at": "2026-08-13T08:00:41+01:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": "FB-001",
+      "treatment": "practical_reader_ritual",
+      "rights_basis": "Original BookQuotes text; no third-party visual, cover or quotation.",
+      "metrics": {
+        "views": 0,
+        "reach": 1,
+        "viewers": 0,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": 0,
+        "follows": 0
+      },
+      "notes": "Published once and reconciled in Meta Scheduled/Published Library. Initial under-24-hour read-back; do not interpret as a creative result."
+    },
+    {
+      "observation_id": "fb-2026-08-14-caption-integrity-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122107333143415831",
+      "title": "dry-run-only",
+      "format": "text",
+      "published_at": "2026-08-13T13:00:00+01:00",
+      "observed_at": "2026-08-14T08:09:11+01:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text; placeholder caption detected; content-integrity incident.",
+      "metrics": {
+        "views": 2,
+        "reach": 2,
+        "viewers": 2,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": 0,
+        "follows": 0
+      },
+      "notes": "Published once; native read-back displays the placeholder `dry-run-only`. Metrics are not usable for creative learning. Caption restoration requires an approved Business Suite action."
     }
   ],
   "search_snapshots": [

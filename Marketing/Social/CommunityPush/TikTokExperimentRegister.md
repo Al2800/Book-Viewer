@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 12 August 2026
+Updated: 14 August 2026
 
 ## Method
 
@@ -48,6 +48,28 @@ Result labels:
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 14 August 2026, 08:09 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7670655931193068823` | TK-008 | 9-day-plus check | Post-level result Not available; initial account dashboard showed 1 video view, 0 profile views, 0 likes, 0 comments and 0 shares | The account-level view is not attributable; account-check redirected to the dashboard without an account-health result | No creative verdict; distribution/measurement blocker persists. |
+| `7668631665064938774` | TK-008 | 14-day-plus check | Post-level result Not available | No attributable analytics were exposed | No like-for-like comparison is valid. |
+| `7667570006032387350` | TK-005 | 17-day-plus check | Post-level result Not available | No attributable analytics were exposed | No creative verdict; retain the publishing gate. |
+
+No confidence or result label changed. The account-level one-view signal remains unattributed, and
+the proposed two-a-day cadence remains paused.
+
+### 13 August 2026, 08:00 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7670655931193068823` | TK-008 | 8-day-plus check | Post-level result Not available; last readable account dashboard showed 1 video view, 0 profile views, 0 likes, 0 comments and 0 shares | Content route returned `Access Denied`; retention, completion, saves, profile visits, follows, link taps and attributable analytics Not available | The account-level view cannot be assigned to this post; distribution/measurement blocker persists. |
+| `7668631665064938774` | TK-008 | 13-day-plus check | Post-level result Not available | Content route returned `Access Denied`; no attributable analytics | No like-for-like comparison is valid. |
+| `7667570006032387350` | TK-005 | 16-day-plus check | Post-level result Not available | Content route returned `Access Denied`; no attributable analytics | No creative verdict; retain the publishing gate. |
+
+No confidence or result label changed. The account-level one-view signal is not attributable to a
+content ID, and the proposed two-a-day cadence remains paused.
 
 ### 12 August 2026
 

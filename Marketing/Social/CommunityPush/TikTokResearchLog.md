@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 12 August 2026
+Updated: 14 August 2026
 
 ## Purpose
 
@@ -63,6 +63,137 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-14, 08:09 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio is signed in as `@bookquotes.app` and the account is public. The
+  initial dashboard showed 1 account-level video view in the last seven days and 0 profile views,
+  likes, comments and shares; this is not attributable to a post. The account-check URL redirected
+  to the dashboard and returned placeholder metrics rather than an account-health result.
+- Expected posts: no new TikTok post was released while the native attributable-analytics gate is
+  unresolved.
+- Published: the recent-post surface still shows the Three-Body Problem reader-fit Reel and the
+  Player of Games reading-route Reel. No new publication has been verified since 5 August.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| TikTok Creative Center | https://ads.tiktok.com/help/article/creative-center | The dashboard's current Inspiration surface surfaced unrelated Film & TV, news and creator guidance rather than a relevant BookTok pattern. | No current signal is strong enough to alter the reader-led queue. | Short | Do not adopt unrelated trend bait; continue reader-fit, use-condition and specific-question briefs. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. Native post-level distribution remains unavailable.
+- Transferable patterns: retain reader-fit, use-condition, honest-reservation and specific-question
+  formats already prepared.
+- Elements explicitly excluded from imitation: unrelated news/entertainment bait, copied hooks,
+  automated engagement and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: no comments were visible; search and attributable post data
+  were not available.
+- Potential reader-need hooks: existing reading-route and reader-fit questions remain hypotheses,
+  not validated winners.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: no attributable analytics; account-check did not expose account health; no new creative
+  passed the publication gate.
+
+**Performance**
+
+- 24-hour checkpoints: existing posts have no attributable post-level analytics.
+- 72-hour checkpoints: existing posts have no attributable post-level analytics.
+- Seven-day checkpoints: the account-level one-view signal cannot be assigned to a content ID.
+- Missing measures: post-level views, reach, watch time, completion, saves, shares, profile visits,
+  follows, link taps and search attribution.
+
+**Learning**
+
+- Experiment updates: no result label changed.
+- Confidence changes: none.
+- Repeat: reader-fit and use-condition briefs after the native gate clears.
+- Modify: restore Content and Account Check access before another controlled test.
+- Pause: two-a-day cadence and further TikTok publishing until one controlled post has attributable
+  analytics.
+
+**Queue**
+
+- Approved: existing approved or near-approved reader-led queue remains available.
+- In production: maintain three to five viable pieces without manufacturing filler.
+- Awaiting evidence or review: native distribution and analytics gate.
+- Requires user approval: account verification, Business/Advanced Access or platform-status
+  intervention.
+
+### 2026-08-13, 08:00 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio initially identified `@bookquotes.app`, public account, with the
+  dashboard showing 1 account-level video view in the last seven days and 0 profile views, likes,
+  comments and shares. The Content and Account Check routes then returned `Access Denied`.
+- Expected posts: no new TikTok post was released while the native attributable-analytics gate is
+  unresolved.
+- Published: the last readable recent-post surface showed the 5 August `The Three-Body Problem`
+  Reel and the 31 July Culture reading-route Reel. No publication has been verified since 5 August.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Center as the source for current trends, Top Ads, keywords and creative patterns | https://ads.tiktok.com/help/article/creative-center | Official TikTok for Business guidance, updated July 2026. | Supports the existing evidence-first research loop; today's logged-in Inspiration surface was dominated by unrelated news and entertainment. | Short | Do not adopt a trend unless it is relevant to readers and can be tested with a clean BookQuotes hypothesis. |
+| #BookTok as a durable reader-discovery context | https://newsroom.tiktok.com/the-booktok-communitys-2026-summer-reading-list?lang=en | TikTok reported more than 80 million global #BookTok posts as of 1 June 2026; this is platform context, not BookQuotes performance evidence. | Supports reader-led recommendations, reading routes and community questions as the main editorial territory. | Medium | Keep reader value first; do not increase cadence from platform-scale claims alone. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. A comparable 15-20-post reader sample could not be
+  completed because the native content surface returned Access Denied after the dashboard read.
+- Transferable patterns: retain precise reader-fit, use-condition, honest-reservation and specific-
+  question formats already in the queue.
+- Elements explicitly excluded from imitation: unrelated news/entertainment trend bait, copied
+  hooks, automated engagement, follower-acquisition tactics and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: no comments were visible; search and attributable post data were
+  not available.
+- Potential reader-need hooks: existing reading-route and reader-fit questions remain hypotheses,
+  not validated winners.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: Content and Account Check access denied; the one account-level view is not attributable
+  to a post; no new creative passed the publication gate.
+
+**Performance**
+
+- 24-hour checkpoints: existing posts have no attributable post-level analytics.
+- 72-hour checkpoints: existing posts have no attributable post-level analytics.
+- Seven-day checkpoints: account-level 1 video view is not enough to classify any execution.
+- Missing measures: post-level views, reach, watch time, completion, saves, shares, profile visits,
+  follows, link taps and search attribution.
+
+**Learning**
+
+- Experiment updates: no result label changed.
+- Confidence changes: none.
+- Repeat: reader-fit and use-condition briefs after the native gate clears.
+- Modify: restore Content and Account Check access before another publishing test.
+- Pause: two-a-day cadence and further TikTok publishing until one controlled post has attributable
+  analytics.
+
+**Queue**
+
+- Approved: existing approved or near-approved reader-led queue remains available.
+- In production: maintain three to five viable pieces without manufacturing filler.
+- Awaiting evidence or review: native distribution and analytics gate.
+- Requires user approval: any account verification, Business/Advanced Access or platform-status
+  intervention.
 
 ### 2026-08-12, 08:00 Europe/London
 

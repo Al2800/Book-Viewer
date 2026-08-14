@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 12 August 2026
+Updated: 14 August 2026
 
 ## Purpose
 
@@ -63,6 +63,137 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 13 August 2026, Meta write-scope incident
+
+**Platforms checked:** BookQuotes-only Graph CLI against Page `1246405755221229` and Instagram
+`17841434821362428`.
+
+**Observation**
+
+- A refreshed user token now grants Facebook and Instagram write names:
+  `pages_manage_posts` and `instagram_content_publish`, plus
+  `instagram_manage_comments`. Read scopes remain granted. Identity is still
+  `api_identity_verified` for BookQuotes / `bookquotes.app`.
+- Facebook listing still returns 19 owned posts. Instagram listing still returns 0 published
+  media items.
+- A probe `update --approve` executed against the live 13 August 13:00 post
+  `1246405755221229_122107333143415831` and replaced its caption with `dry-run-only`.
+  That was an operator error, not a publishing decision. The original caption is not in the
+  repo.
+
+**Interpretation and decision**
+
+- Token auth now covers Facebook and Instagram for the bound BookQuotes assets.
+- Facebook and Instagram publication remain review-gated. The runtime policy still has
+  `writes_enabled` false. Instagram published-media edit remains unsupported.
+- Restore the 13 August caption from Meta Business Suite before any creative read-back of
+  that post.
+
+**Next actions**
+
+- Restore post `1246405755221229_122107333143415831` from Business Suite edit history.
+- Keep `--approve` off unless a specific, rights-cleared mutation is requested.
+
+### 13 August 2026
+
+**Platforms checked:** Meta Business Suite BookQuotes Page, Published and Scheduled Content
+Library, Facebook comments and Inbox; TikTok Studio dashboard, Content and Account Check routes;
+Meta Business Suite Instagram asset.
+
+**Observation**
+
+- Facebook's 12 August `Try the 24-hour highlight test` prompt is Published once at 13:00. The
+  initial native read-back shows reach 1, visible views, viewers, follows, interactions, likes,
+  comments, shares, saves and link clicks at 0, with watch-time fields Not available. The queue is
+  reconciled and contains one Public, Facebook-only, unboosted item per day from 13 through 18
+  August at 13:00 Europe/London.
+- Facebook comments reports `No comments` and Inbox shows no message requiring action. No routine
+  reply was made and no approval-required draft is outstanding.
+- TikTok Studio was initially readable as `@bookquotes.app` and showed 1 account-level video view
+  in the last seven days; profile views, likes, comments and shares were 0. The view is not
+  attributable to a content ID. The Content and Account Check routes then returned `Access Denied`.
+- The last readable TikTok recent-post surface still showed the 5 August `The Three-Body Problem`
+  Reel and the 31 July Culture Reel. No TikTok post has been added since 5 August. Instagram's
+  `@bookquotes.app` asset is visible in Meta Business Suite, but profile editing is blocked by
+  account verification and no Instagram publication or performance data is verified.
+
+**External signals**
+
+- TikTok's [Creative Center guidance](https://ads.tiktok.com/help/article/creative-center) remains
+  the authoritative place to inspect current trends, keywords, creative patterns and best
+  practices. The logged-in Inspiration surface was dominated by unrelated news and entertainment
+  topics today, so no generic trend was promoted into the BookQuotes queue.
+- TikTok's [BookTok 2026 summer reading list](https://newsroom.tiktok.com/the-booktok-communitys-2026-summer-reading-list?lang=en)
+  reports more than 80 million global #BookTok posts as of 1 June 2026. This supports the reader
+  community as a durable context, not a reason to change BookQuotes cadence without account data.
+
+**Interpretation and decision**
+
+- Facebook is operational: the identity, publication, queue, privacy and no-boost checks agree.
+  The one reach signal is too small for a creative or timing decision; continue the existing
+  reader-led queue.
+- TikTok has moved from literal account-level zero to one un-attributed view, but this is still a
+  distribution and measurement blocker. Do not classify any creative, activate routine posting or
+  move to two posts per day from this signal.
+- Instagram is connected at the Business Suite asset level but not operationally verified for
+  profile editing or publishing. Keep Instagram manual and separate from Facebook reporting.
+- No hypothesis confidence or experiment result label changed.
+
+**Next actions**
+
+- Keep Facebook's six-day verified queue and collect the 12 August prompt's 24-hour read-back on
+  the next run.
+- Restore TikTok's native Content and Account Check access, then require one attributable post
+  analytics entry before any new upload or cadence increase.
+- Complete Meta's Instagram account-verification step manually before profile changes or Instagram
+  publishing are attempted.
+
+### 14 August 2026, 08:09 Europe/London
+
+**Platforms checked:** Meta Business Suite BookQuotes Page, Published and Scheduled Content
+Library, Facebook comments and Inbox; TikTok Studio dashboard and account-check route; Meta Business
+Suite Instagram account settings.
+
+**Observation**
+
+- The 13 August 13:00 Facebook item published once, but the Published table displays the
+  placeholder caption `dry-run-only` for content ID `122107333143415831`. Native visible metrics are
+  reach 2, views 2 and viewers 2; interactions, likes, comments, shares, saves, follows and link
+  clicks are 0, and watch-time fields are Not available. This invalidates creative interpretation
+  of that item until its intended caption is restored.
+- The Facebook queue remains healthy at five future Public, Facebook-only, unboosted items for 14
+  through 18 August at 13:00 Europe/London. No duplicate, comment or message was found.
+- TikTok Studio initially read `@bookquotes.app` and showed 1 un-attributed account-level video view
+  in the last seven days, with profile views, likes, comments and shares at 0. The account-check
+  route redirected to the dashboard and did not provide an account-health result. The visible
+  recent-post surface still contains the Three-Body Problem and Player of Games posts; no new
+  TikTok post has been verified since 5 August.
+- Meta Business Suite settings shows the connected `@bookquotes.app` Instagram asset, but profile
+  editing remains verification-gated and no Instagram publication or native performance data is
+  verified.
+
+**Interpretation and decision**
+
+- Facebook distribution is measurable at a very small level, but the placeholder caption is a
+  content-integrity blocker. Do not use the 2-reach/2-view signal to judge the creative, and do not
+  mutate the live post automatically.
+- TikTok remains a distribution and measurement blocker, not evidence that the current science-
+  fiction creative is bad. Keep publishing and the two-a-day cadence paused.
+- Instagram is connected at the asset level but not operationally verified for profile editing or
+  publishing. Keep it separate from Facebook reporting.
+- No hypothesis confidence or experiment result label changed.
+
+**Next actions**
+
+- Restore the 13 August Facebook caption through an approved Business Suite edit-history action,
+  then capture a corrected read-back before using the post in learning comparisons.
+- Keep the Facebook queue running while treating the placeholder item as an incident; do not use
+  the CLI `--approve` path for testing.
+- Restore TikTok Content/Account Check access and require one attributable post analytics entry
+  before any upload or cadence increase.
+- Complete Meta's Instagram account-verification step manually before profile changes or Instagram
+  publishing are attempted.
 
 ### 12 August 2026
 
