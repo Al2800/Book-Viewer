@@ -1,13 +1,13 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-14T08:09:11+01:00</code>.
+Generated from structured evidence updated <code>2026-08-15T09:04:08+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-07T08:09:11+01:00</code> to <code>2026-08-14T08:09:11+01:00</code>
-- Published Facebook items represented: 3
-- Visible views: 2
-- Visible reach: 3
+- Reporting window: <code>2026-08-08T09:04:08+01:00</code> to <code>2026-08-15T09:04:08+01:00</code>
+- Published Facebook items represented: 4
+- Visible views: 33
+- Visible reach: 30
 - Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
@@ -16,7 +16,14 @@ Generated from structured evidence updated <code>2026-08-14T08:09:11+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-15 | published | instagram | BookQuotesIntro | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-14 | published | instagram | Your reading journal should not become homework | reel | initial | 31 | 27 | 0.0 | 0.0 | Review against declared experiment |
+| 2026-08-14 | published | facebook | Do you keep the first line, the last line, or the line you argued with? | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
+| 2026-08-14 | failed | tiktok | Commonplace Ritual adapter test | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-14 | published | facebook | Your reading journal should not become homework | reel | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-13 | published | facebook | dry-run-only | text | initial | 2 | 2 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-08-13 | published | facebook | dry-run-only | text | 24h-plus | 2 | 2 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-12 | published | facebook | Try the 24-hour highlight test | text | initial | 0 | 1 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-10 | draft | facebook | The 24-hour highlight test | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-08-07 | published | facebook | Find the line | reel | initial | 0 | 0 | Not available | Not available | Insufficient distribution |
@@ -43,8 +50,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 3
-- Channel-only items: 3
+- Durable published items: 7
+- Channel-only items: 7
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

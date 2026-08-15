@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 14 August 2026
+Updated: 15 August 2026
 
 ## Purpose
 
@@ -63,6 +63,73 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-15, 09:04 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio is signed in as `@bookquotes.app` and the account is public. The
+  dashboard shows 1 account-level video view in the last seven days, with profile views, likes,
+  comments and shares at 0; the view is not attributable to a content ID. The account-check route
+  again redirected to the dashboard and returned placeholder metrics instead of account health.
+- Expected posts: no new TikTok post is eligible while the native attributable-analytics gate is
+  unresolved.
+- Published: the native recent-post surface still contains only the 5 August Three-Body Problem
+  Reel and the 31 July Player of Games Reel. The attempted 14 August Commonplace Ritual adapter
+  post failed with `Daily active user quota reached`; no TikTok content ID was created.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current TikTok Inspiration surface | TikTok Studio, signed-in dashboard | Current topics were dominated by an eclipse, earthquake/news, trial and Film & TV guidance rather than a relevant BookTok reader pattern. | No current trend is strong enough to override the distribution gate or reader-led queue. | Short | Keep reader-fit, use-condition and specific-question briefs; reject unrelated trend bait. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. The native account has no new attributable post-level
+  evidence.
+- Transferable patterns: retain reader-fit, use-condition, honest-reservation and specific-question
+  formats already prepared.
+- Elements explicitly excluded from imitation: unrelated news/entertainment bait, copied hooks,
+  automated engagement, quota workarounds and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: TikTok reports `No comments yet`; attributable search data were
+  not available.
+- Potential reader-need hooks: existing reading-route and reader-fit questions remain hypotheses,
+  not validated winners.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native account-check did not expose account health; the adapter quota failure created
+  no content ID; no new creative passed the native publication gate.
+
+**Performance**
+
+- 24-hour, 72-hour and seven-day checkpoints: no new TikTok content ID was created; existing posts
+  retain no attributable post-level analytics.
+- Missing measures: post-level views, reach, watch time, completion, saves, shares, profile visits,
+  follows, link taps and search attribution.
+
+**Learning**
+
+- Experiment updates: record the adapter failure as an operational failure only; no result label
+  changed.
+- Confidence changes: none.
+- Repeat: reader-fit and use-condition briefs after the native gate clears.
+- Modify: restore native Content and Account Check access and resolve quota state before another
+  controlled test.
+- Pause: TikTok publishing and the two-a-day cadence.
+
+**Queue**
+
+- Approved: existing approved or near-approved reader-led queue remains available.
+- In production: maintain three to five viable pieces without manufacturing filler.
+- Awaiting evidence or review: native distribution, account-health, quota and analytics gates.
+- Requires user approval: account verification, Business/Advanced Access or platform-status
+  intervention.
 
 ### 2026-08-14, 08:09 Europe/London
 

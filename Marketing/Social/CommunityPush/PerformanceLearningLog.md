@@ -195,6 +195,61 @@ Suite Instagram account settings.
 - Complete Meta's Instagram account-verification step manually before profile changes or Instagram
   publishing are attempted.
 
+### 15 August 2026, 09:04 Europe/London
+
+**Platforms checked:** Meta Business Suite BookQuotes Published and Scheduled Content Library,
+Facebook and Instagram comments/Inbox, Instagram account settings; TikTok Studio dashboard, recent
+posts and account-check route.
+
+**Observation**
+
+- The scheduled Facebook text item for 14 August published once at 13:00 as content ID
+  `122107651779415831`. Visible native reach, views, viewers, interactions, likes, comments,
+  shares, saves, follows and link clicks are all 0; watch-time fields are Not available.
+- An additional Facebook Reel published at 12:47 as `122107649667415831` and also has visible
+  metrics at 0. This resulted in two primary Facebook items on 14 August and is logged as an
+  extra-slot observation, not as evidence for a higher routine cadence.
+- The 13 August Facebook placeholder incident remains live: `dry-run-only`, reach 2, views 2,
+  viewers 2, all other visible engagement 0. The caption was not changed. The future queue has
+  four Public Facebook-only items for 15 through 18 August at 13:00, below the seven-day target
+  but above the three-day alert threshold.
+- Meta Published read-back confirms three Instagram Reels. The 14 August 22:15 Commonplace Ritual
+  Reel has reach 27 and views 31, with viewers/watch-time Not available and visible engagement 0.
+  The 15 August 08:12 intro Reel and the 08:21 library-cover variant each show 0 views so far;
+  reach/viewers/watch-time are Not available at this early checkpoint. The two intro variants share
+  overlapping core copy and require a duplicate-candidate review before further Instagram posting.
+- Facebook and Instagram comments show no comments. No Instagram direct message requiring action
+  was visible. No routine reply was made.
+- TikTok Studio still shows only two BookQuotes posts, latest 5 August at 22:02. The dashboard
+  shows one account-level video view, profile views/likes/comments/shares 0, and no attributable
+  content ID. The 14 August adapter attempt failed with `Daily active user quota reached` before
+  TikTok created a content ID. The account-check route redirected to the dashboard and returned
+  placeholder metrics.
+
+**Interpretation and decision**
+
+- Facebook has functioning native publication, but the extra same-day Reel means the current output
+  should not be used to justify a higher cadence. The queue needs rebuilding toward the seven-day
+  target without duplicating or silently editing the live placeholder.
+- Instagram now has a measurable early signal on the first test Reel, but the two later intro posts
+  are too new and not a clean comparison because their copy overlaps. Do not infer a winner or
+  automatically delete either post.
+- TikTok remains a native distribution and measurement blocker. The adapter quota failure is an
+  operational failure, not a creative verdict, and does not satisfy the runbook's native validation
+  gate. Keep TikTok posting and the two-a-day cadence paused.
+- No hypothesis confidence or experiment result label changed.
+
+**Next actions**
+
+- Restore the 13 August Facebook caption through an approved Business Suite edit-history action.
+- Rebuild the Facebook queue beyond 18 August only after checking for concurrent scheduler writes;
+  do not create a duplicate 15 August item.
+- Treat the 14 August Instagram Reel as the first early baseline, wait for 24-hour read-back on the
+  two intro variants, and review the duplicate candidate manually before any further Instagram
+  publishing.
+- Resolve TikTok's native account/content access and quota state, then require one attributable
+  native post analytics entry before retrying or increasing cadence.
+
 ### 12 August 2026
 
 **Platforms checked:** Meta Business Suite BookQuotes Page, Published and Scheduled Content

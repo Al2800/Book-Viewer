@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 14 August 2026
+Updated: 15 August 2026
 
 ## Method
 
@@ -48,6 +48,17 @@ Result labels:
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 15 August 2026, 09:04 Europe/London
+
+- No new TikTok content ID was created. The attempted Commonplace Ritual adapter test failed with
+  `Daily active user quota reached` before publication, so it has no 24-hour, 72-hour or seven-day
+  checkpoint and must not be scored as a creative result.
+- The native account still exposes only the two BookQuotes posts dated 31 July and 5 August. The
+  dashboard's one account-level video view is not attributable, and the account-check route returns
+  the dashboard with placeholders rather than account-health evidence.
+- No confidence or result label changed. TikTok publishing and the proposed two-a-day cadence
+  remain paused.
 
 ### 14 August 2026, 08:09 Europe/London
 

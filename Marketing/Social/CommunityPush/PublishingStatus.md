@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 14 August 2026
+Updated: 15 August 2026
 
 ## Automation
 
@@ -18,6 +18,99 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 15 August 2026, 09:04 Europe/London
+
+- The 14 August scheduled Facebook text item `Do you keep the first line, the last line, or the
+  line you argued with?` published once at 13:00 as content ID `122107651779415831`. Visible reach,
+  views, viewers, interactions, likes, comments, shares, saves, follows and link clicks are all
+  0; watch-time fields are Not available.
+- An additional Facebook Reel, `Your reading journal should not become homework`, published at
+  12:47 as content ID `122107649667415831` and also reads back with visible metrics at 0. This
+  created two primary Facebook items on 14 August, so it is recorded as an extra-slot observation
+  rather than treated as evidence for increasing cadence.
+- The 13 August item still displays `dry-run-only` with reach/views/viewers 2/2/2. It remains a
+  content-integrity blocker and was not edited automatically. The Scheduled Library now reads
+  four future Public, Facebook-only, unboosted items on 15, 16, 17 and 18 August at 13:00; this is
+  above the three-day alert threshold but below the seven-day runbook target.
+- Facebook comments show no comments. Instagram comments show no comments, and no Instagram direct
+  message requiring action was visible. No routine reply was made.
+
+### Live audit: 15 August 2026, Instagram and TikTok
+
+- Meta Published read-back confirms three BookQuotes Instagram Reels. The 14 August 22:15
+  Commonplace Ritual test has reach 27 and views 31, with viewers/watch-time not exposed and all
+  visible engagement at 0. The 15 August 08:12 intro Reel and 08:21 library-cover variant each
+  show 0 views so far, with reach and viewer data not exposed at this early checkpoint.
+- The two 15 August intro Reels share overlapping core copy and should be reviewed as a duplicate
+  candidate before any further Instagram posting. No deletion was made automatically. Instagram
+  publishing works through the current Graph path, but native profile editing remains verification-
+  gated and Instagram has no native scheduling path in the current setup.
+- TikTok Studio still shows only two BookQuotes posts: the latest is the Three-Body Problem Reel
+  from 5 August at 22:02 and the earlier Player of Games Reel from 31 July at 11:07. The dashboard
+  shows 1 account-level video view and 0 profile views, likes, comments and shares; no content ID is
+  attributable to that view. The attempted 14 August adapter post failed with `Daily active user
+  quota reached` and created no TikTok content ID. No retry was made.
+- TikTok account-check again redirected to the dashboard and returned placeholder metrics rather
+  than an account-health result. TikTok publishing and the two-a-day cadence remain paused.
+
+### Instagram pin intro cover: 15 August 2026, 08:21 Europe/London
+
+- Replaced the illustrated-page cover with a ShiftPro-style still: dark ink field,
+  concentric rings, brand top-left, and a real phone mockup of the library home
+  (`screens/appstore/iphone/01_library_grid.png`). The video hook now opens on the
+  same library capture. BookQuotes gold/ink/bone only.
+- New Instagram ID `18093336461178403`. Permalink
+  `https://www.instagram.com/reel/DcDVq58DNVI/`.
+- Graph cannot update a published Reel cover or pin. Pin this new Reel in the
+  Instagram app: Reel → ••• → Pin to profile. The 08:12 Reel
+  `https://www.instagram.com/reel/DcDUmjEDAs3/` is still live; do not delete it
+  unless asked.
+- CLI read-back timed out after publish; the media list confirms the post.
+
+### Instagram pin intro: 15 August 2026, 08:12 Europe/London
+
+- Posted a 30-second product explainer Reel `BookQuotesIntro` with dedicated cover
+  `out/bookquotes-intro-cover.png`. Dark high-contrast tile, brand on, four shipped
+  capabilities: photograph a marked page, review extracted words, save with the book,
+  search the personal library. End card names tags, collections and export only.
+- Instagram ID `17953145868015200`. Permalink
+  `https://www.instagram.com/reel/DcDUmjEDAs3/`.
+- Superseded as the pin candidate by the 08:21 library-phone cover. Graph cannot pin.
+- CLI read-back timed out after publish; the media list confirms the post.
+
+### Instagram test: 14 August 2026, 22:15 Europe/London
+
+- Graph does not need the Business Suite profile-verification prompt to publish. That prompt
+  only blocks native profile edits. `instagram_content_publish` was already granted.
+- The Facebook Commonplace Ritual Reel was reused: same MP4, same cover, same caption.
+- The CLI now hosts the local files on `media.zernio.com`, waits for the Instagram container to
+  finish processing, then publishes immediately. No Instagram schedule exists.
+- Live Instagram Reel `18112192355072092`. Permalink
+  `https://www.instagram.com/reel/DcCQSLRj430/`.
+- This is a one-off test, not the start of automatic Instagram posting. Bank cards remain drafts.
+  Instagram still cannot be scheduled.
+
+### TikTok adapter: 14 August 2026, 13:00 Europe/London
+
+- `publish --channel tiktok --approve` now uses Zernio for `@bookquotes.app` only. Local Remotion
+  MP4s and dedicated covers upload, then post with the same `--approve` gate as Facebook.
+- A Commonplace Ritual test was submitted once. Zernio accepted the video and cover, then TikTok
+  returned `Daily active user quota reached.` Zernio post `6a7f031b2fc86999e9e30916` is `failed`.
+  No TikTok content ID was created. Do not retry today.
+
+### Live publish: 14 August 2026, 12:48 Europe/London
+
+- Published one Facebook Reel as a cover-and-video test: Commonplace Ritual, with the dedicated
+  `FeedCover` still `out/community/commonplace-ritual-cover.png`.
+- Graph accepted the preferred thumbnail. Content ID
+  `1246405755221229_122107649667415831`. Permalink
+  `https://www.facebook.com/reel/3633316180171083/`.
+- Caption is the existing launch-pack commonplace copy. This is not a duplicate of the 5 August
+  commonplace carousel.
+- Instagram and TikTok were not posted. Find the line, Annotation debate, One line, and Marked
+  page were not re-uploaded.
+- The 13 August `dry-run-only` caption was not edited.
 
 ### Live audit: 14 August 2026, 08:09 Europe/London
 
@@ -293,10 +386,11 @@ Live audit on 30 July at 08:20 Europe/London:
 
 ## Instagram
 
-The `@bookquotes.app` Instagram asset is now visible in the BookQuotes Meta Business Suite
-portfolio, but the profile editor is gated by Meta's account-verification prompt. No Instagram
-publication or native performance data is verified, and the Facebook schedule remains
-Facebook-only until Instagram publishing is explicitly completed and checked.
+The `@bookquotes.app` Instagram asset is connected in Graph as `17841434821362428`. The Business
+Suite profile editor can still show a verification prompt; that does not block CLI publishing.
+A first Graph Reel is live: `https://www.instagram.com/reel/DcCQSLRj430/`. Native insights after
+24 hours remain unread. Instagram posts are immediate only. The Facebook 13:00 queue stays
+Facebook-only unless a separate `--now` Instagram publish is run.
 
 Once the account is created or recovered and connected:
 
