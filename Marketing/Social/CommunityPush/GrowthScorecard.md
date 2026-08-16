@@ -1,13 +1,13 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-15T09:04:08+01:00</code>.
+Generated from structured evidence updated <code>2026-08-16T09:02:07+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-08T09:04:08+01:00</code> to <code>2026-08-15T09:04:08+01:00</code>
-- Published Facebook items represented: 4
-- Visible views: 33
-- Visible reach: 30
+- Reporting window: <code>2026-08-09T09:02:07+01:00</code> to <code>2026-08-16T09:02:07+01:00</code>
+- Published Facebook items represented: 5
+- Visible views: 65
+- Visible reach: 63
 - Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
@@ -16,9 +16,13 @@ Generated from structured evidence updated <code>2026-08-15T09:04:08+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-08-15 | published | facebook | A reading list is useful when it leaves room for the book you did not know you needed. | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | 24h-plus | 7 | 7 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-15 | published | instagram | BookQuotesIntro | reel | 24h-plus | 12 | 12 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-14 | published | instagram | Your reading journal should not become homework | reel | initial | 31 | 27 | 0.0 | 0.0 | Review against declared experiment |
+| 2026-08-14 | published | instagram | Your reading journal should not become homework | reel | 24h-plus | 44 | 41 | 0.0 | 0.0 | Review against declared experiment |
 | 2026-08-14 | published | facebook | Do you keep the first line, the last line, or the line you argued with? | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-14 | failed | tiktok | Commonplace Ritual adapter test | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-14 | published | facebook | Your reading journal should not become homework | reel | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
@@ -50,8 +54,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 7
-- Channel-only items: 7
+- Durable published items: 8
+- Channel-only items: 8
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

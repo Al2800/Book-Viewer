@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 15 August 2026
+Updated: 16 August 2026
 
 ## Method
 
@@ -48,6 +48,15 @@ Result labels:
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 16 August 2026, 09:02 Europe/London
+
+- No new TikTok content ID or native publication exists. The account still exposes only the 31 July
+  and 5 August BookQuotes posts; the account-level one-view signal remains unattributed.
+- The account-check route again redirects to the dashboard with placeholders rather than account-
+  health evidence. No 24-hour, 72-hour or seven-day checkpoint can be opened for a new post.
+- No confidence or result label changed. TikTok publishing and the proposed two-a-day cadence
+  remain paused.
 
 ### 15 August 2026, 09:04 Europe/London
 

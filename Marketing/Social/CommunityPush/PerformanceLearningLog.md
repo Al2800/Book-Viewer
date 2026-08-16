@@ -250,6 +250,53 @@ posts and account-check route.
 - Resolve TikTok's native account/content access and quota state, then require one attributable
   native post analytics entry before retrying or increasing cadence.
 
+### 16 August 2026, 09:02 Europe/London
+
+**Platforms checked:** Meta Business Suite BookQuotes Published and Scheduled Content Library,
+Facebook and Instagram comments/Inbox, Instagram account settings; TikTok Studio dashboard, recent
+posts and account-check route.
+
+**Observation**
+
+- The 15 August Facebook reading-list prompt published once at 13:01 as content ID
+  `122107908201415831`. Visible reach, views, viewers, interactions, likes, comments, shares,
+  saves, follows and link clicks remain 0; watch-time fields are Not available.
+- The 13 August `dry-run-only` placeholder remains live at reach/views/viewers 2/2/2, and the 14
+  August text plus extra Reel remain at visible zeroes. The future Facebook queue is now three
+  Public Facebook-only items for 16 through 18 August at 13:00, below the seven-day target but at
+  the three-day threshold. No new schedule item was created while the concurrent publishing path
+  and caption incident remain under review.
+- Instagram read-back now shows reach/views of 41/44 for the 14 August Commonplace Ritual Reel,
+  12/12 for the 15 August 08:12 intro Reel and 7/7 for the 08:21 library-cover variant. Visible
+  engagement is 0 across all three. Viewers, completion, saves and full retention details are Not
+  available. The two intro variants continue to share overlapping copy and are not a clean A/B test.
+- Facebook and Instagram comments are empty, and Instagram Direct shows no messages. No routine reply
+  was made.
+- TikTok still has only two native BookQuotes posts, latest 5 August. The dashboard remains at one
+  unattributed account-level video view and zero profile views, likes, comments and shares. The
+  account-check route redirects to the dashboard without account-health evidence. No TikTok upload,
+  schedule, edit, deletion or reply was made.
+
+**Interpretation and decision**
+
+- Facebook publication is functioning, but zero engagement across recent items and the unresolved
+  placeholder mean there is no basis for increasing the Facebook cadence or judging the creative.
+  The queue needs replenishing toward seven days after the concurrent write path is reconciled.
+- Instagram has the first measurable reach signal, but no downstream engagement or retention data.
+  Treat the 14 August Reel as an early baseline only; do not call the two intro variants a winner or
+  delete either automatically.
+- TikTok remains an access, distribution and attribution blocker. The two-a-day cadence stays paused.
+- No hypothesis confidence or experiment result label changed.
+
+**Next actions**
+
+- Restore the 13 August Facebook caption through an approved Business Suite edit-history action and
+  reconcile the scheduler before extending the queue.
+- Wait for fuller Instagram retention data and manually decide whether the duplicate intro variant
+  should remain live.
+- Resolve TikTok account-health and quota state, then require one attributable native post entry
+  before retrying publication.
+
 ### 12 August 2026
 
 **Platforms checked:** Meta Business Suite BookQuotes Page, Published and Scheduled Content

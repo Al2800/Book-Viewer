@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 15 August 2026
+Updated: 16 August 2026
 
 ## Automation
 
@@ -18,6 +18,34 @@ daily evidence and creative-pattern scout, maintains a preparation queue and run
 experiment and 70/20/10 portfolio review on Mondays.
 
 ## Facebook
+
+### Live audit: 16 August 2026, 09:02 Europe/London
+
+- The 15 August scheduled Facebook text item `A reading list is useful when it leaves room for
+  the book you did not know you needed` published once at 13:01 as content ID
+  `122107908201415831`. Visible reach, views, viewers, interactions, likes, comments, shares,
+  saves, follows and link clicks are all 0; watch-time fields are Not available.
+- The 13 August placeholder item remains `dry-run-only` at reach/views/viewers 2/2/2. It was not
+  edited automatically. The 14 August text and extra Reel also remain at visible zeroes.
+- The Scheduled Library now reads three future Public, Facebook-only, unboosted items on 16, 17 and
+  18 August at 13:00. This is at the three-day threshold and below the seven-day runbook target; no
+  new item was created while the concurrent publishing path and placeholder incident remain under
+  review.
+- Facebook comments show no comments. Instagram comments show no comments and Instagram Direct
+  shows no messages. No routine reply was made.
+
+### Live audit: 16 August 2026, Instagram and TikTok
+
+- Instagram's 14 August 22:15 Commonplace Ritual Reel now reads reach 41 and views 44, with visible
+  engagement at 0. The 15 August 08:12 intro Reel reads reach/views 12/12, and the 08:21 library-
+  cover variant reads 7/7. Viewers, completion and full retention details remain Not available.
+- The two 15 August intro variants still share overlapping core copy. No deletion or further
+  Instagram publication was made automatically; keep them as a duplicate-candidate comparison until
+  the user decides whether one should remain live.
+- TikTok Studio still shows only two native BookQuotes posts: 5 August at 22:02 and 31 July at
+  11:07. The dashboard remains at 1 account-level video view, with profile views, likes, comments
+  and shares at 0 and no attributable content ID. Account Check again redirects to the dashboard
+  without account-health evidence. TikTok remains paused.
 
 ### Live audit: 15 August 2026, 09:04 Europe/London
 
