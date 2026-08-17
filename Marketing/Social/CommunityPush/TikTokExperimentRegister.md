@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 16 August 2026
+Updated: 17 August 2026
 
 ## Method
 
@@ -48,6 +48,26 @@ Result labels:
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 17 August 2026, 09:03 Europe/London
+
+- Native Recent posts now provides a complete five-item BookQuotes inventory. The Public content
+  IDs are `7667570006032387350`, `7667846219120626966`, `7667829238065646870`,
+  `7668631665064938774` and `7670655931193068823`; the latest was published on 5 August at 22:02
+  Europe/London. No new TikTok post has appeared since then.
+- At the seven-day-plus audit, every native row shows 0 views, 0 likes and 0 comments. Native
+  reach, viewers, watch time, completion, saves, shares, profile visits, follows and link taps are
+  not exposed. The dashboard key metrics remain placeholders and Account Check returns Access
+  Denied.
+- A separate Zernio health read reports an active account and analytics access, but the required
+  native account-health and attributable analytics gate is not yet satisfied. The 14 August
+  `Daily active user quota reached` attempt created no TikTok content ID and is excluded from
+  result scoring.
+- No confidence or result label changed. There is no valid strongest or weakest execution because
+  the account shows absent visible distribution rather than comparable creative evidence.
+- Decision: keep publication and the proposed two-a-day cadence paused. Prepare the next portfolio
+  as 70% reader-fit/use-condition recommendations, 20% history/culture/annotation bridges and 10%
+  controlled native-photo/slideshow/audio tests. Do not schedule until the native gate is clear.
 
 ### 16 August 2026, 09:02 Europe/London
 

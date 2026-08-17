@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 14 August 2026
+Updated: 17 August 2026
 
 ## Purpose
 
@@ -249,6 +249,85 @@ posts and account-check route.
   publishing.
 - Resolve TikTok's native account/content access and quota state, then require one attributable
   native post analytics entry before retrying or increasing cadence.
+
+### 17 August 2026, 09:03 Europe/London
+
+**Platforms checked:** Meta Business Suite BookQuotes Published and Scheduled Content Library,
+Facebook comments and Instagram comments/Direct; TikTok Studio dashboard, native Recent posts and
+Account Check.
+
+**Facebook seven-day review**
+
+- The 16 August reading-reset prompt published once at 13:01 as content ID
+  `122108191239415831`. At the 24-hour-plus checkpoint, visible reach, views, viewers,
+  interactions, comments, shares, saves, link clicks and follows are all 0; watch-time fields are
+  Not available.
+- The visible seven-day sample remains distribution-starved: the 13 August placeholder is still
+  at 2 reach / 2 views / 2 viewers, the 14 August text and extra Reel are at 0, the 15 August
+  reading-list prompt is at 0, and the 16 August reading-reset prompt is at 0. Non-follower reach,
+  meaningful comments, shares, saves, profile visits, link clicks, follows and App Store signals are
+  Not available or zero where the native table exposes them.
+- The Scheduled Library contains only two future Public Facebook-only, unboosted items: 17 and 18
+  August at 13:00. The queue is therefore shorter than the three-day alert threshold and below the
+  seven-day target. No replacement was scheduled while the `dry-run-only` caption incident and
+  concurrent publishing path remain unresolved.
+- No Facebook comments or Instagram comments/Direct messages were visible. No routine reply was
+  made.
+
+**Facebook interpretation and decision**
+
+- There is no defensible strongest or weakest creative by downstream value: every recent item has
+  either near-zero distribution or an unresolved publication-integrity confound. Do not classify the
+  reading prompt, reset prompt or Reel as a topic or format failure.
+- Keep the Facebook cadence at one primary item per day. Do not increase to two daily items until
+  the placeholder caption is restored through approved Business Suite edit history and the queue is
+  reconciled in the Scheduled Library.
+
+**Instagram supporting read-back**
+
+- Three Reels remain live. The 14 August Commonplace Reel reads 41 reach / 44 views; the 15 August
+  08:12 intro reads 12 / 12; and the 08:21 library-cover intro reads 7 / 7. Visible likes,
+  comments, shares, saves and follows remain 0, while viewers, completion and full retention are
+  Not available. The two intro variants still overlap in copy, so this is not a clean comparison.
+
+**TikTok seven-day review**
+
+- Native Recent posts now lists five Public BookQuotes videos, correcting the earlier incomplete
+  inventory: the 28 July marked-page product Reel, two 29 July biography Reels, the 31 July Player
+  of Games route, and the 5 August Three-Body Problem route (`7670655931193068823`). There has
+  been no new TikTok post since 5 August.
+- All five native rows show 0 views, 0 likes and 0 comments. Native reach, viewers, watch time,
+  completion, saves, shares, profile visits, follows and link taps are not exposed in the current
+  Content view. The dashboard key metrics remain `--`, and the Account Check route now returns
+  Access Denied rather than an account-health result. A separate Zernio health read reports synced
+  analytics access, but that does not replace the required native account-health and attributable
+  read-back gate.
+- No post can be ranked as strongest or weakest. The zeros are evidence of absent visible
+  distribution, not evidence that the creative topic failed. No confidence or experiment result
+  label changed.
+
+**TikTok portfolio and next test**
+
+- Keep the preparation portfolio at 70% reader-fit/use-condition recommendations, 20% adjacent
+  history, culture and annotation bridges, and 10% controlled native-photo/slideshow/audio tests.
+- Publishing and the proposed two-a-day cadence remain paused until the native account check and
+  attributable analytics gate is clear. The 14 August Zernio attempt remains a quota failure with
+  no TikTok content ID; it must not be counted as a creative result or duplicated.
+
+**App Store and attribution**
+
+- No new App Store outcome signal is available. The current authorized read path still lacks
+  App Analytics, Sales and Finance report access, so downloads, activations, sales and proceeds are
+  not inferred from social zeros.
+
+**Next actions**
+
+- Restore the 13 August Facebook caption through an approved Business Suite edit-history action,
+  then extend the queue only after the Scheduled Library confirms each saved item.
+- Keep the Instagram duplicate candidate for manual review; do not delete or publish another Reel
+  automatically.
+- Reconnect or verify the TikTok/Zernio account before its reported token expiry, then require one
+  attributable native post analytics entry before any retry or cadence increase.
 
 ### 16 August 2026, 09:02 Europe/London
 

@@ -1,11 +1,11 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-16T09:02:07+01:00</code>.
+Generated from structured evidence updated <code>2026-08-17T09:03:42+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-09T09:02:07+01:00</code> to <code>2026-08-16T09:02:07+01:00</code>
-- Published Facebook items represented: 5
+- Reporting window: <code>2026-08-10T09:03:42+01:00</code> to <code>2026-08-17T09:03:42+01:00</code>
+- Published Facebook items represented: 6
 - Visible views: 65
 - Visible reach: 63
 - Meaningful interactions: 0
@@ -16,6 +16,7 @@ Generated from structured evidence updated <code>2026-08-16T09:02:07+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-08-16 | published | facebook | Try a small reading reset | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | facebook | A reading list is useful when it leaves room for the book you did not know you needed. | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | 24h-plus | 7 | 7 | 0.0 | 0.0 | Insufficient distribution |
@@ -32,9 +33,14 @@ Generated from structured evidence updated <code>2026-08-16T09:02:07+01:00</code
 | 2026-08-10 | draft | facebook | The 24-hour highlight test | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-08-07 | published | facebook | Find the line | reel | initial | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-06 | published | facebook | A reading habit you abandoned? | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
+| 2026-08-05 | published | tiktok | Should you read The Three-Body Problem? | reel | 7d-audit | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-05 | published | facebook | Ten-minute commonplace ritual | carousel | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-04 | published | facebook | The last line copied by hand | text | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-03 | published | facebook | Annotation debate | reel | audit | 1 | 1 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-07-31 | published | tiktok | Want to try the Culture without a giant primer? | reel | 7d-audit | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-07-29 | published | tiktok | Five presidential biographies worth the commitment | reel | 7d-audit | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-07-29 | published | tiktok | Should you read Team of Rivals? | reel | 7d-audit | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-07-28 | published | tiktok | Still losing the lines you underlined? | reel | 7d-audit | 0 | Not available | Not available | Not available | Insufficient distribution |
 
 ## Experiment readiness
 
@@ -54,8 +60,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 8
-- Channel-only items: 8
+- Durable published items: 9
+- Channel-only items: 9
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

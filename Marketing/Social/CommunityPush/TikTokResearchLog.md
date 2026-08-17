@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 16 August 2026
+Updated: 17 August 2026
 
 ## Purpose
 
@@ -63,6 +63,74 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-17, 09:03 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio is signed in as `@bookquotes.app` and the account is public. The
+  dashboard key metrics show placeholders (`--`), and the native Account Check route returns
+  Access Denied rather than a health result.
+- Published: the native Recent posts surface lists five Public BookQuotes videos once: marked-page
+  product proof (28 July, `7667570006032387350`), Team of Rivals (29 July,
+  `7667846219120626966`), presidential biographies (29 July, `7667829238065646870`), Player of
+  Games (31 July, `7668631665064938774`) and Three-Body Problem (5 August,
+  `7670655931193068823`). This corrects the previous incomplete two-post inventory.
+- Expected posts: no new TikTok post is eligible while the native account-health and attributable
+  analytics gates remain unresolved. There has been no new post since 5 August.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current TikTok Inspiration surface | TikTok Studio, signed-in dashboard | The accessible surface continues to prioritise eclipse, news/trial and Film & TV topics rather than a relevant BookTok reader pattern. | No current signal changes the editorial mix or clears the distribution gate. | Short | Keep reader-fit, use-condition and honest-reservation briefs ready; reject unrelated trend bait. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. The five native rows expose no useful comparative
+  performance signal; all show 0 views, 0 likes and 0 comments.
+- Transferable patterns: retain reader-fit, use-condition, honest-reservation and specific-question
+  formats already prepared. Keep the 70/20/10 preparation portfolio unchanged.
+- Elements explicitly excluded from imitation: unrelated news/entertainment bait, copied hooks,
+  automated engagement, quota workarounds and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: TikTok reports `No comments yet`; attributable search data remain
+  unavailable.
+- Potential reader-need hooks: existing reading-route and reader-fit questions remain hypotheses,
+  not validated winners.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native account health is not readable, dashboard account metrics are placeholders, and
+  native retention, completion, saves, shares, profile visits, follows and link taps remain
+  unavailable. The separate Zernio health report does not substitute for the native gate.
+
+**Performance**
+
+- Seven-day checkpoints: the 5 August Three-Body Problem Reel is beyond seven days and reads 0
+  visible views, 0 likes and 0 comments. The four older Public rows show the same visible result.
+- Missing measures: native reach, viewers, watch time, completion, saves, shares, profile visits,
+  follows, link taps and search attribution.
+
+**Learning**
+
+- No confidence or style-catalogue change is warranted. The account has absent visible distribution,
+  not enough evidence to call any topic or format a failure.
+- Repeat: prepare reader-fit and use-condition recommendations.
+- Modify: verify account health and native analytics before changing the publishing system.
+- Pause: publication, two-a-day cadence and any quota workaround.
+
+**Queue**
+
+- Approved: existing evidence-backed briefs and rights-cleared BookQuotes-owned assets.
+- In production: none published or scheduled this run.
+- Awaiting evidence or review: 3-5-item preparation queue, including reader-fit, annotation
+  conversation and controlled audio/native-photo tests.
+- Requires user approval: any workaround, account reconnection confirmation or response to a
+  TikTok account restriction.
 
 ### 2026-08-16, 09:02 Europe/London
 

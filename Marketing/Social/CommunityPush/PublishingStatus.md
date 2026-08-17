@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 16 August 2026
+Updated: 17 August 2026
 
 ## Automation
 
@@ -9,13 +9,60 @@ Routine organic Facebook publishing is now authorised to run automatically under
 publication, performs preflight and rights checks, and logs every action.
 
 TikTok research, briefing, quality control and learning may run automatically under
-`TikTokOperatingRunbook.md`. TikTok publishing and all Instagram activity remain manual until
-their account connections and native posting flows have been verified.
+`TikTokOperatingRunbook.md`. TikTok publishing stays approval-gated (`--approve`) through
+Zernio. Instagram can publish immediately through Graph (`--now`) but cannot be scheduled;
+the daily automation does not post Instagram unless someone runs that command.
 
 The daily `bookquotes-daily-social-check` automation now coordinates both channels at 09:00
 Europe/London. Facebook retains its existing routine publishing authority. TikTok performs a
 daily evidence and creative-pattern scout, maintains a preparation queue and runs a deeper
 experiment and 70/20/10 portfolio review on Mondays.
+
+### TikTok health: 17 August 2026, 07:20 Europe/London
+
+- Zernio now returns a live `@bookquotes.app` account: active, no reconnect flag,
+  analytics access true, last sync 05:55 Europe/London, no sync error. `meta_cli.py
+  posts --channel tiktok` reads this path.
+- Five native videos have content IDs and synced metrics. All current values are 0.
+  That closes the old “no attributable analytics” gap. It does not show distribution.
+- The 14 August Commonplace Zernio post `6a7f031b2fc86999e9e30916` is still `failed`
+  with `Daily active user quota reached.` No TikTok content ID. A new-day retry is
+  allowed; do not reuse that failed Zernio ID.
+- The Zernio TikTok token expires at 22:46 UTC today. Reconnect in Zernio before then
+  or tonight’s publish path dies.
+
+### Instagram: why nothing new since 15 August
+
+- Graph is connected and can publish Reels immediately. It cannot schedule. The daily
+  09:00 job only maintains the Facebook queue, so Instagram stays quiet until someone
+  runs `publish --channel instagram --now --approve`.
+- Three Reels are live. Numbers are unchanged from 16 August: Commonplace 44/41, first
+  intro 12/12, library-phone intro 7/7. Still 0 likes, comments, saves, followers.
+- Profile-editor verification does not block Graph publish.
+
+### Live audit: 17 August 2026, 09:03 Europe/London
+
+- Facebook Published now shows the 16 August reading-reset item as content ID
+  `122108191239415831`, published at 13:01. Its visible reach, views, viewers, interactions,
+  likes, comments, shares, saves, follows and link clicks are all 0; watch-time fields are Not
+  available.
+- Facebook Scheduled now contains only two future Public, Facebook-only, unboosted items: 17 and
+  18 August at 13:00. This is below the three-day alert threshold and below the seven-day target.
+  No replacement was scheduled while the live `dry-run-only` caption incident and concurrent write
+  path remain under review.
+- Facebook comments show no comments. Instagram comments show no comments, and Instagram Direct
+  shows no messages. No routine reply was made.
+- Native TikTok Recent posts now lists five Public BookQuotes videos, not two: marked-page product
+  proof (28 July, `7667570006032387350`), Team of Rivals (29 July,
+  `7667846219120626966`), presidential biographies (29 July, `7667829238065646870`), Player of
+  Games (31 July, `7668631665064938774`) and Three-Body Problem (5 August,
+  `7670655931193068823`). The latest native post is therefore 5 August at 22:02; no new post has
+  appeared since then.
+- Every native TikTok row shows 0 views, 0 likes and 0 comments. The TikTok dashboard key metrics
+  remain placeholders, and the native Account Check route returns Access Denied. The separate
+  Zernio health report says analytics access is enabled, but the native account-health and
+  attributable analytics gate is still not satisfied. TikTok publication and the proposed two-a-day
+  cadence remain paused.
 
 ## Facebook
 
