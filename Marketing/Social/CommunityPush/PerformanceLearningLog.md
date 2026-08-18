@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 17 August 2026
+Updated: 18 August 2026
 
 ## Purpose
 
@@ -63,6 +63,58 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 18 August 2026, 09:01 Europe/London
+
+**Platforms checked:** Meta Business Suite BookQuotes Published and Scheduled Content Library,
+Facebook comments, Instagram comments and Direct; TikTok Studio dashboard, native Recent posts,
+Inspiration and Account Check.
+
+**Observation**
+
+- Facebook Published shows the 17 August 13:10 post `122108480163415831` at reach 1, views 0,
+  viewers 0, interactions 0, likes 0, comments 0, shares 0, saves 0 and follows 0. Watch time and
+  link clicks are Not available. A separate 17 August 13:00 prompt `122108480745415831` is also
+  visible with all exposed metrics at zero.
+- Facebook Scheduled shows only two Public Facebook-only, unboosted rows, both at 18 August 13:00.
+  This conflicts with the older logged 15-item bank queue. The queue was not edited or extended
+  while the native state was contradictory.
+- Instagram's latest published item is the presidential-biographies Reel
+  `17905441377304338`, published 17 August at 11:54. The current native read-back is 32 views,
+  26 reach, 38 seconds watch time and 1 second average play time; visible interactions, likes,
+  comments, shares and saves are 0. The current row does not expose follows, saves or link clicks.
+- TikTok Recent posts shows `7674952452055076118` once as Public at
+  `https://www.tiktok.com/@bookquotes.app/video/7674952452055076118`, published 17 August at
+  11:55. The row reads 855 views, 2 likes and 0 comments. The five older BookQuotes rows remain at
+  0 views, 0 likes and 0 comments. This is the first non-zero attributable native TikTok result.
+- The TikTok Account Check URL resolved to the signed-in Studio surface with no visible warning or
+  restriction text, but no formal account-health report was exposed. Treat that as a limitation,
+  not as a guarantee that no restriction exists.
+- Facebook comments, Instagram comments/Direct and TikTok comments were empty. No routine reply
+  was made. App Store downloads, activations and sales remain Not available.
+
+**Interpretation and decision**
+
+- The TikTok distribution and attribution blocker has materially eased: one post is Public once and
+  has a native addressable analytics entry. That does not yet establish a creative winner; the
+  Commonplace Reel has only one meaningful result.
+- Activate the TikTok establishment phase at one reader-first post per day at 19:30 Europe/London,
+  maintaining the 60/20/15/5 mix. The next eligible prepared item is Category Reel `cr-01` (Player
+  of Games) on 19 August. Do not introduce a second daily slot until seven comparable posts have
+  data.
+- Keep Facebook at one primary item per day, but do not schedule into the contradictory native
+  queue until its saved rows are reconciled. Do not infer topic failure from Facebook zeroes or the
+  small Instagram Reel sample.
+- No hypothesis confidence or result label changed. The next useful comparison is distribution and
+  downstream value across the first seven TikTok establishment posts.
+
+**Next actions**
+
+- Reconcile the Facebook Scheduled Library against the bank before adding the missing future days.
+- Let the TikTok reconnect job refresh the expiring token, then advance `cr-01` through the full
+  evidence, rights and phone-sized preflight gates for the 19 August 19:30 slot.
+- Keep all sensitive, billing, privacy, account-health and App Store replies drafted for review;
+  none are currently awaiting approval.
 
 ### 13 August 2026, Meta write-scope incident
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 17 August 2026
+Updated: 18 August 2026
 
 ## Purpose
 
@@ -63,6 +63,73 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-18, 09:01 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio is signed in as public `@bookquotes.app`. Native Recent posts now
+  lists the Commonplace Reel `7674952452055076118` once as Public with an addressable permalink.
+- Published: the Commonplace Reel, "Your reading journal should not become homework", on 17 August
+  at 11:55. Native row: 855 views, 2 likes and 0 comments. The five older native rows remain at
+  0 views, 0 likes and 0 comments.
+- Expected posts: routine establishment is now active at one primary post per day at 19:30
+  Europe/London. The next prepared item is Category Reel `cr-01`, Player of Games, on 19 August.
+  No second daily Reel is scheduled for 18 August.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current Inspiration surface | TikTok Studio Inspiration, signed-in dashboard | Visible topics were broad entertainment/news subjects such as UFC 330, Disney D23 and Film & TV recommendations rather than a useful BookTok-specific signal. | Do not let unrelated high-volume topics displace reader-fit recommendations. | Short | Keep the prepared reader-use-condition and honest-reservation briefs. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. The first non-zero BookQuotes result clears the distribution
+  question but is not enough to declare a winning execution.
+- Transferable patterns: retain reader-fit openings, practical reading rituals, clear reservations
+  and specific reader questions. Keep one variable per test.
+- Elements explicitly excluded from imitation: unrelated trend bait, copied wording or artwork,
+  automated engagement, quota workarounds and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: TikTok reports `No comments yet`; attributable search language
+  remains Not available.
+- Potential reader-need hooks: continue testing practical reading systems and use-condition
+  recommendations rather than generic best-book claims.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none; the Commonplace Reel uses BookQuotes-owned Remotion artwork
+  and its dedicated cover already recorded in the rights ledger.
+- Blockers: the native Account Check surface exposed no visible warning or restriction text but did
+  not provide a formal health report. Record the limitation and continue normal monitoring.
+
+**Performance**
+
+- 24-hour-plus checkpoint: `7674952452055076118`, approximately 21 hours after publication and
+  within the operational checkpoint minimum, 855 views, 2 likes and 0 comments; likes are 2.34 per
+  1,000 views. Reach, watch time, completion, saves, shares, profile visits, follows and link taps
+  are Not available in the native Content view.
+- 72-hour and seven-day checkpoints: pending.
+
+**Learning**
+
+- The native publication-once and attributable-analytics gate is now satisfied for routine organic
+  publishing. No creative winner or loser is established from one post.
+- Repeat: one reader-first post daily at 19:30 during establishment.
+- Modify: keep the portfolio at 60% recommendations, 20% reader culture, 15% product proof and 5%
+  company updates; use the next category Reel as the controlled continuation.
+- Pause: a second daily slot until seven comparable posts have data.
+
+**Queue**
+
+- Approved: Category Reels `cr-01` through `cr-07`, subject to the daily preflight gate.
+- In production: none required for the next slot; `cr-01` assets are present.
+- Awaiting evidence or review: later category briefs and the audio/native-photo test.
+- Requires user approval: paid promotion, sensitive replies, account-health appeals and rights-
+  uncertain material.
 
 ### 2026-08-17, 09:03 Europe/London
 

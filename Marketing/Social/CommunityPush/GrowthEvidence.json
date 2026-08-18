@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-17T09:03:42+01:00",
+  "updated_at": "2026-08-18T09:01:15+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -69,10 +69,31 @@
     },
     "activation_definition": "The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.",
     "app_store_campaign_links": {
-      "available": false,
-      "value": null,
-      "reason": "No generated App Store Connect campaign link has been read back, and the public App Store Connect API does not create campaign links.",
-      "next_action": "Create channel-specific campaign links in App Store Connect through an explicitly approved UI step, then record only the generated URLs and identifiers."
+      "available": true,
+      "value": [
+        {
+          "channel": "facebook",
+          "campaign_id": "facebook",
+          "url": "https://apps.apple.com/app/apple-store/id6758091579?pt=128448172&ct=facebook&mt=8"
+        },
+        {
+          "channel": "instagram",
+          "campaign_id": "instga",
+          "url": "https://apps.apple.com/app/apple-store/id6758091579?pt=128448172&ct=instga&mt=8"
+        },
+        {
+          "channel": "tiktok",
+          "campaign_id": "tiktok",
+          "url": "https://apps.apple.com/app/apple-store/id6758091579?pt=128448172&ct=tiktok&mt=8"
+        },
+        {
+          "channel": "bookquotes_website",
+          "campaign_id": "b00k quotes",
+          "url": "https://apps.apple.com/app/apple-store/id6758091579?pt=128448172&ct=b00k%20quotes&mt=8"
+        }
+      ],
+      "reason": null,
+      "next_action": "Use these generated URLs on future posts and site CTAs. Instagram token is instga and the website token is b00k quotes as generated; regenerate only if cleaner tokens are wanted."
     }
   },
   "experiments": [
@@ -735,7 +756,7 @@
       "status": "published",
       "experiment_id": null,
       "treatment": null,
-      "rights_basis": "BookQuotes-owned Remotion Reel and dedicated cover; native TikTok read-back.",
+      "rights_basis": "BookQuotes-owned Remotion Reel and dedicated cover; Zernio publish of the Commonplace retry.",
       "metrics": {
         "views": 0,
         "reach": null,
@@ -777,6 +798,230 @@
       },
       "metrics_unavailable_reason": "Native TikTok Content exposed views, likes and comments only; reach, viewers, interactions, shares, saves, link clicks and follows were not exposed in this read-back. Dashboard account metrics remain placeholders.",
       "notes": "Public post listed once. Zero visible views, likes and comments are recorded as observed; no distribution or retention verdict is inferred."
+    },
+    {
+      "observation_id": "ig-2026-08-17-presidential-reel-initial",
+      "platform": "instagram",
+      "identity": "BookQuotes",
+      "content_id": "17905441377304338",
+      "title": "Five presidential biographies worth the commitment",
+      "format": "reel",
+      "published_at": "2026-08-17T11:54:11+01:00",
+      "observed_at": "2026-08-17T11:55:00+01:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel and phone-overview cover; Graph publish --now.",
+      "metrics": {
+        "views": 0,
+        "reach": 0,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Graph returned views, reach, likes, comments, shares and saves immediately after publish. Viewers, link clicks and follows were not requested in this read-back.",
+      "notes": "Published once at 11:54 Europe/London. Initial Graph read-back only; do not treat zero views as a creative result."
+    },
+    {
+      "observation_id": "tk-2026-08-17-commonplace-reel-initial",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7674951820296898582",
+      "title": "Your reading journal should not become homework",
+      "format": "reel",
+      "published_at": "2026-08-17T11:54:29+01:00",
+      "observed_at": "2026-08-17T11:55:00+01:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel and dedicated cover; Zernio publish --now after the 14 August quota failure.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio accepted the post as published with TikTok content ID 7674951820296898582. Analytics sync has not yet attached this item; permalink was empty at read-back.",
+      "notes": "New-day retry of the 14 August Commonplace attempt. Zernio post 6a82e8684c5d29bbff1741c1 is published. Do not judge performance until the next analytics sync."
+    },
+    {
+      "observation_id": "tk-2026-08-17-commonplace-reel-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7674952452055076118",
+      "title": "Your reading journal should not become homework",
+      "format": "reel",
+      "published_at": "2026-08-17T11:55:10+01:00",
+      "observed_at": "2026-08-17T14:17:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel and dedicated cover; Zernio publish of the Commonplace retry.",
+      "metrics": {
+        "views": 227,
+        "reach": 0,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio returned views, reach, likes, comments, shares and saves. Viewers, link clicks and follows are not in this analytics payload.",
+      "notes": "Latest TikTok item in Zernio analytics. Zernio post 6a82eaa377555aae018f8db3, permalink https://www.tiktok.com/@bookquotes.app/video/7674952452055076118. Machine views are 227. Owner reported 298 on the native TikTok surface at 14:16 Europe/London; treat that as a later native read, not a second post. This is the first non-zero BookQuotes TikTok view count in the ledger. Likes, comments, shares and saves are measured zeros. The earlier publish read-back ID 7674951820296898582 has not attached analytics."
+    },
+    {
+      "observation_id": "tk-2026-08-18-commonplace-reel-24h",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7674952452055076118",
+      "title": "Your reading journal should not become homework",
+      "format": "reel",
+      "published_at": "2026-08-17T11:55:10+01:00",
+      "observed_at": "2026-08-18T09:01:15+01:00",
+      "checkpoint": "24h-plus",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel and dedicated cover; Zernio publish of the Commonplace retry.",
+      "metrics": {
+        "views": 855,
+        "reach": null,
+        "viewers": null,
+        "interactions": 2,
+        "comments": 0,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Native Content exposed views, likes and comments only. Reach, viewers, watch time, completion, shares, saves, link clicks and follows were not exposed in this read-back.",
+      "notes": "First non-zero attributable native TikTok result. Public once at https://www.tiktok.com/@bookquotes.app/video/7674952452055076118. The 855 views and 2 likes clear the distribution and attribution question for establishment, but do not establish a creative winner."
+    },
+    {
+      "observation_id": "ig-2026-08-17-presidential-reel-audit",
+      "platform": "instagram",
+      "identity": "BookQuotes",
+      "content_id": "17905441377304338",
+      "title": "Five presidential biographies worth the commitment",
+      "format": "reel",
+      "published_at": "2026-08-17T11:54:11+01:00",
+      "observed_at": "2026-08-17T14:56:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel and phone-overview cover; Graph publish --now.",
+      "metrics": {
+        "views": 20,
+        "reach": 16,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Graph returned views, reach, likes, comments, shares, saves, total_interactions, average watch time, total watch time and reels_skip_rate. Viewers, link clicks and follows were not in this insights payload.",
+      "notes": "Graph media insights on https://www.instagram.com/reel/DcI3nv9j-bV/. Average watch 1.52s; total watch 27.4s; reels_skip_rate 94.4% (first 3 seconds). Likes, comments, shares and saves are measured zeros. The Instagram-app second-by-second retention graph is not in Graph. Volume is still too small for a creative verdict."
+    },
+    {
+      "observation_id": "ig-2026-08-17-intro-cover-audit",
+      "platform": "instagram",
+      "identity": "BookQuotes",
+      "content_id": "18093336461178403",
+      "title": "BookQuotesIntro library cover",
+      "format": "reel",
+      "published_at": "2026-08-15T08:21:00+01:00",
+      "observed_at": "2026-08-17T14:56:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel, phone mockup and dedicated cover; native Meta read-back.",
+      "metrics": {
+        "views": 7,
+        "reach": 7,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Graph returned views, reach, likes, comments, shares, saves, total_interactions, average watch time, total watch time and reels_skip_rate. Viewers, link clicks and follows were not in this insights payload.",
+      "notes": "Graph media insights on https://www.instagram.com/reel/DcDVq58DNVI/. Average watch 4.84s; total watch 38.8s; reels_skip_rate 85.7% (first 3 seconds). Likes, comments, shares and saves are measured zeros. The Instagram-app second-by-second retention graph is not in Graph. Volume is still too small for a creative verdict."
+    },
+    {
+      "observation_id": "ig-2026-08-17-intro-reel-audit",
+      "platform": "instagram",
+      "identity": "BookQuotes",
+      "content_id": "17953145868015200",
+      "title": "BookQuotesIntro",
+      "format": "reel",
+      "published_at": "2026-08-15T08:12:00+01:00",
+      "observed_at": "2026-08-17T14:56:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel and dedicated cover; native Meta read-back.",
+      "metrics": {
+        "views": 12,
+        "reach": 12,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Graph returned views, reach, likes, comments, shares, saves, total_interactions, average watch time, total watch time and reels_skip_rate. Viewers, link clicks and follows were not in this insights payload.",
+      "notes": "Graph media insights on https://www.instagram.com/reel/DcDUmjEDAs3/. Average watch 1.02s; total watch 12.2s; reels_skip_rate 100.0% (first 3 seconds). Likes, comments, shares and saves are measured zeros. The Instagram-app second-by-second retention graph is not in Graph. Volume is still too small for a creative verdict."
+    },
+    {
+      "observation_id": "ig-2026-08-17-commonplace-reel-audit",
+      "platform": "instagram",
+      "identity": "BookQuotes",
+      "content_id": "18112192355072092",
+      "title": "Your reading journal should not become homework",
+      "format": "reel",
+      "published_at": "2026-08-14T22:15:00+01:00",
+      "observed_at": "2026-08-17T14:56:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned Remotion Reel and dedicated cover; native Meta read-back.",
+      "metrics": {
+        "views": 44,
+        "reach": 41,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Graph returned views, reach, likes, comments, shares, saves, total_interactions, average watch time, total watch time and reels_skip_rate. Viewers, link clicks and follows were not in this insights payload.",
+      "notes": "Graph media insights on https://www.instagram.com/reel/DcCQSLRj430/. Average watch 1.88s; total watch 78.9s; reels_skip_rate 95.1% (first 3 seconds). Likes, comments, shares and saves are measured zeros. The Instagram-app second-by-second retention graph is not in Graph. Volume is still too small for a creative verdict."
     }
   ],
   "search_snapshots": [
@@ -830,7 +1075,11 @@
           "warnings": 0,
           "errors": 0,
           "contents": [
-            {"type": "web", "submitted": 15, "indexed": 0}
+            {
+              "type": "web",
+              "submitted": 15,
+              "indexed": 0
+            }
           ]
         },
         "url_inspection": {
@@ -855,10 +1104,52 @@
               "end_date": "2026-08-10",
               "data_state": "final",
               "dimensions": {
-                "query": {"row_count": 0, "rows": []},
-                "page": {"row_count": 1, "rows": [{"keys": ["https://bookquotes.uk/"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
-                "country": {"row_count": 1, "rows": [{"keys": ["gbr"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
-                "device": {"row_count": 1, "rows": [{"keys": ["MOBILE"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]}
+                "query": {
+                  "row_count": 0,
+                  "rows": []
+                },
+                "page": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "https://bookquotes.uk/"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    }
+                  ]
+                },
+                "country": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "gbr"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    }
+                  ]
+                },
+                "device": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "MOBILE"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    }
+                  ]
+                }
               }
             },
             "90d": {
@@ -866,10 +1157,52 @@
               "end_date": "2026-08-10",
               "data_state": "final",
               "dimensions": {
-                "query": {"row_count": 0, "rows": []},
-                "page": {"row_count": 1, "rows": [{"keys": ["https://bookquotes.uk/"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
-                "country": {"row_count": 1, "rows": [{"keys": ["gbr"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]},
-                "device": {"row_count": 1, "rows": [{"keys": ["MOBILE"], "clicks": 1, "impressions": 1, "ctr": 1, "position": 2}]}
+                "query": {
+                  "row_count": 0,
+                  "rows": []
+                },
+                "page": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "https://bookquotes.uk/"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    }
+                  ]
+                },
+                "country": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "gbr"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    }
+                  ]
+                },
+                "device": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "MOBILE"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    }
+                  ]
+                }
               }
             }
           }
@@ -884,6 +1217,323 @@
         "next_action": "Provide an approved Cloudflare API token through the protected environment before the next read-only edge-traffic probe."
       },
       "notes": "Read-only Search Console API snapshot. Existing sitemap submission was read before any mutation; no sitemap submission or indexing request was performed. Cloudflare HTTP traffic is unavailable and is not inferred from Search Console."
+    },
+    {
+      "observed_at": "2026-08-17T14:29:54+01:00",
+      "property": "bookquotes.uk",
+      "sitemap_url": "https://bookquotes.uk/sitemap.xml",
+      "sitemap_status": "Success",
+      "submitted_at": "2026-08-07",
+      "last_read_at": "2026-08-17",
+      "discovered_pages": 15,
+      "discovered_videos": 0,
+      "indexed_homepage": true,
+      "indexing_request_status": "No duplicate indexing request performed; URL Inspection is read-only",
+      "performance_available": true,
+      "performance_status": "Final Search Analytics queried through 2026-08-16; reporting delay applies",
+      "cloudflare_http_traffic_24h": null,
+      "search_console": {
+        "property": "sc-domain:bookquotes.uk",
+        "permission_level": "siteOwner",
+        "auth_method": "application_default_credentials",
+        "read_tested": true,
+        "sitemap": {
+          "url": "https://bookquotes.uk/sitemap.xml",
+          "status": "Success",
+          "last_submitted": "2026-08-07T06:52:13.248Z",
+          "last_downloaded": "2026-08-14T21:18:40.168Z",
+          "is_pending": false,
+          "warnings": 0,
+          "errors": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": 15,
+              "indexed": 0
+            }
+          ]
+        },
+        "url_inspection": {
+          "inspection_url": "https://bookquotes.uk/",
+          "verdict": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://bookquotes.uk/",
+          "user_canonical": "https://bookquotes.uk/",
+          "last_crawl_time": "2026-08-07T06:53:14Z",
+          "referring_urls": [
+            "http://bookquotes.uk/journal/what-to-do-with-book-highlights",
+            "http://bookquotes.uk/"
+          ]
+        },
+        "performance": {
+          "processing_delay_note": "Search Analytics was queried through the latest lagged final date (2026-08-16); Google data remains subject to reporting delay.",
+          "windows": {
+            "28d": {
+              "start_date": "2026-07-20",
+              "end_date": "2026-08-16",
+              "data_state": "final",
+              "dimensions": {
+                "query": {
+                  "row_count": 5,
+                  "rows": [
+                    {
+                      "keys": [
+                        "book quote finder"
+                      ],
+                      "clicks": 0,
+                      "impressions": 2,
+                      "ctr": 0,
+                      "position": 79.5
+                    },
+                    {
+                      "keys": [
+                        "book quote search"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 81
+                    },
+                    {
+                      "keys": [
+                        "book quotes finder"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 82
+                    },
+                    {
+                      "keys": [
+                        "quote finder for books"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 79
+                    },
+                    {
+                      "keys": [
+                        "quote finder in books"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 77
+                    }
+                  ]
+                },
+                "page": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "https://bookquotes.uk/"
+                      ],
+                      "clicks": 1,
+                      "impressions": 9,
+                      "ctr": 0.1111111111111111,
+                      "position": 64.55555555555556
+                    }
+                  ]
+                },
+                "country": {
+                  "row_count": 3,
+                  "rows": [
+                    {
+                      "keys": [
+                        "gbr"
+                      ],
+                      "clicks": 1,
+                      "impressions": 7,
+                      "ctr": 0.14285714285714285,
+                      "position": 68.57142857142857
+                    },
+                    {
+                      "keys": [
+                        "phl"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 95
+                    },
+                    {
+                      "keys": [
+                        "usa"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 6
+                    }
+                  ]
+                },
+                "device": {
+                  "row_count": 2,
+                  "rows": [
+                    {
+                      "keys": [
+                        "MOBILE"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    },
+                    {
+                      "keys": [
+                        "DESKTOP"
+                      ],
+                      "clicks": 0,
+                      "impressions": 8,
+                      "ctr": 0,
+                      "position": 72.375
+                    }
+                  ]
+                }
+              }
+            },
+            "90d": {
+              "start_date": "2026-05-19",
+              "end_date": "2026-08-16",
+              "data_state": "final",
+              "dimensions": {
+                "query": {
+                  "row_count": 5,
+                  "rows": [
+                    {
+                      "keys": [
+                        "book quote finder"
+                      ],
+                      "clicks": 0,
+                      "impressions": 2,
+                      "ctr": 0,
+                      "position": 79.5
+                    },
+                    {
+                      "keys": [
+                        "book quote search"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 81
+                    },
+                    {
+                      "keys": [
+                        "book quotes finder"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 82
+                    },
+                    {
+                      "keys": [
+                        "quote finder for books"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 79
+                    },
+                    {
+                      "keys": [
+                        "quote finder in books"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 77
+                    }
+                  ]
+                },
+                "page": {
+                  "row_count": 1,
+                  "rows": [
+                    {
+                      "keys": [
+                        "https://bookquotes.uk/"
+                      ],
+                      "clicks": 1,
+                      "impressions": 9,
+                      "ctr": 0.1111111111111111,
+                      "position": 64.55555555555556
+                    }
+                  ]
+                },
+                "country": {
+                  "row_count": 3,
+                  "rows": [
+                    {
+                      "keys": [
+                        "gbr"
+                      ],
+                      "clicks": 1,
+                      "impressions": 7,
+                      "ctr": 0.14285714285714285,
+                      "position": 68.57142857142857
+                    },
+                    {
+                      "keys": [
+                        "phl"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 95
+                    },
+                    {
+                      "keys": [
+                        "usa"
+                      ],
+                      "clicks": 0,
+                      "impressions": 1,
+                      "ctr": 0,
+                      "position": 6
+                    }
+                  ]
+                },
+                "device": {
+                  "row_count": 2,
+                  "rows": [
+                    {
+                      "keys": [
+                        "MOBILE"
+                      ],
+                      "clicks": 1,
+                      "impressions": 1,
+                      "ctr": 1,
+                      "position": 2
+                    },
+                    {
+                      "keys": [
+                        "DESKTOP"
+                      ],
+                      "clicks": 0,
+                      "impressions": 8,
+                      "ctr": 0,
+                      "position": 72.375
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "cloudflare_http_traffic": {
+        "available": false,
+        "source": "cloudflare_graphql_api_read_only",
+        "window": "2026-08-16T13:00:00Z/2026-08-17T13:00:00Z",
+        "value": null,
+        "reason": "CLOUDFLARE_API_TOKEN is not present in the read environment.",
+        "next_action": "Provide an approved Cloudflare API token through the protected environment before the next read-only edge-traffic probe."
+      },
+      "notes": "Read-only Search Console API snapshot. Existing sitemap submission was read before any mutation; no sitemap submission or indexing request was performed. Cloudflare HTTP traffic is unavailable and is not inferred from Search Console. Query-row clicks of 0 are measured Search Analytics zeros."
     }
   ],
   "app_store_snapshots": [
@@ -949,6 +1599,71 @@
           "currency": null,
           "reason": "The monthly Finance report returned HTTP 403.",
           "next_action": "Read proceeds and currency from an authorized App Store Connect Finance or Sales report."
+        }
+      }
+    },
+    {
+      "observed_at": "2026-08-17T14:23:00+01:00",
+      "source": "app_store_connect_api_read_only",
+      "app_id": "6758091579",
+      "live_version": "1.0.1",
+      "live_state": "READY_FOR_SALE",
+      "downloadable": true,
+      "access": {
+        "metadata": {
+          "available": true,
+          "http_status": 200,
+          "reason": null,
+          "next_action": "Continue read-only version and metadata polling."
+        },
+        "analytics": {
+          "available": true,
+          "http_status": 200,
+          "reason": null,
+          "next_action": "Request an App Analytics report instance if downloads are still missing from Sales."
+        },
+        "sales": {
+          "available": false,
+          "http_status": 400,
+          "reason": "Team key XL86RSSVSY is Admin. Vendor 93932031 is accepted by Finance. Sales and Trends UI has no reports, so Apple's Invalid vendor number is an empty-account catch-all, not a wrong vendor or missing role.",
+          "next_action": "Retry the daily Sales report after Sales and Trends shows a downloadable report, or after the first processed units period."
+        },
+        "finance": {
+          "available": false,
+          "http_status": 404,
+          "reason": "Team key is authorized. Apple returned no finance rows for 2026-07: there were no sales for the date specified. Sales and Trends UI is also empty.",
+          "next_action": "Retry the monthly Finance report after the first paid period."
+        }
+      },
+      "outcomes": {
+        "downloads": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "reason": "Per-app analyticsReportRequests is readable but empty. Sales has no reports in the UI or API. Values stay null.",
+          "next_action": "Retry Sales after the first processed period, or request an App Analytics report instance."
+        },
+        "first_time_downloads": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "reason": "Per-app analyticsReportRequests is readable but empty. Sales has no reports in the UI or API. Values stay null.",
+          "next_action": "Retry Sales after the first processed period, or request an App Analytics report instance."
+        },
+        "sales": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "reason": "Sales and Trends UI is empty. Daily Sales API returns Invalid vendor number as an empty-account catch-all.",
+          "next_action": "Retry Sales after Sales and Trends shows a downloadable report."
+        },
+        "proceeds": {
+          "value": null,
+          "available": false,
+          "source": null,
+          "currency": null,
+          "reason": "Finance access is authorized; 2026-07 has no sales rows. Sales and Trends UI is empty.",
+          "next_action": "Retry Finance after the first paid period."
         }
       }
     }

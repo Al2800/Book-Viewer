@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 28 July 2026
+Updated: 18 August 2026
 
 ## Purpose
 
@@ -8,8 +8,11 @@ This runbook defines how BookQuotes maintains a regular organic publishing flow 
 approval for every routine Facebook post. The system should behave like a careful editor, not a
 blind autoposter.
 
-Facebook is the first automatic channel. TikTok and Instagram remain manual until their account
-connections, native publishing controls and post-verification flows have been tested.
+Facebook is the first automatic channel. Approved bank cards are scheduled on Graph at 13:00
+Europe/London. Instagram publishes the same approved bank through a separate 13:00 due agent;
+Graph cannot schedule. TikTok routine publishing is now active in its measured establishment phase
+after the native validation gate recorded on 18 August; its cadence and quality gates live in
+`TikTokOperatingRunbook.md`.
 
 ## Publishing Authority
 
@@ -26,6 +29,10 @@ Automatic authority covers:
 - low-risk BookQuotes workflow demonstrations;
 - carousels, photos, text posts and organic Reels;
 - routine rescheduling after a clearly identified technical publishing failure.
+
+TikTok routine authority is limited to one reader-first post per day at 19:30 Europe/London during
+the establishment phase. The first seven comparable posts use the 60/20/15/5 editorial mix. A
+second daily slot remains a later controlled experiment, not a default cadence.
 
 Automatic authority does not cover:
 
@@ -44,9 +51,9 @@ Those cases must be logged and presented to the user with a recommended action.
 
 Maintain a rolling seven-day Facebook queue with one strong primary post per day.
 
-- Use 12:30 Europe/London for text posts, discussion prompts and carousels when no stronger
-  account evidence exists.
-- Use 18:30-19:00 Europe/London for Reels and more visual posts.
+- Use 13:00 Europe/London for the approved content-bank cards and the current text prompts.
+- Use 18:30-19:00 Europe/London only for a distinct visual/Reel slot, not as a second copy of
+  the same bank card.
 - Do not publish more than one primary post in a day unless account evidence supports it and the
   second item is materially different.
 - Keep app-led content near 15% of output. The Page should remain useful to readers who never
@@ -57,18 +64,25 @@ Maintain a rolling seven-day Facebook queue with one strong primary post per day
 
 At 09:00 Europe/London:
 
-1. Read `PublishingStatus.md`, `PerformanceLearningLog.md`, this runbook and the relevant content
-   pack.
-2. Confirm the previous scheduled item moved to Published and record its live URL, actual time,
-   format and initial metrics.
-3. Compare the Meta Planner with the Content Library. Treat Planner/Library disagreement as a
-   publishing risk and resolve it before relying on the queue.
-4. Check today's item for correct account, public visibility, date, time, caption, cover, media,
-   links and absence of accidental paid promotion.
-5. If today's item is missing, select or create a replacement that passes the content and rights
-   gates below, then schedule it for the appropriate daily slot.
-6. Maintain at least seven future days in the queue. Use existing verified assets before creating
-   new ones.
+1. Read the **Current operating loop** block in `PublishingStatus.md` first. Do not treat older
+   dated notes as live queue state. Also read `PerformanceLearningLog.md`, this runbook and
+   `ContentBankRunbook.md`.
+2. Confirm the previous scheduled Facebook item moved to Published and record its live URL, actual
+   time, format and initial metrics.
+3. Read Graph `scheduled_posts` for Page `1246405755221229`. Treat the native read-back and the
+   current operating-loop block in `PublishingStatus.md` as authoritative; do not infer the live
+   queue from an older bank snapshot or describe an unverified queue as full.
+4. Check today's Facebook item for correct account, public visibility, date, time, caption, cover,
+   media, links and absence of accidental paid promotion.
+5. If today's Facebook item is missing and the slot is still more than ten minutes away, select or
+   create a replacement that passes the content and rights gates below, then schedule it. Do not
+   duplicate an approved bank card already on Graph.
+6. Maintain at least seven future Facebook days. Use the approved bank before creating new assets.
+   Instagram is not published by this 09:00 job. Name the separate path:
+   `uk.bookquotes.instagram-due` at 13:00, with `pre-publish-awake` at 12:50. TikTok reconnect is
+   `uk.bookquotes.tiktok-reconnect` at 09:05.
+   Once the TikTok validation gate is recorded as clear, the next eligible category Reel may publish
+   at 19:30 under `TikTokOperatingRunbook.md`; do not add a same-day second Reel.
 7. Inspect comments and messages. Routine acknowledgements and verified factual answers may be
    posted automatically; sensitive or ambiguous replies must be drafted for review.
 8. Append the actions and evidence to `PerformanceLearningLog.md`, update `PublishingStatus.md`,
@@ -151,7 +165,7 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-On 28 July 2026, the Facebook Planner displayed content on 28, 29 and 30 July and 1 August, while
-the Content Library's Scheduled tab displayed no scheduled posts. The Planner entries contain real
-post content, but the next automation run must reconcile this disagreement before treating the
-future queue as guaranteed.
+As of 17 August 2026, Graph scheduled posts are the source of truth for Facebook. The queue is
+the 18 August text item plus approved bank cards `bq14-01`–`bq14-14` at 13:00 Europe/London
+through 1 September. Instagram due and TikTok reconnect are separate launchd agents, not this
+09:00 publisher. The 28 July Planner/Library disagreement is historical.

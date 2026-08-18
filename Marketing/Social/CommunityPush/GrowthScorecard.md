@@ -1,13 +1,13 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-17T09:03:42+01:00</code>.
+Generated from structured evidence updated <code>2026-08-18T09:01:15+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-10T09:03:42+01:00</code> to <code>2026-08-17T09:03:42+01:00</code>
+- Reporting window: <code>2026-08-11T09:01:15+01:00</code> to <code>2026-08-18T09:01:15+01:00</code>
 - Published Facebook items represented: 6
-- Visible views: 65
-- Visible reach: 63
+- Visible views: 940
+- Visible reach: 79
 - Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
@@ -16,14 +16,22 @@ Generated from structured evidence updated <code>2026-08-17T09:03:42+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | audit | 227 | 0 | Not available | Not available | Insufficient distribution |
+| 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | 24h-plus | 855 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-17 | published | instagram | Five presidential biographies worth the commitment | reel | initial | 0 | 0 | Not available | Not available | Insufficient distribution |
+| 2026-08-17 | published | instagram | Five presidential biographies worth the commitment | reel | audit | 20 | 16 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-16 | published | facebook | Try a small reading reset | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | facebook | A reading list is useful when it leaves room for the book you did not know you needed. | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | 24h-plus | 7 | 7 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-08-15 | published | instagram | BookQuotesIntro library cover | reel | audit | 7 | 7 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-15 | published | instagram | BookQuotesIntro | reel | 24h-plus | 12 | 12 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-08-15 | published | instagram | BookQuotesIntro | reel | audit | 12 | 12 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-14 | published | instagram | Your reading journal should not become homework | reel | initial | 31 | 27 | 0.0 | 0.0 | Review against declared experiment |
 | 2026-08-14 | published | instagram | Your reading journal should not become homework | reel | 24h-plus | 44 | 41 | 0.0 | 0.0 | Review against declared experiment |
+| 2026-08-14 | published | instagram | Your reading journal should not become homework | reel | audit | 44 | 41 | 0.0 | 0.0 | Review against declared experiment |
 | 2026-08-14 | published | facebook | Do you keep the first line, the last line, or the line you argued with? | text | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-14 | failed | tiktok | Commonplace Ritual adapter test | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-14 | published | facebook | Your reading journal should not become homework | reel | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
@@ -60,8 +68,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 9
-- Channel-only items: 9
+- Durable published items: 12
+- Channel-only items: 12
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.
@@ -78,27 +86,32 @@ A practical next-day highlight review ritual will produce more saves and meaning
 
 ## App Store performance
 
-Observed <code>2026-08-11T17:15:10+01:00</code> from <code>app&#95;store&#95;connect&#95;api&#95;read&#95;only</code> for app <code>6758091579</code>.
+Observed <code>2026-08-17T14:23:00+01:00</code> from <code>app&#95;store&#95;connect&#95;api&#95;read&#95;only</code> for app <code>6758091579</code>.
 Live version <code>1.0.1</code>; state <code>READY&#95;FOR&#95;SALE</code>; downloadable <code>True</code>.
 
 | Surface | Available | HTTP | Reason | Next action |
 | --- | --- | ---: | --- | --- |
 | metadata | True | 200 | Not available | Continue read-only version and metadata polling. |
-| analytics | False | 403 | The configured Individual API key returned FORBIDDEN&#95;ERROR for the app analytics report endpoint. | Create or authorize a least-privilege Team API key with App Analytics report access, then repeat the read-only probe. |
-| sales | False | 403 | The configured Individual API key returned FORBIDDEN&#95;ERROR for the daily Sales report. | Create or authorize a least-privilege Team API key with Sales report access for vendor 93932031, then repeat the read-only probe. |
-| finance | False | 403 | The configured Individual API key returned FORBIDDEN&#95;ERROR for the monthly Finance report. | Create or authorize a least-privilege Team API key with Finance report access for vendor 93932031, then repeat the read-only probe. |
+| analytics | True | 200 | Not available | Request an App Analytics report instance if downloads are still missing from Sales. |
+| sales | False | 400 | Team key XL86RSSVSY is Admin. Vendor 93932031 is accepted by Finance. Sales and Trends UI has no reports, so Apple's Invalid vendor number is an empty-account catch-all, not a wrong vendor or missing role. | Retry the daily Sales report after Sales and Trends shows a downloadable report, or after the first processed units period. |
+| finance | False | 404 | Team key is authorized. Apple returned no finance rows for 2026-07: there were no sales for the date specified. Sales and Trends UI is also empty. | Retry the monthly Finance report after the first paid period. |
 
 | Outcome | Value | Currency | Available | Authoritative source | Reason | Next action |
 | --- | ---: | --- | --- | --- | --- | --- |
-| downloads | Not available | Not available | False | Not available | App Analytics and Sales reports are not authorized for the configured key. | Read downloads from an authorized App Store Connect Analytics or Sales report. |
-| first&#95;time&#95;downloads | Not available | Not available | False | Not available | App Analytics and Sales reports are not authorized for the configured key. | Read first-time downloads from an authorized App Store Connect Analytics or Sales report. |
-| sales | Not available | Not available | False | Not available | The daily Sales report returned HTTP 403. | Read sales units from an authorized App Store Connect Sales report. |
-| proceeds | Not available | Not available | False | Not available | The monthly Finance report returned HTTP 403. | Read proceeds and currency from an authorized App Store Connect Finance or Sales report. |
+| downloads | Not available | Not available | False | Not available | Per-app analyticsReportRequests is readable but empty. Sales has no reports in the UI or API. Values stay null. | Retry Sales after the first processed period, or request an App Analytics report instance. |
+| first&#95;time&#95;downloads | Not available | Not available | False | Not available | Per-app analyticsReportRequests is readable but empty. Sales has no reports in the UI or API. Values stay null. | Retry Sales after the first processed period, or request an App Analytics report instance. |
+| sales | Not available | Not available | False | Not available | Sales and Trends UI is empty. Daily Sales API returns Invalid vendor number as an empty-account catch-all. | Retry Sales after Sales and Trends shows a downloadable report. |
+| proceeds | Not available | Not available | False | Not available | Finance access is authorized; 2026-07 has no sales rows. Sales and Trends UI is empty. | Retry Finance after the first paid period. |
 
 Downloads, sales and proceeds are reported only from authoritative Apple evidence. HTTP 403 or missing access is `Not available`, never zero.
 
 ## Search state
 
+- 2026-08-17: Search Console API access: read-tested (siteOwner); Sitemap API state: Success; submitted 15; indexed 0; pending False; warnings 0; errors 0.
+  URL Inspection: PASS; Submitted and indexed; canonical https://bookquotes.uk/; last crawl 2026-08-07T06:53:14Z.
+  28d (2026-07-20 to 2026-08-16): 1 clicks, 9 impressions; queries 5 rows; pages 1 rows; countries 3 rows; devices 2 rows.
+  90d (2026-05-19 to 2026-08-16): 1 clicks, 9 impressions; queries 5 rows; pages 1 rows; countries 3 rows; devices 2 rows.
+  Cloudflare HTTP traffic: unavailable (CLOUDFLARE&#95;API&#95;TOKEN is not present in the read environment.); not a Search Console metric.
 - 2026-08-12: Search Console API access: read-tested (siteOwner); Sitemap API state: Success; submitted 15; indexed 0; pending False; warnings 0; errors 0.
   URL Inspection: PASS; Submitted and indexed; canonical https://bookquotes.uk/; last crawl 2026-08-07T06:53:14Z.
   28d (2026-07-14 to 2026-08-10): 1 clicks, 1 impressions; queries 0 rows; pages 1 rows; countries 1 rows; devices 1 rows.

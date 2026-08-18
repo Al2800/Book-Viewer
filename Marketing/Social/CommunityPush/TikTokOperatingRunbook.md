@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 28 July 2026
+Updated: 18 August 2026
 
 ## Purpose
 
@@ -22,13 +22,16 @@ Read this file together with:
 The daily research, briefing, quality-control and learning stages may run automatically.
 
 These stages are active in the `bookquotes-daily-social-check` automation at 09:00
-Europe/London. The same coordinated run manages Facebook under its separate publishing authority.
+Europe/London. After the native gate was cleared on 18 August, the automation may advance the
+next eligible TikTok item for the 19:30 Europe/London establishment slot. Token health is
+`uk.bookquotes.tiktok-reconnect` at 09:05 (`reconnect --if-expiring`). Facebook is a separate
+Graph queue at 13:00.
 
 The user has authorised routine automatic TikTok publishing once the native validation below
 passes. The automation may record that activation without seeking another approval when every
 validation item is evidenced.
 
-TikTok publishing remains approval-only until all of the following have been verified:
+Before 18 August, TikTok publishing was approval-only until all of the following had been verified:
 
 1. `@bookquotes.app` has the required Business Suite or Advanced Access.
 2. A private or low-risk test has been scheduled through TikTok's native scheduler.
@@ -37,21 +40,45 @@ TikTok publishing remains approval-only until all of the following have been ver
 5. The post has an addressable analytics entry attributable to the correct content ID. The
    measurements may continue to mature through the 24-hour checkpoint.
 
-After that test, this runbook can be revised to authorise automatic routine publishing. Paid
-promotion, partnerships, rights-uncertain material and sensitive community responses remain
-approval-only.
+The gate is now recorded as satisfied for routine organic publishing. The controlled marked-page
+post is Public and appears once in the native content library, and the 17 August Commonplace Reel
+has a native addressable content ID with 855 views, 2 likes and 0 comments. The Account Check URL
+resolved to the signed-in Studio surface with no visible warning or restriction text; TikTok did
+not expose a formal account-health report, so that limitation remains recorded. Paid promotion,
+partnerships, rights-uncertain material and sensitive community responses remain approval-only.
 
-### Validation In Progress
+### Validation Evidence, 17 August 2026
 
 - Scheduled item: `bookquotes-marked-page.mp4`
 - TikTok content ID: `7667570006032387350`
-- Scheduled time: 28 July 2026 at 19:30 Europe/London
-- Audience: Public
-- Upload: 1080p with high-quality uploads enabled
-- Content Check Lite: No issues found
-- Native Content table: item present with the correct scheduled time
-- Remaining checks: confirm one publication without duplication and confirm its attributable
-  analytics entry
+- Published: 28 July 2026 at 19:30 Europe/London, Public
+- Zernio account `6a7e30f977555aae0187cea3` / `@bookquotes.app` is active, with
+  `video.publish` and `hasAnalyticsAccess`
+- Five older native videos still read 0 in Zernio. The 17 August Commonplace retry now
+  has distribution: native content ID `7674952452055076118`, public permalink and a native
+  read-back of 855 views, 2 likes and 0 comments. Deeper reach, watch, save, share, profile and
+  follow fields remain unavailable in the Content view.
+- The 14 August Zernio Commonplace attempt `6a7f031b2fc86999e9e30916` failed on TikTok
+  daily quota and created no content ID. Do not reuse that job.
+- Token expiry is `2026-08-18T11:55:56Z`. `uk.bookquotes.tiktok-reconnect` at 09:05
+  opens OAuth only when fewer than 6 hours remain. Manual:
+  `python3 /Users/skyhub/bookquotes-marketing-os/bin/meta_cli.py reconnect --channel tiktok`.
+  Routine automatic publishing is active for the establishment phase: one primary post daily at
+  19:30 Europe/London, with no second slot until seven comparable posts are available. Bank
+  typography PNGs are not TikTok-ready.
+
+### Routine activation: 18 August 2026, 09:01 Europe/London
+
+- Native Recent posts lists the controlled ID `7667570006032387350` once as Public and lists the
+  new Commonplace Reel `7674952452055076118` once as Public with an addressable URL and native
+  metrics of 855 views, 2 likes and 0 comments.
+- This satisfies the publication-once, no-duplication and attributable-analytics requirements for
+  routine organic publishing. The account-health route did not expose a formal report, but the
+  signed-in Studio surface showed no visible warning or restriction text.
+- Establishment phase is active. Publish one strong reader-first post daily at 19:30, keep the
+  60/20/15/5 mix, and do not test a second daily slot until seven comparable posts have data.
+- The next eligible prepared item is Category Reel `cr-01` (Player of Games) on 19 August. No
+  additional TikTok item is scheduled for 18 August by this audit.
 
 ## Editorial Principles
 
@@ -68,14 +95,18 @@ approval-only.
 
 ### Daily
 
-1. Check publishing status and account health.
-2. Collect current UK reader and BookTok signals.
-3. Review recent comments, searches and audience language.
-4. Add only relevant signals to `TikTokResearchLog.md`.
-5. Convert the strongest signals into testable briefs.
-6. Verify evidence and rights before production.
-7. Maintain three to five approved or near-approved pieces in the queue.
-8. Measure posts at the next available 24-hour and 72-hour checkpoints.
+1. Check publishing status, TikTok token health, and account health.
+2. Advance `CategoryReelPipeline.json` for today's category. The 13:00 bank still is a
+   different post; do not treat the PNG as the TikTok Reel.
+3. Collect current UK reader and BookTok signals only when they change a brief.
+4. Review recent comments, searches and audience language.
+5. Add only relevant signals to `TikTokResearchLog.md`.
+6. Convert the strongest unused signal into the next empty rotation row, not a
+   same-day second Reel.
+7. Verify evidence and rights before production. Faceless Remotion or owned book
+   objects only.
+8. Maintain three to five `draft` or `ready` category briefs.
+9. Measure posts at the next available 24-hour and 72-hour checkpoints.
 
 ## Publishing Ramp After Validation
 

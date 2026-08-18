@@ -1,6 +1,6 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 17 August 2026
+Updated: 18 August 2026
 
 ## Automation
 
@@ -9,14 +9,80 @@ Routine organic Facebook publishing is now authorised to run automatically under
 publication, performs preflight and rights checks, and logs every action.
 
 TikTok research, briefing, quality control and learning may run automatically under
-`TikTokOperatingRunbook.md`. TikTok publishing stays approval-gated (`--approve`) through
-Zernio. Instagram can publish immediately through Graph (`--now`) but cannot be scheduled;
-the daily automation does not post Instagram unless someone runs that command.
+`TikTokOperatingRunbook.md`. Native validation is now recorded as complete, so TikTok routine
+publishing is active for the one-post-per-day establishment phase at 19:30 Europe/London.
+Instagram can publish immediately through Graph (`--now`) but cannot be scheduled; the daily
+automation does not post Instagram unless someone runs that command.
 
-The daily `bookquotes-daily-social-check` automation now coordinates both channels at 09:00
-Europe/London. Facebook retains its existing routine publishing authority. TikTok performs a
-daily evidence and creative-pattern scout, maintains a preparation queue and runs a deeper
-experiment and 70/20/10 portfolio review on Mondays.
+The daily `bookquotes-daily-social-check` automation now coordinates research, Facebook preflight
+and the validated TikTok establishment phase at 09:00 Europe/London. It does not publish Instagram.
+Instagram bank cards publish from `uk.bookquotes.instagram-due` at 13:00. TikTok reconnect is
+`uk.bookquotes.tiktok-reconnect` at 09:05. TikTok routine posts use the 19:30 slot; paid,
+sensitive and rights-uncertain material remains approval-gated.
+
+### Current operating loop: 18 August 2026, 09:01 Europe/London
+
+Use this block as the live browser audit. The older 17 August queue block below is historical and
+must not be treated as proof of the current native queue.
+
+- Facebook Published shows the latest live post `122108480163415831`, published 17 August at
+  13:10. The visible row reads reach 1, views 0, viewers 0, interactions 0, likes 0, comments 0,
+  shares 0, saves 0 and follows 0; watch time and link clicks are not available. A separate 17
+  August 13:00 prompt `122108480745415831` is also visible with all exposed metrics at zero.
+- Facebook Scheduled currently shows only two Public, Facebook-only, unboosted rows, both at 18
+  August 13:00: the unfinished-book prompt and the reader-first recommendation prompt. This
+  conflicts with the older logged 15-item bank queue. No new item was scheduled and no existing
+  row was edited or deleted while the native queue is contradictory.
+- Instagram Published shows the presidential-biographies Reel `17905441377304338`, published 17
+  August at 11:54. The current native read-back is 32 views, 26 reach, 38 seconds watch time and
+  1 second average play time, with 0 visible interactions, likes, comments, shares and saves.
+- TikTok Studio is signed in as `@bookquotes.app`. The Commonplace Reel
+  `7674952452055076118` is Public once at `https://www.tiktok.com/@bookquotes.app/video/7674952452055076118`
+  with 855 views, 2 likes and 0 comments. The five older native rows remain at 0 views, 0 likes
+  and 0 comments. This is the first non-zero attributable TikTok result.
+- The native Account Check URL resolved to the signed-in Studio surface without visible warning or
+  restriction text, but did not expose a formal account-health report. Record that limitation;
+  do not treat it as a guarantee of unrestricted account health.
+- TikTok establishment is active at one reader-first post per day at 19:30. The next eligible
+  prepared item is Category Reel `cr-01` (Player of Games) on 19 August. No second daily slot is
+  permitted until seven comparable posts have data.
+- Facebook comments, Instagram comments/Direct and TikTok comments show no new messages. No
+  routine reply was made. App Store downloads and activation signals remain unavailable.
+
+### Current operating loop: 17 August 2026, 14:30 Europe/London
+
+Use this block as the 09:00 source of truth. Older dated notes below are history.
+
+- Facebook Graph scheduled queue is **not** empty. 18 August text plus approved bank cards
+  `bq14-01`–`bq14-14` sit at 13:00 Europe/London through 1 September (15 future items after
+  today's 13:10 publish). Page `1246405755221229` only.
+- Content bank `bookquotes-2026-08-a` is **approved**, not draft. Instagram due prefers
+  the git bank when readable; launchd falls back to the marketing-os mirror. A commit
+  or merge refreshes that mirror. `uk.bookquotes.sync-content-bank` also tries at 12:55.
+- Instagram Graph is `--now` only. `uk.bookquotes.instagram-due` at 13:00 publishes today's
+  approved bank card. `pre-publish-awake` starts at 12:50. Owner accepted the Mac-on
+  residual on 17 August; a non-Mac runner is not required. First bank Instagram date
+  is 19 August.
+- TikTok token expires `2026-08-18T11:55:56Z`. 09:05 reconnect opens OAuth only when fewer
+  than 6 hours remain. Commonplace retry is live; latest Zernio analytics ID
+  `7674952452055076118`.
+- Category Reel pipeline is live in `CategoryReelPipeline.json`. 13:00 stills stay on
+  Facebook/Instagram. 19:30 is one faceless category Reel on TikTok and Instagram
+  (same MP4; Instagram `--now`). First week 19–25 August: Player of Games, Team of
+  Rivals, Foster, Tinker Tailor, Four Thousand Weeks, Stoner, Culture/Three-Body
+  pairing. Draft briefs still need Remotion renders, a hard first-frame hook, and
+  `--approve`.
+- 13 August Facebook caption is still `dry-run-only`. Owner parked restore
+  (`hbec.5.1.7`). CLI `writes_enabled` stays false.
+- Instagram profile photo is live. Graph read at 16:42 shows
+  `has_profile_pic=true` for `@bookquotes.app`. Owner uploaded the official
+  app icon in the Instagram app. Pin is `DcDVq58DNVI`.
+- Instagram Graph insights at 14:56: Commonplace 44 views / 95% 3s skip /
+  1.9s avg watch. Presidential 20 / 94% / 1.5s. Illustrated intro 12 / 100% /
+  1.0s. Library-phone intro 7 / 86% / 4.8s. The app retention curve is not in
+  Graph. Volume is too small for a verdict; library-phone is the only hold.
+- App Store Sales and Trends UI is empty. Downloads stay null. Search Console was refreshed
+  17 August 14:29.
 
 ### TikTok health: 17 August 2026, 07:20 Europe/London
 
@@ -63,6 +129,68 @@ experiment and 70/20/10 portfolio review on Mondays.
   Zernio health report says analytics access is enabled, but the native account-health and
   attributable analytics gate is still not satisfied. TikTok publication and the proposed two-a-day
   cadence remain paused.
+
+### Manual publish: 17 August 2026, 11:54 Europe/London
+
+- Instagram `--now --approve`: presidential biographies Reel with the phone-overview
+  cover. Graph ID `17905441377304338`. Permalink
+  `https://www.instagram.com/reel/DcI3nv9j-bV/`. Initial insights 0/0.
+- TikTok `--now --approve`: Commonplace Ritual retry. Zernio post
+  `6a82e8684c5d29bbff1741c1` reached `published` with TikTok content ID
+  `7674951820296898582`. Analytics have not attached yet. The 14 August failed
+  Zernio job remains on file and was not reused.
+- Facebook Graph scheduled queue is empty. Today's 13:00 slot is not sitting in
+  Graph as scheduled. The 19 August–1 September content bank is still 14 drafts.
+  Superseded at 13:12: queue restored and all 14 bank cards approved. See Current
+  operating loop.
+
+### Queue restore: 17 August 2026, 13:12 Europe/London
+
+- TikTok reconnect completed. `token_expires_at` moved from 22:46 UTC today to
+  `2026-08-18T11:55:56Z` (12:55 tomorrow). TikTok access tokens on this path last
+  about 24 hours. `uk.bookquotes.tiktok-reconnect` runs at 09:05 and opens OAuth
+  only when fewer than 6 hours remain. Manual: `reconnect --channel tiktok`.
+- Facebook today published at 13:10:
+  `1246405755221229_122108480163415831`
+  https://www.facebook.com/122107379391415831/posts/122108480163415831
+- Facebook scheduled queue now has 15 items: 18 August text plus `bq14-01`–`bq14-14`
+  at 13:00 Europe/London through 1 September.
+- All 14 content-bank cards are approved (`john-mcneil`, native queues reconciled).
+- Instagram Mac path is live. launchd could not read `~/Documents`, so the agent
+  publishes from `/Users/skyhub/bookquotes-marketing-os/content-bank/` (14 approved
+  cards mirrored). A 13:18 kickstart from launchd returned `no_due_item` / exit 0.
+  A 19 August dry-run selected `bq14-01` with the local PNG. `pre-publish-awake`
+  holds sleep from 12:50. After any bank edit, rerun `bin/sync_content_bank.py`.
+
+### Search Console rollup: 17 August 2026, 14:29 Europe/London
+
+- Property `sc-domain:bookquotes.uk` still reads as `siteOwner` via application
+  default credentials. Sitemap was read only: Success, 15 submitted, 0 indexed,
+  last downloaded 14 August 21:18 UTC. Homepage URL Inspection remains PASS /
+  Submitted and indexed; last crawl still 7 August 06:53 UTC. No sitemap
+  resubmit and no indexing request.
+- Final Search Analytics through 16 August: homepage 1 click / 9 impressions.
+  Query rows are now present (measured zeros on clicks): book quote finder,
+  book quote search, book quotes finder, quote finder for books, quote finder
+  in books. Cloudflare HTTP traffic stays unavailable.
+
+### App Store instrumentation: 17 August 2026, 14:23 Europe/London
+
+- Team API key `XL86RSSVSY` is installed at the existing external App Store Connect
+  path and is shown as Admin. The older Individual key was not deleted. Metadata,
+  versions and IAPs still read 200. Per-app `analyticsReportRequests` now reads 200.
+  July finance is authorized and empty (`no sales for the date specified`).
+  Downloads stay null.
+- Owner confirmed vendor `93932031`. Finance accepts it. Sales and Trends UI shows
+  no reports. Daily Sales still returns `Invalid vendor number`; that is Apple's
+  empty-account catch-all, not a wrong vendor or missing role. Retry after the
+  first processed period. Do not invent zeros.
+- Four generated campaign links are recorded in `GrowthEvidence.json` with
+  `pt=128448172`: `facebook`, `instga`, `tiktok`, `b00k quotes`.
+- TikTok Commonplace retry now has distribution. Zernio read 227 views on
+  `7674952452055076118` at 14:17. Owner reported 298 on the native surface.
+  Likes, comments, shares and saves are measured zeros. This is the first
+  non-zero BookQuotes TikTok view count in the ledger.
 
 ## Facebook
 
