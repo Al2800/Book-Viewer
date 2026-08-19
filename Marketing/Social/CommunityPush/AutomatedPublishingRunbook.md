@@ -34,6 +34,10 @@ TikTok routine authority is limited to one reader-first post per day at 19:30 Eu
 the establishment phase. The first seven comparable posts use the 60/20/15/5 editorial mix. A
 second daily slot remains a later controlled experiment, not a default cadence.
 
+The 19 August audit found a same-caption Player of Games duplicate in the native TikTok library.
+Until the single-writer path and duplicate guard are reconciled, TikTok uploads are held. Keep the
+existing 19:30 baseline and do not delete or re-upload the duplicate automatically.
+
 Automatic authority does not cover:
 
 - paid advertisements, boosts, budgets or targeting;

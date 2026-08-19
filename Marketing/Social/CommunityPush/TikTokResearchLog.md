@@ -64,6 +64,69 @@ with a dated note rather than rewriting history.
 
 ## Entries
 
+### 2026-08-19, 09:08 Europe/London
+
+**Account and publishing**
+
+- Account access: TikTok Studio and Zernio both identify active public `@bookquotes.app`; analytics
+  access is true and the token is healthy until 20 August 08:04 UTC.
+- Published: nine Public BookQuotes posts are now visible. The Player of Games caption was posted
+  twice on 18 August: `7675397759196957954` and `7675398121542929667`. Team of Rivals
+  `7675422232285433110` was an owner-requested extra format test. No further upload was made in
+  this audit.
+- Expected posts: `cr-01` was already published early on 18 August and must not be uploaded again;
+  `cr-03` Foster remains the next unused illustrated cut after review. Routine TikTok publishing is
+  on a single-writer hold until the duplicate path is reconciled.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current account analytics | TikTok Studio and Zernio sync | Native rows show distribution for the two illustrated cuts; no comments and no follower growth. | Distribution is no longer the blocker, but duplication and source disagreement are now the operational risk. | Short | Hold publishing, reconcile the writer and retain one baseline slot. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. The same Player of Games execution cannot be counted twice.
+- Transferable patterns: deliberate quiet, hard first-frame reader proposition and an honest
+  reservation remain viable packaging choices to test once publishing integrity is restored.
+- Elements explicitly excluded from imitation: duplicate uploads, copied wording, quota workarounds,
+  automated engagement and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: TikTok reports `No comments yet`; no attributable search language
+  is available.
+- Potential reader-need hooks: keep use-condition openings and reader-fit reservations; do not change
+  the editorial strategy from one anomalous duplicate event.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none; cr-01 and cr-02 use the already recorded illustrated
+  stills, cleared jacket overlays and no retailer downloads.
+- Blockers: duplicate publication path and slight native-versus-Zernio metric disagreement. No new
+  rights blocker was found.
+
+**Performance**
+
+- Early audit: Player of Games `7675397759196957954` native 681 views / 1 like and duplicate
+  `7675398121542929667` native 235 / 1. Team of Rivals `7675422232285433110` Zernio 514 / 0 and
+  native 587 / 0. Commonplace `7674952452055076118` is 859 / 2. All comments are 0.
+- 24-hour and 72-hour checkpoints: pending for the 18 August illustrated posts; do not score the
+  duplicate as an independent execution.
+
+**Learning**
+
+- Repeat: the reader-led illustrated grammar remains a candidate for the single baseline slot.
+- Modify: add a single-writer lock and post-publication duplicate check before any next upload.
+- Pause: all additional TikTok uploads, second daily slot and any claim that the format has won.
+
+**Queue**
+
+- Approved: `cr-03` through `cr-07`, subject to muted-phone review and the hold clearing.
+- In production: none for this audit.
+- Awaiting evidence or review: `cr-03` Foster and the duplicate-path repair.
+- Requires user approval: deletion, account appeals, paid promotion or any rights-uncertain change.
+
 ### 2026-08-18, 09:01 Europe/London
 
 **Account and publishing**

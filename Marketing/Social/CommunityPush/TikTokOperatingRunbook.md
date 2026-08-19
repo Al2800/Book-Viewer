@@ -77,8 +77,25 @@ partnerships, rights-uncertain material and sensitive community responses remain
   signed-in Studio surface showed no visible warning or restriction text.
 - Establishment phase is active. Publish one strong reader-first post daily at 19:30, keep the
   60/20/15/5 mix, and do not test a second daily slot until seven comparable posts have data.
-- The next eligible prepared item is Category Reel `cr-01` (Player of Games) on 19 August. No
-  additional TikTok item is scheduled for 18 August by this audit.
+- Category Reel `cr-01` went out early on 18 August as a silent illustrated extra
+  (`7675397855864604694`). Owner chose no voiceover and no baked music. That post
+  sits beside the calendar: keep the 19:30 establishment slot and the 19–25 August
+  week on their dated rows. Do not re-upload the live cr-01 file. Do not post a
+  second TikTok on 18 August. The rejected Remotion placeholder set stays unpublished.
+
+### Publishing integrity hold: 19 August 2026, 09:08 Europe/London
+
+- Native Recent posts and the latest Zernio sync show the Player of Games caption twice on 18
+  August: `7675397759196957954` and `7675398121542929667`. The second row is a duplicate upload,
+  not a second creative treatment.
+- Team of Rivals `7675422232285433110` was an owner-requested extra format test and is not the
+  dated 20 August slot. Its native and Zernio view counts differ slightly; preserve both reads.
+- Routine TikTok publishing is temporarily held after this audit. Do not upload `cr-01` again,
+  do not delete either duplicate automatically, and do not advance `cr-03` until the single-writer
+  path, duplicate guard and native/Zernio reconciliation are verified.
+- The 19:30 establishment slot and the 60/20/15/5 mix remain the intended operating baseline once
+  the hold clears. The second daily slot remains disabled until seven comparable non-duplicated
+  posts have data.
 
 ## Editorial Principles
 

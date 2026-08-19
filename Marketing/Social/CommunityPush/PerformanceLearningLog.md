@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 18 August 2026
+Updated: 19 August 2026
 
 ## Purpose
 
@@ -63,6 +63,87 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 19 August 2026, 09:05 Europe/London
+
+**Platforms checked:** BookQuotes Graph identity, Facebook posts and `scheduled_posts`,
+Instagram media plus Reel insights, TikTok Zernio posts and token health.
+
+**Observation**
+
+- TikTok illustrated cuts now have overnight distribution. *Player of Games*
+  `7675397759196957954` 681 views / 1 like; duplicate `7675398121542929667` 235 / 1;
+  *Team of Rivals* `7675422232285433110` 514 / 0. Commonplace remains 859 / 2. All
+  comments 0. Followers still 0.
+- The same illustrated files on Instagram have 2–4 views and a 100% 3-second skip.
+  That is a distribution gap, not a format verdict.
+- Facebook 18 August text posts published on time. The 19 August–1 September 13:00
+  bank is now on Graph (14 rows). Today's card is `bq14-01`.
+- TikTok token `expiring_soon` at 08:45 UTC. Reconnect browser opened. Instagram
+  comments empty. Facebook comment edge not granted. App Store outcomes still null.
+
+**Interpretation and decision**
+
+- The illustrated stills-plus-type grammar is the first BookQuotes recommendation
+  format with same-day TikTok distribution. Do not treat 681 vs 514 as a book
+  winner; both are extras, one title was posted twice, and watch-through is not in
+  Zernio.
+- Keep the dated 13:00 bank. Do not re-upload `cr-01` at 19:30. Do not add a
+  website-link post onto these Reels.
+- No hypothesis confidence changed. Need three comparable illustrated posts and
+  Instagram distribution before calling the format supported.
+
+**Next actions**
+
+- Finish the TikTok OAuth reconnect this morning.
+- Let `instagram-due` publish `bq14-01` at 13:00 if the Mac is on.
+- Review `cr-03` *Foster* before the 21 August 19:30 slot.
+
+### 19 August 2026, 09:08 Europe/London: source reconciliation and duplicate incident
+
+**Platforms checked:** Meta Published and Scheduled Content Library, Graph read-back, Facebook and
+Instagram inbox surfaces; TikTok Studio Recent posts, dashboard and Zernio analytics read-back.
+
+**Observation**
+
+- Meta's visible Scheduled tab says `No scheduled posts`, but the Graph/control-plane status block
+  records 14 approved Facebook rows from 19 August through 1 September. A live attempt to schedule
+  approved `bq14-01` was refused by the publishing guard as `duplicate_copy_refused`, so no new item
+  was created. This is a source discrepancy, not proof that the queue is empty or full.
+- Facebook's visible Published table confirms the two 18 August 13:00 text posts at reach 0, views
+  0 and exposed interaction fields 0. The latest 17 August 13:10 post is reach 1, views 0.
+- Instagram's current native Meta table shows the 18 August Player of Games Reel
+  `18022991393885494` at 4 views / 4 reach, 8 seconds total watch time and 2 seconds average play
+  time; Team of Rivals `18060518723770036` at 2 views / 2 reach, 8 seconds total watch time and 3
+  seconds average play time. Both show 0 visible engagement and a 100% three-second skip rate in
+  the latest Graph read. These are too small for a format verdict.
+- TikTok's latest synced account is active, analytics-enabled and token-healthy through
+  20 August 08:04 UTC. The native table shows nine Public posts. The Player of Games caption was
+  published twice on 18 August: `7675397759196957954` at 681 views / 1 like and
+  `7675398121542929667` at 235 / 1. Team of Rivals `7675422232285433110` is 514 views / 0 likes
+  in the latest Zernio sync and 587 / 0 in the native table. Commonplace `7674952452055076118`
+  is 859 / 2; older rows remain at 0. All comments are 0 and followers remain 0.
+- Facebook comments, Instagram comments/Direct and TikTok latest comments are empty. No routine
+  reply was made. App Store outcomes remain unavailable.
+
+**Interpretation and decision**
+
+- The duplicate Player of Games post is a publishing-integrity failure. It invalidates treating the
+  two rows as independent tests and does not justify increasing cadence. Team of Rivals was logged
+  as an owner-requested extra format test, but it is not the dated 20 August slot.
+- Freeze further TikTok uploads until the single-writer path has reconciled native and Zernio state.
+  Keep one 19:30 establishment slot as the intended baseline after the hold is cleared, and keep
+  the second daily slot disabled until seven comparable, non-duplicated posts have data.
+- Do not classify the illustrated format from Instagram's tiny sample or from the two duplicate
+  TikTok rows. The useful signal is that reader-led illustrated Reels now receive distribution;
+  downstream value remains unproven.
+
+**Next actions**
+
+- Reconcile the Meta UI queue against the Graph queue before any further Facebook scheduling.
+- Trace the TikTok single-writer/duplicate guard and preserve both duplicate content IDs for audit;
+  do not delete or re-upload automatically.
+- Review `cr-03` Foster for the next eligible slot only after the hold is explicitly cleared.
 
 ### 18 August 2026, 09:01 Europe/London
 

@@ -50,6 +50,17 @@ Result labels:
 
 ## Measurement Checkpoints
 
+### 19 August 2026, 09:08 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7675397759196957954` | Establishment illustrated baseline | Early audit, under 24 hours | 681 views, 1 like, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available in the native table | Candidate baseline, but the same caption was duplicated and must not be scored as a standalone winner. |
+| `7675398121542929667` | Publishing-integrity duplicate | Early audit, under 24 hours | 235 views, 1 like, 0 comments | Same measures Not available | Duplicate of the Player of Games execution; exclude from creative comparison and investigate the writer path. |
+| `7675422232285433110` | Owner-requested format extra | Early audit, under 24 hours | Native 587 views, 0 likes, 0 comments; Zernio 514 views | Reach, watch completion, saves, shares, profile visits and follows Not available | Deliberate extra, not the dated 20 August slot; no creative verdict before comparable checkpoints. |
+
+No confidence or result label changed. The second daily slot remains disabled. Further TikTok
+publishing is on hold until native and Zernio state are reconciled and the duplicate guard is fixed.
+
 ### 18 August 2026, 09:01 Europe/London
 
 | Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |

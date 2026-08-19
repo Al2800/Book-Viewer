@@ -1,13 +1,13 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-18T09:01:15+01:00</code>.
+Generated from structured evidence updated <code>2026-08-19T09:08:12+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-11T09:01:15+01:00</code> to <code>2026-08-18T09:01:15+01:00</code>
+- Reporting window: <code>2026-08-12T09:08:12+01:00</code> to <code>2026-08-19T09:08:12+01:00</code>
 - Published Facebook items represented: 6
-- Visible views: 940
-- Visible reach: 79
+- Visible views: 2450
+- Visible reach: 85
 - Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
@@ -16,6 +16,11 @@ Generated from structured evidence updated <code>2026-08-18T09:01:15+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-08-18 | published | instagram | Team of Rivals | reel | audit | 2 | 2 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-08-18 | published | tiktok | Team of Rivals | reel | audit | 587 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-18 | published | instagram | The Player of Games | reel | audit | 4 | 4 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-08-18 | published | tiktok | The Player of Games | reel | audit | 235 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-18 | published | tiktok | The Player of Games | reel | audit | 682 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | audit | 227 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | 24h-plus | 855 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
@@ -68,8 +73,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 12
-- Channel-only items: 12
+- Durable published items: 17
+- Channel-only items: 17
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

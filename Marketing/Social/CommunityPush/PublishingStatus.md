@@ -1,6 +1,38 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 18 August 2026
+Updated: 19 August 2026, 09:05 Europe/London
+
+### Manual publish: 18 August 2026, 18:18 Europe/London
+
+Owner asked for a second illustrated Reel to test the *Player of Games* format
+(151 and 80 views on the two live PoG posts after ~2 hours). Same compiler,
+deliberate quiet, different book.
+
+- Asset: `Marketing/Video/illustrated-category-reels/02-team-of-rivals.mp4` plus cover.
+- TikTok Zernio `6a84939c6dbb0dd4614c7c8b`, content ID `7675422054036424726`,
+  `https://www.tiktok.com/@bookquotes.app/video/7675422054036424726`.
+- Instagram `18060518723770036` at `https://www.instagram.com/reel/DcMIcjmCTZy/`.
+- Extra format test. Keep the 19–25 August dated week. Do not re-upload this MP4
+  on 20 August.
+
+### Manual publish: 18 August 2026, 16:45 Europe/London
+
+Owner reviewed the illustrated *Player of Games* cut muted, chose deliberate quiet (no
+voiceover, no baked music), and asked to post that silent file.
+
+- Asset: `Marketing/Video/illustrated-category-reels/01-player-of-games.mp4` plus
+  `01-player-of-games-cover.png`. Not the rejected Remotion `category-reels/` set.
+- Audio: silent AAC track only. No VO. No Commercial Music Library bed.
+- TikTok `--now --approve` to `@bookquotes.app`. Zernio `6a847da810c540993aa32423`
+  reached `published`. Native content ID `7675397855864604694` at
+  `https://www.tiktok.com/@bookquotes.app/video/7675397855864604694`.
+- Instagram `--now --approve` to `17841434821362428`. Media `18022991393885494` at
+  `https://www.instagram.com/reel/DcL9vV5D5GY/`.
+- Facebook was not used. The 13:00 bank still stays a different asset.
+- This is an extra early post, sitting beside the calendar. It does not replace
+  the 19–25 August week. Do not post a second TikTok tonight. Do not upload this
+  same MP4 again. Keep 13:00 bank stills and 19:30 category Reels on their dated
+  slots. cr-02–cr-07 still need muted-phone review before `--approve`.
 
 ## Automation
 
@@ -19,6 +51,61 @@ and the validated TikTok establishment phase at 09:00 Europe/London. It does not
 Instagram bank cards publish from `uk.bookquotes.instagram-due` at 13:00. TikTok reconnect is
 `uk.bookquotes.tiktok-reconnect` at 09:05. TikTok routine posts use the 19:30 slot; paid,
 sensitive and rights-uncertain material remains approval-gated.
+
+### Current operating loop: 19 August 2026, 09:05 Europe/London
+
+Use this block as the live audit. Older dated notes below are history.
+
+- Identity is verified. Page `1246405755221229`, Instagram `17841434821362428`, TikTok
+  `@bookquotes.app` / Zernio `6a7e30f977555aae0187cea3`.
+- Facebook 18 August 13:00 published twice as intended: unfinished-book prompt
+  `122108736033415831` at 13:00 and reader-first recommendation `122108480283415831`
+  at 13:00. Graph comment and insights edges are not readable with the current token
+  (`pages_read_user_content` missing; insights metric names rejected).
+- Facebook Scheduled is healthy: 14 Public photo rows at 13:00 Europe/London from
+  19 August through 1 September. Today's item is `bq14-01` (`122108483445415831`):
+  "Choose your next read with 3 adjectives—not a genre."
+- Instagram due dry-run selected `bq14-01` for 13:00. `uk.bookquotes.instagram-due`
+  should publish it if this Mac is awake at 12:50/13:00. Do not `--approve` it now.
+- Instagram illustrated Reels have almost no distribution: *Player of Games*
+  `18022991393885494` 4 views / 4 reach / 1.6s avg / 100% 3s skip;
+  *Team of Rivals* `18060518723770036` 2 views / 2 reach / 2.6s avg / 100% skip.
+  Presidential 34/28, Commonplace 44/41. Comments empty on all four.
+- TikTok is the live channel. Zernio sync 19 August 07:35 Europe/London. Followers 0.
+  Latest rows: *Team of Rivals* `7675422232285433110` 514 views / 0 likes;
+  *Player of Games* `7675397759196957954` 681 views / 1 like and a same-caption
+  duplicate `7675398121542929667` 235 views / 1 like; Commonplace
+  `7674952452055076118` 859 views / 2 likes. Older rows remain 0. No comments.
+- TikTok token was reconnected at 09:05. Status `ok`. Expires
+  `2026-08-20T08:04:18Z` (~09:04 Europe/London tomorrow). `needs_reconnection`
+  is false. The 09:05 reconnect job should refresh it again tomorrow.
+- Today's 19:30 category row is `cr-01`. That illustrated cut is already live as an
+  18 August extra. Do not re-upload it. Do not use the rejected Remotion
+  `category-reels/` files. Next unused illustrated cut is `cr-03` *Foster* on 21 August
+  after muted-phone review.
+- No Facebook/Instagram/TikTok comments to answer. App Store downloads remain
+  unavailable. No website-link post has been published yet.
+
+### Reconciliation note: 19 August 2026, 09:08 Europe/London
+
+- Meta has a source conflict. The visible Scheduled tab says `No scheduled posts`, while the
+  Graph/control-plane read recorded 14 approved Public photo rows from 19 August through 1
+  September. The approved `bq14-01` schedule attempt was refused as `duplicate_copy_refused`; no
+  new mutation was made. Treat the native UI and Graph queue as unresolved until one source can be
+  verified against the other. Do not create another Facebook copy.
+- The visible Published table confirms two Facebook posts at 18 August 13:00, both reach 0,
+  views 0 and exposed interaction fields 0. The 17 August 13:10 post remains reach 1, views 0.
+- TikTok native Recent posts now shows nine public BookQuotes posts. On 18 August the same Player
+  of Games caption appeared twice: `7675397759196957954` at 681 native views / 1 like and
+  `7675398121542929667` at 235 / 1. The current Team of Rivals extra is
+  `7675422232285433110` at 514 in the latest Zernio sync and 587 in the native table. The native
+  and Zernio reads differ slightly; preserve both as source observations rather than averaging.
+- The Player of Games duplicate is a publishing-integrity failure, not evidence for two creative
+  executions. Do not delete automatically, do not upload either file again, and do not treat the
+  Team of Rivals extra as the dated 20 August slot.
+- TikTok routine publishing is on a single-writer hold until the duplicate path is reconciled.
+  Keep the next unused illustrated cut (`cr-03`, Foster) in review for 21 August; do not publish a
+  new TikTok item during this audit.
 
 ### Current operating loop: 18 August 2026, 09:01 Europe/London
 
@@ -43,9 +130,11 @@ must not be treated as proof of the current native queue.
 - The native Account Check URL resolved to the signed-in Studio surface without visible warning or
   restriction text, but did not expose a formal account-health report. Record that limitation;
   do not treat it as a guarantee of unrestricted account health.
-- TikTok establishment is active at one reader-first post per day at 19:30. The next eligible
-  prepared item is Category Reel `cr-01` (Player of Games) on 19 August. No second daily slot is
-  permitted until seven comparable posts have data.
+- TikTok establishment stays one reader-first post per day at 19:30. The 18 August
+  16:45 *Player of Games* Reel is an extra early cut, not a substitute for the
+  19–25 August week. 13:00 bank stills continue from 19 August (`bq14-01`).
+  19:30 category Reels continue on their dated rows. Do not re-upload the live
+  cr-01 file. The rejected Remotion `category-reels/` files stay unpublished.
 - Facebook comments, Instagram comments/Direct and TikTok comments show no new messages. No
   routine reply was made. App Store downloads and activation signals remain unavailable.
 
