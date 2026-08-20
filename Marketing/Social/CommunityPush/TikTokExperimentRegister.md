@@ -50,6 +50,17 @@ Result labels:
 
 ## Measurement Checkpoints
 
+### 20 August 2026, 09:04 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7675397759196957954` | Establishment illustrated baseline | 24h-plus, approximately 40 hours | 687 views, 1 like, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available in Zernio read | Later distribution is measurable, but this was an early extra and a same-caption duplicate exists; do not score as a clean dated-slot result. |
+| `7675398121542929667` | Publishing-integrity duplicate | 24h-plus, approximately 40 hours | 239 views, 1 like, 0 comments | Same measures Not available | Duplicate of the Player of Games execution; retain for integrity evidence and exclude from creative comparison. |
+| `7675422232285433110` | Owner-requested format extra | 24h-plus, approximately 39 hours | 683 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available in Zernio read | Extra format test, not the dated 20 August slot; no creative verdict before a clean comparable test. |
+
+No confidence or result label changed. Token health is now `ok` through 21 August, but the
+single-writer hold and second-slot hold remain active until native and Zernio state are reconciled.
+
 ### 19 August 2026, 09:08 Europe/London
 
 | Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |

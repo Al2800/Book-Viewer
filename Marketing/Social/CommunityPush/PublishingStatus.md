@@ -1,6 +1,39 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 19 August 2026, 09:05 Europe/London
+Updated: 20 August 2026, 07:10 Europe/London
+
+### Audit: 20 August 2026, 09:04 Europe/London
+
+- Identity remains verified: Facebook Page `1246405755221229`, Instagram
+  `17841434821362428` / `bookquotes.app`, and TikTok `@bookquotes.app`.
+- The Facebook Graph feed still shows `bq14-01` (`122108483445415831`) as the latest
+  published BookQuotes card from 19 August at 13:00. The current CLI reads the published
+  feed only; it does not prove the scheduled queue. A direct read of the logged website-hop
+  object (`122108977917415831`) failed because the current Graph request uses a deprecated
+  singular-status endpoint/field combination. The last native Scheduled read still showed no
+  scheduled posts, so the claimed queue remains unresolved. No new Facebook mutation was made.
+- Instagram's current media list still has no 19 August `bq14-01` card. The read-only due check
+  selects `bq14-02` for today's 13:00 path, but it was not published during this audit.
+- TikTok analytics synced at `2026-08-20T07:39:12Z`; the account is active, analytics-enabled,
+  has 9 external posts and 0 followers. Current Zernio values are Team of Rivals 683 views / 0
+  likes, Player of Games intended 687 / 1, the same-caption duplicate 239 / 1, and Commonplace
+  Ritual 859 / 2. The token is healthy through `2026-08-21T06:07:17Z` and does not need
+  reconnection.
+- No new comment or message evidence was exposed by the current API read. No routine replies
+  were made. App Store outcomes remain unavailable.
+- Keep the TikTok single-writer hold. Do not upload `cr-03`, delete either Player duplicate, or
+  retry the Facebook website-hop schedule until native/control-plane state is reconciled.
+
+### Scheduled: 20 August 2026, 13:00 Europe/London — first website hop
+
+Owner asked for a measurable Facebook-to-site post. Page
+`1246405755221229` only. Graph ID `122108977917415831`. Unpublished until 13:00.
+
+- Landing: `https://bookquotes.uk/journal/build-a-digital-commonplace-book`
+- UTMs: `utm_source=facebook&utm_medium=organic_social&utm_campaign=bq-web-001-2026_08&utm_content=web-001-commonplace`
+- No App Store URL in the post. The page carries the store button.
+- Facebook bank card `bq14-02` was moved to 2 September 13:00 so this slot is not a
+  double post. Instagram due still publishes `bq14-02` tomorrow at 13:00.
 
 ### Manual publish: 18 August 2026, 18:18 Europe/London
 
@@ -52,6 +85,30 @@ Instagram bank cards publish from `uk.bookquotes.instagram-due` at 13:00. TikTok
 `uk.bookquotes.tiktok-reconnect` at 09:05. TikTok routine posts use the 19:30 slot; paid,
 sensitive and rights-uncertain material remains approval-gated.
 
+### Current operating loop: 20 August 2026, 07:10 Europe/London
+
+Use this block as the live audit. Older dated notes below are history.
+
+- Identity is verified. Page `1246405755221229`, Instagram `17841434821362428`, TikTok
+  `@bookquotes.app`.
+- Facebook 19 August 13:00 published `bq14-01` (`122108483445415831`): three-adjectives
+  card. Graph comments/insights still unread with this token.
+- Facebook Scheduled still has a full 13:00 queue through 2 September. Today's 13:00
+  item is the website hop `122108977917415831` (unpublished). `bq14-02` sits at
+  2 September 13:00 on Facebook only.
+- Instagram due dry-run selected `bq14-02` for 13:00. Yesterday's `bq14-01` card is
+  not in the Instagram media list: the 13:00 due job likely missed (Mac asleep).
+  Keep this Mac awake at 12:50 today. Do not `--approve` the due item now.
+- Instagram illustrated Reels unchanged and undistributed: PoG 4/4 / 100% skip;
+  ToR 2/2 / 100% skip; presidential 34/28; Commonplace 44/41. Comments empty.
+- TikTok views have plateaued overnight. ToR 683 / 0 likes; PoG 687 / 1 and
+  duplicate 239 / 1; Commonplace 859 / 2. Followers 0. No comments. Older rows 0.
+- TikTok token expires `2026-08-20T08:04:18Z` (~09:04 Europe/London). Status
+  `expiring_soon`. Reconnect OAuth was opened. Complete it before 09:04.
+- Do not re-upload cr-01 or cr-02 at 19:30. Next unused illustrated cut is
+  `cr-03` *Foster* on 21 August after muted-phone review.
+- No comments or DMs to answer. App Store downloads remain unavailable.
+
 ### Current operating loop: 19 August 2026, 09:05 Europe/London
 
 Use this block as the live audit. Older dated notes below are history.
@@ -84,7 +141,8 @@ Use this block as the live audit. Older dated notes below are history.
   `category-reels/` files. Next unused illustrated cut is `cr-03` *Foster* on 21 August
   after muted-phone review.
 - No Facebook/Instagram/TikTok comments to answer. App Store downloads remain
-  unavailable. No website-link post has been published yet.
+  unavailable. First website-link Facebook post is scheduled for 20 August 13:00
+  (`122108977917415831`).
 
 ### Reconciliation note: 19 August 2026, 09:08 Europe/London
 

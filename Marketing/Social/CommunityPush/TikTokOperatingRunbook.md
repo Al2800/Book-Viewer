@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 18 August 2026
+Updated: 20 August 2026
 
 ## Purpose
 
@@ -96,6 +96,16 @@ partnerships, rights-uncertain material and sensitive community responses remain
 - The 19:30 establishment slot and the 60/20/15/5 mix remain the intended operating baseline once
   the hold clears. The second daily slot remains disabled until seven comparable non-duplicated
   posts have data.
+
+### Audit: 20 August 2026, 09:04 Europe/London
+
+- Zernio now reports active `@bookquotes.app`, analytics access true, latest sync at
+  `2026-08-20T07:39:12Z`, and token health `ok` through `2026-08-21T06:07:17Z`.
+- The hold is unchanged. Current later reads are Player of Games intended 687 views / 1 like,
+  same-caption duplicate 239 / 1, Team of Rivals 683 / 0, and Commonplace Ritual 859 / 2; all
+  comments are 0 and deeper retention or downstream measures are unavailable.
+- No new TikTok post was uploaded. Do not advance `cr-03` or enable the second slot until the
+  single-writer path, duplicate guard and native/Zernio reconciliation are evidenced.
 
 ## Editorial Principles
 

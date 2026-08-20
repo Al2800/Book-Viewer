@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 18 August 2026
+Updated: 20 August 2026
 
 ## Purpose
 
@@ -63,6 +63,70 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-20, 09:04 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`; analytics access is true,
+  the latest sync is `2026-08-20T07:39:12Z`, and token health is `ok` through
+  `2026-08-21T06:07:17Z`.
+- Published: no new TikTok post was created in this audit. The live inventory remains 9 posts,
+  including the same-caption Player of Games duplicate and the owner-requested Team of Rivals
+  extra.
+- Expected posts: `cr-03` Foster remains the next unused illustrated cut, but the single-writer
+  hold remains active until the duplicate path and native/Zernio reconciliation are verified.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current account and post analytics | Zernio account, analytics and posts read | 9 external posts; 0 followers; Team of Rivals 683 views, Player of Games 687 / 239, Commonplace Ritual 859; no comments. | Access and distribution are measurable again, but the duplicate makes the Player comparison invalid. | Short | Hold publishing and repair the single-writer path before adding another execution. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none; no new Creative Center or creator-pattern evidence was
+  collected in this audit.
+- Transferable patterns retained: reader-fit/use-condition openings and deliberate quiet remain
+  candidates, but the latest views do not justify a format or timing change.
+- Elements explicitly excluded from imitation: duplicate uploads, copied wording, quota workarounds,
+  automated engagement and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: no comments and no attributable search language available.
+- Potential reader-need hooks: retain the existing use-condition and honest-reservation framing for
+  the next clean test; do not manufacture a new hook from plateaued reach.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: publishing-integrity hold and slight native-versus-Zernio metric disagreement remain;
+  no new rights blocker was found.
+
+**Performance**
+
+- Current Zernio read: `7675397759196957954` Player of Games intended 687 views / 1 like;
+  `7675398121542929667` duplicate 239 / 1; `7675422232285433110` Team of Rivals 683 / 0;
+  `7674952452055076118` Commonplace Ritual 859 / 2. All comments 0.
+- 24-hour, 72-hour and seven-day retention, completion, saves, shares, profile visits and follows:
+  Not available.
+
+**Learning**
+
+- Experiment updates: record the current metrics as a later audit only; exclude the duplicate from
+  creative comparison.
+- Confidence changes: none.
+- Repeat: the clean reader-led baseline remains a candidate once integrity is repaired.
+- Modify: enforce one writer, one content ID and a native post-publication duplicate check.
+- Pause: all further TikTok uploads and the second daily slot.
+
+**Queue**
+
+- Approved: `cr-03` through `cr-07`, subject to the hold and muted-phone review.
+- In production: none for this audit.
+- Awaiting evidence or review: `cr-03` Foster and duplicate-path repair.
+- Requires user approval: deletion, account appeals, paid promotion or rights-uncertain changes.
 
 ### 2026-08-19, 09:08 Europe/London
 

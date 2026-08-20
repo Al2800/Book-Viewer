@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-19T09:08:12+01:00",
+  "updated_at": "2026-08-20T09:04:00+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -1162,6 +1162,90 @@
       },
       "metrics_unavailable_reason": "Graph returned views, reach, likes, comments, shares, saves, total_interactions, average watch time, total watch time and reels_skip_rate. Viewers, link clicks and follows were not in this insights payload.",
       "notes": "Graph media insights on https://www.instagram.com/reel/DcCQSLRj430/. Average watch 1.88s; total watch 78.9s; reels_skip_rate 95.1% (first 3 seconds). Likes, comments, shares and saves are measured zeros. The Instagram-app second-by-second retention graph is not in Graph. Volume is still too small for a creative verdict."
+    },
+    {
+      "observation_id": "tk-2026-08-20-player-of-games-later-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7675397759196957954",
+      "title": "The Player of Games",
+      "format": "reel",
+      "published_at": "2026-08-18T16:43:10+01:00",
+      "observed_at": "2026-08-20T09:04:00+01:00",
+      "checkpoint": "24h-plus",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned illustrated category Reel and cleared jacket overlay; Zernio publish --now.",
+      "metrics": {
+        "views": 687,
+        "reach": null,
+        "viewers": null,
+        "interactions": 1,
+        "comments": 0,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio exposed views, likes and comments only in this read. Reach, watch completion, shares, saves, link clicks and follows were not exposed.",
+      "notes": "Later audit of the intended cr-01 early extra. A same-caption duplicate is also Public; retain this observation for distribution evidence but exclude it from a clean creative verdict."
+    },
+    {
+      "observation_id": "tk-2026-08-20-player-of-games-duplicate-later-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7675398121542929667",
+      "title": "The Player of Games",
+      "format": "reel",
+      "published_at": "2026-08-18T16:44:32+01:00",
+      "observed_at": "2026-08-20T09:04:00+01:00",
+      "checkpoint": "24h-plus",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned illustrated category Reel and cleared jacket overlay; Zernio publish --now.",
+      "metrics": {
+        "views": 239,
+        "reach": null,
+        "viewers": null,
+        "interactions": 1,
+        "comments": 0,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio exposed views, likes and comments only in this read. Reach, watch completion, shares, saves, link clicks and follows were not exposed.",
+      "notes": "Same-caption duplicate of 7675397759196957954. Retained for publishing-integrity audit and excluded from creative comparison."
+    },
+    {
+      "observation_id": "tk-2026-08-20-team-of-rivals-later-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7675422232285433110",
+      "title": "Team of Rivals",
+      "format": "reel",
+      "published_at": "2026-08-18T18:18:06+01:00",
+      "observed_at": "2026-08-20T09:04:00+01:00",
+      "checkpoint": "24h-plus",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned illustrated category Reel and cleared jacket overlay; Zernio publish --now.",
+      "metrics": {
+        "views": 683,
+        "reach": null,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio exposed views, likes and comments only in this read. Reach, watch completion, shares, saves, link clicks and follows were not exposed.",
+      "notes": "Owner-requested extra format test, not the dated 20 August slot. No creative verdict before a clean comparable execution."
     }
   ],
   "search_snapshots": [

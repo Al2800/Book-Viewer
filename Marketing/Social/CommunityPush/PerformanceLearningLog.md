@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 19 August 2026
+Updated: 20 August 2026
 
 ## Purpose
 
@@ -63,6 +63,78 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 20 August 2026, 09:04 Europe/London
+
+**Platforms checked:** BookQuotes Graph identity, Facebook and Instagram published-media lists,
+read-only Instagram due selection, TikTok Zernio analytics and token health.
+
+**Observation**
+
+- Facebook's latest API-readable published card is `bq14-01` (`122108483445415831`), created
+  19 August at 13:00 Europe/London. Post-level reach, views, interactions, comments, shares,
+  saves, link clicks and follows are **Not available** from this token/read path.
+- The logged Facebook website-hop object (`122108977917415831`) could not be read: Graph returned
+  a deprecated singular-status error. The current list endpoint does not expose the scheduled
+  queue, and the last native Scheduled read showed no scheduled posts. The queue is therefore
+  unresolved, not confirmed empty or confirmed full. No duplicate scheduling attempt was made.
+- Instagram has no 19 August `bq14-01` item in the current media list. The read-only due check
+  selected `bq14-02` for 13:00, but no publish occurred in this audit. Latest listed Instagram
+  media remains the 18 August Team of Rivals Reel.
+- TikTok's latest analytics sync is `2026-08-20T07:39:12Z`: Team of Rivals 683 views / 0 likes,
+  Player of Games intended 687 / 1, same-caption duplicate 239 / 1, and Commonplace Ritual
+  859 / 2. Comments are 0, followers are 0, and reach, watch completion, saves, shares,
+  profile visits, link clicks and follows are **Not available** in this read.
+- TikTok account access is active and analytics-enabled. Token health is **ok** through
+  `2026-08-21T06:07:17Z`; the reconnect problem is cleared.
+
+**Interpretation and decision**
+
+- Token recovery removes an operational access blocker, but it does not repair the publishing
+  integrity incident. The duplicate Player upload remains an exclusion from creative comparison.
+- The four TikTok posts have plateaued relative to the prior audit; this is not enough evidence to
+  change the reader-fit or illustrated-format priors. No hypothesis confidence changed.
+- The Facebook queue source conflict is still a measurement and scheduling-integrity issue, not a
+  reason to create another copy. Instagram's missed 19 August card remains an automation/awake
+  path issue rather than a content verdict.
+
+**Next actions**
+
+- Keep the TikTok single-writer hold and second-slot hold. Reconcile writer, duplicate guard and
+  native/Zernio state before `cr-03` Foster is eligible.
+- Do not schedule another Facebook copy while the Graph/native queue disagreement remains.
+- Keep the Mac awake for the approved Instagram due path, but do not run the due command manually
+  during this audit. No routine or sensitive replies are awaiting action.
+
+### 20 August 2026, 07:10 Europe/London
+
+**Platforms checked:** Graph identity, Facebook posts and `scheduled_posts`, Instagram
+media plus Reel insights, TikTok Zernio posts and token health.
+
+**Observation**
+
+- TikTok illustrated cuts have stopped adding meaningful views overnight: ToR 683,
+  PoG 687 plus duplicate 239, Commonplace 859. Likes 0–2. Comments 0. Followers 0.
+- Instagram illustrated stills remain 2–4 views and 100% 3-second skip. The 19 August
+  `bq14-01` still is missing from Instagram media; Facebook published that card.
+- Today's Facebook 13:00 website hop is still scheduled and unpublished
+  (`122108977917415831`). Instagram due is ready for `bq14-02`.
+- TikTok token `expiring_soon` at 08:04 UTC. Reconnect browser opened.
+
+**Interpretation and decision**
+
+- Overnight plateau on TikTok is consistent with a For You test that did not
+  compound, not with a collapse. Do not change format on that signal alone.
+- Instagram still has not distributed the illustrated cuts. Yesterday's missed still
+  is an operator/Mac-awake failure, not a creative result.
+- No hypothesis confidence changed.
+
+**Next actions**
+
+- Finish TikTok OAuth before 09:04.
+- Keep the Mac awake for 12:50/13:00 Instagram `bq14-02`.
+- Let the Facebook website hop publish at 13:00. Do not re-upload cr-02 tonight.
+- Review `03-foster.mp4` before Friday 19:30.
 
 ### 19 August 2026, 09:05 Europe/London
 
