@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 20 August 2026
+Updated: 21 August 2026
 
 ## Purpose
 
@@ -63,6 +63,64 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 21 August 2026, 08:55 Europe/London
+
+**Platforms checked:** Graph identity, Facebook published feed and
+`scheduled_posts`, Instagram media plus insights, TikTok Zernio posts and
+token health, Instagram due dry-run.
+
+**Observation**
+
+- TikTok numbers are identical to last night: Commonplace 859 / 2, Player of
+  Games 687 / 1, Team of Rivals 684 / 0, duplicate 239 / 1. Followers 0.
+  Comments 0. Token `ok` through `2026-08-22T06:45:09Z`.
+- Instagram Reels are unchanged (ToR 2 / 100% skip, PoG 4 / 100% skip).
+  Last night's `bq14-02` still is live and unread: 0 views, 0 reach, 0 saves
+  after about 15 hours.
+- Facebook website hop remains published. Clicks and comments are still
+  **Not available** on this token. Thirteen scheduled Page posts are
+  readable; today's 13:00 item is `bq14-03`.
+- Instagram due dry-run selects `bq14-03` and is ready. No new replies.
+
+**Interpretation and decision**
+
+- Overnight TikTok plateau continues. That is still a For You test that did
+  not compound, not a collapse. Do not change the illustrated format on
+  this signal.
+- The evening still has not been distributed. One zero-reach card is not a
+  creative verdict.
+- No hypothesis confidence changed.
+
+**Next actions**
+
+- Keep the Mac awake for 12:50 / 13:00 Instagram `bq14-03`.
+- Let Facebook publish `bq14-03` at 13:00. Do not add a second Facebook post.
+- Review `03-foster.mp4` muted before 19:30. Do not `--approve` until then.
+  Do not use the rejected Remotion `category-reels/` file.
+
+### 20 August 2026, 18:10 Europe/London
+
+**Platforms checked:** Instagram due path, live media list, Facebook already-published hop.
+
+**Observation**
+
+- Instagram `bq14-02` is now live: `17893658793394131`,
+  `https://www.instagram.com/p/DcRRJ61iI6X/`.
+- The 13:00 due job did run on 19 and 20 August. Both stopped on
+  `instagram_png_unsupported`. This was not a Mac-asleep miss.
+- Facebook website hop remains the only Facebook post today. TikTok was not used.
+
+**Interpretation and decision**
+
+- The still-card due path needs a JPEG conversion before Graph, same as Reel covers.
+  That is an automation defect, not a content verdict.
+- No hypothesis confidence changed.
+
+**Next actions**
+
+- Leave tomorrow's 13:00 due to publish `bq14-03` through the fixed JPEG path.
+- Keep *Foster* on 21 August 19:30 after a muted review. Do not re-upload cr-02.
 
 ### 20 August 2026, 09:04 Europe/London
 

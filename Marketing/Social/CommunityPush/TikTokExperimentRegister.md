@@ -50,6 +50,17 @@ Result labels:
 
 ## Measurement Checkpoints
 
+### 21 August 2026, 09:01 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7675397759196957954` | Establishment illustrated baseline | Monitoring read, before 72h | 687 views, 1 like, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | No valid new checkpoint yet. Keep the earlier `24h-plus` record and exclude the early extra from a clean dated-slot verdict. |
+| `7675398121542929667` | Publishing-integrity duplicate | Monitoring read, before 72h | 239 views, 1 like, 0 comments | Same measures Not available | Duplicate remains an integrity observation, not a creative treatment. |
+| `7675422232285433110` | Owner-requested format extra | Monitoring read, before 72h | 684 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | No valid new checkpoint yet; this extra is not the dated 21 August slot. |
+
+No confidence or result label changed. The 72-hour checkpoint is not yet due at this audit, and
+the single-writer hold and second-slot hold remain active.
+
 ### 20 August 2026, 09:04 Europe/London
 
 | Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |

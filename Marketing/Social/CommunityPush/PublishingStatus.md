@@ -1,6 +1,51 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 20 August 2026, 07:10 Europe/London
+Updated: 21 August 2026, 08:55 Europe/London
+
+### Audit: 21 August 2026, 08:55 Europe/London
+
+- Identity remains verified: Facebook Page `1246405755221229`, Instagram
+  `17841434821362428` / `bookquotes.app`, TikTok `@bookquotes.app`.
+- Facebook latest published is still the 20 August website hop
+  `122108977917415831`. Native `scheduled_posts` now reads 13 future items.
+  Today's 13:00 card is `bq14-03` (describe a book without the plot). Queue
+  continues at least through 30 August.
+- Instagram `bq14-02` is live from last night:
+  `17893658793394131` / `https://www.instagram.com/p/DcRRJ61iI6X/`. Insights
+  are 0 views / 0 reach / 0 saves. Due dry-run for 13:00 selects `bq14-03`.
+  JPEG conversion is in the CLI; keep the Mac awake at 12:50.
+- TikTok token is `ok` until `2026-08-22T06:45:09Z`. Analytics synced
+  `2026-08-21T06:45:11Z`. Views unchanged overnight: Commonplace 859 / 2,
+  Player of Games 687 / 1, Team of Rivals 684 / 0, PoG duplicate 239 / 1.
+  Followers 0. Comments 0.
+- No new comment or message evidence. Graph still cannot read Facebook
+  clicks on the hop. App Store outcomes remain unavailable.
+- Do not publish *Foster* until a muted review. Use
+  `Marketing/Video/illustrated-category-reels/03-foster.mp4`, not the
+  rejected Remotion `category-reels/` file. Do not re-upload cr-01 or cr-02.
+
+### Manual publish: 20 August 2026, 18:10 Europe/London
+
+Owner asked to keep today's slot moving after the 13:00 Instagram due failed.
+
+- Asset: approved bank still `bq14-02` (reading-menu card). Instagram only.
+- Facebook already had the 13:00 website hop; do not also post this card there.
+- Cause of the 13:00 miss: `uk.bookquotes.instagram-due` did fire, then stopped on
+  `instagram_png_unsupported`. Mac was awake. CLI now converts PNG stills to JPEG
+  the same way Reel covers already do.
+- Instagram `17893658793394131` at `https://www.instagram.com/p/DcRRJ61iI6X/`.
+- Do not re-upload cr-02. Next illustrated cut remains *Foster* on 21 August 19:30.
+
+### Evening read-back: 20 August 2026, 18:05 Europe/London
+
+- Facebook website hop `122108977917415831` published at 13:00 as planned.
+  `https://www.facebook.com/122107379391415831/posts/122108977917415831`.
+  Graph still cannot read clicks or comments on this token.
+- Instagram due missed again. No 19 August `bq14-01` and no 20 August `bq14-02`
+  in the media list. Latest IG item remains the 18 August *Team of Rivals* Reel.
+- TikTok token is `ok` until `2026-08-21T06:07:17Z`. No new TikTok today, as
+  intended. Views unchanged: ToR 684, PoG 687 / 239, Commonplace 859.
+- Do not post cr-02 tonight. Next illustrated cut is *Foster* on 21 August.
 
 ### Audit: 20 August 2026, 09:04 Europe/London
 
@@ -24,10 +69,10 @@ Updated: 20 August 2026, 07:10 Europe/London
 - Keep the TikTok single-writer hold. Do not upload `cr-03`, delete either Player duplicate, or
   retry the Facebook website-hop schedule until native/control-plane state is reconciled.
 
-### Scheduled: 20 August 2026, 13:00 Europe/London — first website hop
+### Published: 20 August 2026, 13:00 Europe/London — first website hop
 
 Owner asked for a measurable Facebook-to-site post. Page
-`1246405755221229` only. Graph ID `122108977917415831`. Unpublished until 13:00.
+`1246405755221229` only. Graph ID `122108977917415831`. Published on schedule.
 
 - Landing: `https://bookquotes.uk/journal/build-a-digital-commonplace-book`
 - UTMs: `utm_source=facebook&utm_medium=organic_social&utm_campaign=bq-web-001-2026_08&utm_content=web-001-commonplace`

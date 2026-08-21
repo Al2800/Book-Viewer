@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 20 August 2026
+Updated: 21 August 2026
 
 ## Purpose
 
@@ -63,6 +63,72 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-21, 09:01 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`; analytics access is true,
+  the latest sync is `2026-08-21T06:45:11Z`, and token health is `ok` through
+  `2026-08-22T06:45:09Z`.
+- Published: no new TikTok post was created. The live inventory remains 9 posts; no new content
+  ID has appeared since the 18 August illustrated extras.
+- Expected posts: `cr-03` Foster remains the next unused cut for the 21 August 19:30 slot, but it
+  is still blocked pending a muted review and the single-writer integrity hold. Do not use the
+  rejected Remotion `category-reels/` output.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| TikTok Trends guidance | [TikTok for Business, How to use Trends](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en) | Creative Center trend pages expose trendlines, related videos, audience insights, regional popularity and related hashtags. | UK-region checks are more useful than generic global trend lists. | Short | Use the UK Creative Center as a research input once the publishing hold clears; do not copy creator execution. |
+| BookTok community scale | [TikTok Newsroom, 2026 summer reading list](https://newsroom.tiktok.com/the-booktok-communitys-2026-summer-reading-list?lang=en) | TikTok reported more than 80 million global posts using `#BookTok` as of 1 June 2026 and framed the community around personal recommendations. | Reader-first recommendation language remains the right audience fit; app-led posts should stay secondary. | Medium | Keep researched, specific reader-fit briefs in the queue. |
+| Creative structure | [TikTok Creative Codes](https://www.tiktok.com/business/en-US/creative-codes) | TikTok's current guidance describes a reliable hook, body and close structure. | The existing BQ first-frame hook and held-choice close are directionally compatible. | Medium | Preserve the structure in `cr-03` review; do not change the visual treatment from one overnight read. |
+
+No reliable 15-20-post UK creator sample was available through the connected read in this run, so
+no style-catalogue or audio change is being claimed. The external signals are recorded as context,
+not as BookQuotes account evidence.
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: use a clear reader proposition in the opening, a compact middle and a
+  deliberate close; keep the recommendation itself useful without relying on a trend sound.
+- Elements explicitly excluded from imitation: copied wording, creator identity, distinctive
+  artwork, manufactured controversy, duplicate uploads and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: no comments, messages or attributable search language available.
+- Potential reader-need hooks: preserve the *Foster* short-book/quiet-fiction use condition, subject
+  to the muted review.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: single-writer duplicate hold and pending muted-phone review; no new rights blocker.
+
+**Performance**
+
+- Current Zernio read: Commonplace Ritual 859 views / 2 likes; Player of Games intended 687 / 1;
+  Player duplicate 239 / 1; Team of Rivals 684 / 0. All comments 0 and followers 0.
+- 24-hour, 72-hour and seven-day retention, completion, saves, shares, profile visits and follows:
+  Not available. The 72-hour checkpoint for the 18 August extras is not yet due at this audit.
+
+**Learning**
+
+- Experiment updates: no new valid checkpoint; retain the 20 August `24h-plus` observations.
+- Confidence changes: none.
+- Repeat: reader-fit/use-condition framing and hook-body-close structure remain candidates.
+- Modify: keep one writer, one content ID and a native post-publication duplicate check.
+- Pause: all further TikTok uploads and the second daily slot until integrity is reconciled.
+
+**Queue**
+
+- Approved: `cr-03` through `cr-07`, subject to muted review and the integrity hold.
+- In production: none for this audit.
+- Awaiting evidence or review: `cr-03` Foster and single-writer repair.
+- Requires user approval: deletion, account appeals, paid promotion or rights-uncertain changes.
 
 ### 2026-08-20, 09:04 Europe/London
 

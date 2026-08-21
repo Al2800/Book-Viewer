@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-20T09:04:00+01:00",
+  "updated_at": "2026-08-21T09:01:27+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -1246,6 +1246,62 @@
       },
       "metrics_unavailable_reason": "Zernio exposed views, likes and comments only in this read. Reach, watch completion, shares, saves, link clicks and follows were not exposed.",
       "notes": "Owner-requested extra format test, not the dated 20 August slot. No creative verdict before a clean comparable execution."
+    },
+    {
+      "observation_id": "fb-2026-08-21-website-hop-24h",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122108977917415831",
+      "title": "BookQuotes digital commonplace book website hop",
+      "format": "text",
+      "published_at": "2026-08-20T13:00:00+01:00",
+      "observed_at": "2026-08-21T09:01:27+01:00",
+      "checkpoint": "24h-plus",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes commonplace-book prompt and owned website link; Graph publish.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Graph published-feed read confirms the post and permalink, but the current token/read path does not expose post-level insights, comments, clicks or downstream actions.",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122108977917415831. Treat this as a publication and attribution checkpoint, not a creative result until metrics are readable."
+    },
+    {
+      "observation_id": "ig-2026-08-21-reading-menu-audit",
+      "platform": "instagram",
+      "identity": "BookQuotes",
+      "content_id": "17893658793394131",
+      "title": "Build a reading menu, not one impossible TBR",
+      "format": "image",
+      "published_at": "2026-08-20T18:10:54+01:00",
+      "observed_at": "2026-08-21T09:01:27+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes typography card; Graph publish --now after JPEG conversion.",
+      "metrics": {
+        "views": 0,
+        "reach": 0,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Current Graph insight read exposes measured zeros for views, reach and saves. Likes, comments, shares, watch time, viewers, link clicks and follows are not available.",
+      "notes": "Public once at https://www.instagram.com/p/DcRRJ61iI6X/. Approximately 15 hours after publication; volume is too small for a creative verdict."
     }
   ],
   "search_snapshots": [
