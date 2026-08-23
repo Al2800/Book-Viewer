@@ -1,6 +1,94 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 21 August 2026, 08:55 Europe/London
+Updated: 23 August 2026, 09:03 Europe/London
+
+### Manual publish: 23 August 2026, 08:48 Europe/London
+
+Owner asked for another TikTok, with the Creator Inbox draft fallback if
+direct posting was at capacity.
+
+- Asset: `Marketing/Video/illustrated-category-reels/05-four-thousand-weeks.mp4`
+  plus cover. Today's dated cut. Not the rejected Remotion `category-reels/`
+  file. Do not re-upload this MP4.
+- TikTok direct submit succeeded (no capacity error). Zernio
+  `6a8aa575ad60a2d3550a9fca`, status `published`, publish ID
+  `v_pub_url~v2-1.7677130482354587670`. Expected public URL
+  `https://www.tiktok.com/@bookquotes.app/video/7677130482354587670`.
+  Analytics has not synced this row yet (empty permalink, stage
+  `awaiting-finalize`). If it is not on the profile, finish it in Creator
+  Inbox / drafts. Do not upload a second copy.
+- Instagram live despite a CLI timeout on read-back:
+  `17900162196354062` at `https://www.instagram.com/reel/DcX_ZYQCGja/`.
+- Do not also post this file at 19:30. Saturday `cr-04` *Tinker Tailor*
+  remains unused.
+
+### Audit: 23 August 2026, 09:03 Europe/London
+
+- Identity remains verified: Facebook Page `1246405755221229`, Instagram
+  `17841434821362428` / `bookquotes.app`, and TikTok `@bookquotes.app`.
+- Facebook published the Saturday TBR knockout at 13:00 Europe/London:
+  `122108484573415831`. The Sunday 13:00 card is still queued. The direct
+  `scheduled_posts` read shows 11 future Page rows from 23 August through 2
+  September. Page post-level views, reach, clicks, comments, shares and
+  reactions remain unavailable through the current read path.
+- Instagram's latest Reel is *Four Thousand Weeks*,
+  `17900162196354062`, at `https://www.instagram.com/reel/DcX_ZYQCGja/`.
+  Graph insights currently read 3 views, 0 reach, 0 likes, 0 comments, 0
+  saves and 0 shares. Volume is too small for a creative verdict.
+- TikTok account is active with 1 follower, analytics synced at
+  `2026-08-23T07:07:12Z`, and token health `ok` through
+  `2026-08-24T06:31:57Z`. The 72-hour read is now valid: intended Player of
+  Games 689 / 1 like, duplicate 239 / 1, Team of Rivals 684 / 0; comments
+  remain 0 and deeper retention, reach, saves, shares, profile visits and
+  follows are unavailable. The new Four Thousand Weeks submit
+  `7677130482354587670` has not yet appeared in the analytics inventory.
+- No new comment or message evidence was exposed. The TikTok single-writer
+  hold and second-slot hold remain active. Do not upload a second Four
+  Thousand Weeks copy while the first is awaiting analytics finalisation.
+
+### Audit: 23 August 2026, 08:46 Europe/London
+
+- TikTok `@bookquotes.app` now has **1 follower**. Token `ok` until
+  `2026-08-24T06:31:57Z`. Inbox draft landed as public video
+  `7676740679392840993` at 22 Aug 07:34 London:
+  `https://www.tiktok.com/@bookquotes.app/video/7676740679392840993`.
+  Caption read-back is `#Zernio` (not the Foster copy). 224 views, 1 like,
+  0 comments.
+- Older TikTok stills are flat: Commonplace 859 / 2, PoG 689 / 1, ToR 684 / 0,
+  PoG duplicate 239 / 1.
+- Instagram latest Reel is still Friday *Foster*
+  `https://www.instagram.com/reel/DcTrieKIBzG/` — 1 view, 2 reach, 100% skip,
+  0.67s average. Friday still `bq14-03` is live; Saturday `bq14-04` is
+  missing. Due dry-run for 13:00 selects `bq14-05`.
+- Facebook published Friday `bq14-03` and Saturday TBR knockout
+  `122108484573415831`. Today's 13:00 card is queued (reread job). Eleven
+  scheduled posts remain.
+
+### TikTok finish: 22 August 2026, 07:31 Europe/London
+
+Owner asked to finish the *Foster* TikTok after yesterday's capacity block.
+
+- Direct post still refused (`TikTok direct posting is at capacity`).
+- Inbox draft accepted: Zernio `6a8941f92b8affc929dd9521`, status `published`,
+  no public permalink yet. Finish in TikTok Creator Inbox / drafts, then
+  do not upload this MP4 again.
+- Instagram remains `https://www.instagram.com/reel/DcTrieKIBzG/`.
+- Token was `expiring_soon` at `2026-08-22T06:45:09Z`. OAuth browser opened.
+
+### Manual publish: 21 August 2026, 16:40 Europe/London
+
+Owner asked to get the lined-up Reel out now.
+
+- Asset: `Marketing/Video/illustrated-category-reels/03-foster.mp4` plus cover.
+  Not the rejected Remotion `category-reels/` file.
+- Instagram live: `17893455543668592` at
+  `https://www.instagram.com/reel/DcTrieKIBzG/`.
+- TikTok failed twice on platform capacity
+  (`TikTok direct posting is at capacity`). Zernio jobs
+  `6a88712bcb16874d21ad3050` and `6a887185c5f5ed9576b7d806`. No live TikTok
+  permalink. Do not retry in a tight loop. Do not upload a second copy.
+- Do not re-upload this MP4 at 19:30 unless TikTok is retried once later
+  and succeeds.
 
 ### Audit: 21 August 2026, 08:55 Europe/London
 

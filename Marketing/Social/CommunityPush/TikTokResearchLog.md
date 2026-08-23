@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 21 August 2026
+Updated: 23 August 2026
 
 ## Purpose
 
@@ -63,6 +63,73 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-23, 09:03 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`; analytics
+  access is true, the latest sync is `2026-08-23T07:07:12Z`, token health is
+  `ok` through `2026-08-24T06:31:57Z`, and the account has 1 follower.
+- Published or pending: the Four Thousand Weeks submit is reported as
+  published by the direct job path with content ID
+  `7677130482354587670`, but it has not appeared in the synced analytics
+  inventory and has no read-back permalink. Do not upload or schedule a second
+  copy. Instagram has the corresponding Reel live; Facebook has its normal
+  queue.
+- 72-hour checkpoints: intended Player of Games 689 views / 1 like, the
+  same-caption duplicate 239 / 1, and Team of Rivals 684 / 0. All comments are
+  0. Reach, completion, saves, shares, profile visits and follows are Not
+  available.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Trend discovery | [TikTok for Business, How to use Trends](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en&redirected=2) | The current help page says Trends can be filtered by industry and time frame, then inspected for trendline, related videos, audience insights, regional popularity and related hashtags. | Use UK-region trend evidence as a research input rather than treating a global trend list as audience proof. | Short | Re-run the UK Creative Center check after the publishing hold is reconciled. |
+| Creative structure and sound | [TikTok Creative Codes](https://ads.tiktok.com/business/en/creative-codes?redirected=1) | TikTok describes hook-body-close, vertical 9:16 production, text overlays and sound as reusable creative principles. | The BQ reader proposition and held-choice close remain directionally compatible; sound should serve the idea rather than be added as decoration. | Medium | Keep BQ-08 available for a controlled audio test; do not change the account style on this checkpoint. |
+
+No reliable 15-20-post UK creator sample was available through the connected read in this run, so
+no new audio, style-catalogue or creator-pattern claim is being made. The external guidance is
+context, not BookQuotes account evidence.
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: retain a direct reader proposition, a compact body and a deliberate
+  close; use audio only when it improves the reading idea or keeps the spoken explanation clear.
+- Elements explicitly excluded from imitation: copied wording, creator identity, distinctive
+  artwork, manufactured controversy, duplicate uploads and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: no comments, messages or attributable search language
+  available.
+- Potential reader-need hooks: the Four Thousand Weeks use-condition remains useful, but its
+  TikTok delivery must be evaluated only after the content ID finalises.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none; EV-008 already verifies *Four Thousand Weeks* and the
+  current text-only/handwritten treatment.
+- Blockers: analytics finalisation for `7677130482354587670` and the existing duplicate-path hold.
+
+**Learning**
+
+- Experiment updates: added valid 72-hour reads for the 18 August items; the new Four Thousand
+  Weeks post has no valid analytics checkpoint yet.
+- Confidence changes: none.
+- Repeat: reader-fit/use-condition framing and hook-body-close structure remain candidates.
+- Modify: reconcile one writer, one content ID and one post-publication analytics row before the
+  next upload.
+- Pause: further TikTok uploads and the second daily slot while the integrity hold remains.
+
+**Queue**
+
+- Approved: `cr-04` through `cr-07`, subject to their existing evidence and quality gates.
+- In production: none for this audit.
+- Awaiting evidence or review: finalisation of `7677130482354587670` and the single-writer repair.
+- Requires user approval: deletion, account appeals, paid promotion or rights-uncertain changes.
 
 ### 2026-08-21, 09:01 Europe/London
 

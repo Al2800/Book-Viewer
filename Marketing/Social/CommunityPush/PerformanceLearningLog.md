@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 21 August 2026
+Updated: 23 August 2026
 
 ## Purpose
 
@@ -63,6 +63,53 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 23 August 2026, 09:03 Europe/London
+
+**Platforms checked:** Graph identity, Facebook published feed and
+`scheduled_posts`, Instagram media plus insights, TikTok Zernio posts and
+token health, and the official TikTok Trends and Creative Codes guidance.
+
+**Observation**
+
+- Facebook is publishing normally: the 22 August TBR knockout is live at
+  13:00 Europe/London and 11 future Page rows are queued through 2 September.
+  Page post-level views, reach, clicks, reactions, comments and shares remain
+  Not available through the current Graph read path.
+- Instagram's 23 August *Four Thousand Weeks* Reel is live at
+  `https://www.instagram.com/reel/DcX_ZYQCGja/`. Current lifetime insights are
+  3 views, 0 reach, 0 likes, 0 comments, 0 saves and 0 shares. This is too
+  little volume for a content judgement.
+- TikTok has 1 follower and token health is `ok` through
+  `2026-08-24T06:31:57Z`. The 72-hour read for the 18 August items is valid:
+  intended Player of Games 689 views / 1 like, the duplicate 239 / 1, and
+  Team of Rivals 684 / 0. Comments remain 0; retention, reach, saves, shares,
+  profile visits and follows are Not available.
+- The direct Four Thousand Weeks TikTok submit `7677130482354587670` reports
+  published in the job path, but it is not yet present in the synced analytics
+  inventory and has no read-back permalink. No second upload was attempted.
+- No new comments, messages, recurring audience language or App Store outcome
+  metrics were available.
+
+**Interpretation and decision**
+
+- The TikTok 72-hour numbers confirm distribution for the two intended 18
+  August extras, but the Player duplicate and Team of Rivals extra still make
+  them unsuitable for a clean creative comparison. No hypothesis confidence
+  changed.
+- Instagram has a live Reel but not enough delivery to judge its packaging.
+  Facebook queue health is a publishing success, not evidence of downstream
+  performance while Page insights remain unavailable.
+- Keep the TikTok single-writer and duplicate hold. Do not use the new post's
+  missing analytics row as zero, and do not upload a second copy.
+
+**Next actions**
+
+- Let the queued Facebook card publish at 13:00 Europe/London.
+- Re-read TikTok after analytics finalisation and reconcile the new content ID
+  before advancing `cr-06` or enabling a second daily slot.
+- Continue the normal Instagram due path; the current content volume does not
+  justify changing the creative direction.
 
 ### 21 August 2026, 08:55 Europe/London
 

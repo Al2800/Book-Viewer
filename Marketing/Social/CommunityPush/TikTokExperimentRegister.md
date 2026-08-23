@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 18 August 2026
+Updated: 23 August 2026
 
 ## Method
 
@@ -49,6 +49,20 @@ Result labels:
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 23 August 2026, 09:03 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7675397759196957954` | Establishment illustrated baseline | 72h | 689 views, 1 like, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Valid distribution checkpoint, but a same-caption duplicate is also Public; retain as evidence and exclude from a clean creative verdict. |
+| `7675398121542929667` | Publishing-integrity duplicate | 72h | 239 views, 1 like, 0 comments | Same measures Not available | Duplicate remains an integrity observation, not a creative treatment. |
+| `7675422232285433110` | Owner-requested format extra | 72h | 684 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Valid time-based read, but this extra is not a clean dated-slot treatment; do not infer a creative winner. |
+
+The Four Thousand Weeks submit `7677130482354587670` is reported as published by the job path but
+has not appeared in the synced analytics inventory. No checkpoint is recorded for it yet, and no
+second copy should be uploaded.
+
+No confidence or result label changed. The single-writer hold and second-slot hold remain active.
 
 ### 21 August 2026, 09:01 Europe/London
 
