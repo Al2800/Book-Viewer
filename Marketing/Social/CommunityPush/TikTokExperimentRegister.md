@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 23 August 2026
+Updated: 25 August 2026
 
 ## Method
 
@@ -49,6 +49,20 @@ Result labels:
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 25 August 2026, 09:02 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7674952452055076118` | Establishment baseline | 7d | 859 views, 2 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Valid seven-day baseline read at 2.33 likes per 1,000 views; one post is insufficient for a creative verdict. |
+| `7677130725304503575` | Category Reel `cr-05` | 24h-plus | 236 views, 0 likes, 0 comments | Same measures Not available | Attributable public post with a correct caption; distribution is measurable, but no creative conclusion is warranted from one item. |
+| `7676740679392840993` | Category Reel `cr-03` metadata audit | 72h | 224 views, 1 like, 0 comments | Same measures Not available | Public row reads `#Zernio` rather than Foster; retain as a publishing-integrity observation and exclude from creative comparison. |
+| `7677590432297127200` | Category Reel `cr-06` metadata audit | Initial audit | 247 views, 1 like, 0 comments | Same measures Not available | Public row reads `#Zernio` rather than Stoner; intended Inbox ID `7677574869307672598` is absent. This is not a valid Stoner creative treatment. |
+
+The Stoner direct job `6a8c3983c88a7e49fd0f9940` failed on capacity and the Inbox fallback produced
+the mismatched public row above. No deletion, repost or second copy is authorized automatically.
+No confidence or result label changed. The single-writer, metadata and second-slot holds remain
+active.
 
 ### 23 August 2026, 09:03 Europe/London
 

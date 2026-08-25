@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 23 August 2026
+Updated: 25 August 2026, 09:02 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,166 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 25 August 2026, 09:02 Europe/London
+
+**Platforms checked:** Graph identity, Facebook `scheduled_posts`, Instagram
+media plus lifetime insights, TikTok Zernio posts and token health, and the
+current official TikTok Trends and Creative Codes guidance.
+
+**Observation**
+
+- Facebook's Sunday reread card is the latest verified publication. The 13:00
+  queue remains healthy at 9 future rows through 2 September, including
+  today's reservation. The current Page feed read is blocked by Meta's
+  `pages_read_engagement` / Page Public Content Access response; post-level
+  metrics therefore remain Not available.
+- Instagram's latest *Stoner* Reel is at 16 views / 15 reach / 0 likes / 0
+  comments / 0 saves / 0 shares. *Four Thousand Weeks* is at 44 / 42 / 1
+  like, and the 23 August still is at 0 / 0 / 0. No Instagram sample is large
+  enough for a packaging verdict.
+- TikTok's current live rows include Commonplace 859 views / 2 likes, Player
+  of Games intended 690 / 1, the duplicate 239 / 1, Team of Rivals 684 / 0,
+  *Four Thousand Weeks* 236 / 0, the `#Zernio` Foster row 224 / 1 and the
+  `#Zernio` Stoner row 247 / 1. Comments remain 0 and the account has 1
+  follower. Reach, completion, saves, shares and profile visits are Not
+  available.
+- The Stoner direct submit failed on capacity. Its Inbox fallback is public
+  under content ID `7677590432297127200` with caption `#Zernio`, while the
+  intended job ID `7677574869307672598` is absent from the analytics inventory.
+  Do not score this as a Stoner creative result or post another copy.
+
+**Seven-day review: 18 to 24 August, recorded 25 August**
+
+- Facebook maintained one primary daily card and has recovered a queue above
+  the seven-day target, but the missing Page insights mean strongest and
+  weakest downstream content cannot be ranked.
+- Instagram's highest current downstream signal is *Four Thousand Weeks* at
+  one like from 44 views; *Stoner* is too new to compare. The still-card at
+  0 / 0 is a delivery observation, not a creative verdict.
+- TikTok's valid reader-first signals are Commonplace at 2.33 likes per 1,000
+  views and intended Player of Games at 1.45 per 1,000. The duplicate, Foster
+  and Stoner `#Zernio` rows are excluded from creative comparison because
+  publishing identity or metadata is not trustworthy. No meaningful comments
+  were recorded and follower growth is only 1.
+- Repeat: practical reader rituals and specific reader-fit recommendations.
+  Modify: make caption, cover, audience and final content ID an atomic
+  post-publication check. Pause: further TikTok uploads, deletion or reposting,
+  and the second daily slot until the metadata path is repaired.
+- Proposed post-hold 70/20/10 TikTok portfolio: 70 percent reader-fit
+  recommendations, 20 percent reading culture and practical rituals, and 10
+  percent product proof. This is a proposal only; the active hold and current
+  60/20/15/5 establishment baseline are unchanged.
+
+**Interpretation and decision**
+
+- The strongest evidence is currently about delivery and publishing integrity,
+  not creative superiority. No hypothesis confidence changed.
+- Treat the Stoner and Foster `#Zernio` rows as metadata failures. Do not use
+  their likes or views to justify a new cadence.
+- No new comments, messages, recurring audience language or App Store outcome
+  metrics were available.
+
+**Next actions**
+
+- Allow today's Facebook card to publish at 13:00 Europe/London.
+- Keep Instagram on its normal due path and monitor the current low-volume
+  Reels without adding an untested second slot.
+- Reconcile the TikTok Inbox fallback against the intended job and public
+  caption before any further upload; deletion or account remediation requires
+  explicit user review.
+
+### 24 August 2026, 05:03 Europe/London
+
+**Platforms checked:** TikTok Zernio analytics and token health,
+Instagram media plus lifetime insights, Facebook published feed and
+`scheduled_posts`, Instagram due dry-run.
+
+**Observation**
+
+- TikTok *Four Thousand Weeks* is unchanged overnight: 236 views, 0 likes
+  in Zernio. Account still 1 follower. Other live rows are flat versus
+  17:26. Comments remain 0. Reach, watch, saves, shares and profile
+  visits stay Not available.
+- Same file on Instagram: 42 views / 40 reach / 1 like / 2.3s average
+  (from 39 / 38 last evening). Sunday still `bq14-05` unread (0/0).
+- Token health is `expiring_soon` (`2026-08-24T06:31:57Z`). The 09:05
+  reconnect job fires after expiry.
+- Facebook Sunday card published. Ten future Page rows remain, including
+  today's 13:00 reservation card. Page insights remain Not available.
+
+**Interpretation and decision**
+
+- Overnight TikTok distribution stopped at yesterday's same-day bump.
+  That is still far ahead of Instagram on the same file. On Instagram,
+  *Four Thousand Weeks* is the strongest illustrated Reel so far (42/40
+  and the only like in 20 hours; Commonplace is 44/41 after nine days).
+  No hypothesis change. Do not treat the plateau as a fail, and do not
+  add a second daily Reel.
+
+**Next actions**
+
+- Finish TikTok OAuth before 07:31 Europe/London.
+- Let `bq14-06` take the 13:00 Instagram due path. Facebook is already
+  queued.
+- *Stoner* (`cr-06`) is today's dated cut after muted review. Do not
+  re-upload Four Thousand Weeks.
+
+### 23 August 2026, 17:26 Europe/London
+
+**Platforms checked:** TikTok Zernio analytics after the 16:21 UTC sync,
+Instagram media plus lifetime insights.
+
+**Observation**
+
+- Owner reported TikTok traction: more views than Instagram, likes, and a
+  follower. API read-back: account still 1 follower. *Four Thousand Weeks*
+  is now in inventory as
+  `https://www.tiktok.com/@bookquotes.app/video/7677130725304503575` —
+  236 views, 0 likes, 0 comments. Native likes can sit ahead of Zernio.
+  Same-file Instagram: 39 views / 38 reach / 1 like / 2.3s average watch.
+- Other TikTok rows since morning: Commonplace 859 / 2, intended Player of
+  Games 690 / 1, Team of Rivals 684 / 0, Foster `#Zernio` 224 / 1, PoG
+  duplicate 239 / 1. Comments remain 0. Reach, watch, saves, shares and
+  profile visits stay Not available.
+- Instagram 13:00 still `bq14-05` published and unread (0/0). Foster Reel
+  still 1/2. Bank stills remain 0/0.
+
+**Interpretation and decision**
+
+- Same illustrated file: TikTok 236 vs Instagram 39. That matches the
+  earlier not-like-for-like read. Treat TikTok as the distribution surface
+  for these Reels; do not copy the Instagram skip pattern onto TikTok.
+- One follower and a same-day view bump are not enough to raise hypothesis
+  confidence or add a second daily Reel. Keep the dated week. Do not
+  re-upload this MP4.
+
+**Next actions**
+
+- Leave *Four Thousand Weeks* alone. Next unused illustrated cut is
+  Monday `cr-06` *Stoner*, after muted review.
+- Reconnect TikTok before `2026-08-24T06:31:57Z` if the 09:05 job does
+  not fire.
+
+### 23 August 2026, 09:28 Europe/London
+
+**Platforms checked:** TikTok Zernio analytics, Instagram media plus
+lifetime insights, Facebook published feed.
+
+**Observation**
+
+- Instagram *Four Thousand Weeks* moved in 25 minutes: 3 views / 0 reach at
+  09:03 to 19 views / 4 reach at 09:28. Average watch 0.57s. Likes, comments,
+  saves and shares remain 0.
+- TikTok inventory is unchanged from the 07:07 UTC sync. Four Thousand Weeks
+  is still absent from analytics. Older rows are flat versus 08:46.
+- Facebook post-level insights remain Not available
+  (`pages_read_user_content` missing).
+
+**Interpretation and decision**
+
+- The Instagram bump is delivery, not engagement. Average watch is still a
+  bounce. Too small for a content judgement. No hypothesis change.
 
 ### 23 August 2026, 09:03 Europe/London
 

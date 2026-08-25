@@ -1,13 +1,13 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-23T09:03:15+01:00</code>.
+Generated from structured evidence updated <code>2026-08-25T09:02:39+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-16T09:03:15+01:00</code> to <code>2026-08-23T09:03:15+01:00</code>
+- Reporting window: <code>2026-08-18T09:02:39+01:00</code> to <code>2026-08-25T09:02:39+01:00</code>
 - Published Facebook items represented: 4
-- Visible views: 2496
-- Visible reach: 22
+- Visible views: 2385
+- Visible reach: 63
 - Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
@@ -16,8 +16,15 @@ Generated from structured evidence updated <code>2026-08-23T09:03:15+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-08-24 | published | tiktok | Stoner metadata mismatch | reel | audit | 247 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-24 | published | instagram | Stoner | reel | audit | 16 | 15 | 0.0 | 0.0 | Insufficient distribution |
+| 2026-08-24 | published | facebook | Not every reread has the same job | image | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-23 | published | instagram | Not every reread has the same job | image | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-23 | published | instagram | Four Thousand Weeks | reel | audit | 3 | 0 | Not available | Not available | Insufficient distribution |
+| 2026-08-23 | published | instagram | Four Thousand Weeks | reel | 24h-plus | 44 | 42 | 0.0 | 0.0 | Review against declared experiment |
+| 2026-08-23 | published | tiktok | Four Thousand Weeks | reel | 24h-plus | 236 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-22 | published | facebook | Eight-book TBR knockout | image | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-22 | published | tiktok | Foster metadata mismatch | reel | 72h | 224 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-21 | published | facebook | Describe a book without giving the plot away | image | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-20 | published | instagram | Build a reading menu, not one impossible TBR | image | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-20 | published | facebook | BookQuotes digital commonplace book website hop | text | 24h-plus | Not available | Not available | Not available | Not available | Insufficient distribution |
@@ -34,6 +41,7 @@ Generated from structured evidence updated <code>2026-08-23T09:03:15+01:00</code
 | 2026-08-18 | published | tiktok | The Player of Games | reel | 72h | 689 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | audit | 227 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | 24h-plus | 855 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | 7d | 859 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | tiktok | Your reading journal should not become homework | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | instagram | Five presidential biographies worth the commitment | reel | initial | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-08-17 | published | instagram | Five presidential biographies worth the commitment | reel | audit | 20 | 16 | 0.0 | 0.0 | Insufficient distribution |
@@ -84,8 +92,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 14
-- Channel-only items: 14
+- Durable published items: 16
+- Channel-only items: 16
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

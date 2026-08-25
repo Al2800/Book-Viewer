@@ -1,6 +1,83 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 23 August 2026, 09:03 Europe/London
+Updated: 25 August 2026, 09:02 Europe/London
+
+### Manual publish: 24 August 2026, 13:30 Europe/London
+
+Owner asked to post the next unused illustrated cut: *Stoner*.
+
+- Asset: `Marketing/Video/illustrated-category-reels/06-stoner.mp4` plus cover.
+  Not the rejected Remotion `category-reels/` file. Do not re-upload this MP4.
+- TikTok direct failed on capacity (`6a8c3983c88a7e49fd0f9940`). Inbox draft
+  accepted: Zernio `6a8c39a5bba9f822cb6568cf`, status `published`, inbox ID
+  `v_inbox_url~v2.7677574869307672598`. Finish in Creator Inbox / drafts.
+  Expected URL once public:
+  `https://www.tiktok.com/@bookquotes.app/video/7677574869307672598`.
+- Instagram live: `18117021674294001` at
+  `https://www.instagram.com/reel/DcbEieBlGKg/`.
+- Do not also post this file at 19:30. Saturday `cr-04` *Tinker Tailor*
+  remains unused. Next dated cut is Tuesday `cr-07`.
+
+### Audit: 25 August 2026, 09:02 Europe/London
+
+- Identity remains verified: Facebook Page `1246405755221229`, Instagram
+  `17841434821362428` / `bookquotes.app`, and TikTok `@bookquotes.app`.
+- Facebook's last verified published item is the Sunday reread card
+  `122108485041415831` at 13:00 Europe/London. Today's 13:00 card remains
+  queued. The direct `scheduled_posts` read shows 9 future Page rows from 25
+  August through 2 September. The Page feed read is currently blocked by
+  Meta's `pages_read_engagement` / Page Public Content Access response, so
+  post-level views, reach, clicks, comments, shares and reactions remain Not
+  available.
+- Instagram's latest Reel is *Stoner*, `18117021674294001`, at
+  `https://www.instagram.com/reel/DcbEieBlGKg/`: 16 views, 15 reach, 0 likes,
+  0 comments, 0 saves and 0 shares. *Four Thousand Weeks* is at 44 views,
+  42 reach and 1 like; the 23 August still remains 0 views / 0 reach / 0
+  likes. These are small samples.
+- TikTok analytics synced at `2026-08-25T07:47:01Z`; token health is `ok`
+  through `2026-08-26T04:32:28Z`, with 1 follower. *Four Thousand Weeks*
+  reads 236 views / 0 likes. The Stoner direct job failed on capacity, while
+  the Inbox fallback is public as `7677590432297127200` at
+  `https://www.tiktok.com/@bookquotes.app/video/7677590432297127200` with
+  read-back caption `#Zernio`, not the intended Stoner caption: 247 views, 1
+  like and 0 comments. The intended Inbox ID `7677574869307672598` is not in
+  the analytics inventory. This is a metadata-attribution failure, not a
+  creative result.
+- No new comment, message or attributable search-language evidence was
+  exposed. The TikTok publishing-integrity and metadata holds remain active;
+  do not delete, edit, re-upload or schedule another copy automatically.
+
+### Audit: 24 August 2026, 05:03 Europe/London
+
+- TikTok `@bookquotes.app` still 1 follower. Sync
+  `2026-08-24T03:07:22Z`. *Four Thousand Weeks* overnight: 236 views / 0
+  likes (unchanged since 17:26). Older rows flat: Commonplace 859 / 2,
+  Player of Games 690 / 1, Team of Rivals 684 / 0, Foster 224 / 1.
+  Comments 0. Token `expiring_soon` at `2026-08-24T06:31:57Z` (~07:31
+  London). The 09:05 reconnect job is after expiry. OAuth window opened.
+- Instagram *Four Thousand Weeks* 42 views / 40 reach / 1 like / 2.3s
+  average. Sunday still `bq14-05` still 0/0. Due dry-run for 13:00 selects
+  `bq14-06`. Keep the Mac awake at 12:50.
+- Facebook Sunday reread card published
+  `122108485041415831`. Today's 13:00 reservation card is queued. Ten
+  scheduled Page posts remain through 2 September. Insights still Not
+  available.
+- Do not re-upload Four Thousand Weeks. Today's dated Reel is `cr-06`
+  *Stoner* after muted review. Saturday `cr-04` remains unused.
+
+### Audit: 23 August 2026, 17:26 Europe/London
+
+- TikTok `@bookquotes.app` now has the *Four Thousand Weeks* row:
+  native `7677130725304503575` at
+  `https://www.tiktok.com/@bookquotes.app/video/7677130725304503575`.
+  Zernio: 236 views, 0 likes, 0 comments. Account still shows 1 follower.
+  Sync `2026-08-23T16:21:31Z`. Token `ok` until `2026-08-24T06:31:57Z`.
+  Older rows are flat except intended Player of Games 690 / 1.
+- Same file on Instagram: 39 views, 38 reach, 1 like, 2.3s average watch
+  `https://www.instagram.com/reel/DcX_ZYQCGja/`. Today's 13:00 still
+  `bq14-05` published: `https://www.instagram.com/p/DcYcAy_ihlD/` (0/0).
+- Do not re-upload the Four Thousand Weeks MP4. Saturday `cr-04` remains
+  unused. Next dated cut is Monday `cr-06` *Stoner*.
 
 ### Manual publish: 23 August 2026, 08:48 Europe/London
 

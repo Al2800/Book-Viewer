@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 20 August 2026
+Updated: 25 August 2026
 
 ## Purpose
 
@@ -96,6 +96,18 @@ partnerships, rights-uncertain material and sensitive community responses remain
 - The 19:30 establishment slot and the 60/20/15/5 mix remain the intended operating baseline once
   the hold clears. The second daily slot remains disabled until seven comparable non-duplicated
   posts have data.
+
+### Metadata reconciliation hold: 25 August 2026, 09:02 Europe/London
+
+- The direct Stoner submit failed on TikTok capacity. The Creator Inbox fallback became Public as
+  content ID `7677590432297127200`, but its caption reads `#Zernio` rather than the intended Stoner
+  recommendation. The intended Inbox ID `7677574869307672598` is not present in the synced
+  analytics inventory.
+- This is a publishing-integrity and attribution failure. Do not treat the 247 views / 1 like as a
+  Stoner creative result. Do not delete, edit, re-upload or schedule a second copy automatically.
+- Keep the single-writer, duplicate and second-slot holds active. Further TikTok publishing may
+  resume only after one controlled path produces the intended caption, cover, audience and a single
+  attributable public content ID with analytics read-back.
 
 ### Audit: 20 August 2026, 09:04 Europe/London
 

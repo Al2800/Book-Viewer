@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 23 August 2026
+Updated: 25 August 2026
 
 ## Purpose
 
@@ -63,6 +63,80 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-25, 09:02 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`; analytics
+  access is true, the latest sync is `2026-08-25T07:47:01Z`, token health is
+  `ok` through `2026-08-26T04:32:28Z`, and the account has 1 follower.
+- Current live inventory: Commonplace 859 / 2, intended Player of Games 690 /
+  1, duplicate Player 239 / 1, Team of Rivals 684 / 0, *Four Thousand Weeks*
+  236 / 0, Foster `#Zernio` 224 / 1 and Stoner `#Zernio` 247 / 1. All comments
+  are 0; deeper retention and downstream measures are Not available.
+- The Stoner direct job failed on platform capacity. The Inbox fallback became
+  public as `7677590432297127200` with caption `#Zernio`; the intended Inbox ID
+  `7677574869307672598` is not in the analytics inventory. This blocks a clean
+  creative read and all further automatic TikTok publishing.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Trend discovery | [TikTok for Business, How to Use Trends](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) | The July 2026 help page says Trends can be filtered by industry and time frame, then inspected for trendline, related videos, audience insights, regional popularity and related hashtags. | UK-region evidence is preferable to generic global trend lists, but it does not replace BookQuotes account data. | Short | Re-run the UK Creative Center sample after the metadata hold is repaired. |
+| Creative structure and sound | [TikTok Creative Codes](https://ads.tiktok.com/business/en-US/creative-codes) | TikTok continues to describe hook-body-close, vertical production, stimulation and sound as creative principles. | Keep BQ-08 sound-with-a-job available as a controlled test; do not add audio or imitate a creator simply to fill a slot. | Medium | Preserve the current reader-first visual language until a clean test is possible. |
+
+No reliable 15-20-post UK creator sample was available through the connected read in this run, so
+no new audio, style-catalogue or creator-pattern claim is being made. These are platform guidance
+signals, not BookQuotes performance evidence.
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: direct reader proposition, compact body, deliberate close and audio only
+  when it improves explanation or attention.
+- Elements explicitly excluded from imitation: copied wording, creator identity, distinctive
+  artwork, manufactured controversy, duplicate uploads and unverified audio.
+
+**Audience language**
+
+- Comments, searches or questions: no comments, messages or attributable search language
+  available.
+- Potential reader-need hooks: keep the Stoner use-condition and Four Thousand Weeks finitude
+  framing in the queue, but do not use the malformed `#Zernio` rows as creative evidence.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none; EV-008 and EV-009 already verify the Four Thousand Weeks
+  and Stoner titles and their text-only/handwritten treatment.
+- Blockers: exact caption-to-content-ID reconciliation for the Inbox fallback and the existing
+  duplicate path. No new rights blocker.
+
+**Performance**
+
+- Seven-day evidence: Commonplace 859 / 2, intended Player 690 / 1, Team of Rivals 684 / 0,
+  Four Thousand Weeks 236 / 0, Foster `#Zernio` 224 / 1 and Stoner `#Zernio` 247 / 1.
+- Valid checkpoints now due: Commonplace 7d at 859 / 2; Four Thousand Weeks 24h-plus at 236 /
+  0. Foster's 72h read and Stoner's initial audit are metadata observations, not clean creative
+  treatments. Reach, completion, saves, shares, profile visits and follows remain Not available.
+
+**Learning**
+
+- Experiment updates: added Commonplace 7d, Four Thousand Weeks 24h-plus and metadata-integrity
+  observations for Foster and Stoner.
+- Confidence changes: none.
+- Repeat: practical reader rituals and reader-fit recommendations after a clean publication check.
+- Modify: require exact caption, cover, audience and public content ID reconciliation before the
+  next upload.
+- Pause: further TikTok uploads, automated deletion or reposting, and the second daily slot.
+
+**Queue**
+
+- Approved: `cr-04` through `cr-07`, subject to evidence, muted review and the metadata hold.
+- In production: none for this audit.
+- Awaiting evidence or review: Inbox/direct writer repair and the public caption correction path.
+- Requires user approval: deletion, account appeals, paid promotion or rights-uncertain changes.
 
 ### 2026-08-23, 09:03 Europe/London
 
