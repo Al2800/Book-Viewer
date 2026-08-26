@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 25 August 2026
+Updated: 26 August 2026
 
 ## Purpose
 
@@ -63,6 +63,79 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-08-26, 09:01 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`; analytics
+  access is true, the latest sync is `2026-08-26T07:07:28Z`, token health is
+  `ok` through `2026-08-27T05:02:14Z`, and the account has 1 follower.
+- The live inventory contains 13 public rows. The latest row is
+  `7678034754557529376` with 231 views / 0 likes / 0 comments and read-back
+  caption `#Zernio`. The intended pairing Inbox ID
+  `7677955167269996566` is absent. The *Tinker Tailor* draft
+  `7677958495261493270` is not live.
+- This is a metadata and attribution failure, not a clean pairing test. The
+  single-writer, duplicate and second-slot holds remain active.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Trend discovery | [TikTok for Business, How to Use Trends](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) | The current operating reference still recommends industry, time-frame, audience and regional trend inspection. | Useful for selecting a UK signal after the publishing path is repaired, not evidence that this account should increase cadence now. | Short | Re-run the UK sample only after a clean attributable post exists. |
+| Creative structure and sound | [TikTok Creative Codes](https://ads.tiktok.com/business/en-US/creative-codes) | Hook-body-close, vertical production, stimulation and sound remain the relevant official principles. | Keep sound optional and purposeful; do not add it to the held post or imitate a creator to fill a slot. | Medium | Preserve reader-first visual language until a clean audio or packaging test is possible. |
+
+No reliable new 15-20-post UK creator sample was available through the connected
+read in this run. No new style or audio claim was added.
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: none added; the current operational evidence is a
+  metadata failure.
+- Elements explicitly excluded from imitation: `#Zernio` fallback metadata,
+  duplicate uploads and any attempt to manufacture a second daily slot while
+  attribution is unresolved.
+
+**Audience language**
+
+- Comments, searches or questions: no new attributable comments, messages or
+  search language exposed.
+- Potential reader-need hooks: unchanged; use-condition and reader-fit hooks
+  remain queued but cannot be advanced to publication during the hold.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: intended caption and public content ID mismatch; live fallback
+  caption is `#Zernio`; Tinker draft has no live analytics row.
+
+**Performance**
+
+- 24-hour checkpoints: the current `#Zernio` row is an initial audit only and
+  is excluded from creative scoring.
+- 72-hour checkpoints: none due for a valid new treatment.
+- Seven-day checkpoints: none due for a valid new treatment.
+- Missing measures: reach, watch time, completion, saves, shares, profile
+  visits, follows, search terms and link taps remain Not available.
+
+**Learning**
+
+- Experiment updates: record the metadata mismatch in the experiment register.
+- Confidence changes: none.
+- Repeat: reader-fit recommendations and practical rituals after the hold.
+- Modify: make caption, cover, audience and final content ID an atomic
+  post-publication check.
+- Pause: all TikTok publishing and the second daily slot until reconciliation.
+
+**Queue**
+
+- Approved: no new TikTok item for automatic publication.
+- In production: no new item advanced.
+- Awaiting evidence or review: *Tinker Tailor* Inbox draft and the held
+  pairing state.
+- Requires user approval: any manual recovery, edit or deletion of public rows.
 
 ### 2026-08-25, 09:02 Europe/London
 

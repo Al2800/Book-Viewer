@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-25T09:02:39+01:00",
+  "updated_at": "2026-08-26T09:01:36+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -1694,6 +1694,62 @@
       },
       "metrics_unavailable_reason": "Zernio exposed views, likes and comments only in this read. Reach, watch completion, shares, saves, link clicks and follows were not exposed.",
       "notes": "Public row read-back caption is #Zernio rather than Stoner, and intended Inbox ID 7677574869307672598 is absent. Retain for publishing-integrity evidence and exclude from creative comparison."
+    },
+    {
+      "observation_id": "ig-2026-08-26-two-front-doors-audit",
+      "platform": "instagram",
+      "identity": "BookQuotes",
+      "content_id": "17972676695932383",
+      "title": "The Player of Games / The Three-Body Problem",
+      "format": "reel",
+      "published_at": "2026-08-25T14:12:19+01:00",
+      "observed_at": "2026-08-26T09:01:36+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned illustrated category Reel and verified EV-004/EV-005 text-only treatment; native Meta read-back.",
+      "metrics": {
+        "views": 14,
+        "reach": 15,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Graph returned views, reach, likes, comments, saved, shares and total_interactions. Watch time, viewers, link clicks and follows were not in this insights payload.",
+      "notes": "Public at https://www.instagram.com/reel/DcdtwHEjlPE/. Small early sample; not a creative verdict."
+    },
+    {
+      "observation_id": "tk-2026-08-26-pairing-metadata-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7678034754557529376",
+      "title": "Two front doors metadata mismatch",
+      "format": "reel",
+      "published_at": "2026-08-25T18:16:16+01:00",
+      "observed_at": "2026-08-26T09:01:36+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned illustrated category Reel and verified EV-004/EV-005 text-only treatment; Inbox fallback read-back.",
+      "metrics": {
+        "views": 231,
+        "reach": null,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio exposed views, likes and comments only in this read. Reach, watch completion, shares, saves, link clicks and follows were not exposed.",
+      "notes": "Public row read-back caption is #Zernio rather than the intended pairing caption. Intended Inbox ID 7677955167269996566 is absent; retain for publishing-integrity evidence and exclude from creative comparison."
     }
   ],
   "search_snapshots": [

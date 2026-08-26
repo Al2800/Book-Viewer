@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 25 August 2026
+Updated: 26 August 2026
 
 ## Purpose
 
@@ -108,6 +108,19 @@ partnerships, rights-uncertain material and sensitive community responses remain
 - Keep the single-writer, duplicate and second-slot holds active. Further TikTok publishing may
   resume only after one controlled path produces the intended caption, cover, audience and a single
   attributable public content ID with analytics read-back.
+
+### Metadata reconciliation hold: 26 August 2026, 09:01 Europe/London
+
+- The 25 August two-front-doors pairing did not appear under its intended Inbox
+  ID `7677955167269996566`. The live inventory instead contains
+  `7678034754557529376` with caption `#Zernio`, 231 views, 0 likes and 0
+  comments.
+- Treat this as a continuation of the publishing-integrity failure, not as a
+  creative result. The *Tinker Tailor* Inbox draft
+  `7677958495261493270` has no live analytics row.
+- Keep the single-writer, duplicate and second-slot holds active. Do not
+  delete, edit, re-upload, schedule or publish another TikTok copy
+  automatically. Manual recovery of public rows remains user-approved work.
 
 ### Audit: 20 August 2026, 09:04 Europe/London
 

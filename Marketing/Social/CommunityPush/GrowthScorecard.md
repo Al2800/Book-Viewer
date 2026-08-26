@@ -1,13 +1,13 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-25T09:02:39+01:00</code>.
+Generated from structured evidence updated <code>2026-08-26T09:01:36+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-18T09:02:39+01:00</code> to <code>2026-08-25T09:02:39+01:00</code>
+- Reporting window: <code>2026-08-19T09:01:36+01:00</code> to <code>2026-08-26T09:01:36+01:00</code>
 - Published Facebook items represented: 4
-- Visible views: 2385
-- Visible reach: 63
+- Visible views: 1012
+- Visible reach: 72
 - Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
@@ -16,6 +16,8 @@ Generated from structured evidence updated <code>2026-08-25T09:02:39+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-08-25 | published | tiktok | Two front doors metadata mismatch | reel | audit | 231 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-25 | published | instagram | The Player of Games / The Three-Body Problem | reel | audit | 14 | 15 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-24 | published | tiktok | Stoner metadata mismatch | reel | audit | 247 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-24 | published | instagram | Stoner | reel | audit | 16 | 15 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-24 | published | facebook | Not every reread has the same job | image | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
@@ -92,8 +94,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 16
-- Channel-only items: 16
+- Durable published items: 13
+- Channel-only items: 13
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

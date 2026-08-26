@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 25 August 2026, 09:02 Europe/London
+Updated: 26 August 2026, 09:01 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,47 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 26 August 2026, 09:01 Europe/London
+
+**Platforms checked:** Graph identity, Facebook `scheduled_posts`, Instagram
+media plus lifetime insights, TikTok Zernio posts and token health, and the
+current official TikTok Trends and Creative Codes guidance.
+
+**Observation**
+
+- Facebook's current queue contains 8 future Page rows from 26 August through
+  2 September at 13:00 Europe/London. The Page feed read is still blocked by
+  Meta's `pages_read_engagement` / Page Public Content Access response, so
+  publication-level reach, views, clicks and engagement remain Not available.
+- Instagram's 25 August pairing Reel reads 14 views / 15 reach / 0 likes /
+  0 comments / 0 saves / 0 shares. The 25 August still reads 0 views / 0
+  reach / 0 interactions. These are small or zero-delivery observations, not
+  a creative verdict.
+- TikTok's latest actual public row is `7678034754557529376` with 231 views,
+  0 likes and 0 comments. It is a `#Zernio` metadata row, not a trustworthy
+  read of the intended two-front-doors pairing. The intended Inbox ID
+  `7677955167269996566` is absent; the Tinker draft ID
+  `7677958495261493270` is also absent from live analytics. Token health is
+  currently okay through 27 August at approximately 06:02 Europe/London,
+  with 13 public rows and 1 follower.
+
+**Interpretation and decision**
+
+- The current evidence is still about delivery and metadata integrity rather
+  than creative superiority. No hypothesis confidence changed and no TikTok
+  result label was assigned.
+- Keep Facebook's existing queue, treat Instagram as early low-volume evidence,
+  and keep TikTok publishing paused until one controlled path produces the
+  intended caption, cover, audience and a single attributable content ID.
+- Do not use the 231 TikTok views or the Instagram 14 views to justify a
+  second daily slot or a new creative cadence.
+
+**Community and next actions**
+
+- No comments or messages required action; no replies were made.
+- Continue read-only reconciliation at the next scheduled run. Do not
+  delete, edit, re-upload or schedule a TikTok copy while the hold is active.
 
 ### 25 August 2026, 09:02 Europe/London
 

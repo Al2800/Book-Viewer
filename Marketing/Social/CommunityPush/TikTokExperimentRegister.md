@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 25 August 2026
+Updated: 26 August 2026
 
 ## Method
 
@@ -49,6 +49,17 @@ Result labels:
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
 
 ## Measurement Checkpoints
+
+### 26 August 2026, 09:01 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7678034754557529376` | Category Reel `cr-07` metadata audit | Initial audit | 231 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Public row reads `#Zernio`; intended Inbox ID `7677955167269996566` is absent. Exclude from creative comparison. |
+
+The *Tinker Tailor* Inbox draft `7677958495261493270` has no live analytics
+row. No confidence or result label changed. The single-writer, metadata and
+second-slot holds remain active; do not upload, schedule, edit or delete
+another TikTok copy automatically.
 
 ### 25 August 2026, 09:02 Europe/London
 

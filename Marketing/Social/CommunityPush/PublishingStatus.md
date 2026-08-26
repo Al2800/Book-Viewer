@@ -1,6 +1,64 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 25 August 2026, 09:02 Europe/London
+Updated: 26 August 2026, 09:01 Europe/London
+
+### Audit: 26 August 2026, 09:01 Europe/London
+
+- Identity remains verified: Facebook Page `1246405755221229`, Instagram
+  `17841434821362428` / `bookquotes.app`, and TikTok `@bookquotes.app`.
+- Facebook's latest publication that can be verified through the current read
+  path remains the Sunday reread card `122108485041415831`. The direct
+  `scheduled_posts` read now shows 8 future Page rows from 26 August through
+  2 September, all at 13:00 Europe/London. The Page feed remains blocked by
+  Meta's `pages_read_engagement` / Page Public Content Access response, so
+  post-level metrics are Not available.
+- Instagram's latest pairing Reel is `17972676695932383` at
+  `https://www.instagram.com/reel/DcdtwHEjlPE/`, published at 14:12
+  Europe/London on 25 August. It reads 14 views / 15 reach / 0 likes /
+  0 comments / 0 saves / 0 shares. The 25 August 13:00 still
+  `17902857909508124` remains at measured 0 views / 0 reach / 0 interactions.
+- TikTok has 13 public rows, 1 follower and analytics access. The latest
+  attributable public row is `7678034754557529376` at
+  `https://www.tiktok.com/@bookquotes.app/video/7678034754557529376`, with
+  231 views / 0 likes / 0 comments; its caption reads `#Zernio` rather than
+  the intended pairing caption. The intended Inbox ID
+  `7677955167269996566` is absent. The *Tinker Tailor* Inbox hold
+  `7677958495261493270` is also not present in the live inventory.
+- No new comments or messages were exposed. The TikTok single-writer,
+  duplicate and metadata holds remain active. Do not delete, edit, re-upload,
+  schedule or publish another TikTok copy automatically.
+
+### Inbox hold: 25 August 2026, 14:21 Europe/London
+
+Owner asked to line up *Tinker Tailor* in Creator Inbox for later.
+
+- Asset: `Marketing/Video/illustrated-category-reels/04-tinker-tailor.mp4`
+  plus cover. Not the rejected Remotion file. Instagram was not posted.
+- Inbox draft accepted: Zernio `6a8d96c40225411553b0e249`, inbox ID
+  `v_inbox_url~v2.7677958495261493270`. Finish later in Creator Inbox.
+  Expected URL once public:
+  `https://www.tiktok.com/@bookquotes.app/video/7677958495261493270`.
+- Do not upload this MP4 again. Do not publish Instagram until asked.
+- Inbox now has two drafts: today's pairing (`7677955167269996566`) then
+  this *Tinker Tailor* hold.
+
+### Manual publish: 25 August 2026, 14:07 Europe/London
+
+Owner asked for another TikTok from the illustrated library.
+
+- Asset: `Marketing/Video/illustrated-category-reels/07-two-front-doors.mp4`
+  plus cover. Today's dated pairing cut. Not the rejected Remotion file.
+  Do not re-upload this MP4.
+- TikTok direct failed on capacity (`6a8d93a912f6c1ac243ab45f`). Inbox draft
+  accepted: Zernio `6a8d93b8a9558c108daa6ce2`, inbox ID
+  `v_inbox_url~v2.7677955167269996566`. Finish in Creator Inbox / drafts.
+  Expected URL once public:
+  `https://www.tiktok.com/@bookquotes.app/video/7677955167269996566`.
+- Instagram live despite a CLI timeout:
+  `17972676695932383` at `https://www.instagram.com/reel/DcdtwHEjlPE/`.
+- Today's 13:00 still `bq14-07` is already live:
+  `https://www.instagram.com/p/DcdllpNCPId/`.
+- Saturday `cr-04` *Tinker Tailor* is now the only unused compiled cut.
 
 ### Manual publish: 24 August 2026, 13:30 Europe/London
 
