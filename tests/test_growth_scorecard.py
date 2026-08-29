@@ -215,6 +215,11 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         }
         module.validate(data)
 
+        data["attribution"]["app_store_campaign_links"]["value"][0]["url"] = (
+            "https://apps.apple.com/app/apple-store/id6758091579?pt=128448172&ct=fb-001&mt=8"
+        )
+        module.validate(data)
+
         data["attribution"]["app_store_campaign_links"]["value"][0]["url"] = "https://apps.apple.com/attacker?id6758091579"
         with self.assertRaisesRegex(ValueError, "must be the BookQuotes App Store URL"):
             module.validate(data)

@@ -1,85 +1,69 @@
-'use client'
-
-import { motion } from 'framer-motion'
-import { ArrowDown } from 'lucide-react'
 import Image from 'next/image'
-import { Button } from '@/components/ui/Button'
-import { DeviceMockup } from '@/components/ui/DeviceMockup'
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-16 overflow-hidden paper-texture">
-      <div className="container-wide">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Content */}
-          <div className="text-center lg:text-left">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-balance mb-6"
-            >
-              Save the lines you{' '}
-              <span className="text-gradient">underlined</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-lg md:text-xl text-ink-dark max-w-prose mx-auto lg:mx-0 mb-8"
-            >
-              BookQuotes is a book quote app for turning marked pages from physical
-              books into a searchable personal library. Capture, review, and keep
-              the passages you want to find again.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-            >
+    <section className="section-padding">
+      <div className="container-wide grid lg:grid-cols-[7fr_5fr] gap-12 lg:gap-16 items-start">
+        <div>
+          <h1 className="text-balance mb-6">
+            Save the lines you underlined
+          </h1>
+          <p className="text-lg md:text-xl text-ink-dark max-w-prose mb-8">
+            Transform marked pages from physical books into a private, searchable
+            digital commonplace book. Capture your underlines, margin notes, and
+            highlights, review extracted passages, and keep the lines you want to find again.
+          </p>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center">
+            <div>
               <a
                 href="https://apps.apple.com/app/id6758091579"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="btn-primary"
               >
-                <Button size="lg" className="w-full sm:w-auto">
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                  </svg>
-                  Download on App Store
-                </Button>
+                Get the app
               </a>
-              <a href="#how-it-works">
-                <Button variant="secondary" size="lg" className="w-full sm:w-auto">
-                  See How It Works
-                  <ArrowDown className="w-4 h-4 ml-2" />
-                </Button>
-              </a>
-            </motion.div>
+              <p className="font-ui text-xs text-ink-medium mt-1.5">
+                7-day free trial · Designed for iPhone
+              </p>
+            </div>
+            <a
+              href="#method"
+              className="font-ui text-sm text-ink-black underline underline-offset-4 whitespace-nowrap self-start sm:self-auto pt-1 pb-4 sm:pb-0"
+            >
+              Read the method
+            </a>
           </div>
-
-          {/* Device Mockup */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative"
-          >
-            <DeviceMockup className="w-64 md:w-72 lg:w-80">
-              <Image
-                src="/screenshots/library.png"
-                alt="BookQuotes library showing saved books and quotes"
-                fill
-                priority
-                sizes="(max-width: 768px) 256px, 320px"
-                className="object-cover"
-              />
-            </DeviceMockup>
-          </motion.div>
         </div>
+
+        <figure className="min-w-0">
+          <div className="space-y-4">
+            <Image
+              src="/screenshots/library.png"
+              alt="BookQuotes library showing saved books and quotes"
+              width={603}
+              height={1311}
+              priority
+              sizes="(max-width: 1024px) 100vw, 360px"
+              className="w-full max-w-sm border border-subtle bg-paper-aged"
+            />
+            <div className="max-w-sm p-4 bg-paper-warm border border-subtle">
+              <div className="flex items-center justify-between text-xs font-ui text-ink-medium mb-1.5">
+                <span>Four Thousand Weeks · p. 34</span>
+                <span className="uppercase tracking-wider text-[10px] border border-subtle px-1.5 py-0.5">Underline</span>
+              </div>
+              <blockquote className="font-body text-ink-black text-sm italic leading-snug mb-2">
+                &ldquo;The world is already filled to the brim with things that are worthwhile and interesting... you&rsquo;ll never get around to experiencing more than a microscopic fraction of them.&rdquo;
+              </blockquote>
+              <p className="font-ui text-xs text-ink-medium">
+                Saved to personal library · <span className="text-ink-dark">#philosophy #habits</span>
+              </p>
+            </div>
+          </div>
+          <figcaption className="mt-3 font-ui text-sm text-ink-medium max-w-sm">
+            A first-party library screen and saved quote specimen. The page, not a drawn phone.
+          </figcaption>
+        </figure>
       </div>
     </section>
   )

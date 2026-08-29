@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-25T14:12:00+01:00",
+  "production_path": "illustrated_stills_then_edit",
+  "rejected_path": "Marketing/Video/Remotion/out/community/category-reels/",
+  "brief": "Marketing/Video/IllustratedCategoryReelBrief.md",
+  "purpose": "Daily faceless category Reels sit beside the 13:00 typography bank. They do not replace it.",
+  "cadence": {
+    "still_channels": ["facebook", "instagram"],
+    "still_slot": "13:00",
+    "reel_channels": ["tiktok", "instagram"],
+    "reel_slot": "19:30",
+    "timezone": "Europe/London",
+    "app_led_share_ceiling": 0.15,
+    "second_daily_reel": false
+  },
+  "first_frame": {
+    "max_hook_words": 8,
+    "readable_by_seconds": 2,
+    "no_brand_in_open": true,
+    "no_app_in_open": true,
+    "no_fade_in_type": true,
+    "hard_cuts": true,
+    "max_still_seconds": 3,
+    "cover_is_not_first_frame": true,
+    "default_open": "community_hook_typography",
+    "phone_open_days_per_seven": 1,
+    "paper_body_after_seconds": 5,
+    "instagram_cover_max_words": 6,
+    "instagram_cover_center_safe": true,
+    "recipes": [
+      "use_condition_lock",
+      "correction_slash",
+      "time_cost_lock",
+      "genre_wrong_room",
+      "number_interrupt"
+    ],
+    "cut_rhythm_10s": [
+      {"at": 0, "show": "dark hook plus a visual object; no title or brand"},
+      {"at": 1, "show": "title and author on a card"},
+      {"at": 2.1, "show": "three short chips, not a paragraph"},
+      {"at": 4.5, "show": "slash the wrong reason, then the catch"},
+      {"at": 6.1, "show": "two-door choice"},
+      {"at": 10, "show": "hold the choice; no fade to black"}
+    ]
+  },
+  "faceless_rules": [
+    "No talking-head presenter.",
+    "Muted-readable in the first two seconds.",
+    "Typography, handwritten marks, owned book objects, or already-cleared Remotion compositions only.",
+    "Do not download retailer covers. Do not use adaptation stills.",
+    "Stance is Researched unless a later Read record exists. Never imply personal reading.",
+    "One honest reservation in every recommendation."
+  ],
+  "categories": [
+    {
+      "id": "science_fiction",
+      "label": "Science fiction",
+      "reader_need": "A way into a big system without a primer",
+      "existing_pack": "SciFiReadingRoutesPack.md",
+      "remotion": ["SciFi-01-PlayerOfGames", "SciFiReadingRouteReel"]
+    },
+    {
+      "id": "history_biography",
+      "label": "History and biography",
+      "reader_need": "A long life, told so the structure is usable",
+      "existing_pack": "PresidentialBiographiesPost.md",
+      "remotion": ["PresidentialBooksReel", "HandwrittenBookReview"]
+    },
+    {
+      "id": "literary_fiction",
+      "label": "Literary fiction",
+      "reader_need": "A short book that still leaves a mark",
+      "existing_pack": null,
+      "remotion": ["HandwrittenBookReview"]
+    },
+    {
+      "id": "crime_thriller",
+      "label": "Crime and spy fiction",
+      "reader_need": "A mole hunt that rewards patience, not gore",
+      "existing_pack": null,
+      "remotion": ["HandwrittenBookReview"]
+    },
+    {
+      "id": "nonfiction_ideas",
+      "label": "Ideas nonfiction",
+      "reader_need": "A book that changes how you spend a week",
+      "existing_pack": null,
+      "remotion": ["HandwrittenBookReview"]
+    },
+    {
+      "id": "classics_backlist",
+      "label": "Classics and backlist",
+      "reader_need": "A quiet book that lasted for a reason",
+      "existing_pack": null,
+      "remotion": ["HandwrittenBookReview"]
+    },
+    {
+      "id": "pairing_wildcard",
+      "label": "Pairing or wildcard",
+      "reader_need": "Two books that disagree, or one unexpected fit",
+      "existing_pack": "SciFiReadingRoutesPack.md",
+      "remotion": ["SciFi-05-TwoBigSystems"]
+    }
+  ],
+  "rotation": [
+    {"date": "2026-08-19", "category_id": "science_fiction", "brief_id": "cr-01"},
+    {"date": "2026-08-20", "category_id": "history_biography", "brief_id": "cr-02"},
+    {"date": "2026-08-21", "category_id": "literary_fiction", "brief_id": "cr-03"},
+    {"date": "2026-08-22", "category_id": "crime_thriller", "brief_id": "cr-04"},
+    {"date": "2026-08-23", "category_id": "nonfiction_ideas", "brief_id": "cr-05"},
+    {"date": "2026-08-24", "category_id": "classics_backlist", "brief_id": "cr-06"},
+    {"date": "2026-08-25", "category_id": "pairing_wildcard", "brief_id": "cr-07"}
+  ],
+  "briefs": [
+    {
+      "id": "cr-01",
+      "date": "2026-08-19",
+      "published_at": "2026-08-18T16:45:00+01:00",
+      "category_id": "science_fiction",
+      "format": "reading_route_reel",
+      "status": "published",
+      "stance": "Researched",
+      "title": "The Player of Games",
+      "author": "Iain M. Banks",
+      "hook": "Want the Culture without a giant primer?",
+      "video_hook": "Skip the primer.",
+      "cover_hook": "Start with the game",
+      "choice": "The game, or the whole map?",
+      "who_for": "Readers who like politics and games more than a 100-page tour of the setting.",
+      "distinctive": "One player, one hostile society, one game that decides the rule.",
+      "reservation": "If you want intimate character psychology first, start elsewhere.",
+      "audio": "deliberate_quiet",
+      "beats": [
+        "Start here, not with the whole series map.",
+        "The game is the argument.",
+        "Then decide if you want more Culture."
+      ],
+      "sources": [
+        {"id": "EV-004", "locator": "https://www.hachette.co.uk/titles/iain-m-banks-3/the-player-of-games/9780356521640/"}
+      ],
+      "rights": "Illustrated stills plus already-cleared Orbit jacket overlay. No retailer download.",
+      "remotion_id": "Illustrated-01",
+      "render": {
+        "mp4": "Marketing/Video/illustrated-category-reels/01-player-of-games.mp4",
+        "cover": "Marketing/Video/illustrated-category-reels/01-player-of-games-cover.png"
+      },
+      "live": {
+        "tiktok_zernio_id": "6a847da810c540993aa32423",
+        "tiktok_content_id": "7675397855864604694",
+        "tiktok_url": "https://www.tiktok.com/@bookquotes.app/video/7675397855864604694",
+        "instagram_id": "18022991393885494",
+        "instagram_url": "https://www.instagram.com/reel/DcL9vV5D5GY/"
+      },
+      "still_same_day": "bq14-01",
+      "schedule_note": "Posted early on 18 August as an extra. Keep the 19-25 August 19:30 week and the 13:00 bank on their dated rows. Do not upload this MP4 again.",
+      "do_not": "Do not say favourite or I loved. Do not rank the Culture. Do not upload this MP4 a second time."
+    },
+    {
+      "id": "cr-02",
+      "date": "2026-08-20",
+      "published_at": "2026-08-18T18:18:00+01:00",
+      "category_id": "history_biography",
+      "format": "one_book_three_reasons",
+      "status": "published",
+      "stance": "Researched",
+      "title": "Team of Rivals",
+      "author": "Doris Kearns Goodwin",
+      "hook": "A cabinet of opponents, not a greatest-hits Lincoln.",
+      "video_hook": "Not a shrine.",
+      "cover_hook": "Cabinet of opponents",
+      "choice": "The method, or a weekend?",
+      "who_for": "Readers who want political biography with a usable structure.",
+      "distinctive": "The book is about how Lincoln used rivals, not a shrine.",
+      "reservation": "It is long. Treat it as a study of a working method, not a weekend read.",
+      "audio": "deliberate_quiet",
+      "beats": [
+        "Who it is for.",
+        "What is distinctive.",
+        "The honest length reservation."
+      ],
+      "sources": [
+        {"id": "EV-001", "locator": "PresidentialBiographiesPost.md"}
+      ],
+      "rights": "Illustrated stills plus already-cleared Team of Rivals jacket overlay. No retailer download.",
+      "remotion_id": "Illustrated-02",
+      "render": {
+        "mp4": "Marketing/Video/illustrated-category-reels/02-team-of-rivals.mp4",
+        "cover": "Marketing/Video/illustrated-category-reels/02-team-of-rivals-cover.png"
+      },
+      "live": {
+        "tiktok_zernio_id": "6a84939c6dbb0dd4614c7c8b",
+        "tiktok_content_id": "7675422054036424726",
+        "tiktok_url": "https://www.tiktok.com/@bookquotes.app/video/7675422054036424726",
+        "instagram_id": "18060518723770036",
+        "instagram_url": "https://www.instagram.com/reel/DcMIcjmCTZy/"
+      },
+      "still_same_day": "bq14-02",
+      "schedule_note": "Posted early on 18 August as a format-test extra. Keep the 20 August dated row. Do not upload this MP4 again.",
+      "do_not": "Do not imply every presidential title was personally read. Do not upload this MP4 a second time."
+    },
+    {
+      "id": "cr-03",
+      "date": "2026-08-21",
+      "category_id": "literary_fiction",
+      "format": "handwritten_note",
+      "status": "needs_illustrated_cut",
+      "stance": "Researched",
+      "title": "Foster",
+      "author": "Claire Keegan",
+      "hook": "A short book you can finish tonight and still think about next week.",
+      "video_hook": "Finish tonight.",
+      "cover_hook": "Short on purpose",
+      "choice": "Quiet, or incident?",
+      "who_for": "Readers who want literary fiction without a 400-page commitment.",
+      "distinctive": "A girl sent to a farm for a summer; warmth, then the secret the house was not supposed to have.",
+      "reservation": "It is slight on plot. If you need incident every chapter, this will feel too quiet.",
+      "beats": [
+        "Short on purpose.",
+        "What the summer changes.",
+        "Who should skip it."
+      ],
+      "sources": [
+        {"id": "S-foster-faber", "locator": "https://www.faber.co.uk/product/9780571379149-foster/"}
+      ],
+      "rights": "Typography or handwritten Remotion only until an owned physical copy is photographed. No retailer cover. No Quiet Girl stills.",
+      "remotion_id": "CategoryReel-03",
+      "render": {
+        "mp4": "Marketing/Video/Remotion/out/community/category-reels/03-foster.mp4",
+        "cover": "Marketing/Video/Remotion/out/community/category-reels/03-foster-cover.png"
+      },
+      "still_same_day": "bq14-03",
+      "do_not": "Do not sell the film. Do not quote the novella."
+    },
+    {
+      "id": "cr-04",
+      "date": "2026-08-22",
+      "category_id": "crime_thriller",
+      "format": "handwritten_note",
+      "status": "needs_illustrated_cut",
+      "stance": "Researched",
+      "title": "Tinker Tailor Soldier Spy",
+      "author": "John le Carré",
+      "hook": "A spy novel where the violence is in the office, not the chase.",
+      "video_hook": "No chase.",
+      "cover_hook": "The hunt is inside",
+      "choice": "Fifty pages. Can you wait?",
+      "who_for": "Readers who want a mole hunt that rewards patience.",
+      "distinctive": "Smiley is brought back to find a traitor inside the Circus; the suspense is institutional.",
+      "reservation": "The first third is dense. If you want a set-piece every chapter, wait.",
+      "beats": [
+        "Who it is for.",
+        "The hunt is inside the service.",
+        "Give it fifty pages."
+      ],
+      "sources": [
+        {"id": "S-ttss-author", "locator": "https://johnlecarre.com/books/tinker-tailor-soldier-spy/"}
+      ],
+      "rights": "Typography or handwritten Remotion only. No retailer cover. No film stills.",
+      "remotion_id": "CategoryReel-04",
+      "render": {
+        "mp4": "Marketing/Video/Remotion/out/community/category-reels/04-tinker-tailor.mp4",
+        "cover": "Marketing/Video/Remotion/out/community/category-reels/04-tinker-tailor-cover.png"
+      },
+      "still_same_day": "bq14-04",
+      "do_not": "Do not spoil the mole. Do not use the 2011 film as the hook."
+    },
+    {
+      "id": "cr-05",
+      "date": "2026-08-23",
+      "published_at": "2026-08-23T08:48:00+01:00",
+      "category_id": "nonfiction_ideas",
+      "format": "handwritten_note",
+      "status": "published",
+      "stance": "Researched",
+      "title": "Four Thousand Weeks",
+      "author": "Oliver Burkeman",
+      "hook": "You do not have a time-management problem. You have a finitude problem.",
+      "video_hook": "4,000 weeks.",
+      "cover_hook": "Stop clearing the list",
+      "choice": "A choice, or a planner?",
+      "who_for": "Readers tired of productivity books that add another system.",
+      "distinctive": "The average life is about four thousand weeks; the book argues for choosing, not clearing the list.",
+      "reservation": "If you want a step-by-step planner, this will feel like philosophy.",
+      "beats": [
+        "The number.",
+        "Stop trying to do everything.",
+        "Who should skip it."
+      ],
+      "sources": [
+        {"id": "S-4000-penguin", "locator": "https://www.penguin.co.uk/books/433471/four-thousand-weeks-by-burkeman-oliver/9781784704001"}
+      ],
+      "rights": "Typography or handwritten Remotion only. No retailer cover.",
+      "remotion_id": "CategoryReel-05",
+      "render": {
+        "mp4": "Marketing/Video/illustrated-category-reels/05-four-thousand-weeks.mp4",
+        "cover": "Marketing/Video/illustrated-category-reels/05-four-thousand-weeks-cover.png"
+      },
+      "still_same_day": "bq14-05",
+      "do_not": "Do not turn it into a five-hacks list. Do not claim it will change your life."
+    },
+    {
+      "id": "cr-06",
+      "date": "2026-08-24",
+      "published_at": "2026-08-24T13:30:00+01:00",
+      "category_id": "classics_backlist",
+      "format": "handwritten_note",
+      "status": "published",
+      "stance": "Researched",
+      "title": "Stoner",
+      "author": "John Williams",
+      "hook": "A quiet life that should not have been forgettable.",
+      "video_hook": "Ordinary.",
+      "cover_hook": "An ordinary life",
+      "choice": "Work, or plot machinery?",
+      "who_for": "Readers who want a campus novel about work, not campus hijinks.",
+      "distinctive": "William Stoner becomes a teacher, marries badly, and is barely remembered; the book treats that life as enough.",
+      "reservation": "It is sad and slow. If you need plot machinery, this will feel uneventful.",
+      "beats": [
+        "Not a forgotten-genius myth.",
+        "What the ordinary life contains.",
+        "The pace reservation."
+      ],
+      "sources": [
+        {"id": "S-stoner-vintage", "locator": "https://www.penguin.co.uk/books/357430/stoner-by-williams-john/9781784879143"}
+      ],
+      "rights": "Typography or handwritten Remotion only. No retailer cover.",
+      "remotion_id": "CategoryReel-06",
+      "render": {
+        "mp4": "Marketing/Video/illustrated-category-reels/06-stoner.mp4",
+        "cover": "Marketing/Video/illustrated-category-reels/06-stoner-cover.png"
+      },
+      "still_same_day": "bq14-06",
+      "do_not": "Do not call it the greatest novel nobody read. That is hype."
+    },
+    {
+      "id": "cr-07",
+      "date": "2026-08-25",
+      "published_at": "2026-08-25T14:07:00+01:00",
+      "category_id": "pairing_wildcard",
+      "format": "pairing_reel",
+      "status": "published",
+      "stance": "Researched",
+      "title": "The Player of Games / The Three-Body Problem",
+      "author": "Iain M. Banks / Cixin Liu",
+      "hook": "Two huge systems. Very different front doors.",
+      "video_hook": "Two doors.",
+      "cover_hook": "Pick the door",
+      "choice": "Politics, or cosmic mystery?",
+      "who_for": "Readers choosing a first big sci-fi after a smaller book.",
+      "distinctive": "Games and politics versus scientific mystery and cosmic scale.",
+      "reservation": "Neither is a gentle on-ramp. Name which difficulty you actually want.",
+      "beats": [
+        "Same appetite: a system.",
+        "Different entry cost.",
+        "Pick the door, not the ranking."
+      ],
+      "sources": [
+        {"id": "EV-004", "locator": "https://www.hachette.co.uk/titles/iain-m-banks-3/the-player-of-games/9780356521640/"},
+        {"id": "EV-005", "locator": "https://www.bloomsbury.com/uk/series/the-threebody-problem/"}
+      ],
+      "rights": "Existing SciFi-05 Remotion or text-only. No retailer covers. No Netflix stills.",
+      "remotion_id": "CategoryReel-07",
+      "render": {
+        "mp4": "Marketing/Video/illustrated-category-reels/07-two-front-doors.mp4",
+        "cover": "Marketing/Video/illustrated-category-reels/07-two-front-doors-cover.png"
+      },
+      "still_same_day": "bq14-07",
+      "do_not": "Do not rank Banks against Liu."
+    }
+  ]
+}

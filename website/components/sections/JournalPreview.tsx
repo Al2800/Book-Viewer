@@ -1,58 +1,48 @@
 import Link from 'next/link'
-import { ArrowRight, BookMarked } from 'lucide-react'
 import { journalArticles } from '@/lib/journal'
 
 export function JournalPreview() {
   return (
-    <section className="section-padding">
-      <div className="container-wide">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
-          <div>
-            <div className="flex items-center gap-2 text-rust font-ui text-sm font-semibold mb-3">
-              <BookMarked className="w-5 h-5" />
-              The BookQuotes Journal
-            </div>
-            <h2 className="mb-3">Read, Mark, Remember</h2>
-            <p className="text-ink-medium text-lg max-w-2xl">
-              Practical ideas for getting more value from paper-book annotations.
-            </p>
-          </div>
-          <Link
-            href="/journal"
-            className="inline-flex items-center gap-2 text-gold-primary font-ui font-medium"
-          >
-            Browse the journal
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+    <section className="bg-paper-warm">
+      <div className="container-wide section-padding">
+        <div className="max-w-2xl mb-12">
+          <h2 className="mb-3">Read, mark, remember</h2>
+          <p className="text-lg text-ink-medium">
+            Practical ideas for getting more value from paper-book annotations.
+          </p>
         </div>
-
-        <div className="grid md:grid-cols-3 border-y border-subtle">
-          {journalArticles.map((article, index) => (
+        <div className="border-y border-subtle">
+          {journalArticles.map((article) => (
             <article
               key={article.slug}
-              className={`py-8 md:px-8 ${index === 0 ? 'md:pl-0' : ''} ${
-                index < journalArticles.length - 1 ? 'border-b md:border-b-0 md:border-r border-subtle' : ''
-              }`}
+              className="grid md:grid-cols-[11rem_1fr] gap-3 md:gap-10 py-8 border-b border-subtle last:border-b-0"
             >
-              <p className="font-ui text-xs font-semibold uppercase text-rust mb-4">
-                {article.category}
-              </p>
-              <h3 className="text-xl mb-3">
-                <Link href={`/journal/${article.slug}`} className="hover:text-gold-primary">
-                  {article.title}
+              <p className="font-ui text-sm text-ink-medium">{article.category}</p>
+              <div>
+                <h3 className="text-xl mb-3">
+                  <Link href={`/journal/${article.slug}`} className="hover:underline">
+                    {article.title}
+                  </Link>
+                </h3>
+                <p className="text-ink-medium mb-4">{article.summary}</p>
+                <Link
+                  href={`/journal/${article.slug}`}
+                  className="font-ui text-sm text-ink-black underline underline-offset-4"
+                >
+                  Read article
                 </Link>
-              </h3>
-              <p className="text-ink-medium mb-5">{article.summary}</p>
-              <Link
-                href={`/journal/${article.slug}`}
-                className="font-ui text-sm font-semibold text-navy inline-flex items-center gap-2"
-              >
-                Read article
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              </div>
             </article>
           ))}
         </div>
+        <p className="mt-8">
+          <Link
+            href="/journal"
+            className="font-ui text-sm text-ink-black underline underline-offset-4"
+          >
+            Browse the journal
+          </Link>
+        </p>
       </div>
     </section>
   )

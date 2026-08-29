@@ -2,6 +2,21 @@
 
 Date prepared: 2026-08-11
 
+## Status as of 2026-08-13
+
+The empty `/me/accounts` / Graph 100-33 failure is closed. After `business_management` was granted, Graph v26.0 returned the BookQuotes Page and linked Instagram professional account.
+
+Bind only these IDs:
+
+- Facebook Page `1246405755221229` (live name BookQuotes)
+- Instagram professional `17841434821362428` (username `bookquotes.app`)
+
+Do not use Page ID `61592474937437` as the Graph bind target. Graph did not return it on 2026-08-13. That value remains below as the historical reproduction ID only.
+
+Granted permission names: `pages_show_list`, `business_management`, `pages_read_engagement`, `instagram_basic`, `instagram_manage_insights`, `public_profile`. Not granted: `pages_manage_posts`, `instagram_content_publish`.
+
+The BookQuotes-only CLI lives in `/Users/skyhub/bookquotes-marketing-os/bin/meta_cli.py`.
+
 ## Summary
 
 A read-only Meta Graph API integration returns no Facebook Pages for an app administrator who also has full Facebook control of the target Page. OAuth authorization succeeds and all requested permissions are granted, but `GET /me/accounts` returns an empty data array and a direct Page read returns Graph API error code 100, subcode 33.

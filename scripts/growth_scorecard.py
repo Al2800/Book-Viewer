@@ -107,7 +107,7 @@ def is_bookquotes_app_store_url(value: str) -> bool:
     return (
         parsed.scheme == "https"
         and parsed.netloc == "apps.apple.com"
-        and parsed.path == "/app/id6758091579"
+        and parsed.path in {"/app/id6758091579", "/app/apple-store/id6758091579"}
         and not parsed.fragment
     )
 

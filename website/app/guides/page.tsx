@@ -16,9 +16,9 @@ export default function GuidesPage() {
   return (
     <>
       <Header />
-      <main className="pt-28 md:pt-36">
+      <main className="pt-8 md:pt-12">
         <header className="container-standard pb-14 md:pb-20">
-          <p className="font-ui text-sm font-semibold uppercase text-rust mb-4">BookQuotes guides</p>
+          <p className="font-ui text-sm text-ink-medium mb-4">Guides</p>
           <h1 className="mb-5">Save the ideas you want to find again</h1>
           <p className="text-xl text-ink-medium max-w-2xl">
             Clear, practical answers for readers who underline paper books, keep margin notes, and want a better way to revisit them.

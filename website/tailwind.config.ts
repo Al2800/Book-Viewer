@@ -8,35 +8,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary - Warm Paper Tones
         paper: {
-          cream: '#FDFBF7',
-          warm: '#F8F5EF',
-          aged: '#EDE8DE',
+          cream: 'var(--color-paper)',
+          warm: 'var(--color-paper-2)',
+          aged: 'var(--color-paper-3)',
         },
-        // Text - Rich Book Ink
         ink: {
-          black: '#1A1915',
-          dark: '#3D3A33',
-          medium: '#6B665A',
-          light: '#9C9687',
+          black: 'var(--color-ink)',
+          dark: 'var(--color-ink-2)',
+          medium: 'var(--color-ink-3)',
+          light: 'var(--color-ink-4)',
         },
-        // Accent - Library Gold
         gold: {
-          primary: '#B8860B',
-          light: '#D4A84B',
-          muted: '#C9B896',
+          primary: 'var(--color-accent)',
+          light: 'var(--color-accent-2)',
+          muted: 'var(--color-paper-3)',
         },
-        // Supporting
-        sage: '#7A8B6F',
-        rust: '#A65D57',
-        navy: '#2C3E50',
+        sage: 'var(--color-sage)',
+        rust: 'var(--color-rust)',
+        navy: 'var(--color-navy)',
       },
       fontFamily: {
-        display: ['Playfair Display', 'Crimson Pro', 'Georgia', 'serif'],
-        body: ['Source Serif Pro', 'Crimson Text', 'Georgia', 'serif'],
-        ui: ['Inter', 'SF Pro Text', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'SF Mono', 'monospace'],
+        display: ['var(--font-display)'],
+        body: ['var(--font-body)'],
+        ui: ['var(--font-ui)'],
+        mono: ['var(--font-mono)'],
       },
       fontSize: {
         '5xl': ['3.5rem', { lineHeight: '1.2' }],

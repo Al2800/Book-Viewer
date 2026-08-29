@@ -8,20 +8,20 @@ Primary records: 14; product-led: 2 (14.3%)
 
 | Date | ID | Territory | Audience | Hook | Format | Product-led | Asset | Approval |
 |---|---|---|---|---|---|---:|---|---|
-| 2026-08-19 | bq14-01 | discovery | Mood-led readers stuck choosing their next book | Choose your next read with 3 adjectives—not a genre. | typography&#95;card | False | bq14-01 | draft |
-| 2026-08-20 | bq14-02 | discovery | Readers with variable time or concentration | Build a reading menu, not one impossible TBR. | typography&#95;card | False | bq14-02 | draft |
-| 2026-08-21 | bq14-03 | discovery | Readers recommending books without spoilers | Describe a book without giving the plot away. | typography&#95;card | False | bq14-03 | draft |
-| 2026-08-22 | bq14-04 | discovery | Readers with an overfilled TBR | Give your TBR an eight-book knockout round. | typography&#95;card | False | bq14-04 | draft |
-| 2026-08-23 | bq14-05 | discovery | Readers deciding what deserves a reread | Not every reread has the same job. | typography&#95;card | False | bq14-05 | draft |
-| 2026-08-24 | bq14-06 | discovery | Readers giving recommendations to friends | A useful recommendation includes one honest reservation. | typography&#95;card | False | bq14-06 | draft |
-| 2026-08-25 | bq14-07 | discovery | Book-club hosts who want discussion beyond plot recap | Replace “Did you like it?” with a choice the book forces. | typography&#95;card | False | bq14-07 | draft |
-| 2026-08-26 | bq14-08 | discovery | Readers seeking meaningful book pairings | Pair two books that disagree—not two that merely look alike. | typography&#95;card | False | bq14-08 | draft |
-| 2026-08-27 | bq14-09 | reader&#95;practice | Readers dissatisfied with star ratings | Rate the reading experience, not the book. | typography&#95;card | False | bq14-09 | draft |
-| 2026-08-28 | bq14-10 | reader&#95;practice | Readers beginning a dense nonfiction book | Write the questions first; let the book earn the answers. | typography&#95;card | False | bq14-10 | draft |
-| 2026-08-29 | bq14-11 | reader&#95;practice | Readers who want useful notes without copying passages | Keep the context without reposting the sentence. | typography&#95;card | False | bq14-11 | draft |
-| 2026-08-30 | bq14-12 | reader&#95;practice | Readers finishing a complex book | Close the book with 3 concepts, 2 questions, 1 disagreement. | typography&#95;card | False | bq14-12 | draft |
-| 2026-08-31 | bq14-13 | bookquotes&#95;proof | Readers whose saved ideas cross several books | One idea can belong to more than one shelf. | typography&#95;card | True | bq14-13 | draft |
-| 2026-09-01 | bq14-14 | bookquotes&#95;proof | Readers who want control over their own notes | Your reading notes should have an exit. | typography&#95;card | True | bq14-14 | draft |
+| 2026-08-19 | bq14-01 | discovery | Mood-led readers stuck choosing their next book | Choose your next read with 3 adjectives—not a genre. | typography&#95;card | False | bq14-01 | approved |
+| 2026-08-20 | bq14-02 | discovery | Readers with variable time or concentration | Build a reading menu, not one impossible TBR. | typography&#95;card | False | bq14-02 | approved |
+| 2026-08-21 | bq14-03 | discovery | Readers recommending books without spoilers | Describe a book without giving the plot away. | typography&#95;card | False | bq14-03 | approved |
+| 2026-08-22 | bq14-04 | discovery | Readers with an overfilled TBR | Give your TBR an eight-book knockout round. | typography&#95;card | False | bq14-04 | approved |
+| 2026-08-23 | bq14-05 | discovery | Readers deciding what deserves a reread | Not every reread has the same job. | typography&#95;card | False | bq14-05 | approved |
+| 2026-08-24 | bq14-06 | discovery | Readers giving recommendations to friends | A useful recommendation includes one honest reservation. | typography&#95;card | False | bq14-06 | approved |
+| 2026-08-25 | bq14-07 | discovery | Book-club hosts who want discussion beyond plot recap | Replace “Did you like it?” with a choice the book forces. | typography&#95;card | False | bq14-07 | approved |
+| 2026-08-26 | bq14-08 | discovery | Readers seeking meaningful book pairings | Pair two books that disagree—not two that merely look alike. | typography&#95;card | False | bq14-08 | approved |
+| 2026-08-27 | bq14-09 | reader&#95;practice | Readers dissatisfied with star ratings | Rate the reading experience, not the book. | typography&#95;card | False | bq14-09 | approved |
+| 2026-08-28 | bq14-10 | reader&#95;practice | Readers beginning a dense nonfiction book | Write the questions first; let the book earn the answers. | typography&#95;card | False | bq14-10 | approved |
+| 2026-08-29 | bq14-11 | reader&#95;practice | Readers who want useful notes without copying passages | Keep the context without reposting the sentence. | typography&#95;card | False | bq14-11 | approved |
+| 2026-08-30 | bq14-12 | reader&#95;practice | Readers finishing a complex book | Close the book with 3 concepts, 2 questions, 1 disagreement. | typography&#95;card | False | bq14-12 | approved |
+| 2026-08-31 | bq14-13 | bookquotes&#95;proof | Readers whose saved ideas cross several books | One idea can belong to more than one shelf. | typography&#95;card | True | bq14-13 | approved |
+| 2026-09-01 | bq14-14 | bookquotes&#95;proof | Readers who want control over their own notes | Your reading notes should have an exit. | typography&#95;card | True | bq14-14 | approved |
 
 ## Claims and channel adaptations
 

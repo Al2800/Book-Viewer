@@ -9,7 +9,11 @@
 - 2 BookQuotes product-proof records;
 - product-led share: 2/14 = 14.3%, below the 20% ceiling.
 
-The current records are drafts. They are prepared for review, not silently authorized for publication.
+All 14 current records are approved (`john-mcneil`, 17 August 2026) after native queue
+reconciliation. Facebook Graph already holds `bq14-01`–`bq14-14` at 13:00 Europe/London.
+Instagram publishes the same approved bytes via the 13:00 due agent. A commit or merge
+refreshes the launchd mirror; do not rely on a manual `sync_content_bank.py` after every
+edit. TikTok still needs MP4+cover assets; do not treat these typography PNGs as TikTok-ready.
 
 ## Files
 
@@ -89,11 +93,37 @@ The two product-proof records use only claims supported by `S1`:
 
 The generated assets are explanatory typography cards rather than fabricated product screenshots. A future UI capture must use synthetic titles/placeholders and receive a separate rights/readability review.
 
+## Publication
+
+After an item is approved, scheduling and posting go through the BookQuotes Meta CLI, not the
+Business Suite GUI:
+
+```bash
+python3 /Users/skyhub/bookquotes-marketing-os/bin/meta_cli.py publish \
+  --channel facebook \
+  --bank Marketing/Social/CommunityPush/ContentBank.json \
+  --item-id bq14-01
+```
+
+Omit `--approve` for a dry-run. Facebook can take `--at` or default to 13:00 Europe/London on
+the item date. Remotion MP4s go to Facebook with `--video path.mp4`. Instagram has no native
+Graph schedule. Local PNG/JPEG/MP4 files are hosted on `media.zernio.com`, then published
+with `--now`. Timed Instagram uses this Mac:
+
+```bash
+python3 /Users/skyhub/bookquotes-marketing-os/bin/sync_content_bank.py
+```
+
+`uk.bookquotes.instagram-due` publishes the mirrored bank at 13:00. `uk.bookquotes.pre-publish-awake`
+keeps the Mac awake from 12:50. After any bank edit, rerun the sync from Terminal. Do not point
+launchd at the repository copy: it cannot read `~/Documents`. Business Suite remains the GUI
+fallback. TikTok stays out of the bank CLI; reconnect with `meta_cli.py reconnect --channel tiktok`.
+
 ## Channel and platform gates
 
 - Facebook’s existing verified queue runs through 18 August; this bank starts 19 August to avoid replacement or accidental duplication.
-- Instagram publication/analytics remain blocked while its Meta Business connection is unresolved.
-- TikTok publication remains manual-approval-gated while account-health/distribution and attributable analytics are unresolved.
+- Instagram Graph publish is live (`--now` only). The Mac `due` agent posts today’s approved bank card at 13:00 from the marketing-os mirror.
+- TikTok publication remains `--approve` through Zernio. Reconnect before `token_health.expires_at` or the path dies. `posts --channel tiktok` flags `expiring_soon` inside 6 hours.
 - Do not claim App Store campaign attribution until a channel-specific link has been generated and read back from the authoritative platform.
 - Do not use inaccessible analytics as zero. Record unavailable outcomes as unavailable/null in the growth evidence system.
 

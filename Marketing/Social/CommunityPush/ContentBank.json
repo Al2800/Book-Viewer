@@ -371,8 +371,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "22d3f93b922c9fd13f0ee51f3721c3e03fbc945d03f7595eeb93371f6d5e8b39",
+          "asset_sha256": {
+            "bq14-01": "8d2223a8392f0a6d24b55372e7363b149b5f96bc3e5af9e1f296b2f1633f8c25"
+          },
+          "caption_sha256": {
+            "tiktok": "f7be15a136c73e33ea3bc9e690b79191ba97a49e8fff68fec26f238da596a0e9",
+            "instagram": "7363d82acd90b65d6e0c7a1ce7406606b2175d8c8c29e01116ba83e323d65034",
+            "facebook": "76137afac1cfc167dd101df9a2680a7869b9e9449e99193b72f54da3367ffb77"
+          }
+        }
       }
     },
     {
@@ -415,8 +428,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "83f41309dfe5c2561742a6b2fdf0afc86a0c89c75a55238fd37388b7069b1243",
+          "asset_sha256": {
+            "bq14-02": "de14cf1151836fbe3751038d14c142ae7df56e7f0e3fa426be159f19d17fb2d1"
+          },
+          "caption_sha256": {
+            "tiktok": "c8da4888bce904a4217253e79fcb11de60fb5d1ef8ff2c84c6652862ed4070da",
+            "instagram": "2e7b1f6679c345134c958553881563841eaa390942bf7e015cee71941ebc0b2f",
+            "facebook": "7e9c1b1869c14c6d915b6d048e6b2251ddd7bb6665649b9edee4e3ac81486e0d"
+          }
+        }
       }
     },
     {
@@ -459,8 +485,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "5d490a35b69d29bff9adc6dc95b05849979c24f011ca76bad6ffaecbc8bbc6bb",
+          "asset_sha256": {
+            "bq14-03": "526d8255122cace1bfdef1b990cdca42086f8ba75bf21e79fa8af52aedc61785"
+          },
+          "caption_sha256": {
+            "tiktok": "752d1e1e6d6e0f1184632246145b29d0a02caffa50526053dc68bad14c3a8c8b",
+            "instagram": "09b5912932b3a3d7451eb554362dbb6e2c1af6c2bcd9c10c352f0d1e8c6abb86",
+            "facebook": "e2a959138c8116f63e4d26de0d1556cc7c11af87a4907aba373bdaed70e4ed42"
+          }
+        }
       }
     },
     {
@@ -503,8 +542,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "9fa4cc1745ddb126c4f8bb30dbc843c8fa7a86209412c88f0bf0b7b529fc5fec",
+          "asset_sha256": {
+            "bq14-04": "9f45371b06fe8be35dd6e820a51bf0306b5d484fba334be19936b97e322a559e"
+          },
+          "caption_sha256": {
+            "tiktok": "6f81a5413004c01a93f650cf8861ed6514c0735fdcb61d8c79d3a8bc6cdbfe02",
+            "instagram": "081de11e2c6de7aa7c227953ef231341170fe16219a0f2863df8418d02c16c16",
+            "facebook": "142a9aaf421ee61011851c103c9f6cafa6b9b562ec27b3696fd94b135a9f151e"
+          }
+        }
       }
     },
     {
@@ -547,8 +599,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "cceb8def3e636931471102ca4105a0cb028cd34df679cfac480668c39b1caf52",
+          "asset_sha256": {
+            "bq14-05": "f67a433e16e0bf2f2fca7b40e7e154a293461eaa0113cf110013ad9148e0e88a"
+          },
+          "caption_sha256": {
+            "tiktok": "61974ce48407cb9fc14bf13ecd3a244032f0f36de0c7956bdba5bd896e3d4d0b",
+            "instagram": "cd5944ca4adbe4568d5a8b71c212ca4f1dec999939b79eb0612ed6cb3a1234e1",
+            "facebook": "8f3ca4d16f2fd300a9c56676debc32346e788fd306a801d7e527e7cc0644965b"
+          }
+        }
       }
     },
     {
@@ -591,8 +656,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "0a0efb2c2fafc7364d4d6ee5922a1bd690fa65452a4694e1819f41cc9bdc77a2",
+          "asset_sha256": {
+            "bq14-06": "b8781a6c789fa4b4cb78fb60b5f1498fd2bec1f98c43fd20ac48849e287a3047"
+          },
+          "caption_sha256": {
+            "tiktok": "bfd167df2b3c322001906f36352aae4cc3f7e84f3c45c02ca47c44de30c625eb",
+            "instagram": "6b7ba115fad41b2a2173e6acd8405cb1f164ef8b49ebf5e852a719cbe73f40ce",
+            "facebook": "7d24a7a236b8ceb32b5001a1de553c72314594632acd0158f4b322f40601622a"
+          }
+        }
       }
     },
     {
@@ -635,8 +713,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "a065e8bd8858d4bc6a1e61ba5e2c8c622bd7dcba3fa3370f1023eabbc88b1f25",
+          "asset_sha256": {
+            "bq14-07": "48b952552939b5cd530d6b69bae46cc5eeb48a718ac54dd9baa48dce9a553e32"
+          },
+          "caption_sha256": {
+            "tiktok": "619939ab748b1a8d8853b3467635c85ba0a966520b59489e31f2ba7e85e05b99",
+            "instagram": "9b91194a03d2df6fe5c3e0dbd06fadec8d1aa67c3aea6d8d583a8ac66f83fbf6",
+            "facebook": "331d214815cb5c33dc3a312af11de10aabe4abca1ed78fdb4a8d6a235cc86d6f"
+          }
+        }
       }
     },
     {
@@ -679,8 +770,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "891f57efb82e18d52ba786360682f13362219a8634fd3e6ea61a80bb0335c0a8",
+          "asset_sha256": {
+            "bq14-08": "387b5e3781a469660a44ee8dddd5711c1f5efacfb16ad4bd1b26f9376edae7b3"
+          },
+          "caption_sha256": {
+            "tiktok": "e57564442862ae7f781b8b7e368e22391d3c065533856b0b019a6b4a8ee383e8",
+            "instagram": "0266c055745435391ed741f1e95fa894e95a8ee40dc5a09f932657fe5ca0285d",
+            "facebook": "5c0e1c6687a501a3d3a12c4cce4357887d652a185d2b11271d40d4fc88713c51"
+          }
+        }
       }
     },
     {
@@ -723,8 +827,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "5f558aa791b22c2e9dfcc34ece1d0760f44f3527a9849f927ec8485d7f9d99cf",
+          "asset_sha256": {
+            "bq14-09": "2266f30fdd03b69c3ee88114e1f51708853eb7a763c813b655af0bd9bff18423"
+          },
+          "caption_sha256": {
+            "tiktok": "74f1770fb575f8cf1890b1a639828dd1387e38d45dfce64ca6196c23e38c936e",
+            "instagram": "076dbafeceb66698d4c5bdc82a53b7f2f7b1e1bd20b20dedbd46c91dd848ced5",
+            "facebook": "11c6a111d409b23d85e11dca680ea822f6a8201c5e9f7468b62263beaa675c4e"
+          }
+        }
       }
     },
     {
@@ -767,8 +884,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "06744a4e1d453bd309233cd55c20e8d14cdfd3b81b39e80fe407c53948b0f07c",
+          "asset_sha256": {
+            "bq14-10": "653d648410d95352371a159f31da061d3d1e95a8808689f3fe829673d4591588"
+          },
+          "caption_sha256": {
+            "tiktok": "5653b99f6af644b29d4a30b208243f0f1ad01b4a6b837d3671ca92e794e060fb",
+            "instagram": "aaf608cbd484e2aa44962dbb5644bd3ffeed8ac7441358e549007adc20539a90",
+            "facebook": "87499640cdfff8822ccef5925fdec5b2dc5ed41d24089709f83683d921b0b2ae"
+          }
+        }
       }
     },
     {
@@ -811,8 +941,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "353d8e8645620323d5ca83d7eefb2035ef2b592c70be7f66a948b0964857eab1",
+          "asset_sha256": {
+            "bq14-11": "5d73c933fa0795e692e4b49305c2673f95a283050f51e393c66eab71cebfff55"
+          },
+          "caption_sha256": {
+            "tiktok": "508e0c2c906f294b728cb3e8cb16a5effc1f3d73a6fbeb7b9a81bec968a270ea",
+            "instagram": "a67915d28f718b55a31eea89397cc684119a745284879ade40b942cc9ecc24c6",
+            "facebook": "4e8c42fc3a9975f3efc49cbf3d89a260aaa299383445131d4d66c6f49a0bd62b"
+          }
+        }
       }
     },
     {
@@ -855,8 +998,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "67e2deb8378a94f1359c13764a28ab13d03c67e063bbbda1e89e1ab19b89efdf",
+          "asset_sha256": {
+            "bq14-12": "850f3fe42b6c0e23e3cbaa6728c1fc385b8568e573aa936b65410bc234e07d22"
+          },
+          "caption_sha256": {
+            "tiktok": "9c20de2738aded2ba4381b2b679cf847a624d7415613ad619c627a9c2f3f1dff",
+            "instagram": "bf3e4cfd4d3ceefe36e96ee1c4ebde97579422482600124a69c9e8e33c47021d",
+            "facebook": "eef29c99f6b01e804ef281d9e9c4565c5976afdb951557dcba7b7049763374c2"
+          }
+        }
       }
     },
     {
@@ -899,8 +1055,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "4812cb75e43d40e8cd796a26ef4b80786a0b1396cb46e91a2c4f0fc95946764a",
+          "asset_sha256": {
+            "bq14-13": "d6d9368f8587894fa875f3ebb1f6258f34178baa011fe1d6faa5e7aae267b99c"
+          },
+          "caption_sha256": {
+            "tiktok": "1d4f9fc72acd9f003072019c7cd64835206cf8a575cf1ed1dceda78260bda283",
+            "instagram": "d4232f278cd419cbc8d83d235c54fbc8ed0b3b1411d0cfbcc3d37a2002a65323",
+            "facebook": "96e3ba8bd78bedfbb8ce6687e16e2c6f8c8e8b0af3656429e9d7fc5e01458520"
+          }
+        }
       }
     },
     {
@@ -943,8 +1112,21 @@
         }
       },
       "approval": {
-        "state": "draft",
-        "record": null
+        "state": "approved",
+        "record": {
+          "approved_by": "john-mcneil",
+          "approved_at": "2026-08-17T12:53:00+01:00",
+          "native_queue_confirmed": true,
+          "content_sha256": "83e7a54d2d14734403fb84ef71c0b3ae0d61276b6e133aac10df3ea1e352dd1f",
+          "asset_sha256": {
+            "bq14-14": "230953c5eac1b27b2ac12f49fc2093628fe7cc24f3d2c6cc6d28a6aa6bb5ddf5"
+          },
+          "caption_sha256": {
+            "tiktok": "814644106290093175f2b13d3ff0f01a85d3b0ba7d1db5a53100ebfe68f12806",
+            "instagram": "95879b553d600783f880d0be1b3db96f98f31d42c9081deabb8be6a9a3ff8271",
+            "facebook": "dcf5caf0d381e00b7cd782a260668fa75dc043d71c82e74b0b4e8e64b2c300fc"
+          }
+        }
       }
     }
   ]

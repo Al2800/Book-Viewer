@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
 import { ProductEvidence } from '@/components/sections/ProductEvidence'
 import { getJournalArticle, journalArticles } from '@/lib/journal'
-import { seoAppStoreUrl } from '@/lib/seo'
+import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
 
 type ArticlePageProps = {
   params: Promise<{ slug: string }>
@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       publishedTime: `${article.publishedISO}T00:00:00.000Z`,
       modifiedTime: `${article.publishedISO}T00:00:00.000Z`,
       section: article.category,
+      images: [seoShareImage],
     },
   }
 }
@@ -74,17 +75,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <>
       <Header />
-      <main className="pt-28 md:pt-36">
+      <main className="pt-8 md:pt-12">
         <article>
           <header className="container-standard pb-12 md:pb-16">
             <Link
               href="/journal"
-              className="inline-flex items-center gap-2 font-ui text-sm text-navy mb-10"
+              className="inline-flex items-center gap-2 font-ui text-sm text-ink-medium mb-10"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Journal
             </Link>
-            <p className="font-ui text-sm font-semibold uppercase text-rust mb-4">
+            <p className="font-ui text-sm text-ink-medium mb-4">
               {article.category}
             </p>
             <h1 className="text-balance mb-6">{article.title}</h1>
@@ -114,8 +115,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </article>
 
-        <section className="container-standard py-14 md:py-20 text-center">
-          <h2 className="mb-4">Keep the Lines That Matter</h2>
+        <section className="container-standard py-14 md:py-20">
+          <h2 className="mb-4">Keep the lines that matter</h2>
           <p className="text-ink-medium text-lg mb-7">
             BookQuotes is available now on iPhone and iPad.
           </p>

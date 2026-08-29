@@ -1,114 +1,77 @@
-'use client'
-
-import { AnimatedSection, StaggeredContainer, StaggeredItem } from '@/components/ui/AnimatedSection'
 import { Button } from '@/components/ui/Button'
-import { Check, Shield } from 'lucide-react'
 
 const plans = [
   {
     name: 'Monthly',
-    description: 'Flexible access for regular readers',
-    price: 'Monthly',
-    period: 'local App Store pricing',
+    description: 'Flexible month-to-month access for active readers',
+    period: 'Set in App Store for your region',
+    badge: 'Flexible',
     features: [
-      '7-day free trial for eligible new subscribers',
+      '7-day free trial included',
       'AI-assisted quote extraction',
       'Batch capture, search, tags, and collections',
-      'Markdown, plain text, JSON, Notion, and Obsidian export',
+      'Full export to Obsidian, Notion, Markdown, and JSON',
+      'Cancel anytime in Apple ID settings',
     ],
-    cta: 'Start 7-Day Trial',
-    variant: 'secondary' as const,
-    popular: false,
   },
   {
     name: 'Yearly',
-    description: 'Best value for committed readers',
-    price: 'Yearly',
-    period: 'local App Store pricing',
+    description: 'Save 33% compared to monthly billing',
+    period: 'Billed annually · Best value for committed readers',
+    badge: 'Save 33%',
     features: [
-      '7-day free trial for eligible new subscribers',
+      '7-day free trial included',
       'Everything in Monthly',
-      'Lower effective monthly cost',
-      'Save 33% compared with monthly billing',
+      'Lowest effective monthly cost',
+      'Continuous feature updates and export formats',
+      'Cancel anytime in Apple ID settings',
     ],
-    cta: 'Start 7-Day Trial',
-    variant: 'primary' as const,
-    popular: true,
   },
 ]
 
 export function Pricing() {
   return (
-    <section id="access" className="section-padding bg-paper-warm">
-      <div className="container-standard">
-        <AnimatedSection className="text-center mb-12">
-          <h2 className="mb-4">Choose Your Plan</h2>
-          <p className="text-ink-medium text-lg max-w-prose mx-auto">
-            Start with a 7-day trial, then continue on a monthly or yearly auto-renewable plan.
-          </p>
-        </AnimatedSection>
-
-        <StaggeredContainer className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    <section id="access" className="bg-paper-warm">
+      <div className="container-standard section-padding-loose">
+        <h2 className="mb-3">Access</h2>
+        <p className="text-lg text-ink-medium max-w-prose mb-12">
+          Start with a 7-day free trial on either plan. Subscriptions renew automatically
+          and can be managed or cancelled at any time through your Apple ID account settings.
+        </p>
+        <div className="grid md:grid-cols-2 gap-12 md:gap-16">
           {plans.map((plan) => (
-            <StaggeredItem key={plan.name}>
-              <div
-                className={`relative bg-paper-cream rounded-2xl p-8 h-full flex flex-col ${
-                  plan.popular ? 'ring-2 ring-gold-primary shadow-medium' : 'border border-subtle'
-                }`}
-              >
-                {/* Popular badge */}
-                {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold-primary text-paper-cream px-4 py-1 rounded-full font-ui text-xs font-medium">
-                    Best Value
-                  </div>
-                )}
-
-                {/* Header */}
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-semibold mb-1">{plan.name}</h3>
-                  <p className="text-ink-medium text-sm">{plan.description}</p>
-                </div>
-
-                {/* Price */}
-                <div className="text-center mb-8">
-                  <span className="block font-display text-3xl font-bold text-ink-black">{plan.price}</span>
-                  <span className="block mt-2 text-ink-medium font-ui text-sm">{plan.period}</span>
-                </div>
-
-                {/* Features */}
-                <ul className="space-y-3 mb-8 flex-1">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-sage flex-shrink-0 mt-0.5" />
-                      <span className="text-ink-dark font-ui text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* CTA */}
-                <a
-                  href="https://apps.apple.com/app/id6758091579"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button variant={plan.variant} className="w-full">
-                    {plan.cta}
-                  </Button>
-                </a>
+            <div key={plan.name} className="border-t border-subtle pt-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-2xl">{plan.name}</h3>
+                <span className="font-ui text-xs text-ink-medium border border-subtle px-2 py-0.5 uppercase tracking-wider">
+                  {plan.badge}
+                </span>
               </div>
-            </StaggeredItem>
+              <p className="text-ink-medium mb-2">{plan.description}</p>
+              <p className="font-ui text-sm text-ink-dark font-medium mb-6">{plan.period}</p>
+              <ul className="space-y-3 mb-8 text-ink-dark">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2 text-sm">
+                    <span className="text-ink-medium select-none">&bull;</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="https://apps.apple.com/app/id6758091579"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant={plan.name === 'Yearly' ? 'primary' : 'secondary'}>
+                  Start 7-day trial
+                </Button>
+              </a>
+            </div>
           ))}
-        </StaggeredContainer>
-
-        {/* Trust badges */}
-        <AnimatedSection delay={0.3} className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 bg-paper-aged px-6 py-3 rounded-full">
-            <Shield className="w-5 h-5 text-sage" />
-            <span className="text-ink-medium font-ui text-sm">
-              Privacy-first. Your library stays on your device in this release.
-            </span>
-          </div>
-        </AnimatedSection>
+        </div>
+        <p className="mt-12 font-ui text-sm text-ink-medium max-w-prose">
+          Privacy-first architecture. Your library is stored locally on your device in this release.
+        </p>
       </div>
     </section>
   )

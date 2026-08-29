@@ -1,6 +1,40 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 26 August 2026, 09:01 Europe/London
+Updated: 28 August 2026, 09:48 Europe/London
+
+### Audit: 28 August 2026, 09:48 Europe/London
+
+- Cover-hold Reel is live on TikTok as
+  `https://www.tiktok.com/@bookquotes.app/video/7678826123786063137`
+  (posted 27 Aug 22:27 London). Zernio 185 views / 0 likes at 08:31 UTC;
+  owner sees 198 in-app. Caption read-back is empty. Watch time, skip,
+  reach, saves and shares are Not available on this path. Still 1 follower.
+- Instagram does not have this Reel (CML bed stays TikTok-only). Latest IG
+  still is 27 Aug `bq14-09` at 0/0. Illustrated IG unchanged.
+
+### Audit: 27 August 2026, 09:32 Europe/London
+
+- TikTok still 1 follower. Sync `2026-08-27T08:19:55Z`. Token `ok` until
+  `2026-08-28T05:14:46Z`. Overnight rows are flat: Tinker Tailor 233 / 0,
+  Stoner 247 / 1, Four Thousand Weeks 236 / 0. Pairing draft remains
+  inbox-only. Do not re-upload.
+- Instagram unchanged: Four Thousand Weeks 44/42 / 1 like; pairing 14/15;
+  Stoner 16/15. Bank stills 0/0. Facebook 13:00 today is queued
+  (rate the reading experience). Seven scheduled Page posts remain.
+
+### Audit: 26 August 2026, 16:24 Europe/London
+
+- TikTok latest public row `7678034754557529376` is the *Tinker Tailor*
+  inbox hold, not the pairing cut. Zernio draft
+  `6a8d96c40225411553b0e249` now has that permalink. Caption read-back
+  is `#Zernio`. 233 views / 0 likes. Pairing draft
+  `6a8d93b8a9558c108daa6ce2` is still inbox-only
+  (`v_inbox_url~v2.7677955167269996566`). Do not re-upload either MP4.
+- Instagram pairing Reel 14/15 / 0.9s. *Four Thousand Weeks* still the
+  best IG illustrated result: 44/42 / 1 like. Today's still
+  `bq14-08` is live at 0/0. Facebook 13:00 disagree-pair card published.
+  Seven scheduled Page posts remain. Token `ok` until
+  `2026-08-27T05:02:14Z`.
 
 ### Audit: 26 August 2026, 09:01 Europe/London
 

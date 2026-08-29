@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
 import { ProductEvidence } from '@/components/sections/ProductEvidence'
 import { getGuide, guides } from '@/lib/guides'
-import { seoAppStoreUrl } from '@/lib/seo'
+import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
 
 type GuidePageProps = {
   params: Promise<{ slug: string }>
@@ -35,6 +35,7 @@ export async function generateMetadata({ params }: GuidePageProps): Promise<Meta
       publishedTime: '2026-08-03T00:00:00:00.000Z',
       modifiedTime: '2026-08-03T00:00:00:00.000Z',
       section: guide.category,
+      images: [seoShareImage],
     },
   }
 }
@@ -80,14 +81,14 @@ export default async function GuidePage({ params }: GuidePageProps) {
   return (
     <>
       <Header />
-      <main className="pt-28 md:pt-36">
+      <main className="pt-8 md:pt-12">
         <article>
           <header className="container-standard pb-12 md:pb-16">
-            <Link href="/guides" className="inline-flex items-center gap-2 font-ui text-sm text-navy mb-10">
+            <Link href="/guides" className="inline-flex items-center gap-2 font-ui text-sm text-ink-medium mb-10">
               <ArrowLeft className="w-4 h-4" />
               Back to guides
             </Link>
-            <p className="font-ui text-sm font-semibold uppercase text-rust mb-4">{guide.category}</p>
+            <p className="font-ui text-sm text-ink-medium mb-4">{guide.category}</p>
             <h1 className="text-balance mb-6">{guide.title}</h1>
             <p className="text-xl text-ink-medium max-w-2xl mb-6">{guide.intro}</p>
             <div className="flex flex-wrap gap-x-4 gap-y-2 font-ui text-sm text-ink-light">
@@ -132,7 +133,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
           </div>
         </article>
 
-        <section className="container-standard py-14 md:py-20 text-center">
+        <section className="container-standard py-14 md:py-20">
           <h2 className="mb-4">Keep the lines that matter</h2>
           <p className="text-ink-medium text-lg mb-7">BookQuotes is available on iPhone and iPad.</p>
           <a href={seoAppStoreUrl} target="_blank" rel="noopener noreferrer">

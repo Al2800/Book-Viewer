@@ -15,10 +15,10 @@ export default function JournalPage() {
   return (
     <>
       <Header />
-      <main className="pt-28 md:pt-36">
+      <main className="pt-8 md:pt-12">
         <header className="container-standard pb-14 md:pb-20">
-          <p className="font-ui text-sm font-semibold uppercase text-rust mb-4">BookQuotes Journal</p>
-          <h1 className="mb-5">Read, Mark, Remember</h1>
+          <p className="font-ui text-sm text-ink-medium mb-4">Journal</p>
+          <h1 className="mb-5">Read, mark, remember</h1>
           <p className="text-xl text-ink-medium max-w-2xl">
             Practical methods for keeping the ideas you find in paper books.
           </p>

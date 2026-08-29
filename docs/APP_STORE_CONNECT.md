@@ -21,7 +21,7 @@ Config shape:
 }
 ```
 
-`subject: "user"` is required for the local individual App Store Connect key. Without it, direct REST calls return `401 NOT_AUTHORIZED`.
+`subject: "user"` is required for an Individual App Store Connect key. Team keys must omit `subject`; the 17 August Team key `XL86RSSVSY` is configured that way. Do not put `.p8` material in git.
 
 Keep this file and its `.p8` private key outside the repository. The helper expands `~/` in both
 the config location and `privateKeyPath`.

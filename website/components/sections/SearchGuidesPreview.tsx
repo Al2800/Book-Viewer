@@ -1,53 +1,49 @@
 import Link from 'next/link'
-import { ArrowRight, Search } from 'lucide-react'
 import { guides } from '@/lib/guides'
 
 export function SearchGuidesPreview() {
   return (
-    <section className="section-padding bg-paper-warm border-y border-subtle">
+    <section className="section-padding">
       <div className="container-wide">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
-          <div>
-            <div className="flex items-center gap-2 text-rust font-ui text-sm font-semibold mb-3">
-              <Search className="w-5 h-5" />
-              Reading guides
-            </div>
-            <h2 className="mb-3">Make your marked pages useful again</h2>
-            <p className="text-ink-medium text-lg max-w-2xl">
-              Practical answers for saving quotes, scanning underlined pages, and building a reading library you can actually revisit.
-            </p>
-          </div>
-          <Link
-            href="/guides"
-            className="inline-flex items-center gap-2 text-gold-primary font-ui font-medium"
-          >
-            See all guides
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+        <div className="max-w-2xl mb-12">
+          <h2 className="mb-3">Make your marked pages useful again</h2>
+          <p className="text-lg text-ink-medium">
+            Practical answers for saving quotes, scanning underlined pages, and
+            building a reading library you can actually revisit.
+          </p>
         </div>
-
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="border-y border-subtle">
           {guides.slice(0, 3).map((guide) => (
-            <article key={guide.slug} className="bg-paper-cream border border-subtle rounded-xl p-6">
-              <p className="font-ui text-xs font-semibold uppercase tracking-wide text-rust mb-4">
-                {guide.category}
-              </p>
-              <h3 className="text-xl mb-3">
-                <Link href={`/guides/${guide.slug}`} className="hover:text-gold-primary">
-                  {guide.title}
+            <article
+              key={guide.slug}
+              className="grid md:grid-cols-[11rem_1fr] gap-3 md:gap-10 py-8 border-b border-subtle last:border-b-0"
+            >
+              <p className="font-ui text-sm text-ink-medium">{guide.category}</p>
+              <div>
+                <h3 className="text-xl mb-3">
+                  <Link href={`/guides/${guide.slug}`} className="hover:underline">
+                    {guide.title}
+                  </Link>
+                </h3>
+                <p className="text-ink-medium mb-4">{guide.description}</p>
+                <Link
+                  href={`/guides/${guide.slug}`}
+                  className="font-ui text-sm text-ink-black underline underline-offset-4"
+                >
+                  Read the guide
                 </Link>
-              </h3>
-              <p className="text-ink-medium mb-5">{guide.description}</p>
-              <Link
-                href={`/guides/${guide.slug}`}
-                className="font-ui text-sm font-semibold text-navy inline-flex items-center gap-2"
-              >
-                Read the guide
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              </div>
             </article>
           ))}
         </div>
+        <p className="mt-8">
+          <Link
+            href="/guides"
+            className="font-ui text-sm text-ink-black underline underline-offset-4"
+          >
+            See all guides
+          </Link>
+        </p>
       </div>
     </section>
   )

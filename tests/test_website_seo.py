@@ -41,6 +41,9 @@ class WebsiteSEOContractTests(unittest.TestCase):
         self.assertIn("seoAppStoreUrl", guide_source)
         self.assertIn("seoAppStoreUrl", journal_source)
         self.assertIn("utm_source=organic&utm_medium=website&utm_campaign=seo", links_source)
+        self.assertIn("seoShareImage", guide_source)
+        self.assertIn("seoShareImage", journal_source)
+        self.assertIn("url: '/og.png'", links_source)
         self.assertIn("alt", evidence_source)
         self.assertIn("/screenshots/library.png", evidence_source)
 

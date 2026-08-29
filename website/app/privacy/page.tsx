@@ -12,7 +12,7 @@ export default function PrivacyPage() {
   return (
     <>
       <Header />
-      <main className="pt-24 pb-16">
+      <main className="pt-8 md:pt-12 pb-16">
         <article className="container-narrow prose prose-ink max-w-none">
           <h1 className="font-display">Privacy Policy</h1>
           <p className="text-ink-medium text-lg">Last updated: July 2026</p>

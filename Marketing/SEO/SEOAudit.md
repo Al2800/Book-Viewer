@@ -1,29 +1,30 @@
 # BookQuotes SEO Audit and Intent Map
 
-Updated: 11 August 2026 19:07 UTC
+Updated: 14 August 2026 20:36 UTC
 
-Status: source remediation is complete for the current audit findings; production read-back is still required after the reviewed Worker deployment. Search Console metrics are intentionally not claimed here.
+Status: the existing free-plan `bookquotes-website` Worker is live on revision `9451f02e7e69`. Journal self-canonicals, homepage-scoped `SoftwareApplication`, and editorial `og:image` now read back from production. Search Console and Analytics remain unconnected, so those metrics stay unavailable rather than zero.
 
 ## Scope and evidence boundary
 
 This audit covers the public BookQuotes acquisition site at `https://bookquotes.uk`, the tracked source under `website/`, and the current Cloudflare Worker deployment marker. Repository source, live HTML, hosting control-plane state, and Search Console state are separate evidence surfaces. A source fix is not described as live until the public route is read back.
 
-The public origin currently identifies the service as `bookquotes-website` and reports source revision `c4c6fe87f7d9` from `/deployment.json`.[4] Read-only Wrangler deployment evidence identifies the production Worker as `bookquotes-website` with the `c4c6fe87f7d9` revision at 100% traffic. The repository `main` tip is `fdc17385a4695bed57a320558e8d4f1d10102d94`, so the deployed site is behind the current source and must be redeployed before the journal remediation can be called live.
+The public origin currently identifies the service as `bookquotes-website` and reports source revision `9451f02e7e69` from `/deployment.json`.[4] That matches `git rev-parse --short=12 HEAD` at deploy time (`9451f02e7e697ed9433cad5b61db2ef8b16383ab`). The Worker version on 100% traffic is `deb96761-635f-4d36-a623-f1e1b6eb32ec`. No new Worker, DNS record, or paid plan was added.
 
 ## Technical audit
 
 | Surface | Evidence captured | Result | Follow-up |
 | --- | --- | --- | --- |
-| HTTPS and HTTP policy | `http://bookquotes.uk/` returned 308 to `https://bookquotes.uk/`; normal HTTPS homepage returned 200.[1] | Pass for apex HTTPS | Recheck after deployment; do not infer `www` readiness from apex. |
-| Canonical URL policy | No-slash content routes returned 200. Slash variants returned 308 to the no-slash route. The deployed journal detail pages currently canonicalise to the homepage.[5] Source now emits a self-canonical route. | Source fixed; live pending | Redeploy and read back all journal detail canonicals. |
-| `robots.txt` | `https://bookquotes.uk/robots.txt` returned 200 and names `https://bookquotes.uk/sitemap.xml`.[2] | Pass | Recheck after deployment. |
+| HTTPS and HTTP policy | `http://bookquotes.uk/` returned 308 to `https://bookquotes.uk/`; normal HTTPS homepage returned 200.[1] | Pass for apex HTTPS | Do not infer `www` readiness from apex. HSTS is still absent. |
+| Canonical URL policy | No-slash content routes returned 200. All three live journal details now self-canonicalise to `/journal/{slug}`.[5] | Pass live | Recrawl after the next source change. |
+| `robots.txt` | `https://bookquotes.uk/robots.txt` returned 200 and names `https://bookquotes.uk/sitemap.xml`.[2] | Pass | Recheck after the next deploy. |
 | XML sitemap | `https://bookquotes.uk/sitemap.xml` returned 200 with 15 URLs.[3] The sitemap should remain a complete, canonical URL inventory.[9] | Pass | Keep generated URLs aligned with the route map; submit/read in Search Console under `.8.1`. |
-| Titles and descriptions | All 15 sitemap routes returned 200 in the captured baseline. Titles were present on every HTML route; guide and journal detail titles are intent-specific. | Pass | Re-read after deployment. |
-| Structured data | The deployed baseline exposes `SoftwareApplication` globally; guide details also expose `Article`, `BreadcrumbList`, and `FAQPage`. The source now scopes `SoftwareApplication` to the homepage, keeps guide article data, and adds `Article`/`BreadcrumbList` to journal details. | Source fixed; live pending | Validate the three journal detail pages and non-homepage schema scope after deployment. The site makes no review/rating claims. |
+| Titles and descriptions | All 15 sitemap routes returned 200. Titles were present on every HTML route; guide and journal detail titles are intent-specific. Four editorial titles still exceed the SEO CLI 580px estimate. | Pass with low title-width notes | Review wording after Search Console evidence exists; do not shorten blindly. |
+| Structured data | Homepage exposes `SoftwareApplication` and `Organization`. Guide details expose `Article`, `BreadcrumbList`, and `FAQPage`. Journal details expose `Article` and `BreadcrumbList`. Listing and legal pages have no JSON-LD. | Pass live | Do not restore global `SoftwareApplication`. The site makes no review/rating claims. |
+| Open Graph image | Homepage, guides, journal details, and legal/support pages emit `https://bookquotes.uk/og.png`. | Pass live | Keep an explicit image on child `openGraph` objects so they cannot drop the layout default. |
 | Internal links | Crawl of sitemap pages checked 37 unique internal paths. No content/legal/support route returned 4xx. The only 400 was a bare `/_vinext/image` optimizer endpoint discovered from an image URL without its required query parameters; it is not a navigational content link. | Pass with known non-page endpoint | Keep image URLs generated by the framework; do not add the bare optimizer path to the sitemap. |
-| Mobile rendering | Production build generated all 20 routes successfully. Editorial templates use responsive grid/layout classes and responsive image sizing; the evidence figure is capped at a mobile-safe width. | Source/build pass; device visual read-back pending | Perform a phone-sized visual pass before the next major template change. |
-| App Store CTA measurement | Editorial detail templates now use `https://apps.apple.com/app/id6758091579?utm_source=organic&utm_medium=website&utm_campaign=seo`. The link is an attribution signal, not an install or conversion claim. | Source pass | Count tagged CTA URLs after deployment; compare with Search Console and App Store data only when available. |
-| Host matrix | Apex HTTPS is live. `www.bookquotes.uk` did not resolve in the read-only DNS probe. | Incomplete | Canonical-domain and four-host verification belongs to `.8.2`; no DNS mutation is made by this bead. |
+| Mobile rendering | Production build generated the current route set successfully. Editorial templates use responsive grid/layout classes and responsive image sizing; the evidence figure is capped at a mobile-safe width. | Source/build pass; device visual read-back pending | Perform a phone-sized visual pass before the next major template change. |
+| App Store CTA measurement | Live guide and journal details include `https://apps.apple.com/app/id6758091579?utm_source=organic&utm_medium=website&utm_campaign=seo`. The link is an attribution signal, not an install or conversion claim. | Pass live | Compare with Search Console and App Store data only when available. |
+| Host matrix | Apex HTTPS is live. `www.bookquotes.uk` did not resolve in the earlier read-only DNS probe. | Incomplete | Canonical-domain and four-host verification belongs to `.8.2`; no DNS mutation is made by this deploy. |
 
 ## Source remediation in this change
 
@@ -32,6 +33,7 @@ The public origin currently identifies the service as `bookquotes-website` and r
 3. A shared first-party `ProductEvidence` figure reuses the approved BookQuotes library screenshot with meaningful alt text and a visible evidence caption on guide and journal detail pages. The image shows product UI, saved-quote counts and book cards, not a public quotation database.
 4. Editorial App Store CTAs use one explicit organic SEO UTM convention.
 5. `/deployment.json` now works under both the Vite/Worker build and a plain `next build`; it falls back to the process revision or `unknown` instead of throwing when the Vite compile-time define is absent.
+6. Guide and journal `openGraph` metadata now include the shared `seoShareImage` (`/og.png`) so child metadata cannot drop the layout default.
 
 The initial source regression contract covers self-canonical journal metadata, Article/BreadcrumbList JSON-LD, ISO dates, first-party evidence, and the tagged CTA. The website production build also completes all 20 generated routes.
 
@@ -42,6 +44,35 @@ The current repository tip is `fdc17385a4695bed57a320558e8d4f1d10102d94` and the
 The live sitemap contains 15 apex URLs. A normal-TLS route probe returned HTTP 200 for every sitemap URL, including `/guides`, `/journal`, `/support`, `/privacy` and `/terms`; the clean routes are the production policy and legacy `.html` paths are not linked or required. `robots.txt` remains available and names the apex sitemap.
 
 Live HTML confirms the stale-deployment distinction: the homepage is self-canonical and exposes `SoftwareApplication`; the sampled guide is self-canonical and exposes `Article`, `BreadcrumbList` and `FAQPage`; but the sampled journal detail still canonicalises to `https://bookquotes.uk/` and exposes only the older global `SoftwareApplication` schema. The live legal/support pages return 200 and self-canonicalise to their clean routes. No Search Console submission, indexing request, DNS change, Worker deployment, or other production mutation was performed. The authenticated Cloudflare read path can list Worker deployments, while the unrelated Pages project read returned API error `10000`; this is not evidence that the existing Worker is unavailable.
+
+## Read-only recheck — 14 August 2026
+
+Ian Nuttall’s SEO CLI (`seo` 0.2.34) is installed locally. A BookQuotes project profile was saved with start URL `https://bookquotes.uk` and Google auth skipped. No Search Console login, IndexNow submit, DNS change, or Worker deployment was performed.
+
+Sitemap health (`seo crawl --sitemap-url https://bookquotes.uk/sitemap.xml --health --refresh`) found 15 sitemap URLs, all HTTP 200, no redirects, no status errors. Soft-404 probes to unknown `.well-known/seo-audit/` paths returned 404. `robots.txt` remains available and names the apex sitemap.
+
+The full crawl (`seo crawl https://bookquotes.uk --refresh --save`, report `crawl_ec9b8d855d4e42cc9af0427d57984149`, 14:46 UTC) fetched the same 15 pages, observed 105 internal links, and found no high or medium issues. The 28 low findings were:
+
+| Rule | Count | Live evidence | Action |
+| --- | --- | --- | --- |
+| `canonicalized_page` | 3 | All journal details still canonicalise to `https://bookquotes.uk/` and expose only global `SoftwareApplication`/`Organization`. | Already fixed in source; blocked on Worker deploy and live read-back. |
+| `og_image_missing` | 6 | Every `/guides/{slug}` page lacks `og:image`. Homepage, journal index, journal details, and legal/support pages use `https://bookquotes.uk/og.png`. | Source guide/journal `openGraph` still omits `images`, so a child metadata object can drop the layout default. Add an explicit `og.png` (or page image) before or with the deploy. |
+| `title_too_wide` | 4 | Four editorial titles exceed the CLI’s 580px Arial-20 estimate by 1–87px. Wording is page-specific and should stay first. | Review after deploy; do not shorten blindly. |
+| `hsts_missing` | 15 | No `Strict-Transport-Security` header on crawled HTML. Apex HTTPS itself still returns 200. | Hosting/Cloudflare follow-up, not a content change. Do not treat as a deploy substitute. |
+
+Live `/deployment.json` still reports `c4c6fe87f7d9`. Guide details remain self-canonical with `Article`, `BreadcrumbList`, and `FAQPage`. Journal details remain the stale homepage-canonical case. `llms.txt` and agent discovery files are absent (404); that is optional and is not a reason to add programmatic pages.
+
+GSC/Analytics joins were skipped because no Google token is present. The CLI may print `0` clicks/impressions in ranking helpers when those joins fail; those figures are unavailable, not a measured baseline. `seo report --project bookquotes` requires `seo auth login` and was not run.
+
+## Live deploy read-back — 14 August 2026 20:36 UTC
+
+The existing Worker `bookquotes-website` was redeployed with `npx vinext deploy --name bookquotes-website` on the free plan. No preview Worker, TPR/KV cache, DNS change, or plan upgrade was used. Bindings remain `IMAGES` and `ASSETS` only. Current version `deb96761-635f-4d36-a623-f1e1b6eb32ec` is at 100% traffic.
+
+Live `/deployment.json` now reports `9451f02e7e69`. HTTP apex still 308s to HTTPS. All three journal details self-canonicalise and expose `Article`/`BreadcrumbList`. Guide details keep `Article`/`BreadcrumbList`/`FAQPage` and now include `og:image`. `SoftwareApplication` is homepage-only. Editorial App Store CTAs include the organic SEO UTM.
+
+Post-deploy crawl `crawl_6cd9b81f6bda4a9986e42931163e100f` fetched 15/15 pages at HTTP 200. The earlier `canonicalized_page` and `og_image_missing` findings are gone. Remaining low findings are HSTS (hosting), four long titles, and `structured_data_missing` on `/guides`, `/journal`, `/privacy`, `/support`, and `/terms`. Those listing/legal pages are not supposed to carry `SoftwareApplication`; do not treat that as a regression.
+
+No Search Console submission, IndexNow notify, or DNS mutation was performed.
 
 ## Keyword and intent map
 
@@ -73,10 +104,11 @@ No numeric search-volume or conversion baseline is asserted until first-party Se
 
 ## Measurement and handoff
 
-1. After the reviewed source commit is pushed, deploy the website Worker through the authenticated CLI path and read back `/deployment.json`, all sitemap routes, journal canonicals, JSON-LD types, and tagged CTA URLs.
-2. `.8.1` owns the authenticated Search Console read-back, sitemap/indexing evidence, and delayed-metric interpretation. Missing or processing metrics remain unavailable, not zero.
+1. The reviewed Worker revision is live. Recrawl after the next source change; do not treat a saved local crawl as future production proof.
+2. `.8.1` owns the authenticated Search Console read-back, sitemap/indexing evidence, and delayed-metric interpretation. Connect GSC with `seo auth login` only when that work is approved. Missing or processing metrics remain unavailable, not zero.
 3. `.8.2` owns the apex/`www` four-host matrix, canonical redirect policy, DNS/certificate evidence, and any separately approved DNS/hosting mutation.
-4. Keep the live App Store binary status separate from website deployment state. A stale website deployment is a website provenance/SEO blocker, not evidence that the already-live app binary is unavailable.
+4. HSTS remains a hosting follow-up. Enabling it is not required for this deploy and was not changed.
+5. Keep the live App Store binary status separate from website deployment state.
 
 ## Sources
 
