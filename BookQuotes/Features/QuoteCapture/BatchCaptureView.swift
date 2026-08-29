@@ -315,6 +315,14 @@ struct BatchCaptureView: View {
     }
 
     private var batchStatusPill: CaptureStatusPill? {
+        if !cameraService.detectedBoundingBoxes.isEmpty {
+            return CaptureStatusPill(
+                systemImage: "sparkles",
+                text: "Perfect Framing • \(cameraService.detectedBoundingBoxes.count) Passages",
+                tint: Color.gildedAccent
+            )
+        }
+
         if let quality = currentQuality, !quality.isAcceptable {
             return CaptureStatusPill(
                 systemImage: "exclamationmark.triangle.fill",

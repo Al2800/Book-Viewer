@@ -39,34 +39,100 @@ struct LibraryHomeSnapshot {
     }
 }
 
-/// Epigraph-style card resurfacing one passage per day.
+/// Epigraph-style card resurfacing one passage per day with gold bookmark ribbon.
 struct DailyPassageCard: View {
     let quote: Quote
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("Today's Passage")
-                .sectionHeaderStyle()
+        ZStack(alignment: .topTrailing) {
+            VStack(alignment: .leading, spacing: Spacing.md) {
+                HStack(spacing: Spacing.xs) {
+                    Image(systemName: "sparkle")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(Color.gildedAccent)
+                    Text("Daily Serendipity")
+                        .sectionHeaderStyle()
+                }
 
-            Text("\u{201C}\(quote.text)\u{201D}")
-                .font(.quoteLarge)
-                .foregroundStyle(Color.textPrimary)
-                .lineSpacing(5)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if let book = quote.book {
-                Text("— \(book.title), \(book.author)")
-                    .font(.attribution)
-                    .foregroundStyle(Color.textSecondary)
+                Text("\u{201C}\(quote.text)\u{201D}")
+                    .font(.quoteLarge)
+                    .foregroundStyle(Color.textPrimary)
+                    .lineSpacing(5)
+                    .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
+
+                if let book = quote.book {
+                    Text("— \(book.title), \(book.author)")
+                        .font(.attribution)
+                        .foregroundStyle(Color.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(Spacing.lg)
+            .padding(.trailing, Spacing.lg)
+
+            BookmarkRibbon()
+                .padding(.trailing, Spacing.lg)
+                .offset(y: -4)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Spacing.lg)
-        .paperCard()
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.lg)
+                .fill(Color.warmVellum)
+                .overlay {
+                    LinearGradient.cardHighlight
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.lg)
+                        .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
+                }
+        )
+        .elevation(.sm)
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
         .accessibilityHint("Open quote")
+    }
+
+    private var accessibilityLabel: String {
+        var label = "Daily Serendipity. \"\(quote.text)\""
+        if let book = quote.book {
+            label += ", by \(book.author), from \(book.title)"
+        }
+        return label
+    }
+}
+
+/// Shape for a notched bookmark ribbon banner.
+struct BookmarkRibbonShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY - 6))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        path.closeSubpath()
+        return path
+    }
+}
+
+/// Gold foil bookmark ribbon pinned to cards.
+struct BookmarkRibbon: View {
+    var width: CGFloat = 20
+    var height: CGFloat = 34
+
+    var body: some View {
+        BookmarkRibbonShape()
+            .fill(LinearGradient.foilAccent)
+            .frame(width: width, height: height)
+            .overlay(alignment: .center) {
+                Image(systemName: "sparkle")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundStyle(Color.black.opacity(0.35))
+                    .offset(y: -3)
+            }
+            .shadow(color: Color.black.opacity(0.12), radius: 2, y: 2)
     }
 }
 

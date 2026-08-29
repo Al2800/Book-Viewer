@@ -54,6 +54,14 @@ struct ContentView: View {
                     .badge(queueBadgeCount)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.captureTab)
 
+                StudioTab()
+                    .tabItem {
+                        Label(Tab.studio.title, systemImage: Tab.studio.systemImage)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.studioTab)
+                    }
+                    .tag(Tab.studio)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.studioTab)
+
                 SettingsTab()
                     .tabItem {
                         Label(Tab.settings.title, systemImage: Tab.settings.systemImage)
@@ -136,6 +144,10 @@ struct ContentView: View {
         case "capture":
             hasCompletedOnboarding = true
             selectedTab = .capture
+
+        case "studio":
+            hasCompletedOnboarding = true
+            selectedTab = .studio
 
         case "settings":
             hasCompletedOnboarding = true

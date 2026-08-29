@@ -60,4 +60,30 @@ final class QuoteSaveDraftTests: XCTestCase {
         XCTAssertEqual(quote.customMarkingDefinition?.id, customMarking.id)
         XCTAssertEqual(quote.markingDisplayName, "Follow Up")
     }
+
+    func testSuggestedTagsAndBoundingBoxSurviveReviewAndSave() throws {
+        let book = Book(title: "Atomic Habits", author: "James Clear")
+        let editableQuote = EditableQuote(
+            pageId: UUID(),
+            text: "You do not rise to the level of your goals. You fall to the level of your systems.",
+            markingType: "underline",
+            confidence: 0.96,
+            pageNumber: 27,
+            marginNote: "Systems over goals",
+            boundingBox: CGRect(x: 0.1, y: 0.2, width: 0.8, height: 0.05),
+            suggestedTags: ["habits", "systems", "productivity"]
+        )
+
+        let extractedQuote = editableQuote.toExtractedQuote()
+        let quote = try QuoteSaveDraft(
+            extractedQuote: extractedQuote,
+            book: book,
+            sourceImage: nil
+        )
+        .makeQuote()
+
+        XCTAssertEqual(quote.boundingBox, CGRect(x: 0.1, y: 0.2, width: 0.8, height: 0.05))
+        XCTAssertEqual(quote.suggestedTagNames, ["habits", "systems", "productivity"])
+        XCTAssertEqual(quote.marginNote, "Systems over goals")
+    }
 }

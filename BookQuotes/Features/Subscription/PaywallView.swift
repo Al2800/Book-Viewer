@@ -96,17 +96,17 @@ struct PaywallView: View {
     private var headerSection: some View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "sparkles")
-                .font(.system(size: 50))
-                .foregroundStyle(Color.brand)
+                .font(.system(size: 48))
+                .foregroundStyle(Color.gildedAccent)
 
             Text("Capture the wisdom\nin your books")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.serifTitleLarge)
                 .multilineTextAlignment(.center)
+                .foregroundStyle(Color.textPrimary)
 
             Text("Start your 7-day free trial")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textSecondary)
         }
         .padding(.top, Spacing.lg)
     }

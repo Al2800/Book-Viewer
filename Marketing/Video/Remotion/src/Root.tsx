@@ -11,6 +11,15 @@ import {
 } from './PresidentialBooks';
 import {HandwrittenBookReview} from './HandwrittenBookReview';
 import {SciFiReadingRouteReel, sciFiPosts} from './SciFiReadingRoutes';
+import {CATEGORY_REEL_FRAMES, CategoryReel, categoryReels} from './CategoryReel';
+import {
+  ILLUSTRATED_REEL_FRAMES,
+  IllustratedCover,
+  IllustratedReel,
+  illustratedReels,
+} from './IllustratedReel';
+import {FeedCover, feedCovers} from './FeedCover';
+import {ProductIntro} from './ProductIntro';
 import {colours} from './theme';
 
 const reelProps: BookQuotesReelProps = {
@@ -162,6 +171,14 @@ export const RemotionRoot: React.FC = () => (
       defaultProps={reelProps}
     />
     <Composition
+      id="BookQuotesIntro"
+      component={ProductIntro}
+      durationInFrames={900}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+    <Composition
       id="PresidentialBooksReel"
       component={PresidentialBooksReel}
       durationInFrames={870}
@@ -177,6 +194,63 @@ export const RemotionRoot: React.FC = () => (
       width={1080}
       height={1920}
     />
+    {categoryReels.map((reel) => (
+      <Composition
+        key={reel.id}
+        id={reel.id}
+        component={CategoryReel}
+        durationInFrames={CATEGORY_REEL_FRAMES}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={reel.props}
+      />
+    ))}
+    {illustratedReels.map((reel) => (
+      <Composition
+        key={reel.id}
+        id={reel.id}
+        component={IllustratedReel}
+        durationInFrames={ILLUSTRATED_REEL_FRAMES}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={reel.props}
+      />
+    ))}
+    {illustratedReels.map((reel) => (
+      <Composition
+        key={reel.coverId}
+        id={reel.coverId}
+        component={IllustratedCover}
+        durationInFrames={1}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          folder: reel.props.folder,
+          still: reel.id === 'Illustrated-01' || reel.id === 'Illustrated-02' ? 'jacket' : 'hook',
+          hook:
+            reel.id === 'Illustrated-01'
+              ? 'Start with the game'
+              : reel.id === 'Illustrated-02'
+                ? 'Cabinet of opponents'
+                : reel.id === 'Illustrated-03'
+                  ? 'Finish it tonight'
+                  : reel.id === 'Illustrated-04'
+                    ? 'The hunt is inside'
+                    : reel.id === 'Illustrated-05'
+                      ? 'Stop clearing the list'
+                      : reel.id === 'Illustrated-06'
+                        ? 'An ordinary life'
+                        : 'Pick the door',
+          kicker:
+            reel.id === 'Illustrated-07' ? 'Pairing' : reel.props.beats[0].kicker,
+          accent: reel.props.accent,
+          field: reel.props.field,
+        }}
+      />
+    ))}
     {sciFiPosts.map((post) => (
       <Composition
         key={post.id}
@@ -229,6 +303,18 @@ export const RemotionRoot: React.FC = () => (
         width={1080}
         height={1920}
         defaultProps={reel.props}
+      />
+    ))}
+    {feedCovers.map((cover) => (
+      <Composition
+        key={cover.id}
+        id={cover.id}
+        component={FeedCover}
+        durationInFrames={1}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={cover.props}
       />
     ))}
     {carouselSets.flatMap((set) =>

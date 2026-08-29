@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 
 // MARK: - Quote Extraction Result
@@ -162,6 +163,18 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
     /// Reader-facing custom marking name captured with the result for review display.
     let customMarkingDisplayName: String?
 
+    /// Normalized bounding box coordinates [x, y, width, height] relative to the captured image (0.0 to 1.0)
+    let boundingBox: [Double]?
+
+    /// Semantic topic tags suggested by AI
+    let suggestedTags: [String]?
+
+    /// Computed normalized bounding box CGRect
+    var normalizedBoundingBox: CGRect? {
+        guard let b = boundingBox, b.count == 4 else { return nil }
+        return CGRect(x: b[0], y: b[1], width: b[2], height: b[3])
+    }
+
     init(
         text: String,
         pageNumber: Int?,
@@ -170,7 +183,9 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         confidence: Double?,
         extractionSource: QuoteExtractionSource = .unknown,
         customMarkingDefinitionID: UUID? = nil,
-        customMarkingDisplayName: String? = nil
+        customMarkingDisplayName: String? = nil,
+        boundingBox: [Double]? = nil,
+        suggestedTags: [String]? = nil
     ) {
         self.text = text
         self.pageNumber = pageNumber
@@ -180,6 +195,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         self.extractionSource = extractionSource
         self.customMarkingDefinitionID = customMarkingDefinitionID
         self.customMarkingDisplayName = customMarkingDisplayName
+        self.boundingBox = boundingBox
+        self.suggestedTags = suggestedTags
     }
 
     /// Convert to ExtractedQuote for saving
@@ -190,7 +207,9 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
             confidence: confidence,
             pageNumber: pageNumber,
             marginNote: marginNote,
-            customMarkingDefinition: customMarkingDefinition
+            customMarkingDefinition: customMarkingDefinition,
+            boundingBox: normalizedBoundingBox,
+            suggestedTags: suggestedTags
         )
     }
 
@@ -239,6 +258,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         case extractionSource
         case customMarkingDefinitionID
         case customMarkingDisplayName
+        case boundingBox
+        case suggestedTags
     }
 
     init(from decoder: Decoder) throws {
@@ -251,6 +272,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         extractionSource = try container.decodeIfPresent(QuoteExtractionSource.self, forKey: .extractionSource) ?? .unknown
         customMarkingDefinitionID = try container.decodeIfPresent(UUID.self, forKey: .customMarkingDefinitionID)
         customMarkingDisplayName = try container.decodeIfPresent(String.self, forKey: .customMarkingDisplayName)
+        boundingBox = try container.decodeIfPresent([Double].self, forKey: .boundingBox)
+        suggestedTags = try container.decodeIfPresent([String].self, forKey: .suggestedTags)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -263,6 +286,8 @@ struct ExtractedQuoteData: Codable, Sendable, Identifiable {
         try container.encode(extractionSource, forKey: .extractionSource)
         try container.encodeIfPresent(customMarkingDefinitionID, forKey: .customMarkingDefinitionID)
         try container.encodeIfPresent(customMarkingDisplayName, forKey: .customMarkingDisplayName)
+        try container.encodeIfPresent(boundingBox, forKey: .boundingBox)
+        try container.encodeIfPresent(suggestedTags, forKey: .suggestedTags)
     }
 }
 
@@ -528,6 +553,8 @@ private struct RawExtractedQuoteData: Decodable {
     let marginNote: String?
     let markingType: String?
     let confidence: Double?
+    let boundingBox: [Double]?
+    let suggestedTags: [String]?
 }
 
 private enum QuoteExtractionOutputValidator {
@@ -549,8 +576,22 @@ private enum QuoteExtractionOutputValidator {
             pageNumber: pageNumber(raw.pageNumber),
             marginNote: optionalText(raw.marginNote, maximumLength: maximumMarginNoteLength),
             markingType: markingType(raw.markingType),
-            confidence: confidence(raw.confidence)
+            confidence: confidence(raw.confidence),
+            boundingBox: boundingBox(raw.boundingBox),
+            suggestedTags: suggestedTags(raw.suggestedTags)
         )
+    }
+
+    static func boundingBox(_ value: [Double]?) -> [Double]? {
+        guard let value, value.count == 4 else { return nil }
+        guard value.allSatisfy({ $0.isFinite && (0.0...1.0).contains($0) }) else { return nil }
+        return value
+    }
+
+    static func suggestedTags(_ value: [String]?) -> [String]? {
+        guard let value else { return nil }
+        let tags = value.compactMap { optionalText($0, maximumLength: 32) }
+        return tags.isEmpty ? nil : tags
     }
 
     static func pageNumber(_ value: Int?) -> Int? {

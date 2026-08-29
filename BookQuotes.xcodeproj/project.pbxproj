@@ -22,6 +22,7 @@
 			DAB600000000000000000001 /* BookQuotes/Services/SubscriptionProductID.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB600000000000000000002 /* BookQuotes/Services/SubscriptionProductID.swift */; };
 			DAB700000000000000000001 /* BookQuotesTests/Unit/Services/SubscriptionProductIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB700000000000000000002 /* BookQuotesTests/Unit/Services/SubscriptionProductIDTests.swift */; };
 		117D73B13DBB8776DDF32895 /* BookQuotesUITests/Flows/LibraryManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D008FE3FA62825489705B3A /* BookQuotesUITests/Flows/LibraryManagementTests.swift */; };
+		CFD600000000000000000001 /* BookQuotesUITests/Flows/StudioFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD600000000000000000002 /* BookQuotesUITests/Flows/StudioFlowTests.swift */; };
 		4530AC65134C4A67B51291D7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D385EB78B1B4C2EA480CCF7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift */; };
 		148E3DC2F79A23F6F74C5B7B /* BookQuotes/Features/Auth/SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F6182EAE584D7BF5212203 /* BookQuotes/Features/Auth/SignInView.swift */; };
 		17C8042D0AC02773B83CD325 /* BookQuotes/Features/Capture/ImageReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB801457360DB93D592BE927 /* BookQuotes/Features/Capture/ImageReviewView.swift */; };
@@ -175,6 +176,23 @@
 		CF6500000000000000000001 /* BatchCaptureSupplementaryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6500000000000000000002 /* BatchCaptureSupplementaryViews.swift */; };
 		CF7100000000000000000001 /* LibraryOverviewViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7100000000000000000002 /* LibraryOverviewViews.swift */; };
 		CF8500000000000000000001 /* LibraryBooksSectionViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8500000000000000000002 /* LibraryBooksSectionViews.swift */; };
+		CFB700000000000000000001 /* LibraryBookshelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB700000000000000000002 /* LibraryBookshelfView.swift */; };
+		CFB700000000000000000003 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB700000000000000000004 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift */; };
+		CFB700000000000000000005 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB700000000000000000006 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift */; };
+		CFB700000000000000000007 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB700000000000000000008 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift */; };
+		CFB700000000000000000009 /* StudioViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB70000000000000000000A /* StudioViews.swift */; };
+		CFB70000000000000000000B /* BookQuotesTests/Unit/Utilities/TabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB70000000000000000000C /* BookQuotesTests/Unit/Utilities/TabTests.swift */; };
+		CFB800000000000000000001 /* StudioTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB800000000000000000002 /* StudioTheme.swift */; };
+		CFB800000000000000000003 /* StudioThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB800000000000000000004 /* StudioThemePicker.swift */; };
+		CFB800000000000000000005 /* QuoteCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB800000000000000000006 /* QuoteCanvasView.swift */; };
+		CFB800000000000000000007 /* QuoteStudioExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB800000000000000000008 /* QuoteStudioExportService.swift */; };
+		CFB800000000000000000009 /* BookQuotesTests/Unit/Studio/StudioThemePickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB80000000000000000000A /* BookQuotesTests/Unit/Studio/StudioThemePickerTests.swift */; };
+		CFB80000000000000000000B /* BookQuotesTests/Unit/Studio/QuoteStudioExportServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB80000000000000000000C /* BookQuotesTests/Unit/Studio/QuoteStudioExportServiceTests.swift */; };
+		CFB80000000000000000000D /* BookQuotesTests/Unit/Studio/QuoteCardStudioViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB80000000000000000000E /* BookQuotesTests/Unit/Studio/QuoteCardStudioViewTests.swift */; };
+		CFB900000000000000000001 /* ActiveReadingSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB900000000000000000002 /* ActiveReadingSessionStore.swift */; };
+		CFB900000000000000000003 /* ActiveBookHUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB900000000000000000004 /* ActiveBookHUDView.swift */; };
+		CFB900000000000000000005 /* BookQuotesTests/Unit/Capture/ActiveReadingSessionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB900000000000000000006 /* BookQuotesTests/Unit/Capture/ActiveReadingSessionStoreTests.swift */; };
+		CFB900000000000000000007 /* BookQuotesTests/Unit/Capture/CaptureTabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB900000000000000000008 /* BookQuotesTests/Unit/Capture/CaptureTabTests.swift */; };
 		CF7200000000000000000001 /* SearchResultsStateViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7200000000000000000002 /* SearchResultsStateViews.swift */; };
 		CF10A0000000000000000001 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF10A0000000000000000002 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift */; };
 		CF1400000000000000000001 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1400000000000000000002 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift */; };
@@ -310,6 +328,7 @@
 		EE5726DD1AE087CF883A0BC9 /* BookQuotes/Features/Subscription/SubscriptionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC024DFEF298BADEC2530C7 /* BookQuotes/Features/Subscription/SubscriptionStatusView.swift */; };
 		EE5FF6AA7BB8CC9DD0EE1FF2 /* BookQuotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1BB2CC3DD4EE5FF6AA7BB8 /* BookQuotesApp.swift */; };
 		EEF7FD687AB581A1470F27C8 /* BookQuotesTests/Unit/Services/QuoteExtractionPromptBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CE785402F90F924F852DFD /* BookQuotesTests/Unit/Services/QuoteExtractionPromptBuilderTests.swift */; };
+		CFBA00000000000000000001 /* BookQuotesTests/Unit/Services/QuoteExtractionResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBA00000000000000000002 /* BookQuotesTests/Unit/Services/QuoteExtractionResultTests.swift */; };
 		CFD200000000000000000001 /* BookQuotesTests/Unit/Services/QuoteSaveDraftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD200000000000000000002 /* BookQuotesTests/Unit/Services/QuoteSaveDraftTests.swift */; };
 		CFD200000000000000000003 /* QuoteSaveDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD200000000000000000004 /* QuoteSaveDraft.swift */; };
 		DAB800000000000000000001 /* BookQuotesTests/Unit/Services/QuoteSaveResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB800000000000000000002 /* BookQuotesTests/Unit/Services/QuoteSaveResultTests.swift */; };
@@ -460,6 +479,7 @@
 		51BC0C35E2D6D878FA276F97 /* BookQuotes/Components/CaptureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Components/CaptureButton.swift; sourceTree = SOURCE_ROOT; };
 		53226CFB1B652B087D0CBA26 /* BookQuotes/Features/Subscription/SubscriptionOptionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Subscription/SubscriptionOptionCard.swift; sourceTree = SOURCE_ROOT; };
 		55CE785402F90F924F852DFD /* BookQuotesTests/Unit/Services/QuoteExtractionPromptBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Services/QuoteExtractionPromptBuilderTests.swift; sourceTree = SOURCE_ROOT; };
+		CFBA00000000000000000002 /* BookQuotesTests/Unit/Services/QuoteExtractionResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Services/QuoteExtractionResultTests.swift; sourceTree = SOURCE_ROOT; };
 		CFD500000000000000000002 /* BookQuotesTests/Unit/Capture/CaptureFlashModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/CaptureFlashModeTests.swift; sourceTree = SOURCE_ROOT; };
 		CFD500000000000000000004 /* BookQuotes/Components/CaptureFlashMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Components/CaptureFlashMode.swift; sourceTree = SOURCE_ROOT; };
 		CFD200000000000000000002 /* BookQuotesTests/Unit/Services/QuoteSaveDraftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Services/QuoteSaveDraftTests.swift; sourceTree = SOURCE_ROOT; };
@@ -483,6 +503,7 @@
 		CF7000000000000000000010 /* SettingsAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAccountView.swift; sourceTree = "<group>"; };
 		6ABF9EC452BB861AA300CDBE /* BookQuotesTests/Infrastructure/FTS5TestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Infrastructure/FTS5TestCase.swift; sourceTree = SOURCE_ROOT; };
 		6D008FE3FA62825489705B3A /* BookQuotesUITests/Flows/LibraryManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Flows/LibraryManagementTests.swift; sourceTree = SOURCE_ROOT; };
+		CFD600000000000000000002 /* BookQuotesUITests/Flows/StudioFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Flows/StudioFlowTests.swift; sourceTree = SOURCE_ROOT; };
 		0D385EB78B1B4C2EA480CCF7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift; sourceTree = SOURCE_ROOT; };
 		FE897A2EB1714A4FA0EEE4BB /* BookQuotesUITests/Flows/AppStoreMediaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesUITests/Flows/AppStoreMediaTests.swift; sourceTree = SOURCE_ROOT; };
 		6XBJW6W8XE065Y30BQLYR1KC /* SearchScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchScope.swift; sourceTree = "<group>"; };
@@ -700,6 +721,23 @@
 		CF6500000000000000000002 /* BatchCaptureSupplementaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchCaptureSupplementaryViews.swift; sourceTree = "<group>"; };
 		CF7100000000000000000002 /* LibraryOverviewViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryOverviewViews.swift; sourceTree = "<group>"; };
 		CF8500000000000000000002 /* LibraryBooksSectionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBooksSectionViews.swift; sourceTree = "<group>"; };
+		CFB700000000000000000002 /* LibraryBookshelfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBookshelfView.swift; sourceTree = "<group>"; };
+		CFB700000000000000000004 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB700000000000000000006 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Utilities/DesignSystemTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB700000000000000000008 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB70000000000000000000A /* StudioViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Studio/StudioViews.swift; sourceTree = SOURCE_ROOT; };
+		CFB70000000000000000000C /* BookQuotesTests/Unit/Utilities/TabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Utilities/TabTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB800000000000000000002 /* StudioTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Studio/StudioTheme.swift; sourceTree = SOURCE_ROOT; };
+		CFB800000000000000000004 /* StudioThemePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Studio/StudioThemePicker.swift; sourceTree = SOURCE_ROOT; };
+		CFB800000000000000000006 /* QuoteCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Studio/QuoteCanvasView.swift; sourceTree = SOURCE_ROOT; };
+		CFB800000000000000000008 /* QuoteStudioExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Studio/QuoteStudioExportService.swift; sourceTree = SOURCE_ROOT; };
+		CFB80000000000000000000A /* BookQuotesTests/Unit/Studio/StudioThemePickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Studio/StudioThemePickerTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB80000000000000000000C /* BookQuotesTests/Unit/Studio/QuoteStudioExportServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Studio/QuoteStudioExportServiceTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB80000000000000000000E /* BookQuotesTests/Unit/Studio/QuoteCardStudioViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Studio/QuoteCardStudioViewTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB900000000000000000002 /* ActiveReadingSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Capture/ActiveReadingSessionStore.swift; sourceTree = SOURCE_ROOT; };
+		CFB900000000000000000004 /* ActiveBookHUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Capture/ActiveBookHUDView.swift; sourceTree = SOURCE_ROOT; };
+		CFB900000000000000000006 /* BookQuotesTests/Unit/Capture/ActiveReadingSessionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/ActiveReadingSessionStoreTests.swift; sourceTree = SOURCE_ROOT; };
+		CFB900000000000000000008 /* BookQuotesTests/Unit/Capture/CaptureTabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/CaptureTabTests.swift; sourceTree = SOURCE_ROOT; };
 		CF7200000000000000000002 /* SearchResultsStateViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsStateViews.swift; sourceTree = "<group>"; };
 		CF10A0000000000000000002 /* BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/CaptureFlowStateTests.swift; sourceTree = SOURCE_ROOT; };
 		CF1400000000000000000002 /* BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Capture/CameraFramingProfileTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1037,6 +1075,7 @@
 				128FD3F2AB0A7A55F02F62C8 /* BookQuotesUITests/Flows/CollectionsTagsFlowTests.swift */,
 					2442A786C04A3375354D62DD /* BookQuotesUITests/Flows/CoverCaptureFlowTests.swift */,
 					6D008FE3FA62825489705B3A /* BookQuotesUITests/Flows/LibraryManagementTests.swift */,
+					CFD600000000000000000002 /* BookQuotesUITests/Flows/StudioFlowTests.swift */,
 					0D385EB78B1B4C2EA480CCF7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift */,
 					5D78BD4AFA4B2C050830CF32 /* BookQuotesUITests/Flows/OnboardingFlowTests.swift */,
 					4C68EF64599EE15B525F5DF1 /* BookQuotesUITests/Flows/QuoteCaptureFlowTests.swift */,
@@ -1120,6 +1159,7 @@
 				B22B3A7B7965AF26B7AD3867 /* BookQuotesTests/Unit/Services/ImageQualityAnalyzerTests.swift */,
 				DF368723046999B19C71BF7C /* BookQuotesTests/Unit/Services/KeychainServiceTests.swift */,
 				55CE785402F90F924F852DFD /* BookQuotesTests/Unit/Services/QuoteExtractionPromptBuilderTests.swift */,
+				CFBA00000000000000000002 /* BookQuotesTests/Unit/Services/QuoteExtractionResultTests.swift */,
 				CFD200000000000000000002 /* BookQuotesTests/Unit/Services/QuoteSaveDraftTests.swift */,
 				DAB800000000000000000002 /* BookQuotesTests/Unit/Services/QuoteSaveResultTests.swift */,
 				ODQ000000000000000000002 /* BookQuotesTests/Unit/Services/OnDeviceQuoteExtractorTests.swift */,
@@ -1130,6 +1170,13 @@
 				2D89AE6473CEA7C50F7FE186 /* BookQuotesTests/Unit/Utilities/ImagePreprocessorTests.swift */,
 				CCB10204C1AF5B7B71DA03CA /* BookQuotesTests/Unit/Utilities/LevenshteinDistanceTests.swift */,
 				2FC1B07C813C9EBCC24319F8 /* BookQuotesTests/Unit/Utilities/UITestConfigurationTests.swift */,
+				CFB700000000000000000006 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift */,
+				CFB70000000000000000000C /* BookQuotesTests/Unit/Utilities/TabTests.swift */,
+				CFB80000000000000000000A /* BookQuotesTests/Unit/Studio/StudioThemePickerTests.swift */,
+				CFB80000000000000000000C /* BookQuotesTests/Unit/Studio/QuoteStudioExportServiceTests.swift */,
+				CFB80000000000000000000E /* BookQuotesTests/Unit/Studio/QuoteCardStudioViewTests.swift */,
+				CFB900000000000000000006 /* BookQuotesTests/Unit/Capture/ActiveReadingSessionStoreTests.swift */,
+				CFB900000000000000000008 /* BookQuotesTests/Unit/Capture/CaptureTabTests.swift */,
 				CF8900000000000000000002 /* BookQuotesTests/Unit/Services/CaptureQueueSupportTests.swift */,
 				CF9700000000000000000002 /* BookQuotesTests/Unit/Services/CaptureQueueStoreTests.swift */,
 				CF8A00000000000000000002 /* BookQuotesTests/Unit/Utilities/OnboardingFlowPolicyTests.swift */,
@@ -1156,6 +1203,8 @@
 					CFC600000000000000000002 /* BookQuotesTests/Unit/Library/LibraryNavigationLookupTests.swift */,
 					CFFA00000000000000000002 /* BookQuotesTests/Unit/Library/LibraryViewModeTests.swift */,
 					CFDE00000000000000000002 /* BookQuotesTests/Unit/Library/BookDetailQuotePresentationTests.swift */,
+					CFB700000000000000000004 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift */,
+					CFB700000000000000000008 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift */,
 				);
 				name = "Recovered References";
 				sourceTree = "<group>";
@@ -1180,6 +1229,12 @@
 				A1B3IHMQSW47HL2QQKUKIAV6 /* BookDetailView.swift */,
 				CF7100000000000000000002 /* LibraryOverviewViews.swift */,
 				CF8500000000000000000002 /* LibraryBooksSectionViews.swift */,
+				CFB700000000000000000002 /* LibraryBookshelfView.swift */,
+				CFB70000000000000000000A /* StudioViews.swift */,
+				CFB800000000000000000002 /* StudioTheme.swift */,
+				CFB800000000000000000004 /* StudioThemePicker.swift */,
+				CFB800000000000000000006 /* QuoteCanvasView.swift */,
+				CFB800000000000000000008 /* QuoteStudioExportService.swift */,
 				CF9B00000000000000000002 /* LibrarySearchServices.swift */,
 					CF9F00000000000000000002 /* QuoteDetailTextFormatter.swift */,
 					CFD300000000000000000004 /* QuoteDetailEditDraft.swift */,
@@ -1239,6 +1294,8 @@
 			isa = PBXGroup;
 			children = (
 				CF10A0000000000000000004 /* CaptureFlowState.swift */,
+				CFB900000000000000000002 /* ActiveReadingSessionStore.swift */,
+				CFB900000000000000000004 /* ActiveBookHUDView.swift */,
 				CF1410000000000000000002 /* CameraFraming.swift */,
 				CF5100000000000000000002 /* CaptureModeOption.swift */,
 				CF5100000000000000000004 /* CaptureModeSelectionView.swift */,
@@ -1555,6 +1612,7 @@
 				DAB500000000000000000001 /* BookQuotesTests/Unit/Services/SubscriptionSyncStateTests.swift in Sources */,
 				DAB700000000000000000001 /* BookQuotesTests/Unit/Services/SubscriptionProductIDTests.swift in Sources */,
 				EEF7FD687AB581A1470F27C8 /* BookQuotesTests/Unit/Services/QuoteExtractionPromptBuilderTests.swift in Sources */,
+				CFBA00000000000000000001 /* BookQuotesTests/Unit/Services/QuoteExtractionResultTests.swift in Sources */,
 				CFD200000000000000000001 /* BookQuotesTests/Unit/Services/QuoteSaveDraftTests.swift in Sources */,
 				DAB800000000000000000001 /* BookQuotesTests/Unit/Services/QuoteSaveResultTests.swift in Sources */,
 				ODQ000000000000000000001 /* BookQuotesTests/Unit/Services/OnDeviceQuoteExtractorTests.swift in Sources */,
@@ -1588,6 +1646,15 @@
 					CFC600000000000000000001 /* BookQuotesTests/Unit/Library/LibraryNavigationLookupTests.swift in Sources */,
 					CFFA00000000000000000001 /* BookQuotesTests/Unit/Library/LibraryViewModeTests.swift in Sources */,
 					CFDE00000000000000000001 /* BookQuotesTests/Unit/Library/BookDetailQuotePresentationTests.swift in Sources */,
+					CFB700000000000000000003 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift in Sources */,
+					CFB700000000000000000005 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift in Sources */,
+					CFB700000000000000000007 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift in Sources */,
+					CFB70000000000000000000B /* BookQuotesTests/Unit/Utilities/TabTests.swift in Sources */,
+					CFB800000000000000000009 /* BookQuotesTests/Unit/Studio/StudioThemePickerTests.swift in Sources */,
+					CFB80000000000000000000B /* BookQuotesTests/Unit/Studio/QuoteStudioExportServiceTests.swift in Sources */,
+					CFB80000000000000000000D /* BookQuotesTests/Unit/Studio/QuoteCardStudioViewTests.swift in Sources */,
+					CFB900000000000000000005 /* BookQuotesTests/Unit/Capture/ActiveReadingSessionStoreTests.swift in Sources */,
+					CFB900000000000000000007 /* BookQuotesTests/Unit/Capture/CaptureTabTests.swift in Sources */,
 				);
 				runOnlyForDeploymentPostprocessing = 0;
 			};
@@ -1671,6 +1738,14 @@
 				ANMP1JU3UR6N1129UIV1MUY5 /* BookDetailView.swift in Sources */,
 				CF7100000000000000000001 /* LibraryOverviewViews.swift in Sources */,
 				CF8500000000000000000001 /* LibraryBooksSectionViews.swift in Sources */,
+				CFB700000000000000000001 /* LibraryBookshelfView.swift in Sources */,
+				CFB700000000000000000009 /* StudioViews.swift in Sources */,
+				CFB800000000000000000001 /* StudioTheme.swift in Sources */,
+				CFB800000000000000000003 /* StudioThemePicker.swift in Sources */,
+				CFB800000000000000000005 /* QuoteCanvasView.swift in Sources */,
+				CFB800000000000000000007 /* QuoteStudioExportService.swift in Sources */,
+				CFB900000000000000000001 /* ActiveReadingSessionStore.swift in Sources */,
+				CFB900000000000000000003 /* ActiveBookHUDView.swift in Sources */,
 					CF9B00000000000000000001 /* LibrarySearchServices.swift in Sources */,
 					CF9F00000000000000000001 /* QuoteDetailTextFormatter.swift in Sources */,
 					CFD300000000000000000003 /* QuoteDetailEditDraft.swift in Sources */,
@@ -1839,6 +1914,7 @@
 				7A6F5C0E2F75F8DD366CF178 /* BookQuotesUITests/Flows/CollectionsTagsFlowTests.swift in Sources */,
 					F320C77FA80DB4BB9F232742 /* BookQuotesUITests/Flows/CoverCaptureFlowTests.swift in Sources */,
 					117D73B13DBB8776DDF32895 /* BookQuotesUITests/Flows/LibraryManagementTests.swift in Sources */,
+					CFD600000000000000000001 /* BookQuotesUITests/Flows/StudioFlowTests.swift in Sources */,
 					4530AC65134C4A67B51291D7 /* BookQuotesUITests/Flows/MarkingDefinitionsFlowTests.swift in Sources */,
 					6A27BA4018594ABCBA3CC645 /* BookQuotesUITests/Flows/AppStoreMediaTests.swift in Sources */,
 					E08291146D986A78DC4469A7 /* BookQuotesUITests/Flows/OnboardingFlowTests.swift in Sources */,

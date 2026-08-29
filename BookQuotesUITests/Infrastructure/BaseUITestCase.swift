@@ -43,12 +43,14 @@ class BaseUITestCase: XCTestCase {
     enum UITestTab {
         case library
         case capture
+        case studio
         case settings
 
         var identifier: String {
             switch self {
             case .library: return AccessibilityIdentifiers.Tabs.libraryTab
             case .capture: return AccessibilityIdentifiers.Tabs.captureTab
+            case .studio: return AccessibilityIdentifiers.Tabs.studioTab
             case .settings: return AccessibilityIdentifiers.Tabs.settingsTab
             }
         }
@@ -57,6 +59,7 @@ class BaseUITestCase: XCTestCase {
             switch self {
             case .library: return "Library"
             case .capture: return "Capture"
+            case .studio: return "Studio"
             case .settings: return "Settings"
             }
         }
@@ -926,6 +929,7 @@ enum AccessibilityIdentifiers {
     enum Tabs {
         static let libraryTab = "tab_library"
         static let captureTab = "tab_capture"
+        static let studioTab = "tab_studio"
         static let settingsTab = "tab_settings"
     }
 

@@ -115,7 +115,59 @@ struct FullImageViewer: View {
     }
 }
 
-// MARK: - Page List View
+// MARK: - Illuminated Page Overlay
+
+/// Renders glowing amber highlight bounding boxes over detected passages in the source photo.
+struct IlluminatedPageOverlay: View {
+    let quotes: [EditableQuote]
+    let selectedQuoteID: UUID?
+    let onSelectQuote: (UUID) -> Void
+
+    var body: some View {
+        GeometryReader { geo in
+            let size = geo.size
+            ForEach(quotes) { quote in
+                if let box = quote.boundingBox {
+                    let rect = CGRect(
+                        x: box.origin.x * size.width,
+                        y: box.origin.y * size.height,
+                        width: max(box.size.width * size.width, 24),
+                        height: max(box.size.height * size.height, 14)
+                    )
+                    let isSelected = quote.id == selectedQuoteID
+
+                    ZStack {
+                        // Illuminated amber fill
+                        RoundedRectangle(cornerRadius: CornerRadius.xs)
+                            .fill(
+                                isSelected
+                                    ? Color.gildedAccent.opacity(0.35)
+                                    : Color.gildedAccent.opacity(0.18)
+                            )
+
+                        // Luminous border and glow
+                        RoundedRectangle(cornerRadius: CornerRadius.xs)
+                            .stroke(
+                                isSelected ? Color.gildedAccent : Color.gildedAccent.opacity(0.65),
+                                lineWidth: isSelected ? 2 : 1
+                            )
+                            .shadow(
+                                color: isSelected ? Color.gildedAccent.opacity(0.8) : Color.clear,
+                                radius: 5
+                            )
+                    }
+                    .frame(width: rect.width, height: rect.height)
+                    .position(x: rect.midX, y: rect.midY)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        onSelectQuote(quote.id)
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 enum PageListLayout {
     case horizontal

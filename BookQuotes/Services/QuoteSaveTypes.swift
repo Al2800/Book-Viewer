@@ -13,6 +13,7 @@ struct ExtractedQuote {
     let marginNote: String?
     let customMarkingDefinition: MarkingDefinition?
     let boundingBox: CGRect?
+    let suggestedTags: [String]?
 
     init(
         text: String,
@@ -22,7 +23,8 @@ struct ExtractedQuote {
         chapter: String? = nil,
         marginNote: String? = nil,
         customMarkingDefinition: MarkingDefinition? = nil,
-        boundingBox: CGRect? = nil
+        boundingBox: CGRect? = nil,
+        suggestedTags: [String]? = nil
     ) {
         self.text = text
         self.markingType = markingType
@@ -32,6 +34,7 @@ struct ExtractedQuote {
         self.marginNote = marginNote
         self.customMarkingDefinition = customMarkingDefinition
         self.boundingBox = boundingBox
+        self.suggestedTags = suggestedTags
     }
 }
 

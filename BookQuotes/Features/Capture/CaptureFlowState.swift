@@ -25,6 +25,8 @@ struct CaptureFlowState: Equatable {
         case cancelQuoteCapture
         case completeBatchCapture
         case cancelBatchCapture
+        case switchActiveBook
+        case toggleBatchMode
     }
 
     struct Command: Equatable {
@@ -63,7 +65,7 @@ struct CaptureFlowState: Equatable {
             mode = .bookSelectionForBatch
             return .none
 
-        case .selectBookForQuoteCapture:
+        case .selectBookForQuoteCapture, .switchActiveBook:
             quoteCaptureFlowID = UUID()
             mode = .quoteCapture
             return .none
@@ -71,6 +73,16 @@ struct CaptureFlowState: Equatable {
         case .selectBookForBatchCapture:
             batchCaptureFlowID = UUID()
             mode = .batchCapture
+            return .none
+
+        case .toggleBatchMode:
+            if mode == .batchCapture {
+                quoteCaptureFlowID = UUID()
+                mode = .quoteCapture
+            } else {
+                batchCaptureFlowID = UUID()
+                mode = .batchCapture
+            }
             return .none
 
         case .resumeBatchCapture:

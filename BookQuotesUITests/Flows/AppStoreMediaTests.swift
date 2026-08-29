@@ -53,6 +53,11 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
         logger.step(7, "Extraction review")
         showExtractionReviewForMedia()
         captureScreenshot(named: "07_extraction_review", description: "Review the extracted marked passage")
+
+        logger.step(8, "Quote Studio")
+        closePresentedMediaFlow()
+        _ = tapTab(.studio, timeout: 3)
+        captureScreenshot(named: "08_quote_studio", description: "Quote Card Studio with editorial themes and typography")
     }
 }
 

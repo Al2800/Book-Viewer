@@ -22,6 +22,9 @@ struct OrganizationFilterBar: View {
         if !collections.isEmpty || !tags.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Spacing.sm) {
+                    // "All" Pill
+                    allPill
+
                     // Collections
                     collectionsSection
 
@@ -36,12 +39,52 @@ struct OrganizationFilterBar: View {
                     // Clear all if any selected
                     clearAllButton
                 }
-                .padding(.horizontal, Spacing.md)
+                .padding(.horizontal, Spacing.lg)
+                .padding(.vertical, Spacing.xs)
             }
             .accessibilityIdentifier(AccessibilityIdentifiers.Library.organizationFilterBar)
-            .padding(.vertical, Spacing.xs)
-            .background(Color.backgroundSecondary.opacity(0.3))
+            .background(
+                Rectangle()
+                    .fill(Color.backgroundPrimary)
+                    .overlay(alignment: .bottom) {
+                        Rectangle()
+                            .fill(Color.quoteBorder.opacity(0.4))
+                            .frame(height: Stroke.hairline.width)
+                    }
+            )
         }
+    }
+
+    // MARK: - All Pill
+
+    private var allPill: some View {
+        let isAllSelected = selectedCollectionIds.isEmpty && selectedTagIds.isEmpty
+        return Button {
+            HapticManager.selection()
+            withAnimation(.quickSpring) {
+                selectedCollectionIds.removeAll()
+                selectedTagIds.removeAll()
+            }
+        } label: {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "books.vertical")
+                    .font(.caption2)
+                Text("All")
+                    .font(.caption.weight(isAllSelected ? .semibold : .regular))
+            }
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.xs)
+            .background(
+                Capsule()
+                    .fill(isAllSelected ? Color.brand : Color.backgroundSecondary)
+            )
+            .foregroundStyle(isAllSelected ? .white : Color.textPrimary)
+            .overlay(
+                Capsule()
+                    .stroke(isAllSelected ? Color.clear : Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Collections Section
@@ -106,7 +149,8 @@ struct OrganizationFilterBar: View {
     // MARK: - Actions
 
     private func toggleCollection(_ id: UUID) {
-        withAnimation {
+        HapticManager.selection()
+        withAnimation(.quickSpring) {
             if selectedCollectionIds.contains(id) {
                 _ = selectedCollectionIds.remove(id)
             } else {
@@ -116,7 +160,8 @@ struct OrganizationFilterBar: View {
     }
 
     private func toggleTag(_ id: UUID) {
-        withAnimation {
+        HapticManager.selection()
+        withAnimation(.quickSpring) {
             if selectedTagIds.contains(id) {
                 _ = selectedTagIds.remove(id)
             } else {

@@ -512,6 +512,9 @@ enum AccessibilityIdentifiers {
         /// Capture tab bar item
         static let captureTab = "tab_capture"
 
+        /// Studio tab bar item
+        static let studioTab = "tab_studio"
+
         /// Settings tab bar item
         static let settingsTab = "tab_settings"
     }

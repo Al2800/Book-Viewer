@@ -70,22 +70,36 @@ final class ExportFlowTests: SwiftDataTestCase {
         logger.success("JSON export produced file")
     }
 
-    func testExportNotionReturnsApiError() async throws {
+    func testExportNotionProducesFile() async throws {
         logger.step(1, "Creating quote data")
-        let quote = TestFixtures.quote()
+        let book = TestFixtures.book { builder in
+            builder.title = "Notion Book"
+            builder.author = "Notion Author"
+        }
+        let quote = TestFixtures.quote { builder in
+            builder.book = book
+            builder.text = "Notion formatted quote text"
+            builder.pageNumber = 42
+        }
+        modelContext.insert(book)
+        modelContext.insert(quote)
+        try modelContext.save()
 
         logger.step(2, "Exporting to Notion")
         let exportService = ExportService()
         let result = try await exportService.export(quotes: [quote], format: .notion)
 
-        logger.step(3, "Verifying API error")
-        guard case let .apiError(message) = result else {
-            XCTFail("Expected API error")
+        logger.step(3, "Verifying output")
+        guard case let .file(url, filename) = result else {
+            XCTFail("Expected file export for Notion markdown")
             return
         }
-        XCTAssertTrue(message.contains("not implemented"))
+        XCTAssertTrue(filename.hasSuffix(".md"))
+        let content = try String(contentsOf: url)
+        XCTAssertTrue(content.contains("Notion formatted quote text"))
+        XCTAssertTrue(content.contains("Notion Book"))
 
-        logger.success("Notion export returns API error")
+        logger.success("Notion export produced file")
     }
 
     func testExportObsidianProducesFile() async throws {

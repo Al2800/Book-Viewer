@@ -66,15 +66,16 @@ struct SubscriptionOptionCard: View {
             .padding(Spacing.md)
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .fill(isSelected ? Color.brand.opacity(0.1) : Color(.secondarySystemBackground))
+                    .fill(isSelected ? Color.warmVellum : Color.backgroundSecondary)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
                     .strokeBorder(
-                        isSelected ? Color.brand : Color.clear,
-                        lineWidth: 2
+                        isSelected ? Color.gildedAccent : Color.quoteBorder.opacity(0.4),
+                        lineWidth: isSelected ? 2 : Stroke.hairline.width
                     )
             )
+            .shadow(color: Color.black.opacity(isSelected ? 0.05 : 0.02), radius: 4, y: 2)
         }
         .buttonStyle(.plain)
     }
@@ -84,12 +85,12 @@ struct SubscriptionOptionCard: View {
     private var selectionIndicator: some View {
         ZStack {
             Circle()
-                .strokeBorder(isSelected ? Color.brand : Color.secondary.opacity(0.3), lineWidth: 2)
+                .strokeBorder(isSelected ? Color.gildedAccent : Color.secondary.opacity(0.3), lineWidth: 2)
                 .frame(width: 24, height: 24)
 
             if isSelected {
                 Circle()
-                    .fill(Color.brand)
+                    .fill(Color.gildedAccent)
                     .frame(width: 14, height: 14)
             }
         }

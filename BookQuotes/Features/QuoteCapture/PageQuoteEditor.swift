@@ -13,6 +13,7 @@ struct PageQuoteEditor: View {
 
     @State private var showingFullImage = false
     @State private var imageScale: CGFloat = 1.0
+    @State private var selectedQuoteID: UUID?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
@@ -20,11 +21,61 @@ struct PageQuoteEditor: View {
             // Source image section
             imageSection
 
+            // Visual provenance tether badge
+            if let activeQuote = activeQuote, activeQuote.boundingBox != nil {
+                tetherBanner
+            }
+
             Divider()
 
             // Quotes list section
             quotesSection
         }
+        .onAppear {
+            if selectedQuoteID == nil {
+                selectedQuoteID = quotes.first?.id
+            }
+        }
+        .onChange(of: quotes) { _, newQuotes in
+            if selectedQuoteID == nil || !newQuotes.contains(where: { $0.id == selectedQuoteID }) {
+                selectedQuoteID = newQuotes.first?.id
+            }
+        }
+    }
+
+    private var activeQuote: EditableQuote? {
+        quotes.first(where: { $0.id == selectedQuoteID }) ?? quotes.first
+    }
+
+    // MARK: - Tether Banner
+
+    private var tetherBanner: some View {
+        HStack(spacing: Spacing.xs) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(Color.gildedAccent)
+
+            Text("Passage Illuminated on Original Page")
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(Color.gildedAccent)
+
+            Spacer()
+
+            Image(systemName: "link")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(Color.gildedAccent.opacity(0.8))
+        }
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, 4)
+        .background(
+            Rectangle()
+                .fill(Color.darkLinen)
+                .overlay(alignment: .bottom) {
+                    Rectangle()
+                        .fill(Color.gildedAccent.opacity(0.4))
+                        .frame(height: Stroke.hairline.width)
+                }
+        )
     }
 
     // MARK: - Image Section
@@ -34,26 +85,39 @@ struct PageQuoteEditor: View {
             Color.black
 
             if let image = page.loadFullImage() {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .scaleEffect(imageScale)
-                    .gesture(
-                        MagnificationGesture()
-                            .onChanged { scale in
-                                imageScale = scale
+                ZStack {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+
+                    IlluminatedPageOverlay(
+                        quotes: quotes,
+                        selectedQuoteID: selectedQuoteID ?? quotes.first?.id,
+                        onSelectQuote: { id in
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                selectedQuoteID = id
                             }
-                            .onEnded { _ in
-                                withAnimation(.spring()) {
-                                    imageScale = max(1.0, min(imageScale, 3.0))
-                                }
-                            }
-                    )
-                    .onTapGesture(count: 2) {
-                        withAnimation(.spring()) {
-                            imageScale = imageScale > 1.5 ? 1.0 : 2.0
+                            HapticManager.selection()
                         }
+                    )
+                }
+                .scaleEffect(imageScale)
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { scale in
+                            imageScale = scale
+                        }
+                        .onEnded { _ in
+                            withAnimation(.spring()) {
+                                imageScale = max(1.0, min(imageScale, 3.0))
+                            }
+                        }
+                )
+                .onTapGesture(count: 2) {
+                    withAnimation(.spring()) {
+                        imageScale = imageScale > 1.5 ? 1.0 : 2.0
                     }
+                }
             } else if let thumbnail = page.loadThumbnail() {
                 Image(uiImage: thumbnail)
                     .resizable()
@@ -141,6 +205,12 @@ struct PageQuoteEditor: View {
             ForEach($quotes) { $quote in
                 QuoteEditRow(
                     quote: $quote,
+                    isSelected: quote.id == (selectedQuoteID ?? quotes.first?.id),
+                    onSelect: {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                            selectedQuoteID = quote.id
+                        }
+                    },
                     onDelete: {
                         deleteQuote(quote)
                     }

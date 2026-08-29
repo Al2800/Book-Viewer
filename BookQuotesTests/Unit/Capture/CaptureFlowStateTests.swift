@@ -118,4 +118,19 @@ final class CaptureFlowStateTests: XCTestCase {
         XCTAssertEqual(cancelState.mode, .selection)
         XCTAssertFalse(cancelCommand.clearsSelectedBook)
     }
+
+    func testSwitchActiveBookAndToggleBatchModeTransitions() {
+        var state = CaptureFlowState(mode: .quoteCapture)
+        let originalQuoteID = state.quoteCaptureFlowID
+
+        state.handle(.switchActiveBook)
+        XCTAssertEqual(state.mode, .quoteCapture)
+        XCTAssertNotEqual(state.quoteCaptureFlowID, originalQuoteID)
+
+        state.handle(.toggleBatchMode)
+        XCTAssertEqual(state.mode, .batchCapture)
+
+        state.handle(.toggleBatchMode)
+        XCTAssertEqual(state.mode, .quoteCapture)
+    }
 }

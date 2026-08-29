@@ -301,6 +301,18 @@ struct LibraryView: View {
                     .buttonStyle(.plain)
                 }
 
+                if !books.isEmpty {
+                    LibraryBookshelfView(
+                        books: books,
+                        onSelectBook: { book in
+                            router.navigate(to: book)
+                        },
+                        onAddBook: {
+                            showAddBookCapture = true
+                        }
+                    )
+                }
+
                 LibrarySummaryCard(
                     bookCount: books.count,
                     quoteCount: snapshot.totalQuoteCount,

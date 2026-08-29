@@ -47,6 +47,34 @@ extension Color {
     static let confidenceHigh = Color.success
     static let confidenceMedium = Color.warning
     static let confidenceLow = Color.error
+
+    // MARK: - V2 Theme Palette
+    /// Dark Linen luxury card background #141414
+    static let darkLinen = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.08, green: 0.08, blue: 0.08, alpha: 1.0)
+            : UIColor(red: 0.11, green: 0.11, blue: 0.12, alpha: 1.0)
+    })
+
+    /// Warm Vellum tactile paper background #F7F4EC
+    static let warmVellum = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.18, green: 0.17, blue: 0.15, alpha: 1.0)
+            : UIColor(red: 0.97, green: 0.96, blue: 0.93, alpha: 1.0)
+    })
+
+    /// Editorial Monochrome soft paper tone #ECECE8
+    static let editorialMonochrome = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.16, green: 0.16, blue: 0.17, alpha: 1.0)
+            : UIColor(red: 0.92, green: 0.92, blue: 0.91, alpha: 1.0)
+    })
+
+    /// Gilded gold accent #D4AF37
+    static let gildedAccent = Color(red: 0.83, green: 0.69, blue: 0.22)
+
+    /// Deep gold foil #C5A059
+    static let goldFoil = Color(red: 0.77, green: 0.63, blue: 0.35)
 }
 
 // MARK: - Dark Mode Support
@@ -67,13 +95,23 @@ extension ShapeStyle where Self == Color {
 // MARK: - Typography
 
 extension Font {
-    // MARK: - Display (for large quotes)
+    // MARK: - Display & Hero Headlines
+    /// Extra large display serif for hero quote cards and prominent headers
+    static let serifTitleLarge = Font.system(size: 34, weight: .semibold, design: .serif)
+    /// Large headline serif font for section headers and book cards
+    static let serifHeadline = Font.system(.headline, design: .serif).weight(.semibold)
     /// Title-sized serif font for featured quotes
     static let quoteDisplay = Font.system(.title2, design: .serif)
     /// Large serif font for standard quotes
     static let quoteLarge = Font.system(.title3, design: .serif)
     /// Body-sized serif font for quote text
     static let quoteBody = Font.system(.body, design: .serif)
+
+    // MARK: - Margin Script (organic handwriting for margin notes)
+    /// Organic handwritten script font for margin notes
+    static let marginScript = Font.system(.body, design: .serif).italic()
+    /// Small margin script font
+    static let marginScriptSmall = Font.system(.caption, design: .serif).italic()
 
     // MARK: - Attribution
     /// Serif italic for attributions
@@ -147,6 +185,8 @@ enum Spacing {
 // MARK: - Corner Radius
 
 enum CornerRadius {
+    /// 3pt - Extra small corners
+    static let xs: CGFloat = 3
     /// 6pt - Small corners
     static let sm: CGFloat = 6
     /// 10pt - Medium corners
@@ -276,6 +316,29 @@ extension LinearGradient {
         colors: [Color.brand, Color.accent],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
+    )
+
+    /// Gold foil accent gradient for ribbons and emblems
+    static let foilAccent = LinearGradient(
+        colors: [
+            Color(red: 0.90, green: 0.78, blue: 0.45),
+            Color(red: 0.77, green: 0.63, blue: 0.35),
+            Color(red: 0.85, green: 0.72, blue: 0.40)
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    /// Book spine depth gradient creating 3D physical book feel
+    static let spineDepth = LinearGradient(
+        colors: [
+            Color.black.opacity(0.24),
+            Color.black.opacity(0.08),
+            Color.white.opacity(0.06),
+            Color.clear
+        ],
+        startPoint: .leading,
+        endPoint: .trailing
     )
 
     /// Subtle highlight for cards - creates glass-like effect

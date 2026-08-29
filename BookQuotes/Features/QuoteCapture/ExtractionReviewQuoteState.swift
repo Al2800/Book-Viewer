@@ -110,7 +110,9 @@ struct ExtractionReviewQuoteState {
                     isManual: false,
                     extractionSource: data.extractionSource,
                     customMarkingDefinitionID: data.customMarkingDefinitionID,
-                    customMarkingDisplayName: data.customMarkingDisplayName
+                    customMarkingDisplayName: data.customMarkingDisplayName,
+                    boundingBox: data.normalizedBoundingBox,
+                    suggestedTags: data.suggestedTags
                 )
             }
         }

@@ -138,6 +138,34 @@ enum CameraImageCompressor {
     }
 }
 
+enum VisionBoundingBoxTransformer {
+    /// Convert Vision normalized rect (bottom-left origin in landscape/buffer orientation)
+    /// to UI portrait normalized rect (top-left origin).
+    static func transformVisionRectToUIPortrait(_ visionRect: CGRect) -> CGRect {
+        let uiX = visionRect.minY
+        let uiY = 1.0 - visionRect.maxX
+        let uiWidth = visionRect.height
+        let uiHeight = visionRect.width
+        return CGRect(
+            x: max(0, min(1, uiX)),
+            y: max(0, min(1, uiY)),
+            width: max(0, min(1, uiWidth)),
+            height: max(0, min(1, uiHeight))
+        )
+    }
+
+    /// Scale a normalized UI rect (0..1) to target view size (points).
+    static func scaleNormalizedRect(_ normalizedRect: CGRect, to viewSize: CGSize) -> CGRect {
+        guard viewSize.width > 0, viewSize.height > 0 else { return .zero }
+        return CGRect(
+            x: normalizedRect.origin.x * viewSize.width,
+            y: normalizedRect.origin.y * viewSize.height,
+            width: normalizedRect.size.width * viewSize.width,
+            height: normalizedRect.size.height * viewSize.height
+        )
+    }
+}
+
 extension CameraService {
     /// Compress an image for API upload.
     static func compressForUpload(

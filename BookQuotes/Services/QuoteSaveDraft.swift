@@ -18,6 +18,10 @@ struct QuoteSaveDraft {
         quote.confidence = extractedQuote.confidence
         quote.sourceImageData = sourceImage
         quote.customMarkingDefinition = extractedQuote.customMarkingDefinition
+        quote.boundingBox = extractedQuote.boundingBox
+        if let suggestedTags = extractedQuote.suggestedTags {
+            quote.suggestedTagNames = suggestedTags
+        }
 
         try quote.validate()
         return quote

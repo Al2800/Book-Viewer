@@ -9,6 +9,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import {BookOverviewHook} from './FeedCover';
 import {colours, sans, serif} from './theme';
 
 const hand =
@@ -153,83 +154,28 @@ const Cover: React.FC<{
   </div>
 );
 
-const HookScene: React.FC<{frame: number}> = ({frame}) => {
-  const {fps} = useVideoConfig();
-  const enter = spring({
-    frame,
-    fps,
-    config: {damping: 16, stiffness: 92, mass: 0.9},
-  });
-  const circle = interpolate(frame, [24, 64], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.inOut(Easing.cubic),
-  });
-  const arrow = interpolate(frame, [47, 82], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-
-  return (
-    <AbsoluteFill style={{opacity: sceneOpacity(frame, 0, 112)}}>
-      <SeriesLabel />
-      <div
-        style={{
-          position: 'absolute',
-          left: 130,
-          top: 220,
-          width: 830,
-          fontFamily: serif,
-          fontSize: 101,
-          lineHeight: 1.02,
-          fontWeight: 700,
-          transform: `translateY(${interpolate(enter, [0, 1], [60, 0])}px)`,
-        }}
-      >
-        Should you read <span style={{color: colours.ink}}>Team of Rivals</span>?
-      </div>
-      <Cover
-        width={430}
-        top={730}
-        left={335}
-        scale={interpolate(enter, [0, 1], [0.82, 1])}
-      />
-      <svg
-        viewBox="0 0 1080 1920"
-        style={{position: 'absolute', inset: 0, width: '100%', height: '100%'}}
-      >
-        <DrawnPath
-          d="M 308 720 C 410 665, 690 674, 778 748 C 842 802, 840 1248, 765 1358 C 690 1468, 410 1460, 322 1362 C 246 1278, 244 820, 308 720"
-          progress={circle}
-          width={9}
-        />
-        <DrawnPath
-          d="M 210 885 C 265 940, 300 966, 346 984 M 316 943 L 346 984 L 298 979"
-          progress={arrow}
-          colour={colours.navy}
-          width={7}
-        />
-      </svg>
-      <div
-        style={{
-          position: 'absolute',
-          left: 120,
-          top: 843,
-          width: 250,
-          fontFamily: hand,
-          fontSize: 43,
-          lineHeight: 1.05,
-          fontWeight: 700,
-          color: colours.ink,
-          transform: 'rotate(-7deg)',
-          opacity: arrow,
-        }}
-      >
-        yes, for politics told through people
-      </div>
-    </AbsoluteFill>
-  );
-};
+const HookScene: React.FC<{frame: number}> = ({frame}) => (
+  <AbsoluteFill style={{opacity: sceneOpacity(frame, 0, 112)}}>
+    <BookOverviewHook
+      hook="Should you read it?"
+      title="Team of Rivals"
+      kicker="Doris Kearns Goodwin"
+      label="Reading note"
+      field="rust"
+      accent={colours.gold}
+      object="jacket"
+      jacket="assets/presidential-covers/team-of-rivals.jpg"
+      book={{
+        title: 'Team of Rivals',
+        author: 'Doris Kearns Goodwin',
+        jacket: 'assets/presidential-covers/team-of-rivals.jpg',
+        status: 'Finished',
+        collection: 'Reading note',
+        note: "Lincoln's political intelligence — why this one earns the time.",
+      }}
+    />
+  </AbsoluteFill>
+);
 
 const ReadForScene: React.FC<{frame: number}> = ({frame}) => {
   const local = frame - 96;
@@ -548,11 +494,13 @@ export const HandwrittenBookReview: React.FC = () => {
   const frame = useCurrentFrame();
 
   return (
-    <Paper>
+    <AbsoluteFill>
+      <Paper>
+        <ReadForScene frame={frame} />
+        <HonestNoteScene frame={frame} />
+        <VerdictScene frame={frame} />
+      </Paper>
       <HookScene frame={frame} />
-      <ReadForScene frame={frame} />
-      <HonestNoteScene frame={frame} />
-      <VerdictScene frame={frame} />
-    </Paper>
+    </AbsoluteFill>
   );
 };

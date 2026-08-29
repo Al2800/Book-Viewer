@@ -310,7 +310,7 @@ struct ExtractionReviewView: View {
                 if isSaving {
                     ProgressView()
                 } else {
-                    Text("Save All")
+                    Text("Save to Library")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundStyle(canSave ? Color.brand : Color.textSecondary)

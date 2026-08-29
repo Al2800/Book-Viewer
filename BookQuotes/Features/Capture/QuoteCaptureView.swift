@@ -242,6 +242,14 @@ struct QuoteCaptureView: View {
             )
         }
 
+        if !cameraService.detectedBoundingBoxes.isEmpty {
+            return CaptureStatusPill(
+                systemImage: "sparkles",
+                text: "Perfect Framing • \(cameraService.detectedBoundingBoxes.count) Passages",
+                tint: Color.gildedAccent
+            )
+        }
+
         guard let result = qualityResult else {
             return CaptureStatusPill(
                 systemImage: "text.viewfinder",
@@ -252,7 +260,7 @@ struct QuoteCaptureView: View {
         if result.isAcceptable {
             return CaptureStatusPill(
                 systemImage: "checkmark.circle.fill",
-                text: "Ready to capture",
+                text: "Perfect Framing",
                 tint: .white
             )
         }

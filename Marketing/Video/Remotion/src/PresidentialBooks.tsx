@@ -9,6 +9,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import {BookOverviewHook} from './FeedCover';
 import {colours, sans, serif} from './theme';
 
 type PresidentialBook = {
@@ -403,39 +404,32 @@ export const PresidentialBookSlide: React.FC<PresidentialBookSlideProps> = (prop
 
 const ReelCover: React.FC = () => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const entrance = spring({frame, fps, config: {damping: 19, stiffness: 95}});
+  const opacity = interpolate(frame, [0, 8, 90, 105], [0, 1, 1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
 
   return (
-    <Paper accent={colours.rust}>
-      <Header label="Presidential reading" />
-      <div
-        style={{
-          position: 'absolute',
-          left: 84,
-          right: 80,
-          top: 330,
-          transform: `translateY(${interpolate(entrance, [0, 1], [80, 0])}px)`,
+    <AbsoluteFill style={{opacity}}>
+      <BookOverviewHook
+        hook="5 biographies"
+        kicker="worth the commitment"
+        title="Lincoln, Johnson, Washington, Grant, Truman"
+        label="Reading list"
+        field="rust"
+        accent={colours.gold}
+        object="jacket"
+        jacket="assets/presidential-covers/team-of-rivals.jpg"
+        book={{
+          title: 'Team of Rivals',
+          author: 'Doris Kearns Goodwin',
+          jacket: 'assets/presidential-covers/team-of-rivals.jpg',
+          status: 'Reader pick',
+          collection: 'Presidential biographies',
+          note: "Lincoln's political intelligence, and the rivals he brought into cabinet.",
         }}
-      >
-        <div style={{fontFamily: serif, fontSize: 112, lineHeight: 0.98, fontWeight: 700}}>
-          5 presidential biographies worth the commitment
-        </div>
-        <div
-          style={{
-            marginTop: 54,
-            fontFamily: sans,
-            fontSize: 35,
-            lineHeight: 1.42,
-            fontWeight: 650,
-            color: colours.navy,
-          }}
-        >
-          Not a ranking. Five different ways to read power.
-        </div>
-      </div>
-      <Footer />
-    </Paper>
+      />
+    </AbsoluteFill>
   );
 };
 

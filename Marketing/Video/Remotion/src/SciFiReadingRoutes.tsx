@@ -8,7 +8,8 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
-import {colours, sans, serif} from './theme';
+import {BookOverviewHook} from './FeedCover';
+import {colours, coverFields, sans, serif} from './theme';
 
 export type SciFiPost = {
   id: string;
@@ -172,6 +173,29 @@ const BookJacket: React.FC<{src: string; progress: number}> = ({src, progress}) 
   </div>
 );
 
+const sciFiOverview = (post: SciFiPost) => {
+  if (post.id === 'SciFi-03-IdeasThroughAGame') {
+    return {
+      hook: 'Ideas as a game',
+      kicker: 'If you want systems first',
+      label: 'Reader fit',
+      field: 'rust' as const,
+      status: 'Systems first',
+      collection: 'Reader fit',
+      note: 'Big ideas disguised as a game of power and strategy.',
+    };
+  }
+  return {
+    hook: 'Start here',
+    kicker: 'The Culture, without a primer',
+    label: 'Reading route',
+    field: 'wine' as const,
+    status: 'Start here',
+    collection: 'The Culture',
+    note: post.premise,
+  };
+};
+
 export const SciFiReadingRouteReel: React.FC<{post: SciFiPost}> = ({post}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -179,9 +203,42 @@ export const SciFiReadingRouteReel: React.FC<{post: SciFiPost}> = ({post}) => {
   const reveal = spring({frame: frame - 50, fps, config: {damping: 180}});
   const close = spring({frame: frame - 320, fps, config: {damping: 180}});
   const y = interpolate(inProgress, [0, 1], [38, 0]);
+  const overview = post.cover ? sciFiOverview(post) : null;
+  const paperOpacity = overview
+    ? interpolate(frame, [78, 96], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+    : 1;
+  const hookOpacity = overview
+    ? interpolate(frame, [0, 8, 78, 90], [0, 1, 1, 0], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 0;
 
   return (
-    <AbsoluteFill style={{backgroundColor: colours.paper, color: colours.ink, overflow: 'hidden'}}>
+    <AbsoluteFill style={{backgroundColor: overview ? coverFields.ink : colours.paper, color: colours.ink, overflow: 'hidden'}}>
+      {overview && post.cover ? (
+        <AbsoluteFill style={{opacity: hookOpacity}}>
+          <BookOverviewHook
+            hook={overview.hook}
+            title={post.title}
+            kicker={overview.kicker}
+            label={overview.label}
+            field={overview.field}
+            accent={post.accent}
+            object="jacket"
+            jacket={post.cover}
+            book={{
+              title: post.title,
+              author: post.author,
+              jacket: post.cover,
+              status: overview.status,
+              collection: overview.collection,
+              note: overview.note,
+            }}
+          />
+        </AbsoluteFill>
+      ) : null}
+      <AbsoluteFill style={{backgroundColor: colours.paper, opacity: paperOpacity}}>
       <div style={{position: 'absolute', inset: 34, border: `2px solid ${colours.line}`}} />
       <div style={{position: 'absolute', left: 34, top: 34, bottom: 34, width: 14, backgroundColor: post.accent}} />
       <Motif kind={post.motif} accent={post.accent} progress={inProgress} />
@@ -203,6 +260,7 @@ export const SciFiReadingRouteReel: React.FC<{post: SciFiPost}> = ({post}) => {
         <div style={{fontFamily: serif, fontSize: 47, lineHeight: 1.13, fontWeight: 700}}>{post.question}</div>
         <div style={{marginTop: 25, display: 'flex', justifyContent: 'space-between', fontFamily: sans, fontSize: 22, fontWeight: 750, color: colours.muted}}><span>@bookquotes.app</span><span>Researched reading route</span></div>
       </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };

@@ -69,7 +69,34 @@ final class Quote {
     /// Custom marking definition (user-defined vocabulary)
     var customMarkingDefinition: MarkingDefinition?
 
+    // MARK: - Provenance & Tags
+
+    /// Normalized bounding box coordinates (0.0 - 1.0) on the original capture photo
+    var boundingBoxX: Double?
+    var boundingBoxY: Double?
+    var boundingBoxWidth: Double?
+    var boundingBoxHeight: Double?
+
+    /// AI-suggested topic tags captured during extraction
+    var suggestedTagNames: [String] = []
+
     // MARK: - Computed Properties
+
+    /// Computed normalized bounding box CGRect
+    var boundingBox: CGRect? {
+        get {
+            guard let x = boundingBoxX, let y = boundingBoxY, let w = boundingBoxWidth, let h = boundingBoxHeight else {
+                return nil
+            }
+            return CGRect(x: x, y: y, width: w, height: h)
+        }
+        set {
+            boundingBoxX = newValue.map { Double($0.origin.x) }
+            boundingBoxY = newValue.map { Double($0.origin.y) }
+            boundingBoxWidth = newValue.map { Double($0.size.width) }
+            boundingBoxHeight = newValue.map { Double($0.size.height) }
+        }
+    }
 
     /// Display name for the marking (prefers custom definition over legacy enum)
     var markingDisplayName: String {

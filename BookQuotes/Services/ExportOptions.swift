@@ -13,14 +13,12 @@ enum ExportFormat: String, CaseIterable, Identifiable {
 
     var fileExtension: String {
         switch self {
-        case .markdown, .obsidian:
+        case .markdown, .obsidian, .notion:
             return "md"
         case .plainText:
             return "txt"
         case .json:
             return "json"
-        case .notion:
-            return ""
         }
     }
 }

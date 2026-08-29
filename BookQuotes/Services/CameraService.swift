@@ -1,5 +1,6 @@
 import AVFoundation
 import SwiftUI
+import Vision
 
 /// Camera service for capturing book cover and page photos.
 /// Handles AVFoundation session management, permissions, and photo capture.
@@ -31,6 +32,9 @@ final class CameraService: NSObject {
     /// Current camera position (front/back)
     private(set) var cameraPosition: AVCaptureDevice.Position = .back
 
+    /// Real-time detected text/mark bounding boxes normalized to UI portrait space (0.0 - 1.0)
+    private(set) var detectedBoundingBoxes: [CGRect] = []
+
     /// Any error that occurred
     private(set) var error: CameraError?
 
@@ -46,6 +50,8 @@ final class CameraService: NSObject {
 
     private(set) var captureSession: AVCaptureSession?
     private var photoOutput: AVCapturePhotoOutput?
+    private var videoDataOutput: AVCaptureVideoDataOutput?
+    private let videoDataQueue = DispatchQueue(label: "uk.bookquotes.camera.videodata", qos: .userInitiated)
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var previewSizeStore = CameraPreviewSizeStore()
@@ -159,6 +165,18 @@ final class CameraService: NSObject {
             photoOutput = output
         } else {
             throw CameraError.cannotAddOutput
+        }
+
+        // Add real-time video data output for Apple Vision mark framing
+        let videoOutput = AVCaptureVideoDataOutput()
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.videoSettings = [
+            kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)
+        ]
+        if session.canAddOutput(videoOutput) {
+            session.addOutput(videoOutput)
+            videoOutput.setSampleBufferDelegate(self, queue: videoDataQueue)
+            videoDataOutput = videoOutput
         }
 
         session.commitConfiguration()
@@ -473,5 +491,32 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
                 }
             }
         }
+    }
+}
+
+// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+
+extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
+    nonisolated func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+    ) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        let request = VNDetectTextRectanglesRequest { [weak self] request, _ in
+            guard let observations = request.results as? [VNTextObservation] else { return }
+            let transformedBoxes = observations.prefix(12).map { observation in
+                VisionBoundingBoxTransformer.transformVisionRectToUIPortrait(observation.boundingBox)
+            }
+
+            Task { @MainActor [weak self] in
+                self?.detectedBoundingBoxes = transformedBoxes
+            }
+        }
+        request.reportCharacterBoxes = false
+
+        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right, options: [:])
+        try? handler.perform([request])
     }
 }

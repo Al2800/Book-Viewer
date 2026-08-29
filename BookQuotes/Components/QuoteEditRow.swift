@@ -7,6 +7,8 @@ import UIKit
 /// Shows confidence indicator, text editor, and delete option.
 struct QuoteEditRow: View {
     @Binding var quote: EditableQuote
+    var isSelected: Bool = false
+    var onSelect: (() -> Void)? = nil
     let onDelete: () -> Void
 
     @State private var showEditor = false
@@ -26,6 +28,7 @@ struct QuoteEditRow: View {
                 .foregroundStyle(Color.textPrimary)
                 .textSelection(.enabled)
                 .onTapGesture {
+                    onSelect?()
                     openEditor()
                 }
 
@@ -37,23 +40,82 @@ struct QuoteEditRow: View {
                 accessibilityActions
             }
 
-            // Margin note if present
-        if let marginNote = quote.marginNote, !marginNote.isEmpty {
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: "note.text")
-                    .font(.caption2)
-                    .foregroundStyle(Color.textTertiary)
+            // Organic handwritten margin note card if present
+            if let marginNote = quote.marginNote, !marginNote.isEmpty {
+                HStack(alignment: .top, spacing: Spacing.xs) {
+                    Image(systemName: "pencil.line")
+                        .font(.caption2)
+                        .foregroundStyle(Color.goldFoil)
+                        .padding(.top, 2)
 
                     Text(marginNote)
-                        .font(.caption)
-                        .foregroundStyle(Color.textSecondary)
-                        .italic()
+                        .font(.marginScript)
+                        .foregroundStyle(Color.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.top, Spacing.xs)
+                .padding(Spacing.sm)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: CornerRadius.xs)
+                        .fill(Color.warmVellum)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                                .stroke(Color.quoteBorder.opacity(0.4), lineWidth: Stroke.hairline.width)
+                        )
+                )
+            }
+
+            // AI-suggested Topic Tags Strip
+            if let tags = quote.suggestedTags, !tags.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: Spacing.xs) {
+                        Image(systemName: "sparkle")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(Color.gildedAccent)
+
+                        ForEach(tags, id: \.self) { tag in
+                            HStack(spacing: 4) {
+                                Text("#\(tag)")
+                                    .font(.caption2.weight(.medium))
+                                    .foregroundStyle(Color.textSecondary)
+
+                                Button {
+                                    withAnimation(.snappy) {
+                                        quote.suggestedTags?.removeAll(where: { $0 == tag })
+                                    }
+                                } label: {
+                                    Image(systemName: "xmark")
+                                        .font(.system(size: 8, weight: .bold))
+                                        .foregroundStyle(Color.textTertiary)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.horizontal, Spacing.xs)
+                            .padding(.vertical, 3)
+                            .background(
+                                Capsule()
+                                    .fill(Color.backgroundSecondary)
+                                    .overlay(
+                                        Capsule()
+                                            .stroke(Color.quoteBorder.opacity(0.5), lineWidth: Stroke.hairline.width)
+                                    )
+                            )
+                        }
+                    }
+                    .padding(.vertical, 2)
+                }
             }
         }
         .padding(Spacing.md)
         .paperCard(cornerRadius: CornerRadius.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .stroke(isSelected ? Color.gildedAccent : Color.clear, lineWidth: 1.5)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onSelect?()
+        }
         .sheet(isPresented: $showEditor) {
             QuoteEditorSheet(
                 text: $draftText,
@@ -418,6 +480,8 @@ struct EditableQuote: Identifiable, Equatable {
     var marginNote: String?
     var customMarkingDefinitionID: UUID?
     var customMarkingDisplayName: String?
+    var boundingBox: CGRect?
+    var suggestedTags: [String]?
 
     /// Whether this quote was added manually by the user
     var isManual: Bool
@@ -439,7 +503,9 @@ struct EditableQuote: Identifiable, Equatable {
         isManual: Bool = false,
         extractionSource: QuoteExtractionSource? = nil,
         customMarkingDefinitionID: UUID? = nil,
-        customMarkingDisplayName: String? = nil
+        customMarkingDisplayName: String? = nil,
+        boundingBox: CGRect? = nil,
+        suggestedTags: [String]? = nil
     ) {
         self.id = id
         self.pageId = pageId
@@ -450,6 +516,8 @@ struct EditableQuote: Identifiable, Equatable {
         self.marginNote = marginNote
         self.customMarkingDefinitionID = customMarkingDefinitionID
         self.customMarkingDisplayName = customMarkingDisplayName
+        self.boundingBox = boundingBox
+        self.suggestedTags = suggestedTags
         self.isManual = isManual
         self.extractionSource = extractionSource ?? (isManual ? .manual : .unknown)
         self.isModified = false
@@ -466,6 +534,8 @@ struct EditableQuote: Identifiable, Equatable {
         self.marginNote = data.marginNote
         self.customMarkingDefinitionID = data.customMarkingDefinitionID
         self.customMarkingDisplayName = data.customMarkingDisplayName
+        self.boundingBox = data.normalizedBoundingBox
+        self.suggestedTags = data.suggestedTags
         self.isManual = false
         self.extractionSource = data.extractionSource
         self.isModified = false
@@ -479,7 +549,9 @@ struct EditableQuote: Identifiable, Equatable {
             confidence: isManual ? nil : confidence,
             pageNumber: pageNumber,
             marginNote: marginNote,
-            customMarkingDefinition: customMarkingDefinition
+            customMarkingDefinition: customMarkingDefinition,
+            boundingBox: boundingBox,
+            suggestedTags: suggestedTags
         )
     }
 

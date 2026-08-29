@@ -4,6 +4,7 @@ import Foundation
 enum Tab: Hashable, CaseIterable, Identifiable {
     case library
     case capture
+    case studio
     case settings
 
     var id: Self { self }
@@ -12,6 +13,7 @@ enum Tab: Hashable, CaseIterable, Identifiable {
         switch self {
         case .library: return "Library"
         case .capture: return "Capture"
+        case .studio: return "Studio"
         case .settings: return "Settings"
         }
     }
@@ -20,6 +22,7 @@ enum Tab: Hashable, CaseIterable, Identifiable {
         switch self {
         case .library: return "books.vertical"
         case .capture: return "camera"
+        case .studio: return "sparkles.rectangle.stack"
         case .settings: return "gear"
         }
     }

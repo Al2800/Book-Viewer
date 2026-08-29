@@ -89,7 +89,9 @@ enum QuoteExtractionPromptBuilder {
               "pageNumber": 42,
               "marginNote": "Any handwritten note near this passage, or null",
               "markingType": "underline",
-              "confidence": 0.92
+              "confidence": 0.92,
+              "boundingBox": [0.12, 0.35, 0.76, 0.08],
+              "suggestedTags": ["stoicism", "philosophy"]
             }
           ],
           "pageNumber": 42,
@@ -115,7 +117,9 @@ enum QuoteExtractionPromptBuilder {
            - <0.5 : Low confidence, marking unclear or text hard to read
         13. Prioritize precision over recall. If it is uncertain whether a reader marking exists, omit that candidate rather than returning nearby unmarked text.
         14. Return an empty quotes array when no unambiguous reader markings are visible. Readable body text by itself is not a marked quote.
-        15. Use one of these markingType values: \(markingTypes)
+        15. boundingBox: normalized coordinates [x, y, width, height] relative to the image (0.0 to 1.0) bounding the marked quote region. Set to null if uncertain.
+        16. suggestedTags: array of 1 to 3 concise semantic topic tags (e.g. ["habits", "psychology"]).
+        17. Use one of these markingType values: \(markingTypes)
 
         Respond with ONLY valid JSON. No markdown formatting, no code blocks, no explanatory text.
         """

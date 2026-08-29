@@ -23,6 +23,7 @@ struct QuoteDetailView: View {
     @State private var showSourceImage = false
     @State private var showMarkingPicker = false
     @State private var showShareSheet = false
+    @State private var showStudioSheet = false
     @State private var shareItems: [Any] = []
     @State private var organizationSheet: OrganizationSheet?
 
@@ -46,6 +47,49 @@ struct QuoteDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Spacing.xl) {
+                // Design Quote Card in Studio Action Card
+                if !isEditing {
+                    Button {
+                        HapticManager.light()
+                        showStudioSheet = true
+                    } label: {
+                        HStack(spacing: Spacing.md) {
+                            Image(systemName: "sparkles.rectangle.stack")
+                                .font(.title3)
+                                .foregroundStyle(Color.gildedAccent)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Design Quote Card")
+                                    .font(.headline)
+                                    .foregroundStyle(Color.textPrimary)
+
+                                Text("Style with v2 editorial themes & export to social, Obsidian or Notion")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.textSecondary)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.textTertiary)
+                        }
+                        .padding(Spacing.md)
+                        .background(
+                            RoundedRectangle(cornerRadius: CornerRadius.lg)
+                                .fill(Color.warmVellum)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: CornerRadius.lg)
+                                        .stroke(Color.gildedAccent.opacity(0.4), lineWidth: 1)
+                                )
+                        )
+                        .shadow(color: Color.black.opacity(0.04), radius: 4, y: 2)
+                    }
+                    .buttonStyle(.plain)
+                    .opacity(hasAppeared ? 1 : 0)
+                    .offset(y: hasAppeared ? 0 : 15)
+                }
+
                 // Quote text
                 quoteSection
                     .opacity(hasAppeared ? 1 : 0)
@@ -146,6 +190,12 @@ struct QuoteDetailView: View {
                         }
 
                         Button {
+                            showStudioSheet = true
+                        } label: {
+                            Label("Design Quote Card", systemImage: "sparkles.rectangle.stack")
+                        }
+
+                        Button {
                             shareQuote()
                         } label: {
                             Label("Share", systemImage: "square.and.arrow.up")
@@ -232,6 +282,9 @@ struct QuoteDetailView: View {
         .sheet(isPresented: $showShareSheet) {
             QuoteShareSheet(items: shareItems)
         }
+        .sheet(isPresented: $showStudioSheet) {
+            QuoteCardStudioView(quote: quote)
+        }
         .sheet(item: $organizationSheet) { destination in
             switch destination {
             case .collections:
@@ -265,48 +318,76 @@ struct QuoteDetailView: View {
                     .fieldChrome(minHeight: 150)
                     .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.textEditor)
             } else {
-                Text(quote.text)
-                    .quoteTextStyle()
+                Text("“\(quote.text)”")
+                    .font(.quoteDisplay)
+                    .foregroundStyle(Color.textPrimary)
+                    .lineSpacing(6)
+                    .fixedSize(horizontal: false, vertical: true)
                     .textSelection(.enabled)
 
                 // Favorite indicator
                 if quote.isFavorite {
-                    HStack {
+                    HStack(spacing: Spacing.xs) {
                         Image(systemName: "heart.fill")
-                            .foregroundStyle(Color.accent)
+                            .foregroundStyle(Color.gildedAccent)
                         Text("Favorite")
-                            .foregroundStyle(.secondary)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(Color.gildedAccent)
                     }
-                    .font(.caption)
+                    .padding(.top, Spacing.xs)
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.lg)
-        .paperCard()
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.lg)
+                .fill(Color.warmVellum)
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.lg)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
+        )
+        .shadow(color: Color.black.opacity(0.04), radius: 6, y: 2)
     }
 
     // MARK: - Margin Note Section
 
     private var marginNoteSection: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
-            Label("Margin Note", systemImage: "note.text")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "pencil.line")
+                    .font(.caption)
+                    .foregroundStyle(Color.goldFoil)
+                Text("Margin Note")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.textSecondary)
+            }
 
             if isEditing {
                 TextField("Add a margin note...", text: $editedMarginNote)
-                    .font(.body)
+                    .font(.marginScript)
                     .textFieldStyle(.plain)
                     .fieldChrome(minHeight: 56)
             } else if let note = quote.marginNote {
                 Text(note)
-                    .font(.attribution)
-                    .foregroundStyle(.secondary)
+                    .font(.marginScript)
+                    .foregroundStyle(Color.textPrimary)
+                    .lineSpacing(4)
                     .textSelection(.enabled)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.lg)
-        .paperCard()
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .fill(Color.warmVellum.opacity(0.8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.md)
+                        .stroke(Color.quoteBorder.opacity(0.5), lineWidth: Stroke.hairline.width)
+                )
+        )
+        .shadow(color: Color.black.opacity(0.03), radius: 3, y: 1)
     }
 
     // MARK: - Metadata Section

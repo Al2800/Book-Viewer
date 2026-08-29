@@ -10,6 +10,16 @@ export const colours = {
   line: '#D9D2C5',
 };
 
+export const coverFields = {
+  ink: '#12151A',
+  navy: '#172532',
+  rust: '#2C1A16',
+  green: '#14221C',
+  wine: '#26181D',
+} as const;
+
+export const coverBone = '#F3EBDD';
+
 export const sans =
   '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif';
 
