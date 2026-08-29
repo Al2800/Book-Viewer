@@ -30,14 +30,22 @@ final class ISBNScanner: NSObject {
 
     // MARK: - Configuration
 
-    /// Minimum confidence required for detection
+    /// Minimum confidence required for live-camera detections
     var minimumConfidence: Float = 0.8
+
+    /// Frame interval and confirmation policy for the live camera feed
+    var scanConfiguration: ScanConfiguration = .default {
+        didSet {
+            liveScanCoordinator.updateConfiguration(scanConfiguration)
+        }
+    }
 
     // MARK: - Real-time Scanning State
 
     private var videoOutput: AVCaptureVideoDataOutput?
     private weak var activeSession: AVCaptureSession?
     private let videoQueue = DispatchQueue(label: "com.bookquotes.ISBNScanner", qos: .userInitiated)
+    private let liveScanCoordinator = ISBNLiveScanCoordinator()
 
     // MARK: - Initialization
 
@@ -128,6 +136,8 @@ final class ISBNScanner: NSObject {
         error = nil
         detectedISBN = nil
         confidence = 0
+        liveScanCoordinator.updateConfiguration(scanConfiguration)
+        liveScanCoordinator.reset()
 
         let output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
@@ -165,6 +175,7 @@ final class ISBNScanner: NSObject {
         videoOutput = nil
         activeSession = nil
         isScanning = false
+        liveScanCoordinator.reset()
     }
 
     /// Process a camera frame for barcode detection.
@@ -269,6 +280,7 @@ final class ISBNScanner: NSObject {
         detectedISBN = nil
         confidence = 0
         error = nil
+        liveScanCoordinator.reset()
     }
 }
 
@@ -280,16 +292,29 @@ extension ISBNScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let coordinator = liveScanCoordinator
+        let now = CFAbsoluteTimeGetCurrent()
+        guard coordinator.beginFrame(now: now) else { return }
+
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            coordinator.endFrame()
+            return
+        }
 
         Task {
-            if let result = await detectBarcode(in: pixelBuffer) {
-                await MainActor.run {
-                    guard isScanning else { return }
-                    detectedISBN = result.isbn
-                    confidence = result.confidence
-                    onBarcodeDetected?(result.isbn)
-                }
+            defer { coordinator.endFrame() }
+
+            guard let result = await detectBarcode(in: pixelBuffer) else { return }
+
+            let minimumConfidence = await MainActor.run { self.minimumConfidence }
+            guard result.confidence >= minimumConfidence else { return }
+            guard coordinator.confirm(result.isbn) else { return }
+
+            await MainActor.run {
+                guard isScanning else { return }
+                detectedISBN = result.isbn
+                confidence = result.confidence
+                onBarcodeDetected?(result.isbn)
             }
         }
     }
@@ -378,5 +403,66 @@ extension ISBNScanner {
             confirmationCount: 1,
             hapticFeedback: true
         )
+    }
+}
+
+/// Serializes live-camera ISBN work so Vision is not invoked on every frame.
+final class ISBNLiveScanCoordinator: @unchecked Sendable {
+    private let lock = NSLock()
+    private var configuration: ISBNScanner.ScanConfiguration
+    private var lastProcessedAt: TimeInterval = 0
+    private var isBusy = false
+    private var candidate: String?
+    private var hits = 0
+
+    init(configuration: ISBNScanner.ScanConfiguration = .default) {
+        self.configuration = configuration
+    }
+
+    func updateConfiguration(_ configuration: ISBNScanner.ScanConfiguration) {
+        lock.lock()
+        self.configuration = configuration
+        lock.unlock()
+    }
+
+    func reset() {
+        lock.lock()
+        lastProcessedAt = 0
+        isBusy = false
+        candidate = nil
+        hits = 0
+        lock.unlock()
+    }
+
+    func beginFrame(now: TimeInterval) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+
+        guard !isBusy else { return false }
+        guard now - lastProcessedAt >= configuration.frameInterval else { return false }
+
+        isBusy = true
+        lastProcessedAt = now
+        return true
+    }
+
+    func endFrame() {
+        lock.lock()
+        isBusy = false
+        lock.unlock()
+    }
+
+    func confirm(_ isbn: String) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+
+        if isbn == candidate {
+            hits += 1
+        } else {
+            candidate = isbn
+            hits = 1
+        }
+
+        return hits >= configuration.confirmationCount
     }
 }

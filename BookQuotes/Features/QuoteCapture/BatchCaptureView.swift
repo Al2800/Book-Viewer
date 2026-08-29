@@ -15,7 +15,10 @@ struct BatchCaptureView: View {
 
     @State private var session: CaptureSession
     @State private var cameraService = CameraService()
+    @State private var cameraPermission = CameraPermissionService()
     @State private var currentQuality: ImageQualityAnalyzer.QualityResult?
+    @State private var showError = false
+    @State private var errorMessage = ""
     @State private var lifecycleState = BatchCaptureLifecycleState()
     @State private var selectedCapture: PageCapture?
     @StateObject private var milestoneManager = MilestoneManager()
@@ -42,17 +45,17 @@ struct BatchCaptureView: View {
             // Camera preview background
             cameraPreviewLayer
 
-            // Main content overlay
             VStack(spacing: 0) {
-                // Top bar with session info
+                // Keep cancel available even when permission is denied.
                 sessionHeader
                     .padding(.horizontal, Spacing.lg)
                     .padding(.top, Spacing.sm)
 
                 Spacer()
 
-                // Bottom controls
-                bottomControls
+                if cameraService.isAuthorized {
+                    bottomControls
+                }
             }
         }
         .statusBarHidden()
@@ -60,10 +63,17 @@ struct BatchCaptureView: View {
         // Prevent the system tab bar from overlapping camera capture UI.
         .toolbar(.hidden, for: .tabBar)
         .onAppear {
+            cameraPermission.checkStatus()
             setupCamera()
         }
         .onDisappear {
             cameraService.cleanup()
+        }
+        .cameraSessionHandlesScenePhase(cameraService)
+        .alert("Capture Error", isPresented: $showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
         }
         .sheet(isPresented: $lifecycleState.showsCaptureDetail) {
             if let capture = selectedCapture {
@@ -97,7 +107,11 @@ struct BatchCaptureView: View {
     @ViewBuilder
     private var cameraPreviewLayer: some View {
         ZStack {
-            if cameraService.isSessionConfigured {
+            if !cameraService.isAuthorized {
+                CameraPermissionView()
+                    .environment(cameraPermission)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.permissionPrompt)
+            } else if cameraService.isSessionConfigured {
                 CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
                     .ignoresSafeArea()
             } else {
@@ -105,7 +119,7 @@ struct BatchCaptureView: View {
                     .ignoresSafeArea()
             }
 
-            if !cameraService.isSessionRunning {
+            if cameraService.isAuthorized && !cameraService.isSessionRunning {
                 Color.black.opacity(0.6)
                     .ignoresSafeArea()
 
@@ -155,15 +169,11 @@ struct BatchCaptureView: View {
 
             // Capture button row
             HStack(spacing: Spacing.xl) {
-                // Flash toggle placeholder
-                Button {
-                    // Toggle flash
-                } label: {
-                    Image(systemName: "bolt.slash.fill")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                        .frame(width: 50, height: 50)
-                        .background(Color.black.opacity(0.35), in: Circle())
+                CaptureFlashButton(
+                    flashMode: cameraService.flashMode,
+                    isAvailable: cameraService.isFlashAvailable
+                ) {
+                    cameraService.cycleFlashMode()
                 }
 
                 // Main capture button
@@ -268,6 +278,7 @@ struct BatchCaptureView: View {
                 cropBehavior: cameraFramingProfile.captureCropBehavior
             )
             currentQuality = result.quality
+            cameraService.clearCapturedImage()
 
             HapticManager.captureSuccess()
 
@@ -276,6 +287,8 @@ struct BatchCaptureView: View {
 
         } catch {
             HapticManager.error()
+            errorMessage = error.localizedDescription
+            showError = true
         }
     }
 

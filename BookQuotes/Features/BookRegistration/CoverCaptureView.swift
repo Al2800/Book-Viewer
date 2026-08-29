@@ -54,11 +54,13 @@ struct CoverCaptureView: View {
             Text(errorMessage)
         }
         .onAppear {
+            cameraPermission.checkStatus()
             setupCamera()
         }
         .onDisappear {
             cleanup()
         }
+        .cameraSessionHandlesScenePhase(cameraService)
     }
 
     @ViewBuilder

@@ -123,6 +123,26 @@ private struct FocusIndicatorView: View {
     }
 }
 
+// MARK: - Scene Phase
+
+extension View {
+    /// Stops the camera when the app backgrounds and restarts it on return.
+    func cameraSessionHandlesScenePhase(_ cameraService: CameraService) -> some View {
+        modifier(CameraSessionScenePhaseModifier(cameraService: cameraService))
+    }
+}
+
+private struct CameraSessionScenePhaseModifier: ViewModifier {
+    @Environment(\.scenePhase) private var scenePhase
+    let cameraService: CameraService
+
+    func body(content: Content) -> some View {
+        content.onChange(of: scenePhase) { _, phase in
+            cameraService.handleScenePhase(phase)
+        }
+    }
+}
+
 // MARK: - Preview
 
 #Preview("Camera Preview View") {

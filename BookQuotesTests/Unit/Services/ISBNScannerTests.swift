@@ -39,4 +39,25 @@ final class ISBNScannerTests: XCTestCase {
         XCTAssertEqual(scanner.confidence, 0)
         XCTAssertNil(scanner.error)
     }
+
+    func testLiveScanCoordinatorThrottlesFramesAndRequiresConfirmation() {
+        let coordinator = ISBNLiveScanCoordinator(
+            configuration: ISBNScanner.ScanConfiguration(
+                frameInterval: 0.1,
+                confirmationCount: 2,
+                hapticFeedback: false
+            )
+        )
+
+        XCTAssertTrue(coordinator.beginFrame(now: 1.0))
+        XCTAssertFalse(coordinator.beginFrame(now: 1.05), "In-flight frame should reject overlap")
+        coordinator.endFrame()
+        XCTAssertFalse(coordinator.beginFrame(now: 1.08), "Interval should skip the next frame")
+        XCTAssertTrue(coordinator.beginFrame(now: 1.11))
+        coordinator.endFrame()
+
+        XCTAssertFalse(coordinator.confirm("9780735211292"))
+        XCTAssertTrue(coordinator.confirm("9780735211292"))
+        XCTAssertFalse(coordinator.confirm("9780000000002"), "A new ISBN should reset confirmation")
+    }
 }

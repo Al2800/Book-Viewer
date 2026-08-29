@@ -43,8 +43,6 @@ struct DetectedPageMark: Sendable, Equatable {
 }
 
 struct OnDeviceQuoteExtractor: Sendable {
-    private static let maximumReviewableCandidateCount = 8
-
     private let textRecognizer: any PageTextRecognizing
     private let markDetector: any PageMarkDetecting
     private let selector: QuoteMarkTextSelector
@@ -71,11 +69,9 @@ struct OnDeviceQuoteExtractor: Sendable {
             return enabledFamilies.isEmpty || enabledFamilies.contains(mark.type)
         }
         let detectedCandidates = selector.selectCandidates(textLines: textLines, marks: marks)
-        let candidates = detectedCandidates.count <= Self.maximumReviewableCandidateCount
-            ? detectedCandidates
-            : []
+        let budget = OnDeviceQuoteCandidateBudget.selected(detectedCandidates)
 
-        let quotes = candidates.map { candidate in
+        let quotes = budget.candidates.map { candidate in
             let customMarking = markings.customMarking(
                 forLocalMarkingFamily: candidate.markingType
             )
@@ -94,14 +90,34 @@ struct OnDeviceQuoteExtractor: Sendable {
         return QuoteExtractionResult(
             quotes: quotes,
             pageNumber: nil,
-            processingNotes: detectedCandidates.count <= Self.maximumReviewableCandidateCount
-                ? "On-device OCR extraction"
-                : "On-device extraction found too many ambiguous markings"
+            processingNotes: budget.overflowed
+                ? "On-device extraction kept the \(OnDeviceQuoteCandidateBudget.maximumReviewableCount) highest-confidence markings"
+                : "On-device OCR extraction"
         )
     }
 }
 
 extension OnDeviceQuoteExtractor: QuoteExtracting {}
+
+enum OnDeviceQuoteCandidateBudget {
+    static let maximumReviewableCount = 8
+
+    static func selected(_ candidates: [OnDeviceQuoteCandidate]) -> (
+        candidates: [OnDeviceQuoteCandidate],
+        overflowed: Bool
+    ) {
+        guard candidates.count > maximumReviewableCount else {
+            return (candidates, false)
+        }
+
+        let kept = Array(
+            candidates
+                .sorted { $0.confidence > $1.confidence }
+                .prefix(maximumReviewableCount)
+        )
+        return (kept, true)
+    }
+}
 
 struct OnDeviceQuoteCandidate: Sendable, Equatable {
     let text: String

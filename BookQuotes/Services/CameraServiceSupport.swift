@@ -83,12 +83,39 @@ struct CameraCaptureLifecycle {
 enum CameraCaptureConfiguration {
     static let portraitRotationAngle: CGFloat = 90
 
+    /// Caps live capture around 12 MP so batch sessions do not keep 24–48 MP buffers.
+    static let preferredMaxPhotoPixelCount: Int64 = 12_582_912
+
     static func maximumPhotoDimensions(
         from supportedDimensions: [CMVideoDimensions]
     ) -> CMVideoDimensions? {
         supportedDimensions.max { lhs, rhs in
             pixelCount(lhs) < pixelCount(rhs)
         }
+    }
+
+    /// Prefers the largest supported size that stays under the memory budget.
+    /// If every size exceeds the budget, returns the smallest available size.
+    static func preferredPhotoDimensions(
+        from supportedDimensions: [CMVideoDimensions],
+        maxPixelCount: Int64 = preferredMaxPhotoPixelCount
+    ) -> CMVideoDimensions? {
+        let withinBudget = supportedDimensions.filter { pixelCount($0) <= maxPixelCount }
+        if let bestFit = withinBudget.max(by: { pixelCount($0) < pixelCount($1) }) {
+            return bestFit
+        }
+
+        return supportedDimensions.min { lhs, rhs in
+            pixelCount(lhs) < pixelCount(rhs)
+        }
+    }
+
+    static func photoFlashMode(
+        for flashMode: CaptureFlashMode,
+        supported: [AVCaptureDevice.FlashMode]
+    ) -> AVCaptureDevice.FlashMode? {
+        let requested = flashMode.avFoundationMode
+        return supported.contains(requested) ? requested : nil
     }
 
     static func applyPortraitRotation(to connection: AVCaptureConnection?) {

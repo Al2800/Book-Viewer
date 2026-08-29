@@ -141,18 +141,12 @@ struct BookCoverCard: View {
     /// Context menu items
     @ViewBuilder
     private var contextMenuItems: some View {
-        if let onEdit = onEdit {
-            BookCardContextMenuItems(
-                onEdit: onEdit,
-                onShare: onShare,
-                onDelete: onDelete
-            )
-        } else {
-            BookCardContextMenuItems(
-                onShare: onShare,
-                onDelete: onDelete
-            )
-        }
+        BookCardContextMenuItems(
+            onEdit: onEdit,
+            onViewQuotes: onTap,
+            onShare: onShare,
+            onDelete: onDelete
+        )
     }
 }
 
@@ -302,6 +296,7 @@ struct BookListRow: View {
     private var contextMenuItems: some View {
         BookCardContextMenuItems(
             onEdit: onEdit,
+            onViewQuotes: onTap,
             onShare: onShare,
             onDelete: onDelete
         )

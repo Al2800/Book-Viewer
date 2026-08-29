@@ -31,6 +31,9 @@ final class CameraService: NSObject {
     /// Current camera position (front/back)
     private(set) var cameraPosition: AVCaptureDevice.Position = .back
 
+    /// Hardware flash mode applied to the next still capture.
+    private(set) var flashMode: CaptureFlashMode = .auto
+
     /// Any error that occurred
     private(set) var error: CameraError?
 
@@ -57,6 +60,7 @@ final class CameraService: NSObject {
     private var captureLifecycle = CameraCaptureLifecycle()
     private var photoTimeoutTask: Task<Void, Never>?
     private static let defaultCaptureTimeoutSeconds: UInt64 = 15
+    private let sessionQueue = DispatchQueue(label: "com.bookquotes.camera.session")
 
     // MARK: - Initialization
 
@@ -125,6 +129,10 @@ final class CameraService: NSObject {
 
         guard isAuthorized else {
             throw CameraError.notAuthorized
+        }
+
+        if isSessionConfigured, captureSession != nil {
+            return
         }
 
         let session = AVCaptureSession()
@@ -196,12 +204,14 @@ final class CameraService: NSObject {
             return
         }
 
-        guard let session = captureSession, !session.isRunning else { return }
+        guard let session = captureSession else { return }
 
-        Task.detached(priority: .userInitiated) { [self, session] in
-            session.startRunning()
-            await MainActor.run {
-                isSessionRunning = true
+        sessionQueue.async { [weak self] in
+            if !session.isRunning {
+                session.startRunning()
+            }
+            DispatchQueue.main.async {
+                self?.isSessionRunning = true
             }
         }
     }
@@ -214,14 +224,47 @@ final class CameraService: NSObject {
             return
         }
 
-        guard let session = captureSession, session.isRunning else { return }
+        guard let session = captureSession else {
+            isSessionRunning = false
+            return
+        }
 
-        Task.detached(priority: .userInitiated) { [self, session] in
-            session.stopRunning()
-            await MainActor.run {
-                isSessionRunning = false
+        sessionQueue.async { [weak self] in
+            if session.isRunning {
+                session.stopRunning()
+            }
+            DispatchQueue.main.async {
+                self?.isSessionRunning = false
             }
         }
+    }
+
+    /// Pause on background and resume when the capture flow is visible again.
+    func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            guard isAuthorized, isSessionConfigured else { return }
+            startSession()
+        case .background:
+            stopSession()
+        case .inactive:
+            break
+        @unknown default:
+            break
+        }
+    }
+
+    /// Cycle auto → on → off for the next still capture.
+    func cycleFlashMode() {
+        flashMode = flashMode.next
+    }
+
+    /// Whether the current input can fire a flash. Mock camera always reports available.
+    var isFlashAvailable: Bool {
+        if isMockCameraMode {
+            return true
+        }
+        return videoDeviceInput?.device.hasFlash == true
     }
 
     // MARK: - Photo Capture
@@ -240,6 +283,12 @@ final class CameraService: NSObject {
         let settings = AVCapturePhotoSettings()
         if let configuredPhotoDimensions {
             settings.maxPhotoDimensions = configuredPhotoDimensions
+        }
+        if let flash = CameraCaptureConfiguration.photoFlashMode(
+            for: flashMode,
+            supported: photoOutput.supportedFlashModes
+        ) {
+            settings.flashMode = flash
         }
 
         let captureID = UUID()
@@ -362,7 +411,7 @@ final class CameraService: NSObject {
         for device: AVCaptureDevice,
         output: AVCapturePhotoOutput
     ) {
-        let dimensions = CameraCaptureConfiguration.maximumPhotoDimensions(
+        let dimensions = CameraCaptureConfiguration.preferredPhotoDimensions(
             from: device.activeFormat.supportedMaxPhotoDimensions
         )
         configuredPhotoDimensions = dimensions
@@ -412,7 +461,22 @@ final class CameraService: NSObject {
         photoContinuation = nil
         captureLifecycle.cancel()
 
-        stopSession()
+        if isMockCameraMode {
+            isSessionRunning = false
+            isSessionConfigured = false
+            capturedImage = nil
+            flashMode = .auto
+            return
+        }
+
+        let session = captureSession
+        sessionQueue.sync {
+            if let session, session.isRunning {
+                session.stopRunning()
+            }
+        }
+
+        isSessionRunning = false
         isSessionConfigured = false
         captureSession = nil
         photoOutput = nil
@@ -420,6 +484,7 @@ final class CameraService: NSObject {
         videoDeviceInput = nil
         previewLayer = nil
         capturedImage = nil
+        flashMode = .auto
     }
 }
 

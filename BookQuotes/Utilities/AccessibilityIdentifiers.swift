@@ -234,6 +234,9 @@ enum AccessibilityIdentifiers {
         /// Page counter in batch capture
         static let pageCounter = "capture_page_counter"
 
+        /// Flash mode toggle on capture screens
+        static let flashButton = "capture_flash_button"
+
         /// Done button in batch capture
         static let doneButton = "capture_done_button"
 

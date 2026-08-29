@@ -238,13 +238,6 @@ struct ContentView: View {
     private func presentPersistenceRecoveryIfNeeded() {
         guard !persistenceRecoveryMessage.isEmpty else { return }
         showPersistenceBanner = true
-
-        // Auto-dismiss after a short period unless the user dismisses sooner.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
-            guard showPersistenceBanner else { return }
-            showPersistenceBanner = false
-            persistenceRecoveryMessage = ""
-        }
     }
 
     /// Determine whether onboarding should be presented.

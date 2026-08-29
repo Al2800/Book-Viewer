@@ -1,5 +1,6 @@
 import XCTest
 import SwiftData
+import UIKit
 
 @testable import BookQuotes
 
@@ -326,5 +327,18 @@ final class BookModelTests: SwiftDataTestCase {
         let book = Book(title: "Test", author: "Author")
         XCTAssertTrue(book.tags.isEmpty)
         logger.success("Tags empty by default")
+    }
+
+    func testBookCoverImageCacheReusesDecodedThumbnails() async {
+        let bookID = UUID()
+        let image = UIImage(systemName: "book.closed") ?? UIImage()
+        let data = image.pngData()
+
+        let decoded = await BookCoverImageCache.image(bookID: bookID, thumbnailData: data)
+        let cached = BookCoverImageCache.cachedImage(bookID: bookID, thumbnailData: data)
+
+        XCTAssertNotNil(decoded)
+        XCTAssertNotNil(cached)
+        XCTAssertNil(await BookCoverImageCache.image(bookID: bookID, thumbnailData: nil))
     }
 }

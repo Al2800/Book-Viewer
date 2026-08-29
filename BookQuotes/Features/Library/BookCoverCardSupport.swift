@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct BookCoverQuoteCountBadge: View {
     let quoteCount: Int
@@ -20,6 +21,34 @@ struct BookCoverQuoteCountBadge: View {
     }
 }
 
+enum BookCoverImageCache {
+    private static let cache = NSCache<NSString, UIImage>()
+
+    static func cacheKey(bookID: UUID, thumbnailData: Data?) -> String {
+        "\(bookID.uuidString)-\(thumbnailData?.count ?? 0)"
+    }
+
+    static func cachedImage(bookID: UUID, thumbnailData: Data?) -> UIImage? {
+        let key = cacheKey(bookID: bookID, thumbnailData: thumbnailData) as NSString
+        return cache.object(forKey: key)
+    }
+
+    static func image(bookID: UUID, thumbnailData: Data?) async -> UIImage? {
+        guard let thumbnailData, !thumbnailData.isEmpty else { return nil }
+
+        let key = cacheKey(bookID: bookID, thumbnailData: thumbnailData) as NSString
+        if let cached = cache.object(forKey: key) {
+            return cached
+        }
+
+        return await Task.detached(priority: .userInitiated) {
+            guard let image = UIImage(data: thumbnailData) else { return nil }
+            cache.setObject(image, forKey: key)
+            return image
+        }.value
+    }
+}
+
 struct BookCoverArtwork: View {
     enum Style {
         case grid
@@ -30,13 +59,33 @@ struct BookCoverArtwork: View {
     let style: Style
     let reduceMotion: Bool
 
+    @State private var decodedImage: UIImage?
+
     var body: some View {
-        if let coverData = book.coverThumbnailData,
-           let uiImage = UIImage(data: coverData) {
-            coverImage(uiImage)
-        } else {
-            placeholder
+        Group {
+            if let uiImage = displayedImage {
+                coverImage(uiImage)
+            } else {
+                placeholder
+            }
         }
+        .task(id: coverCacheKey) {
+            decodedImage = await BookCoverImageCache.image(
+                bookID: book.id,
+                thumbnailData: book.coverThumbnailData
+            )
+        }
+    }
+
+    private var coverCacheKey: String {
+        BookCoverImageCache.cacheKey(bookID: book.id, thumbnailData: book.coverThumbnailData)
+    }
+
+    private var displayedImage: UIImage? {
+        decodedImage ?? BookCoverImageCache.cachedImage(
+            bookID: book.id,
+            thumbnailData: book.coverThumbnailData
+        )
     }
 
     private func coverImage(_ uiImage: UIImage) -> some View {
@@ -158,6 +207,7 @@ struct BookReadingStatusBadge: View {
 
 struct BookCardContextMenuItems: View {
     var onEdit: (() -> Void)?
+    var onViewQuotes: (() -> Void)?
     var onShare: (() -> Void)?
     var onDelete: (() -> Void)?
 
@@ -171,10 +221,13 @@ struct BookCardContextMenuItems: View {
             }
         }
 
-        Button {
-            HapticManager.light()
-        } label: {
-            Label("View Quotes", systemImage: "text.quote")
+        if let onViewQuotes {
+            Button {
+                HapticManager.light()
+                onViewQuotes()
+            } label: {
+                Label("View Quotes", systemImage: "text.quote")
+            }
         }
 
         if let onShare {

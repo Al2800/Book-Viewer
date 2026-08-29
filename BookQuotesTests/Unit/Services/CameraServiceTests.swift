@@ -1,3 +1,4 @@
+import AVFoundation
 import XCTest
 import UIKit
 import CoreMedia
@@ -83,5 +84,57 @@ final class CameraServiceTests: XCTestCase {
 
     func testCaptureConfigurationUsesPortraitRotationAngle() {
         XCTAssertEqual(CameraCaptureConfiguration.portraitRotationAngle, 90)
+    }
+
+    func testPreferredPhotoDimensionsStayWithinMemoryBudget() throws {
+        let selected = try XCTUnwrap(CameraCaptureConfiguration.preferredPhotoDimensions(from: [
+            CMVideoDimensions(width: 1920, height: 1080),
+            CMVideoDimensions(width: 4032, height: 3024),
+            CMVideoDimensions(width: 5712, height: 4284)
+        ]))
+
+        XCTAssertEqual(selected.width, 4032)
+        XCTAssertEqual(selected.height, 3024)
+    }
+
+    func testPreferredPhotoDimensionsFallBackToSmallestWhenAllExceedBudget() throws {
+        let selected = try XCTUnwrap(CameraCaptureConfiguration.preferredPhotoDimensions(
+            from: [
+                CMVideoDimensions(width: 5712, height: 4284),
+                CMVideoDimensions(width: 8064, height: 6048)
+            ],
+            maxPixelCount: 1_000_000
+        ))
+
+        XCTAssertEqual(selected.width, 5712)
+        XCTAssertEqual(selected.height, 4284)
+    }
+
+    func testPhotoFlashModeUsesRequestedModeWhenSupported() {
+        XCTAssertEqual(
+            CameraCaptureConfiguration.photoFlashMode(
+                for: .on,
+                supported: [.off, .on, .auto]
+            ),
+            .on
+        )
+        XCTAssertNil(
+            CameraCaptureConfiguration.photoFlashMode(
+                for: .on,
+                supported: [.off]
+            )
+        )
+    }
+
+    @MainActor
+    func testCameraServiceCyclesFlashMode() {
+        let service = CameraService()
+        XCTAssertEqual(service.flashMode, .auto)
+        service.cycleFlashMode()
+        XCTAssertEqual(service.flashMode, .on)
+        service.cycleFlashMode()
+        XCTAssertEqual(service.flashMode, .off)
+        service.cleanup()
+        XCTAssertEqual(service.flashMode, .auto)
     }
 }

@@ -374,7 +374,33 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
         XCTAssertTrue(result.quotes.isEmpty)
     }
 
-    func testOnDeviceExtractorFailsClosedForImplausibleCandidateCount() async throws {
+    func testOnDeviceExtractorKeepsHighestConfidenceCandidatesWhenBusy() {
+        let candidates = (0..<11).map { index in
+            OnDeviceQuoteCandidate(
+                text: "Candidate \(index)",
+                markingType: .underline,
+                marginNote: nil,
+                confidence: Double(index) / 10
+            )
+        }
+
+        let budget = OnDeviceQuoteCandidateBudget.selected(candidates)
+
+        XCTAssertTrue(budget.overflowed)
+        XCTAssertEqual(budget.candidates.count, OnDeviceQuoteCandidateBudget.maximumReviewableCount)
+        XCTAssertEqual(budget.candidates.map(\.text), [
+            "Candidate 10",
+            "Candidate 9",
+            "Candidate 8",
+            "Candidate 7",
+            "Candidate 6",
+            "Candidate 5",
+            "Candidate 4",
+            "Candidate 3"
+        ])
+    }
+
+    func testOnDeviceExtractorCapsBusyPageCandidates() async throws {
         let lines = (0..<9).map { index in
             RecognizedTextLine(
                 text: "Candidate \(index)",
@@ -399,8 +425,17 @@ final class OnDeviceQuoteExtractorTests: XCTestCase {
             markings: []
         )
 
-        XCTAssertTrue(result.quotes.isEmpty)
-        XCTAssertEqual(result.processingNotes, "On-device extraction found too many ambiguous markings")
+        XCTAssertFalse(result.quotes.isEmpty)
+        XCTAssertLessThanOrEqual(
+            result.quotes.count,
+            OnDeviceQuoteCandidateBudget.maximumReviewableCount
+        )
+        if result.quotes.count == OnDeviceQuoteCandidateBudget.maximumReviewableCount {
+            XCTAssertEqual(
+                result.processingNotes,
+                "On-device extraction kept the \(OnDeviceQuoteCandidateBudget.maximumReviewableCount) highest-confidence markings"
+            )
+        }
     }
 
     func testDoubleUnderlineRetainsItsMarkingFamily() throws {

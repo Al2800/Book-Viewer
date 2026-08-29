@@ -105,8 +105,8 @@ struct CaptureButton: View {
     // MARK: - Capture Action
 
     private func triggerCapture() {
-        // Haptic feedback
-        HapticManager.captureSuccess()
+        // Button-press haptic only. Callers fire success after the photo lands.
+        HapticManager.light()
 
         // Ripple animation
         if !reduceMotion {
@@ -381,6 +381,33 @@ struct CaptureStatusPill: View {
         .background(Color.black.opacity(0.55), in: Capsule())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(text)
+    }
+}
+
+struct CaptureFlashButton: View {
+    let flashMode: CaptureFlashMode
+    var isAvailable: Bool = true
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            guard isAvailable else { return }
+            HapticManager.light()
+            action()
+        } label: {
+            Image(systemName: flashMode.icon)
+                .font(.title2)
+                .foregroundStyle(.white)
+                .frame(width: 50, height: 50)
+                .background(Color.black.opacity(0.35), in: Circle())
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.plain)
+        .disabled(!isAvailable)
+        .opacity(isAvailable ? 1 : 0.4)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.flashButton)
+        .accessibilityLabel(flashMode.accessibilityLabel)
+        .accessibilityHint("Cycles flash between automatic, on, and off")
     }
 }
 

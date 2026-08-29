@@ -30,7 +30,6 @@ struct QuoteCaptureView: View {
     @State private var isAnalyzingQuality = false
     @State private var showError = false
     @State private var errorMessage = ""
-    @State private var showExtractionReview = false
     @State private var capturedSession: CaptureSession?
     private let cameraFramingProfile = CameraFramingProfile.quotePage
     private let imageProcessor = QuoteCaptureImageProcessor()
@@ -44,6 +43,10 @@ struct QuoteCaptureView: View {
 
             if captureState == .qualityChecking {
                 qualityCheckingOverlay
+            }
+
+            if captureState == .processing {
+                processingView
             }
 
             if captureState == .previewing {
@@ -65,13 +68,17 @@ struct QuoteCaptureView: View {
         // Hide it during capture so the shutter controls are always visible.
         .toolbar(.hidden, for: .tabBar)
         .safeAreaInset(edge: .bottom) {
-            if captureState == .previewing {
+            if captureState == .previewing && cameraService.isAuthorized {
                 bottomCaptureControls
             }
         }
         .sheet(isPresented: .init(
             get: { captureState == .reviewing },
-            set: { if !$0 { captureState = .previewing } }
+            set: { newValue in
+                if !newValue, captureState == .reviewing {
+                    captureState = .previewing
+                }
+            }
         )) {
             if let image = capturedImage {
                 ImageReviewView(
@@ -88,39 +95,33 @@ struct QuoteCaptureView: View {
                 )
             }
         }
-        .fullScreenCover(isPresented: .init(
-            get: { captureState == .processing },
-            set: { _ in }
-        )) {
-            processingView
-        }
         .alert("Error", isPresented: $showError) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage)
         }
-        .fullScreenCover(isPresented: $showExtractionReview, onDismiss: {
+        .fullScreenCover(item: $capturedSession, onDismiss: {
             // Always reset to previewing when the review flow is dismissed.
             // This prevents returning to a camera preview with no shutter controls.
             retakePhoto()
-        }) {
-            if let session = capturedSession {
-                ExtractionReviewView(
-                    session: session,
-                    book: book,
-                    onComplete: {
-                        showExtractionReview = false
-                        finalizeCaptureFlow()
-                    }
-                )
-            }
+        }) { session in
+            ExtractionReviewView(
+                session: session,
+                book: book,
+                onComplete: {
+                    capturedSession = nil
+                    finalizeCaptureFlow()
+                }
+            )
         }
         .onAppear {
+            cameraPermission.checkStatus()
             setupCamera()
         }
         .onDisappear {
             cameraService.cleanup()
         }
+        .cameraSessionHandlesScenePhase(cameraService)
     }
 
     // MARK: - Camera Content
@@ -182,6 +183,13 @@ struct QuoteCaptureView: View {
             }
 
             HStack {
+                CaptureFlashButton(
+                    flashMode: cameraService.flashMode,
+                    isAvailable: cameraService.isFlashAvailable
+                ) {
+                    cameraService.cycleFlashMode()
+                }
+
                 Spacer()
 
                 Button {
@@ -202,6 +210,9 @@ struct QuoteCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
 
                 Spacer()
+
+                Color.clear
+                    .frame(width: 50, height: 50)
             }
 
             if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
@@ -362,7 +373,6 @@ struct QuoteCaptureView: View {
 
                 captureState = .completed(session: session)
                 capturedSession = session
-                showExtractionReview = true
 
             } catch {
                 captureState = .previewing
