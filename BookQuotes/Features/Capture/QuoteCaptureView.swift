@@ -13,6 +13,12 @@ struct QuoteCaptureView: View {
     /// The book to attach quotes to
     let book: Book
 
+    /// When true, hides the legacy top CaptureHeaderBar (e.g. when ActiveBookHUD is shown)
+    var hidesHeaderBar: Bool = false
+
+    /// When true, hides the tab bar. Keep false on the Capture tab so the user can leave.
+    var hidesTabBar: Bool = true
+
     /// Completion handler when capture flow finishes
     var onComplete: (() -> Void)?
 
@@ -46,7 +52,7 @@ struct QuoteCaptureView: View {
                 qualityCheckingOverlay
             }
 
-            if captureState == .previewing {
+            if captureState == .previewing && !hidesHeaderBar {
                 VStack(spacing: 0) {
                     CaptureHeaderBar(
                         title: book.title,
@@ -61,9 +67,7 @@ struct QuoteCaptureView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
-        // The system tab bar can overlap full-screen camera controls on newer iOS versions.
-        // Hide it during capture so the shutter controls are always visible.
-        .toolbar(.hidden, for: .tabBar)
+        .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
         .safeAreaInset(edge: .bottom) {
             if captureState == .previewing {
                 bottomCaptureControls

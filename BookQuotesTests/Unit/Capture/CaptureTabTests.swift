@@ -8,13 +8,16 @@ final class CaptureTabTests: XCTestCase {
         var bookCreated: Book?
         var quotesSaved: Book?
 
+        var didExit = false
         let tab = CaptureTab(
             onBookCreated: { book in bookCreated = book },
-            onQuotesSaved: { book in quotesSaved = book }
+            onQuotesSaved: { book in quotesSaved = book },
+            onExit: { didExit = true }
         )
         XCTAssertNotNil(tab)
         XCTAssertNil(bookCreated)
         XCTAssertNil(quotesSaved)
+        XCTAssertFalse(didExit)
     }
 
     func testCaptureFlowStateDirectsToActiveReadingByDefault() {

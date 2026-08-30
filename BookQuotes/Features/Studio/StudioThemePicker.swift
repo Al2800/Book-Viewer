@@ -15,7 +15,7 @@ struct StudioThemePicker: View {
 
             // Theme Swatches
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: Spacing.md) {
+                HStack(spacing: Spacing.sm) {
                     ForEach(StudioTheme.allCases) { theme in
                         Button {
                             HapticManager.selection()
@@ -23,17 +23,17 @@ struct StudioThemePicker: View {
                                 selectedTheme = theme
                             }
                         } label: {
-                            VStack(spacing: Spacing.xs) {
+                            VStack(spacing: Spacing.xxs) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: CornerRadius.md)
                                         .fill(theme.cardBackground)
-                                        .frame(width: 64, height: 44)
+                                        .frame(width: 58, height: 42)
 
-                                    // Decorative inner stripe
+                                    // Decorative inner accent stripe
                                     Rectangle()
                                         .fill(theme.accentColor)
-                                        .frame(width: 4, height: 24)
-                                        .offset(x: -20)
+                                        .frame(width: 3.5, height: 22)
+                                        .offset(x: -18)
 
                                     if selectedTheme == theme {
                                         RoundedRectangle(cornerRadius: CornerRadius.md)
@@ -43,12 +43,15 @@ struct StudioThemePicker: View {
                                             .stroke(theme.borderColor, lineWidth: 1)
                                     }
                                 }
-                                .shadow(color: Color.black.opacity(selectedTheme == theme ? 0.2 : 0.05), radius: 4, y: 2)
+                                .shadow(color: Color.black.opacity(selectedTheme == theme ? 0.2 : 0.04), radius: 3, y: 1)
 
                                 Text(theme.displayName)
                                     .font(.caption2.weight(selectedTheme == theme ? .bold : .regular))
                                     .foregroundStyle(selectedTheme == theme ? Color.textPrimary : Color.textSecondary)
+                                    .lineLimit(1)
                             }
+                            .frame(width: 66, height: 64)
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel("\(theme.displayName) theme")

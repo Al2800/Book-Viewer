@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - LibraryBookshelfView
 
 /// 3D horizontal interactive bookshelf displaying currently reading books.
-/// Features tactile spine depth, realistic shadow projection, and a wooden shelf ledge.
+/// Features realistic 3D standing books, tactile spine depth, and a rich wooden shelf ledge.
 struct LibraryBookshelfView: View {
 
     // MARK: - Properties
@@ -60,9 +60,9 @@ struct LibraryBookshelfView: View {
     // MARK: - Bookshelf Content
 
     private var bookshelfContent: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(alignment: .bottom, spacing: Spacing.lg) {
+                LazyHStack(alignment: .bottom, spacing: Spacing.md) {
                     ForEach(currentlyReadingBooks) { book in
                         BookshelfItemView(book: book) {
                             HapticManager.light()
@@ -70,13 +70,13 @@ struct LibraryBookshelfView: View {
                         }
                     }
                 }
-                .padding(.horizontal, Spacing.md)
-                .padding(.top, Spacing.md)
-                .padding(.bottom, Spacing.xs)
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.lg)
+                .padding(.bottom, 4)
             }
 
-            // Tactile wooden shelf ledge
             BookshelfLedge()
+                .padding(.bottom, BookshelfItemView.captionReserve)
         }
         .padding(.vertical, Spacing.xs)
     }
@@ -123,64 +123,41 @@ struct LibraryBookshelfView: View {
 
 // MARK: - BookshelfItemView
 
-/// Single standing book item on the 3D shelf with spine shading.
+/// Single standing book item on the 3D shelf with 3D perspective projection.
 struct BookshelfItemView: View {
+    static let captionReserve: CGFloat = 40
+
     let book: Book
     let onTap: () -> Void
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: Spacing.xs) {
-                // Book Cover with 3D Spine and realistic shadow
-                ZStack(alignment: .leading) {
-                    BookCoverArtwork(book: book, style: .grid, reduceMotion: reduceMotion)
-                        .frame(width: 90, height: 135)
-                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-                        .overlay {
-                            // 3D book spine depth shader
-                            LinearGradient.spineDepth
-                                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
-                        }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: CornerRadius.sm)
-                                .stroke(Color.white.opacity(0.15), lineWidth: Stroke.hairline.width)
-                        }
+            VStack(spacing: 0) {
+                ThreeDimensionalBookView(
+                    book: book,
+                    width: 92,
+                    height: 138,
+                    pageBlockThickness: 10,
+                    isInteractive: false,
+                    showQuoteBadge: true,
+                    presentation: .shelf
+                )
 
-                    // Gold foil badge for quote count
-                    if book.hasQuotes {
-                        VStack {
-                            HStack {
-                                Spacer()
-                                Text("\(book.quoteCount)")
-                                    .font(.system(size: 9, weight: .bold))
-                                    .foregroundStyle(Color.black.opacity(0.85))
-                                    .padding(.horizontal, 5)
-                                    .padding(.vertical, 2)
-                                    .background(LinearGradient.foilAccent)
-                                    .clipShape(Capsule())
-                                    .shadow(color: Color.black.opacity(0.15), radius: 1, y: 1)
-                                    .padding(4)
-                            }
-                            Spacer()
-                        }
-                    }
+                Color.clear
+                    .frame(height: 11)
+
+                VStack(spacing: 2) {
+                    Text(book.title)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(Color.textPrimary)
+                        .lineLimit(1)
+
+                    Text(book.author)
+                        .font(.caption2)
+                        .foregroundStyle(Color.textSecondary)
+                        .lineLimit(1)
                 }
-                .elevation(.md)
-
-                // Title label
-                Text(book.title)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(Color.textPrimary)
-                    .lineLimit(1)
-                    .frame(width: 90)
-
-                Text(book.author)
-                    .font(.caption2)
-                    .foregroundStyle(Color.textSecondary)
-                    .lineLimit(1)
-                    .frame(width: 90)
+                .frame(width: 110, height: Self.captionReserve - 4, alignment: .top)
             }
         }
         .buttonStyle(.plain)
@@ -192,38 +169,44 @@ struct BookshelfItemView: View {
 
 // MARK: - BookshelfLedge
 
-/// Tactile shelf ledge underneath standing books with wood-like depth.
+/// Tactile shelf ledge underneath standing books with rich oak/mahogany depth.
 struct BookshelfLedge: View {
     var body: some View {
         VStack(spacing: 0) {
-            // Shelf top surface highlight
+            // Shelf top surface highlight reflection
             Rectangle()
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(red: 0.85, green: 0.80, blue: 0.72).opacity(0.6),
-                            Color(red: 0.70, green: 0.65, blue: 0.58).opacity(0.4)
+                            Color(red: 0.90, green: 0.85, blue: 0.77).opacity(0.8),
+                            Color(red: 0.75, green: 0.68, blue: 0.58).opacity(0.6)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
                     )
                 )
-                .frame(height: 3)
+                .frame(height: 3.5)
 
             // Shelf front bevel ledge
             Rectangle()
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(red: 0.55, green: 0.48, blue: 0.40).opacity(0.8),
-                            Color(red: 0.38, green: 0.32, blue: 0.26).opacity(0.9)
+                            Color(red: 0.52, green: 0.42, blue: 0.32),
+                            Color(red: 0.36, green: 0.28, blue: 0.20),
+                            Color(red: 0.26, green: 0.20, blue: 0.14)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
                     )
                 )
-                .frame(height: 6)
-                .shadow(color: Color.black.opacity(0.15), radius: 3, y: 2)
+                .frame(height: 8)
+                .overlay(alignment: .bottom) {
+                    Rectangle()
+                        .fill(Color.black.opacity(0.35))
+                        .frame(height: 1)
+                }
+                .shadow(color: Color.black.opacity(0.22), radius: 4, y: 3)
         }
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
     }

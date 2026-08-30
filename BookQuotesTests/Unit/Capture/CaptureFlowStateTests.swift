@@ -83,23 +83,23 @@ final class CaptureFlowStateTests: XCTestCase {
 
         state = CaptureFlowState(mode: .quoteCapture)
         let quoteCompleteCommand = state.handle(.completeQuoteCapture)
-        XCTAssertEqual(state.mode, .selection)
-        XCTAssertTrue(quoteCompleteCommand.clearsSelectedBook)
+        XCTAssertEqual(state.mode, .quoteCapture)
+        XCTAssertFalse(quoteCompleteCommand.clearsSelectedBook)
 
         state = CaptureFlowState(mode: .quoteCapture)
         let quoteCancelCommand = state.handle(.cancelQuoteCapture)
-        XCTAssertEqual(state.mode, .selection)
-        XCTAssertTrue(quoteCancelCommand.clearsSelectedBook)
+        XCTAssertEqual(state.mode, .quoteCapture)
+        XCTAssertFalse(quoteCancelCommand.clearsSelectedBook)
 
         state = CaptureFlowState(mode: .batchCapture)
         let batchCompleteCommand = state.handle(.completeBatchCapture)
-        XCTAssertEqual(state.mode, .selection)
-        XCTAssertTrue(batchCompleteCommand.clearsSelectedBook)
+        XCTAssertEqual(state.mode, .batchCapture)
+        XCTAssertFalse(batchCompleteCommand.clearsSelectedBook)
 
         state = CaptureFlowState(mode: .batchCapture)
         let batchCancelCommand = state.handle(.cancelBatchCapture)
-        XCTAssertEqual(state.mode, .selection)
-        XCTAssertTrue(batchCancelCommand.clearsSelectedBook)
+        XCTAssertEqual(state.mode, .batchCapture)
+        XCTAssertFalse(batchCancelCommand.clearsSelectedBook)
     }
 
     func testBookSelectionCancellationAndAddNewBookTransitions() {

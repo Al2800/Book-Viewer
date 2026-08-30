@@ -5,11 +5,13 @@ import SwiftData
 struct CaptureTab: View {
     var onBookCreated: ((Book) -> Void)?
     var onQuotesSaved: ((Book) -> Void)?
+    var onExit: (() -> Void)?
 
     var body: some View {
         CaptureTabRootView(
             onBookCreated: onBookCreated,
-            onQuotesSaved: onQuotesSaved
+            onQuotesSaved: onQuotesSaved,
+            onExit: onExit
         )
     }
 }

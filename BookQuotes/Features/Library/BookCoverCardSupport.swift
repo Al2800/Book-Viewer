@@ -31,87 +31,62 @@ struct BookCoverArtwork: View {
     let reduceMotion: Bool
 
     var body: some View {
-        if let coverData = book.coverThumbnailData,
-           let uiImage = UIImage(data: coverData) {
-            coverImage(uiImage)
-        } else {
-            placeholder
-        }
-    }
-
-    private func coverImage(_ uiImage: UIImage) -> some View {
-        Image(uiImage: uiImage)
-            .resizable()
-            .aspectRatio(style == .grid ? 2/3 : nil, contentMode: .fill)
-            .frame(width: style == .list ? 50 : nil, height: style == .list ? 72 : nil)
-            .spineDetail(cornerRadius: cornerRadius)
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+        switch style {
+        case .grid:
+            ThreeDimensionalBookView(
+                book: book,
+                width: 112,
+                height: 168,
+                pageBlockThickness: 8,
+                isInteractive: false,
+                showQuoteBadge: false,
+                presentation: .card
             )
+            .frame(maxWidth: .infinity)
+            .aspectRatio(2 / 3, contentMode: .fit)
+
+        case .list:
+            listThumbnail
+        }
     }
 
     @ViewBuilder
-    private var placeholder: some View {
-        switch style {
-        case .grid:
-            gridPlaceholder
-        case .list:
-            listPlaceholder
-        }
-    }
-
-    private var gridPlaceholder: some View {
-        RoundedRectangle(cornerRadius: CornerRadius.sm)
-            .fill(
-                LinearGradient(
-                    colors: [Color.backgroundSecondary, Color.backgroundTertiary],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .aspectRatio(2/3, contentMode: .fit)
-            .overlay {
-                VStack(spacing: Spacing.xs) {
-                    Image(systemName: "book.closed")
-                        .font(.title)
-                        .foregroundStyle(Color.textSecondary)
-
-                    Text(book.title)
-                        .font(.system(.caption2, design: .serif))
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                        .padding(.horizontal, Spacing.xs)
-                        .foregroundStyle(Color.textPrimary)
+    private var listThumbnail: some View {
+        if let coverData = book.coverThumbnailData ?? book.coverFullData,
+           let uiImage = UIImage(data: coverData) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 48, height: 70)
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.xs)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
                 }
-            }
-            .spineDetail(cornerRadius: CornerRadius.sm)
-            .overlay(
-                RoundedRectangle(cornerRadius: CornerRadius.sm)
-                    .stroke(Color.quoteBorder.opacity(0.5), lineWidth: Stroke.hairline.width)
-            )
-    }
-
-    private var listPlaceholder: some View {
-        RoundedRectangle(cornerRadius: CornerRadius.sm)
-            .fill(Color.backgroundSecondary)
-            .frame(width: 50, height: 72)
-            .overlay {
-                Image(systemName: "book.closed")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .spineDetail(cornerRadius: CornerRadius.sm)
-            .overlay(
-                RoundedRectangle(cornerRadius: CornerRadius.sm)
-                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-            )
-    }
-
-    private var cornerRadius: CGFloat {
-        switch style {
-        case .grid: return CornerRadius.md
-        case .list: return CornerRadius.sm
+                .elevation(.xs)
+        } else {
+            let theme = ClothboundJacketTheme.forBook(book)
+            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                .fill(theme.baseColor)
+                .frame(width: 48, height: 70)
+                .overlay {
+                    VStack(spacing: 2) {
+                        Text("✦")
+                            .font(.system(size: 8))
+                            .foregroundStyle(theme.foilGradient)
+                        Text(book.title)
+                            .font(.system(size: 8, weight: .bold, design: .serif))
+                            .foregroundStyle(theme.foilGradient)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .padding(.horizontal, 2)
+                    }
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.xs)
+                        .stroke(theme.foilBorderColor.opacity(0.6), lineWidth: Stroke.hairline.width)
+                }
+                .elevation(.xs)
         }
     }
 }

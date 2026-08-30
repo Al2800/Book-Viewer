@@ -44,7 +44,8 @@ struct ContentView: View {
 
                 CaptureTab(
                     onBookCreated: openBookInLibrary,
-                    onQuotesSaved: openBookInLibrary
+                    onQuotesSaved: openBookInLibrary,
+                    onExit: { selectedTab = .library }
                 )
                     .tabItem {
                         Label(Tab.capture.title, systemImage: Tab.capture.systemImage)

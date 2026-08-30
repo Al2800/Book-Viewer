@@ -139,55 +139,55 @@ struct BookHeaderView: View {
 
     @ViewBuilder
     private var coverImage: some View {
-        if let coverData = book.coverThumbnailData,
-           let uiImage = UIImage(data: coverData) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 100, height: 150)
-                .spineDetail(cornerRadius: CornerRadius.sm)
-                .overlay(
-                    RoundedRectangle(cornerRadius: CornerRadius.sm)
-                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                )
-                .elevation(.md)
-        } else {
-            placeholderCover(width: 100, height: 150)
-        }
+        ThreeDimensionalBookView(
+            book: book,
+            width: 88,
+            height: 132,
+            pageBlockThickness: 10,
+            isInteractive: true,
+            showQuoteBadge: false,
+            presentation: .hero
+        )
+        .frame(width: 104, height: 140, alignment: .bottomLeading)
+        .clipped()
     }
 
     @ViewBuilder
     private var smallCoverImage: some View {
-        if let coverData = book.coverThumbnailData,
+        if let coverData = book.coverThumbnailData ?? book.coverFullData,
            let uiImage = UIImage(data: coverData) {
             Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 44, height: 66)
-                .spineDetail(cornerRadius: CornerRadius.sm)
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
                 .overlay(
-                    RoundedRectangle(cornerRadius: CornerRadius.sm)
+                    RoundedRectangle(cornerRadius: CornerRadius.xs)
                         .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
                 )
         } else {
-            placeholderCover(width: 44, height: 66)
+            let theme = ClothboundJacketTheme.forBook(book)
+            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                .fill(theme.baseColor)
+                .frame(width: 44, height: 66)
+                .overlay {
+                    VStack(spacing: 2) {
+                        Text("✦")
+                            .font(.system(size: 6))
+                            .foregroundStyle(theme.foilGradient)
+                        Text(book.title)
+                            .font(.system(size: 7, weight: .bold, design: .serif))
+                            .foregroundStyle(theme.foilGradient)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .padding(.horizontal, 2)
+                    }
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: CornerRadius.xs)
+                        .stroke(theme.foilBorderColor.opacity(0.6), lineWidth: Stroke.hairline.width)
+                )
         }
-    }
-
-    private func placeholderCover(width: CGFloat, height: CGFloat) -> some View {
-        RoundedRectangle(cornerRadius: CornerRadius.sm)
-            .fill(Color.backgroundSecondary)
-            .frame(width: width, height: height)
-            .overlay {
-                Image(systemName: "book.closed")
-                    .font(width > 60 ? .title : .caption)
-                    .foregroundStyle(.secondary)
-            }
-            .spineDetail(cornerRadius: CornerRadius.sm)
-            .overlay(
-                RoundedRectangle(cornerRadius: CornerRadius.sm)
-                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-            )
     }
 
     // MARK: - Status Badge

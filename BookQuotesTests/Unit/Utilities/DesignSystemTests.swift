@@ -16,6 +16,9 @@ final class DesignSystemTests: XCTestCase {
         _ = Font.marginScriptSmall
         _ = Font.attribution
         _ = Font.attributionSmall
+        _ = Font.uiBadge
+        _ = Font.uiPill
+        _ = Font.sectionHeader
     }
 
     // MARK: - Palette & Color Tests

@@ -99,12 +99,14 @@ struct CaptureFlowState: Equatable {
             return .none
 
         case .completeQuoteCapture, .cancelQuoteCapture:
-            mode = .selection
-            return .clearSelectedBook
+            quoteCaptureFlowID = UUID()
+            mode = .quoteCapture
+            return .none
 
         case .completeBatchCapture, .cancelBatchCapture:
-            mode = .selection
-            return .clearSelectedBook
+            batchCaptureFlowID = UUID()
+            mode = .batchCapture
+            return .none
         }
     }
 }

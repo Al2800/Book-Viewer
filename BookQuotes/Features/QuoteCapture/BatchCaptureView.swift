@@ -10,6 +10,8 @@ struct BatchCaptureView: View {
     @Environment(\.dismiss) private var dismiss
 
     let book: Book
+    var hidesHeaderBar: Bool = false
+    var hidesTabBar: Bool = true
     let onComplete: (CaptureSession) -> Void
     let onCancel: () -> Void
 
@@ -26,12 +28,16 @@ struct BatchCaptureView: View {
     init(
         book: Book,
         session: CaptureSession? = nil,
+        hidesHeaderBar: Bool = false,
+        hidesTabBar: Bool = true,
         onComplete: @escaping (CaptureSession) -> Void,
         onCancel: @escaping () -> Void
     ) {
         let activeSession = session ?? CaptureSession(book: book)
         activeSession.resumeCapturing()
         self.book = book
+        self.hidesHeaderBar = hidesHeaderBar
+        self.hidesTabBar = hidesTabBar
         self.onComplete = onComplete
         self.onCancel = onCancel
         self._session = State(initialValue: activeSession)
@@ -45,9 +51,11 @@ struct BatchCaptureView: View {
             // Main content overlay
             VStack(spacing: 0) {
                 // Top bar with session info
-                sessionHeader
-                    .padding(.horizontal, Spacing.lg)
-                    .padding(.top, Spacing.sm)
+                if !hidesHeaderBar {
+                    sessionHeader
+                        .padding(.horizontal, Spacing.lg)
+                        .padding(.top, Spacing.sm)
+                }
 
                 Spacer()
 
@@ -57,8 +65,7 @@ struct BatchCaptureView: View {
         }
         .statusBarHidden()
         .toolbar(.hidden, for: .navigationBar)
-        // Prevent the system tab bar from overlapping camera capture UI.
-        .toolbar(.hidden, for: .tabBar)
+        .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
         .onAppear {
             setupCamera()
         }

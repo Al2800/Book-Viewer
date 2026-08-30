@@ -16,6 +16,7 @@ struct CaptureTabRootView: View {
     @State private var showingBookSwitcher = false
     var onBookCreated: ((Book) -> Void)?
     var onQuotesSaved: ((Book) -> Void)?
+    var onExit: (() -> Void)?
     @State private var showCoaching = false
     @AppStorage("hasCompletedCaptureCoaching") private var hasCompletedCoaching = false
     @Environment(\.scenePhase) private var scenePhase
@@ -153,6 +154,8 @@ struct CaptureTabRootView: View {
         case .selection, .bookSelection, .bookSelectionForBatch, .quoteCapture:
             QuoteCaptureFlowView(
                 book: selectedBook,
+                hidesHeaderBar: true,
+                hidesTabBar: false,
                 onComplete: {
                     let completedBook = selectedBook
                     handleCaptureFlowEvent(.completeQuoteCapture)
@@ -160,8 +163,9 @@ struct CaptureTabRootView: View {
                         onQuotesSaved?(completedBook)
                     }
                 },
-                onCancel: {
-                    handleCaptureFlowEvent(.cancelQuoteCapture)
+                onCancel: exitCapture,
+                onChooseBook: {
+                    showingBookSwitcher = true
                 }
             )
             .id(captureFlow.quoteCaptureFlowID)
@@ -170,8 +174,10 @@ struct CaptureTabRootView: View {
                     book: selectedBook,
                     onSwitchBook: {
                         showingBookSwitcher = true
-                    }
+                    },
+                    onClose: exitCapture
                 )
+                .padding(.horizontal, Spacing.md)
                 .padding(.top, Spacing.sm)
             }
 
@@ -192,6 +198,8 @@ struct CaptureTabRootView: View {
             BatchCaptureFlowView(
                 book: selectedBook,
                 initialSession: selectedDraft,
+                hidesHeaderBar: true,
+                hidesTabBar: false,
                 onComplete: { _ in
                     let completedBook = selectedBook
                     selectedDraft = nil
@@ -202,7 +210,10 @@ struct CaptureTabRootView: View {
                 },
                 onCancel: {
                     selectedDraft = nil
-                    handleCaptureFlowEvent(.cancelBatchCapture)
+                    exitCapture()
+                },
+                onChooseBook: {
+                    showingBookSwitcher = true
                 }
             )
             .id(captureFlow.batchCaptureFlowID)
@@ -211,11 +222,24 @@ struct CaptureTabRootView: View {
                     book: selectedBook,
                     onSwitchBook: {
                         showingBookSwitcher = true
+                    },
+                    onClose: {
+                        selectedDraft = nil
+                        exitCapture()
                     }
                 )
+                .padding(.horizontal, Spacing.md)
                 .padding(.top, Spacing.sm)
             }
         }
+    }
+
+    private func exitCapture() {
+        if let onExit {
+            onExit()
+            return
+        }
+        handleCaptureFlowEvent(.cancelQuoteCapture)
     }
 
     private func ensureActiveBook() {

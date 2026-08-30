@@ -51,7 +51,7 @@ struct BookCoverCard: View {
     }
 
     private var cardContent: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
             ZStack(alignment: .topTrailing) {
                 // Cover image
                 BookCoverArtwork(book: book, style: .grid, reduceMotion: reduceMotion)
@@ -65,6 +65,7 @@ struct BookCoverCard: View {
                 .font(.bookTitleSmall)
                 .foregroundStyle(Color.textPrimary)
                 .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                .padding(.top, Spacing.xxs)
 
             Text(book.author)
                 .font(.authorNameSmall)
@@ -73,7 +74,7 @@ struct BookCoverCard: View {
 
             cardMetadata
         }
-        .padding(Spacing.md)
+        .padding(Spacing.sm)
         .paperCard(cornerRadius: CornerRadius.lg)
         // MARK: - Entrance Animation
         .opacity(hasAppeared ? 1.0 : 0.0)

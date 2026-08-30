@@ -63,7 +63,10 @@ struct StudioTab: View {
                             theme: selectedTheme,
                             aspectRatio: selectedAspect
                         )
+                        .aspectRatio(selectedAspect.ratioValue, contentMode: .fit)
+                        .frame(maxWidth: 280, maxHeight: 260)
                         .frame(maxWidth: .infinity)
+                        .clipped()
                         .elevation(.md)
                         .onTapGesture {
                             selectedQuote = featured
@@ -155,71 +158,114 @@ struct StudioTab: View {
 // MARK: - QuoteCanvasCard
 
 /// Typographic card rendering for canvas and live previews.
+/// Uses adaptive dynamic font scaling so short and long quotes fit proportionally into any aspect ratio.
 struct QuoteCanvasCard: View {
     let quote: Quote
     let theme: StudioTheme
     let aspectRatio: StudioAspectRatio
 
-    private var displayFont: Font {
-        if quote.text.count < 80 {
-            return .serifTitleLarge
-        } else if quote.text.count < 180 {
-            return .quoteDisplay
-        } else {
-            return .quoteLarge
+    private var textLength: Int {
+        quote.text.count
+    }
+
+    /// Dynamic font size computed from text length and aspect ratio geometry.
+    private var quoteFontSize: CGFloat {
+        switch aspectRatio {
+        case .story: // 9:16 (tall vertical canvas)
+            if textLength < 70 { return 24 }
+            if textLength < 150 { return 19 }
+            if textLength < 260 { return 15 }
+            return 13
+        case .square: // 1:1 (compact vertical space)
+            if textLength < 70 { return 20 }
+            if textLength < 140 { return 16 }
+            if textLength < 240 { return 13 }
+            return 11.5
+        case .portrait: // 4:5
+            if textLength < 70 { return 22 }
+            if textLength < 140 { return 17 }
+            if textLength < 250 { return 14 }
+            return 12
+        }
+    }
+
+    private var quoteLineSpacing: CGFloat {
+        max(3, quoteFontSize * 0.28)
+    }
+
+    private var cardPadding: CGFloat {
+        switch aspectRatio {
+        case .story: return Spacing.lg
+        case .square, .portrait: return Spacing.md
         }
     }
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            VStack(alignment: .leading, spacing: Spacing.lg) {
-                // Top Mark
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                // Top Mark Header
                 HStack {
                     Image(systemName: "quote.opening")
-                        .font(.title2)
+                        .font(.system(size: max(14, quoteFontSize * 0.9), weight: .semibold))
                         .foregroundStyle(theme.accentColor)
                     Spacer()
                 }
 
-                Text("\u{201C}\(quote.text)\u{201D}")
-                    .font(displayFont)
-                    .foregroundStyle(theme.textColor)
-                    .lineSpacing(6)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 2)
 
+                // Quote Text (Scaled & Fitted with minimum scale factor)
+                Text("\u{201C}\(quote.text)\u{201D}")
+                    .font(.system(size: quoteFontSize, weight: .regular, design: .serif))
+                    .foregroundStyle(theme.textColor)
+                    .lineSpacing(quoteLineSpacing)
+                    .multilineTextAlignment(.leading)
+                    .minimumScaleFactor(0.7)
+                    .allowsTightening(true)
+
+                // Organic handwritten margin note card if present
                 if let marginNote = quote.marginNote, !marginNote.isEmpty {
-                    HStack(spacing: Spacing.xs) {
+                    HStack(alignment: .top, spacing: Spacing.xs) {
                         Image(systemName: "pencil.line")
-                            .font(.caption2)
+                            .font(.system(size: 10))
                             .foregroundStyle(theme.accentColor)
+                            .padding(.top, 2)
                         Text(marginNote)
-                            .font(.marginScript)
+                            .font(.system(size: max(11, quoteFontSize * 0.75), weight: .regular, design: .serif).italic())
                             .foregroundStyle(theme.textColor.opacity(0.9))
+                            .lineLimit(2)
                     }
-                    .padding(Spacing.sm)
+                    .padding(.horizontal, Spacing.sm)
+                    .padding(.vertical, 4)
                     .background(theme.accentColor.opacity(0.12))
-                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
+                    .padding(.top, 2)
                 }
 
-                Spacer(minLength: Spacing.md)
+                Spacer(minLength: 2)
 
-                // Attribution footer
+                // Attribution Footer
                 if let book = quote.book {
-                    VStack(alignment: .leading, spacing: Spacing.xxs) {
-                        Text(book.title)
-                            .font(.headline.weight(.semibold))
-                            .foregroundStyle(theme.textColor)
+                    HStack(alignment: .center, spacing: Spacing.sm) {
+                        // Mini 3D Book Cover thumbnail badge
+                        miniBookCoverBadge(book: book)
 
-                        HStack(spacing: Spacing.xs) {
-                            Text(book.author)
-                                .font(.subheadline)
-                                .foregroundStyle(theme.secondaryTextColor)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(book.title)
+                                .font(.system(size: max(11, quoteFontSize * 0.7), weight: .semibold, design: .serif))
+                                .foregroundStyle(theme.textColor)
+                                .lineLimit(1)
 
-                            if let page = quote.pageNumber {
-                                Text("· p. \(page)")
-                                    .font(.subheadline)
+                            HStack(spacing: Spacing.xs) {
+                                Text(book.author)
+                                    .font(.system(size: max(9.5, quoteFontSize * 0.6), design: .serif))
                                     .foregroundStyle(theme.secondaryTextColor)
+                                    .lineLimit(1)
+
+                                if let page = quote.pageNumber {
+                                    Text("· p. \(page)")
+                                        .font(.system(size: max(9.5, quoteFontSize * 0.6), design: .serif))
+                                        .foregroundStyle(theme.secondaryTextColor)
+                                }
                             }
                         }
                     }
@@ -228,16 +274,16 @@ struct QuoteCanvasCard: View {
                 // Brand subtle footer
                 HStack {
                     Text("BookQuotes Studio")
-                        .font(.caption2.italic())
+                        .font(.system(size: 8.5, weight: .regular).italic())
                         .foregroundStyle(theme.secondaryTextColor.opacity(0.6))
                     Spacer()
                 }
             }
-            .padding(Spacing.xl)
+            .padding(cardPadding)
 
             // Bookmark Ribbon
             BookmarkRibbon()
-                .padding(.trailing, Spacing.lg)
+                .padding(.trailing, Spacing.md)
                 .offset(y: -2)
         }
         .background(
@@ -252,6 +298,41 @@ struct QuoteCanvasCard: View {
                         .stroke(theme.borderColor, lineWidth: Stroke.hairline.width)
                 }
         )
+        .clipped()
+    }
+
+    // MARK: - Mini Book Cover Badge
+
+    @ViewBuilder
+    private func miniBookCoverBadge(book: Book) -> some View {
+        if let coverData = book.coverThumbnailData ?? book.coverFullData,
+           let uiImage = UIImage(data: coverData) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 18, height: 26)
+                .clipShape(RoundedRectangle(cornerRadius: 2))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 2)
+                        .stroke(Color.white.opacity(0.2), lineWidth: 0.5)
+                }
+                .shadow(color: Color.black.opacity(0.15), radius: 1, y: 1)
+        } else {
+            let theme = ClothboundJacketTheme.forBook(book)
+            RoundedRectangle(cornerRadius: 2)
+                .fill(theme.baseColor)
+                .frame(width: 18, height: 26)
+                .overlay {
+                    Text("❖")
+                        .font(.system(size: 6))
+                        .foregroundStyle(theme.foilGradient)
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 2)
+                        .stroke(theme.foilBorderColor.opacity(0.6), lineWidth: 0.5)
+                }
+                .shadow(color: Color.black.opacity(0.15), radius: 1, y: 1)
+        }
     }
 }
 

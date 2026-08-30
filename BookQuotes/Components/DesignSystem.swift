@@ -132,8 +132,14 @@ extension Font {
     static let authorNameSmall = Font.system(.caption, design: .serif)
     /// Serif footnote for compact quote text
     static let quoteCompact = Font.system(.footnote, design: .serif)
-    /// Semibold footnote for section headers
+
+    // MARK: - Tier 3: Functional UI Chrome (SF Pro Sans)
+    /// Semibold footnote for chapter/section headers
     static let sectionHeader = Font.system(.footnote).weight(.semibold)
+    /// Small UI badge font for counts, status, and tags
+    static let uiBadge = Font.system(size: 11, weight: .semibold)
+    /// Compact UI pill font for filters and navigation
+    static let uiPill = Font.system(size: 13, weight: .medium)
     /// Standard body text
     static let bodyText = Font.system(.body)
     /// Caption text

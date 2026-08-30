@@ -7,77 +7,101 @@ import SwiftData
 struct ActiveBookHUDView: View {
     let book: Book?
     let onSwitchBook: () -> Void
+    var onClose: (() -> Void)?
 
     var body: some View {
-        Button(action: onSwitchBook) {
-            HStack(spacing: Spacing.sm) {
-                // Book thumbnail or icon
-                if let book, let coverData = book.coverThumbnailData ?? book.coverFullData, let uiImage = UIImage(data: coverData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 24, height: 32)
-                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: CornerRadius.xs)
-                                .stroke(Color.white.opacity(0.3), lineWidth: 0.5)
+        HStack(spacing: Spacing.xs) {
+            Button(action: onSwitchBook) {
+                HStack(spacing: Spacing.sm) {
+                    bookThumbnail
+
+                    VStack(alignment: .leading, spacing: 1) {
+                        if let book {
+                            Text(book.title)
+                                .font(.system(.subheadline, design: .serif).weight(.semibold))
+                                .foregroundStyle(.white)
+                                .lineLimit(1)
+
+                            Text(book.author)
+                                .font(.caption2)
+                                .foregroundStyle(.white.opacity(0.78))
+                                .lineLimit(1)
+                        } else {
+                            Text("No Book Selected")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.white)
+
+                            Text("Tap to choose active book")
+                                .font(.caption2)
+                                .foregroundStyle(Color.gildedAccent)
                         }
-                } else {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: CornerRadius.xs)
-                            .fill(LinearGradient.spineDepth)
-                            .frame(width: 24, height: 32)
-
-                        Image(systemName: "book.closed")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Color.gildedAccent)
                     }
+                    .frame(maxWidth: 180, alignment: .leading)
+
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(Color.gildedAccent)
                 }
-
-                // Book Title & Status
-                VStack(alignment: .leading, spacing: 1) {
-                    if let book {
-                        Text(book.title)
-                            .font(.system(.subheadline, design: .serif).weight(.semibold))
-                            .foregroundStyle(.white)
-                            .lineLimit(1)
-
-                        Text(book.author)
-                            .font(.caption2)
-                            .foregroundStyle(.white.opacity(0.75))
-                            .lineLimit(1)
-                    } else {
-                        Text("No Book Selected")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.white)
-
-                        Text("Tap to choose active book")
-                            .font(.caption2)
-                            .foregroundStyle(Color.gildedAccent)
-                    }
-                }
-                .frame(maxWidth: 200, alignment: .leading)
-
-                // Switcher Chevron
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.caption2.weight(.bold))
-                    .foregroundStyle(Color.gildedAccent)
-                    .padding(.leading, Spacing.xxs)
+                .padding(.leading, Spacing.md)
+                .padding(.trailing, onClose == nil ? Spacing.md : Spacing.xs)
+                .padding(.vertical, Spacing.xs)
+                .contentShape(Capsule())
             }
-            .padding(.horizontal, Spacing.md)
-            .padding(.vertical, Spacing.xs)
-            .background(
-                Capsule()
-                    .fill(.ultraThinMaterial)
-                    .overlay {
-                        Capsule()
-                            .stroke(Color.white.opacity(0.25), lineWidth: Stroke.hairline.width)
-                    }
-            )
-            .shadow(color: Color.black.opacity(0.25), radius: 8, y: 4)
+            .buttonStyle(.plain)
+            .accessibilityLabel(book != nil ? "Active Book: \(book!.title). Tap to switch" : "Select active book")
+
+            if let onClose {
+                Button(action: onClose) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Close capture")
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
+                .padding(.trailing, Spacing.xs)
+            }
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(book != nil ? "Active Book: \(book!.title). Tap to switch" : "Select active book")
+        .background(
+            Capsule()
+                .fill(Color.black.opacity(0.62))
+                .overlay {
+                    Capsule()
+                        .fill(.ultraThinMaterial.opacity(0.35))
+                }
+                .overlay {
+                    Capsule()
+                        .stroke(Color.white.opacity(0.22), lineWidth: Stroke.hairline.width)
+                }
+        )
+        .shadow(color: Color.black.opacity(0.35), radius: 8, y: 4)
+    }
+
+    @ViewBuilder
+    private var bookThumbnail: some View {
+        if let book, let coverData = book.coverThumbnailData ?? book.coverFullData, let uiImage = UIImage(data: coverData) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 24, height: 32)
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.xs)
+                        .stroke(Color.white.opacity(0.3), lineWidth: 0.5)
+                }
+        } else {
+            ZStack {
+                RoundedRectangle(cornerRadius: CornerRadius.xs)
+                    .fill(LinearGradient.spineDepth)
+                    .frame(width: 24, height: 32)
+
+                Image(systemName: "book.closed")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(Color.gildedAccent)
+            }
+        }
     }
 }
 

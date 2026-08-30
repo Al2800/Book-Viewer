@@ -66,28 +66,15 @@ final class QuoteStudioExportService {
             throw ExportError.writeFailed
         }
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
-                guard status == .authorized || status == .limited else {
-                    continuation.resume(throwing: ExportError.writeFailed)
-                    return
-                }
-
-                UIImageWriteToSavedPhotosAlbum(
-                    image,
-                    PhotoSaveTarget { success, error in
-                        if success {
-                            HapticManager.notification(.success)
-                            continuation.resume()
-                        } else {
-                            continuation.resume(throwing: error ?? ExportError.writeFailed)
-                        }
-                    },
-                    #selector(PhotoSaveTarget.image(_:didFinishSavingWithError:contextInfo:)),
-                    nil
-                )
-            }
+        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        guard status == .authorized || status == .limited else {
+            throw ExportError.writeFailed
         }
+
+        try await PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.creationRequestForAsset(from: image)
+        }
+        HapticManager.notification(.success)
     }
 
     // MARK: - Obsidian Export
@@ -180,20 +167,5 @@ final class QuoteStudioExportService {
         }
 
         return output
-    }
-}
-
-// MARK: - PhotoSaveTarget Helper
-
-private final class PhotoSaveTarget: NSObject {
-    private let completion: (Bool, Error?) -> Void
-
-    init(completion: @escaping (Bool, Error?) -> Void) {
-        self.completion = completion
-        super.init()
-    }
-
-    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
-        completion(error == nil, error)
     }
 }
