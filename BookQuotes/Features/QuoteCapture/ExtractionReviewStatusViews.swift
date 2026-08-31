@@ -36,9 +36,19 @@ struct ExtractionReviewProcessingView: View {
             .paperCard()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .task {
-            while isProcessing {
-                try? await Task.sleep(for: .milliseconds(500))
+        .task(id: isProcessing) {
+            guard isProcessing else { return }
+
+            while !Task.isCancelled {
+                do {
+                    try await Task.sleep(for: .milliseconds(500))
+                } catch {
+                    // A state change or dismissal cancels this task. Return rather than
+                    // swallowing cancellation and spinning in a tight polling loop.
+                    return
+                }
+
+                guard !Task.isCancelled else { return }
                 onPoll()
             }
         }
