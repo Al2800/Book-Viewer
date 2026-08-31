@@ -3,28 +3,16 @@ import SwiftUI
 // MARK: - BookCoverCard
 
 /// Grid card displaying a book cover with quote count badge.
-/// Features Stripe-level polish: elevation, press states, haptics, and entrance animations.
 struct BookCoverCard: View {
-
-    // MARK: - Properties
-
     let book: Book
-
-    /// Optional tap action for interactive cards
     var onTap: (() -> Void)?
-
-    /// Context menu actions
     var onEdit: (() -> Void)?
     var onShare: (() -> Void)?
     var onDelete: (() -> Void)?
 
-    // MARK: - State
-
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    // MARK: - Body
 
     var body: some View {
         Group {
@@ -53,7 +41,6 @@ struct BookCoverCard: View {
     private var cardContent: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             ZStack(alignment: .topTrailing) {
-                // Cover image
                 BookCoverArtwork(book: book, style: .grid, reduceMotion: reduceMotion)
 
                 if book.hasQuotes {
@@ -76,7 +63,6 @@ struct BookCoverCard: View {
         }
         .padding(Spacing.sm)
         .paperCard(cornerRadius: CornerRadius.lg)
-        // MARK: - Entrance Animation
         .opacity(hasAppeared ? 1.0 : 0.0)
         .scaleEffect(hasAppeared ? 1.0 : 0.9)
         .onAppear {
@@ -127,61 +113,38 @@ struct BookCoverCard: View {
         }
     }
 
-    /// Staggered entrance delay for list animations
     private var entranceDelay: Double {
         Double.random(in: 0.0...0.15)
     }
 
-    // MARK: - Context Menu
-
-    /// Whether any context menu action is provided
     private var hasContextMenu: Bool {
-        onEdit != nil || onShare != nil || onDelete != nil
+        onTap != nil || onEdit != nil || onShare != nil || onDelete != nil
     }
 
-    /// Context menu items
     @ViewBuilder
     private var contextMenuItems: some View {
-        if let onEdit = onEdit {
-            BookCardContextMenuItems(
-                onEdit: onEdit,
-                onShare: onShare,
-                onDelete: onDelete
-            )
-        } else {
-            BookCardContextMenuItems(
-                onShare: onShare,
-                onDelete: onDelete
-            )
-        }
+        BookCardContextMenuItems(
+            onEdit: onEdit,
+            onViewQuotes: onTap,
+            onShare: onShare,
+            onDelete: onDelete
+        )
     }
 }
 
 // MARK: - BookListRow
 
 /// List row displaying book details with cover thumbnail.
-/// Features polished press state, haptics, and smooth transitions.
 struct BookListRow: View {
-
-    // MARK: - Properties
-
     let book: Book
-
-    /// Optional tap action
     var onTap: (() -> Void)?
-
-    /// Context menu actions
     var onEdit: (() -> Void)?
     var onShare: (() -> Void)?
     var onDelete: (() -> Void)?
 
-    // MARK: - State
-
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    // MARK: - Body
 
     var body: some View {
         Group {
@@ -209,10 +172,8 @@ struct BookListRow: View {
 
     private var rowContent: some View {
         HStack(spacing: Spacing.md) {
-            // Small cover thumbnail
             BookCoverArtwork(book: book, style: .list, reduceMotion: reduceMotion)
 
-            // Book details
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(book.title)
                     .font(.bookTitle)
@@ -228,14 +189,12 @@ struct BookListRow: View {
 
             Spacer()
 
-            // Chevron indicator for navigation
             Image(systemName: "chevron.right")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
         .padding(Spacing.md)
         .paperCard(cornerRadius: CornerRadius.lg)
-        // MARK: - Entrance Animation
         .opacity(hasAppeared ? 1.0 : 0.0)
         .offset(x: hasAppeared ? 0 : -10)
         .onAppear {
@@ -286,23 +245,19 @@ struct BookListRow: View {
         }
     }
 
-    /// Staggered entrance delay
     private var entranceDelay: Double {
         Double.random(in: 0.0...0.1)
     }
 
-    // MARK: - Context Menu
-
-    /// Whether any context menu action is provided
     private var hasContextMenu: Bool {
-        onEdit != nil || onShare != nil || onDelete != nil
+        onTap != nil || onEdit != nil || onShare != nil || onDelete != nil
     }
 
-    /// Context menu items
     @ViewBuilder
     private var contextMenuItems: some View {
         BookCardContextMenuItems(
             onEdit: onEdit,
+            onViewQuotes: onTap,
             onShare: onShare,
             onDelete: onDelete
         )
@@ -325,7 +280,6 @@ private struct BookCardButtonStyle: ButtonStyle {
 #Preview("Book Cards") {
     ScrollView {
         VStack(spacing: Spacing.xl) {
-            // Grid card preview
             Text("Grid Cards (Tappable)")
                 .font(.headline)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 16) {
@@ -346,7 +300,6 @@ private struct BookCardButtonStyle: ButtonStyle {
 
             Divider()
 
-            // List row preview
             Text("List Rows (Tappable)")
                 .font(.headline)
             VStack(spacing: 0) {
