@@ -80,8 +80,87 @@ struct CameraCaptureLifecycle {
     }
 }
 
+/// Thread-safe generation token used to invalidate queued capture-session work during teardown.
+final class CameraSessionGenerationGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private var generation: UInt64 = 0
+
+    func activate() -> UInt64 {
+        lock.lock()
+        defer { lock.unlock() }
+        generation &+= 1
+        return generation
+    }
+
+    func invalidate() {
+        lock.lock()
+        generation &+= 1
+        lock.unlock()
+    }
+
+    func isCurrent(_ token: UInt64) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return generation == token
+    }
+}
+
+struct CameraFrameProcessingToken: Sendable, Equatable {
+    let generation: UInt64
+}
+
+/// Limits expensive live Vision work to one request at a time and invalidates old callbacks.
+final class CameraFrameProcessingGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private let minimumInterval: TimeInterval
+    private var generation: UInt64 = 0
+    private var lastStartedAt: TimeInterval = 0
+    private var isBusy = false
+
+    init(minimumInterval: TimeInterval) {
+        self.minimumInterval = minimumInterval
+    }
+
+    func beginFrame(now: TimeInterval) -> CameraFrameProcessingToken? {
+        lock.lock()
+        defer { lock.unlock() }
+
+        guard !isBusy else { return nil }
+        guard lastStartedAt == 0 || now - lastStartedAt >= minimumInterval else { return nil }
+
+        isBusy = true
+        lastStartedAt = now
+        return CameraFrameProcessingToken(generation: generation)
+    }
+
+    func finish(_ token: CameraFrameProcessingToken) {
+        lock.lock()
+        if token.generation == generation {
+            isBusy = false
+        }
+        lock.unlock()
+    }
+
+    func isCurrent(_ token: CameraFrameProcessingToken) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return token.generation == generation
+    }
+
+    func reset() {
+        lock.lock()
+        generation &+= 1
+        lastStartedAt = 0
+        isBusy = false
+        lock.unlock()
+    }
+}
+
 enum CameraCaptureConfiguration {
     static let portraitRotationAngle: CGFloat = 90
+
+    /// Approximately 12 MP. This avoids retaining 24–48 MP buffers for routine page capture.
+    static let preferredMaxPhotoPixelCount: Int64 = 12_582_912
 
     static func maximumPhotoDimensions(
         from supportedDimensions: [CMVideoDimensions]
@@ -89,6 +168,30 @@ enum CameraCaptureConfiguration {
         supportedDimensions.max { lhs, rhs in
             pixelCount(lhs) < pixelCount(rhs)
         }
+    }
+
+    /// Selects the largest supported still size within the memory budget.
+    /// If every supported size exceeds the budget, the smallest available size is used.
+    static func preferredPhotoDimensions(
+        from supportedDimensions: [CMVideoDimensions],
+        maxPixelCount: Int64 = preferredMaxPhotoPixelCount
+    ) -> CMVideoDimensions? {
+        let withinBudget = supportedDimensions.filter { pixelCount($0) <= maxPixelCount }
+        if let bestFit = withinBudget.max(by: { pixelCount($0) < pixelCount($1) }) {
+            return bestFit
+        }
+
+        return supportedDimensions.min { lhs, rhs in
+            pixelCount(lhs) < pixelCount(rhs)
+        }
+    }
+
+    static func photoFlashMode(
+        for flashMode: CaptureFlashMode,
+        supported: [AVCaptureDevice.FlashMode]
+    ) -> AVCaptureDevice.FlashMode? {
+        let requested = flashMode.avFoundationMode
+        return supported.contains(requested) ? requested : nil
     }
 
     static func applyPortraitRotation(to connection: AVCaptureConnection?) {
