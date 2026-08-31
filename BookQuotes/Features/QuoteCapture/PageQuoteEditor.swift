@@ -18,17 +18,13 @@ struct PageQuoteEditor: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Source image section
             imageSection
 
-            // Visual provenance tether badge
             if let activeQuote = activeQuote, activeQuote.boundingBox != nil {
                 tetherBanner
             }
 
             Divider()
-
-            // Quotes list section
             quotesSection
         }
         .onAppear {
@@ -91,6 +87,7 @@ struct PageQuoteEditor: View {
                         .aspectRatio(contentMode: .fit)
 
                     IlluminatedPageOverlay(
+                        imageSize: image.size,
                         quotes: quotes,
                         selectedQuoteID: selectedQuoteID ?? quotes.first?.id,
                         onSelectQuote: { id in
@@ -134,7 +131,6 @@ struct PageQuoteEditor: View {
                 )
             }
 
-            // Zoom indicator
             VStack {
                 Spacer()
                 HStack {
@@ -181,12 +177,10 @@ struct PageQuoteEditor: View {
 
     private var quotesSection: some View {
         VStack(spacing: 0) {
-            // Header
             quoteListHeader
-            .padding(Spacing.md)
-            .background(Color.backgroundSecondary)
+                .padding(Spacing.md)
+                .background(Color.backgroundSecondary)
 
-            // Quote list
             if quotes.isEmpty {
                 emptyState
             } else if scrollsQuotesIndependently {
