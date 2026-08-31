@@ -1,33 +1,42 @@
 import SwiftUI
 
+// MARK: - Bookshelf Presentation
+
+struct LibraryBookshelfPresentation {
+    let title: String
+    let books: [Book]
+
+    init(books: [Book]) {
+        let currentlyReading = books.filter { $0.status == .currentlyReading }
+        if currentlyReading.isEmpty {
+            title = "Recent Books"
+            self.books = Array(books.prefix(5))
+        } else {
+            title = "Currently Reading"
+            self.books = currentlyReading
+        }
+    }
+}
+
 // MARK: - LibraryBookshelfView
 
-/// 3D horizontal interactive bookshelf displaying currently reading books.
-/// Features realistic 3D standing books, tactile spine depth, and a rich wooden shelf ledge.
+/// 3D horizontal interactive bookshelf displaying active or recent books.
 struct LibraryBookshelfView: View {
-
-    // MARK: - Properties
-
     let books: [Book]
     var onSelectBook: (Book) -> Void
     var onAddBook: (() -> Void)?
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    // MARK: - Computed Properties
-
-    private var currentlyReadingBooks: [Book] {
-        let reading = books.filter { $0.status == .currentlyReading }
-        return reading.isEmpty ? Array(books.prefix(5)) : reading
+    private var presentation: LibraryBookshelfPresentation {
+        LibraryBookshelfPresentation(books: books)
     }
-
-    // MARK: - Body
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             header
 
-            if currentlyReadingBooks.isEmpty {
+            if presentation.books.isEmpty {
                 emptyShelfCard
             } else {
                 bookshelfContent
@@ -43,14 +52,14 @@ struct LibraryBookshelfView: View {
                 Image(systemName: "books.vertical.fill")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.gildedAccent)
-                Text("Currently Reading")
+                Text(presentation.title)
                     .sectionHeaderStyle()
             }
 
             Spacer()
 
-            if !currentlyReadingBooks.isEmpty {
-                Text("\(currentlyReadingBooks.count) \(currentlyReadingBooks.count == 1 ? "book" : "books")")
+            if !presentation.books.isEmpty {
+                Text("\(presentation.books.count) \(presentation.books.count == 1 ? "book" : "books")")
                     .font(.caption)
                     .foregroundStyle(Color.textTertiary)
             }
@@ -63,7 +72,7 @@ struct LibraryBookshelfView: View {
         ZStack(alignment: .bottom) {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(alignment: .bottom, spacing: Spacing.md) {
-                    ForEach(currentlyReadingBooks) { book in
+                    ForEach(presentation.books) { book in
                         BookshelfItemView(book: book) {
                             HapticManager.light()
                             onSelectBook(book)
@@ -173,7 +182,6 @@ struct BookshelfItemView: View {
 struct BookshelfLedge: View {
     var body: some View {
         VStack(spacing: 0) {
-            // Shelf top surface highlight reflection
             Rectangle()
                 .fill(
                     LinearGradient(
@@ -187,7 +195,6 @@ struct BookshelfLedge: View {
                 )
                 .frame(height: 3.5)
 
-            // Shelf front bevel ledge
             Rectangle()
                 .fill(
                     LinearGradient(
