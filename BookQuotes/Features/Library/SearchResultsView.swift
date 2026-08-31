@@ -383,3 +383,155 @@ struct SearchResultsView: View {
     return PreviewContainer()
         .modelContainer(for: [Book.self, Quote.self])
 }
+
+// MARK: - V2 Explore Foundation
+
+/// Initial grounded Explore surface for the feature-flagged v2 shell.
+/// It uses existing persisted passages rather than placeholder AI content.
+struct V2ExploreFoundationView: View {
+    @Query(sort: \Quote.dateModified, order: .reverse) private var quotes: [Quote]
+    @State private var searchText = ""
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    let onOpenSettings: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if quotes.isEmpty {
+                    ContentUnavailableView {
+                        Label("Explore Your Reading", systemImage: "text.magnifyingglass")
+                    } description: {
+                        Text("Captured passages will become searchable and available to revisit here.")
+                    }
+                } else {
+                    passageList
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.backgroundPrimary)
+            .navigationTitle("Explore")
+            .navigationBarTitleDisplayMode(.large)
+            .searchable(
+                text: $searchText,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Search passages, books and notes"
+            )
+            .navigationDestination(for: Quote.self) { quote in
+                QuoteDetailView(quote: quote)
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: onOpenSettings) {
+                        Image(systemName: "gear")
+                    }
+                    .accessibilityLabel("Settings")
+                    .accessibilityIdentifier("v2_settings_button")
+                }
+            }
+        }
+    }
+
+    private var passageList: some View {
+        List {
+            if isSearching {
+                Section(resultCountTitle) {
+                    if filteredQuotes.isEmpty {
+                        Text("Try a book title, author, passage, note or tag.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.textSecondary)
+                    } else {
+                        ForEach(filteredQuotes) { quote in
+                            passageLink(quote)
+                        }
+                    }
+                }
+            } else {
+                if let revisitQuote {
+                    Section("Revisit") {
+                        passageLink(revisitQuote)
+                    }
+                }
+
+                Section("Recent Passages") {
+                    ForEach(Array(quotes.prefix(20))) { quote in
+                        passageLink(quote)
+                    }
+                }
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
+    }
+
+    private var isSearching: Bool {
+        !trimmedSearchText.isEmpty
+    }
+
+    private var trimmedSearchText: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var filteredQuotes: [Quote] {
+        guard isSearching else { return quotes }
+        let query = trimmedSearchText
+
+        return quotes.filter { quote in
+            quote.text.localizedStandardContains(query)
+                || quote.marginNote?.localizedStandardContains(query) == true
+                || quote.personalNote?.localizedStandardContains(query) == true
+                || quote.book?.title.localizedStandardContains(query) == true
+                || quote.book?.author.localizedStandardContains(query) == true
+                || quote.tags.contains(where: { $0.name.localizedStandardContains(query) })
+        }
+    }
+
+    private var revisitQuote: Quote? {
+        DailyPassage.passage(from: quotes)
+    }
+
+    private var resultCountTitle: String {
+        "\(filteredQuotes.count) Result\(filteredQuotes.count == 1 ? "" : "s")"
+    }
+
+    private func passageLink(_ quote: Quote) -> some View {
+        NavigationLink(value: quote) {
+            V2ExplorePassageRow(quote: quote, dynamicTypeSize: dynamicTypeSize)
+        }
+    }
+}
+
+private struct V2ExplorePassageRow: View {
+    let quote: Quote
+    let dynamicTypeSize: DynamicTypeSize
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text("“\(quote.text)”")
+                .font(.quoteBody)
+                .foregroundStyle(Color.textPrimary)
+                .multilineTextAlignment(.leading)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 4)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(metadata)
+                .font(.caption)
+                .foregroundStyle(Color.textSecondary)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+        }
+        .padding(.vertical, Spacing.xs)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(quote.text). \(metadata)")
+        .accessibilityHint("Open passage")
+    }
+
+    private var metadata: String {
+        guard let book = quote.book else { return "Saved passage" }
+        var parts = [book.title]
+        if let pageNumber = quote.pageNumber {
+            parts.append("p. \(pageNumber)")
+        }
+        return parts.joined(separator: " · ")
+    }
+}
