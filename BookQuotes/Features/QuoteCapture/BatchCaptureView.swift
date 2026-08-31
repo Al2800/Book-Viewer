@@ -8,6 +8,7 @@ import SwiftData
 struct BatchCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     let book: Book
     var hidesHeaderBar: Bool = false
@@ -17,7 +18,10 @@ struct BatchCaptureView: View {
 
     @State private var session: CaptureSession
     @State private var cameraService = CameraService()
+    @State private var cameraPermission = CameraPermissionService()
     @State private var currentQuality: ImageQualityAnalyzer.QualityResult?
+    @State private var showError = false
+    @State private var errorMessage = ""
     @State private var lifecycleState = BatchCaptureLifecycleState()
     @State private var selectedCapture: PageCapture?
     @StateObject private var milestoneManager = MilestoneManager()
@@ -45,12 +49,9 @@ struct BatchCaptureView: View {
 
     var body: some View {
         ZStack {
-            // Camera preview background
             cameraPreviewLayer
 
-            // Main content overlay
             VStack(spacing: 0) {
-                // Top bar with session info
                 if !hidesHeaderBar {
                     sessionHeader
                         .padding(.horizontal, Spacing.lg)
@@ -59,18 +60,28 @@ struct BatchCaptureView: View {
 
                 Spacer()
 
-                // Bottom controls
-                bottomControls
+                if cameraService.isAuthorized {
+                    bottomControls
+                }
             }
         }
         .statusBarHidden()
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
         .onAppear {
+            cameraPermission.checkStatus()
             setupCamera()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            handleScenePhase(phase)
         }
         .onDisappear {
             cameraService.cleanup()
+        }
+        .alert("Capture Error", isPresented: $showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
         }
         .sheet(isPresented: $lifecycleState.showsCaptureDetail) {
             if let capture = selectedCapture {
@@ -104,15 +115,19 @@ struct BatchCaptureView: View {
     @ViewBuilder
     private var cameraPreviewLayer: some View {
         ZStack {
-            if cameraService.isSessionConfigured {
-                CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
+            if !cameraService.isAuthorized {
+                CameraPermissionView()
+                    .environment(cameraPermission)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.permissionPrompt)
+            } else if cameraService.isSessionConfigured {
+                CameraPreviewViewWithFocus(cameraService: cameraService, framingProfile: cameraFramingProfile)
                     .ignoresSafeArea()
             } else {
                 Color.black
                     .ignoresSafeArea()
             }
 
-            if !cameraService.isSessionRunning {
+            if cameraService.isAuthorized && !cameraService.isSessionRunning {
                 Color.black.opacity(0.6)
                     .ignoresSafeArea()
 
@@ -155,32 +170,30 @@ struct BatchCaptureView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
             }
 
-            // Thumbnail strip
             if !session.captures.isEmpty {
                 thumbnailStrip
             }
 
-            // Capture button row
             HStack(spacing: Spacing.xl) {
-                // Flash toggle placeholder
-                Button {
-                    // Toggle flash
-                } label: {
-                    Image(systemName: "bolt.slash.fill")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                        .frame(width: 50, height: 50)
-                        .background(Color.black.opacity(0.35), in: Circle())
+                CaptureFlashButton(
+                    flashMode: cameraService.flashMode,
+                    isAvailable: cameraService.isFlashAvailable
+                ) {
+                    cameraService.cycleFlashMode()
                 }
 
-                // Main capture button
                 CaptureButton(isProcessing: lifecycleState.isCapturing) {
                     await captureCurrentFrame()
                 }
 
-                // Switch camera placeholder
                 Button {
-                    try? cameraService.switchCamera()
+                    do {
+                        try cameraService.switchCamera()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                        showError = true
+                        HapticManager.error()
+                    }
                 } label: {
                     Image(systemName: "camera.rotate")
                         .font(.title2)
@@ -188,6 +201,8 @@ struct BatchCaptureView: View {
                         .frame(width: 50, height: 50)
                         .background(Color.black.opacity(0.35), in: Circle())
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Switch camera")
             }
             .padding(.bottom, Spacing.xl)
 
@@ -234,7 +249,6 @@ struct BatchCaptureView: View {
                     .stroke(Color.white.opacity(0.10), lineWidth: 1)
             }
             .onChange(of: session.captures.count) { _, _ in
-                // Scroll to newest capture with smooth animation
                 if let lastCapture = session.captures.last {
                     withAnimation(.smoothSpring) {
                         proxy.scrollTo(lastCapture.id, anchor: .trailing)
@@ -248,11 +262,40 @@ struct BatchCaptureView: View {
 
     private func setupCamera() {
         Task {
-            await cameraService.requestAuthorization()
-            if cameraService.isAuthorized {
-                try? cameraService.setupSession()
+            let authorized = await cameraService.requestAuthorization()
+            guard authorized else { return }
+
+            do {
+                try cameraService.setupSession()
                 cameraService.startSession()
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
             }
+        }
+    }
+
+    private func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            cameraPermission.onAppBecameActive()
+            cameraService.checkAuthorization()
+
+            guard cameraPermission.isAuthorized, cameraService.isAuthorized else { return }
+            if cameraService.isSessionConfigured {
+                cameraService.startSession()
+            } else {
+                setupCamera()
+            }
+
+        case .background:
+            cameraService.stopSession()
+
+        case .inactive:
+            break
+
+        @unknown default:
+            break
         }
     }
 
@@ -275,28 +318,22 @@ struct BatchCaptureView: View {
                 cropBehavior: cameraFramingProfile.captureCropBehavior
             )
             currentQuality = result.quality
+            cameraService.clearCapturedImage()
 
             HapticManager.captureSuccess()
-
-            // Check for milestone celebrations
             checkMilestone(count: session.totalPages)
-
         } catch {
             HapticManager.error()
+            errorMessage = error.localizedDescription
+            showError = true
         }
     }
 
     private func removeCapture(_ capture: PageCapture) {
-        // Remove from session
         session.captures.removeAll { $0.id == capture.id }
         session.totalPages = max(0, session.totalPages - 1)
-
-        // Delete file
         capture.deleteImageFile()
-
-        // Delete from context
         modelContext.delete(capture)
-
         HapticManager.impact(.light)
     }
 
@@ -308,8 +345,6 @@ struct BatchCaptureView: View {
         session.finishCapturing()
         modelContext.insert(session)
         try? modelContext.save()
-
-        // Extraction Review uses consented remote AI first and keeps remote failures visible.
         onComplete(session)
     }
 
@@ -323,9 +358,10 @@ struct BatchCaptureView: View {
 
     private var batchStatusPill: CaptureStatusPill? {
         if !cameraService.detectedBoundingBoxes.isEmpty {
+            let count = cameraService.detectedBoundingBoxes.count
             return CaptureStatusPill(
-                systemImage: "sparkles",
-                text: "Perfect Framing • \(cameraService.detectedBoundingBoxes.count) Passages",
+                systemImage: "text.viewfinder",
+                text: "Text detected • \(count) region\(count == 1 ? "" : "s")",
                 tint: Color.gildedAccent
             )
         }
