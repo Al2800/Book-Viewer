@@ -195,8 +195,6 @@ struct ContentView: View {
     private func seedTestDataIfNeeded() async {
         guard UITestConfiguration.isUITesting, !isSeedingTestData else { return }
 
-        // If we're intentionally starting empty for a given UI test run, ensure the wipe happens
-        // even if `uiTestSeeded` is already set from a prior install/run.
         if UITestConfiguration.shouldStartWithEmptyLibrary {
             isSeedingTestData = true
             defer { isSeedingTestData = false }
@@ -211,9 +209,6 @@ struct ContentView: View {
             return
         }
 
-        // `uiTestSeeded` lives in UserDefaults and can survive situations where the SwiftData store
-        // is empty (for example: data reset, model container recovery, or app re-install oddities).
-        // If the DB is empty, allow re-seeding.
         if uiTestSeeded {
             do {
                 let descriptor = FetchDescriptor<Book>()
@@ -250,14 +245,9 @@ struct ContentView: View {
 
     private func presentPersistenceRecoveryIfNeeded() {
         guard !persistenceRecoveryMessage.isEmpty else { return }
+        // Persistence recovery represents possible user-data loss. Keep the message visible
+        // until the reader explicitly acknowledges it rather than clearing it on a timer.
         showPersistenceBanner = true
-
-        // Auto-dismiss after a short period unless the user dismisses sooner.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
-            guard showPersistenceBanner else { return }
-            showPersistenceBanner = false
-            persistenceRecoveryMessage = ""
-        }
     }
 
     /// Determine whether onboarding should be presented.
@@ -277,7 +267,6 @@ struct ContentView: View {
     private func handleScenePhaseChange(_ phase: ScenePhase) {
         switch phase {
         case .active:
-            // App came to foreground - resume queue processing
             Task {
                 if !authService.isAuthenticated {
                     _ = await authService.restoreSession()
@@ -291,7 +280,6 @@ struct ContentView: View {
             }
 
         case .background:
-            // App going to background - stop queue processing
             Task {
                 await CaptureQueueManager.shared?.stop()
             }
@@ -307,7 +295,6 @@ struct ContentView: View {
     /// Handle network connectivity changes
     private func handleConnectivityChange(wasConnected: Bool, isConnected: Bool) {
         if !wasConnected && isConnected {
-            // Just came online - resume queue processing
             Task {
                 if !authService.isAuthenticated {
                     _ = await authService.restoreSession()
