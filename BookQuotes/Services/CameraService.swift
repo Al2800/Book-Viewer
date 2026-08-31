@@ -32,7 +32,10 @@ final class CameraService: NSObject {
     /// Current camera position (front/back)
     private(set) var cameraPosition: AVCaptureDevice.Position = .back
 
-    /// Real-time detected text/mark bounding boxes normalized to UI portrait space (0.0 - 1.0)
+    /// Hardware flash mode applied to the next still capture.
+    private(set) var flashMode: CaptureFlashMode = .auto
+
+    /// Real-time detected text bounding boxes normalized to UI portrait space (0.0 - 1.0)
     private(set) var detectedBoundingBoxes: [CGRect] = []
 
     /// Any error that occurred
@@ -52,10 +55,15 @@ final class CameraService: NSObject {
     private var photoOutput: AVCapturePhotoOutput?
     private var videoDataOutput: AVCaptureVideoDataOutput?
     private let videoDataQueue = DispatchQueue(label: "uk.bookquotes.camera.videodata", qos: .userInitiated)
+    private let sessionQueue = DispatchQueue(label: "uk.bookquotes.camera.session", qos: .userInitiated)
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var previewSizeStore = CameraPreviewSizeStore()
     private var configuredPhotoDimensions: CMVideoDimensions?
+    private let sessionGenerationGate = CameraSessionGenerationGate()
+    private var activeSessionGeneration: UInt64 = 0
+    private var wantsSessionRunning = false
+    nonisolated private let visionFrameGate = CameraFrameProcessingGate(minimumInterval: 0.25)
 
     // MARK: - Continuations for async capture
 
@@ -75,6 +83,7 @@ final class CameraService: NSObject {
             isAuthorized = true
             isSessionConfigured = true
             isSessionRunning = true
+            wantsSessionRunning = true
         } else {
             let status = AVCaptureDevice.authorizationStatus(for: .video)
             isAuthorized = CameraAuthorizationPolicy.decision(for: status).isAuthorized
@@ -122,8 +131,9 @@ final class CameraService: NSObject {
 
     // MARK: - Session Management
 
-    /// Set up the capture session with back camera
-    func setupSession() throws {
+    /// Set up the capture session with the back camera.
+    /// Live text detection is disabled for ISBN-only cover capture to avoid duplicate Vision work.
+    func setupSession(enablesLiveTextDetection: Bool = true) throws {
         // In mock mode, no actual session setup needed
         if isMockCameraMode {
             return
@@ -131,6 +141,10 @@ final class CameraService: NSObject {
 
         guard isAuthorized else {
             throw CameraError.notAuthorized
+        }
+
+        if isSessionConfigured, captureSession != nil {
+            return
         }
 
         let session = AVCaptureSession()
@@ -167,21 +181,27 @@ final class CameraService: NSObject {
             throw CameraError.cannotAddOutput
         }
 
-        // Add real-time video data output for Apple Vision mark framing
-        let videoOutput = AVCaptureVideoDataOutput()
-        videoOutput.alwaysDiscardsLateVideoFrames = true
-        videoOutput.videoSettings = [
-            kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)
-        ]
-        if session.canAddOutput(videoOutput) {
-            session.addOutput(videoOutput)
-            videoOutput.setSampleBufferDelegate(self, queue: videoDataQueue)
-            videoDataOutput = videoOutput
+        if enablesLiveTextDetection {
+            let videoOutput = AVCaptureVideoDataOutput()
+            videoOutput.alwaysDiscardsLateVideoFrames = true
+            videoOutput.videoSettings = [
+                kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)
+            ]
+            if session.canAddOutput(videoOutput) {
+                session.addOutput(videoOutput)
+                videoOutput.setSampleBufferDelegate(self, queue: videoDataQueue)
+                videoDataOutput = videoOutput
+            }
         }
 
         session.commitConfiguration()
         captureSession = session
         isSessionConfigured = true
+        isSessionRunning = false
+        wantsSessionRunning = false
+        activeSessionGeneration = sessionGenerationGate.activate()
+        visionFrameGate.reset()
+        detectedBoundingBoxes = []
     }
 
     /// Create a preview layer for the camera feed
@@ -206,40 +226,103 @@ final class CameraService: NSObject {
         previewSizeStore.currentCroppingSize(previewLayerSize: previewLayer?.bounds.size)
     }
 
-    /// Start the capture session
+    /// Start the capture session on its dedicated serial queue.
     func startSession() {
-        // In mock mode, session is always "running"
         if isMockCameraMode {
+            wantsSessionRunning = true
             isSessionRunning = true
             return
         }
 
-        guard let session = captureSession, !session.isRunning else { return }
+        guard let session = captureSession else { return }
 
-        Task.detached(priority: .userInitiated) { [self, session] in
-            session.startRunning()
-            await MainActor.run {
-                isSessionRunning = true
+        wantsSessionRunning = true
+        let generation = activeSessionGeneration
+        let generationGate = sessionGenerationGate
+
+        sessionQueue.async { [weak self, session] in
+            guard generationGate.isCurrent(generation) else { return }
+
+            if !session.isRunning {
+                session.startRunning()
+            }
+            let running = session.isRunning
+
+            Task { @MainActor [weak self] in
+                guard let self,
+                      generationGate.isCurrent(generation),
+                      self.wantsSessionRunning else {
+                    return
+                }
+                self.isSessionRunning = running
             }
         }
     }
 
-    /// Stop the capture session
+    /// Stop the capture session on the same serial queue used for startup.
     func stopSession() {
-        // In mock mode, just update state
+        wantsSessionRunning = false
+        visionFrameGate.reset()
+        detectedBoundingBoxes = []
+
         if isMockCameraMode {
             isSessionRunning = false
             return
         }
 
-        guard let session = captureSession, session.isRunning else { return }
+        guard let session = captureSession else {
+            isSessionRunning = false
+            return
+        }
 
-        Task.detached(priority: .userInitiated) { [self, session] in
-            session.stopRunning()
-            await MainActor.run {
-                isSessionRunning = false
+        let generation = activeSessionGeneration
+        let generationGate = sessionGenerationGate
+
+        sessionQueue.async { [weak self, session] in
+            guard generationGate.isCurrent(generation) else { return }
+
+            if session.isRunning {
+                session.stopRunning()
+            }
+            let running = session.isRunning
+
+            Task { @MainActor [weak self] in
+                guard let self,
+                      generationGate.isCurrent(generation),
+                      !self.wantsSessionRunning else {
+                    return
+                }
+                self.isSessionRunning = running
             }
         }
+    }
+
+    /// Pause on background and resume when the visible capture flow becomes active again.
+    func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            guard isAuthorized, isSessionConfigured else { return }
+            startSession()
+        case .background:
+            stopSession()
+        case .inactive:
+            break
+        @unknown default:
+            break
+        }
+    }
+
+    /// Cycle auto → on → off for the next still capture.
+    func cycleFlashMode() {
+        flashMode = flashMode.next
+    }
+
+    /// Whether the current input can fire a flash. Mock camera always reports available.
+    var isFlashAvailable: Bool {
+        if isMockCameraMode {
+            return true
+        }
+        return videoDeviceInput?.device.hasFlash == true
     }
 
     // MARK: - Photo Capture
@@ -258,6 +341,12 @@ final class CameraService: NSObject {
         let settings = AVCapturePhotoSettings()
         if let configuredPhotoDimensions {
             settings.maxPhotoDimensions = configuredPhotoDimensions
+        }
+        if let flash = CameraCaptureConfiguration.photoFlashMode(
+            for: flashMode,
+            supported: photoOutput.supportedFlashModes
+        ) {
+            settings.flashMode = flash
         }
 
         let captureID = UUID()
@@ -316,16 +405,13 @@ final class CameraService: NSObject {
 
     /// Capture a mock photo for UI testing
     private func captureMockPhoto() throws -> UIImage {
-        // Get the appropriate mock image based on test configuration
         let image = MockCameraImages.getTestImage(
             multipleQuotes: UITestConfiguration.shouldMockMultipleQuotes,
             lowConfidence: UITestConfiguration.shouldMockLowConfidence,
             index: mockImageIndex
         )
 
-        // Cycle through available images for multiple captures
         mockImageIndex += 1
-
         capturedImage = image
         return image
     }
@@ -380,7 +466,7 @@ final class CameraService: NSObject {
         for device: AVCaptureDevice,
         output: AVCapturePhotoOutput
     ) {
-        let dimensions = CameraCaptureConfiguration.maximumPhotoDimensions(
+        let dimensions = CameraCaptureConfiguration.preferredPhotoDimensions(
             from: device.activeFormat.supportedMaxPhotoDimensions
         )
         configuredPhotoDimensions = dimensions
@@ -392,7 +478,13 @@ final class CameraService: NSObject {
 
     // MARK: - Focus
 
-    /// Focus at a specific point in the preview
+    /// Convert a point in preview-layer coordinates into AVFoundation device coordinates.
+    func focus(atPreviewPoint point: CGPoint) {
+        guard let previewLayer else { return }
+        focus(at: previewLayer.captureDevicePointConverted(fromLayerPoint: point))
+    }
+
+    /// Focus at a normalized capture-device point.
     func focus(at point: CGPoint) {
         guard let device = videoDeviceInput?.device,
               device.isFocusPointOfInterestSupported else {
@@ -411,7 +503,7 @@ final class CameraService: NSObject {
 
             device.unlockForConfiguration()
         } catch {
-            // Focus adjustment failed, ignore silently
+            // Focus adjustment failed, ignore silently.
         }
     }
 
@@ -430,14 +522,38 @@ final class CameraService: NSObject {
         photoContinuation = nil
         captureLifecycle.cancel()
 
-        stopSession()
+        wantsSessionRunning = false
+        sessionGenerationGate.invalidate()
+        visionFrameGate.reset()
+        detectedBoundingBoxes = []
+        videoDataOutput?.setSampleBufferDelegate(nil, queue: nil)
+
+        if isMockCameraMode {
+            isSessionRunning = false
+            isSessionConfigured = false
+            capturedImage = nil
+            flashMode = .auto
+            return
+        }
+
+        let session = captureSession
+        sessionQueue.sync {
+            if let session, session.isRunning {
+                session.stopRunning()
+            }
+        }
+
+        isSessionRunning = false
         isSessionConfigured = false
         captureSession = nil
         photoOutput = nil
+        videoDataOutput = nil
         configuredPhotoDimensions = nil
         videoDeviceInput = nil
         previewLayer = nil
         capturedImage = nil
+        flashMode = .auto
+        activeSessionGeneration = 0
     }
 }
 
@@ -446,7 +562,6 @@ final class CameraService: NSObject {
 extension CameraService: AVCapturePhotoCaptureDelegate {
     nonisolated func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         // Keep any heavy work (fileDataRepresentation + JPEG decode) off the MainActor.
-        // On some devices this decode can be expensive enough to freeze the capture UI.
         let imageData = photo.fileDataRepresentation()
         let photoSettingsID = photo.resolvedSettings.uniqueID
 
@@ -457,7 +572,7 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
                 return
             }
 
-            if let error = error {
+            if let error {
                 completePendingCapture(
                     captureID: captureID,
                     result: .failure(CameraError.captureFailed(error))
@@ -502,21 +617,42 @@ extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let gate = visionFrameGate
+        guard let token = gate.beginFrame(now: CFAbsoluteTimeGetCurrent()) else { return }
+
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            gate.finish(token)
+            return
+        }
 
         let request = VNDetectTextRectanglesRequest { [weak self] request, _ in
-            guard let observations = request.results as? [VNTextObservation] else { return }
+            defer { gate.finish(token) }
+            guard gate.isCurrent(token),
+                  let observations = request.results as? [VNTextObservation] else {
+                return
+            }
+
             let transformedBoxes = observations.prefix(12).map { observation in
                 VisionBoundingBoxTransformer.transformVisionRectToUIPortrait(observation.boundingBox)
             }
 
             Task { @MainActor [weak self] in
-                self?.detectedBoundingBoxes = transformedBoxes
+                guard let self,
+                      gate.isCurrent(token),
+                      self.isSessionConfigured,
+                      self.wantsSessionRunning else {
+                    return
+                }
+                self.detectedBoundingBoxes = transformedBoxes
             }
         }
         request.reportCharacterBoxes = false
 
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right, options: [:])
-        try? handler.perform([request])
+        do {
+            try handler.perform([request])
+        } catch {
+            gate.finish(token)
+        }
     }
 }

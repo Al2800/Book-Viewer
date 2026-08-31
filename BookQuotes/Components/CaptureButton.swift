@@ -30,20 +30,17 @@ struct CaptureButton: View {
             triggerCapture()
         } label: {
             ZStack {
-                // Ripple effect layer (behind everything)
                 Circle()
                     .stroke(Color.white.opacity(0.4), lineWidth: 2)
                     .frame(width: size * 1.5, height: size * 1.5)
                     .scaleEffect(rippleScale)
                     .opacity(rippleOpacity)
 
-                // Outer ring with subtle glow
                 Circle()
                     .stroke(Color.white, lineWidth: ringWidth)
                     .frame(width: size, height: size)
                     .shadow(color: .white.opacity(0.3), radius: isPressed ? 8 : 4)
 
-                // Inner circle with gradient
                 Circle()
                     .fill(
                         RadialGradient(
@@ -59,7 +56,6 @@ struct CaptureButton: View {
                     .frame(width: size - ringWidth * 3, height: size - ringWidth * 3)
                     .scaleEffect(isPressed ? 0.85 : 1.0)
 
-                // Processing indicator with rotation
                 if isProcessing {
                     ProgressView()
                         .progressViewStyle(.circular)
@@ -85,7 +81,6 @@ struct CaptureButton: View {
                     }
                 }
         )
-        // Entrance animation
         .opacity(hasAppeared ? 1 : 0)
         .scaleEffect(hasAppeared ? 1 : 0.8)
         .onAppear {
@@ -105,10 +100,10 @@ struct CaptureButton: View {
     // MARK: - Capture Action
 
     private func triggerCapture() {
-        // Haptic feedback
-        HapticManager.captureSuccess()
+        // A light press acknowledgement is appropriate here. Callers emit success only
+        // after AVFoundation or the mock camera has actually returned an image.
+        HapticManager.light()
 
-        // Ripple animation
         if !reduceMotion {
             withAnimation(.easeOut(duration: 0.4)) {
                 rippleScale = 1.8
@@ -118,13 +113,11 @@ struct CaptureButton: View {
                 rippleOpacity = 0
             }
 
-            // Reset ripple
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                 rippleScale = 1.0
             }
         }
 
-        // Execute action
         Task { @MainActor in
             await action()
         }
@@ -186,7 +179,6 @@ struct CaptureControlsBar: View {
 
     var body: some View {
         HStack {
-            // Flash toggle with animation
             if let onFlash = onFlash {
                 Button {
                     HapticManager.light()
@@ -209,7 +201,6 @@ struct CaptureControlsBar: View {
 
             Spacer()
 
-            // Main capture button
             CaptureButton(
                 isProcessing: isProcessing,
                 action: onCapture
@@ -217,7 +208,6 @@ struct CaptureControlsBar: View {
 
             Spacer()
 
-            // Camera flip with rotation animation
             if let onFlip = onFlip {
                 Button {
                     HapticManager.light()
@@ -327,8 +317,6 @@ extension CaptureHeaderBar where Trailing == EmptyView {
 }
 
 /// Floating camera controls anchored to the bottom of the preview.
-/// Controls sit directly on the live preview (Apple Camera-style) with a
-/// soft gradient scrim for legibility instead of a boxed container.
 struct CaptureControlTray<Content: View>: View {
     let content: Content
 
@@ -376,11 +364,36 @@ struct CaptureStatusPill: View {
         .foregroundStyle(tint)
         .padding(.horizontal, Spacing.md)
         .padding(.vertical, Spacing.xs)
-        // Deterministic dark fill: adaptive materials go light over bright
-        // scenes and wash out the white text.
         .background(Color.black.opacity(0.55), in: Capsule())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(text)
+    }
+}
+
+struct CaptureFlashButton: View {
+    let flashMode: CaptureFlashMode
+    var isAvailable: Bool = true
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            guard isAvailable else { return }
+            HapticManager.light()
+            action()
+        } label: {
+            Image(systemName: flashMode.icon)
+                .font(.title2)
+                .foregroundStyle(.white)
+                .frame(width: 50, height: 50)
+                .background(Color.black.opacity(0.35), in: Circle())
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.plain)
+        .disabled(!isAvailable)
+        .opacity(isAvailable ? 1 : 0.4)
+        .accessibilityIdentifier("capture_flash_button")
+        .accessibilityLabel(flashMode.accessibilityLabel)
+        .accessibilityHint(isAvailable ? "Cycles flash between automatic, on, and off" : "Flash is unavailable for this camera")
     }
 }
 
@@ -407,10 +420,7 @@ struct CameraIconButton: View {
 
 // MARK: - Camera Control Button Style
 
-/// Specialized button style for camera controls (flash, flip).
-/// Provides subtle feedback suitable for dark camera UI.
 private struct CameraControlButtonStyle: ButtonStyle {
-
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {

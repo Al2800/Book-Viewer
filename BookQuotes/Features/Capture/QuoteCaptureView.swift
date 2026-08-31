@@ -5,24 +5,15 @@ import SwiftData
 // MARK: - Quote Capture View
 
 /// Single-page quote capture view with camera preview, capture, and review flow.
-/// Provides a streamlined path for capturing one quote at a time.
 struct QuoteCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
-    /// The book to attach quotes to
     let book: Book
-
-    /// When true, hides the legacy top CaptureHeaderBar (e.g. when ActiveBookHUD is shown)
     var hidesHeaderBar: Bool = false
-
-    /// When true, hides the tab bar. Keep false on the Capture tab so the user can leave.
     var hidesTabBar: Bool = true
-
-    /// Completion handler when capture flow finishes
     var onComplete: (() -> Void)?
-
-    /// Cancellation handler for callers embedding the capture flow in custom navigation.
     var onCancel: (() -> Void)?
 
     // MARK: - State
@@ -36,7 +27,6 @@ struct QuoteCaptureView: View {
     @State private var isAnalyzingQuality = false
     @State private var showError = false
     @State private var errorMessage = ""
-    @State private var showExtractionReview = false
     @State private var capturedSession: CaptureSession?
     private let cameraFramingProfile = CameraFramingProfile.quotePage
     private let imageProcessor = QuoteCaptureImageProcessor()
@@ -45,11 +35,14 @@ struct QuoteCaptureView: View {
 
     var body: some View {
         ZStack {
-            // Camera preview / captured image
             cameraContent
 
             if captureState == .qualityChecking {
                 qualityCheckingOverlay
+            }
+
+            if captureState == .processing {
+                processingView
             }
 
             if captureState == .previewing && !hidesHeaderBar {
@@ -69,13 +62,19 @@ struct QuoteCaptureView: View {
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
         .safeAreaInset(edge: .bottom) {
-            if captureState == .previewing {
+            if captureState == .previewing && cameraService.isAuthorized {
                 bottomCaptureControls
             }
         }
         .sheet(isPresented: .init(
             get: { captureState == .reviewing },
-            set: { if !$0 { captureState = .previewing } }
+            set: { isPresented in
+                // Confirming a photo advances to processing before the review sheet closes.
+                // Do not let the sheet binding overwrite that state with previewing.
+                if !isPresented, captureState == .reviewing {
+                    captureState = .previewing
+                }
+            }
         )) {
             if let image = capturedImage {
                 ImageReviewView(
@@ -92,35 +91,30 @@ struct QuoteCaptureView: View {
                 )
             }
         }
-        .fullScreenCover(isPresented: .init(
-            get: { captureState == .processing },
-            set: { _ in }
-        )) {
-            processingView
-        }
         .alert("Error", isPresented: $showError) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage)
         }
-        .fullScreenCover(isPresented: $showExtractionReview, onDismiss: {
-            // Always reset to previewing when the review flow is dismissed.
-            // This prevents returning to a camera preview with no shutter controls.
+        .fullScreenCover(item: $capturedSession, onDismiss: {
+            // Cancellation and completion both return the embedded camera to a usable state.
             retakePhoto()
-        }) {
-            if let session = capturedSession {
-                ExtractionReviewView(
-                    session: session,
-                    book: book,
-                    onComplete: {
-                        showExtractionReview = false
-                        finalizeCaptureFlow()
-                    }
-                )
-            }
+        }) { session in
+            ExtractionReviewView(
+                session: session,
+                book: book,
+                onComplete: {
+                    capturedSession = nil
+                    finalizeCaptureFlow()
+                }
+            )
         }
         .onAppear {
+            cameraPermission.checkStatus()
             setupCamera()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            handleScenePhase(phase)
         }
         .onDisappear {
             cameraService.cleanup()
@@ -140,7 +134,7 @@ struct QuoteCaptureView: View {
                         .aspectRatio(contentMode: .fit)
                 }
         } else if cameraService.isAuthorized && cameraService.isSessionConfigured {
-            CameraPreviewView(cameraService: cameraService, framingProfile: cameraFramingProfile)
+            CameraPreviewViewWithFocus(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
         } else if cameraService.isAuthorized {
@@ -186,6 +180,13 @@ struct QuoteCaptureView: View {
             }
 
             HStack {
+                CaptureFlashButton(
+                    flashMode: cameraService.flashMode,
+                    isAvailable: cameraService.isFlashAvailable
+                ) {
+                    cameraService.cycleFlashMode()
+                }
+
                 Spacer()
 
                 Button {
@@ -206,6 +207,10 @@ struct QuoteCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
 
                 Spacer()
+
+                Color.clear
+                    .frame(width: 50, height: 50)
+                    .accessibilityHidden(true)
             }
 
             if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
@@ -230,7 +235,7 @@ struct QuoteCaptureView: View {
                 .font(.headline)
                 .foregroundStyle(Color.textPrimary)
 
-            Text("Extracting marked passages")
+            Text("Preparing the page for quote extraction")
                 .font(.subheadline)
                 .foregroundStyle(Color.textSecondary)
         }
@@ -247,9 +252,10 @@ struct QuoteCaptureView: View {
         }
 
         if !cameraService.detectedBoundingBoxes.isEmpty {
+            let count = cameraService.detectedBoundingBoxes.count
             return CaptureStatusPill(
-                systemImage: "sparkles",
-                text: "Perfect Framing • \(cameraService.detectedBoundingBoxes.count) Passages",
+                systemImage: "text.viewfinder",
+                text: "Text detected • \(count) region\(count == 1 ? "" : "s")",
                 tint: Color.gildedAccent
             )
         }
@@ -264,7 +270,7 @@ struct QuoteCaptureView: View {
         if result.isAcceptable {
             return CaptureStatusPill(
                 systemImage: "checkmark.circle.fill",
-                text: "Perfect Framing",
+                text: "Image quality looks good",
                 tint: .white
             )
         }
@@ -294,6 +300,30 @@ struct QuoteCaptureView: View {
         }
     }
 
+    private func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            cameraPermission.onAppBecameActive()
+            cameraService.checkAuthorization()
+
+            guard cameraPermission.isAuthorized, cameraService.isAuthorized else { return }
+            if cameraService.isSessionConfigured {
+                cameraService.startSession()
+            } else {
+                setupCamera()
+            }
+
+        case .background:
+            cameraService.stopSession()
+
+        case .inactive:
+            break
+
+        @unknown default:
+            break
+        }
+    }
+
     // MARK: - Capture Actions
 
     private func capturePhoto() {
@@ -302,10 +332,10 @@ struct QuoteCaptureView: View {
                 HapticManager.medium()
 
                 let image = try await cameraService.capturePhoto()
+                HapticManager.captureSuccess()
                 let previewSize = cameraService.currentPreviewSizeForCropping()
 
                 await handleCapturedImage(image, previewSize: previewSize)
-
             } catch {
                 errorMessage = error.localizedDescription
                 showError = true
@@ -320,6 +350,7 @@ struct QuoteCaptureView: View {
             lowConfidence: UITestConfiguration.shouldMockLowConfidence,
             index: 0
         )
+        HapticManager.captureSuccess()
         Task {
             await handleCapturedImage(image)
         }
@@ -346,7 +377,6 @@ struct QuoteCaptureView: View {
             isQualityFeedbackUnavailable = result.qualityError != nil
 
             isAnalyzingQuality = false
-            // Show review sheet
             captureState = .reviewing
         }
     }
@@ -374,8 +404,6 @@ struct QuoteCaptureView: View {
 
                 captureState = .completed(session: session)
                 capturedSession = session
-                showExtractionReview = true
-
             } catch {
                 captureState = .previewing
                 errorMessage = error.localizedDescription

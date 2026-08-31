@@ -5,6 +5,7 @@ import SwiftUI
 /// Camera-based ISBN barcode scanner for adding books from catalog metadata.
 struct CoverCaptureView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     var onComplete: ((Book) -> Void)?
     var onCancel: (() -> Void)?
@@ -54,7 +55,11 @@ struct CoverCaptureView: View {
             Text(errorMessage)
         }
         .onAppear {
+            cameraPermission.checkStatus()
             setupCamera()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            handleScenePhase(phase)
         }
         .onDisappear {
             cleanup()
@@ -90,7 +95,8 @@ struct CoverCaptureView: View {
             guard authorized else { return }
 
             do {
-                try cameraService.setupSession()
+                // The ISBN scanner owns the only live Vision output in this flow.
+                try cameraService.setupSession(enablesLiveTextDetection: false)
                 setupBarcodeCallback()
                 resumeScanning()
                 cameraService.startSession()
@@ -123,14 +129,40 @@ struct CoverCaptureView: View {
         cameraService.cleanup()
     }
 
+    private func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            cameraPermission.onAppBecameActive()
+            cameraService.checkAuthorization()
+
+            guard cameraPermission.isAuthorized, cameraService.isAuthorized else { return }
+            if cameraService.isSessionConfigured {
+                cameraService.startSession()
+                resumeScanning()
+            } else {
+                setupCamera()
+            }
+
+        case .background:
+            // Remove the barcode output before stopping the capture session so the two
+            // AVFoundation configuration paths cannot race one another.
+            isbnScanner.stopScanning()
+            cameraService.stopSession()
+
+        case .inactive:
+            break
+
+        @unknown default:
+            break
+        }
+    }
+
     private func handleBarcodeDetected(_ isbn: String) {
         guard !isProcessing else { return }
         isProcessing = true
         isbnScanner.stopScanning()
 
         Task {
-            HapticManager.success()
-
             do {
                 extractedMetadata = try await CoverCaptureMetadataSupport().lookupISBN(isbn)
                 isProcessing = false
