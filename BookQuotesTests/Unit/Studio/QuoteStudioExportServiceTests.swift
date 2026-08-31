@@ -37,6 +37,31 @@ final class QuoteStudioExportServiceTests: XCTestCase {
         XCTAssertTrue(markdown.contains("📝 **My note:** Habit identity"))
     }
 
+    func testObsidianMarkdownEscapesQuotedAndMultilineYamlValues() {
+        let book = Book(
+            title: "A \"Quoted\"\nTitle",
+            author: "Reader \\ Writer",
+            isbn: "9780000000002"
+        )
+        let quote = Quote(text: "First line\nSecond line", book: book)
+
+        let markdown = QuoteStudioExportService.shared.generateObsidianMarkdown(quote: quote)
+
+        XCTAssertTrue(markdown.contains("title: \"A \\\"Quoted\\\"\\nTitle\""))
+        XCTAssertTrue(markdown.contains("author: \"Reader \\\\ Writer\""))
+        XCTAssertTrue(markdown.contains("> First line\n> Second line"))
+    }
+
+    func testNotionMarkdownEscapesTablePipesAndPreservesMultilineQuote() {
+        let book = Book(title: "Systems", author: "A | B")
+        let quote = Quote(text: "First line\nSecond line", book: book)
+
+        let markdown = QuoteStudioExportService.shared.generateNotionMarkdown(quote: quote)
+
+        XCTAssertTrue(markdown.contains("| Author | A \\| B |"))
+        XCTAssertTrue(markdown.contains("> 💬 First line\n> Second line"))
+    }
+
     func testRenderImageProducesValidUIImage() {
         let book = Book(title: "Dune", author: "Frank Herbert")
         let quote = Quote(text: "Fear is the mind-killer.", book: book)
@@ -54,5 +79,31 @@ final class QuoteStudioExportServiceTests: XCTestCase {
             XCTAssertGreaterThan(image.size.width, 0)
             XCTAssertGreaterThan(image.size.height, 0)
         }
+    }
+
+    func testRenderImageAppliesCanvasTransformWithoutChangingOutputSize() throws {
+        let book = Book(title: "Dune", author: "Frank Herbert")
+        let quote = Quote(text: "Fear is the mind-killer.", book: book)
+        let service = QuoteStudioExportService.shared
+
+        let identity = try XCTUnwrap(service.renderImage(
+            quote: quote,
+            theme: .darkLinen,
+            aspectRatio: .square,
+            scale: 1.0
+        ))
+        let transformed = try XCTUnwrap(service.renderImage(
+            quote: quote,
+            theme: .darkLinen,
+            aspectRatio: .square,
+            transform: StudioCanvasTransform(
+                scale: 1.4,
+                normalizedOffset: CGSize(width: 0.1, height: -0.08)
+            ),
+            scale: 1.0
+        ))
+
+        XCTAssertEqual(identity.size, transformed.size)
+        XCTAssertNotEqual(identity.pngData(), transformed.pngData())
     }
 }
