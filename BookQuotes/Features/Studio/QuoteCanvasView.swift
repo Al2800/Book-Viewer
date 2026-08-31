@@ -1,35 +1,77 @@
 import SwiftUI
 
+// MARK: - Canvas Transform
+
+struct StudioCanvasTransform: Equatable, Sendable {
+    var scale: CGFloat
+    var normalizedOffset: CGSize
+
+    static let identity = StudioCanvasTransform(scale: 1.0, normalizedOffset: .zero)
+
+    func pointOffset(in cardSize: CGSize) -> CGSize {
+        CGSize(
+            width: normalizedOffset.width * cardSize.width,
+            height: normalizedOffset.height * cardSize.height
+        )
+    }
+
+    static func normalized(
+        scale: CGFloat,
+        pointOffset: CGSize,
+        cardSize: CGSize
+    ) -> StudioCanvasTransform {
+        guard cardSize.width > 0, cardSize.height > 0 else {
+            return StudioCanvasTransform(scale: scale, normalizedOffset: .zero)
+        }
+
+        return StudioCanvasTransform(
+            scale: scale,
+            normalizedOffset: CGSize(
+                width: pointOffset.width / cardSize.width,
+                height: pointOffset.height / cardSize.height
+            )
+        )
+    }
+}
+
 // MARK: - QuoteCanvasView
 
 /// Interactive canvas for viewing, scaling, and manipulating a quote card with gestures.
-/// Strictly enforces viewport aspect ratio fitting and prevents canvas overflow.
+/// The transform is stored in normalized card coordinates so export can reproduce the preview.
 struct QuoteCanvasView: View {
     let quote: Quote
     let theme: StudioTheme
     let aspectRatio: StudioAspectRatio
+    @Binding var transform: StudioCanvasTransform
 
-    @State private var currentScale: CGFloat = 1.0
-    @State private var finalScale: CGFloat = 1.0
-    @State private var offset: CGSize = .zero
-    @State private var finalOffset: CGSize = .zero
-    @State private var showAlignmentGuides: Bool = false
+    @State private var magnificationStartScale: CGFloat?
+    @State private var dragStartOffset: CGSize?
+    @State private var showAlignmentGuides = false
+
+    init(
+        quote: Quote,
+        theme: StudioTheme,
+        aspectRatio: StudioAspectRatio,
+        transform: Binding<StudioCanvasTransform> = .constant(.identity)
+    ) {
+        self.quote = quote
+        self.theme = theme
+        self.aspectRatio = aspectRatio
+        self._transform = transform
+    }
 
     var body: some View {
         GeometryReader { geometry in
             let availableWidth = max(geometry.size.width - Spacing.lg * 2, 200)
             let availableHeight = max(geometry.size.height - Spacing.lg * 2, 200)
-            let targetRatio = aspectRatio.ratioValue // e.g. 9/16 = 0.5625, 1/1 = 1.0, 4/5 = 0.8
+            let targetRatio = aspectRatio.ratioValue
 
-            // Compute fitted card dimensions that never overflow available canvas area
             let cardDimensions: CGSize = {
                 if availableWidth / availableHeight > targetRatio {
-                    // Height constrained
                     let height = min(availableHeight, 520)
                     let width = height * targetRatio
                     return CGSize(width: width, height: height)
                 } else {
-                    // Width constrained
                     let width = min(availableWidth, 360)
                     let height = width / targetRatio
                     return CGSize(width: width, height: height)
@@ -37,7 +79,6 @@ struct QuoteCanvasView: View {
             }()
 
             ZStack {
-                // Subtle canvas background texture
                 RoundedRectangle(cornerRadius: CornerRadius.xl)
                     .fill(Color.backgroundSecondary.opacity(0.4))
                     .overlay {
@@ -45,70 +86,75 @@ struct QuoteCanvasView: View {
                             .stroke(Color.quoteBorder.opacity(0.4), lineWidth: 1)
                     }
 
-                // Interactive Alignment Guides
                 if showAlignmentGuides {
-                    alignmentGuides(size: geometry.size)
+                    alignmentGuides
                         .transition(.opacity)
                 }
 
-                // Renderable Card strictly fitted to computed dimensions
                 QuoteCanvasCard(
                     quote: quote,
                     theme: theme,
                     aspectRatio: aspectRatio
                 )
                 .frame(width: cardDimensions.width, height: cardDimensions.height)
-                .scaleEffect(currentScale)
-                .offset(offset)
+                .scaleEffect(transform.scale)
+                .offset(transform.pointOffset(in: cardDimensions))
                 .gesture(
                     SimultaneousGesture(
                         MagnificationGesture()
                             .onChanged { value in
                                 showAlignmentGuides = true
-                                currentScale = min(max(finalScale * value, 0.75), 2.2)
+                                if magnificationStartScale == nil {
+                                    magnificationStartScale = transform.scale
+                                }
+                                let start = magnificationStartScale ?? transform.scale
+                                transform.scale = min(max(start * value, 0.75), 2.2)
                             }
                             .onEnded { value in
+                                let start = magnificationStartScale ?? transform.scale
+                                transform.scale = min(max(start * value, 0.85), 2.0)
+                                magnificationStartScale = nil
                                 showAlignmentGuides = false
-                                finalScale = min(max(finalScale * value, 0.85), 2.0)
-                                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                                    currentScale = finalScale
-                                }
                             },
                         DragGesture()
                             .onChanged { value in
                                 showAlignmentGuides = true
-                                offset = CGSize(
-                                    width: finalOffset.width + value.translation.width,
-                                    height: finalOffset.height + value.translation.height
+                                if dragStartOffset == nil {
+                                    dragStartOffset = transform.normalizedOffset
+                                }
+
+                                let start = dragStartOffset ?? transform.normalizedOffset
+                                transform.normalizedOffset = CGSize(
+                                    width: start.width + value.translation.width / cardDimensions.width,
+                                    height: start.height + value.translation.height / cardDimensions.height
                                 )
                             }
                             .onEnded { value in
-                                showAlignmentGuides = false
+                                let start = dragStartOffset ?? transform.normalizedOffset
+                                var pointOffset = CGSize(
+                                    width: (start.width * cardDimensions.width) + value.translation.width,
+                                    height: (start.height * cardDimensions.height) + value.translation.height
+                                )
+
                                 let maxPanX = geometry.size.width * 0.35
                                 let maxPanY = geometry.size.height * 0.35
+                                pointOffset.width = min(max(pointOffset.width, -maxPanX), maxPanX)
+                                pointOffset.height = min(max(pointOffset.height, -maxPanY), maxPanY)
 
-                                var newX = finalOffset.width + value.translation.width
-                                var newY = finalOffset.height + value.translation.height
-
-                                // Snap back if dragged out of canvas view
-                                if abs(newX) > maxPanX || abs(newY) > maxPanY {
-                                    newX = min(max(newX, -maxPanX), maxPanX)
-                                    newY = min(max(newY, -maxPanY), maxPanY)
-                                }
-
-                                finalOffset = CGSize(width: newX, height: newY)
-                                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                                    offset = finalOffset
-                                }
+                                transform = .normalized(
+                                    scale: transform.scale,
+                                    pointOffset: pointOffset,
+                                    cardSize: cardDimensions
+                                )
+                                dragStartOffset = nil
+                                showAlignmentGuides = false
                             }
                     )
                 )
                 .elevation(.lg)
 
-                // Canvas Controls Overlay (Reset button & aspect ratio indicator)
                 VStack {
                     HStack {
-                        // Aspect ratio badge
                         Text(aspectRatio.displayName)
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(Color.textSecondary)
@@ -120,15 +166,13 @@ struct QuoteCanvasView: View {
 
                         Spacer()
 
-                        // Reset Transform Button (appears if zoomed or panned)
-                        if currentScale != 1.0 || offset != .zero {
+                        if transform != .identity {
                             Button {
                                 HapticManager.light()
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                    currentScale = 1.0
-                                    finalScale = 1.0
-                                    offset = .zero
-                                    finalOffset = .zero
+                                    transform = .identity
+                                    magnificationStartScale = nil
+                                    dragStartOffset = nil
                                 }
                             } label: {
                                 HStack(spacing: 3) {
@@ -155,16 +199,12 @@ struct QuoteCanvasView: View {
         }
     }
 
-    // MARK: - Alignment Guides Overlay
-
-    private func alignmentGuides(size: CGSize) -> some View {
+    private var alignmentGuides: some View {
         ZStack {
-            // Horizontal Center Guide
             Rectangle()
                 .fill(Color.gildedAccent.opacity(0.4))
                 .frame(height: 1)
 
-            // Vertical Center Guide
             Rectangle()
                 .fill(Color.gildedAccent.opacity(0.4))
                 .frame(width: 1)
