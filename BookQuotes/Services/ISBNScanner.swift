@@ -7,7 +7,7 @@ import Vision
 // MARK: - ISBNScanner
 
 /// Observable service for scanning ISBN barcodes from camera feed or images.
-/// Uses Vision framework for near-100% accuracy barcode detection.
+/// Uses Vision framework for barcode detection and validates ISBN payloads.
 @MainActor
 @Observable
 final class ISBNScanner: NSObject {
@@ -30,26 +30,26 @@ final class ISBNScanner: NSObject {
 
     // MARK: - Configuration
 
-    /// Minimum confidence required for detection
+    /// Minimum confidence required for live-camera detections
     var minimumConfidence: Float = 0.8
+
+    /// Frame interval and confirmation policy for the live camera feed
+    var scanConfiguration: ScanConfiguration = .default {
+        didSet {
+            liveScanCoordinator.updateConfiguration(scanConfiguration)
+        }
+    }
 
     // MARK: - Real-time Scanning State
 
     private var videoOutput: AVCaptureVideoDataOutput?
     private weak var activeSession: AVCaptureSession?
     private let videoQueue = DispatchQueue(label: "com.bookquotes.ISBNScanner", qos: .userInitiated)
-
-    // MARK: - Initialization
-
-    override init() {
-        super.init()
-    }
+    nonisolated private let liveScanCoordinator = ISBNLiveScanCoordinator()
 
     // MARK: - Single Image Scanning
 
     /// Scan a UIImage for ISBN barcodes
-    /// - Parameter image: The image to scan
-    /// - Returns: The detected ISBN, or nil if none found
     func scanImage(_ image: UIImage) async throws -> String? {
         guard let ciImage = CIImage(image: image) else {
             throw ISBNScannerError.invalidImage
@@ -58,8 +58,6 @@ final class ISBNScanner: NSObject {
     }
 
     /// Scan a CIImage for ISBN barcodes
-    /// - Parameter image: The image to scan
-    /// - Returns: The detected ISBN, or nil if none found
     func scanCIImage(_ image: CIImage) async throws -> String? {
         let wasScanning = isScanning
         isScanning = true
@@ -79,24 +77,18 @@ final class ISBNScanner: NSObject {
         } catch {
             let scanError = error as? ISBNScannerError ?? .detectionFailed(error.localizedDescription)
 
-            // For still-image scanning, treat Vision detection failures as "no barcode found" rather than
-            // a hard error. Real-time scanning already returns nil on detection errors, and callers of
-            // `scanImage(_:)` expect nil when no barcode is present.
+            // Still-image callers treat Vision detection failure as no barcode found.
             switch scanError {
             case .invalidImage, .invalidSampleBuffer:
                 self.error = scanError
                 throw scanError
-            case .detectionFailed:
-                return nil
-            case .noBarcodesFound:
+            case .detectionFailed, .noBarcodesFound:
                 return nil
             }
         }
     }
 
     /// Scan image data for ISBN barcodes
-    /// - Parameter data: Image data (JPEG, PNG, etc.)
-    /// - Returns: The detected ISBN, or nil if none found
     func scanImageData(_ data: Data) async throws -> String? {
         guard let image = UIImage(data: data) else {
             throw ISBNScannerError.invalidImage
@@ -107,9 +99,6 @@ final class ISBNScanner: NSObject {
     // MARK: - Real-time Scanning
 
     /// Scan a sample buffer from camera for ISBN barcodes.
-    /// Designed for real-time scanning during camera preview.
-    /// - Parameter sampleBuffer: CMSampleBuffer from camera
-    /// - Returns: The detected ISBN, or nil if none found
     func scanSampleBuffer(_ sampleBuffer: CMSampleBuffer) async throws -> String? {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             throw ISBNScannerError.invalidSampleBuffer
@@ -128,6 +117,8 @@ final class ISBNScanner: NSObject {
         error = nil
         detectedISBN = nil
         confidence = 0
+        liveScanCoordinator.updateConfiguration(scanConfiguration)
+        liveScanCoordinator.reset()
 
         let output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
@@ -139,6 +130,7 @@ final class ISBNScanner: NSObject {
         session.beginConfiguration()
         guard session.canAddOutput(output) else {
             session.commitConfiguration()
+            liveScanCoordinator.reset()
             error = .detectionFailed("Unable to attach video output for scanning.")
             return
         }
@@ -151,13 +143,18 @@ final class ISBNScanner: NSObject {
         isScanning = true
     }
 
-    /// Stop scanning and remove barcode output from the session.
+    /// Stop scanning and invalidate every in-flight frame before removing the output.
     func stopScanning() {
+        liveScanCoordinator.reset()
+
         guard let session = activeSession, let output = videoOutput else {
+            videoOutput = nil
+            activeSession = nil
             isScanning = false
             return
         }
 
+        output.setSampleBufferDelegate(nil, queue: nil)
         session.beginConfiguration()
         session.removeOutput(output)
         session.commitConfiguration()
@@ -167,8 +164,7 @@ final class ISBNScanner: NSObject {
         isScanning = false
     }
 
-    /// Process a camera frame for barcode detection.
-    /// Returns immediately without storing state - use for continuous scanning.
+    /// Process a camera frame for barcode detection without storing observable state.
     nonisolated func detectBarcode(in pixelBuffer: CVPixelBuffer) async -> ScanResult? {
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
 
@@ -182,9 +178,7 @@ final class ISBNScanner: NSObject {
     // MARK: - Vision Detection
 
     private nonisolated func performBarcodeDetection(on image: CIImage) async throws -> ScanResult? {
-        return try await withCheckedThrowingContinuation { continuation in
-            // Vision can surface errors both via the request completion and by throwing from
-            // `handler.perform(_)`. Resume at most once to avoid fatal continuation misuse.
+        try await withCheckedThrowingContinuation { continuation in
             let lock = NSLock()
             var hasResumed = false
 
@@ -198,7 +192,7 @@ final class ISBNScanner: NSObject {
             }
 
             let request = VNDetectBarcodesRequest { request, error in
-                if let error = error {
+                if let error {
                     resumeOnce {
                         continuation.resume(throwing: ISBNScannerError.detectionFailed(error.localizedDescription))
                     }
@@ -210,35 +204,26 @@ final class ISBNScanner: NSObject {
                     return
                 }
 
-                // Find first valid ISBN barcode
                 for observation in results {
-                    // Check symbology
-                    guard Self.isISBNSymbology(observation.symbology) else {
+                    guard Self.isISBNSymbology(observation.symbology),
+                          let payload = observation.payloadStringValue,
+                          let isbn = ISBNValidator.isbnFromBarcode(payload) else {
                         continue
                     }
 
-                    // Check payload
-                    guard let payload = observation.payloadStringValue else {
-                        continue
-                    }
-
-                    // Validate as ISBN
-                    if let isbn = ISBNValidator.isbnFromBarcode(payload) {
-                        let result = ScanResult(
-                            isbn: isbn,
-                            confidence: observation.confidence,
-                            boundingBox: observation.boundingBox,
-                            symbology: observation.symbology
-                        )
-                        resumeOnce { continuation.resume(returning: result) }
-                        return
-                    }
+                    let result = ScanResult(
+                        isbn: isbn,
+                        confidence: observation.confidence,
+                        boundingBox: observation.boundingBox,
+                        symbology: observation.symbology
+                    )
+                    resumeOnce { continuation.resume(returning: result) }
+                    return
                 }
 
                 resumeOnce { continuation.resume(returning: nil) }
             }
 
-            // Configure request for book barcodes
             request.symbologies = [.ean13, .ean8, .upce]
 
             let handler = VNImageRequestHandler(ciImage: image, options: [:])
@@ -264,11 +249,12 @@ final class ISBNScanner: NSObject {
 
     // MARK: - State Management
 
-    /// Clear the last detection result
+    /// Clear the last detection result and invalidate any frame still completing.
     func clearResult() {
         detectedISBN = nil
         confidence = 0
         error = nil
+        liveScanCoordinator.reset()
     }
 }
 
@@ -280,16 +266,33 @@ extension ISBNScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let coordinator = liveScanCoordinator
+        guard let frameToken = coordinator.beginFrame(now: CFAbsoluteTimeGetCurrent()) else { return }
+
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            coordinator.endFrame(frameToken)
+            return
+        }
 
         Task {
-            if let result = await detectBarcode(in: pixelBuffer) {
-                await MainActor.run {
-                    guard isScanning else { return }
-                    detectedISBN = result.isbn
-                    confidence = result.confidence
-                    onBarcodeDetected?(result.isbn)
+            defer { coordinator.endFrame(frameToken) }
+
+            guard let result = await detectBarcode(in: pixelBuffer) else { return }
+
+            let requirements = await MainActor.run {
+                (minimumConfidence: self.minimumConfidence, hapticFeedback: self.scanConfiguration.hapticFeedback)
+            }
+            guard result.confidence >= requirements.minimumConfidence else { return }
+            guard coordinator.confirm(result.isbn, for: frameToken) else { return }
+
+            await MainActor.run {
+                guard isScanning, coordinator.isCurrent(frameToken) else { return }
+                detectedISBN = result.isbn
+                confidence = result.confidence
+                if requirements.hapticFeedback {
+                    HapticManager.success()
                 }
+                onBarcodeDetected?(result.isbn)
             }
         }
     }
@@ -298,21 +301,12 @@ extension ISBNScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
 // MARK: - Scan Result
 
 extension ISBNScanner {
-    /// Result of a successful barcode scan
     struct ScanResult: Sendable {
-        /// The validated ISBN
         let isbn: String
-
-        /// Detection confidence (0.0-1.0)
         let confidence: Float
-
-        /// Bounding box in normalized image coordinates
         let boundingBox: CGRect
-
-        /// The barcode symbology detected
         let symbology: VNBarcodeSymbology
 
-        /// Formatted ISBN for display
         var formattedISBN: String {
             ISBNValidator.format(isbn)
         }
@@ -343,25 +337,20 @@ enum ISBNScannerError: LocalizedError {
 
 // MARK: - Real-time Scanner Delegate
 
-/// Protocol for receiving real-time scan results
 @MainActor
 protocol ISBNScannerDelegate: AnyObject {
-    /// Called when an ISBN barcode is detected
     func scanner(_ scanner: ISBNScanner, didDetect result: ISBNScanner.ScanResult)
-
-    /// Called when scanning fails
     func scanner(_ scanner: ISBNScanner, didFailWith error: ISBNScannerError)
 }
 
 // MARK: - Continuous Scanning Support
 
 extension ISBNScanner {
-    /// Configuration for continuous scanning mode
     struct ScanConfiguration: Sendable {
         /// Minimum time between processing frames (to reduce CPU usage)
         let frameInterval: TimeInterval
 
-        /// Number of consecutive detections required to confirm ISBN
+        /// Number of matching detections required to confirm an ISBN
         let confirmationCount: Int
 
         /// Whether to play haptic feedback on detection
@@ -378,5 +367,93 @@ extension ISBNScanner {
             confirmationCount: 1,
             hapticFeedback: true
         )
+    }
+}
+
+struct ISBNLiveScanFrameToken: Sendable, Equatable {
+    let generation: UInt64
+}
+
+/// Serializes live-camera ISBN work so Vision is not invoked on every frame.
+/// Each reset advances a generation, preventing an old frame from completing into a new scan.
+final class ISBNLiveScanCoordinator: @unchecked Sendable {
+    private let lock = NSLock()
+    private var configuration: ISBNScanner.ScanConfiguration
+    private var generation: UInt64 = 0
+    private var lastProcessedAt: TimeInterval = 0
+    private var isBusy = false
+    private var candidate: String?
+    private var hits = 0
+    private var confirmedISBN: String?
+
+    init(configuration: ISBNScanner.ScanConfiguration = .default) {
+        self.configuration = configuration
+    }
+
+    func updateConfiguration(_ configuration: ISBNScanner.ScanConfiguration) {
+        lock.lock()
+        self.configuration = configuration
+        generation &+= 1
+        lastProcessedAt = 0
+        isBusy = false
+        candidate = nil
+        hits = 0
+        confirmedISBN = nil
+        lock.unlock()
+    }
+
+    func reset() {
+        lock.lock()
+        generation &+= 1
+        lastProcessedAt = 0
+        isBusy = false
+        candidate = nil
+        hits = 0
+        confirmedISBN = nil
+        lock.unlock()
+    }
+
+    func beginFrame(now: TimeInterval) -> ISBNLiveScanFrameToken? {
+        lock.lock()
+        defer { lock.unlock() }
+
+        guard !isBusy, confirmedISBN == nil else { return nil }
+        guard lastProcessedAt == 0 || now - lastProcessedAt >= configuration.frameInterval else { return nil }
+
+        isBusy = true
+        lastProcessedAt = now
+        return ISBNLiveScanFrameToken(generation: generation)
+    }
+
+    func endFrame(_ token: ISBNLiveScanFrameToken) {
+        lock.lock()
+        if token.generation == generation {
+            isBusy = false
+        }
+        lock.unlock()
+    }
+
+    func confirm(_ isbn: String, for token: ISBNLiveScanFrameToken) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+
+        guard token.generation == generation, confirmedISBN == nil else { return false }
+
+        if isbn == candidate {
+            hits += 1
+        } else {
+            candidate = isbn
+            hits = 1
+        }
+
+        guard hits >= max(configuration.confirmationCount, 1) else { return false }
+        confirmedISBN = isbn
+        return true
+    }
+
+    func isCurrent(_ token: ISBNLiveScanFrameToken) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return token.generation == generation
     }
 }
