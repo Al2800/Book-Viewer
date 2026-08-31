@@ -132,7 +132,23 @@ struct PageQuoteEditor: View {
             }
 
             VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        showingFullImage = true
+                    } label: {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 44, height: 44)
+                            .background(Color.black.opacity(0.65), in: Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("View full page image")
+                }
+
                 Spacer()
+
                 HStack {
                     Spacer()
                     if imageScale > 1.0 {
@@ -146,8 +162,8 @@ struct PageQuoteEditor: View {
                             .clipShape(Capsule())
                     }
                 }
-                .padding(Spacing.sm)
             }
+            .padding(Spacing.sm)
         }
         .frame(height: imageHeight)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
@@ -157,16 +173,8 @@ struct PageQuoteEditor: View {
         )
         .padding(Spacing.sm)
         .paperCard(cornerRadius: CornerRadius.lg)
-        .onTapGesture {
-            showingFullImage = true
-        }
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel("Source page image")
-        .accessibilityHint("Double tap to view the full page image")
-        .accessibilityAddTraits(.isButton)
-        .accessibilityAction {
-            showingFullImage = true
-        }
         .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionPageImage)
         .fullScreenCover(isPresented: $showingFullImage) {
             FullImageViewer(page: page)
