@@ -15,6 +15,7 @@ struct CaptureTabRootView: View {
     @State private var selectedDraft: CaptureSession?
     @State private var showingBookSwitcher = false
     @State private var showingDrafts = false
+    @State private var draftErrorMessage: String?
     var onBookCreated: ((Book) -> Void)?
     var onQuotesSaved: ((Book) -> Void)?
     var onExit: (() -> Void)?
@@ -42,7 +43,6 @@ struct CaptureTabRootView: View {
                 showCoaching = false
                 return
             }
-            // Show coaching for first-time users
             if cameraPermission.isAuthorized && !hasCompletedCoaching {
                 showCoaching = true
             }
@@ -53,7 +53,6 @@ struct CaptureTabRootView: View {
             }
         }
         .onChange(of: cameraPermission.isAuthorized) { _, isAuthorized in
-            // Show coaching after permission granted
             if isAuthorized && !hasCompletedCoaching {
                 showCoaching = true
             }
@@ -87,6 +86,14 @@ struct CaptureTabRootView: View {
                 onResumeDraft: resumeDraft,
                 onDeleteDraft: deleteDraft
             )
+        }
+        .alert("Could Not Delete Draft", isPresented: .init(
+            get: { draftErrorMessage != nil },
+            set: { if !$0 { draftErrorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(draftErrorMessage ?? "The saved capture session could not be deleted.")
         }
     }
 
@@ -210,10 +217,7 @@ struct CaptureTabRootView: View {
                         onQuotesSaved?(completedBook)
                     }
                 },
-                onCancel: {
-                    selectedDraft = nil
-                    exitCapture()
-                },
+                onCancel: returnToSingleCapture,
                 onChooseBook: {
                     showingBookSwitcher = true
                 }
@@ -255,6 +259,12 @@ struct CaptureTabRootView: View {
         handleCaptureFlowEvent(.cancelQuoteCapture)
     }
 
+    private func returnToSingleCapture() {
+        selectedDraft = nil
+        guard captureFlow.mode == .batchCapture else { return }
+        handleCaptureFlowEvent(.toggleBatchMode)
+    }
+
     private func ensureActiveBook() {
         if selectedBook == nil {
             selectedBook = ActiveReadingSessionStore.shared.resolveActiveBook(from: books)
@@ -284,12 +294,13 @@ struct CaptureTabRootView: View {
     }
 
     private func deleteDraft(_ session: CaptureSession) {
-        session.deleteImageFiles()
         modelContext.delete(session)
         do {
             try modelContext.save()
+            session.deleteImageFiles()
             HapticManager.success()
         } catch {
+            draftErrorMessage = error.localizedDescription
             HapticManager.error()
         }
     }
@@ -304,8 +315,10 @@ private struct CaptureModeMenuButton: View {
 
     var body: some View {
         Menu {
-            Label("Single Page", systemImage: "checkmark")
-                .accessibilityLabel("Single Page selected")
+            Button {} label: {
+                Label("Single Page", systemImage: "checkmark")
+            }
+            .disabled(true)
 
             Button {
                 HapticManager.selection()
@@ -313,6 +326,7 @@ private struct CaptureModeMenuButton: View {
             } label: {
                 Label("Batch Mode", systemImage: "square.stack.3d.up")
             }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modeSelectBatch)
 
             if draftCount > 0 {
                 Divider()
@@ -323,6 +337,7 @@ private struct CaptureModeMenuButton: View {
                 } label: {
                     Label("Saved Drafts (\(draftCount))", systemImage: "tray.full")
                 }
+                .accessibilityIdentifier("capture_saved_drafts_button")
             }
         } label: {
             Image(systemName: "camera.badge.ellipsis")
