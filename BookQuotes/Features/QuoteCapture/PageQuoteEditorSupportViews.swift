@@ -115,29 +115,72 @@ struct FullImageViewer: View {
     }
 }
 
+// MARK: - Aspect Fit Geometry
+
+enum AspectFitGeometry {
+    static func fittedRect(contentSize: CGSize, in containerSize: CGSize) -> CGRect {
+        guard contentSize.width > 0,
+              contentSize.height > 0,
+              containerSize.width > 0,
+              containerSize.height > 0 else {
+            return .zero
+        }
+
+        let scale = min(
+            containerSize.width / contentSize.width,
+            containerSize.height / contentSize.height
+        )
+        let fittedSize = CGSize(
+            width: contentSize.width * scale,
+            height: contentSize.height * scale
+        )
+
+        return CGRect(
+            x: (containerSize.width - fittedSize.width) / 2,
+            y: (containerSize.height - fittedSize.height) / 2,
+            width: fittedSize.width,
+            height: fittedSize.height
+        )
+    }
+
+    static func scaleNormalizedRect(
+        _ normalizedRect: CGRect,
+        contentSize: CGSize,
+        containerSize: CGSize
+    ) -> CGRect {
+        let fitted = fittedRect(contentSize: contentSize, in: containerSize)
+        guard !fitted.isEmpty else { return .zero }
+
+        return CGRect(
+            x: fitted.minX + normalizedRect.minX * fitted.width,
+            y: fitted.minY + normalizedRect.minY * fitted.height,
+            width: normalizedRect.width * fitted.width,
+            height: normalizedRect.height * fitted.height
+        )
+    }
+}
+
 // MARK: - Illuminated Page Overlay
 
 /// Renders glowing amber highlight bounding boxes over detected passages in the source photo.
 struct IlluminatedPageOverlay: View {
+    let imageSize: CGSize
     let quotes: [EditableQuote]
     let selectedQuoteID: UUID?
     let onSelectQuote: (UUID) -> Void
 
     var body: some View {
         GeometryReader { geo in
-            let size = geo.size
             ForEach(quotes) { quote in
                 if let box = quote.boundingBox {
-                    let rect = CGRect(
-                        x: box.origin.x * size.width,
-                        y: box.origin.y * size.height,
-                        width: max(box.size.width * size.width, 24),
-                        height: max(box.size.height * size.height, 14)
+                    let rect = AspectFitGeometry.scaleNormalizedRect(
+                        box,
+                        contentSize: imageSize,
+                        containerSize: geo.size
                     )
                     let isSelected = quote.id == selectedQuoteID
 
                     ZStack {
-                        // Illuminated amber fill
                         RoundedRectangle(cornerRadius: CornerRadius.xs)
                             .fill(
                                 isSelected
@@ -145,7 +188,6 @@ struct IlluminatedPageOverlay: View {
                                     : Color.gildedAccent.opacity(0.18)
                             )
 
-                        // Luminous border and glow
                         RoundedRectangle(cornerRadius: CornerRadius.xs)
                             .stroke(
                                 isSelected ? Color.gildedAccent : Color.gildedAccent.opacity(0.65),
@@ -156,7 +198,7 @@ struct IlluminatedPageOverlay: View {
                                 radius: 5
                             )
                     }
-                    .frame(width: rect.width, height: rect.height)
+                    .frame(width: max(rect.width, 24), height: max(rect.height, 14))
                     .position(x: rect.midX, y: rect.midY)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -167,7 +209,6 @@ struct IlluminatedPageOverlay: View {
         }
     }
 }
-
 
 enum PageListLayout {
     case horizontal

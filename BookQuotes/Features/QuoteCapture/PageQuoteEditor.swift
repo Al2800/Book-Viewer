@@ -18,17 +18,13 @@ struct PageQuoteEditor: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Source image section
             imageSection
 
-            // Visual provenance tether badge
             if let activeQuote = activeQuote, activeQuote.boundingBox != nil {
                 tetherBanner
             }
 
             Divider()
-
-            // Quotes list section
             quotesSection
         }
         .onAppear {
@@ -91,6 +87,7 @@ struct PageQuoteEditor: View {
                         .aspectRatio(contentMode: .fit)
 
                     IlluminatedPageOverlay(
+                        imageSize: image.size,
                         quotes: quotes,
                         selectedQuoteID: selectedQuoteID ?? quotes.first?.id,
                         onSelectQuote: { id in
@@ -134,9 +131,24 @@ struct PageQuoteEditor: View {
                 )
             }
 
-            // Zoom indicator
             VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        showingFullImage = true
+                    } label: {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 44, height: 44)
+                            .background(Color.black.opacity(0.65), in: Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("View full page image")
+                }
+
                 Spacer()
+
                 HStack {
                     Spacer()
                     if imageScale > 1.0 {
@@ -150,8 +162,8 @@ struct PageQuoteEditor: View {
                             .clipShape(Capsule())
                     }
                 }
-                .padding(Spacing.sm)
             }
+            .padding(Spacing.sm)
         }
         .frame(height: imageHeight)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
@@ -161,16 +173,8 @@ struct PageQuoteEditor: View {
         )
         .padding(Spacing.sm)
         .paperCard(cornerRadius: CornerRadius.lg)
-        .onTapGesture {
-            showingFullImage = true
-        }
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel("Source page image")
-        .accessibilityHint("Double tap to view the full page image")
-        .accessibilityAddTraits(.isButton)
-        .accessibilityAction {
-            showingFullImage = true
-        }
         .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionPageImage)
         .fullScreenCover(isPresented: $showingFullImage) {
             FullImageViewer(page: page)
@@ -181,12 +185,10 @@ struct PageQuoteEditor: View {
 
     private var quotesSection: some View {
         VStack(spacing: 0) {
-            // Header
             quoteListHeader
-            .padding(Spacing.md)
-            .background(Color.backgroundSecondary)
+                .padding(Spacing.md)
+                .background(Color.backgroundSecondary)
 
-            // Quote list
             if quotes.isEmpty {
                 emptyState
             } else if scrollsQuotesIndependently {

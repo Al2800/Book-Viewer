@@ -133,6 +133,7 @@ struct BookReadingStatusBadge: View {
 
 struct BookCardContextMenuItems: View {
     var onEdit: (() -> Void)?
+    var onViewQuotes: (() -> Void)?
     var onShare: (() -> Void)?
     var onDelete: (() -> Void)?
 
@@ -146,10 +147,13 @@ struct BookCardContextMenuItems: View {
             }
         }
 
-        Button {
-            HapticManager.light()
-        } label: {
-            Label("View Quotes", systemImage: "text.quote")
+        if let onViewQuotes {
+            Button {
+                HapticManager.light()
+                onViewQuotes()
+            } label: {
+                Label("View Quotes", systemImage: "text.quote")
+            }
         }
 
         if let onShare {

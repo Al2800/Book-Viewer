@@ -13,25 +13,33 @@ final class QuoteStudioExportService {
 
     // MARK: - Image Rendering
 
-    /// Renders a quote card to a high-resolution UIImage.
+    /// Renders the same scale and normalized offset shown on the interactive canvas.
     func renderImage(
         quote: Quote,
         theme: StudioTheme,
         aspectRatio: StudioAspectRatio,
+        transform: StudioCanvasTransform = .identity,
         scale: CGFloat = 3.0
     ) -> UIImage? {
         let cardWidth: CGFloat = 400
         let cardHeight: CGFloat = cardWidth / aspectRatio.ratioValue
+        let cardSize = CGSize(width: cardWidth, height: cardHeight)
 
-        let card = QuoteCanvasCard(
-            quote: quote,
-            theme: theme,
-            aspectRatio: aspectRatio
-        )
+        let canvas = ZStack {
+            QuoteCanvasCard(
+                quote: quote,
+                theme: theme,
+                aspectRatio: aspectRatio
+            )
+            .frame(width: cardWidth, height: cardHeight)
+            .scaleEffect(transform.scale)
+            .offset(transform.pointOffset(in: cardSize))
+        }
         .frame(width: cardWidth, height: cardHeight)
+        .clipped()
         .environment(\.colorScheme, theme.colorScheme)
 
-        let renderer = ImageRenderer(content: card)
+        let renderer = ImageRenderer(content: canvas)
         renderer.scale = scale
         renderer.proposedSize = ProposedViewSize(width: cardWidth, height: cardHeight)
         return renderer.uiImage
@@ -39,14 +47,19 @@ final class QuoteStudioExportService {
 
     // MARK: - Copy Image to Clipboard
 
-    /// Copies the rendered quote card image to the system pasteboard.
     @discardableResult
     func copyImageToClipboard(
         quote: Quote,
         theme: StudioTheme,
-        aspectRatio: StudioAspectRatio
+        aspectRatio: StudioAspectRatio,
+        transform: StudioCanvasTransform = .identity
     ) -> Bool {
-        guard let image = renderImage(quote: quote, theme: theme, aspectRatio: aspectRatio) else {
+        guard let image = renderImage(
+            quote: quote,
+            theme: theme,
+            aspectRatio: aspectRatio,
+            transform: transform
+        ) else {
             return false
         }
         UIPasteboard.general.image = image
@@ -56,13 +69,18 @@ final class QuoteStudioExportService {
 
     // MARK: - Save to Photo Library
 
-    /// Saves the rendered card to the user's photo library.
     func saveImageToPhotos(
         quote: Quote,
         theme: StudioTheme,
-        aspectRatio: StudioAspectRatio
+        aspectRatio: StudioAspectRatio,
+        transform: StudioCanvasTransform = .identity
     ) async throws {
-        guard let image = renderImage(quote: quote, theme: theme, aspectRatio: aspectRatio) else {
+        guard let image = renderImage(
+            quote: quote,
+            theme: theme,
+            aspectRatio: aspectRatio,
+            transform: transform
+        ) else {
             throw ExportError.writeFailed
         }
 
@@ -79,14 +97,13 @@ final class QuoteStudioExportService {
 
     // MARK: - Obsidian Export
 
-    /// Generates Obsidian-compatible markdown with YAML frontmatter.
     func generateObsidianMarkdown(quote: Quote) -> String {
         var content = "---\n"
         if let book = quote.book {
-            content += "title: \"\(book.title)\"\n"
-            content += "author: \"\(book.author)\"\n"
+            content += "title: \"\(yamlEscaped(book.title))\"\n"
+            content += "author: \"\(yamlEscaped(book.author))\"\n"
             if let isbn = book.isbn {
-                content += "isbn: \"\(isbn)\"\n"
+                content += "isbn: \"\(yamlEscaped(isbn))\"\n"
             }
         }
         content += "type: book-quote\n"
@@ -98,7 +115,10 @@ final class QuoteStudioExportService {
         content += "  - book-quotes\n"
         content += "  - reading\n"
         for tag in quote.tags {
-            content += "  - \(tag.name.lowercased().replacingOccurrences(of: " ", with: "-"))\n"
+            let value = markdownTag(tag.name)
+            if !value.isEmpty {
+                content += "  - \(value)\n"
+            }
         }
         content += "---\n\n"
 
@@ -107,7 +127,7 @@ final class QuoteStudioExportService {
             content += "*by \(book.author)*\n\n"
         }
 
-        content += "> \(quote.text)\n\n"
+        content += markdownBlockquote(quote.text) + "\n\n"
 
         var metadataParts: [String] = []
         if let page = quote.pageNumber {
@@ -130,22 +150,21 @@ final class QuoteStudioExportService {
 
     // MARK: - Notion Export
 
-    /// Generates Notion-compatible block markdown.
     func generateNotionMarkdown(quote: Quote) -> String {
         var output = ""
         if let book = quote.book {
             output += "# \(book.title)\n\n"
             output += "| Property | Value |\n"
             output += "|---|---|\n"
-            output += "| Author | \(book.author) |\n"
-            output += "| Status | \(book.status.displayName) |\n"
+            output += "| Author | \(markdownTableValue(book.author)) |\n"
+            output += "| Status | \(markdownTableValue(book.status.displayName)) |\n"
             if let page = quote.pageNumber {
                 output += "| Page | \(page) |\n"
             }
             output += "\n---\n\n"
         }
 
-        output += "> 💬 \(quote.text)\n"
+        output += markdownBlockquote("💬 \(quote.text)") + "\n"
 
         var metadata: [String] = []
         if let page = quote.pageNumber {
@@ -167,5 +186,43 @@ final class QuoteStudioExportService {
         }
 
         return output
+    }
+
+    // MARK: - Escaping
+
+    private func yamlEscaped(_ value: String) -> String {
+        value
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\r\n", with: "\\n")
+            .replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: "\r", with: "\\n")
+    }
+
+    private func markdownTableValue(_ value: String) -> String {
+        value
+            .replacingOccurrences(of: "|", with: "\\|")
+            .replacingOccurrences(of: "\r\n", with: "<br>")
+            .replacingOccurrences(of: "\n", with: "<br>")
+            .replacingOccurrences(of: "\r", with: "<br>")
+    }
+
+    private func markdownBlockquote(_ value: String) -> String {
+        value
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .split(separator: "\n", omittingEmptySubsequences: false)
+            .map { "> \($0)" }
+            .joined(separator: "\n")
+    }
+
+    private func markdownTag(_ value: String) -> String {
+        let lowered = value.lowercased()
+        let allowed = lowered.map { character -> Character in
+            character.isLetter || character.isNumber ? character : "-"
+        }
+        return String(allowed)
+            .split(separator: "-", omittingEmptySubsequences: true)
+            .joined(separator: "-")
     }
 }

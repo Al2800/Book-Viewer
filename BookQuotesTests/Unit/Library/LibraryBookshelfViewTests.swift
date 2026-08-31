@@ -4,6 +4,33 @@ import SwiftUI
 
 final class LibraryBookshelfViewTests: XCTestCase {
 
+    func testBookshelfPresentationUsesCurrentlyReadingBooks() {
+        let finished = Book(title: "Finished", author: "Author 1")
+        finished.status = .finished
+
+        let reading = Book(title: "Reading", author: "Author 2")
+        reading.status = .currentlyReading
+
+        let presentation = LibraryBookshelfPresentation(books: [finished, reading])
+
+        XCTAssertEqual(presentation.title, "Currently Reading")
+        XCTAssertEqual(presentation.books.map(\.id), [reading.id])
+    }
+
+    func testBookshelfPresentationLabelsFallbackAsRecentBooks() {
+        let books = (1...7).map { index in
+            let book = Book(title: "Book \(index)", author: "Author")
+            book.status = .finished
+            return book
+        }
+
+        let presentation = LibraryBookshelfPresentation(books: books)
+
+        XCTAssertEqual(presentation.title, "Recent Books")
+        XCTAssertEqual(presentation.books.count, 5)
+        XCTAssertEqual(presentation.books.map(\.id), Array(books.prefix(5)).map(\.id))
+    }
+
     func testBookshelfDisplaysCurrentlyReadingBooksFirst() {
         let book1 = Book(title: "Book 1", author: "Author 1")
         book1.status = .finished

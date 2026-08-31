@@ -48,4 +48,60 @@ final class QuoteCardStudioViewTests: XCTestCase {
         let studioView = QuoteCardStudioView(quote: quote, initialTheme: .warmVellum, initialAspect: .portrait)
         XCTAssertNotNil(studioView)
     }
+
+    func testStudioCanvasTransformRoundTripsPointOffset() {
+        let cardSize = CGSize(width: 400, height: 500)
+        let pointOffset = CGSize(width: 40, height: -75)
+
+        let transform = StudioCanvasTransform.normalized(
+            scale: 1.35,
+            pointOffset: pointOffset,
+            cardSize: cardSize
+        )
+
+        XCTAssertEqual(transform.scale, 1.35, accuracy: 0.0001)
+        XCTAssertEqual(transform.normalizedOffset.width, 0.1, accuracy: 0.0001)
+        XCTAssertEqual(transform.normalizedOffset.height, -0.15, accuracy: 0.0001)
+        XCTAssertEqual(transform.pointOffset(in: cardSize).width, pointOffset.width, accuracy: 0.0001)
+        XCTAssertEqual(transform.pointOffset(in: cardSize).height, pointOffset.height, accuracy: 0.0001)
+    }
+
+    func testAspectFitGeometryCentersPortraitImageAndMapsNormalizedBox() {
+        let contentSize = CGSize(width: 100, height: 200)
+        let containerSize = CGSize(width: 300, height: 300)
+
+        let fitted = AspectFitGeometry.fittedRect(
+            contentSize: contentSize,
+            in: containerSize
+        )
+        XCTAssertEqual(fitted, CGRect(x: 75, y: 0, width: 150, height: 300))
+
+        let mapped = AspectFitGeometry.scaleNormalizedRect(
+            CGRect(x: 0.1, y: 0.2, width: 0.5, height: 0.25),
+            contentSize: contentSize,
+            containerSize: containerSize
+        )
+        XCTAssertEqual(mapped.origin.x, 90, accuracy: 0.0001)
+        XCTAssertEqual(mapped.origin.y, 60, accuracy: 0.0001)
+        XCTAssertEqual(mapped.width, 75, accuracy: 0.0001)
+        XCTAssertEqual(mapped.height, 75, accuracy: 0.0001)
+    }
+
+    func testAspectFitGeometryReturnsZeroForInvalidSizes() {
+        XCTAssertEqual(
+            AspectFitGeometry.fittedRect(
+                contentSize: .zero,
+                in: CGSize(width: 300, height: 300)
+            ),
+            .zero
+        )
+        XCTAssertEqual(
+            AspectFitGeometry.scaleNormalizedRect(
+                CGRect(x: 0.1, y: 0.1, width: 0.5, height: 0.5),
+                contentSize: CGSize(width: 100, height: 200),
+                containerSize: .zero
+            ),
+            .zero
+        )
+    }
 }

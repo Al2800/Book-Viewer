@@ -34,12 +34,9 @@ struct StudioTab: View {
         }
     }
 
-    // MARK: - Studio Content
-
     private var studioContent: some View {
         ScrollView {
             VStack(spacing: Spacing.xl) {
-                // Featured Quote Card Preview
                 if let featured = selectedQuote ?? quotes.first {
                     VStack(alignment: .leading, spacing: Spacing.sm) {
                         HStack {
@@ -75,7 +72,6 @@ struct StudioTab: View {
                     .padding(.horizontal, Spacing.lg)
                 }
 
-                // Theme & Aspect Controls
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Presets")
                         .sectionHeaderStyle()
@@ -87,7 +83,6 @@ struct StudioTab: View {
                     )
                 }
 
-                // Choose from Library Quotes
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Select a Quote")
                         .sectionHeaderStyle()
@@ -133,8 +128,6 @@ struct StudioTab: View {
         }
     }
 
-    // MARK: - Empty State
-
     private var emptyStudioState: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "sparkles.rectangle.stack")
@@ -158,7 +151,6 @@ struct StudioTab: View {
 // MARK: - QuoteCanvasCard
 
 /// Typographic card rendering for canvas and live previews.
-/// Uses adaptive dynamic font scaling so short and long quotes fit proportionally into any aspect ratio.
 struct QuoteCanvasCard: View {
     let quote: Quote
     let theme: StudioTheme
@@ -168,20 +160,19 @@ struct QuoteCanvasCard: View {
         quote.text.count
     }
 
-    /// Dynamic font size computed from text length and aspect ratio geometry.
     private var quoteFontSize: CGFloat {
         switch aspectRatio {
-        case .story: // 9:16 (tall vertical canvas)
+        case .story:
             if textLength < 70 { return 24 }
             if textLength < 150 { return 19 }
             if textLength < 260 { return 15 }
             return 13
-        case .square: // 1:1 (compact vertical space)
+        case .square:
             if textLength < 70 { return 20 }
             if textLength < 140 { return 16 }
             if textLength < 240 { return 13 }
             return 11.5
-        case .portrait: // 4:5
+        case .portrait:
             if textLength < 70 { return 22 }
             if textLength < 140 { return 17 }
             if textLength < 250 { return 14 }
@@ -203,7 +194,6 @@ struct QuoteCanvasCard: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack(alignment: .leading, spacing: Spacing.sm) {
-                // Top Mark Header
                 HStack {
                     Image(systemName: "quote.opening")
                         .font(.system(size: max(14, quoteFontSize * 0.9), weight: .semibold))
@@ -213,7 +203,6 @@ struct QuoteCanvasCard: View {
 
                 Spacer(minLength: 2)
 
-                // Quote Text (Scaled & Fitted with minimum scale factor)
                 Text("\u{201C}\(quote.text)\u{201D}")
                     .font(.system(size: quoteFontSize, weight: .regular, design: .serif))
                     .foregroundStyle(theme.textColor)
@@ -222,7 +211,6 @@ struct QuoteCanvasCard: View {
                     .minimumScaleFactor(0.7)
                     .allowsTightening(true)
 
-                // Organic handwritten margin note card if present
                 if let marginNote = quote.marginNote, !marginNote.isEmpty {
                     HStack(alignment: .top, spacing: Spacing.xs) {
                         Image(systemName: "pencil.line")
@@ -243,10 +231,8 @@ struct QuoteCanvasCard: View {
 
                 Spacer(minLength: 2)
 
-                // Attribution Footer
                 if let book = quote.book {
                     HStack(alignment: .center, spacing: Spacing.sm) {
-                        // Mini 3D Book Cover thumbnail badge
                         miniBookCoverBadge(book: book)
 
                         VStack(alignment: .leading, spacing: 1) {
@@ -271,7 +257,6 @@ struct QuoteCanvasCard: View {
                     }
                 }
 
-                // Brand subtle footer
                 HStack {
                     Text("BookQuotes Studio")
                         .font(.system(size: 8.5, weight: .regular).italic())
@@ -281,7 +266,6 @@ struct QuoteCanvasCard: View {
             }
             .padding(cardPadding)
 
-            // Bookmark Ribbon
             BookmarkRibbon()
                 .padding(.trailing, Spacing.md)
                 .offset(y: -2)
@@ -300,8 +284,6 @@ struct QuoteCanvasCard: View {
         )
         .clipped()
     }
-
-    // MARK: - Mini Book Cover Badge
 
     @ViewBuilder
     private func miniBookCoverBadge(book: Book) -> some View {
@@ -343,6 +325,7 @@ struct QuoteCardStudioView: View {
     let quote: Quote
     @State var currentTheme: StudioTheme
     @State var currentAspect: StudioAspectRatio
+    @State private var canvasTransform: StudioCanvasTransform = .identity
     @State private var showingShareSheet = false
     @State private var shareItems: [Any] = []
     @State private var toastMessage: String?
@@ -360,16 +343,15 @@ struct QuoteCardStudioView: View {
                 Color.backgroundPrimary.ignoresSafeArea()
 
                 VStack(spacing: Spacing.md) {
-                    // Live Gesture Canvas
                     QuoteCanvasView(
                         quote: quote,
                         theme: currentTheme,
-                        aspectRatio: currentAspect
+                        aspectRatio: currentAspect,
+                        transform: $canvasTransform
                     )
                     .padding(.horizontal, Spacing.lg)
                     .padding(.top, Spacing.sm)
 
-                    // Theme and Aspect Ratio Selectors
                     StudioThemePicker(
                         selectedTheme: $currentTheme,
                         selectedAspect: $currentAspect
@@ -377,7 +359,6 @@ struct QuoteCardStudioView: View {
                     .padding(.bottom, Spacing.md)
                 }
 
-                // Toast banner
                 if let toastMessage {
                     VStack {
                         Spacer()
@@ -392,6 +373,9 @@ struct QuoteCardStudioView: View {
                             .transition(.opacity.combined(with: .move(edge: .bottom)))
                     }
                 }
+            }
+            .onChange(of: currentAspect) { _, _ in
+                canvasTransform = .identity
             }
             .navigationTitle("Studio Canvas")
             .navigationBarTitleDisplayMode(.inline)
@@ -449,24 +433,37 @@ struct QuoteCardStudioView: View {
         }
     }
 
-    // MARK: - Export Actions
-
     private func shareRenderedImage() {
-        if let image = QuoteStudioExportService.shared.renderImage(quote: quote, theme: currentTheme, aspectRatio: currentAspect) {
+        if let image = QuoteStudioExportService.shared.renderImage(
+            quote: quote,
+            theme: currentTheme,
+            aspectRatio: currentAspect,
+            transform: canvasTransform
+        ) {
             shareItems = [image, quote.text]
             showingShareSheet = true
         }
     }
 
     private func copyImage() {
-        if QuoteStudioExportService.shared.copyImageToClipboard(quote: quote, theme: currentTheme, aspectRatio: currentAspect) {
+        if QuoteStudioExportService.shared.copyImageToClipboard(
+            quote: quote,
+            theme: currentTheme,
+            aspectRatio: currentAspect,
+            transform: canvasTransform
+        ) {
             showToast("Copied card to clipboard")
         }
     }
 
     private func saveToPhotos() async {
         do {
-            try await QuoteStudioExportService.shared.saveImageToPhotos(quote: quote, theme: currentTheme, aspectRatio: currentAspect)
+            try await QuoteStudioExportService.shared.saveImageToPhotos(
+                quote: quote,
+                theme: currentTheme,
+                aspectRatio: currentAspect,
+                transform: canvasTransform
+            )
             showToast("Saved to Photos")
         } catch {
             showToast("Failed to save image")
