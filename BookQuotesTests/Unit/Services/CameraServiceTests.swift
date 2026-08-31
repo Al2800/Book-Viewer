@@ -1,3 +1,4 @@
+import AVFoundation
 import XCTest
 import UIKit
 import CoreMedia
@@ -79,6 +80,87 @@ final class CameraServiceTests: XCTestCase {
 
     func testCaptureConfigurationReturnsNilWithoutSupportedDimensions() {
         XCTAssertNil(CameraCaptureConfiguration.maximumPhotoDimensions(from: []))
+        XCTAssertNil(CameraCaptureConfiguration.preferredPhotoDimensions(from: []))
+    }
+
+    func testPreferredPhotoDimensionsStayWithinMemoryBudget() throws {
+        let selected = try XCTUnwrap(CameraCaptureConfiguration.preferredPhotoDimensions(from: [
+            CMVideoDimensions(width: 1920, height: 1080),
+            CMVideoDimensions(width: 4032, height: 3024),
+            CMVideoDimensions(width: 5712, height: 4284)
+        ]))
+
+        XCTAssertEqual(selected.width, 4032)
+        XCTAssertEqual(selected.height, 3024)
+    }
+
+    func testPreferredPhotoDimensionsFallBackToSmallestWhenAllExceedBudget() throws {
+        let selected = try XCTUnwrap(CameraCaptureConfiguration.preferredPhotoDimensions(
+            from: [
+                CMVideoDimensions(width: 5712, height: 4284),
+                CMVideoDimensions(width: 8064, height: 6048)
+            ],
+            maxPixelCount: 1_000_000
+        ))
+
+        XCTAssertEqual(selected.width, 5712)
+        XCTAssertEqual(selected.height, 4284)
+    }
+
+    func testPhotoFlashModeUsesRequestedModeOnlyWhenSupported() {
+        XCTAssertEqual(
+            CameraCaptureConfiguration.photoFlashMode(
+                for: .on,
+                supported: [.off, .on, .auto]
+            ),
+            .on
+        )
+        XCTAssertNil(
+            CameraCaptureConfiguration.photoFlashMode(
+                for: .on,
+                supported: [.off]
+            )
+        )
+    }
+
+    @MainActor
+    func testCameraServiceCyclesAndResetsFlashMode() {
+        let service = CameraService()
+        XCTAssertEqual(service.flashMode, .auto)
+        service.cycleFlashMode()
+        XCTAssertEqual(service.flashMode, .on)
+        service.cycleFlashMode()
+        XCTAssertEqual(service.flashMode, .off)
+        service.cleanup()
+        XCTAssertEqual(service.flashMode, .auto)
+    }
+
+    func testSessionGenerationGateRejectsWorkAfterInvalidation() {
+        let gate = CameraSessionGenerationGate()
+        let first = gate.activate()
+        XCTAssertTrue(gate.isCurrent(first))
+
+        gate.invalidate()
+        XCTAssertFalse(gate.isCurrent(first))
+
+        let second = gate.activate()
+        XCTAssertTrue(gate.isCurrent(second))
+        XCTAssertFalse(gate.isCurrent(first))
+    }
+
+    func testFrameProcessingGateThrottlesAndInvalidatesCallbacks() throws {
+        let gate = CameraFrameProcessingGate(minimumInterval: 0.1)
+        let first = try XCTUnwrap(gate.beginFrame(now: 1.0))
+        XCTAssertNil(gate.beginFrame(now: 1.05), "Only one Vision request may be in flight")
+
+        gate.finish(first)
+        XCTAssertNil(gate.beginFrame(now: 1.08), "Frames inside the interval should be skipped")
+
+        let second = try XCTUnwrap(gate.beginFrame(now: 1.11))
+        XCTAssertTrue(gate.isCurrent(second))
+        gate.reset()
+        XCTAssertFalse(gate.isCurrent(second), "Reset must invalidate an old Vision callback")
+        XCTAssertNotNil(gate.beginFrame(now: 1.12))
     }
 
     func testCaptureConfigurationUsesPortraitRotationAngle() {
@@ -86,12 +168,6 @@ final class CameraServiceTests: XCTestCase {
     }
 
     func testVisionBoundingBoxTransformerTransformsVisionRectToUIPortrait() {
-        // Vision rect (landscape/buffer): origin (0.2, 0.3), size (0.4, 0.1)
-        // Expected portrait UI rect:
-        // uiX = minY = 0.3
-        // uiY = 1.0 - maxX = 1.0 - (0.2 + 0.4) = 0.4
-        // uiWidth = height = 0.1
-        // uiHeight = width = 0.4
         let visionRect = CGRect(x: 0.2, y: 0.3, width: 0.4, height: 0.1)
         let uiRect = VisionBoundingBoxTransformer.transformVisionRectToUIPortrait(visionRect)
 
