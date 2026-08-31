@@ -14,6 +14,7 @@ struct CaptureTabRootView: View {
     @State private var selectedBook: Book?
     @State private var selectedDraft: CaptureSession?
     @State private var showingBookSwitcher = false
+    @State private var showingDrafts = false
     var onBookCreated: ((Book) -> Void)?
     var onQuotesSaved: ((Book) -> Void)?
     var onExit: (() -> Void)?
@@ -57,7 +58,7 @@ struct CaptureTabRootView: View {
                 showCoaching = true
             }
         }
-        .onChange(of: books) { _, newBooks in
+        .onChange(of: books) { _, _ in
             if selectedBook == nil {
                 ensureActiveBook()
             }
@@ -78,6 +79,13 @@ struct CaptureTabRootView: View {
                 onScanNewBook: {
                     handleCaptureFlowEvent(.addNewBook)
                 }
+            )
+        }
+        .sheet(isPresented: $showingDrafts) {
+            SavedCaptureDraftsSheet(
+                drafts: resumableDrafts,
+                onResumeDraft: resumeDraft,
+                onDeleteDraft: deleteDraft
             )
         }
     }
@@ -170,15 +178,9 @@ struct CaptureTabRootView: View {
             )
             .id(captureFlow.quoteCaptureFlowID)
             .overlay(alignment: .top) {
-                ActiveBookHUDView(
-                    book: selectedBook,
-                    onSwitchBook: {
-                        showingBookSwitcher = true
-                    },
-                    onClose: exitCapture
-                )
-                .padding(.horizontal, Spacing.md)
-                .padding(.top, Spacing.sm)
+                quoteCaptureHUD
+                    .padding(.horizontal, Spacing.md)
+                    .padding(.top, Spacing.sm)
             }
 
         case .coverCapture:
@@ -198,7 +200,7 @@ struct CaptureTabRootView: View {
             BatchCaptureFlowView(
                 book: selectedBook,
                 initialSession: selectedDraft,
-                hidesHeaderBar: true,
+                hidesHeaderBar: false,
                 hidesTabBar: false,
                 onComplete: { _ in
                     let completedBook = selectedBook
@@ -217,20 +219,31 @@ struct CaptureTabRootView: View {
                 }
             )
             .id(captureFlow.batchCaptureFlowID)
-            .overlay(alignment: .top) {
-                ActiveBookHUDView(
-                    book: selectedBook,
-                    onSwitchBook: {
-                        showingBookSwitcher = true
-                    },
-                    onClose: {
-                        selectedDraft = nil
-                        exitCapture()
-                    }
-                )
-                .padding(.horizontal, Spacing.md)
-                .padding(.top, Spacing.sm)
-            }
+        }
+    }
+
+    private var quoteCaptureHUD: some View {
+        HStack(alignment: .top, spacing: Spacing.xs) {
+            ActiveBookHUDView(
+                book: selectedBook,
+                onSwitchBook: {
+                    showingBookSwitcher = true
+                },
+                onClose: exitCapture
+            )
+
+            Spacer(minLength: 0)
+
+            CaptureModeMenuButton(
+                draftCount: resumableDrafts.count,
+                onSelectBatch: {
+                    selectedDraft = nil
+                    handleCaptureFlowEvent(.toggleBatchMode)
+                },
+                onShowDrafts: {
+                    showingDrafts = true
+                }
+            )
         }
     }
 
@@ -263,15 +276,153 @@ struct CaptureTabRootView: View {
 
     private func resumeDraft(_ session: CaptureSession) {
         guard let book = session.book else { return }
+        showingDrafts = false
         selectedBook = book
         selectedDraft = session
+        ActiveReadingSessionStore.shared.setActiveBook(book)
         handleCaptureFlowEvent(.resumeBatchCapture)
     }
 
     private func deleteDraft(_ session: CaptureSession) {
         session.deleteImageFiles()
         modelContext.delete(session)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            HapticManager.success()
+        } catch {
+            HapticManager.error()
+        }
+    }
+}
+
+// MARK: - Capture Mode Menu
+
+private struct CaptureModeMenuButton: View {
+    let draftCount: Int
+    let onSelectBatch: () -> Void
+    let onShowDrafts: () -> Void
+
+    var body: some View {
+        Menu {
+            Label("Single Page", systemImage: "checkmark")
+                .accessibilityLabel("Single Page selected")
+
+            Button {
+                HapticManager.selection()
+                onSelectBatch()
+            } label: {
+                Label("Batch Mode", systemImage: "square.stack.3d.up")
+            }
+
+            if draftCount > 0 {
+                Divider()
+
+                Button {
+                    HapticManager.light()
+                    onShowDrafts()
+                } label: {
+                    Label("Saved Drafts (\(draftCount))", systemImage: "tray.full")
+                }
+            }
+        } label: {
+            Image(systemName: "camera.badge.ellipsis")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .background(
+                    Circle()
+                        .fill(Color.black.opacity(0.62))
+                        .overlay {
+                            Circle()
+                                .fill(.ultraThinMaterial.opacity(0.35))
+                        }
+                        .overlay {
+                            Circle()
+                                .stroke(Color.white.opacity(0.22), lineWidth: Stroke.hairline.width)
+                        }
+                )
+                .shadow(color: Color.black.opacity(0.3), radius: 6, y: 3)
+        }
+        .accessibilityIdentifier("capture_mode_menu")
+        .accessibilityLabel("Capture mode, Single Page")
+        .accessibilityHint("Choose Batch Mode or open saved drafts")
+    }
+}
+
+// MARK: - Saved Capture Drafts
+
+private struct SavedCaptureDraftsSheet: View {
+    let drafts: [CaptureSession]
+    let onResumeDraft: (CaptureSession) -> Void
+    let onDeleteDraft: (CaptureSession) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if drafts.isEmpty {
+                    ContentUnavailableView(
+                        "No Saved Drafts",
+                        systemImage: "tray",
+                        description: Text("Batch sessions saved for later will appear here.")
+                    )
+                } else {
+                    List {
+                        ForEach(drafts) { draft in
+                            Button {
+                                dismiss()
+                                onResumeDraft(draft)
+                            } label: {
+                                HStack(spacing: Spacing.md) {
+                                    Image(systemName: "doc.on.doc")
+                                        .font(.title3)
+                                        .foregroundStyle(Color.brand)
+
+                                    VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                        Text(draft.book?.title ?? "Untitled Book")
+                                            .font(.headline)
+                                            .foregroundStyle(Color.textPrimary)
+                                            .lineLimit(1)
+
+                                        Text("\(draft.totalPages) page\(draft.totalPages == 1 ? "" : "s") · \(draft.dateStarted.formatted(date: .abbreviated, time: .shortened))")
+                                            .font(.subheadline)
+                                            .foregroundStyle(Color.textSecondary)
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(Color.textTertiary)
+                                }
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityIdentifier("capture_resume_draft_\(draft.id.uuidString)")
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    onDeleteDraft(draft)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                    }
+                    .scrollContentBackground(.hidden)
+                    .background(Color.backgroundPrimary)
+                }
+            }
+            .navigationTitle("Saved Drafts")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }
 
