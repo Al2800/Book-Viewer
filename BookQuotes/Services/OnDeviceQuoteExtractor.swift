@@ -43,6 +43,8 @@ struct DetectedPageMark: Sendable, Equatable {
 }
 
 struct OnDeviceQuoteExtractor: Sendable {
+    private static let maximumReviewableCandidateCount = 8
+
     private let textRecognizer: any PageTextRecognizing
     private let markDetector: any PageMarkDetecting
     private let selector: QuoteMarkTextSelector
@@ -69,9 +71,11 @@ struct OnDeviceQuoteExtractor: Sendable {
             return enabledFamilies.isEmpty || enabledFamilies.contains(mark.type)
         }
         let detectedCandidates = selector.selectCandidates(textLines: textLines, marks: marks)
-        let budget = OnDeviceQuoteCandidateBudget.selected(detectedCandidates)
+        let candidates = detectedCandidates.count <= Self.maximumReviewableCandidateCount
+            ? detectedCandidates
+            : []
 
-        let quotes = budget.candidates.map { candidate in
+        let quotes = candidates.map { candidate in
             let customMarking = markings.customMarking(
                 forLocalMarkingFamily: candidate.markingType
             )
@@ -90,45 +94,14 @@ struct OnDeviceQuoteExtractor: Sendable {
         return QuoteExtractionResult(
             quotes: quotes,
             pageNumber: nil,
-            processingNotes: budget.overflowed
-                ? "On-device extraction kept the \(OnDeviceQuoteCandidateBudget.maximumReviewableCount) highest-confidence markings in page order"
-                : "On-device OCR extraction"
+            processingNotes: detectedCandidates.count <= Self.maximumReviewableCandidateCount
+                ? "On-device OCR extraction"
+                : "On-device extraction found too many ambiguous markings"
         )
     }
 }
 
 extension OnDeviceQuoteExtractor: QuoteExtracting {}
-
-enum OnDeviceQuoteCandidateBudget {
-    static let maximumReviewableCount = 8
-
-    static func selected(_ candidates: [OnDeviceQuoteCandidate]) -> (
-        candidates: [OnDeviceQuoteCandidate],
-        overflowed: Bool
-    ) {
-        guard candidates.count > maximumReviewableCount else {
-            return (candidates, false)
-        }
-
-        let selectedIndices = Set(
-            candidates.enumerated()
-                .sorted { lhs, rhs in
-                    if lhs.element.confidence == rhs.element.confidence {
-                        return lhs.offset < rhs.offset
-                    }
-                    return lhs.element.confidence > rhs.element.confidence
-                }
-                .prefix(maximumReviewableCount)
-                .map(\.offset)
-        )
-
-        // Confidence decides which candidates survive; original sequence decides review order.
-        let keptInPageOrder = candidates.enumerated().compactMap { index, candidate in
-            selectedIndices.contains(index) ? candidate : nil
-        }
-        return (keptInPageOrder, true)
-    }
-}
 
 struct OnDeviceQuoteCandidate: Sendable, Equatable {
     let text: String
