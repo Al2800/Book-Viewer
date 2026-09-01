@@ -64,8 +64,11 @@ final class LibraryOverviewViewsTests: XCTestCase {
     }
 
     func testActiveReadingSessionStorePureQueryDoesNotMutatePersistedID() {
-        let store = ActiveReadingSessionStore()
-        store.clearActiveBook()
+        let suiteName = "test_library_snapshot_store_\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let store = ActiveReadingSessionStore(userDefaults: defaults)
         XCTAssertNil(store.activeBookID)
 
         let book = Book(title: "Deep Work", author: "Cal Newport")
@@ -73,7 +76,6 @@ final class LibraryOverviewViewsTests: XCTestCase {
 
         let resolved = store.activeBook(from: [book])
         XCTAssertEqual(resolved?.id, book.id)
-        // Ensure pure query did not mutate activeBookID
         XCTAssertNil(store.activeBookID)
     }
 }

@@ -78,6 +78,7 @@ struct BatchCaptureFlowView: View {
                 session: initialSession,
                 hidesHeaderBar: hidesHeaderBar,
                 hidesTabBar: hidesTabBar,
+                onSwitchBook: onChooseBook,
                 onComplete: { session in
                     capturedSession = session
                 },
@@ -113,6 +114,31 @@ private struct MissingSelectedBookView: View {
             Color.black.ignoresSafeArea()
 
             VStack(spacing: Spacing.xl) {
+                HStack {
+                    Button(action: onCancel) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 44, height: 44)
+                            .background(
+                                Circle()
+                                    .fill(Color.black.opacity(0.62))
+                                    .overlay {
+                                        Circle()
+                                            .stroke(Color.white.opacity(0.22), lineWidth: Stroke.hairline.width)
+                                    }
+                            )
+                            .contentShape(Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Close capture")
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
+
+                    Spacer()
+                }
+                .padding(.horizontal, Spacing.md)
+                .padding(.top, Spacing.sm)
+
                 Spacer()
 
                 ZStack {
@@ -152,19 +178,15 @@ private struct MissingSelectedBookView: View {
                             .shadow(color: Color.gildedAccent.opacity(0.4), radius: 8, y: 4)
                     }
                     .buttonStyle(.plain)
+                    .frame(minHeight: 44)
                 }
 
                 Spacer()
             }
             .padding()
         }
-        .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Close", action: onCancel)
-                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
-            }
-        }
+        .accessibilityLabel(title)
+        .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
     }
 }

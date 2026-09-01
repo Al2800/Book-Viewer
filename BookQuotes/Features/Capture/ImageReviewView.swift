@@ -39,7 +39,7 @@ struct ImageReviewView: View {
                 // Action buttons
                 actionButtons
             }
-            .background(Color.backgroundPrimary)
+            .background(Color.black.ignoresSafeArea())
             .navigationTitle("Review Photo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -51,7 +51,10 @@ struct ImageReviewView: View {
                     .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.cancelButton)
                 }
             }
-            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(Color.black, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .preferredColorScheme(.dark)
         }
     }
 
@@ -122,7 +125,7 @@ struct ImageReviewView: View {
                 }
             }
             .padding(Spacing.md)
-            .background(Color.backgroundSecondary, in: RoundedRectangle(cornerRadius: CornerRadius.md))
+            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: CornerRadius.md))
 
             // Warnings if any
             if !result.issues.isEmpty {
@@ -136,7 +139,7 @@ struct ImageReviewView: View {
 
                             Text(issue.description)
                                 .font(.caption)
-                                .foregroundStyle(Color.textSecondary)
+                                .foregroundStyle(Color.white.opacity(0.75))
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
@@ -158,11 +161,11 @@ struct ImageReviewView: View {
 
             Text("You can still review the image before continuing.")
                 .font(.caption)
-                .foregroundStyle(Color.textSecondary)
+                .foregroundStyle(Color.white.opacity(0.75))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.md)
-        .background(Color.backgroundSecondary, in: RoundedRectangle(cornerRadius: CornerRadius.md))
+        .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: CornerRadius.md))
         .padding(.horizontal, Spacing.lg)
         .padding(.vertical, Spacing.sm)
         .accessibilityIdentifier(AccessibilityIdentifiers.ImageReview.qualityBar)
@@ -172,7 +175,7 @@ struct ImageReviewView: View {
         VStack(spacing: 2) {
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(Color.textSecondary)
+                .foregroundStyle(Color.white.opacity(0.7))
                 .fixedSize(horizontal: false, vertical: true)
 
             Circle()
@@ -242,7 +245,7 @@ struct ImageReviewView: View {
             Text(qualityLabel(for: result.overallScore))
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundStyle(Color.textPrimary)
+                .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }

@@ -87,6 +87,7 @@ struct LibraryView: View {
     @State private var showEditSheet = false
     @State private var showAddBookCapture = false
     @State private var activeBookToCapture: Book?
+    @State private var showingCaptureBookSwitcher = false
     @State private var hasAppeared = false
     @State private var isRefreshing = false
     @State private var selectedCollectionIds: Set<UUID> = []
@@ -219,15 +220,48 @@ struct LibraryView: View {
         .fullScreenCover(item: $activeBookToCapture) { book in
             QuoteCaptureFlowView(
                 book: book,
-                hidesHeaderBar: false,
+                hidesHeaderBar: true,
                 hidesTabBar: true,
                 onComplete: {
                     activeBookToCapture = nil
                 },
                 onCancel: {
                     activeBookToCapture = nil
+                },
+                onChooseBook: {
+                    showingCaptureBookSwitcher = true
                 }
             )
+            .overlay(alignment: .top) {
+                HStack(alignment: .top, spacing: Spacing.xs) {
+                    ActiveBookHUDView(
+                        book: book,
+                        onSwitchBook: {
+                            showingCaptureBookSwitcher = true
+                        },
+                        onClose: {
+                            activeBookToCapture = nil
+                        }
+                    )
+
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, Spacing.md)
+                .padding(.top, Spacing.sm)
+            }
+            .sheet(isPresented: $showingCaptureBookSwitcher) {
+                ActiveBookSwitcherSheet(
+                    currentBook: book,
+                    onSelectBook: { selected in
+                        ActiveReadingSessionStore.shared.setActiveBook(selected)
+                        activeBookToCapture = selected
+                    },
+                    onScanNewBook: {
+                        activeBookToCapture = nil
+                        showAddBookCapture = true
+                    }
+                )
+            }
         }
         .sheet(isPresented: $showEditSheet) {
             if let book = bookToEdit {
@@ -349,9 +383,11 @@ struct LibraryView: View {
                     VStack(alignment: .leading, spacing: Spacing.md) {
                         HStack(alignment: .center) {
                             HStack(spacing: Spacing.xs) {
+                                Image(systemName: "books.vertical")
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(Color.gildedAccent)
                                 Text("Books")
-                                    .font(.serifHeadline)
-                                    .foregroundStyle(Color.textPrimary)
+                                    .sectionHeaderStyle()
 
                                 Text("\(organizationFilteredBooks.count)")
                                     .font(.uiBadge)

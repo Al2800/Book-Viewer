@@ -13,6 +13,7 @@ struct BatchCaptureView: View {
     let book: Book
     var hidesHeaderBar: Bool = false
     var hidesTabBar: Bool = true
+    var onSwitchBook: (() -> Void)? = nil
     let onComplete: (CaptureSession) -> Void
     let onCancel: () -> Void
 
@@ -34,6 +35,7 @@ struct BatchCaptureView: View {
         session: CaptureSession? = nil,
         hidesHeaderBar: Bool = false,
         hidesTabBar: Bool = true,
+        onSwitchBook: (() -> Void)? = nil,
         onComplete: @escaping (CaptureSession) -> Void,
         onCancel: @escaping () -> Void
     ) {
@@ -42,6 +44,7 @@ struct BatchCaptureView: View {
         self.book = book
         self.hidesHeaderBar = hidesHeaderBar
         self.hidesTabBar = hidesTabBar
+        self.onSwitchBook = onSwitchBook
         self.onComplete = onComplete
         self.onCancel = onCancel
         self._session = State(initialValue: activeSession)
@@ -54,7 +57,11 @@ struct BatchCaptureView: View {
             cameraPreviewLayer
 
             VStack(spacing: 0) {
-                if !hidesHeaderBar {
+                if hidesHeaderBar {
+                    batchHUDChrome
+                        .padding(.horizontal, Spacing.md)
+                        .padding(.top, Spacing.sm)
+                } else {
                     sessionHeader
                         .padding(.horizontal, Spacing.lg)
                         .padding(.top, Spacing.sm)
@@ -141,6 +148,48 @@ struct BatchCaptureView: View {
     }
 
     // MARK: - Session Header
+
+    private var batchHUDChrome: some View {
+        HStack(alignment: .top, spacing: Spacing.xs) {
+            ActiveBookHUDView(
+                book: book,
+                onSwitchBook: {
+                    onSwitchBook?()
+                },
+                onClose: cancelBatchCapture
+            )
+
+            Spacer(minLength: 0)
+
+            VStack(alignment: .trailing, spacing: Spacing.xs) {
+                Button {
+                    _ = lifecycleState.requestFinish(pageCount: session.totalPages)
+                } label: {
+                    Text("Done")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(lifecycleState.canFinish(pageCount: session.totalPages) ? Color.gildedAccent : Color.white.opacity(0.45))
+                        .frame(minWidth: 44, minHeight: 44)
+                        .padding(.horizontal, Spacing.md)
+                        .background(
+                            Capsule()
+                                .fill(Color.black.opacity(0.62))
+                                .overlay {
+                                    Capsule()
+                                        .stroke(Color.white.opacity(0.22), lineWidth: Stroke.hairline.width)
+                                }
+                        )
+                }
+                .buttonStyle(.plain)
+                .disabled(!lifecycleState.canFinish(pageCount: session.totalPages))
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.doneButton)
+
+                Text("\(session.totalPages) page\(session.totalPages == 1 ? "" : "s") in session")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.78))
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.pageCounter)
+            }
+        }
+    }
 
     @ViewBuilder
     private var sessionHeader: some View {

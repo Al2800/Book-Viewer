@@ -53,15 +53,15 @@ struct ActiveBookHUDView: View {
             if let onClose {
                 Button(action: onClose) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.white)
-                        .frame(width: 32, height: 32)
+                        .frame(width: 44, height: 44)
                         .contentShape(Circle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Close capture")
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
-                .padding(.trailing, Spacing.xs)
+                .padding(.trailing, Spacing.xxs)
             }
         }
         .background(

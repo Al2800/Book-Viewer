@@ -192,9 +192,11 @@ struct CaptureTabRootView: View {
             )
             .id(captureFlow.quoteCaptureFlowID)
             .overlay(alignment: .top) {
-                quoteCaptureHUD
-                    .padding(.horizontal, Spacing.md)
-                    .padding(.top, Spacing.sm)
+                if selectedBook != nil {
+                    quoteCaptureHUD
+                        .padding(.horizontal, Spacing.md)
+                        .padding(.top, Spacing.sm)
+                }
             }
 
         case .coverCapture:
@@ -214,7 +216,7 @@ struct CaptureTabRootView: View {
             BatchCaptureFlowView(
                 book: selectedBook,
                 initialSession: selectedDraft,
-                hidesHeaderBar: false,
+                hidesHeaderBar: true,
                 hidesTabBar: true,
                 onComplete: { _ in
                     let completedBook = selectedBook
