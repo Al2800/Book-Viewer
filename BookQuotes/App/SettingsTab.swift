@@ -75,6 +75,7 @@ struct SettingsView: View {
     @AppStorage("libraryViewMode") private var libraryViewMode: String = "grid"
     @AppStorage("autoProcessQueue") private var autoProcessQueue = true
     @AppStorage("hapticFeedbackEnabled") private var hapticFeedbackEnabled = true
+    @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = ProductExperience.defaultEnabled
 
     var body: some View {
         ScrollView {
@@ -136,6 +137,13 @@ struct SettingsView: View {
                         icon: "hand.tap",
                         title: "Haptic Feedback",
                         isOn: $hapticFeedbackEnabled
+                    )
+
+                    SettingsToggleRow(
+                        icon: "rectangle.split.3x1",
+                        title: "Reading, Capture & Explore",
+                        subtitle: "Use the new three-tab layout. Turn off to restore Library, Studio and Settings tabs.",
+                        isOn: $productExperienceV2Enabled
                     )
                 }
 

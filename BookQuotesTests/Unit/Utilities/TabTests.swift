@@ -53,6 +53,17 @@ final class TabTests: XCTestCase {
         ))
     }
 
+    func testProductExperienceLegacyLaunchArgumentDisablesV2() {
+        XCTAssertFalse(ProductExperience.usesV2(
+            storedValue: true,
+            arguments: [ProductExperience.legacyLaunchArgument]
+        ))
+    }
+
+    func testProductExperienceDefaultsOnOutsideUITests() {
+        XCTAssertEqual(ProductExperience.defaultEnabled, !UITestConfiguration.isUITesting)
+    }
+
     func testStudioThemesAndAspectRatios() {
         XCTAssertEqual(StudioTheme.allCases.count, 5)
         XCTAssertEqual(StudioAspectRatio.allCases.count, 3)

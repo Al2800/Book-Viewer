@@ -76,6 +76,7 @@ struct LibraryView: View {
 
     @AppStorage("libraryViewMode") private var viewMode: LibraryViewMode = .grid
     @AppStorage("librarySortOrder") private var sortOrder: LibrarySortOrder = .recent
+    @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = ProductExperience.defaultEnabled
     @State private var searchText = ""
     @State private var searchScope: SearchScope = .all
     @State private var isSearchActive = false
@@ -90,6 +91,10 @@ struct LibraryView: View {
     @State private var selectedCollectionIds: Set<UUID> = []
     @State private var selectedTagIds: Set<UUID> = []
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var readingHomeTitle: String {
+        ProductExperience.usesV2(storedValue: productExperienceV2Enabled) ? "Reading" : "Library"
+    }
 
     // MARK: - Body
 
@@ -109,7 +114,7 @@ struct LibraryView: View {
                     .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestBookCount)
             }
         }
-        .navigationTitle("Library")
+        .navigationTitle(readingHomeTitle)
         .navigationBarTitleDisplayMode(.large)
         .searchable(
             text: $searchText,

@@ -9,7 +9,7 @@ struct ContentView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("uiTestSeeded") private var uiTestSeeded = false
     @AppStorage("persistence_recovery_message") private var persistenceRecoveryMessage = ""
-    @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = false
+    @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = ProductExperience.defaultEnabled
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(NetworkMonitor.self) private var networkMonitor
