@@ -35,6 +35,8 @@ struct QuoteCaptureView: View {
 
     var body: some View {
         ZStack {
+            Color.black.ignoresSafeArea()
+
             cameraContent
 
             if captureState == .qualityChecking {
@@ -58,14 +60,17 @@ struct QuoteCaptureView: View {
                 .padding(.horizontal, Spacing.lg)
                 .padding(.top, Spacing.sm)
             }
-        }
-        .toolbar(.hidden, for: .navigationBar)
-        .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
-        .safeAreaInset(edge: .bottom) {
+
             if captureState == .previewing && cameraService.isAuthorized {
-                bottomCaptureControls
+                VStack(spacing: 0) {
+                    Spacer()
+                    bottomCaptureControls
+                }
             }
         }
+        .background(Color.black.ignoresSafeArea())
+        .toolbar(.hidden, for: .navigationBar)
+        .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
         .sheet(isPresented: .init(
             get: { captureState == .reviewing },
             set: { isPresented in
@@ -189,22 +194,9 @@ struct QuoteCaptureView: View {
 
                 Spacer()
 
-                Button {
+                CaptureButton(isProcessing: !cameraService.isSessionRunning || cameraService.isCapturing) {
                     capturePhoto()
-                } label: {
-                    ZStack {
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 72, height: 72)
-
-                        Circle()
-                            .stroke(.white.opacity(0.5), lineWidth: 4)
-                            .frame(width: 82, height: 82)
-                    }
                 }
-                .disabled(!cameraService.isSessionRunning || cameraService.isCapturing)
-                .accessibilityLabel("Take photo")
-                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.captureButton)
 
                 Spacer()
 
@@ -229,18 +221,18 @@ struct QuoteCaptureView: View {
         VStack(spacing: Spacing.lg) {
             ProgressView()
                 .scaleEffect(1.5)
-                .tint(.brand)
+                .tint(.white)
 
             Text("Processing image...")
                 .font(.headline)
-                .foregroundStyle(Color.textPrimary)
+                .foregroundStyle(.white)
 
             Text("Preparing the page for quote extraction")
                 .font(.subheadline)
-                .foregroundStyle(Color.textSecondary)
+                .foregroundStyle(Color.white.opacity(0.75))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.backgroundPrimary)
+        .background(Color.black.ignoresSafeArea())
     }
 
     private var qualityStatusPill: CaptureStatusPill? {

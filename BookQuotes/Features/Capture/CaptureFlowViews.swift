@@ -109,26 +109,54 @@ private struct MissingSelectedBookView: View {
     let onCancel: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("No Book Selected", systemImage: "book.closed")
-        } description: {
-            Text("Please choose an active book or scan a new one to start capturing quotes.")
-        } actions: {
-            if let onChooseBook {
-                Button {
-                    HapticManager.selection()
-                    onChooseBook()
-                } label: {
-                    Text("Select Active Book")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, Spacing.lg)
-                        .padding(.vertical, Spacing.sm)
-                        .background(Color.brand)
-                        .clipShape(Capsule())
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            VStack(spacing: Spacing.xl) {
+                Spacer()
+
+                ZStack {
+                    Circle()
+                        .fill(LinearGradient.foilAccent.opacity(0.15))
+                        .frame(width: 88, height: 88)
+
+                    Image(systemName: "book.closed")
+                        .font(.system(size: 36, weight: .light))
+                        .foregroundStyle(Color.gildedAccent)
                 }
-                .buttonStyle(.plain)
+
+                VStack(spacing: Spacing.sm) {
+                    Text("No Book Selected")
+                        .font(.serifTitleLarge)
+                        .foregroundStyle(.white)
+
+                    Text("Please choose an active book or scan a new one to start capturing quotes.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.white.opacity(0.75))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Spacing.xl)
+                }
+
+                if let onChooseBook {
+                    Button {
+                        HapticManager.selection()
+                        onChooseBook()
+                    } label: {
+                        Text("Select Active Book")
+                            .font(.headline)
+                            .foregroundStyle(Color.darkLinen)
+                            .padding(.horizontal, Spacing.xl)
+                            .padding(.vertical, Spacing.md)
+                            .background(LinearGradient.foilAccent)
+                            .clipShape(Capsule())
+                            .shadow(color: Color.gildedAccent.opacity(0.4), radius: 8, y: 4)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Spacer()
             }
+            .padding()
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)

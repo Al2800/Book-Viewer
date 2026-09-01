@@ -31,13 +31,13 @@ final class ActiveReadingSessionStore {
         }
     }
 
-    /// Resolves the active book from a collection of available books.
+    /// Resolves the active book from a collection of available books without side effects.
     /// Priority order:
     /// 1. Book matching persisted `activeBookID`
     /// 2. First book with `.currentlyReading` status (sorted by dateModified desc)
     /// 3. Most recently modified book
     /// 4. nil if no books exist
-    func resolveActiveBook(from books: [Book]) -> Book? {
+    func activeBook(from books: [Book]) -> Book? {
         guard !books.isEmpty else { return nil }
 
         // 1. Persisted match
@@ -50,18 +50,22 @@ final class ActiveReadingSessionStore {
             .filter { $0.status == .currentlyReading }
             .sorted { $0.dateModified > $1.dateModified }
         if let firstReading = currentlyReading.first {
-            setActiveBook(firstReading)
             return firstReading
         }
 
         // 3. Most recently modified
         let sorted = books.sorted { $0.dateModified > $1.dateModified }
-        if let mostRecent = sorted.first {
-            setActiveBook(mostRecent)
-            return mostRecent
-        }
+        return sorted.first
+    }
 
-        return nil
+    /// Resolves and persists the active book from available books.
+    @discardableResult
+    func resolveActiveBook(from books: [Book], persist: Bool = true) -> Book? {
+        guard let resolved = activeBook(from: books) else { return nil }
+        if persist && activeBookID != resolved.id {
+            setActiveBook(resolved)
+        }
+        return resolved
     }
 
     /// Sets the currently active reading book.

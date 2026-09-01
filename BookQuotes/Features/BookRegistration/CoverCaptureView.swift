@@ -21,25 +21,29 @@ struct CoverCaptureView: View {
 
     var body: some View {
         ZStack {
+            Color.black.ignoresSafeArea()
             cameraContent
             CoverBarcodeScanOverlay()
+
+            VStack(spacing: 0) {
+                CoverCaptureHeader(onCancel: cancelCapture)
+
+                Spacer()
+
+                CoverCaptureBottomControls(
+                    isProcessing: isProcessing,
+                    showsTestISBNButton: UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode,
+                    onUseTestISBN: useTestISBN,
+                    onManualEntry: showManualEntry
+                )
+            }
 
             if isProcessing {
                 CoverProcessingOverlay(message: "Looking up book...")
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            CoverCaptureHeader(onCancel: cancelCapture)
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            CoverCaptureBottomControls(
-                isProcessing: isProcessing,
-                showsTestISBNButton: UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode,
-                onUseTestISBN: useTestISBN,
-                onManualEntry: showManualEntry
-            )
-        }
+        .background(Color.black.ignoresSafeArea())
+        .statusBarHidden()
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
         .sheet(item: $extractedMetadata, onDismiss: resumeScanning) { metadata in

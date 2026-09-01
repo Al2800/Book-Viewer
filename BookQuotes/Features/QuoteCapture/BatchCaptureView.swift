@@ -49,6 +49,8 @@ struct BatchCaptureView: View {
 
     var body: some View {
         ZStack {
+            Color.black.ignoresSafeArea()
+
             cameraPreviewLayer
 
             VStack(spacing: 0) {
@@ -65,6 +67,7 @@ struct BatchCaptureView: View {
                 }
             }
         }
+        .background(Color.black.ignoresSafeArea())
         .statusBarHidden()
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)

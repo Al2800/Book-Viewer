@@ -331,10 +331,10 @@ struct CaptureControlTray<Content: View>: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, Spacing.lg)
         .padding(.top, Spacing.xl)
-        .padding(.bottom, Spacing.md)
+        .padding(.bottom, Spacing.xxl)
         .background {
             LinearGradient(
-                colors: [.clear, Color.black.opacity(0.62)],
+                colors: [.clear, Color.black.opacity(0.78)],
                 startPoint: .top,
                 endPoint: .bottom
             )

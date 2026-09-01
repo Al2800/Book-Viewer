@@ -31,11 +31,26 @@ struct DailyPassage {
 struct LibraryHomeSnapshot {
     let totalQuoteCount: Int
     let dailyPassage: Quote?
+    let recentQuotes: [Quote]
+    let activeBook: Book?
 
     init(books: [Book], on date: Date = Date(), calendar: Calendar = .current) {
         let quotes = books.flatMap(\.quotes)
         totalQuoteCount = quotes.count
-        dailyPassage = DailyPassage.passage(from: quotes, on: date, calendar: calendar)
+        let passage = DailyPassage.passage(from: quotes, on: date, calendar: calendar)
+        dailyPassage = passage
+
+        // Sort by most recently captured; deduplicate against daily passage so the same
+        // quote is not shown in both places when the library has few quotes.
+        let sorted = quotes.sorted(by: { $0.captureDate > $1.captureDate })
+        if let passage {
+            let withoutDaily = sorted.filter { $0.id != passage.id }
+            recentQuotes = Array(withoutDaily.prefix(3))
+        } else {
+            recentQuotes = Array(sorted.prefix(3))
+        }
+
+        activeBook = ActiveReadingSessionStore.shared.activeBook(from: books)
     }
 }
 
@@ -136,121 +151,424 @@ struct BookmarkRibbon: View {
     }
 }
 
-// MARK: - Browse Section
+// MARK: - Continue Reading Hero Card
 
-/// Browse controls card: grid/list view mode, book sort order, and the
-/// camera-first add-book action.
-struct LibraryBrowseSection: View {
-    @Binding var viewMode: LibraryViewMode
-    @Binding var sortOrder: LibrarySortOrder
-    let onAddBook: () -> Void
+/// Hero card highlighting the currently active book with 1-tap capture action.
+struct ContinueReadingCard: View {
+    let book: Book
+    let onOpenBook: () -> Void
+    let onCapture: () -> Void
 
     var body: some View {
-        SectionCard(title: "Browse") {
-            VStack(alignment: .leading, spacing: Spacing.sm) {
-                LibraryControlRow(
-                    icon: viewMode.systemImageName,
-                    title: "Library View",
-                    trailing: {
-                        LibraryViewModeControl(viewMode: $viewMode)
-                    }
-                )
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "bookmark.fill")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text("Continue Reading")
+                    .sectionHeaderStyle()
 
-                LibraryControlRow(
-                    icon: "arrow.up.arrow.down",
-                    title: "Sort Books",
-                    trailing: {
-                        sortMenu
-                    }
-                )
+                Spacer()
 
-                Button {
-                    HapticManager.light()
-                    onAddBook()
-                } label: {
-                    LibraryActionRow(
-                        icon: "camera.viewfinder",
-                        title: "Add New Book",
-                        subtitle: "Scan an ISBN barcode"
-                    )
+                Button(action: onOpenBook) {
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.textSecondary)
+                        .frame(width: 32, height: 32)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Open \(book.title)")
+                .accessibilityHint("Opens book details")
+            }
+
+            HStack(alignment: .center, spacing: Spacing.md) {
+                // Book cover thumbnail with spine depth
+                Button(action: onOpenBook) {
+                    bookThumbnail
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(book.title) cover")
+                .accessibilityHint("Opens book details")
+
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Button(action: onOpenBook) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(book.title)
+                                .font(.serifHeadline)
+                                .foregroundStyle(Color.textPrimary)
+                                .lineLimit(2)
+                                .multilineTextAlignment(.leading)
+
+                            Text(book.author)
+                                .font(.authorName)
+                                .foregroundStyle(Color.textSecondary)
+                                .lineLimit(1)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(book.title) by \(book.author)")
+                    .accessibilityHint("Opens book details")
+
+                    HStack(spacing: Spacing.sm) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "text.quote")
+                                .font(.caption2)
+                            Text("\(book.quotes.count) \(book.quotes.count == 1 ? "passage" : "passages")")
+                                .font(.caption)
+                        }
+                        .foregroundStyle(Color.textSecondary)
+
+                        Spacer()
+
+                        Button {
+                            HapticManager.selection()
+                            onCapture()
+                        } label: {
+                            HStack(spacing: Spacing.xs) {
+                                Image(systemName: "camera.fill")
+                                    .font(.caption.weight(.semibold))
+                                Text("Capture")
+                                    .font(.uiPill)
+                            }
+                            .foregroundStyle(Color.darkLinen)
+                            .padding(.horizontal, Spacing.md)
+                            .padding(.vertical, Spacing.sm)
+                            .background(
+                                Capsule()
+                                    .fill(LinearGradient.foilAccent)
+                            )
+                            .shadow(color: Color.gildedAccent.opacity(0.3), radius: 4, y: 2)
+                        }
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Capture passage for \(book.title)")
+                        .accessibilityHint("Opens camera to capture a new quote")
+                        .accessibilityIdentifier("continue_reading_capture_button")
+                    }
+                }
+            }
+        }
+        .padding(Spacing.lg)
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.lg)
+                .fill(Color.warmVellum)
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.lg)
+                        .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
+                }
+        )
+        .elevation(.sm)
+    }
+
+    @ViewBuilder
+    private var bookThumbnail: some View {
+        if let coverData = book.coverThumbnailData ?? book.coverFullData, let uiImage = UIImage(data: coverData) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 48, height: 68)
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.xs)
+                        .stroke(Color.quoteBorder.opacity(0.8), lineWidth: 0.5)
+                }
+                .shadow(color: Color.black.opacity(0.12), radius: 3, y: 2)
+        } else {
+            ZStack {
+                RoundedRectangle(cornerRadius: CornerRadius.xs)
+                    .fill(LinearGradient.spineDepth)
+                    .frame(width: 48, height: 68)
+
+                Image(systemName: "book.closed")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.gildedAccent)
+            }
+            .shadow(color: Color.black.opacity(0.1), radius: 2, y: 1)
+        }
+    }
+}
+
+// MARK: - Recent Passages
+
+/// Passage-first section showcasing recently marked passages.
+struct RecentPassagesSection: View {
+    let quotes: [Quote]
+    let onSelectQuote: (Quote) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "text.quote")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text("Recent Passages")
+                    .sectionHeaderStyle()
+            }
+
+            VStack(spacing: Spacing.sm) {
+                ForEach(quotes) { quote in
+                    Button {
+                        HapticManager.light()
+                        onSelectQuote(quote)
+                    } label: {
+                        RecentPassageRow(quote: quote)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
     }
+}
 
-    private var sortMenu: some View {
-        Menu {
-            ForEach(LibrarySortOrder.allCases) { order in
-                Button {
-                    HapticManager.selection()
-                    sortOrder = order
-                } label: {
-                    if sortOrder == order {
-                        Label(order.displayName, systemImage: "checkmark")
-                    } else {
-                        Text(order.displayName)
+/// Compact tactile card for a single recent passage.
+struct RecentPassageRow: View {
+    let quote: Quote
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text("\u{201C}\(quote.text)\u{201D}")
+                .font(.quoteBody)
+                .foregroundStyle(Color.textPrimary)
+                .lineSpacing(4)
+                .lineLimit(3)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(alignment: .firstTextBaseline) {
+                if let book = quote.book {
+                    Text("— \(book.title)\(pageSuffix)")
+                        .font(.attribution)
+                        .foregroundStyle(Color.textSecondary)
+                        .lineLimit(1)
+                }
+
+                Spacer()
+
+                if let marginNote = quote.marginNote, !marginNote.isEmpty {
+                    HStack(spacing: 3) {
+                        Image(systemName: "pencil.line")
+                            .font(.caption2)
+                            .foregroundStyle(Color.goldFoil)
+                        Text(marginNote)
+                            .font(.marginScriptSmall)
+                            .foregroundStyle(Color.textSecondary)
+                            .lineLimit(1)
                     }
                 }
             }
-        } label: {
-            HStack(spacing: Spacing.xxs) {
-                Text(sortOrder.displayName)
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.caption2)
-            }
-            .font(.subheadline)
-            .foregroundStyle(Color.brand)
-            .frame(minHeight: 44, alignment: .trailing)
-            .contentShape(Rectangle())
         }
-        .accessibilityIdentifier(AccessibilityIdentifiers.Library.sortMenu)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Spacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .fill(Color.warmVellum)
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.md)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                }
+        )
+        .elevation(.xs)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint("Open quote details")
+    }
+
+    private var pageSuffix: String {
+        guard let page = quote.pageNumber, page > 0 else { return "" }
+        return " · p. \(page)"
+    }
+
+    private var accessibilityLabel: String {
+        var label = "\"\(quote.text)\""
+        if let book = quote.book {
+            label += ", from \(book.title)"
+            if let page = quote.pageNumber, page > 0 {
+                label += ", page \(page)"
+            }
+        }
+        if let marginNote = quote.marginNote, !marginNote.isEmpty {
+            label += ". Margin note: \(marginNote)"
+        }
+        return label
+    }
+}
+
+// MARK: - Browse Controls
+
+/// Compact browse controls for the books section header: grid/list toggle and sort menu with accessible 44pt hit targets.
+struct LibraryBrowseControls: View {
+    @Binding var viewMode: LibraryViewMode
+    @Binding var sortOrder: LibrarySortOrder
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            // View Mode Toggle Button
+            Button {
+                HapticManager.selection()
+                withAnimation(.smoothSpring) {
+                    viewMode = viewMode == .grid ? .list : .grid
+                }
+            } label: {
+                Image(systemName: viewMode == .grid ? "list.bullet" : "square.grid.2x2")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.textSecondary)
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(Color.backgroundSecondary))
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Library.viewModeToggle)
+            .accessibilityLabel("Switch to \(viewMode == .grid ? "list" : "grid") view")
+
+            // Sort Menu Button
+            Menu {
+                ForEach(LibrarySortOrder.allCases) { order in
+                    Button {
+                        HapticManager.selection()
+                        sortOrder = order
+                    } label: {
+                        if sortOrder == order {
+                            Label(order.displayName, systemImage: "checkmark")
+                        } else {
+                            Text(order.displayName)
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "arrow.up.arrow.down")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.textSecondary)
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(Color.backgroundSecondary))
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityIdentifier(AccessibilityIdentifiers.Library.sortMenu)
+            .accessibilityLabel("Sort books: \(sortOrder.displayName)")
+        }
     }
 }
 
 // MARK: - Organize Section
 
-/// Organize card linking to the Collections and Tags screens.
+/// Clean organize cards linking to Collections and Tags with responsive Dynamic Type support.
 struct LibraryOrganizeSection: View {
-    var body: some View {
-        SectionCard(title: "Organize") {
-            VStack(alignment: .leading, spacing: Spacing.sm) {
-                NavigationLink(value: LibraryOrganizeDestination.collections) {
-                    LibraryActionRow(
-                        icon: "folder",
-                        title: "Collections",
-                        subtitle: "Group quotes by theme or project"
-                    )
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Library.collectionsRow)
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-                NavigationLink(value: LibraryOrganizeDestination.tags) {
-                    LibraryActionRow(
-                        icon: "tag",
-                        title: "Tags",
-                        subtitle: "Label quotes across your library"
-                    )
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "folder")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text("Organize")
+                    .sectionHeaderStyle()
+            }
+
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: Spacing.sm) {
+                    collectionsLink
+                    tagsLink
                 }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier(AccessibilityIdentifiers.Library.tagsRow)
+            } else {
+                HStack(spacing: Spacing.md) {
+                    collectionsLink
+                    tagsLink
+                }
             }
         }
+    }
+
+    private var collectionsLink: some View {
+        NavigationLink(value: LibraryOrganizeDestination.collections) {
+            HStack(spacing: Spacing.sm) {
+                Image(systemName: "folder")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+
+                Text("Collections")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.textPrimary)
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(Color.textTertiary)
+            }
+            .padding(Spacing.md)
+            .background(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .fill(Color.warmVellum)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: CornerRadius.md)
+                            .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                    }
+            )
+            .elevation(.xs)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.collectionsRow)
+    }
+
+    private var tagsLink: some View {
+        NavigationLink(value: LibraryOrganizeDestination.tags) {
+            HStack(spacing: Spacing.sm) {
+                Image(systemName: "tag")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+
+                Text("Tags")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.textPrimary)
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(Color.textTertiary)
+            }
+            .padding(Spacing.md)
+            .background(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .fill(Color.warmVellum)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: CornerRadius.md)
+                            .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                    }
+            )
+            .elevation(.xs)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.tagsRow)
     }
 }
 
 // MARK: - Filtered Books Empty Card
 
-/// Shown in place of the Books section when the active collection/tag
-/// filters exclude every book.
+/// Shown in place of the Books section when active collection/tag filters exclude every book.
 struct LibraryFilteredBooksEmptyCard: View {
     var body: some View {
-        SectionCard(title: "Books") {
+        VStack(spacing: Spacing.sm) {
             Text("No books match the selected filters.")
                 .font(.subheadline)
                 .foregroundStyle(Color.textSecondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
+        .padding(Spacing.lg)
+        .background(
+            RoundedRectangle(cornerRadius: CornerRadius.md)
+                .fill(Color.warmVellum)
+                .overlay {
+                    RoundedRectangle(cornerRadius: CornerRadius.md)
+                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                }
+        )
+        .elevation(.xs)
     }
 }
 
@@ -263,32 +581,57 @@ struct EmptyLibraryView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: Spacing.lg) {
-                LibrarySummaryCard(bookCount: 0, quoteCount: 0, viewMode: .grid)
+            VStack(spacing: Spacing.xl) {
+                Spacer(minLength: 40)
 
-                SectionCard(title: "Library") {
-                    emptyIntroRow
+                ZStack {
+                    Circle()
+                        .fill(LinearGradient.foilAccent.opacity(0.12))
+                        .frame(width: 90, height: 90)
 
-                    Button {
-                        HapticManager.light()
-                        onAddBook?()
-                    } label: {
-                        LibraryActionRow(
-                            icon: "camera.viewfinder",
-                            title: "Add Your First Book",
-                            subtitle: "Scan an ISBN barcode"
-                        )
-                    }
-                    .buttonStyle(.plain)
+                    Image(systemName: "books.vertical")
+                        .font(.system(size: 38, weight: .light))
+                        .foregroundStyle(Color.gildedAccent)
                 }
+
+                VStack(spacing: Spacing.sm) {
+                    Text("Your Reading Sanctuary")
+                        .font(.serifTitleLarge)
+                        .foregroundStyle(Color.textPrimary)
+
+                    Text("Turn the lines you mark in physical books into a searchable personal reading memory.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Spacing.xl)
+                }
+
+                Button {
+                    HapticManager.selection()
+                    onAddBook?()
+                } label: {
+                    HStack(spacing: Spacing.sm) {
+                        Image(systemName: "camera.viewfinder")
+                        Text("Add Your First Book")
+                    }
+                    .font(.headline)
+                    .foregroundStyle(Color.darkLinen)
+                    .padding(.horizontal, Spacing.xl)
+                    .padding(.vertical, Spacing.md)
+                    .background(LinearGradient.foilAccent)
+                    .clipShape(Capsule())
+                    .shadow(color: Color.gildedAccent.opacity(0.3), radius: 8, y: 4)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.addBookButton)
+
+                Spacer()
             }
-            .padding(.horizontal, Spacing.lg)
-            .padding(.top, Spacing.lg)
-            .padding(.bottom, Spacing.xxxl)
+            .padding(Spacing.xl)
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.emptyState)
         .opacity(hasAppeared ? 1 : 0)
-        .scaleEffect(hasAppeared ? 1 : 0.9)
+        .scaleEffect(hasAppeared ? 1 : 0.95)
         .onAppear {
             guard !reduceMotion else {
                 hasAppeared = true
@@ -297,243 +640,6 @@ struct EmptyLibraryView: View {
             withAnimation(.smoothSpring.delay(0.2)) {
                 hasAppeared = true
             }
-        }
-    }
-
-    private var emptyIntroRow: some View {
-        HStack(spacing: Spacing.md) {
-            LibraryIconCircle(systemImage: "books.vertical", size: 44, font: .headline.weight(.semibold))
-
-            VStack(alignment: .leading, spacing: Spacing.xxs) {
-                Text("No Books Yet")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.textPrimary)
-
-                Text("Add your first book to start building a searchable quote library.")
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-            }
-
-            Spacer(minLength: 0)
-        }
-    }
-}
-
-struct LibrarySummaryCard: View {
-    let bookCount: Int
-    let quoteCount: Int
-    let viewMode: LibraryViewMode
-
-    var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: Spacing.sm) {
-                summaryPills
-            }
-
-            VStack(alignment: .leading, spacing: Spacing.sm) {
-                summaryPills
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Spacing.lg)
-        .paperCard()
-    }
-
-    @ViewBuilder
-    private var summaryPills: some View {
-        LibrarySummaryPill(
-            systemImage: "books.vertical",
-            text: "\(bookCount) \(bookCount == 1 ? "Book" : "Books")"
-        )
-        LibrarySummaryPill(
-            systemImage: "text.quote",
-            text: "\(quoteCount) \(quoteCount == 1 ? "Quote" : "Quotes")"
-        )
-        LibrarySummaryPill(
-            systemImage: viewMode.systemImageName,
-            text: viewMode.summaryText
-        )
-    }
-}
-
-struct LibraryControlRow<Trailing: View>: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    let icon: String
-    let title: String
-    let subtitle: String?
-    let trailing: Trailing
-
-    init(
-        icon: String,
-        title: String,
-        subtitle: String? = nil,
-        @ViewBuilder trailing: () -> Trailing
-    ) {
-        self.icon = icon
-        self.title = title
-        self.subtitle = subtitle
-        self.trailing = trailing()
-    }
-
-    var body: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            accessibilityLayout
-        } else {
-            standardLayout
-        }
-    }
-
-    private var standardLayout: some View {
-        HStack(spacing: Spacing.md) {
-            LibraryIconCircle(systemImage: icon)
-
-            rowLabels
-
-            Spacer(minLength: 0)
-
-            trailing
-        }
-    }
-
-    private var accessibilityLayout: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            HStack(alignment: .top, spacing: Spacing.md) {
-                LibraryIconCircle(systemImage: icon)
-                rowLabels
-            }
-
-            trailing
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-
-    private var rowLabels: some View {
-        VStack(alignment: .leading, spacing: Spacing.xxs) {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Color.textPrimary)
-
-            if let subtitle {
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-struct LibraryActionRow: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    let icon: String
-    let title: String
-    var subtitle: String?
-
-    var body: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            accessibilityLayout
-        } else {
-            standardLayout
-        }
-    }
-
-    private var standardLayout: some View {
-        HStack(spacing: Spacing.md) {
-            LibraryIconCircle(systemImage: icon, foreground: Color.accent)
-
-            rowLabels
-
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(Color.textTertiary)
-        }
-        .contentShape(Rectangle())
-    }
-
-    private var accessibilityLayout: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            HStack {
-                LibraryIconCircle(systemImage: icon, foreground: Color.accent)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(Color.textTertiary)
-            }
-
-            rowLabels
-        }
-        .contentShape(Rectangle())
-    }
-
-    private var rowLabels: some View {
-        VStack(alignment: .leading, spacing: Spacing.xxs) {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Color.textPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if let subtitle {
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct LibrarySummaryPill: View {
-    let systemImage: String
-    let text: String
-
-    var body: some View {
-        HStack(spacing: Spacing.xs) {
-            Image(systemName: systemImage)
-                .font(.caption.weight(.semibold))
-                .accessibilityHidden(true)
-
-            Text(text)
-                .font(.caption.weight(.medium))
-        }
-        .foregroundStyle(Color.textPrimary)
-        .padding(.vertical, Spacing.xs)
-        .padding(.horizontal, Spacing.sm)
-        .background(
-            Capsule()
-                .fill(Color.backgroundSecondary)
-        )
-        .overlay {
-            Capsule()
-                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-        }
-    }
-}
-
-private struct LibraryIconCircle: View {
-    let systemImage: String
-    var size: CGFloat = 36
-    var font: Font = .subheadline.weight(.semibold)
-    var foreground: Color = .textPrimary
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color.backgroundSecondary)
-                .frame(width: size, height: size)
-                .overlay {
-                    Circle()
-                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                }
-
-            Image(systemName: systemImage)
-                .font(font)
-                .foregroundStyle(foreground)
-                .accessibilityHidden(true)
         }
     }
 }

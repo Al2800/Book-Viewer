@@ -86,6 +86,7 @@ struct LibraryView: View {
     @State private var showDeleteConfirmation = false
     @State private var showEditSheet = false
     @State private var showAddBookCapture = false
+    @State private var activeBookToCapture: Book?
     @State private var hasAppeared = false
     @State private var isRefreshing = false
     @State private var selectedCollectionIds: Set<UUID> = []
@@ -215,6 +216,19 @@ struct LibraryView: View {
                 }
             )
         }
+        .fullScreenCover(item: $activeBookToCapture) { book in
+            QuoteCaptureFlowView(
+                book: book,
+                hidesHeaderBar: false,
+                hidesTabBar: true,
+                onComplete: {
+                    activeBookToCapture = nil
+                },
+                onCancel: {
+                    activeBookToCapture = nil
+                }
+            )
+        }
         .sheet(isPresented: $showEditSheet) {
             if let book = bookToEdit {
                 BookEditView(mode: .edit(book))
@@ -295,7 +309,31 @@ struct LibraryView: View {
 
     private func libraryScrollContent(snapshot: LibraryHomeSnapshot) -> some View {
         ScrollView {
-            VStack(spacing: Spacing.lg) {
+            VStack(spacing: Spacing.xl) {
+                // 1. Continue Reading (Hero active book card with direct capture)
+                if let activeBook = snapshot.activeBook {
+                    ContinueReadingCard(
+                        book: activeBook,
+                        onOpenBook: {
+                            router.navigate(to: activeBook)
+                        },
+                        onCapture: {
+                            activeBookToCapture = activeBook
+                        }
+                    )
+                }
+
+                // 2. Recent Passages (Passage-first reading memory)
+                if !snapshot.recentQuotes.isEmpty {
+                    RecentPassagesSection(
+                        quotes: snapshot.recentQuotes,
+                        onSelectQuote: { quote in
+                            router.navigate(to: quote)
+                        }
+                    )
+                }
+
+                // 3. Revisit (Daily Serendipity / Epigraph)
                 if let passage = snapshot.dailyPassage {
                     Button {
                         HapticManager.light()
@@ -306,56 +344,60 @@ struct LibraryView: View {
                     .buttonStyle(.plain)
                 }
 
+                // 4. Books Section with clean inline browse controls
                 if !books.isEmpty {
-                    LibraryBookshelfView(
-                        books: books,
-                        onSelectBook: { book in
-                            router.navigate(to: book)
-                        },
-                        onAddBook: {
-                            showAddBookCapture = true
+                    VStack(alignment: .leading, spacing: Spacing.md) {
+                        HStack(alignment: .center) {
+                            HStack(spacing: Spacing.xs) {
+                                Text("Books")
+                                    .font(.serifHeadline)
+                                    .foregroundStyle(Color.textPrimary)
+
+                                Text("\(organizationFilteredBooks.count)")
+                                    .font(.uiBadge)
+                                    .foregroundStyle(Color.textSecondary)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Capsule().fill(Color.backgroundSecondary))
+                            }
+
+                            Spacer()
+
+                            LibraryBrowseControls(
+                                viewMode: $viewMode,
+                                sortOrder: $sortOrder
+                            )
                         }
-                    )
+
+                        if hasOrganizationFilters && organizationFilteredBooks.isEmpty {
+                            LibraryFilteredBooksEmptyCard()
+                        } else {
+                            LibraryBooksSection(
+                                books: sortOrder.sorted(organizationFilteredBooks),
+                                viewMode: $viewMode,
+                                hasAppeared: hasAppeared,
+                                reduceMotion: reduceMotion,
+                                onTap: { book in
+                                    router.navigate(to: book)
+                                },
+                                onEdit: { book in
+                                    bookToEdit = book
+                                    showEditSheet = true
+                                },
+                                onDelete: { book in
+                                    bookToDelete = book
+                                    showDeleteConfirmation = true
+                                }
+                            )
+                        }
+                    }
                 }
 
-                LibrarySummaryCard(
-                    bookCount: books.count,
-                    quoteCount: snapshot.totalQuoteCount,
-                    viewMode: viewMode
-                )
-
-                LibraryBrowseSection(
-                    viewMode: $viewMode,
-                    sortOrder: $sortOrder,
-                    onAddBook: { showAddBookCapture = true }
-                )
-
+                // 5. Organize Section (Collections & Tags - Clean, zero subtitle clutter)
                 LibraryOrganizeSection()
-
-                if hasOrganizationFilters && organizationFilteredBooks.isEmpty {
-                    LibraryFilteredBooksEmptyCard()
-                } else {
-                    LibraryBooksSection(
-                        books: sortOrder.sorted(organizationFilteredBooks),
-                        viewMode: $viewMode,
-                        hasAppeared: hasAppeared,
-                        reduceMotion: reduceMotion,
-                        onTap: { book in
-                            router.navigate(to: book)
-                        },
-                        onEdit: { book in
-                            bookToEdit = book
-                            showEditSheet = true
-                        },
-                        onDelete: { book in
-                            bookToDelete = book
-                            showDeleteConfirmation = true
-                        }
-                    )
-                }
             }
             .padding(.horizontal, Spacing.lg)
-            .padding(.top, Spacing.lg)
+            .padding(.top, Spacing.md)
             .padding(.bottom, Spacing.xxxl)
         }
         .refreshable {

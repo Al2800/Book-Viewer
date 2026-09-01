@@ -25,7 +25,7 @@ struct CaptureTabRootView: View {
 
     var body: some View {
         ZStack {
-            Color.backgroundPrimary.ignoresSafeArea()
+            Color.black.ignoresSafeArea()
 
             // UI tests: bypass the camera permission gate so App Store media capture is deterministic.
             if UITestConfiguration.isUITesting || cameraPermission.isAuthorized {
@@ -102,11 +102,17 @@ struct CaptureTabRootView: View {
     @ViewBuilder
     private var authorizedContent: some View {
         NavigationStack {
-            if books.isEmpty && captureFlow.mode != .coverCapture {
-                emptyLibraryPrompt
-            } else {
-                captureContent
+            ZStack {
+                Color.black.ignoresSafeArea()
+
+                if books.isEmpty && captureFlow.mode != .coverCapture {
+                    emptyLibraryPrompt
+                } else {
+                    captureContent
+                }
             }
+            .background(Color.black.ignoresSafeArea())
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
@@ -128,12 +134,12 @@ struct CaptureTabRootView: View {
 
             VStack(spacing: Spacing.sm) {
                 Text("Ready to Capture")
-                    .font(.serifHeadline)
-                    .foregroundStyle(Color.textPrimary)
+                    .font(.serifTitleLarge)
+                    .foregroundStyle(.white)
 
                 Text("Scan an ISBN barcode or enter a title to add your first book, then start saving passages instantly.")
                     .font(.subheadline)
-                    .foregroundStyle(Color.textSecondary)
+                    .foregroundStyle(Color.white.opacity(0.75))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, Spacing.xl)
             }
@@ -147,18 +153,19 @@ struct CaptureTabRootView: View {
                     Text("Add Your First Book")
                 }
                 .font(.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(.black)
                 .padding(.horizontal, Spacing.xl)
                 .padding(.vertical, Spacing.md)
-                .background(Color.brand)
+                .background(Color.gildedAccent)
                 .clipShape(Capsule())
-                .shadow(color: Color.brand.opacity(0.3), radius: 8, y: 4)
+                .shadow(color: Color.gildedAccent.opacity(0.4), radius: 8, y: 4)
             }
             .buttonStyle(.plain)
 
             Spacer()
         }
         .padding()
+        .background(Color.black.ignoresSafeArea())
     }
 
     // MARK: - Capture Content
@@ -170,7 +177,7 @@ struct CaptureTabRootView: View {
             QuoteCaptureFlowView(
                 book: selectedBook,
                 hidesHeaderBar: true,
-                hidesTabBar: false,
+                hidesTabBar: true,
                 onComplete: {
                     let completedBook = selectedBook
                     handleCaptureFlowEvent(.completeQuoteCapture)
@@ -208,7 +215,7 @@ struct CaptureTabRootView: View {
                 book: selectedBook,
                 initialSession: selectedDraft,
                 hidesHeaderBar: false,
-                hidesTabBar: false,
+                hidesTabBar: true,
                 onComplete: { _ in
                     let completedBook = selectedBook
                     selectedDraft = nil
