@@ -38,6 +38,10 @@ final class TabTests: XCTestCase {
         XCTAssertEqual(V2Tab.explore.accessibilityIdentifier, "v2_explore_tab")
     }
 
+    func testProductExperienceUsesRotatedPreferenceKey() {
+        XCTAssertEqual(ProductExperience.v2StorageKey, "product_experience_prefer_v2")
+    }
+
     func testProductExperienceIsOffWithoutStoredValueOrArgument() {
         XCTAssertFalse(ProductExperience.usesV2(storedValue: false, arguments: []))
     }

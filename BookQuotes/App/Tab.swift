@@ -63,11 +63,13 @@ enum V2Tab: Hashable, CaseIterable, Identifiable {
 
 /// Gate for the v2 Reading / Capture / Explore shell.
 ///
-/// TestFlight and normal launches default to v2. UI tests keep the legacy
-/// four-tab shell unless they pass `--product-experience-v2`. Testers can
-/// revert with Settings or `--product-experience-legacy`.
+/// TestFlight and normal launches default to v2. The storage key was rotated
+/// after Build 52/53 so a persisted `false` from the original default-off
+/// flag cannot keep testers on the legacy four-tab shell.
+/// UI tests keep the legacy shell unless they pass `--product-experience-v2`.
+/// Testers can revert with Settings or `--product-experience-legacy`.
 enum ProductExperience {
-    static let v2StorageKey = "product_experience_v2_enabled"
+    static let v2StorageKey = "product_experience_prefer_v2"
     static let v2LaunchArgument = "--product-experience-v2"
     static let legacyLaunchArgument = "--product-experience-legacy"
 
