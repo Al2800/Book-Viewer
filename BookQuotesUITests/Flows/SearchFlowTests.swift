@@ -252,3 +252,31 @@ final class AdaptiveSearchAndQuoteDetailLayoutTests: BaseUITestCase {
         return element.exists && element.isHittable
     }
 }
+
+/// Smoke coverage for the default-off v2 product shell.
+final class V2ProductShellTests: BaseUITestCase {
+
+    override var additionalLaunchArguments: [String] {
+        [
+            "--preload-search-test-data",
+            "--product-experience-v2"
+        ]
+    }
+
+    func testV2ShellExposesReadingCaptureAndExplore() {
+        let reading = app.buttons["v2_reading_tab"]
+        let capture = app.buttons["v2_capture_tab"]
+        let explore = app.buttons["v2_explore_tab"]
+
+        XCTAssertTrue(reading.waitForExistence(timeout: 5), "Reading should be the first v2 destination")
+        XCTAssertTrue(capture.exists, "Capture should remain a primary destination")
+        XCTAssertTrue(explore.exists, "Explore should be a primary destination")
+        XCTAssertFalse(app.buttons[AccessibilityIdentifiers.Tabs.studioTab].exists, "Studio should not remain a primary v2 tab")
+
+        explore.tap()
+
+        XCTAssertTrue(app.navigationBars["Explore"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.searchFields["Search passages, books and notes"].exists)
+        XCTAssertTrue(app.buttons["v2_settings_button"].exists, "Settings should remain reachable as a secondary action")
+    }
+}
