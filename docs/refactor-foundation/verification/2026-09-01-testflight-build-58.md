@@ -33,4 +33,5 @@ Wrapper reshape after Build 57. Reading / Capture / Studio is the primary shell.
 
 - Cover capture still exists from Add Book, not as a Capture-tab mode card.
 - Remotion PNG regeneration was not required for this bead; the screenshot list now points at quiet Capture, Passages, and Studio.
-Apple processing may take a few minutes before Build 58 appears in App Store Connect / TestFlight. Internal group **Test v1** has access to all builds.
+- Unused Swift files from earlier capture/review chrome were left in the tree on purpose.
+- Apple processing may take a few minutes before Build 58 appears in App Store Connect / TestFlight. Internal group Test v1 has access to all builds.
