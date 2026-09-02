@@ -1,11 +1,14 @@
 import Foundation
 
-enum LibraryViewMode: String, Equatable {
+enum LibraryViewMode: String, Equatable, CaseIterable {
+    case shelves
     case grid
     case list
 
     var systemImageName: String {
         switch self {
+        case .shelves:
+            return "books.vertical.fill"
         case .grid:
             return "square.grid.2x2"
         case .list:
@@ -15,6 +18,8 @@ enum LibraryViewMode: String, Equatable {
 
     var summaryText: String {
         switch self {
+        case .shelves:
+            return "3D Shelves"
         case .grid:
             return "Grid View"
         case .list:

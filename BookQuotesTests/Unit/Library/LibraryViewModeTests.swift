@@ -3,6 +3,14 @@ import XCTest
 @testable import BookQuotes
 
 final class LibraryViewModeTests: XCTestCase {
+    func testShelvesModePreservesStoredValueAndPresentation() {
+        let mode = LibraryViewMode.shelves
+
+        XCTAssertEqual(mode.rawValue, "shelves")
+        XCTAssertEqual(mode.systemImageName, "books.vertical.fill")
+        XCTAssertEqual(mode.summaryText, "3D Shelves")
+    }
+
     func testGridModePreservesStoredValueAndPresentation() {
         let mode = LibraryViewMode.grid
 

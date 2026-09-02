@@ -399,21 +399,31 @@ struct RecentPassageRow: View {
 
 // MARK: - Browse Controls
 
-/// Compact browse controls for the books section header: grid/list toggle and sort menu with accessible 44pt hit targets.
+/// Compact browse controls for the books section header: 3D shelves / grid / list toggle and sort menu with accessible 44pt hit targets.
 struct LibraryBrowseControls: View {
     @Binding var viewMode: LibraryViewMode
     @Binding var sortOrder: LibrarySortOrder
 
     var body: some View {
         HStack(spacing: Spacing.xs) {
-            // View Mode Toggle Button
-            Button {
-                HapticManager.selection()
-                withAnimation(.smoothSpring) {
-                    viewMode = viewMode == .grid ? .list : .grid
+            // View Mode Toggle Menu / Button
+            Menu {
+                ForEach(LibraryViewMode.allCases, id: \.self) { mode in
+                    Button {
+                        HapticManager.selection()
+                        withAnimation(.smoothSpring) {
+                            viewMode = mode
+                        }
+                    } label: {
+                        if viewMode == mode {
+                            Label(mode.summaryText, systemImage: "checkmark")
+                        } else {
+                            Label(mode.summaryText, systemImage: mode.systemImageName)
+                        }
+                    }
                 }
             } label: {
-                Image(systemName: viewMode == .grid ? "list.bullet" : "square.grid.2x2")
+                Image(systemName: viewMode.systemImageName)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.textSecondary)
                     .frame(width: 36, height: 36)
@@ -421,9 +431,8 @@ struct LibraryBrowseControls: View {
                     .frame(minWidth: 44, minHeight: 44)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
             .accessibilityIdentifier(AccessibilityIdentifiers.Library.viewModeToggle)
-            .accessibilityLabel("Switch to \(viewMode == .grid ? "list" : "grid") view")
+            .accessibilityLabel("View mode: \(viewMode.summaryText)")
 
             // Sort Menu Button
             Menu {

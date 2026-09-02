@@ -80,7 +80,7 @@ struct LibraryView: View {
 
     // MARK: - State
 
-    @AppStorage("libraryViewMode") private var viewMode: LibraryViewMode = .grid
+    @AppStorage("libraryViewMode") private var viewMode: LibraryViewMode = .shelves
     @AppStorage("librarySortOrder") private var sortOrder: LibrarySortOrder = .recent
     @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = ProductExperience.defaultEnabled
     @State private var searchText = ""

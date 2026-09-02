@@ -14,6 +14,12 @@ struct LibraryBooksSection: View {
     var body: some View {
         Group {
             switch viewMode {
+            case .shelves:
+                bookShelvesContent
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                        removal: .opacity
+                    ))
             case .grid:
                 bookGridContent
                     .transition(.asymmetric(
@@ -28,6 +34,72 @@ struct LibraryBooksSection: View {
                     ))
             }
         }
+    }
+
+    private var bookShelvesContent: some View {
+        VStack(spacing: Spacing.xl) {
+            let currentlyReading = books.filter { $0.status == .currentlyReading }
+            let finishedBooks = books.filter { $0.status == .finished }
+            let wantToRead = books.filter { $0.status == .wantToRead }
+
+            if !currentlyReading.isEmpty {
+                shelfTier(title: "Currently Reading", icon: "book.fill", books: currentlyReading)
+            }
+
+            if !finishedBooks.isEmpty {
+                shelfTier(title: "Finished", icon: "checkmark.circle.fill", books: finishedBooks)
+            }
+
+            if !wantToRead.isEmpty {
+                shelfTier(title: "To Read", icon: "bookmark.fill", books: wantToRead)
+            }
+
+            if currentlyReading.isEmpty && finishedBooks.isEmpty && wantToRead.isEmpty {
+                shelfTier(title: "All Books", icon: "books.vertical.fill", books: books)
+            }
+        }
+    }
+
+    private func shelfTier(title: String, icon: String, books: [Book]) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: icon)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.textSecondary)
+
+                Spacer()
+
+                Text("\(books.count)")
+                    .font(.caption2)
+                    .foregroundStyle(Color.textTertiary)
+            }
+            .padding(.horizontal, Spacing.xs)
+
+            ZStack(alignment: .bottom) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(alignment: .bottom, spacing: Spacing.md) {
+                        ForEach(books) { book in
+                            BookshelfItemView(book: book) {
+                                HapticManager.light()
+                                onTap(book)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, Spacing.sm)
+                    .padding(.top, Spacing.sm)
+                    .padding(.bottom, 6)
+                }
+
+                BookshelfLedge()
+                    .padding(.bottom, BookshelfItemView.captionReserve)
+            }
+        }
+        .padding(Spacing.sm)
+        .background(Color.warmVellum.opacity(0.35))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
     }
 
     private var bookGridContent: some View {
@@ -107,11 +179,12 @@ struct LibraryViewModeControl: View {
 
     var body: some View {
         Picker("View", selection: $viewMode) {
+            Image(systemName: LibraryViewMode.shelves.systemImageName).tag(LibraryViewMode.shelves)
             Image(systemName: LibraryViewMode.grid.systemImageName).tag(LibraryViewMode.grid)
             Image(systemName: LibraryViewMode.list.systemImageName).tag(LibraryViewMode.list)
         }
         .pickerStyle(.segmented)
-        .frame(maxWidth: 150)
+        .frame(maxWidth: 180)
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.viewModeToggle)
     }
 }
