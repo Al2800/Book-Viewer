@@ -5,9 +5,9 @@
 - **App Version (MARKETING_VERSION):** `2.0.0`
 - **Build Number (CURRENT_PROJECT_VERSION):** `58`
 - **Bundle Identifier:** `com.acampbell.bookquotes`
-- **Delivery UUID / Build ID:** _pending upload_
-- **Validation Status:** _pending_
-- **Upload Status:** _pending_
+- **Delivery UUID / Build ID:** `52e8701a-6635-4cf5-9b82-8718f9577d7e`
+- **Validation Status:** `VERIFY SUCCEEDED with no errors`
+- **Upload Status:** `UPLOAD SUCCEEDED with no errors`
 
 ## Changes in Build 58
 
@@ -26,10 +26,11 @@ Wrapper reshape after Build 57. Reading / Capture / Studio is the primary shell.
 
 - Complete iPhone 17 unit test suite passed (`xcodebuild test`, 732 tests, 0 failures).
 - Retargeted UI tests passed on iPhone 17: V2 shell, Studio, quiet capture → Passages, batch Done → Passages, batch View page, Save Draft via Cancel.
-- Local archive, IPA export, Apple `altool` validation and upload: _pending_.
+- Local archive (`xcodebuild archive`) and IPA export succeeded.
+- Apple `altool` validation and upload succeeded (`exit_code: 0`).
 
 ## Known gaps
 
 - Cover capture still exists from Add Book, not as a Capture-tab mode card.
 - Remotion PNG regeneration was not required for this bead; the screenshot list now points at quiet Capture, Passages, and Studio.
-- Unused Swift files from earlier capture/review chrome were left in the tree on purpose.
+Apple processing may take a few minutes before Build 58 appears in App Store Connect / TestFlight. Internal group **Test v1** has access to all builds.
