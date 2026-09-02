@@ -6,15 +6,35 @@ import SwiftData
 /// Studio tab for creating beautifully formatted, shareable quote cards.
 struct StudioTab: View {
     @Query(sort: \Quote.dateModified, order: .reverse) private var quotes: [Quote]
+    @Query(sort: \Book.dateModified, order: .reverse) private var books: [Book]
     @State private var selectedQuote: Quote?
     @State private var studioSheetQuote: Quote?
     @State private var selectedTheme: StudioTheme = .darkLinen
     @State private var selectedAspect: StudioAspectRatio = .story
+    @State private var searchText: String = ""
+    @State private var selectedBook: Book?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     var onCapture: (() -> Void)? = nil
 
+    private var filteredQuotes: [Quote] {
+        quotes.filter { quote in
+            if let selectedBook, quote.book?.id != selectedBook.id {
+                return false
+            }
+            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                let term = searchText.lowercased()
+                let matchesText = quote.text.lowercased().contains(term)
+                let matchesAuthor = quote.book?.author.lowercased().contains(term) ?? false
+                let matchesTitle = quote.book?.title.lowercased().contains(term) ?? false
+                let matchesNote = quote.marginNote?.lowercased().contains(term) ?? false
+                return matchesText || matchesAuthor || matchesTitle || matchesNote
+            }
+            return true
+        }
+    }
+
     private var featuredQuote: Quote? {
-        selectedQuote ?? quotes.first
+        selectedQuote ?? filteredQuotes.first ?? quotes.first
     }
 
     var body: some View {
@@ -54,9 +74,142 @@ struct StudioTab: View {
 
                 themeSection
                 formatSection
+                searchAndBookFilterSection
                 passagePicker
             }
             .padding(.vertical, Spacing.lg)
+        }
+    }
+
+    private var searchAndBookFilterSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "magnifyingglass")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text("SEARCH & FILTER PASSAGES")
+                    .inkSectionHeaderStyle()
+            }
+            .padding(.horizontal, Spacing.lg)
+
+            // Search Bar Input
+            HStack(spacing: Spacing.sm) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(Color.gildedAccent.opacity(0.8))
+
+                TextField("Search quotes, books, or authors...", text: $searchText)
+                    .foregroundStyle(.white)
+                    .tint(Color.gildedAccent)
+
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.white.opacity(0.6))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
+            .background(Color.white.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+            .overlay(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .stroke(Color.white.opacity(0.12), lineWidth: 1)
+            )
+            .padding(.horizontal, Spacing.lg)
+
+            // Horizontal Book Carousel Filter
+            if !books.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: Spacing.md) {
+                        // "All Books" Pill
+                        Button {
+                            HapticManager.selection()
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                selectedBook = nil
+                            }
+                        } label: {
+                            VStack(spacing: Spacing.xxs) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: CornerRadius.xs)
+                                        .fill(selectedBook == nil ? LinearGradient.foilAccent : LinearGradient(colors: [Color.white.opacity(0.15), Color.white.opacity(0.08)], startPoint: .top, endPoint: .bottom))
+                                        .frame(width: 44, height: 62)
+
+                                    Image(systemName: "books.vertical.fill")
+                                        .font(.title3)
+                                        .foregroundStyle(selectedBook == nil ? Color.black : Color.white.opacity(0.7))
+                                }
+                                .shadow(color: Color.black.opacity(0.2), radius: 3, y: 1)
+
+                                Text("All Books")
+                                    .font(.caption2.weight(selectedBook == nil ? .bold : .regular))
+                                    .foregroundStyle(selectedBook == nil ? Color.gildedAccent : Color.white.opacity(0.6))
+                                    .lineLimit(1)
+                            }
+                            .frame(width: 60)
+                        }
+                        .buttonStyle(.plain)
+
+                        // Book miniature cards
+                        ForEach(books) { book in
+                            Button {
+                                HapticManager.selection()
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                    if selectedBook?.id == book.id {
+                                        selectedBook = nil
+                                    } else {
+                                        selectedBook = book
+                                    }
+                                }
+                            } label: {
+                                VStack(spacing: Spacing.xxs) {
+                                    ZStack {
+                                        if let coverData = book.coverThumbnailData ?? book.coverFullData,
+                                           let uiImage = UIImage(data: coverData) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: 44, height: 62)
+                                                .clipShape(RoundedRectangle(cornerRadius: CornerRadius.xs))
+                                        } else {
+                                            let theme = ClothboundJacketTheme.forBook(book)
+                                            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                                                .fill(theme.baseColor)
+                                                .frame(width: 44, height: 62)
+                                                .overlay {
+                                                    Text("❖")
+                                                        .font(.system(size: 8))
+                                                        .foregroundStyle(theme.foilGradient)
+                                                }
+                                        }
+
+                                        if selectedBook?.id == book.id {
+                                            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                                                .stroke(Color.gildedAccent, lineWidth: 2.5)
+                                        } else {
+                                            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                                                .stroke(Color.white.opacity(0.2), lineWidth: 0.5)
+                                        }
+                                    }
+                                    .shadow(color: Color.black.opacity(0.25), radius: 3, y: 2)
+
+                                    Text(book.title)
+                                        .font(.caption2.weight(selectedBook?.id == book.id ? .bold : .regular))
+                                        .foregroundStyle(selectedBook?.id == book.id ? Color.gildedAccent : Color.white.opacity(0.7))
+                                        .lineLimit(1)
+                                }
+                                .frame(width: 60)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, Spacing.lg)
+                    .padding(.vertical, Spacing.xxs)
+                }
+            }
         }
     }
 
@@ -149,56 +302,79 @@ struct StudioTab: View {
                 Image(systemName: "text.quote")
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(Color.gildedAccent)
-                Text("CHOOSE A PASSAGE")
+                Text("CHOOSE A PASSAGE (\(filteredQuotes.count))")
                     .inkSectionHeaderStyle()
-            }
-            .padding(.horizontal, Spacing.lg)
 
-            LazyVStack(spacing: Spacing.sm) {
-                ForEach(quotes) { quote in
-                    Button {
-                        HapticManager.selection()
-                        selectedQuote = quote
-                    } label: {
-                        HStack(spacing: Spacing.md) {
-                            RoundedRectangle(cornerRadius: CornerRadius.xs)
-                                .fill(quote.id == featuredQuote?.id ? Color.gildedAccent : Color.clear)
-                                .frame(width: 2)
-
-                            VStack(alignment: .leading, spacing: Spacing.xxs) {
-                                Text("\u{201C}\(quote.text)\u{201D}")
-                                    .font(.quoteBody)
-                                    .foregroundStyle(Color.textPrimary)
-                                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 8 : 2)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .multilineTextAlignment(.leading)
-
-                                if let book = quote.book {
-                                    Text(book.title)
-                                        .font(.attributionSmall)
-                                        .foregroundStyle(Color.textSecondary)
-                                }
-                            }
-
-                            Spacer()
-
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(Color.textTertiary)
-                        }
-                        .padding(Spacing.md)
-                        .background(Color.warmVellum)
-                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: CornerRadius.md)
-                                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                        )
-                        .elevation(.xs)
+                if selectedBook != nil || !searchText.isEmpty {
+                    Spacer()
+                    Button("Clear Filters") {
+                        selectedBook = nil
+                        searchText = ""
                     }
-                    .buttonStyle(.plain)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
                 }
             }
             .padding(.horizontal, Spacing.lg)
+
+            if filteredQuotes.isEmpty {
+                VStack(spacing: Spacing.sm) {
+                    Text("No quotes match your search")
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.8))
+                    Text("Try a different search term or select All Books.")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.6))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Spacing.xl)
+            } else {
+                LazyVStack(spacing: Spacing.sm) {
+                    ForEach(filteredQuotes) { quote in
+                        Button {
+                            HapticManager.selection()
+                            selectedQuote = quote
+                        } label: {
+                            HStack(spacing: Spacing.md) {
+                                RoundedRectangle(cornerRadius: CornerRadius.xs)
+                                    .fill(quote.id == featuredQuote?.id ? Color.gildedAccent : Color.clear)
+                                    .frame(width: 2)
+
+                                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                    Text("\u{201C}\(quote.text)\u{201D}")
+                                        .font(.quoteBody)
+                                        .foregroundStyle(Color.textPrimary)
+                                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? 8 : 2)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .multilineTextAlignment(.leading)
+
+                                    if let book = quote.book {
+                                        Text(book.title)
+                                            .font(.attributionSmall)
+                                            .foregroundStyle(Color.textSecondary)
+                                    }
+                                }
+
+                                Spacer()
+
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.textTertiary)
+                            }
+                            .padding(Spacing.md)
+                            .background(Color.warmVellum)
+                            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: CornerRadius.md)
+                                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                            )
+                            .elevation(.xs)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, Spacing.lg)
+            }
         }
     }
 
