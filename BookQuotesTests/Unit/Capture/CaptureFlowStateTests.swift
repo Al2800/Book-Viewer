@@ -93,12 +93,12 @@ final class CaptureFlowStateTests: XCTestCase {
 
         state = CaptureFlowState(mode: .batchCapture)
         let batchCompleteCommand = state.handle(.completeBatchCapture)
-        XCTAssertEqual(state.mode, .batchCapture)
+        XCTAssertEqual(state.mode, .quoteCapture)
         XCTAssertFalse(batchCompleteCommand.clearsSelectedBook)
 
         state = CaptureFlowState(mode: .batchCapture)
         let batchCancelCommand = state.handle(.cancelBatchCapture)
-        XCTAssertEqual(state.mode, .batchCapture)
+        XCTAssertEqual(state.mode, .quoteCapture)
         XCTAssertFalse(batchCancelCommand.clearsSelectedBook)
     }
 

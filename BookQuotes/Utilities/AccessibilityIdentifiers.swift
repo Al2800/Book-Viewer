@@ -51,6 +51,9 @@ enum AccessibilityIdentifiers {
 
         /// Horizontal collection and tag filter strip
         static let organizationFilterBar = "library_organization_filter_bar"
+
+        /// Continue Reading hero cover, which opens the active book
+        static let continueReadingOpenButton = "library_continue_reading_open"
     }
 
     // MARK: - Search
@@ -268,6 +271,7 @@ enum AccessibilityIdentifiers {
 
         /// Margin note field inside the "Edit Quote" sheet during extraction review.
         static let extractionQuoteMarginNoteField = "capture_extraction_quote_margin_note_field"
+        static let extractionQuoteMarkingPicker = "capture_extraction_quote_marking_picker"
 
         /// Per-candidate provenance shown during extraction review.
         static let extractionQuoteSourceLabel = "capture_extraction_quote_source_label"
@@ -289,7 +293,12 @@ enum AccessibilityIdentifiers {
         static let saveToLibraryButton = "capture_save_to_library"
         static let addManualPassage = "capture_add_manual_passage"
         static let viewPageButton = "capture_view_page"
+        static let passagesCancelButton = "capture_passages_cancel"
         static let passageActionsMenu = "capture_passage_actions"
+
+        static func viewPageButton(orderIndex: Int) -> String {
+            "\(viewPageButton)_\(orderIndex)"
+        }
     }
 
     enum Studio {

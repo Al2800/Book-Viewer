@@ -1,6 +1,9 @@
 import Foundation
 
 struct CaptureFlowState: Equatable {
+    /// `.selection` / `.bookSelection` remain because cover-capture completion
+    /// still lands on `.selection`. The Capture tab maps those modes to the
+    /// live quiet camera; do not revive `CaptureModeSelectionView`.
     enum Mode: Equatable {
         case selection
         case bookSelection
@@ -104,8 +107,11 @@ struct CaptureFlowState: Equatable {
             return .none
 
         case .completeBatchCapture, .cancelBatchCapture:
-            batchCaptureFlowID = UUID()
-            mode = .batchCapture
+            // Quiet capture is the Capture tab default. Finishing or aborting
+            // batch must not remount an empty batch session when the user
+            // returns to Capture after Reading.
+            quoteCaptureFlowID = UUID()
+            mode = .quoteCapture
             return .none
         }
     }

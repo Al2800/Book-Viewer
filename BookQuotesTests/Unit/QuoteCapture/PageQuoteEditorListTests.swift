@@ -34,6 +34,11 @@ final class PageQuoteEditorListTests: XCTestCase {
         XCTAssertEqual(QuoteEditRow.confidenceBarColor(for: nil), Color.error)
     }
 
+    func testPassagesPageHeadersUseCaptureOrder() {
+        XCTAssertEqual(ExtractionReviewPageHeader.title(orderIndex: 0), "PAGE 1")
+        XCTAssertEqual(ExtractionReviewPageHeader.title(orderIndex: 1), "PAGE 2")
+    }
+
     private func quote(id: UUID = UUID(), text: String) -> EditableQuote {
         EditableQuote(
             id: id,

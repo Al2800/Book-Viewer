@@ -348,6 +348,8 @@ struct QuoteCaptureView: View {
 
     @MainActor
     private func presentRetakeSuggestion() {
+        flyInImage = nil
+        lastStripImage = nil
         retakeSuggestion = true
         retakeClearTask?.cancel()
         retakeClearTask = Task { @MainActor in

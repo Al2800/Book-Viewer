@@ -248,6 +248,7 @@ struct CaptureTabRootView: View {
             Spacer(minLength: 0)
 
             CaptureModeMenuButton(
+                currentMode: .singlePage,
                 draftCount: resumableDrafts.count,
                 onSelectBatch: {
                     selectedDraft = nil
@@ -312,64 +313,6 @@ struct CaptureTabRootView: View {
             draftErrorMessage = error.localizedDescription
             HapticManager.error()
         }
-    }
-}
-
-// MARK: - Capture Mode Menu
-
-private struct CaptureModeMenuButton: View {
-    let draftCount: Int
-    let onSelectBatch: () -> Void
-    let onShowDrafts: () -> Void
-
-    var body: some View {
-        Menu {
-            Button {} label: {
-                Label("Single Page", systemImage: "checkmark")
-            }
-            .disabled(true)
-
-            Button {
-                HapticManager.selection()
-                onSelectBatch()
-            } label: {
-                Label("Batch Mode", systemImage: "square.stack.3d.up")
-            }
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modeSelectBatch)
-
-            if draftCount > 0 {
-                Divider()
-
-                Button {
-                    HapticManager.light()
-                    onShowDrafts()
-                } label: {
-                    Label("Saved Drafts (\(draftCount))", systemImage: "tray.full")
-                }
-                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.savedDraftsButton)
-            }
-        } label: {
-            Image(systemName: "camera.badge.ellipsis")
-                .font(.uiLabel)
-                .foregroundStyle(.white)
-                .frame(width: 44, height: 44)
-                .background(
-                    Circle()
-                        .fill(Color.black.opacity(0.62))
-                        .overlay {
-                            Circle()
-                                .fill(.ultraThinMaterial.opacity(0.35))
-                        }
-                        .overlay {
-                            Circle()
-                                .stroke(Color.white.opacity(0.22), lineWidth: Stroke.hairline.width)
-                        }
-                )
-                .shadow(color: Color.black.opacity(0.3), radius: 6, y: 3)
-        }
-        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modeMenu)
-        .accessibilityLabel("Capture mode, Single Page")
-        .accessibilityHint("Choose Batch Mode or open saved drafts")
     }
 }
 

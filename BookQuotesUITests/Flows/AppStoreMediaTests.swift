@@ -212,17 +212,23 @@ final class AdaptiveSubscriptionLayoutTests: BaseUITestCase {
 
 fileprivate extension BaseUITestCase {
     func navigateToLibraryTabIfNeeded() {
-        if app.navigationBars["Library"].exists {
+        if app.navigationBars["Reading"].waitForExistence(timeout: 3)
+            || app.navigationBars["Library"].waitForExistence(timeout: 0.5) {
             return
         }
-        _ = tapTab(.library, timeout: 3)
+        XCTAssertTrue(tapTab(.library, timeout: 8), "Reading tab should be available")
     }
 
     func switchToGridViewIfPossible() {
-        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
-        guard viewModeToggle.waitForExistence(timeout: 2) else { return }
-        if viewModeToggle.buttons.count > 0 {
-            viewModeToggle.buttons.element(boundBy: 0).tap()
+        for _ in 0..<4 {
+            let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
+            if viewModeToggle.waitForExistence(timeout: 0.8) {
+                if viewModeToggle.buttons.count > 0 {
+                    viewModeToggle.buttons.element(boundBy: 0).tap()
+                }
+                return
+            }
+            app.swipeUp()
         }
     }
 
@@ -235,9 +241,15 @@ fileprivate extension BaseUITestCase {
     }
 
     func waitForLibraryLoadedForMedia() {
-        // Any stable element that indicates we're on the library root.
+        let continueReading = app.buttons[AccessibilityIdentifiers.Library.continueReadingOpenButton]
         let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
-        assertExists(viewModeToggle, timeout: 6, "Library root not loaded (view mode toggle missing)")
+        let readingNav = app.navigationBars["Reading"]
+        let libraryNav = app.navigationBars["Library"]
+        let isReady = continueReading.waitForExistence(timeout: 6)
+            || viewModeToggle.waitForExistence(timeout: 2)
+            || readingNav.waitForExistence(timeout: 1)
+            || libraryNav.waitForExistence(timeout: 1)
+        XCTAssertTrue(isReady, "Reading home not loaded (Continue Reading, browse controls, or nav missing)")
     }
 
     func waitForBookDetailLoadedForMedia() {
@@ -261,24 +273,31 @@ fileprivate extension BaseUITestCase {
     }
 
     func openFirstBookDetailForMedia() {
-        // Try list row first
-        let bookRow = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
-            .firstMatch
-        if bookRow.waitForExistence(timeout: 3) {
-            bookRow.tap()
+        let continueReadingCover = app.buttons[AccessibilityIdentifiers.Library.continueReadingOpenButton]
+        if continueReadingCover.waitForExistence(timeout: 2) && continueReadingCover.isHittable {
+            continueReadingCover.tap()
         } else {
-            // Fallback to grid card
-            let bookCard = app.descendants(matching: .any)
-                .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+            app.swipeUp()
+
+            // Try list row first
+            let bookRow = app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Library.bookListRow)
                 .firstMatch
-            if bookCard.waitForExistence(timeout: 3) {
-                bookCard.tap()
+            if bookRow.waitForExistence(timeout: 3) {
+                bookRow.tap()
             } else {
-                // Final fallback: any table cell
-                let firstCell = app.tables.cells.firstMatch
-                if firstCell.waitForExistence(timeout: 2) {
-                    firstCell.tap()
+                // Fallback to grid card
+                let bookCard = app.descendants(matching: .any)
+                    .matching(identifier: AccessibilityIdentifiers.Library.bookCoverCard)
+                    .firstMatch
+                if bookCard.waitForExistence(timeout: 3) {
+                    bookCard.tap()
+                } else {
+                    // Final fallback: any table cell
+                    let firstCell = app.tables.cells.firstMatch
+                    if firstCell.waitForExistence(timeout: 2) {
+                        firstCell.tap()
+                    }
                 }
             }
         }
@@ -393,7 +412,7 @@ fileprivate extension BaseUITestCase {
         // Only pop while we're away from the library root. On iPad, the first
         // navigation button at the root is Add, not a back button.
         for _ in 0..<2 {
-            if app.navigationBars["Library"].exists {
+            if app.navigationBars["Reading"].exists || app.navigationBars["Library"].exists {
                 break
             }
             if app.navigationBars.buttons.element(boundBy: 0).exists {
@@ -402,8 +421,9 @@ fileprivate extension BaseUITestCase {
         }
         navigateToLibraryTabIfNeeded()
         XCTAssertTrue(
-            app.navigationBars["Library"].waitForExistence(timeout: 3),
-            "Library root should be restored after dismissing active search"
+            app.navigationBars["Reading"].waitForExistence(timeout: 3)
+                || app.navigationBars["Library"].waitForExistence(timeout: 1),
+            "Reading root should be restored after dismissing active search"
         )
     }
 
@@ -436,15 +456,35 @@ fileprivate extension BaseUITestCase {
     }
 
     func closePresentedMediaFlow() {
-        let close = app.buttons["Close"]
-        let cancel = app.buttons["Cancel"]
-        if close.waitForExistence(timeout: 2) && close.isHittable {
-            close.tap()
-        } else if cancel.waitForExistence(timeout: 2) && cancel.isHittable {
-            cancel.tap()
-        } else {
-            app.swipeDown()
+        let passages = app.navigationBars["Passages"]
+        if passages.waitForExistence(timeout: 1) {
+            let passagesCancel = app.buttons[AccessibilityIdentifiers.Capture.passagesCancelButton]
+            if passagesCancel.waitForExistence(timeout: 2) {
+                passagesCancel.tap()
+            }
+            let discard = app.alerts.buttons["Discard"]
+            if discard.waitForExistence(timeout: 2) {
+                discard.tap()
+            } else if app.buttons["Discard"].waitForExistence(timeout: 1) {
+                app.buttons["Discard"].tap()
+            }
+            _ = passages.waitForNonExistence(timeout: 5)
         }
+
+        let captureCancel = app.buttons[AccessibilityIdentifiers.Capture.cancelButton]
+        if captureCancel.waitForExistence(timeout: 2) {
+            if captureCancel.isHittable {
+                captureCancel.tap()
+            } else {
+                captureCancel.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            }
+        } else {
+            let close = app.buttons["Close"]
+            if close.waitForExistence(timeout: 1) && close.isHittable {
+                close.tap()
+            }
+        }
+
         navigateToLibraryTabIfNeeded()
     }
 
@@ -485,43 +525,28 @@ fileprivate extension BaseUITestCase {
         navigateToLibraryTabIfNeeded()
         dismissKeyboard()
 
-        // Ensure search isn't active (search focus hides trailing toolbar items).
-        let searchField = app.searchFields.firstMatch
-        if searchField.exists {
-            searchField.tap()
-            let clearText = app.buttons["Clear text"]
-            if clearText.exists && clearText.isHittable {
-                clearText.tap()
-            }
+        let dismissSearch = app.buttons[AccessibilityIdentifiers.Library.dismissSearchButton]
+        if dismissSearch.waitForExistence(timeout: 1) && dismissSearch.isHittable {
+            dismissSearch.tap()
+        } else {
+            let cancelA = app.buttons["Cancel"]
+            let cancelB = app.navigationBars.buttons["Cancel"]
+            if cancelA.exists && cancelA.isHittable { cancelA.tap() }
+            if cancelB.exists && cancelB.isHittable { cancelB.tap() }
         }
-
-        let cancelA = app.buttons["Cancel"]
-        let cancelB = app.navigationBars.buttons["Cancel"]
-        if cancelA.exists && cancelA.isHittable { cancelA.tap() }
-        if cancelB.exists && cancelB.isHittable { cancelB.tap() }
         dismissKeyboard()
 
-        // The "+" is a toolbar item; it can surface under navigationBars.buttons.
-        let addByNavId = app.navigationBars.buttons[AccessibilityIdentifiers.Library.addBookButton]
-        let addByAnyId = app.buttons[AccessibilityIdentifiers.Library.addBookButton]
-        let addByLabel = app.navigationBars.buttons["Add"]
-
-        if addByNavId.waitForExistence(timeout: 2) && addByNavId.isHittable {
-            addByNavId.tap()
-        } else if addByAnyId.waitForExistence(timeout: 2) && addByAnyId.isHittable {
-            addByAnyId.tap()
-        } else if addByLabel.waitForExistence(timeout: 2) && addByLabel.isHittable {
-            addByLabel.tap()
-        } else if app.navigationBars.buttons.count > 0 {
-            app.navigationBars.buttons.element(boundBy: app.navigationBars.buttons.count - 1).tap()
+        let addButton = app.buttons[AccessibilityIdentifiers.Library.addBookButton]
+        XCTAssertTrue(addButton.waitForExistence(timeout: 4), "Add book button should exist on Reading")
+        if addButton.isHittable {
+            addButton.tap()
+        } else {
+            addButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         }
 
-        // The library add button opens the ISBN scanner.
         let captureHeader = app.staticTexts["Add Book"]
-        let manualEntryButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'manually'")
-        ).firstMatch
-        let shown = captureHeader.waitForExistence(timeout: 5) || manualEntryButton.exists
+        let manualEntryButton = app.buttons[AccessibilityIdentifiers.Capture.manualEntryButton]
+        let shown = captureHeader.waitForExistence(timeout: 5) || manualEntryButton.waitForExistence(timeout: 2)
         XCTAssertTrue(shown, "Add Book capture flow not shown")
     }
 

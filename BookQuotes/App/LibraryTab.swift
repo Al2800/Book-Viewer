@@ -479,6 +479,7 @@ struct LibraryView: View {
         } label: {
             Image(systemName: "plus")
         }
+        .accessibilityLabel("Add book")
         .accessibilityIdentifier(AccessibilityIdentifiers.Library.addBookButton)
     }
 

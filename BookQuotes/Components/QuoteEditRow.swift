@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 // MARK: - Quote Edit Row
 
@@ -12,15 +11,11 @@ struct QuoteEditRow: View {
     @State private var showEditor = false
     @State private var draftText = ""
     @State private var draftMarginNote = ""
+    @State private var draftMarkingType = MarkingType.underline.rawValue
+    @State private var markingStartsConfigurable = true
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            RoundedRectangle(cornerRadius: CornerRadius.xs)
-                .fill(Self.confidenceBarColor(for: quote.confidence))
-                .frame(width: 3)
-                .frame(maxHeight: .infinity)
-
-            VStack(alignment: .leading, spacing: Spacing.sm) {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
                 Button {
                     openEditor()
                 } label: {
@@ -55,15 +50,22 @@ struct QuoteEditRow: View {
                 if let tags = quote.suggestedTags, !tags.isEmpty {
                     tagStrip(tags)
                 }
-            }
-            .padding(Spacing.md)
         }
+        .padding(.leading, Spacing.md + 3)
+        .padding(.vertical, Spacing.md)
+        .padding(.trailing, Spacing.md)
         .background(Color.warmVellum)
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+        .overlay(alignment: .leading) {
+            Rectangle()
+                .fill(Self.confidenceBarColor(for: quote.confidence))
+                .frame(width: 3)
+        }
         .overlay(
             RoundedRectangle(cornerRadius: CornerRadius.md)
                 .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
         )
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
         .elevation(.xs)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(accessibilitySummary)
@@ -72,6 +74,7 @@ struct QuoteEditRow: View {
             QuoteEditorSheet(
                 text: $draftText,
                 marginNote: $draftMarginNote,
+                markingType: $draftMarkingType,
                 onSave: applyEdits
             )
         }
@@ -160,146 +163,35 @@ struct QuoteEditRow: View {
     private func openEditor() {
         draftText = quote.text
         draftMarginNote = quote.marginNote ?? ""
+        if let type = MarkingType(rawValue: quote.markingType),
+           MarkingType.configurableCases.contains(type) {
+            draftMarkingType = type.rawValue
+            markingStartsConfigurable = true
+        } else {
+            draftMarkingType = MarkingType.underline.rawValue
+            markingStartsConfigurable = false
+        }
         showEditor = true
     }
 
     private func applyEdits() {
         let trimmedText = draftText.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedNote = draftMarginNote.trimmingCharacters(in: .whitespacesAndNewlines)
+        let markingChanged = markingStartsConfigurable
+            ? draftMarkingType != quote.markingType
+            : draftMarkingType != MarkingType.underline.rawValue
 
-        if trimmedText != quote.text || trimmedNote != (quote.marginNote ?? "") {
+        if trimmedText != quote.text
+            || trimmedNote != (quote.marginNote ?? "")
+            || markingChanged {
             quote.text = trimmedText
             quote.marginNote = trimmedNote.isEmpty ? nil : trimmedNote
+            if markingChanged {
+                quote.markingType = draftMarkingType
+            }
             quote.isModified = true
         }
         showEditor = false
-    }
-}
-
-// MARK: - Quote Editor Sheet
-
-private struct QuoteEditorSheet: View {
-    @Environment(\.dismiss) private var dismiss
-    @Binding var text: String
-    @Binding var marginNote: String
-    let onSave: () -> Void
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: Spacing.md) {
-                QuoteEditorTextView(text: $text)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 260)
-                    .fieldChrome()
-                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteTextEditor)
-
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text("Margin note (optional)")
-                        .font(.uiCaption)
-                        .foregroundStyle(Color.textSecondary)
-                    TextField("Add a note…", text: $marginNote, axis: .vertical)
-                        .textFieldStyle(.plain)
-                        .fieldChrome(minHeight: 56)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteMarginNoteField)
-                }
-            }
-            .padding(Spacing.md)
-            .background(Color.backgroundPrimary)
-            .navigationTitle("Edit Quote")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        onSave()
-                    }
-                    .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-            }
-        }
-    }
-}
-
-private struct QuoteEditorTextView: UIViewRepresentable {
-    @Binding var text: String
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    func makeUIView(context: Context) -> AutofocusingTextView {
-        let textView = AutofocusingTextView()
-        textView.delegate = context.coordinator
-        textView.text = text
-        textView.backgroundColor = .clear
-        textView.font = preferredQuoteFont
-        textView.textColor = .label
-        textView.adjustsFontForContentSizeCategory = true
-        textView.textContainerInset = .zero
-        textView.textContainer.lineFragmentPadding = 0
-        textView.accessibilityIdentifier = AccessibilityIdentifiers.Capture.extractionQuoteTextEditor
-        textView.accessibilityLabel = "Quote text"
-        textView.focusWhenAttached = { [weak coordinator = context.coordinator] textView in
-            coordinator?.requestInitialFocus(for: textView)
-        }
-        return textView
-    }
-
-    func updateUIView(_ textView: AutofocusingTextView, context: Context) {
-        context.coordinator.parent = self
-    }
-
-    private var preferredQuoteFont: UIFont {
-        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body)
-        return UIFont(descriptor: descriptor.withDesign(.serif) ?? descriptor, size: 0)
-    }
-
-    final class Coordinator: NSObject, UITextViewDelegate {
-        var parent: QuoteEditorTextView
-        private var requestedInitialFocus = false
-        private let initialFocusAttemptCount = 5
-
-        init(_ parent: QuoteEditorTextView) {
-            self.parent = parent
-        }
-
-        func requestInitialFocus(for textView: UITextView) {
-            guard !requestedInitialFocus else { return }
-            requestedInitialFocus = true
-            focusWhenReady(textView, attemptsRemaining: initialFocusAttemptCount)
-        }
-
-        private func focusWhenReady(_ textView: UITextView, attemptsRemaining: Int) {
-            guard attemptsRemaining > 0 else { return }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(120)) { [weak self, weak textView] in
-                guard let self, let textView, !textView.isFirstResponder else { return }
-
-                if textView.window != nil, textView.becomeFirstResponder() {
-                    return
-                }
-
-                self.focusWhenReady(textView, attemptsRemaining: attemptsRemaining - 1)
-            }
-        }
-
-        func textViewDidChange(_ textView: UITextView) {
-            parent.text = textView.text
-        }
-    }
-
-    final class AutofocusingTextView: UITextView {
-        var focusWhenAttached: ((UITextView) -> Void)?
-
-        override func didMoveToWindow() {
-            super.didMoveToWindow()
-            guard window != nil else { return }
-            focusWhenAttached?(self)
-        }
     }
 }
 

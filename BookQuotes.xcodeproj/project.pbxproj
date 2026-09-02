@@ -172,6 +172,8 @@
 		CF6100000000000000000001 /* ExtractionReviewQuoteState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6100000000000000000002 /* ExtractionReviewQuoteState.swift */; };
 		CF6200000000000000000001 /* ExtractionReviewSupplementaryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6200000000000000000002 /* ExtractionReviewSupplementaryViews.swift */; };
 		CF7600000000000000000001 /* ExtractionReviewStatusViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7600000000000000000002 /* ExtractionReviewStatusViews.swift */; };
+		CF7720000000000000000001 /* QuoteEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7720000000000000000002 /* QuoteEditorSheet.swift */; };
+		CF7720000000000000000003 /* ExtractionReviewPassagesChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7720000000000000000004 /* ExtractionReviewPassagesChrome.swift */; };
 		CF6400000000000000000001 /* BatchCaptureLifecycleState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6400000000000000000002 /* BatchCaptureLifecycleState.swift */; };
 		CF6500000000000000000001 /* BatchCaptureSupplementaryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6500000000000000000002 /* BatchCaptureSupplementaryViews.swift */; };
 		CF7100000000000000000001 /* LibraryOverviewViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7100000000000000000002 /* LibraryOverviewViews.swift */; };
@@ -719,6 +721,8 @@
 			CF6100000000000000000002 /* ExtractionReviewQuoteState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewQuoteState.swift; sourceTree = "<group>"; };
 			CF6200000000000000000002 /* ExtractionReviewSupplementaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewSupplementaryViews.swift; sourceTree = "<group>"; };
 			CF7600000000000000000002 /* ExtractionReviewStatusViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewStatusViews.swift; sourceTree = "<group>"; };
+			CF7720000000000000000002 /* QuoteEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteEditorSheet.swift; sourceTree = "<group>"; };
+			CF7720000000000000000004 /* ExtractionReviewPassagesChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewPassagesChrome.swift; sourceTree = "<group>"; };
 			CF6400000000000000000002 /* BatchCaptureLifecycleState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchCaptureLifecycleState.swift; sourceTree = "<group>"; };
 		CF6500000000000000000002 /* BatchCaptureSupplementaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchCaptureSupplementaryViews.swift; sourceTree = "<group>"; };
 		CF7100000000000000000002 /* LibraryOverviewViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryOverviewViews.swift; sourceTree = "<group>"; };
@@ -975,6 +979,7 @@
 				CGL3D4E5F6A7B8C9D0E1F2A3 /* QuoteCardView.swift */,
 				CHM4E5F6A7B8C9D0E1F2A3B4 /* EmptyStateView.swift */,
 				QOTED1TRF3L3R3F4A5B6C7DA /* QuoteEditRow.swift */,
+				CF7720000000000000000002 /* QuoteEditorSheet.swift */,
 				CF3DB0000000000000000002 /* ThreeDimensionalBookView.swift */,
 			);
 			path = Components;
@@ -1330,6 +1335,7 @@
 				CF6100000000000000000002 /* ExtractionReviewQuoteState.swift */,
 				CF6200000000000000000002 /* ExtractionReviewSupplementaryViews.swift */,
 				CF7600000000000000000002 /* ExtractionReviewStatusViews.swift */,
+				CF7720000000000000000004 /* ExtractionReviewPassagesChrome.swift */,
 				CF9200000000000000000002 /* PageQuoteEditorList.swift */,
 				PAGQT2EDF2L3R3F4A5B6C7D9 /* PageQuoteEditor.swift */,
 				CF9300000000000000000002 /* PageQuoteEditorSupportViews.swift */,
@@ -1840,10 +1846,12 @@
 				CF6100000000000000000001 /* ExtractionReviewQuoteState.swift in Sources */,
 				CF6200000000000000000001 /* ExtractionReviewSupplementaryViews.swift in Sources */,
 				CF7600000000000000000001 /* ExtractionReviewStatusViews.swift in Sources */,
+				CF7720000000000000000003 /* ExtractionReviewPassagesChrome.swift in Sources */,
 				CF9200000000000000000001 /* PageQuoteEditorList.swift in Sources */,
 				PAGQT2ED3B4C5D6E7F8A9B0C /* PageQuoteEditor.swift in Sources */,
 				CF9300000000000000000001 /* PageQuoteEditorSupportViews.swift in Sources */,
 				QOTED1TR4C5D6E7F8A9B0C1D /* QuoteEditRow.swift in Sources */,
+				CF7720000000000000000001 /* QuoteEditorSheet.swift in Sources */,
 				ONBRDV2EW2A3B4C5D6E7F8A9C /* OnboardingView.swift in Sources */,
 				CF7400000000000000000001 /* OnboardingWelcomeViews.swift in Sources */,
 				CF7400000000000000000003 /* OnboardingMarkingViews.swift in Sources */,

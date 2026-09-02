@@ -7,7 +7,13 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Setup
 
     override var additionalLaunchArguments: [String] {
-        var arguments = ["--preload-library-test-data", "--mock-camera", "--mock-extraction-scenario", extractionScenario]
+        var arguments = [
+            "--preload-library-test-data",
+            "--mock-camera",
+            "--mock-extraction-scenario",
+            extractionScenario,
+            "--product-experience-v2"
+        ]
         if name.contains("LowConfidence") {
             arguments.append("--mock-low-confidence")
         }
@@ -38,6 +44,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.step(2, "Verifying capture HUD and batch entry")
         let modeMenu = app.buttons[AccessibilityIdentifiers.Capture.modeMenu]
         XCTAssertTrue(modeMenu.waitForExistence(timeout: 5), "Capture HUD should provide a mode menu")
+        captureScreenshot(named: "quiet_capture_camera", description: "Quiet capture live camera with HUD")
         modeMenu.tap()
 
         let batchMode = app.descendants(matching: .any)
@@ -120,6 +127,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
                 || app.staticTexts["Passages"].waitForExistence(timeout: 2),
             "Passages should present after a usable capture"
         )
+        captureScreenshot(named: "quiet_capture_passages", description: "Passages sheet after single-page capture")
         logger.success("Passages presented without Image Review")
     }
 
@@ -138,16 +146,24 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         )
 
         logger.step(4, "Dismissing Passages")
-        if passages.exists {
-            passages.swipeDown()
-        } else {
-            app.swipeDown()
+        let passagesCancel = app.buttons[AccessibilityIdentifiers.Capture.passagesCancelButton]
+        XCTAssertTrue(passagesCancel.waitForExistence(timeout: 5), "Passages should expose Cancel")
+        passagesCancel.tap()
+        let discard = app.alerts.buttons["Discard"]
+        if discard.waitForExistence(timeout: 2) {
+            discard.tap()
+        } else if app.buttons["Discard"].waitForExistence(timeout: 1) {
+            app.buttons["Discard"].tap()
         }
 
         logger.step(5, "Verifying return to live camera")
         let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
         let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        let returned = captureButton.waitForExistence(timeout: 5) || testButton.waitForExistence(timeout: 2)
+        XCTAssertFalse(
+            app.navigationBars["Passages"].waitForExistence(timeout: 2),
+            "Passages should dismiss after Cancel"
+        )
+        let returned = waitForHittable(captureButton, timeout: 5) || waitForHittable(testButton, timeout: 2)
         XCTAssertTrue(returned, "Dismissing Passages should return to the live camera")
 
         logger.success("Dismissing Passages returns to camera")
@@ -199,6 +215,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(saveButton.exists && saveButton.isEnabled, "Save to Library should be enabled when mock extraction returns quotes")
         XCTAssertTrue(modelSource.exists, "Review should identify the model-assisted candidate")
         XCTAssertTrue(onDeviceSource.exists, "Review should identify the on-device candidate")
+        captureScreenshot(named: "passages_extracted_quotes", description: "Passages sheet with extracted quote cards")
 
         logger.success("Extraction review displayed extracted quotes")
     }
@@ -290,7 +307,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToExtractionReview()
 
         logger.step(1, "Finding cancel button")
-        let cancelButton = app.navigationBars.buttons[AccessibilityIdentifiers.Capture.cancelButton]
+        let cancelButton = app.navigationBars.buttons[AccessibilityIdentifiers.Capture.passagesCancelButton]
         XCTAssertTrue(cancelButton.waitForExistence(timeout: 5), "Passages should provide Cancel")
         cancelButton.tap()
 
@@ -322,6 +339,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
                 app.staticTexts["48%"].exists,
                 "Retake chrome must not show a confidence percentage"
             )
+            captureScreenshot(named: "retake_pill", description: "Too blurry retake pill on quiet capture")
             logger.success("Low-quality capture offered an inline retake")
             return
         }

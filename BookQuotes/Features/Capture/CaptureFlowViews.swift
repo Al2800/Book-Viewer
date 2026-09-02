@@ -192,3 +192,70 @@ private struct MissingSelectedBookView: View {
         .toolbar(.hidden, for: .tabBar)
     }
 }
+
+enum QuietCaptureMode {
+    case singlePage
+    case batch
+}
+
+struct CaptureModeMenuButton: View {
+    let currentMode: QuietCaptureMode
+    var draftCount: Int = 0
+    var onSelectSingle: () -> Void = {}
+    var onSelectBatch: () -> Void = {}
+    var onShowDrafts: (() -> Void)? = nil
+
+    var body: some View {
+        Menu {
+            Button {
+                HapticManager.selection()
+                onSelectSingle()
+            } label: {
+                Label("Single Page", systemImage: currentMode == .singlePage ? "checkmark" : "doc")
+            }
+            .disabled(currentMode == .singlePage)
+
+            Button {
+                HapticManager.selection()
+                onSelectBatch()
+            } label: {
+                Label("Batch Mode", systemImage: currentMode == .batch ? "checkmark" : "square.stack.3d.up")
+            }
+            .disabled(currentMode == .batch)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modeSelectBatch)
+
+            if let onShowDrafts, draftCount > 0 {
+                Divider()
+
+                Button {
+                    HapticManager.light()
+                    onShowDrafts()
+                } label: {
+                    Label("Saved Drafts (\(draftCount))", systemImage: "tray.full")
+                }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.savedDraftsButton)
+            }
+        } label: {
+            Image(systemName: "camera.badge.ellipsis")
+                .font(.uiLabel)
+                .foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .background(
+                    Circle()
+                        .fill(Color.black.opacity(0.62))
+                        .overlay {
+                            Circle()
+                                .fill(.ultraThinMaterial.opacity(0.35))
+                        }
+                        .overlay {
+                            Circle()
+                                .stroke(Color.white.opacity(0.22), lineWidth: Stroke.hairline.width)
+                        }
+                )
+                .shadow(color: Color.black.opacity(0.3), radius: 6, y: 3)
+        }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modeMenu)
+        .accessibilityLabel(currentMode == .batch ? "Capture mode, Batch Mode" : "Capture mode, Single Page")
+        .accessibilityHint(currentMode == .batch ? "Choose Single Page" : "Choose Batch Mode or open saved drafts")
+    }
+}

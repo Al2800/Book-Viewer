@@ -191,6 +191,7 @@ struct ContinueReadingCard: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("\(book.title) cover")
                 .accessibilityHint("Opens book details")
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.continueReadingOpenButton)
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     Button(action: onOpenBook) {

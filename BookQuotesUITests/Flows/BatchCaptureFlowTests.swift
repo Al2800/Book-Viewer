@@ -7,7 +7,8 @@ final class BatchCaptureFlowTests: BaseUITestCase {
         [
             "--preload-library-test-data",
             "--mock-camera",
-            "--mock-extraction-scenario", "remote"
+            "--mock-extraction-scenario", "remote",
+            "--product-experience-v2"
         ]
     }
 
@@ -26,6 +27,7 @@ final class BatchCaptureFlowTests: BaseUITestCase {
 
         XCTAssertTrue(pageCounter.exists, "Batch capture should display a page counter")
         XCTAssertTrue(testImageButton.exists && testImageButton.isEnabled, "Mock batch capture should provide Use Test Image")
+        captureScreenshot(named: "batch_camera", description: "Batch capture HUD and tray")
     }
 
     // MARK: - Page Counter Tests
@@ -123,6 +125,7 @@ final class BatchCaptureFlowTests: BaseUITestCase {
             .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_model_assisted")
             .firstMatch
         XCTAssertTrue(modelSource.waitForExistence(timeout: 15), "Mock batch processing should render extracted model-assisted content")
+        captureScreenshot(named: "batch_passages", description: "Passages sheet after batch Done")
     }
 
     func testBatchCapture_PassagesShowsPageHeadersAndViewPage() {
@@ -142,12 +145,16 @@ final class BatchCaptureFlowTests: BaseUITestCase {
             "Done should open the Passages sheet"
         )
 
-        let viewPage = app.buttons[AccessibilityIdentifiers.Capture.viewPageButton].firstMatch
+        let viewPage = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", AccessibilityIdentifiers.Capture.viewPageButton)
+        ).firstMatch
         XCTAssertTrue(viewPage.waitForExistence(timeout: 10), "Multi-page Passages should provide View page")
+        captureScreenshot(named: "batch_passages_page_headers", description: "Multi-page Passages with PAGE headers")
         viewPage.tap()
 
         let closeImage = app.buttons["Close image"]
         XCTAssertTrue(closeImage.waitForExistence(timeout: 5), "View page should open the full-page viewer")
+        captureScreenshot(named: "batch_view_page", description: "Full-page viewer from View page")
         closeImage.tap()
 
         XCTAssertTrue(

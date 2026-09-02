@@ -101,7 +101,24 @@ struct ExtractionReviewView: View {
             .navigationTitle("Passages")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                toolbarContent
+                ExtractionReviewPassagesToolbar(
+                    bookTitle: book.title,
+                    hasAppeared: hasAppeared,
+                    canSave: !quoteState.editingQuotes.isEmpty && !isSaving,
+                    isSaving: isSaving,
+                    onCancel: {
+                        HapticManager.light()
+                        if hasChanges {
+                            showingDiscardAlert = true
+                        } else {
+                            dismiss()
+                        }
+                    },
+                    onSave: {
+                        HapticManager.medium()
+                        saveAllQuotes()
+                    }
+                )
             }
             .alert("Discard Changes?", isPresented: $showingDiscardAlert) {
                 Button("Discard", role: .destructive) {
@@ -182,7 +199,9 @@ struct ExtractionReviewView: View {
             VStack(spacing: Spacing.md) {
                 ForEach(orderedPages) { page in
                     if showsPageHeaders {
-                        pageGroupHeader(page)
+                        ExtractionReviewPageGroupHeader(page: page) {
+                            pageToView = page
+                        }
                     }
 
                     ForEach(quoteState.quotes(for: page.id)) { quote in
@@ -197,67 +216,18 @@ struct ExtractionReviewView: View {
                     }
                 }
 
-                addPassageManuallyRow
+                ExtractionReviewAddPassageRow {
+                    HapticManager.light()
+                    if selectedPage == nil {
+                        selectedPage = orderedPages.last
+                    }
+                    showingAddQuoteSheet = true
+                }
             }
             .padding(.horizontal, Spacing.lg)
             .padding(.vertical, Spacing.md)
         }
         .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionReviewScrollView)
-    }
-
-    private func pageGroupHeader(_ page: PageCapture) -> some View {
-        HStack(spacing: Spacing.xs) {
-            Image(systemName: "doc.text")
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(Color.gildedAccent)
-                .accessibilityHidden(true)
-            Text("PAGE \(page.detectedPageNumber ?? page.orderIndex + 1)")
-                .sectionHeaderStyle()
-
-            Spacer()
-
-            Button {
-                HapticManager.light()
-                pageToView = page
-            } label: {
-                Text("View page")
-                    .font(.uiPill)
-                    .foregroundStyle(Color.brand)
-                    .frame(minHeight: 44)
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.viewPageButton)
-        }
-    }
-
-    private var addPassageManuallyRow: some View {
-        Button {
-            HapticManager.light()
-            if selectedPage == nil {
-                selectedPage = orderedPages.last
-            }
-            showingAddQuoteSheet = true
-        } label: {
-            HStack(spacing: Spacing.sm) {
-                Image(systemName: "plus.circle")
-                    .foregroundStyle(Color.gildedAccent)
-                Text("Add a passage manually")
-                    .font(.uiLabel)
-                    .foregroundStyle(Color.textPrimary)
-                Spacer()
-            }
-            .padding(Spacing.md)
-            .background(Color.warmVellum)
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
-            .overlay(
-                RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-            )
-            .elevation(.xs)
-        }
-        .buttonStyle(.plain)
-        .frame(minHeight: 44)
-        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.addManualPassage)
     }
 
     /// Processing state view with progress
@@ -289,62 +259,6 @@ struct ExtractionReviewView: View {
         )
     }
 
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button("Cancel") {
-                HapticManager.light()
-                if hasChanges {
-                    showingDiscardAlert = true
-                } else {
-                    dismiss()
-                }
-            }
-            .foregroundStyle(Color.brand)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
-        }
-
-        ToolbarItem(placement: .principal) {
-            VStack(spacing: 2) {
-                Text("Passages")
-                    .font(.serifHeadline)
-                Text(book.title)
-                    .font(.authorNameSmall)
-                    .foregroundStyle(Color.textSecondary)
-                    .lineLimit(1)
-                    .accessibilityHidden(true)
-            }
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel("Passages, \(book.title)")
-            .opacity(hasAppeared ? 1 : 0)
-        }
-
-        ToolbarItem(placement: .confirmationAction) {
-            let canSave = !quoteState.editingQuotes.isEmpty && !isSaving
-            Button {
-                HapticManager.medium()
-                saveAllQuotes()
-            } label: {
-                Group {
-                    if isSaving {
-                        ProgressView()
-                            .tint(Color.darkLinen)
-                    } else {
-                        Text("Save to Library")
-                            .font(.uiPill.weight(.semibold))
-                            .foregroundStyle(Color.darkLinen)
-                    }
-                }
-                .padding(.horizontal, Spacing.md)
-                .frame(height: 36)
-                .background(LinearGradient.foilAccent, in: Capsule())
-                .opacity(canSave ? 1 : 0.4)
-            }
-            .disabled(quoteState.editingQuotes.isEmpty || isSaving)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.saveToLibraryButton)
-        }
-    }
-
     // MARK: - Bindings
 
     private func deleteQuote(_ quote: EditableQuote) {
@@ -363,7 +277,6 @@ struct ExtractionReviewView: View {
     }
 
     private func closeReview() {
-        onComplete?()
         dismiss()
     }
 

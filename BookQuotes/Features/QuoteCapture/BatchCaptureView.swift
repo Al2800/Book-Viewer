@@ -165,9 +165,15 @@ struct BatchCaptureView: View {
             Spacer(minLength: 0)
 
             VStack(alignment: .trailing, spacing: Spacing.xs) {
-                Button {
-                    finishAndProcess()
-                } label: {
+                HStack(alignment: .top, spacing: Spacing.xs) {
+                    CaptureModeMenuButton(
+                        currentMode: .batch,
+                        onSelectSingle: cancelBatchCapture
+                    )
+
+                    Button {
+                        finishAndProcess()
+                    } label: {
                     Text("Done")
                         .font(.uiLabel)
                         .foregroundStyle(lifecycleState.canFinish(pageCount: session.totalPages) ? Color.gildedAccent : Color.white.opacity(0.45))
@@ -185,6 +191,7 @@ struct BatchCaptureView: View {
                 .buttonStyle(.plain)
                 .disabled(!lifecycleState.canFinish(pageCount: session.totalPages))
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.doneButton)
+                }
 
                 Text("\(session.totalPages) page\(session.totalPages == 1 ? "" : "s") in session")
                     .font(.uiCaption)
@@ -203,7 +210,7 @@ struct BatchCaptureView: View {
             onCancel: cancelBatchCapture
         ) {
             Button {
-                _ = lifecycleState.requestFinish(pageCount: session.totalPages)
+                finishAndProcess()
             } label: {
                 Text("Done")
                     .font(.uiLabel)

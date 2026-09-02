@@ -55,12 +55,30 @@ class BaseUITestCase: XCTestCase {
             }
         }
 
+        var v2Identifier: String? {
+            switch self {
+            case .library: return AccessibilityIdentifiers.V2.readingTab
+            case .capture: return AccessibilityIdentifiers.V2.captureTab
+            case .studio: return AccessibilityIdentifiers.V2.studioTab
+            case .settings: return nil
+            }
+        }
+
         var label: String {
             switch self {
             case .library: return "Library"
             case .capture: return "Capture"
             case .studio: return "Studio"
             case .settings: return "Settings"
+            }
+        }
+
+        var labels: [String] {
+            switch self {
+            case .library: return ["Reading", "Library"]
+            case .capture: return [label]
+            case .studio: return [label]
+            case .settings: return [label]
             }
         }
     }
@@ -491,15 +509,24 @@ class BaseUITestCase: XCTestCase {
         // but fall back to labels and broader queries. Coordinate taps are typically more reliable
         // than `.tap()` when isHittable is false on SwiftUI elements.
 
-        let candidates: [XCUIElement] = [
-            app.tabBars.buttons.matching(identifier: tab.identifier).firstMatch,
-            app.buttons.matching(identifier: tab.identifier).firstMatch,
-            app.tabBars.buttons.matching(NSPredicate(format: "label == %@", tab.label)).firstMatch,
-            app.buttons.matching(NSPredicate(format: "label == %@", tab.label)).firstMatch
-        ]
+        let candidates: [XCUIElement] = {
+            var items: [XCUIElement] = []
+            if let v2Identifier = tab.v2Identifier {
+                items.append(app.tabBars.buttons.matching(identifier: v2Identifier).firstMatch)
+                items.append(app.buttons.matching(identifier: v2Identifier).firstMatch)
+            }
+            items.append(app.tabBars.buttons.matching(identifier: tab.identifier).firstMatch)
+            items.append(app.buttons.matching(identifier: tab.identifier).firstMatch)
+            for label in tab.labels {
+                items.append(app.tabBars.buttons.matching(NSPredicate(format: "label == %@", label)).firstMatch)
+                items.append(app.buttons.matching(NSPredicate(format: "label == %@", label)).firstMatch)
+            }
+            return items
+        }()
 
-        for element in candidates {
-            if element.waitForExistence(timeout: timeout) {
+        for (index, element) in candidates.enumerated() {
+            let probeTimeout = index == candidates.count - 1 ? timeout : min(timeout, 0.6)
+            if element.waitForExistence(timeout: probeTimeout) {
                 if element.isHittable {
                     element.tap()
                 } else {
@@ -818,6 +845,7 @@ enum AccessibilityIdentifiers {
         static let collectionsRow = "library_collections_row"
         static let tagsRow = "library_tags_row"
         static let organizationFilterBar = "library_organization_filter_bar"
+        static let continueReadingOpenButton = "library_continue_reading_open"
     }
 
     enum Search {
@@ -912,7 +940,9 @@ enum AccessibilityIdentifiers {
         static let saveToLibraryButton = "capture_save_to_library"
         static let addManualPassage = "capture_add_manual_passage"
         static let viewPageButton = "capture_view_page"
+        static let passagesCancelButton = "capture_passages_cancel"
         static let passageActionsMenu = "capture_passage_actions"
+        static let extractionQuoteMarkingPicker = "capture_extraction_quote_marking_picker"
     }
 
     enum Collections {

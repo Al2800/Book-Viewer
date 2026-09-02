@@ -18,7 +18,7 @@ struct ActiveBookHUDView: View {
                     VStack(alignment: .leading, spacing: 1) {
                         if let book {
                             Text(book.title)
-                                .font(.system(.subheadline, design: .serif).weight(.semibold))
+                                .font(.authorName.weight(.semibold))
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
                                 .accessibilityHidden(true)
