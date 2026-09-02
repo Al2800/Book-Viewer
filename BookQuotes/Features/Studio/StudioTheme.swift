@@ -9,6 +9,8 @@ enum StudioTheme: String, CaseIterable, Identifiable {
     case monochrome = "monochrome"
     case editorialNewsprint = "editorial_newsprint"
     case gilded = "gilded"
+    case terracotta = "terracotta"
+    case midnightNavy = "midnight_navy"
 
     var id: String { rawValue }
 
@@ -19,51 +21,65 @@ enum StudioTheme: String, CaseIterable, Identifiable {
         case .monochrome: return "Monochrome"
         case .editorialNewsprint: return "Newsprint"
         case .gilded: return "Gilded"
+        case .terracotta: return "Terracotta"
+        case .midnightNavy: return "Midnight Navy"
         }
     }
 
     var cardBackground: Color {
         switch self {
         case .darkLinen:
-            return Color.darkLinen
+            return Color(red: 0.08, green: 0.08, blue: 0.09)
         case .warmVellum:
-            return Color.warmVellum
+            return Color(red: 0.98, green: 0.97, blue: 0.94)
         case .monochrome:
-            return Color.editorialMonochrome
+            return Color(red: 0.92, green: 0.92, blue: 0.91)
         case .editorialNewsprint:
             return Color(red: 0.94, green: 0.93, blue: 0.89)
         case .gilded:
-            return Color(red: 0.12, green: 0.11, blue: 0.10)
+            return Color(red: 0.10, green: 0.09, blue: 0.08)
+        case .terracotta:
+            return Color(red: 0.22, green: 0.12, blue: 0.09)
+        case .midnightNavy:
+            return Color(red: 0.07, green: 0.10, blue: 0.16)
         }
     }
 
     var textColor: Color {
         switch self {
         case .darkLinen:
-            return Color.white.opacity(0.95)
+            return Color(red: 0.96, green: 0.96, blue: 0.96)
         case .warmVellum:
-            return Color(red: 0.15, green: 0.13, blue: 0.10)
+            return Color(red: 0.12, green: 0.10, blue: 0.08)
         case .monochrome:
-            return Color(red: 0.10, green: 0.10, blue: 0.10)
+            return Color(red: 0.08, green: 0.08, blue: 0.08)
         case .editorialNewsprint:
-            return Color(red: 0.12, green: 0.12, blue: 0.12)
+            return Color(red: 0.10, green: 0.10, blue: 0.10)
         case .gilded:
-            return Color(red: 0.96, green: 0.92, blue: 0.80)
+            return Color(red: 0.98, green: 0.95, blue: 0.86)
+        case .terracotta:
+            return Color(red: 0.97, green: 0.93, blue: 0.89)
+        case .midnightNavy:
+            return Color(red: 0.95, green: 0.96, blue: 0.98)
         }
     }
 
     var secondaryTextColor: Color {
         switch self {
         case .darkLinen:
-            return Color.white.opacity(0.70)
+            return Color(red: 0.78, green: 0.78, blue: 0.80)
         case .warmVellum:
-            return Color(red: 0.45, green: 0.40, blue: 0.35)
+            return Color(red: 0.38, green: 0.33, blue: 0.28)
         case .monochrome:
-            return Color.black.opacity(0.60)
+            return Color(red: 0.35, green: 0.35, blue: 0.35)
         case .editorialNewsprint:
-            return Color(red: 0.40, green: 0.40, blue: 0.40)
+            return Color(red: 0.35, green: 0.35, blue: 0.35)
         case .gilded:
-            return Color(red: 0.77, green: 0.63, blue: 0.35)
+            return Color(red: 0.85, green: 0.73, blue: 0.45)
+        case .terracotta:
+            return Color(red: 0.82, green: 0.70, blue: 0.62)
+        case .midnightNavy:
+            return Color(red: 0.72, green: 0.78, blue: 0.88)
         }
     }
 
@@ -72,34 +88,42 @@ enum StudioTheme: String, CaseIterable, Identifiable {
         case .darkLinen:
             return Color.gildedAccent
         case .warmVellum:
-            return Color(red: 0.70, green: 0.48, blue: 0.22)
+            return Color(red: 0.68, green: 0.44, blue: 0.18)
         case .monochrome:
-            return Color.black.opacity(0.75)
-        case .editorialNewsprint:
             return Color(red: 0.20, green: 0.20, blue: 0.20)
+        case .editorialNewsprint:
+            return Color(red: 0.22, green: 0.22, blue: 0.22)
         case .gilded:
-            return Color.gildedAccent
+            return Color(red: 0.92, green: 0.78, blue: 0.32)
+        case .terracotta:
+            return Color(red: 0.90, green: 0.58, blue: 0.42)
+        case .midnightNavy:
+            return Color(red: 0.55, green: 0.75, blue: 0.98)
         }
     }
 
     var borderColor: Color {
         switch self {
         case .darkLinen:
-            return Color.gildedAccent.opacity(0.3)
+            return Color.gildedAccent.opacity(0.35)
         case .warmVellum:
-            return Color.quoteBorder.opacity(0.8)
+            return Color(red: 0.82, green: 0.78, blue: 0.72)
         case .monochrome:
-            return Color.quoteBorder.opacity(0.5)
+            return Color.black.opacity(0.20)
         case .editorialNewsprint:
-            return Color.black.opacity(0.15)
+            return Color.black.opacity(0.18)
         case .gilded:
-            return Color.gildedAccent.opacity(0.4)
+            return Color.gildedAccent.opacity(0.45)
+        case .terracotta:
+            return Color(red: 0.85, green: 0.50, blue: 0.35).opacity(0.35)
+        case .midnightNavy:
+            return Color(red: 0.45, green: 0.65, blue: 0.95).opacity(0.35)
         }
     }
 
     var colorScheme: ColorScheme {
         switch self {
-        case .darkLinen, .gilded:
+        case .darkLinen, .gilded, .terracotta, .midnightNavy:
             return .dark
         case .warmVellum, .monochrome, .editorialNewsprint:
             return .light

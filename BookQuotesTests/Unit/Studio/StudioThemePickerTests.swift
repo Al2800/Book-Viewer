@@ -7,6 +7,10 @@ final class StudioThemePickerTests: XCTestCase {
         let themes = StudioTheme.allCases
         let ids = Set(themes.map(\.id))
         XCTAssertEqual(ids.count, themes.count, "Each theme must have a unique identifier")
+        XCTAssertTrue(themes.contains(.darkLinen))
+        XCTAssertTrue(themes.contains(.warmVellum))
+        XCTAssertTrue(themes.contains(.terracotta))
+        XCTAssertTrue(themes.contains(.midnightNavy))
     }
 
     func testStudioThemePropertiesProduceValidColors() {
