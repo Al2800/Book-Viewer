@@ -1,4 +1,5 @@
 import XCTest
+import SwiftUI
 
 @testable import BookQuotes
 
@@ -22,6 +23,15 @@ final class PageQuoteEditorListTests: XCTestCase {
         list.delete(quote(id: firstId, text: sameText))
 
         XCTAssertEqual(list.quotes.map(\.id), [secondId])
+    }
+
+    func testConfidenceBarColorUsesThreeThresholds() {
+        XCTAssertEqual(QuoteEditRow.confidenceBarColor(for: 0.8), Color.success)
+        XCTAssertEqual(QuoteEditRow.confidenceBarColor(for: 0.95), Color.success)
+        XCTAssertEqual(QuoteEditRow.confidenceBarColor(for: 0.5), Color.warning)
+        XCTAssertEqual(QuoteEditRow.confidenceBarColor(for: 0.79), Color.warning)
+        XCTAssertEqual(QuoteEditRow.confidenceBarColor(for: 0.49), Color.error)
+        XCTAssertEqual(QuoteEditRow.confidenceBarColor(for: nil), Color.error)
     }
 
     private func quote(id: UUID = UUID(), text: String) -> EditableQuote {

@@ -263,20 +263,23 @@ final class V2ProductShellTests: BaseUITestCase {
         ]
     }
 
-    func testV2ShellExposesReadingCaptureAndExplore() {
-        let reading = app.buttons["v2_reading_tab"]
-        let capture = app.buttons["v2_capture_tab"]
-        let explore = app.buttons["v2_explore_tab"]
+    func testV2ShellExposesReadingCaptureAndStudio() {
+        let reading = app.buttons[AccessibilityIdentifiers.V2.readingTab]
+        let capture = app.buttons[AccessibilityIdentifiers.V2.captureTab]
+        let studio = app.buttons[AccessibilityIdentifiers.V2.studioTab]
 
         XCTAssertTrue(reading.waitForExistence(timeout: 5), "Reading should be the first v2 destination")
         XCTAssertTrue(capture.exists, "Capture should remain a primary destination")
-        XCTAssertTrue(explore.exists, "Explore should be a primary destination")
-        XCTAssertFalse(app.buttons[AccessibilityIdentifiers.Tabs.studioTab].exists, "Studio should not remain a primary v2 tab")
+        XCTAssertTrue(studio.exists, "Studio should be a primary destination")
+        XCTAssertFalse(app.buttons["v2_explore_tab"].exists, "Explore should not be a primary v2 tab")
 
-        explore.tap()
+        XCTAssertTrue(app.buttons[AccessibilityIdentifiers.V2.settingsButton].waitForExistence(timeout: 5), "Settings should remain reachable from Reading")
 
-        XCTAssertTrue(app.navigationBars["Explore"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.searchFields["Search passages, books and notes"].exists)
-        XCTAssertTrue(app.buttons["v2_settings_button"].exists, "Settings should remain reachable as a secondary action")
+        studio.tap()
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityIdentifiers.Studio.rootTitle].waitForExistence(timeout: 5)
+                || app.staticTexts["Quote Card Studio"].waitForExistence(timeout: 5),
+            "Studio tab should show the Studio title"
+        )
     }
 }

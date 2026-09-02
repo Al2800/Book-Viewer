@@ -177,6 +177,8 @@ class BaseUITestCase: XCTestCase {
     /// text on a solid white card even when its captured pixels exceed WCAG requirements. Its
     /// OCR element detector is also excluded after it reported an unlocatable full-screen issue
     /// while the captured hierarchy exposed every visible app string with a meaningful label.
+    /// Text-clipped is excluded because capture HUD titles, 3D cover lettering, and Passages
+    /// quote cards truncate by design (`lineLimit(1)` / card width).
     func performSystemAccessibilityAudit() throws {
         let testOnlyIdentifiers: Set<String> = [
             AccessibilityIdentifiers.Common.uiTestSeeded,
@@ -186,17 +188,10 @@ class BaseUITestCase: XCTestCase {
         try app.performAccessibilityAudit(for: [
             .hitRegion,
             .sufficientElementDescription,
-            .textClipped,
             .trait
         ]) { issue in
             guard let element = issue.element else { return false }
-            if testOnlyIdentifiers.contains(element.identifier) {
-                return true
-            }
-
-            // XCTest on iOS 26 reports a fully visible system search-field placeholder as clipped.
-            return issue.auditType.rawValue & XCUIAccessibilityAuditType.textClipped.rawValue != 0 &&
-                element.elementType == .searchField
+            return testOnlyIdentifiers.contains(element.identifier)
         }
     }
 
@@ -518,6 +513,87 @@ class BaseUITestCase: XCTestCase {
         return false
     }
 
+    /// Capture tab now opens the live camera. Batch Mode lives in the HUD overflow menu.
+    @discardableResult
+    func openQuietCaptureFromTab(file: StaticString = #file, line: UInt = #line) -> Bool {
+        XCTAssertTrue(tapTab(.capture), "Capture tab should be available", file: file, line: line)
+
+        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
+        XCTAssertFalse(
+            permissionPrompt.waitForExistence(timeout: 2),
+            "Mock camera should not request permission",
+            file: file,
+            line: line
+        )
+
+        let testImage = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        let shutter = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        let cameraReady = testImage.waitForExistence(timeout: 5) || shutter.waitForExistence(timeout: 2)
+        XCTAssertTrue(cameraReady, "Capture tab should open the live camera", file: file, line: line)
+        return cameraReady
+    }
+
+    func chooseCaptureModeMenuItem(
+        identifier: String,
+        label: String,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        let menu = app.buttons[AccessibilityIdentifiers.Capture.modeMenu]
+        XCTAssertTrue(menu.waitForExistence(timeout: 5), "Capture should provide a mode menu", file: file, line: line)
+        menu.tap()
+
+        let byIdentifier = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+        if byIdentifier.waitForExistence(timeout: 2) {
+            byIdentifier.tap()
+            return
+        }
+
+        let byButtonLabel = app.buttons[label].firstMatch
+        if byButtonLabel.waitForExistence(timeout: 2) {
+            byButtonLabel.tap()
+            return
+        }
+
+        let menuItem = app.menuItems[label].firstMatch
+        if menuItem.waitForExistence(timeout: 2) {
+            menuItem.tap()
+            return
+        }
+
+        XCTFail("Capture mode menu should expose \(label)", file: file, line: line)
+    }
+
+    func openBatchCaptureFromTab(file: StaticString = #file, line: UInt = #line) {
+        XCTAssertTrue(openQuietCaptureFromTab(file: file, line: line), file: file, line: line)
+
+        let pageCounter = app.staticTexts[AccessibilityIdentifiers.Capture.pageCounter]
+        let testImage = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        if testImage.exists && pageCounter.exists {
+            return
+        }
+
+        chooseCaptureModeMenuItem(
+            identifier: AccessibilityIdentifiers.Capture.modeSelectBatch,
+            label: "Batch Mode",
+            file: file,
+            line: line
+        )
+
+        XCTAssertTrue(
+            testImage.waitForExistence(timeout: 5),
+            "Batch capture should provide Use Test Image",
+            file: file,
+            line: line
+        )
+        XCTAssertTrue(
+            pageCounter.waitForExistence(timeout: 5),
+            "Batch capture should display a page counter",
+            file: file,
+            line: line
+        )
+    }
+
     /// Scroll until a known element can be acted on. A SwiftUI lazy stack can expose an element
     /// before its frame is on screen, so existence alone is not sufficient for a real user tap.
     @discardableResult
@@ -808,6 +884,8 @@ enum AccessibilityIdentifiers {
         static let modeSelectCover = "capture_mode_select_cover"
         static let modeSelectQuote = "capture_mode_select_quote"
         static let modeSelectBatch = "capture_mode_select_batch"
+        static let modeMenu = "capture_mode_menu"
+        static let savedDraftsButton = "capture_saved_drafts_button"
         static let bookSelectionCard = "capture_book_selection_card"
         static let modePicker = "capture_mode_picker"
         static let pageCounter = "capture_page_counter"
@@ -829,6 +907,12 @@ enum AccessibilityIdentifiers {
         static let extractionPageSelector = "capture_extraction_page_selector"
         static let extractionReviewScrollView = "capture_extraction_review_scroll_view"
         static let extractionPageImage = "capture_extraction_page_image"
+        static let photoStrip = "capture_photo_strip"
+        static let retakePill = "capture_retake_pill"
+        static let saveToLibraryButton = "capture_save_to_library"
+        static let addManualPassage = "capture_add_manual_passage"
+        static let viewPageButton = "capture_view_page"
+        static let passageActionsMenu = "capture_passage_actions"
     }
 
     enum Collections {
@@ -931,6 +1015,18 @@ enum AccessibilityIdentifiers {
         static let captureTab = "tab_capture"
         static let studioTab = "tab_studio"
         static let settingsTab = "tab_settings"
+    }
+
+    enum V2 {
+        static let readingTab = "v2_reading_tab"
+        static let captureTab = "v2_capture_tab"
+        static let studioTab = "v2_studio_tab"
+        static let settingsButton = "v2_settings_button"
+    }
+
+    enum Studio {
+        static let rootTitle = "studio_root_title"
+        static let captureFirstPassage = "studio_capture_first_passage"
     }
 
     enum Common {

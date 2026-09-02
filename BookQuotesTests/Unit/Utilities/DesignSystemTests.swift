@@ -18,7 +18,11 @@ final class DesignSystemTests: XCTestCase {
         _ = Font.attributionSmall
         _ = Font.uiBadge
         _ = Font.uiPill
+        _ = Font.uiLabel
+        _ = Font.uiCaption
+        _ = Font.screenTitle
         _ = Font.sectionHeader
+        XCTAssertEqual(String(describing: Font.screenTitle), String(describing: Font.serifTitleLarge))
     }
 
     // MARK: - Palette & Color Tests

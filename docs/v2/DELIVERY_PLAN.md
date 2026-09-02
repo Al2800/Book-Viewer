@@ -22,7 +22,7 @@ Add the v2 specification, architecture boundaries, agent contracts, ADR and deli
 Acceptance:
 
 - product thesis and non-goals are explicit;
-- Reading, Capture and Explore responsibilities are defined;
+- Reading, Capture and Studio responsibilities are defined;
 - local/cloud extraction policy is documented;
 - agent invariants are reviewable in the repository.
 
@@ -30,11 +30,11 @@ Acceptance:
 
 Add a default-off shell with three primary destinations:
 
-- Reading, initially backed by the existing Library surface;
+- Reading, initially backed by the existing Library surface, including search;
 - Capture, backed by the hardened capture implementation;
-- Explore, initially providing grounded passage search and revisit.
+- Studio, backed by the existing quote-card studio.
 
-Studio leaves the primary tab bar in the v2 shell but remains accessible from passage detail. Settings remains accessible as a secondary destination.
+Search and later revisit remain Reading capabilities, not a fourth tab. Settings remains accessible as a secondary destination from Reading.
 
 Acceptance:
 
@@ -109,13 +109,13 @@ Implement frozen source page, linked overlays, selected candidates, Check state 
 
 Use the same camera and review language for Batch, including safe drafts and immediate page persistence.
 
-## 6. Phase D: Explore and retrieval
+## 6. Phase D: Search and retrieval (Reading)
 
 ### PR D1: mutation-driven indexing
 
 Replace count-based rebuild triggers with explicit searchable mutations.
 
-### PR D2: Explore search
+### PR D2: Reading search
 
 Search passage text, books, authors, notes and tags. All results navigate to grounded source material.
 
@@ -203,4 +203,4 @@ No PR is ready merely because it compiles. It must include:
 - migration and recovery consequences;
 - screenshots for material UI changes.
 
-The v2 flag becomes the default only after Reading, Capture and Explore meet the release gates in `PRODUCT_SPEC.md`.
+The v2 flag becomes the default only after Reading, Capture and Studio meet the release gates in `PRODUCT_SPEC.md`.

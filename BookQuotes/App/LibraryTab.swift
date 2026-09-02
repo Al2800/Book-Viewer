@@ -5,9 +5,14 @@ import SwiftData
 struct LibraryTab: View {
     @State private var router = RouterPath()
     @Binding private var bookToOpen: Book?
+    var onOpenSettings: (() -> Void)?
 
-    init(bookToOpen: Binding<Book?> = .constant(nil)) {
+    init(
+        bookToOpen: Binding<Book?> = .constant(nil),
+        onOpenSettings: (() -> Void)? = nil
+    ) {
         self._bookToOpen = bookToOpen
+        self.onOpenSettings = onOpenSettings
     }
 
     var body: some View {
@@ -15,7 +20,7 @@ struct LibraryTab: View {
             Color.backgroundPrimary.ignoresSafeArea()
 
             NavigationStack(path: $router.path) {
-                LibraryView()
+                LibraryView(onOpenSettings: onOpenSettings)
                     .navigationDestination(for: Book.self) { book in
                         BookDetailView(book: book)
                     }
@@ -62,6 +67,7 @@ enum LibraryOrganizeDestination: Hashable {
 
 /// Main library view showing books with grid/list toggle and FTS5 search
 struct LibraryView: View {
+    var onOpenSettings: (() -> Void)? = nil
 
     // MARK: - Environment
 
@@ -446,6 +452,21 @@ struct LibraryView: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
+        if ProductExperience.usesV2(storedValue: productExperienceV2Enabled),
+           let onOpenSettings {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    HapticManager.light()
+                    onOpenSettings()
+                } label: {
+                    Image(systemName: "gear")
+                        .frame(minWidth: 44, minHeight: 44)
+                }
+                .accessibilityLabel("Settings")
+                .accessibilityIdentifier(AccessibilityIdentifiers.V2.settingsButton)
+            }
+        }
+
         ToolbarItem(placement: .topBarTrailing) {
             addBookButton
         }

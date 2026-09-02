@@ -8,34 +8,30 @@ struct ExtractionReviewProcessingView: View {
     let onPoll: () -> Void
 
     var body: some View {
-        VStack {
-            VStack(spacing: Spacing.lg) {
-                ProgressView()
-                    .scaleEffect(1.5)
+        VStack(spacing: Spacing.lg) {
+            ProgressView()
+                .controlSize(.large)
+                .tint(Color.gildedAccent)
+                .frame(width: 36, height: 36)
 
-                VStack(spacing: Spacing.sm) {
-                    Text("Processing Pages")
-                        .font(.headline)
+            Text("Reading your page…")
+                .font(.serifHeadline)
+                .foregroundStyle(Color.textPrimary)
 
-                    Text("Extracting quotes from your captured pages...")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-
-                    ProgressView(value: progress)
-                        .progressViewStyle(.linear)
-                        .frame(width: 200)
-                        .padding(.top, Spacing.md)
-
-                    Text("\(completedCount) of \(totalCount) pages complete")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
+            if totalCount > 1 {
+                ProgressView(value: progress)
+                    .progressViewStyle(.linear)
+                    .tint(Color.gildedAccent)
+                    .frame(width: 200)
             }
-            .padding(Spacing.xl)
-            .paperCard()
+
+            Text("\(completedCount) of \(totalCount) pages complete")
+                .font(.uiCaption)
+                .foregroundStyle(Color.textTertiary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(Spacing.xl)
+        .background(Color.backgroundPrimary)
         .task(id: isProcessing) {
             guard isProcessing else { return }
 
@@ -43,8 +39,6 @@ struct ExtractionReviewProcessingView: View {
                 do {
                     try await Task.sleep(for: .milliseconds(500))
                 } catch {
-                    // A state change or dismissal cancels this task. Return rather than
-                    // swallowing cancellation and spinning in a tight polling loop.
                     return
                 }
 
@@ -60,17 +54,42 @@ struct ExtractionReviewNoQuotesView: View {
     let onClose: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("No Quotes Found", systemImage: "text.quote")
-        } description: {
-            Text("No marked passages were detected in the captured pages. You can add quotes manually or try recapturing with clearer markings.")
-        } actions: {
-            ExtractionReviewFallbackActions(
-                onAddManualQuote: onAddManualQuote,
-                onClose: onClose
-            )
+        VStack(spacing: Spacing.lg) {
+            Image(systemName: "text.quote")
+                .font(.largeTitle.weight(.light))
+                .foregroundStyle(Color.gildedAccent)
+                .frame(width: 36, height: 36)
+
+            Text("No marked passages found")
+                .font(.serifHeadline)
+                .foregroundStyle(Color.textPrimary)
+                .multilineTextAlignment(.center)
+
+            Text("You can add a passage yourself, or close and recapture the page.")
+                .font(.subheadline)
+                .foregroundStyle(Color.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Spacing.lg)
+
+            Button(action: onAddManualQuote) {
+                Text("Add manually")
+                    .font(.uiLabel)
+                    .foregroundStyle(Color.darkLinen)
+                    .frame(minHeight: 44)
+                    .padding(.horizontal, Spacing.lg)
+                    .background(LinearGradient.foilAccent, in: Capsule())
+            }
+            .buttonStyle(.plain)
+
+            Button("Close", action: onClose)
+                .font(.uiLabel)
+                .foregroundStyle(Color.brand)
+                .frame(minHeight: 44)
+                .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(Spacing.xl)
+        .background(Color.backgroundPrimary)
     }
 }
 
@@ -82,71 +101,53 @@ struct ExtractionReviewFailureView: View {
     let onClose: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("Extraction Failed", systemImage: "exclamationmark.triangle")
-        } description: {
-            VStack(spacing: Spacing.sm) {
-                Text(primaryFailureMessage ?? "The captured page could not be processed.")
-                Text("Try again with a clear photo, or add the quote manually if the marked text is readable.")
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
-            }
-        } actions: {
-            VStack(spacing: Spacing.md) {
-                Button {
-                    onRetry()
-                } label: {
-                    Label("Retry AI Extraction", systemImage: "arrow.clockwise")
-                }
-                .buttonStyle(.primaryCompact)
+        VStack(spacing: Spacing.lg) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.largeTitle.weight(.light))
+                .foregroundStyle(Color.gildedAccent)
+                .frame(width: 36, height: 36)
 
-                Button {
-                    onUseOnDevice()
-                } label: {
-                    Label("Use On-Device Instead", systemImage: "iphone")
-                }
-                .buttonStyle(.secondaryCompact)
+            Text(primaryFailureMessage ?? "The captured page could not be processed.")
+                .font(.serifHeadline)
+                .foregroundStyle(Color.textPrimary)
+                .multilineTextAlignment(.center)
 
-                ExtractionReviewFallbackActions(
-                    onAddManualQuote: onAddManualQuote,
-                    onClose: onClose
-                )
+            Text("Try again with a clear photo, or add the passage manually if the marked text is readable.")
+                .font(.subheadline)
+                .foregroundStyle(Color.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Spacing.lg)
+
+            Button(action: onRetry) {
+                Text("Retry AI")
+                    .font(.uiLabel)
+                    .foregroundStyle(Color.darkLinen)
+                    .frame(minHeight: 44)
+                    .padding(.horizontal, Spacing.lg)
+                    .background(LinearGradient.foilAccent, in: Capsule())
             }
+            .buttonStyle(.plain)
+
+            Button("Use on-device", action: onUseOnDevice)
+                .font(.uiLabel)
+                .foregroundStyle(Color.brand)
+                .frame(minHeight: 44)
+                .buttonStyle(.plain)
+
+            Button("Add manually", action: onAddManualQuote)
+                .font(.uiLabel)
+                .foregroundStyle(Color.brand)
+                .frame(minHeight: 44)
+                .buttonStyle(.plain)
+
+            Button("Close", action: onClose)
+                .font(.uiLabel)
+                .foregroundStyle(Color.brand)
+                .frame(minHeight: 44)
+                .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-struct ExtractionReviewNoSelectionView: View {
-    var body: some View {
-        ContentUnavailableView {
-            Label("Select a Page", systemImage: "doc.text.viewfinder")
-        } description: {
-            Text("Choose a page from the left to review its extracted quotes")
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-private struct ExtractionReviewFallbackActions: View {
-    let onAddManualQuote: () -> Void
-    let onClose: () -> Void
-
-    var body: some View {
-        HStack(spacing: Spacing.md) {
-            Button {
-                onAddManualQuote()
-            } label: {
-                Label("Add Quote Manually", systemImage: "plus")
-            }
-            .buttonStyle(.primaryCompact)
-
-            Button {
-                onClose()
-            } label: {
-                Text("Close")
-            }
-            .buttonStyle(.secondaryCompact)
-        }
+        .padding(Spacing.xl)
+        .background(Color.backgroundPrimary)
     }
 }

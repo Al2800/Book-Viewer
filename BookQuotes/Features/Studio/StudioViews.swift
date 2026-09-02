@@ -7,14 +7,20 @@ import SwiftData
 struct StudioTab: View {
     @Query(sort: \Quote.dateModified, order: .reverse) private var quotes: [Quote]
     @State private var selectedQuote: Quote?
+    @State private var studioSheetQuote: Quote?
     @State private var selectedTheme: StudioTheme = .darkLinen
     @State private var selectedAspect: StudioAspectRatio = .story
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    var onCapture: (() -> Void)? = nil
+
+    private var featuredQuote: Quote? {
+        selectedQuote ?? quotes.first
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.backgroundPrimary.ignoresSafeArea()
+                Color.darkLinen.ignoresSafeArea()
 
                 if quotes.isEmpty {
                     emptyStudioState
@@ -22,9 +28,12 @@ struct StudioTab: View {
                     studioContent
                 }
             }
-            .navigationTitle("Studio")
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(item: $selectedQuote) { quote in
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .preferredColorScheme(.dark)
+            .sheet(item: $studioSheetQuote) { quote in
                 QuoteCardStudioView(
                     quote: quote,
                     initialTheme: selectedTheme,
@@ -36,113 +45,200 @@ struct StudioTab: View {
 
     private var studioContent: some View {
         ScrollView {
-            VStack(spacing: Spacing.xl) {
-                if let featured = selectedQuote ?? quotes.first {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        HStack {
-                            Text("Live Canvas")
-                                .sectionHeaderStyle()
-                            Spacer()
-                            Button {
-                                selectedQuote = featured
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "wand.and.stars")
-                                    Text("Studio Mode")
-                                }
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Color.gildedAccent)
-                            }
-                        }
+            VStack(alignment: .leading, spacing: Spacing.xl) {
+                studioHeader
 
-                        QuoteCanvasCard(
-                            quote: featured,
-                            theme: selectedTheme,
-                            aspectRatio: selectedAspect
-                        )
-                        .aspectRatio(selectedAspect.ratioValue, contentMode: .fit)
-                        .frame(maxWidth: 280, maxHeight: 260)
-                        .frame(maxWidth: .infinity)
-                        .clipped()
-                        .elevation(.md)
-                        .onTapGesture {
-                            selectedQuote = featured
-                        }
-                    }
-                    .padding(.horizontal, Spacing.lg)
+                if let featured = featuredQuote {
+                    canvasHero(featured)
                 }
 
-                VStack(alignment: .leading, spacing: Spacing.sm) {
-                    Text("Presets")
-                        .sectionHeaderStyle()
-                        .padding(.horizontal, Spacing.lg)
-
-                    StudioThemePicker(
-                        selectedTheme: $selectedTheme,
-                        selectedAspect: $selectedAspect
-                    )
-                }
-
-                VStack(alignment: .leading, spacing: Spacing.sm) {
-                    Text("Select a Quote")
-                        .sectionHeaderStyle()
-                        .padding(.horizontal, Spacing.lg)
-
-                    LazyVStack(spacing: Spacing.md) {
-                        ForEach(quotes) { quote in
-                            Button {
-                                HapticManager.light()
-                                selectedQuote = quote
-                            } label: {
-                                HStack(spacing: Spacing.md) {
-                                    VStack(alignment: .leading, spacing: Spacing.xxs) {
-                                        Text("\u{201C}\(quote.text)\u{201D}")
-                                            .font(.quoteBody)
-                                            .foregroundStyle(Color.textPrimary)
-                                            .lineLimit(2)
-                                            .multilineTextAlignment(.leading)
-
-                                        if let book = quote.book {
-                                            Text("— \(book.title)")
-                                                .font(.caption)
-                                                .foregroundStyle(Color.textSecondary)
-                                        }
-                                    }
-
-                                    Spacer()
-
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(Color.textTertiary)
-                                }
-                                .padding(Spacing.md)
-                                .paperCard()
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.horizontal, Spacing.lg)
-                }
+                themeSection
+                formatSection
+                passagePicker
             }
             .padding(.vertical, Spacing.lg)
         }
     }
 
+    private var studioHeader: some View {
+        Text("Studio")
+            .font(.screenTitle)
+            .foregroundStyle(.white)
+            .padding(.horizontal, Spacing.lg)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Studio.rootTitle)
+    }
+
+    private func canvasHero(_ quote: Quote) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            QuoteCanvasCard(
+                quote: quote,
+                theme: selectedTheme,
+                aspectRatio: selectedAspect
+            )
+            .aspectRatio(selectedAspect.ratioValue, contentMode: .fit)
+            .frame(maxWidth: .infinity)
+            .clipped()
+            .elevation(.lg)
+            .onTapGesture {
+                HapticManager.light()
+                studioSheetQuote = quote
+            }
+
+            HStack {
+                if let book = quote.book {
+                    Text("— \(book.title)")
+                        .font(.attribution)
+                        .foregroundStyle(.white.opacity(0.75))
+                }
+
+                Spacer()
+
+                Button {
+                    HapticManager.light()
+                    studioSheetQuote = quote
+                } label: {
+                    Text("Open in Studio")
+                        .font(.uiPill)
+                        .foregroundStyle(Color.gildedAccent)
+                        .frame(minHeight: 44)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, Spacing.lg)
+    }
+
+    private var themeSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "paintpalette")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text("THEME")
+                    .inkSectionHeaderStyle()
+            }
+            .padding(.horizontal, Spacing.lg)
+
+            StudioThemePicker(
+                selectedTheme: $selectedTheme,
+                selectedAspect: $selectedAspect,
+                showsAspectPicker: false
+            )
+        }
+    }
+
+    private var formatSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "aspectratio")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text("FORMAT")
+                    .inkSectionHeaderStyle()
+            }
+            .padding(.horizontal, Spacing.lg)
+
+            StudioAspectRatioPicker(selectedAspect: $selectedAspect)
+                .padding(.horizontal, Spacing.lg)
+        }
+    }
+
+    private var passagePicker: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "text.quote")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color.gildedAccent)
+                Text("CHOOSE A PASSAGE")
+                    .inkSectionHeaderStyle()
+            }
+            .padding(.horizontal, Spacing.lg)
+
+            LazyVStack(spacing: Spacing.sm) {
+                ForEach(quotes) { quote in
+                    Button {
+                        HapticManager.selection()
+                        selectedQuote = quote
+                    } label: {
+                        HStack(spacing: Spacing.md) {
+                            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                                .fill(quote.id == featuredQuote?.id ? Color.gildedAccent : Color.clear)
+                                .frame(width: 2)
+
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text("\u{201C}\(quote.text)\u{201D}")
+                                    .font(.quoteBody)
+                                    .foregroundStyle(Color.textPrimary)
+                                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 8 : 2)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .multilineTextAlignment(.leading)
+
+                                if let book = quote.book {
+                                    Text(book.title)
+                                        .font(.attributionSmall)
+                                        .foregroundStyle(Color.textSecondary)
+                                }
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(Color.textTertiary)
+                        }
+                        .padding(Spacing.md)
+                        .background(Color.warmVellum)
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: CornerRadius.md)
+                                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+                        )
+                        .elevation(.xs)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, Spacing.lg)
+        }
+    }
+
     private var emptyStudioState: some View {
         VStack(spacing: Spacing.lg) {
+            studioHeader
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Spacer()
+
             Image(systemName: "sparkles.rectangle.stack")
-                .font(.system(size: 48))
+                .font(.largeTitle.weight(.light))
+                .frame(width: 48, height: 48)
                 .foregroundStyle(Color.gildedAccent)
 
             Text("Quote Card Studio")
                 .font(.serifHeadline)
-                .foregroundStyle(Color.textPrimary)
+                .foregroundStyle(.white)
 
-            Text("Capture or save quotes to transform them into luxury editorial cards for social sharing, wallpapers, and Notion.")
+            Text("Capture a passage, then turn it into a card for sharing.")
                 .font(.subheadline)
-                .foregroundStyle(Color.textSecondary)
+                .foregroundStyle(.white.opacity(0.75))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, Spacing.xl)
+
+            Button {
+                HapticManager.light()
+                onCapture?()
+            } label: {
+                Text("Capture your first passage")
+                    .font(.uiLabel)
+                    .foregroundStyle(Color.darkLinen)
+                    .frame(minHeight: 44)
+                    .padding(.horizontal, Spacing.lg)
+                    .background(LinearGradient.foilAccent, in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Studio.captureFirstPassage)
+
+            Spacer()
         }
         .padding()
     }

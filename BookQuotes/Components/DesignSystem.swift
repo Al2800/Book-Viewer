@@ -134,12 +134,19 @@ extension Font {
     static let quoteCompact = Font.system(.footnote, design: .serif)
 
     // MARK: - Tier 3: Functional UI Chrome (SF Pro Sans)
+    /// Serif = authored content (quotes, titles, notes). SF = controls and labels.
     /// Semibold footnote for chapter/section headers
     static let sectionHeader = Font.system(.footnote).weight(.semibold)
     /// Small UI badge font for counts, status, and tags
     static let uiBadge = Font.system(size: 11, weight: .semibold)
     /// Compact UI pill font for filters and navigation
     static let uiPill = Font.system(size: 13, weight: .medium)
+    /// Semibold subheadline for control labels and actions
+    static let uiLabel = Font.system(.subheadline).weight(.semibold)
+    /// Caption for helper text on controls
+    static let uiCaption = Font.system(.caption)
+    /// Screen title alias of serifTitleLarge — serif, authored/screen titles only
+    static let screenTitle = serifTitleLarge
     /// Standard body text
     static let bodyText = Font.system(.body)
     /// Caption text
@@ -164,6 +171,14 @@ extension View {
             .font(.sectionHeader)
             .textCase(.uppercase)
             .foregroundStyle(Color.textSecondary)
+    }
+
+    /// Ink-surface section header: same type and case as Paper, white at 60% opacity.
+    func inkSectionHeaderStyle() -> some View {
+        self
+            .font(.sectionHeader)
+            .textCase(.uppercase)
+            .foregroundStyle(Color.white.opacity(0.6))
     }
 }
 

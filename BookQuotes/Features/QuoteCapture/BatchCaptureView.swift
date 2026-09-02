@@ -25,6 +25,8 @@ struct BatchCaptureView: View {
     @State private var errorMessage = ""
     @State private var lifecycleState = BatchCaptureLifecycleState()
     @State private var selectedCapture: PageCapture?
+    @State private var retakeSuggestion = false
+    @State private var retakeClearTask: Task<Void, Never>?
     @StateObject private var milestoneManager = MilestoneManager()
     private let cameraFramingProfile = CameraFramingProfile.quotePage
 
@@ -86,6 +88,7 @@ struct BatchCaptureView: View {
             handleScenePhase(phase)
         }
         .onDisappear {
+            retakeClearTask?.cancel()
             cameraService.cleanup()
         }
         .alert("Capture Error", isPresented: $showError) {
@@ -163,10 +166,10 @@ struct BatchCaptureView: View {
 
             VStack(alignment: .trailing, spacing: Spacing.xs) {
                 Button {
-                    _ = lifecycleState.requestFinish(pageCount: session.totalPages)
+                    finishAndProcess()
                 } label: {
                     Text("Done")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.uiLabel)
                         .foregroundStyle(lifecycleState.canFinish(pageCount: session.totalPages) ? Color.gildedAccent : Color.white.opacity(0.45))
                         .frame(minWidth: 44, minHeight: 44)
                         .padding(.horizontal, Spacing.md)
@@ -184,7 +187,7 @@ struct BatchCaptureView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.doneButton)
 
                 Text("\(session.totalPages) page\(session.totalPages == 1 ? "" : "s") in session")
-                    .font(.caption.weight(.medium))
+                    .font(.uiCaption)
                     .foregroundStyle(.white.opacity(0.78))
                     .accessibilityIdentifier(AccessibilityIdentifiers.Capture.pageCounter)
             }
@@ -203,7 +206,7 @@ struct BatchCaptureView: View {
                 _ = lifecycleState.requestFinish(pageCount: session.totalPages)
             } label: {
                 Text("Done")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.uiLabel)
                     .foregroundStyle(lifecycleState.canFinish(pageCount: session.totalPages) ? Color.accent : Color.white.opacity(0.45))
             }
             .buttonStyle(.plain)
@@ -217,16 +220,12 @@ struct BatchCaptureView: View {
     @ViewBuilder
     private var bottomControls: some View {
         CaptureControlTray {
-            if let statusPill = batchStatusPill {
-                statusPill
+            if let status = batchTrayStatus {
+                batchTrayPill(status)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
 
-            if !session.captures.isEmpty {
-                thumbnailStrip
-            }
-
-            HStack(spacing: Spacing.xl) {
+            HStack {
                 CaptureFlashButton(
                     flashMode: cameraService.flashMode,
                     isAvailable: cameraService.isFlashAvailable
@@ -234,29 +233,16 @@ struct BatchCaptureView: View {
                     cameraService.cycleFlashMode()
                 }
 
-                CaptureButton(isProcessing: lifecycleState.isCapturing) {
+                Spacer()
+
+                CaptureButton(isProcessing: lifecycleState.isCapturing || !cameraService.isSessionRunning || cameraService.isCapturing) {
                     await captureCurrentFrame()
                 }
 
-                Button {
-                    do {
-                        try cameraService.switchCamera()
-                    } catch {
-                        errorMessage = error.localizedDescription
-                        showError = true
-                        HapticManager.error()
-                    }
-                } label: {
-                    Image(systemName: "camera.rotate")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                        .frame(width: 50, height: 50)
-                        .background(Color.black.opacity(0.35), in: Circle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Switch camera")
+                Spacer()
+
+                batchPhotoStripSlot
             }
-            .padding(.bottom, Spacing.xl)
 
             if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
                 Button("Use Test Image") {
@@ -271,43 +257,80 @@ struct BatchCaptureView: View {
         }
     }
 
-    // MARK: - Thumbnail Strip
+    @ViewBuilder
+    private var batchPhotoStripSlot: some View {
+        if let lastCapture = session.captures.last {
+            Button {
+                selectedCapture = lastCapture
+                lifecycleState.showsCaptureDetail = true
+            } label: {
+                ZStack(alignment: .topTrailing) {
+                    Group {
+                        if let thumbnail = lastCapture.loadThumbnail() ?? lastCapture.loadFullImage() {
+                            Image(uiImage: thumbnail)
+                                .resizable()
+                                .scaledToFill()
+                        } else {
+                            Color.white.opacity(0.12)
+                        }
+                    }
+                    .frame(width: 50, height: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: CornerRadius.sm)
+                            .stroke(Color.white.opacity(0.22), lineWidth: 1)
+                    )
+
+                    Text("\(session.totalPages)")
+                        .font(.uiBadge)
+                        .foregroundStyle(Color.darkLinen)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Color.gildedAccent, in: Capsule())
+                        .offset(x: 6, y: -6)
+                }
+            }
+            .frame(width: 50, height: 50)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.photoStrip)
+            .accessibilityLabel("Last captured page, \(session.totalPages) in session")
+        } else {
+            Color.clear
+                .frame(width: 50, height: 50)
+                .accessibilityHidden(true)
+        }
+    }
 
     @ViewBuilder
-    private var thumbnailStrip: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: Spacing.sm) {
-                    ForEach(session.captures) { capture in
-                        Button {
-                            selectedCapture = capture
-                            lifecycleState.showsCaptureDetail = true
-                        } label: {
-                            ThumbnailView(capture: capture)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.thumbnail)
-                        .accessibilityLabel("Captured page \(capture.orderIndex + 1)")
-                        .id(capture.id)
-                    }
-                }
-                .padding(.horizontal, Spacing.md)
+    private func batchTrayPill(_ status: QuoteCaptureView.CaptureTrayStatus) -> some View {
+        switch status {
+        case .framing(let text):
+            CaptureStatusPill(systemImage: "text.viewfinder", text: text)
+        case .readingPage:
+            CaptureStatusPill(systemImage: "viewfinder", text: "Reading page…")
+        case .retake:
+            Button {
+                HapticManager.light()
+                discardLastRetakeFrame()
+            } label: {
+                CaptureStatusPill(
+                    systemImage: "exclamationmark.triangle.fill",
+                    text: "Too blurry to read — tap to retake",
+                    tint: Color.warning
+                )
             }
-            .frame(height: 70)
-            .cameraChrome(cornerRadius: CornerRadius.lg)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.thumbnailStrip)
-            .overlay {
-                RoundedRectangle(cornerRadius: CornerRadius.lg)
-                    .stroke(Color.white.opacity(0.10), lineWidth: 1)
-            }
-            .onChange(of: session.captures.count) { _, _ in
-                if let lastCapture = session.captures.last {
-                    withAnimation(.smoothSpring) {
-                        proxy.scrollTo(lastCapture.id, anchor: .trailing)
-                    }
-                }
-            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.retakePill)
         }
+    }
+
+    private var batchTrayStatus: QuoteCaptureView.CaptureTrayStatus? {
+        if retakeSuggestion {
+            return .retake
+        }
+        if lifecycleState.isCapturing {
+            return .readingPage
+        }
+        return .framing(cameraFramingProfile.guidanceText)
     }
 
     // MARK: - Actions
@@ -358,8 +381,6 @@ struct BatchCaptureView: View {
         lifecycleState.isCapturing = true
         defer { lifecycleState.isCapturing = false }
 
-        HapticManager.impact(.medium)
-
         do {
             let image = try await cameraService.capturePhoto()
             let pageStore = BatchCapturePageStore(modelContext: modelContext)
@@ -374,6 +395,14 @@ struct BatchCaptureView: View {
 
             HapticManager.captureSuccess()
             checkMilestone(count: session.totalPages)
+
+            if let quality = result.quality,
+               QuoteCaptureView.shouldSuggestRetake(isAcceptable: quality.isAcceptable, overallScore: quality.overallScore) {
+                presentRetakeSuggestion()
+            } else {
+                retakeSuggestion = false
+                retakeClearTask?.cancel()
+            }
         } catch {
             HapticManager.error()
             errorMessage = error.localizedDescription
@@ -408,28 +437,25 @@ struct BatchCaptureView: View {
         onCancel()
     }
 
-    private var batchStatusPill: CaptureStatusPill? {
-        if !cameraService.detectedBoundingBoxes.isEmpty {
-            let count = cameraService.detectedBoundingBoxes.count
-            return CaptureStatusPill(
-                systemImage: "text.viewfinder",
-                text: "Text detected • \(count) region\(count == 1 ? "" : "s")",
-                tint: Color.gildedAccent
-            )
+    @MainActor
+    private func presentRetakeSuggestion() {
+        retakeSuggestion = true
+        retakeClearTask?.cancel()
+        retakeClearTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(6))
+            guard !Task.isCancelled else { return }
+            retakeSuggestion = false
         }
+    }
 
-        if let quality = currentQuality, !quality.isAcceptable {
-            return CaptureStatusPill(
-                systemImage: "exclamationmark.triangle.fill",
-                text: quality.issues.first?.advice ?? "Adjust framing before the next page",
-                tint: Color.warning
-            )
+    private func discardLastRetakeFrame() {
+        retakeClearTask?.cancel()
+        retakeSuggestion = false
+        currentQuality = nil
+        if let lastCapture = session.captures.last {
+            removeCapture(lastCapture)
         }
-
-        return CaptureStatusPill(
-            systemImage: "doc.on.doc",
-            text: lifecycleState.statusText(pageCount: session.totalPages)
-        )
+        cameraService.clearCapturedImage()
     }
 
     private func cancelBatchCapture() {

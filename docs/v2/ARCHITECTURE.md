@@ -27,10 +27,9 @@ App
 Features
   Reading
   Capture
-  Explore
+  Studio
   Book
   Passage
-  Studio
   Settings
 
 Domain

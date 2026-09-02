@@ -63,7 +63,7 @@ private struct MarkingStyleOption: View {
 
     private var markingIcon: some View {
         Image(systemName: type.systemImage)
-            .font(.title2)
+            .font(.uiLabel)
     }
 
     private var markingLabel: some View {

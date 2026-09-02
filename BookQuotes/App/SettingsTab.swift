@@ -292,7 +292,7 @@ struct AIProcessingSettingsView: View {
             if !authService.isAuthenticated {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Label("Sign in required", systemImage: "person.crop.circle.badge.exclamationmark")
-                        .font(.headline)
+                        .font(.uiLabel)
                     Text("Sign in with Apple so a subscription can be verified before a page is sent for remote extraction.")
                         .font(.subheadline)
                         .foregroundStyle(Color.textSecondary)
@@ -305,7 +305,7 @@ struct AIProcessingSettingsView: View {
                       !subscriptionService.hasActiveSubscription {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Label("TestFlight AI testing enabled", systemImage: "checkmark.seal.fill")
-                        .font(.headline)
+                        .font(.uiLabel)
                         .foregroundStyle(Color.success)
                     Text("Temporary tester access is active. Subscription purchase and restore still require a separate check before release.")
                         .font(.subheadline)
@@ -314,7 +314,7 @@ struct AIProcessingSettingsView: View {
             } else if !subscriptionService.hasActiveSubscription {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Label("Subscription required", systemImage: "sparkles")
-                        .font(.headline)
+                        .font(.uiLabel)
                     Text("Choose a plan or restore an existing purchase to use AI-first quote extraction.")
                         .font(.subheadline)
                         .foregroundStyle(Color.textSecondary)
@@ -341,7 +341,7 @@ struct AIProcessingSettingsView: View {
                 }
             } else {
                 Label("Subscription active", systemImage: "checkmark.seal.fill")
-                    .font(.headline)
+                    .font(.uiLabel)
                     .foregroundStyle(Color.success)
             }
         }
@@ -387,11 +387,11 @@ struct AIProcessingConsentView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
                     Image(systemName: "sparkles")
-                        .font(.system(size: 44, weight: .medium))
+                        .font(.largeTitle.weight(.medium))
                         .foregroundStyle(Color.brand)
 
                     Text("Remote AI Processing")
-                        .font(.title2.weight(.bold))
+                        .font(.serifHeadline)
                         .foregroundStyle(Color.textPrimary)
 
                     Text("BookQuotes can use remote AI as the primary way to identify marked quotes. This is optional.")
@@ -435,7 +435,7 @@ struct AIProcessingConsentView: View {
     private func disclosureSection(title: String, text: String) -> some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text(title)
-                .font(.headline)
+                .font(.uiLabel)
                 .foregroundStyle(Color.textPrimary)
             Text(text)
                 .font(.subheadline)

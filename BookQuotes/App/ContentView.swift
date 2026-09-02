@@ -154,7 +154,10 @@ struct ContentView: View {
 
     private var v2TabView: some View {
         TabView(selection: $selectedV2Tab) {
-            LibraryTab(bookToOpen: $pendingLibraryBookToOpen)
+            LibraryTab(
+                bookToOpen: $pendingLibraryBookToOpen,
+                onOpenSettings: { showV2Settings = true }
+            )
                 .tabItem {
                     Label(V2Tab.reading.title, systemImage: V2Tab.reading.systemImage)
                         .accessibilityIdentifier(V2Tab.reading.accessibilityIdentifier)
@@ -175,15 +178,13 @@ struct ContentView: View {
                 .badge(queueBadgeCount)
                 .accessibilityIdentifier(V2Tab.capture.accessibilityIdentifier)
 
-            V2ExploreFoundationView(onOpenSettings: {
-                showV2Settings = true
-            })
+            StudioTab(onCapture: { selectedV2Tab = .capture })
                 .tabItem {
-                    Label(V2Tab.explore.title, systemImage: V2Tab.explore.systemImage)
-                        .accessibilityIdentifier(V2Tab.explore.accessibilityIdentifier)
+                    Label(V2Tab.studio.title, systemImage: V2Tab.studio.systemImage)
+                        .accessibilityIdentifier(V2Tab.studio.accessibilityIdentifier)
                 }
-                .tag(V2Tab.explore)
-                .accessibilityIdentifier(V2Tab.explore.accessibilityIdentifier)
+                .tag(V2Tab.studio)
+                .accessibilityIdentifier(V2Tab.studio.accessibilityIdentifier)
         }
         .tint(Color.brand)
         .glassTabBar()
@@ -243,16 +244,20 @@ struct ContentView: View {
             hasCompletedOnboarding = true
             selectedV2Tab = .capture
 
+        case "studio":
+            hasCompletedOnboarding = true
+            selectedV2Tab = .studio
+
         case "explore":
             hasCompletedOnboarding = true
-            selectedV2Tab = .explore
+            selectedV2Tab = .reading
 
         case "settings":
             hasCompletedOnboarding = true
             selectedV2Tab = .reading
             showV2Settings = true
 
-        case "reading", "library", "studio":
+        case "reading", "library":
             fallthrough
         default:
             hasCompletedOnboarding = true

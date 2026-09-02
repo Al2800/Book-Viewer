@@ -1,6 +1,5 @@
 import AVFoundation
 import SwiftUI
-import Vision
 
 /// Camera service for capturing book cover and page photos.
 /// Handles AVFoundation session management, permissions, and photo capture.
@@ -35,9 +34,6 @@ final class CameraService: NSObject {
     /// Hardware flash mode applied to the next still capture.
     private(set) var flashMode: CaptureFlashMode = .auto
 
-    /// Real-time detected text bounding boxes normalized to UI portrait space (0.0 - 1.0)
-    private(set) var detectedBoundingBoxes: [CGRect] = []
-
     /// Any error that occurred
     private(set) var error: CameraError?
 
@@ -53,8 +49,6 @@ final class CameraService: NSObject {
 
     private(set) var captureSession: AVCaptureSession?
     private var photoOutput: AVCapturePhotoOutput?
-    private var videoDataOutput: AVCaptureVideoDataOutput?
-    private let videoDataQueue = DispatchQueue(label: "uk.bookquotes.camera.videodata", qos: .userInitiated)
     private let sessionQueue = DispatchQueue(label: "uk.bookquotes.camera.session", qos: .userInitiated)
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var previewLayer: AVCaptureVideoPreviewLayer?
@@ -63,7 +57,6 @@ final class CameraService: NSObject {
     private let sessionGenerationGate = CameraSessionGenerationGate()
     private var activeSessionGeneration: UInt64 = 0
     private var wantsSessionRunning = false
-    nonisolated private let visionFrameGate = CameraFrameProcessingGate(minimumInterval: 0.25)
 
     // MARK: - Continuations for async capture
 
@@ -132,8 +125,7 @@ final class CameraService: NSObject {
     // MARK: - Session Management
 
     /// Set up the capture session with the back camera.
-    /// Live text detection is disabled for ISBN-only cover capture to avoid duplicate Vision work.
-    func setupSession(enablesLiveTextDetection: Bool = true) throws {
+    func setupSession() throws {
         // In mock mode, no actual session setup needed
         if isMockCameraMode {
             return
@@ -181,27 +173,12 @@ final class CameraService: NSObject {
             throw CameraError.cannotAddOutput
         }
 
-        if enablesLiveTextDetection {
-            let videoOutput = AVCaptureVideoDataOutput()
-            videoOutput.alwaysDiscardsLateVideoFrames = true
-            videoOutput.videoSettings = [
-                kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)
-            ]
-            if session.canAddOutput(videoOutput) {
-                session.addOutput(videoOutput)
-                videoOutput.setSampleBufferDelegate(self, queue: videoDataQueue)
-                videoDataOutput = videoOutput
-            }
-        }
-
         session.commitConfiguration()
         captureSession = session
         isSessionConfigured = true
         isSessionRunning = false
         wantsSessionRunning = false
         activeSessionGeneration = sessionGenerationGate.activate()
-        visionFrameGate.reset()
-        detectedBoundingBoxes = []
     }
 
     /// Create a preview layer for the camera feed
@@ -262,8 +239,6 @@ final class CameraService: NSObject {
     /// Stop the capture session on the same serial queue used for startup.
     func stopSession() {
         wantsSessionRunning = false
-        visionFrameGate.reset()
-        detectedBoundingBoxes = []
 
         if isMockCameraMode {
             isSessionRunning = false
@@ -524,9 +499,6 @@ final class CameraService: NSObject {
 
         wantsSessionRunning = false
         sessionGenerationGate.invalidate()
-        visionFrameGate.reset()
-        detectedBoundingBoxes = []
-        videoDataOutput?.setSampleBufferDelegate(nil, queue: nil)
 
         if isMockCameraMode {
             isSessionRunning = false
@@ -547,7 +519,6 @@ final class CameraService: NSObject {
         isSessionConfigured = false
         captureSession = nil
         photoOutput = nil
-        videoDataOutput = nil
         configuredPhotoDimensions = nil
         videoDeviceInput = nil
         previewLayer = nil
@@ -605,54 +576,6 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
                     self.completePendingCapture(captureID: captureID, result: .success(image))
                 }
             }
-        }
-    }
-}
-
-// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
-
-extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
-    nonisolated func captureOutput(
-        _ output: AVCaptureOutput,
-        didOutput sampleBuffer: CMSampleBuffer,
-        from connection: AVCaptureConnection
-    ) {
-        let gate = visionFrameGate
-        guard let token = gate.beginFrame(now: CFAbsoluteTimeGetCurrent()) else { return }
-
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            gate.finish(token)
-            return
-        }
-
-        let request = VNDetectTextRectanglesRequest { [weak self] request, _ in
-            defer { gate.finish(token) }
-            guard gate.isCurrent(token),
-                  let observations = request.results as? [VNTextObservation] else {
-                return
-            }
-
-            let transformedBoxes = observations.prefix(12).map { observation in
-                VisionBoundingBoxTransformer.transformVisionRectToUIPortrait(observation.boundingBox)
-            }
-
-            Task { @MainActor [weak self] in
-                guard let self,
-                      gate.isCurrent(token),
-                      self.isSessionConfigured,
-                      self.wantsSessionRunning else {
-                    return
-                }
-                self.detectedBoundingBoxes = transformedBoxes
-            }
-        }
-        request.reportCharacterBoxes = false
-
-        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right, options: [:])
-        do {
-            try handler.perform([request])
-        } catch {
-            gate.finish(token)
         }
     }
 }

@@ -9,6 +9,7 @@ struct QuoteCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     let book: Book
     var hidesHeaderBar: Bool = false
@@ -22,12 +23,17 @@ struct QuoteCaptureView: View {
     @State private var cameraPermission = CameraPermissionService()
     @State private var captureState: CaptureState = .previewing
     @State private var capturedImage: UIImage?
+    @State private var lastStripImage: UIImage?
+    @State private var flyInImage: UIImage?
+    @State private var flyInProgress: CGFloat = 0
     @State private var qualityResult: ImageQualityAnalyzer.QualityResult?
     @State private var isQualityFeedbackUnavailable = false
-    @State private var isAnalyzingQuality = false
+    @State private var retakeSuggestion = false
+    @State private var retakeClearTask: Task<Void, Never>?
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var capturedSession: CaptureSession?
+    @State private var showPassagesSheet = false
     private let cameraFramingProfile = CameraFramingProfile.quotePage
     private let imageProcessor = QuoteCaptureImageProcessor()
 
@@ -39,29 +45,17 @@ struct QuoteCaptureView: View {
 
             cameraContent
 
-            if captureState == .qualityChecking {
-                qualityCheckingOverlay
+            if let flyInImage {
+                Image(uiImage: flyInImage)
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+                    .scaleEffect(reduceMotion ? 1 : (1 - (0.88 * flyInProgress)))
+                    .opacity(1 - flyInProgress)
+                    .allowsHitTesting(false)
             }
 
-            if captureState == .processing {
-                processingView
-            }
-
-            if captureState == .previewing && !hidesHeaderBar {
-                VStack(spacing: 0) {
-                    CaptureHeaderBar(
-                        title: book.title,
-                        subtitle: "Single page capture",
-                        onCancel: cancelCapture
-                    )
-
-                    Spacer()
-                }
-                .padding(.horizontal, Spacing.lg)
-                .padding(.top, Spacing.sm)
-            }
-
-            if captureState == .previewing && cameraService.isAuthorized {
+            if cameraService.isAuthorized {
                 VStack(spacing: 0) {
                     Spacer()
                     bottomCaptureControls
@@ -69,50 +63,30 @@ struct QuoteCaptureView: View {
             }
         }
         .background(Color.black.ignoresSafeArea())
+        .statusBarHidden()
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
-        .sheet(isPresented: .init(
-            get: { captureState == .reviewing },
-            set: { isPresented in
-                // Confirming a photo advances to processing before the review sheet closes.
-                // Do not let the sheet binding overwrite that state with previewing.
-                if !isPresented, captureState == .reviewing {
-                    captureState = .previewing
-                }
-            }
-        )) {
-            if let image = capturedImage {
-                ImageReviewView(
-                    image: image,
-                    qualityResult: qualityResult,
-                    isQualityFeedbackUnavailable: isQualityFeedbackUnavailable,
+        .sheet(isPresented: $showPassagesSheet, onDismiss: {
+            retakePhoto()
+        }) {
+            if let capturedSession {
+                ExtractionReviewView(
+                    session: capturedSession,
                     book: book,
-                    onRetake: {
-                        retakePhoto()
-                    },
-                    onConfirm: {
-                        confirmPhoto(image)
+                    onComplete: {
+                        showPassagesSheet = false
+                        self.capturedSession = nil
+                        lastStripImage = nil
+                        finalizeCaptureFlow()
                     }
                 )
+                .presentationDetents([.large])
             }
         }
         .alert("Error", isPresented: $showError) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage)
-        }
-        .fullScreenCover(item: $capturedSession, onDismiss: {
-            // Cancellation and completion both return the embedded camera to a usable state.
-            retakePhoto()
-        }) { session in
-            ExtractionReviewView(
-                session: session,
-                book: book,
-                onComplete: {
-                    capturedSession = nil
-                    finalizeCaptureFlow()
-                }
-            )
         }
         .onAppear {
             cameraPermission.checkStatus()
@@ -122,6 +96,7 @@ struct QuoteCaptureView: View {
             handleScenePhase(phase)
         }
         .onDisappear {
+            retakeClearTask?.cancel()
             cameraService.cleanup()
         }
     }
@@ -130,15 +105,7 @@ struct QuoteCaptureView: View {
 
     @ViewBuilder
     private var cameraContent: some View {
-        if captureState == .qualityChecking, let capturedImage {
-            Color.black
-                .ignoresSafeArea()
-                .overlay {
-                    Image(uiImage: capturedImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                }
-        } else if cameraService.isAuthorized && cameraService.isSessionConfigured {
+        if cameraService.isAuthorized && cameraService.isSessionConfigured {
             CameraPreviewViewWithFocus(cameraService: cameraService, framingProfile: cameraFramingProfile)
                 .ignoresSafeArea()
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cameraPreview)
@@ -156,31 +123,12 @@ struct QuoteCaptureView: View {
         }
     }
 
-    private var qualityCheckingOverlay: some View {
-        VStack(spacing: Spacing.sm) {
-            ProgressView()
-                .tint(.white)
-
-            Text("Photo captured")
-                .font(.headline)
-
-            Text("Checking focus and lighting")
-                .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.8))
-        }
-        .foregroundStyle(.white)
-        .padding(Spacing.lg)
-        .cameraChrome(cornerRadius: CornerRadius.lg)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Photo captured. Checking focus and lighting.")
-    }
-
     // MARK: - Capture Controls
 
     private var bottomCaptureControls: some View {
         CaptureControlTray {
-            if let statusPill = qualityStatusPill {
-                statusPill
+            if let status = trayStatus {
+                trayPill(status)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
 
@@ -194,15 +142,13 @@ struct QuoteCaptureView: View {
 
                 Spacer()
 
-                CaptureButton(isProcessing: !cameraService.isSessionRunning || cameraService.isCapturing) {
+                CaptureButton(isProcessing: captureState == .processing || !cameraService.isSessionRunning || cameraService.isCapturing) {
                     capturePhoto()
                 }
 
                 Spacer()
 
-                Color.clear
-                    .frame(width: 50, height: 50)
-                    .accessibilityHidden(true)
+                photoStripSlot
             }
 
             if UITestConfiguration.isUITesting && !UITestConfiguration.isAppStoreMediaMode {
@@ -215,64 +161,64 @@ struct QuoteCaptureView: View {
         }
     }
 
-    // MARK: - Processing View
-
-    private var processingView: some View {
-        VStack(spacing: Spacing.lg) {
-            ProgressView()
-                .scaleEffect(1.5)
-                .tint(.white)
-
-            Text("Processing image...")
-                .font(.headline)
-                .foregroundStyle(.white)
-
-            Text("Preparing the page for quote extraction")
-                .font(.subheadline)
-                .foregroundStyle(Color.white.opacity(0.75))
+    @ViewBuilder
+    private var photoStripSlot: some View {
+        if let lastStripImage {
+            Button {
+                guard capturedSession != nil else { return }
+                showPassagesSheet = true
+            } label: {
+                Image(uiImage: lastStripImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 50, height: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: CornerRadius.sm)
+                            .stroke(Color.white.opacity(0.22), lineWidth: 1)
+                    )
+            }
+            .frame(width: 50, height: 50)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.photoStrip)
+            .accessibilityLabel("Last captured page")
+        } else {
+            Color.clear
+                .frame(width: 50, height: 50)
+                .accessibilityHidden(true)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.ignoresSafeArea())
     }
 
-    private var qualityStatusPill: CaptureStatusPill? {
-        if isAnalyzingQuality {
-            return CaptureStatusPill(
-                systemImage: "viewfinder",
-                text: "Analyzing image…"
-            )
+    @ViewBuilder
+    private func trayPill(_ status: CaptureTrayStatus) -> some View {
+        switch status {
+        case .framing(let text):
+            CaptureStatusPill(systemImage: "text.viewfinder", text: text)
+        case .readingPage:
+            CaptureStatusPill(systemImage: "viewfinder", text: "Reading page…")
+        case .retake:
+            Button {
+                HapticManager.light()
+                discardRetakeFrame()
+            } label: {
+                CaptureStatusPill(
+                    systemImage: "exclamationmark.triangle.fill",
+                    text: "Too blurry to read — tap to retake",
+                    tint: Color.warning
+                )
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.retakePill)
         }
+    }
 
-        if !cameraService.detectedBoundingBoxes.isEmpty {
-            let count = cameraService.detectedBoundingBoxes.count
-            return CaptureStatusPill(
-                systemImage: "text.viewfinder",
-                text: "Text detected • \(count) region\(count == 1 ? "" : "s")",
-                tint: Color.gildedAccent
-            )
+    private var trayStatus: CaptureTrayStatus? {
+        if retakeSuggestion {
+            return .retake
         }
-
-        guard let result = qualityResult else {
-            return CaptureStatusPill(
-                systemImage: "text.viewfinder",
-                text: cameraFramingProfile.guidanceText
-            )
+        if captureState == .processing {
+            return .readingPage
         }
-
-        if result.isAcceptable {
-            return CaptureStatusPill(
-                systemImage: "checkmark.circle.fill",
-                text: "Image quality looks good",
-                tint: .white
-            )
-        }
-
-        let issueText = result.issues.isEmpty ? "Adjust framing" : result.issues[0].advice
-        return CaptureStatusPill(
-            systemImage: "exclamationmark.triangle.fill",
-            text: issueText,
-            tint: Color.warning
-        )
+        return .framing(cameraFramingProfile.guidanceText)
     }
 
     // MARK: - Camera Setup
@@ -321,8 +267,6 @@ struct QuoteCaptureView: View {
     private func capturePhoto() {
         Task {
             do {
-                HapticManager.medium()
-
                 let image = try await cameraService.capturePhoto()
                 HapticManager.captureSuccess()
                 let previewSize = cameraService.currentPreviewSizeForCropping()
@@ -351,10 +295,10 @@ struct QuoteCaptureView: View {
     private func handleCapturedImage(_ image: UIImage, previewSize: CGSize? = nil) async {
         await MainActor.run {
             capturedImage = image
-            isAnalyzingQuality = true
             qualityResult = nil
             isQualityFeedbackUnavailable = false
-            captureState = .qualityChecking
+            retakeSuggestion = false
+            animateCapturedFrameToStrip(image)
         }
 
         let result = await imageProcessor.process(
@@ -365,18 +309,73 @@ struct QuoteCaptureView: View {
 
         await MainActor.run {
             capturedImage = result.image
+            lastStripImage = result.image
             qualityResult = result.qualityResult
             isQualityFeedbackUnavailable = result.qualityError != nil
 
-            isAnalyzingQuality = false
-            captureState = .reviewing
+            if let quality = result.qualityResult,
+               Self.shouldSuggestRetake(isAcceptable: quality.isAcceptable, overallScore: quality.overallScore) {
+                presentRetakeSuggestion()
+                return
+            }
+
+            confirmPhoto(result.image)
         }
     }
 
-    private func retakePhoto() {
+    @MainActor
+    private func animateCapturedFrameToStrip(_ image: UIImage) {
+        flyInImage = image
+        flyInProgress = 0
+        lastStripImage = image
+
+        if reduceMotion {
+            withAnimation(.easeOut(duration: 0.2)) {
+                flyInProgress = 1
+            }
+        } else {
+            withAnimation(.smoothSpring) {
+                flyInProgress = 1
+            }
+        }
+
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(reduceMotion ? 220 : 400))
+            flyInImage = nil
+            flyInProgress = 0
+        }
+    }
+
+    @MainActor
+    private func presentRetakeSuggestion() {
+        retakeSuggestion = true
+        retakeClearTask?.cancel()
+        retakeClearTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(6))
+            guard !Task.isCancelled else { return }
+            retakeSuggestion = false
+        }
+    }
+
+    private func discardRetakeFrame() {
+        retakeClearTask?.cancel()
+        retakeSuggestion = false
         capturedImage = nil
         qualityResult = nil
         isQualityFeedbackUnavailable = false
+        if capturedSession == nil {
+            lastStripImage = nil
+        }
+        captureState = .previewing
+        cameraService.clearCapturedImage()
+    }
+
+    private func retakePhoto() {
+        retakeClearTask?.cancel()
+        capturedImage = nil
+        qualityResult = nil
+        isQualityFeedbackUnavailable = false
+        retakeSuggestion = false
         captureState = .previewing
         cameraService.clearCapturedImage()
     }
@@ -384,6 +383,7 @@ struct QuoteCaptureView: View {
     @MainActor
     private func confirmPhoto(_ image: UIImage) {
         captureState = .processing
+        retakeSuggestion = false
 
         Task {
             do {
@@ -396,6 +396,7 @@ struct QuoteCaptureView: View {
 
                 captureState = .completed(session: session)
                 capturedSession = session
+                showPassagesSheet = true
             } catch {
                 captureState = .previewing
                 errorMessage = error.localizedDescription
@@ -426,16 +427,12 @@ struct QuoteCaptureView: View {
 extension QuoteCaptureView {
     enum CaptureState: Equatable {
         case previewing
-        case qualityChecking
-        case reviewing
         case processing
         case completed(session: CaptureSession)
 
         static func == (lhs: CaptureState, rhs: CaptureState) -> Bool {
             switch (lhs, rhs) {
             case (.previewing, .previewing),
-                 (.qualityChecking, .qualityChecking),
-                 (.reviewing, .reviewing),
                  (.processing, .processing):
                 return true
             case (.completed(let a), .completed(let b)):
@@ -444,6 +441,16 @@ extension QuoteCaptureView {
                 return false
             }
         }
+    }
+
+    enum CaptureTrayStatus: Equatable {
+        case framing(String)
+        case readingPage
+        case retake
+    }
+
+    static func shouldSuggestRetake(isAcceptable: Bool, overallScore: Double) -> Bool {
+        !isAcceptable && overallScore < 0.4
     }
 }
 

@@ -100,9 +100,8 @@ struct CaptureButton: View {
     // MARK: - Capture Action
 
     private func triggerCapture() {
-        // A light press acknowledgement is appropriate here. Callers emit success only
-        // after AVFoundation or the mock camera has actually returned an image.
-        HapticManager.light()
+        // Medium shutter press. Callers emit captureSuccess only after the image returns.
+        HapticManager.medium()
 
         if !reduceMotion {
             withAnimation(.easeOut(duration: 0.4)) {

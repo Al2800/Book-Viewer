@@ -100,7 +100,7 @@ struct CoverCaptureView: View {
 
             do {
                 // The ISBN scanner owns the only live Vision output in this flow.
-                try cameraService.setupSession(enablesLiveTextDetection: false)
+                try cameraService.setupSession()
                 setupBarcodeCallback()
                 resumeScanning()
                 cameraService.startSession()

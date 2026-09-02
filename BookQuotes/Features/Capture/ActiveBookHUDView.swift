@@ -21,19 +21,23 @@ struct ActiveBookHUDView: View {
                                 .font(.system(.subheadline, design: .serif).weight(.semibold))
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
+                                .accessibilityHidden(true)
 
                             Text(book.author)
                                 .font(.caption2)
                                 .foregroundStyle(.white.opacity(0.78))
                                 .lineLimit(1)
+                                .accessibilityHidden(true)
                         } else {
                             Text("No Book Selected")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.white)
+                                .accessibilityHidden(true)
 
                             Text("Tap to choose active book")
                                 .font(.caption2)
                                 .foregroundStyle(Color.gildedAccent)
+                                .accessibilityHidden(true)
                         }
                     }
                     .frame(maxWidth: 180, alignment: .leading)
@@ -48,12 +52,13 @@ struct ActiveBookHUDView: View {
                 .contentShape(Capsule())
             }
             .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel(book != nil ? "Active Book: \(book!.title). Tap to switch" : "Select active book")
 
             if let onClose {
                 Button(action: onClose) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .bold))
+                        .font(.caption.weight(.bold))
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 44)
                         .contentShape(Circle())
@@ -98,7 +103,7 @@ struct ActiveBookHUDView: View {
                     .frame(width: 24, height: 32)
 
                 Image(systemName: "book.closed")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.uiBadge)
                     .foregroundStyle(Color.gildedAccent)
             }
         }
@@ -139,7 +144,7 @@ struct ActiveBookSwitcherSheet: View {
                                     .frame(width: 36, height: 36)
 
                                 Image(systemName: "barcode.viewfinder")
-                                    .font(.system(size: 16, weight: .semibold))
+                                    .font(.uiLabel)
                                     .foregroundStyle(Color.black.opacity(0.8))
                             }
 
@@ -156,7 +161,7 @@ struct ActiveBookSwitcherSheet: View {
                             Spacer()
 
                             Image(systemName: "plus.circle.fill")
-                                .font(.title3)
+                                .font(.uiLabel)
                                 .foregroundStyle(Color.gildedAccent)
                         }
                         .padding(.vertical, Spacing.xxs)
@@ -215,7 +220,7 @@ struct ActiveBookSwitcherSheet: View {
                             .frame(width: 32, height: 44)
 
                         Image(systemName: "book.closed")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.caption.weight(.semibold))
                             .foregroundStyle(Color.gildedAccent)
                     }
                 }
@@ -236,7 +241,7 @@ struct ActiveBookSwitcherSheet: View {
 
                 if currentBook?.id == book.id {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.headline)
+                        .font(.uiLabel)
                         .foregroundStyle(Color.gildedAccent)
                 }
             }

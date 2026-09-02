@@ -14,13 +14,14 @@ A change that adds ceremony to this loop must justify the user value and provide
 
 ## 2. Product hierarchy
 
-- **Reading** is the passage-first home.
+- **Reading** is the passage-first home. Search, resurfacing and later connection work live here as capabilities, not as a fourth tab.
 - **Capture** is the active-book camera and review workflow.
-- **Explore** is grounded retrieval and connection.
-- **Studio** is contextual from a passage.
-- **Settings** is secondary.
+- **Studio** is the third primary tab (`sparkles.rectangle.stack`) for turning a saved passage into a shareable card.
+- **Settings** is secondary, opened from a gear in the Reading toolbar.
 
-Do not add a primary tab without changing the product specification first.
+The Studio empty-state CTA switches to the Capture tab. It does not create a second capture coordinator.
+
+Do not add a primary tab without changing the product specification first. Do not restore Explore as a primary tab.
 
 ## 3. Camera ownership
 

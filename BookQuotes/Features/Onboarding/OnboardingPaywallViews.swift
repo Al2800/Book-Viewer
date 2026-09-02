@@ -126,7 +126,7 @@ struct PaywallEmbeddedView: View {
                     .tint(.white)
             } else {
                 Text("Start Free Trial")
-                    .font(.headline)
+                    .font(.uiLabel)
             }
         }
         .frame(maxWidth: .infinity)

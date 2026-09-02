@@ -81,11 +81,11 @@ struct WelcomePageView: View {
 
                 VStack(spacing: Spacing.md) {
                     Image(systemName: page.icon)
-                        .font(.system(size: 44))
+                        .font(.largeTitle)
                         .foregroundStyle(Color.brand)
 
                     Text(page.title)
-                        .font(.system(.title2, design: .serif).weight(.semibold))
+                        .font(.serifHeadline)
                         .multilineTextAlignment(.center)
 
                     Text(page.description)

@@ -128,7 +128,7 @@ struct CaptureTabRootView: View {
                     .frame(width: 100, height: 100)
 
                 Image(systemName: "camera.viewfinder")
-                    .font(.system(size: 44, weight: .light))
+                    .font(.largeTitle.weight(.light))
                     .foregroundStyle(Color.gildedAccent)
             }
 
@@ -152,7 +152,7 @@ struct CaptureTabRootView: View {
                     Image(systemName: "barcode.viewfinder")
                     Text("Add Your First Book")
                 }
-                .font(.headline)
+                .font(.uiLabel)
                 .foregroundStyle(.black)
                 .padding(.horizontal, Spacing.xl)
                 .padding(.vertical, Spacing.md)
@@ -346,11 +346,11 @@ private struct CaptureModeMenuButton: View {
                 } label: {
                     Label("Saved Drafts (\(draftCount))", systemImage: "tray.full")
                 }
-                .accessibilityIdentifier("capture_saved_drafts_button")
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.savedDraftsButton)
             }
         } label: {
             Image(systemName: "camera.badge.ellipsis")
-                .font(.system(size: 17, weight: .semibold))
+                .font(.uiLabel)
                 .foregroundStyle(.white)
                 .frame(width: 44, height: 44)
                 .background(
@@ -367,7 +367,7 @@ private struct CaptureModeMenuButton: View {
                 )
                 .shadow(color: Color.black.opacity(0.3), radius: 6, y: 3)
         }
-        .accessibilityIdentifier("capture_mode_menu")
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.modeMenu)
         .accessibilityLabel("Capture mode, Single Page")
         .accessibilityHint("Choose Batch Mode or open saved drafts")
     }
@@ -400,12 +400,12 @@ private struct SavedCaptureDraftsSheet: View {
                             } label: {
                                 HStack(spacing: Spacing.md) {
                                     Image(systemName: "doc.on.doc")
-                                        .font(.title3)
+                                        .font(.uiLabel)
                                         .foregroundStyle(Color.brand)
 
                                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                                         Text(draft.book?.title ?? "Untitled Book")
-                                            .font(.headline)
+                                            .font(.bookTitle)
                                             .foregroundStyle(Color.textPrimary)
                                             .lineLimit(1)
 

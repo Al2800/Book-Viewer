@@ -84,7 +84,7 @@ struct BatchCaptureFlowView: View {
                 },
                 onCancel: onCancel
             )
-            .fullScreenCover(item: $capturedSession) { session in
+            .sheet(item: $capturedSession) { session in
                 ExtractionReviewView(
                     session: session,
                     book: book,
@@ -93,6 +93,7 @@ struct BatchCaptureFlowView: View {
                         onComplete(session)
                     }
                 )
+                .presentationDetents([.large])
             }
         } else {
             MissingSelectedBookView(
@@ -117,7 +118,7 @@ private struct MissingSelectedBookView: View {
                 HStack {
                     Button(action: onCancel) {
                         Image(systemName: "xmark")
-                            .font(.system(size: 13, weight: .bold))
+                            .font(.caption.weight(.bold))
                             .foregroundStyle(.white)
                             .frame(width: 44, height: 44)
                             .background(
@@ -147,7 +148,8 @@ private struct MissingSelectedBookView: View {
                         .frame(width: 88, height: 88)
 
                     Image(systemName: "book.closed")
-                        .font(.system(size: 36, weight: .light))
+                        .font(.largeTitle.weight(.light))
+                        .frame(width: 36, height: 36)
                         .foregroundStyle(Color.gildedAccent)
                 }
 
@@ -169,7 +171,7 @@ private struct MissingSelectedBookView: View {
                         onChooseBook()
                     } label: {
                         Text("Select Active Book")
-                            .font(.headline)
+                            .font(.uiLabel)
                             .foregroundStyle(Color.darkLinen)
                             .padding(.horizontal, Spacing.xl)
                             .padding(.vertical, Spacing.md)

@@ -23,11 +23,12 @@ final class TabTests: XCTestCase {
         XCTAssertEqual(Tab.settings.systemImage, "gear")
     }
 
-    func testV2ShellDefinesReadingCaptureAndExplore() {
-        XCTAssertEqual(V2Tab.allCases, [.reading, .capture, .explore])
+    func testV2ShellDefinesReadingCaptureAndStudio() {
+        XCTAssertEqual(V2Tab.allCases, [.reading, .capture, .studio])
         XCTAssertEqual(V2Tab.reading.title, "Reading")
         XCTAssertEqual(V2Tab.capture.title, "Capture")
-        XCTAssertEqual(V2Tab.explore.title, "Explore")
+        XCTAssertEqual(V2Tab.studio.title, "Studio")
+        XCTAssertEqual(V2Tab.studio.systemImage, "sparkles.rectangle.stack")
     }
 
     func testV2TabIdentifiersAreStableAndUnique() {
@@ -35,7 +36,7 @@ final class TabTests: XCTestCase {
         XCTAssertEqual(Set(identifiers).count, identifiers.count)
         XCTAssertEqual(V2Tab.reading.accessibilityIdentifier, "v2_reading_tab")
         XCTAssertEqual(V2Tab.capture.accessibilityIdentifier, "v2_capture_tab")
-        XCTAssertEqual(V2Tab.explore.accessibilityIdentifier, "v2_explore_tab")
+        XCTAssertEqual(V2Tab.studio.accessibilityIdentifier, "v2_studio_tab")
     }
 
     func testProductExperienceUsesRotatedPreferenceKey() {

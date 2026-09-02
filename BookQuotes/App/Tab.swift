@@ -32,7 +32,7 @@ enum Tab: Hashable, CaseIterable, Identifiable {
 enum V2Tab: Hashable, CaseIterable, Identifiable {
     case reading
     case capture
-    case explore
+    case studio
 
     var id: Self { self }
 
@@ -40,7 +40,7 @@ enum V2Tab: Hashable, CaseIterable, Identifiable {
         switch self {
         case .reading: return "Reading"
         case .capture: return "Capture"
-        case .explore: return "Explore"
+        case .studio: return "Studio"
         }
     }
 
@@ -48,20 +48,20 @@ enum V2Tab: Hashable, CaseIterable, Identifiable {
         switch self {
         case .reading: return "books.vertical"
         case .capture: return "camera"
-        case .explore: return "magnifyingglass"
+        case .studio: return "sparkles.rectangle.stack"
         }
     }
 
     var accessibilityIdentifier: String {
         switch self {
-        case .reading: return "v2_reading_tab"
-        case .capture: return "v2_capture_tab"
-        case .explore: return "v2_explore_tab"
+        case .reading: return AccessibilityIdentifiers.V2.readingTab
+        case .capture: return AccessibilityIdentifiers.V2.captureTab
+        case .studio: return AccessibilityIdentifiers.V2.studioTab
         }
     }
 }
 
-/// Gate for the v2 Reading / Capture / Explore shell.
+/// Gate for the v2 Reading / Capture / Studio shell.
 ///
 /// TestFlight and normal launches default to v2. The storage key was rotated
 /// after Build 52/53 so a persisted `false` from the original default-off

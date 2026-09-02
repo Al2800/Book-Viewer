@@ -83,14 +83,14 @@ struct AccountView: View {
         SectionCard(title: "Account") {
             HStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: 50))
+                    .font(.largeTitle)
                     .foregroundStyle(Color.brand)
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
                     if let user = authService.currentUser {
                         Text(user.displayNameOrEmail)
-                            .font(.headline)
+                            .font(.uiLabel)
 
                         if let email = user.email {
                             Text(email)
@@ -124,12 +124,12 @@ struct AccountView: View {
         SectionCard(title: "Account") {
             VStack(spacing: Spacing.md) {
                 Image(systemName: "person.crop.circle.badge.questionmark")
-                    .font(.system(size: 50))
+                    .font(.largeTitle)
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
 
                 Text("Optional Account")
-                    .font(.headline)
+                    .font(.uiLabel)
 
                 Text(
                     subscriptionsEnabled
@@ -159,7 +159,7 @@ struct AccountView: View {
             if !authService.isAuthenticated {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Sign In to View Plans")
-                        .font(.headline)
+                        .font(.uiLabel)
 
                     Text("Sign in with Apple before purchasing or restoring so your subscription can be linked to your BookQuotes account.")
                         .font(.subheadline)
@@ -176,7 +176,7 @@ struct AccountView: View {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     HStack {
                         Text(subscriptionTitle)
-                            .font(.headline)
+                            .font(.uiLabel)
 
                         Spacer()
 
@@ -215,7 +215,7 @@ struct AccountView: View {
             } else {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Unlock Premium")
-                        .font(.headline)
+                        .font(.uiLabel)
 
                     Text("Start a 7-day free trial, then continue with monthly or yearly auto-renewing access.")
                         .font(.subheadline)

@@ -17,12 +17,11 @@ struct AboutView: View {
             VStack(spacing: Spacing.lg) {
                 VStack(spacing: Spacing.md) {
                     Image(systemName: "books.vertical.circle.fill")
-                        .font(.system(size: 60))
+                        .font(.largeTitle)
                         .foregroundStyle(Color.brand)
 
                     Text("BookQuotes")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                        .font(.screenTitle)
 
                     Text("Capture the wisdom in your books")
                         .font(.subheadline)

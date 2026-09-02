@@ -55,12 +55,12 @@ struct QuoteDetailView: View {
                     } label: {
                         HStack(spacing: Spacing.md) {
                             Image(systemName: "sparkles.rectangle.stack")
-                                .font(.title3)
+                                .font(.uiLabel)
                                 .foregroundStyle(Color.gildedAccent)
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Design Quote Card")
-                                    .font(.headline)
+                                    .font(.uiLabel)
                                     .foregroundStyle(Color.textPrimary)
 
                                 Text("Style with v2 editorial themes & export to social, Obsidian or Notion")

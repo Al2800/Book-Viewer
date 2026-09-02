@@ -117,11 +117,11 @@ struct OnboardingSignInStepView: View {
     private var header: some View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "person.crop.circle.fill.badge.checkmark")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .foregroundStyle(Color.brand)
 
             Text("Sign In or Continue Locally")
-                .font(.system(.title, design: .serif).weight(.semibold))
+                .font(.screenTitle)
 
             Text(copyPolicy.description)
                 .font(.subheadline)
@@ -208,11 +208,11 @@ struct OnboardingMarkingSetupStepView: View {
     private var header: some View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "highlighter")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .foregroundStyle(Color.brand)
 
             Text("How Do You Mark Books?")
-                .font(.system(.title, design: .serif).weight(.semibold))
+                .font(.screenTitle)
 
             Text("Select the marking styles you use most often")
                 .font(.subheadline)
@@ -250,12 +250,12 @@ struct OnboardingCompletionStepView: View {
     private var successMessage: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 80))
+                .font(.largeTitle)
                 .foregroundStyle(Color.success)
                 .transition(.scale.combined(with: .opacity))
 
             Text("You're All Set!")
-                .font(.system(.title, design: .serif).weight(.semibold))
+                .font(.screenTitle)
 
             Text("Start capturing quotes from your favorite books")
                 .font(.subheadline)

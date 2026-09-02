@@ -225,6 +225,12 @@ enum AccessibilityIdentifiers {
         /// Capture mode selection: batch
         static let modeSelectBatch = "capture_mode_select_batch"
 
+        /// Overflow menu on the capture HUD for Batch Mode and saved drafts
+        static let modeMenu = "capture_mode_menu"
+
+        /// Saved drafts action inside the capture mode menu
+        static let savedDraftsButton = "capture_saved_drafts_button"
+
         /// Book card in capture book selection grid
         static let bookSelectionCard = "capture_book_selection_card"
 
@@ -277,6 +283,18 @@ enum AccessibilityIdentifiers {
 
         /// Source page image shown during extraction review.
         static let extractionPageImage = "capture_extraction_page_image"
+
+        static let photoStrip = "capture_photo_strip"
+        static let retakePill = "capture_retake_pill"
+        static let saveToLibraryButton = "capture_save_to_library"
+        static let addManualPassage = "capture_add_manual_passage"
+        static let viewPageButton = "capture_view_page"
+        static let passageActionsMenu = "capture_passage_actions"
+    }
+
+    enum Studio {
+        static let captureFirstPassage = "studio_capture_first_passage"
+        static let rootTitle = "studio_root_title"
     }
 
     // MARK: - Collections
@@ -517,6 +535,13 @@ enum AccessibilityIdentifiers {
 
         /// Settings tab bar item
         static let settingsTab = "tab_settings"
+    }
+
+    enum V2 {
+        static let readingTab = "v2_reading_tab"
+        static let captureTab = "v2_capture_tab"
+        static let studioTab = "v2_studio_tab"
+        static let settingsButton = "v2_settings_button"
     }
 
     // MARK: - Common

@@ -33,25 +33,33 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     func testCaptureTab_DisplaysCameraOrPermission() {
         logger.step(1, "Navigating to Capture tab")
-        XCTAssertTrue(tapTab(.capture, timeout: 5), "Capture tab should exist")
+        XCTAssertTrue(openQuietCaptureFromTab(), "Capture tab should open the live camera")
 
-        logger.step(2, "Verifying capture view content")
-        let modeSelectCover = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
-        let modeSelectQuote = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-        let modeSelectBatch = app.buttons[AccessibilityIdentifiers.Capture.modeSelectBatch]
+        logger.step(2, "Verifying capture HUD and batch entry")
+        let modeMenu = app.buttons[AccessibilityIdentifiers.Capture.modeMenu]
+        XCTAssertTrue(modeMenu.waitForExistence(timeout: 5), "Capture HUD should provide a mode menu")
+        modeMenu.tap()
 
-        XCTAssertTrue(modeSelectCover.waitForExistence(timeout: 5), "Cover capture mode should be available")
-        XCTAssertTrue(modeSelectQuote.exists, "Quote capture mode should be available")
-        XCTAssertTrue(modeSelectBatch.exists, "Batch capture mode should be available")
+        let batchMode = app.descendants(matching: .any)
+            .matching(identifier: AccessibilityIdentifiers.Capture.modeSelectBatch)
+            .firstMatch
+        let batchLabel = app.buttons["Batch Mode"].firstMatch
+        let batchMenuItem = app.menuItems["Batch Mode"].firstMatch
+        XCTAssertTrue(
+            batchMode.waitForExistence(timeout: 2)
+                || batchLabel.waitForExistence(timeout: 2)
+                || batchMenuItem.waitForExistence(timeout: 2),
+            "Batch capture mode should be available from the HUD menu"
+        )
 
         logger.success("Capture tab displays correctly")
     }
 
     func testCaptureRoot_PassesSystemAccessibilityAudit() throws {
-        XCTAssertTrue(tapTab(.capture, timeout: 5), "Capture tab should exist")
+        XCTAssertTrue(openQuietCaptureFromTab(), "Capture tab should exist")
         XCTAssertTrue(
-            app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote].waitForExistence(timeout: 5),
-            "Capture mode selection should be ready before auditing"
+            app.buttons[AccessibilityIdentifiers.Capture.modeMenu].waitForExistence(timeout: 5),
+            "Capture HUD should be ready before auditing"
         )
         try performSystemAccessibilityAudit()
     }
@@ -93,59 +101,65 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.success("Capture view opened from book")
     }
 
-    // MARK: - Image Review Tests
+    // MARK: - Quiet Capture Tests
 
-    func testImageReview_ShowsQualityIndicator() {
+    func testQuietCapture_PresentsPassagesWithoutImageReview() {
         logger.step(1, "Navigating to capture")
         navigateToCaptureWithBook()
 
         logger.step(2, "Triggering capture")
         triggerCapture()
 
-        logger.step(3, "Checking for image review")
-        // With test image capture, should transition to image review
-        let retakeButton = app.buttons[AccessibilityIdentifiers.ImageReview.retakeButton]
-        let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        let qualityBar = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.ImageReview.qualityBar)
-            .firstMatch
-
-        XCTAssertTrue(retakeButton.waitForExistence(timeout: 5), "Image review should provide Retake")
-        XCTAssertTrue(usePhotoButton.exists, "Image review should provide Use Photo")
-        XCTAssertTrue(qualityBar.exists, "Image review should expose quality feedback")
-        logger.success("Image review displayed with quality indicator")
+        logger.step(3, "Passages should open without a Review Photo gate")
+        XCTAssertFalse(
+            app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton].waitForExistence(timeout: 2),
+            "Quiet capture must not present Image Review"
+        )
+        XCTAssertTrue(
+            app.navigationBars["Passages"].waitForExistence(timeout: 15)
+                || app.staticTexts["Passages"].waitForExistence(timeout: 2),
+            "Passages should present after a usable capture"
+        )
+        logger.success("Passages presented without Image Review")
     }
 
-    func testImageReview_RetakeButton_ReturnsToCamera() {
+    func testQuietCapture_DismissingPassagesReturnsToLiveCamera() {
         logger.step(1, "Navigating to capture")
         navigateToCaptureWithBook()
 
         logger.step(2, "Taking photo")
         triggerCapture()
 
-        logger.step(3, "Finding retake button")
-        let retakeButton = app.buttons[AccessibilityIdentifiers.ImageReview.retakeButton]
-        XCTAssertTrue(retakeButton.waitForExistence(timeout: 5), "Image review should provide Retake")
+        logger.step(3, "Waiting for Passages")
+        let passages = app.navigationBars["Passages"]
+        XCTAssertTrue(
+            passages.waitForExistence(timeout: 15) || app.staticTexts["Passages"].waitForExistence(timeout: 2),
+            "Passages should present after capture"
+        )
 
-        logger.step(4, "Tapping retake")
-        retakeButton.tap()
+        logger.step(4, "Dismissing Passages")
+        if passages.exists {
+            passages.swipeDown()
+        } else {
+            app.swipeDown()
+        }
 
-        logger.step(5, "Verifying return to camera")
+        logger.step(5, "Verifying return to live camera")
         let captureButton = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
         let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        let returned = captureButton.waitForExistence(timeout: 3) || testButton.exists
-        XCTAssertTrue(returned, "Should return to camera view")
+        let returned = captureButton.waitForExistence(timeout: 5) || testButton.waitForExistence(timeout: 2)
+        XCTAssertTrue(returned, "Dismissing Passages should return to the live camera")
 
-        logger.success("Retake returns to camera")
+        logger.success("Dismissing Passages returns to camera")
     }
 
-    func testImageReview_PassesSystemAccessibilityAudit() throws {
+    func testQuietCapture_PassagesPassesSystemAccessibilityAudit() throws {
         navigateToCaptureWithBook()
         triggerCapture()
 
         XCTAssertTrue(
-            app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton].waitForExistence(timeout: 5),
-            "Image review should be ready before auditing"
+            waitForPassagesSheet(),
+            "Passages should be ready before auditing"
         )
         try performSystemAccessibilityAudit()
     }
@@ -159,17 +173,9 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.step(2, "Capturing and processing")
         triggerCapture()
 
-        // Use photo if review appears
-        let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        if usePhotoButton.waitForExistence(timeout: 3) {
-            usePhotoButton.tap()
-        }
-
         logger.step(3, "Waiting for extraction results")
-        // Wait for extraction review view with actual extracted quote controls.
-        let reviewTitle = app.navigationBars["Review Extractions"]
         let editButton = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton]
-        let saveButton = app.buttons["Save All"]
+        let saveButton = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
         let modelSource = app.descendants(matching: .any)
             .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_model_assisted")
             .firstMatch
@@ -177,10 +183,10 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_on_device")
             .firstMatch
         let failureTitle = app.staticTexts["Extraction Failed"]
-        let noQuotesTitle = app.staticTexts["No Quotes Found"]
+        let noQuotesTitle = app.staticTexts["No marked passages found"]
         let remoteConsentButton = app.buttons["Allow Remote AI Processing"]
 
-        XCTAssertTrue(reviewTitle.waitForExistence(timeout: 15), "Extraction review should appear")
+        XCTAssertTrue(waitForPassagesSheet(), "Extraction review should appear")
         XCTAssertFalse(
             remoteConsentButton.exists,
             "On-device quote review must not be blocked by the optional remote-AI consent sheet"
@@ -190,7 +196,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
         let hasExtractedQuoteControls = editButton.waitForExistence(timeout: 10) || saveButton.waitForExistence(timeout: 2)
         XCTAssertTrue(hasExtractedQuoteControls, "Extraction review should show editable extracted quote controls")
-        XCTAssertTrue(saveButton.exists && saveButton.isEnabled, "Save All should be enabled when mock extraction returns quotes")
+        XCTAssertTrue(saveButton.exists && saveButton.isEnabled, "Save to Library should be enabled when mock extraction returns quotes")
         XCTAssertTrue(modelSource.exists, "Review should identify the model-assisted candidate")
         XCTAssertTrue(onDeviceSource.exists, "Review should identify the on-device candidate")
 
@@ -213,12 +219,8 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         let onDeviceSource = app.descendants(matching: .any)
             .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_on_device")
             .firstMatch
-        let fallbackNotice = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionFallbackNotice)
-            .firstMatch
 
-        XCTAssertTrue(onDeviceSource.waitForExistence(timeout: 5))
-        XCTAssertTrue(fallbackNotice.waitForExistence(timeout: 5))
+        XCTAssertTrue(onDeviceSource.waitForExistence(timeout: 5), "Local-fallback extraction should mark the on-device source")
     }
 
     // MARK: - Quote Editing Tests
@@ -270,9 +272,9 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToExtractionReview()
 
         logger.step(1, "Finding save button")
-        let saveAllButton = app.buttons["Save All"]
-        XCTAssertTrue(saveAllButton.waitForExistence(timeout: 5), "Extraction review should provide Save All")
-        XCTAssertTrue(saveAllButton.isEnabled, "Save All should be enabled for extracted quotes")
+        let saveAllButton = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertTrue(saveAllButton.waitForExistence(timeout: 5), "Passages should provide Save to Library")
+        XCTAssertTrue(saveAllButton.isEnabled, "Save to Library should be enabled for extracted quotes")
         saveAllButton.tap()
 
         logger.step(2, "Verifying navigation after save")
@@ -288,8 +290,8 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         navigateToExtractionReview()
 
         logger.step(1, "Finding cancel button")
-        let cancelButton = app.buttons[AccessibilityIdentifiers.Capture.cancelButton]
-        XCTAssertTrue(cancelButton.waitForExistence(timeout: 5), "Extraction review should provide Cancel")
+        let cancelButton = app.navigationBars.buttons[AccessibilityIdentifiers.Capture.cancelButton]
+        XCTAssertTrue(cancelButton.waitForExistence(timeout: 5), "Passages should provide Cancel")
         cancelButton.tap()
 
         logger.step(2, "Checking for discard confirmation")
@@ -309,15 +311,31 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     // MARK: - Quality Warning Tests
 
     func testLowConfidenceExtraction_ShowsReducedConfidence() {
-        logger.step(1, "Opening low-confidence extraction review")
-        navigateToExtractionReview()
+        logger.step(1, "Opening low-confidence capture")
+        navigateToCaptureWithBook()
+        triggerCapture()
 
-        logger.step(2, "Verifying reduced confidence")
+        logger.step(2, "Low-quality frames stay on the camera with a retake pill, or open Passages without a percentage")
+        let retakePill = app.buttons[AccessibilityIdentifiers.Capture.retakePill]
+        if retakePill.waitForExistence(timeout: 6) {
+            XCTAssertFalse(
+                app.staticTexts["48%"].exists,
+                "Retake chrome must not show a confidence percentage"
+            )
+            logger.success("Low-quality capture offered an inline retake")
+            return
+        }
+
+        XCTAssertTrue(waitForPassagesSheet(), "If the frame is usable, Passages should open")
         XCTAssertTrue(
-            app.staticTexts["48%"].waitForExistence(timeout: 5),
-            "Low-confidence mock extraction should display its reduced confidence"
+            app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].waitForExistence(timeout: 5),
+            "Low-confidence mock extraction should still produce an editable passage"
         )
-        logger.success("Low-confidence extraction is visible to the reader")
+        XCTAssertFalse(
+            app.staticTexts["48%"].exists,
+            "Passages cards must not show a confidence percentage"
+        )
+        logger.success("Low-confidence extraction is visible without a percentage badge")
     }
 
     // MARK: - Helpers
@@ -363,18 +381,27 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     private func navigateToExtractionReview() {
         navigateToCaptureWithBook()
-
         triggerCapture()
+        XCTAssertTrue(waitForPassagesSheet(), "Mock capture should open Passages")
+    }
 
-        // Use photo if review appears
-        let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        if usePhotoButton.waitForExistence(timeout: 3) {
-            usePhotoButton.tap()
+    @discardableResult
+    private func waitForPassagesSheet() -> Bool {
+        let consent = app.buttons["Allow Remote AI Processing"]
+        if consent.waitForExistence(timeout: 3) {
+            consent.tap()
         }
 
-        // Wait for extraction review
-        let reviewTitle = app.navigationBars["Review Extractions"]
-        XCTAssertTrue(reviewTitle.waitForExistence(timeout: 15), "Mock capture should open extraction review")
+        return waitUntil("Passages sheet", timeout: 20) { [weak self] in
+            guard let self else { return false }
+            if self.app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton].exists { return true }
+            if self.app.buttons[AccessibilityIdentifiers.Capture.addManualPassage].exists { return true }
+            if self.app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].exists { return true }
+            if self.app.navigationBars["Passages"].exists { return true }
+            if self.app.staticTexts["Passages"].exists { return true }
+            if self.app.staticTexts["No marked passages found"].exists { return true }
+            return false
+        }
     }
 
     private func findMoreMenuButton() -> XCUIElement {
@@ -402,26 +429,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     }
 
     private func openQuoteCaptureFromTabSelectingBook() {
-        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
-
-        let permissionPrompt = app.otherElements[AccessibilityIdentifiers.Capture.permissionPrompt]
-        XCTAssertFalse(permissionPrompt.waitForExistence(timeout: 2), "Mock camera should not request permission")
-
-        let testButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        if testButton.exists {
-            return
-        }
-
-        let quoteModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-        if quoteModeCard.waitForExistence(timeout: 3) {
-            quoteModeCard.tap()
-        }
-
-        let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-        XCTAssertTrue(bookCard.waitForExistence(timeout: 5), "Seeded library should provide a book for quote capture")
-        bookCard.tap()
-
-        XCTAssertTrue(testButton.waitForExistence(timeout: 5), "Quote capture should show Use Test Image")
+        XCTAssertTrue(openQuietCaptureFromTab(), "Quote capture should show the live camera")
     }
 
     private func openCaptureFromBookDetail() {
@@ -492,44 +500,37 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
     func testExtractionReviewStacksControlsWithAccessibilityText() {
         openExtractionReview()
 
-        let pageSelector = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
-            .firstMatch
-        let sourceImage = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
-            .firstMatch
+        let reviewScrollView = app.scrollViews[AccessibilityIdentifiers.Capture.extractionReviewScrollView]
+        let saveButton = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        let addManually = app.buttons[AccessibilityIdentifiers.Capture.addManualPassage]
 
-        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Extraction review should expose its page selector")
-        XCTAssertGreaterThan(
-            pageSelector.frame.width,
-            app.frame.width * 0.7,
-            "Compact accessibility layouts should place the page selector above the editor"
+        XCTAssertTrue(reviewScrollView.waitForExistence(timeout: 5), "Passages should expose a stacked scroll surface")
+        XCTAssertTrue(saveButton.waitForExistence(timeout: 5), "Passages should provide Save to Library")
+        XCTAssertTrue(addManually.waitForExistence(timeout: 5), "Passages should provide Add a passage manually")
+        XCTAssertFalse(
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
+                .firstMatch.exists,
+            "Stacked Passages must not restore the split page selector"
         )
-        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose the source image")
-        XCTAssertTrue(sourceImage.isHittable, "The source image should be reachable by assistive technologies")
-        captureScreenshot(named: "accessibility_text_stacked_review", description: "Compact extraction review at accessibility text size")
+        captureScreenshot(named: "accessibility_text_stacked_review", description: "Compact Passages sheet at accessibility text size")
         openVisibleQuoteEditor()
     }
 
     func testSourceImageAccessibleActionOpensFullScreen() throws {
         openExtractionReview()
 
-        let sourceImage = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
-            .firstMatch
-        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose its source image")
-        XCTAssertTrue(sourceImage.isHittable, "The source image should be available as an accessibility action")
-        sourceImage.tap()
-
-        let closeButton = app.buttons["Close image"]
-        XCTAssertTrue(closeButton.waitForExistence(timeout: 5), "Activating the source image should open its full-screen viewer")
-        XCTAssertTrue(app.staticTexts["Page 38"].exists, "The full-screen viewer should retain the detected page context")
-        try performSystemAccessibilityAudit()
-        closeButton.tap()
-
+        XCTAssertFalse(
+            app.buttons[AccessibilityIdentifiers.Capture.viewPageButton].exists,
+            "Single-page Passages should not show a page header or View page"
+        )
         XCTAssertTrue(
-            app.navigationBars["Review Extractions"].waitForExistence(timeout: 5),
-            "Closing the source image should return to extraction review"
+            app.buttons[AccessibilityIdentifiers.Capture.addManualPassage].waitForExistence(timeout: 5),
+            "Stacked Passages should keep Add a passage manually reachable"
+        )
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton].waitForExistence(timeout: 5),
+            "Stacked Passages should keep Save to Library reachable"
         )
     }
 
@@ -547,50 +548,31 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
 
         openExtractionReview()
 
-        let pageSelector = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
-            .firstMatch
-        let sourceImage = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
-            .firstMatch
-
-        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Landscape review should expose its page selector")
-        XCTAssertGreaterThan(
-            pageSelector.frame.width,
-            app.frame.width * 0.7,
-            "Accessibility text should keep the page selector above the editor in landscape"
+        let reviewScrollView = app.scrollViews[AccessibilityIdentifiers.Capture.extractionReviewScrollView]
+        let saveButton = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertTrue(reviewScrollView.waitForExistence(timeout: 5), "Landscape Passages should keep the stacked list")
+        XCTAssertTrue(saveButton.waitForExistence(timeout: 5), "Landscape Passages should provide Save to Library")
+        XCTAssertFalse(
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
+                .firstMatch.exists,
+            "Landscape Passages must stay a single stacked list"
         )
-        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Landscape review should expose the source image")
-        XCTAssertTrue(sourceImage.isHittable, "The source image should remain reachable in landscape")
-        captureScreenshot(named: "accessibility_text_landscape_review", description: "Landscape extraction review at accessibility text size")
+        captureScreenshot(named: "accessibility_text_landscape_review", description: "Landscape Passages at accessibility text size")
         openVisibleQuoteEditor()
     }
 
     private func openExtractionReview() {
-        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
+        XCTAssertTrue(openQuietCaptureFromTab(), "Capture tab should be available")
 
         let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        if !testImageButton.waitForExistence(timeout: 2) {
-            let quoteModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-            XCTAssertTrue(quoteModeCard.waitForExistence(timeout: 3), "Quote capture mode should be available")
-            quoteModeCard.tap()
-
-            let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-            XCTAssertTrue(bookCard.waitForExistence(timeout: 5), "Seeded library should provide a book for quote capture")
-            bookCard.tap()
-        }
-
         XCTAssertTrue(testImageButton.waitForExistence(timeout: 5), "Quote capture should show Use Test Image")
         testImageButton.tap()
 
-        let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        if usePhotoButton.waitForExistence(timeout: 3) {
-            usePhotoButton.tap()
-        }
-
         XCTAssertTrue(
-            app.navigationBars["Review Extractions"].waitForExistence(timeout: 15),
-            "Mock capture should open extraction review"
+            app.navigationBars["Passages"].waitForExistence(timeout: 15)
+                || app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton].waitForExistence(timeout: 2),
+            "Mock capture should open Passages"
         )
     }
 
@@ -614,12 +596,14 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
     }
 
     private func visibleQuoteEditButton() -> XCUIElement? {
+        let navBar = app.navigationBars.firstMatch
+        let topBound = navBar.exists ? navBar.frame.maxY : app.frame.minY
         let editButtons = app.buttons.matching(identifier: AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
         for index in 0..<editButtons.count {
             let editButton = editButtons.element(boundBy: index)
             let frame = editButton.frame
             if frame.height > 0,
-               frame.minY >= app.navigationBars["Review Extractions"].frame.maxY,
+               frame.minY >= topBound,
                frame.maxY <= app.frame.maxY {
                 return editButton
             }
@@ -640,54 +624,30 @@ final class IPadExtractionReviewLayoutTests: BaseUITestCase {
     }
 
     func testExtractionReviewUsesLayoutForCurrentWidth() {
-        XCTAssertTrue(tapTab(.capture), "Capture tab should be available")
+        XCTAssertTrue(openQuietCaptureFromTab(), "Capture tab should be available")
 
         let testImageButton = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
-        if !testImageButton.waitForExistence(timeout: 2) {
-            let quoteModeCard = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-            XCTAssertTrue(quoteModeCard.waitForExistence(timeout: 3), "Quote capture mode should be available")
-            quoteModeCard.tap()
-
-            let bookCard = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-            XCTAssertTrue(bookCard.waitForExistence(timeout: 5), "Seeded library should provide a book for quote capture")
-            bookCard.tap()
-        }
-
         XCTAssertTrue(testImageButton.waitForExistence(timeout: 5), "Quote capture should show Use Test Image")
         testImageButton.tap()
 
-        let usePhotoButton = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        if usePhotoButton.waitForExistence(timeout: 3) {
-            usePhotoButton.tap()
-        }
-
         XCTAssertTrue(
-            app.navigationBars["Review Extractions"].waitForExistence(timeout: 15),
-            "Mock capture should open extraction review"
+            app.navigationBars["Passages"].waitForExistence(timeout: 15)
+                || app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton].waitForExistence(timeout: 2),
+            "Mock capture should open Passages"
         )
 
-        let pageSelector = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
-            .firstMatch
-        let sourceImage = app.descendants(matching: .any)
-            .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageImage)
-            .firstMatch
-
-        XCTAssertTrue(pageSelector.waitForExistence(timeout: 5), "Extraction review should expose its page selector")
-        if app.frame.width >= 700 {
-            XCTAssertLessThan(
-                pageSelector.frame.width,
-                app.frame.width * 0.25,
-                "Regular-width layouts should keep the page selector beside the editor"
-            )
-        } else {
-            XCTAssertGreaterThan(
-                pageSelector.frame.width,
-                app.frame.width * 0.5,
-                "Compact-width layouts should keep the page selector above the editor"
-            )
-        }
-        XCTAssertTrue(sourceImage.waitForExistence(timeout: 5), "Extraction review should expose the source image")
-        captureScreenshot(named: "ipad_side_by_side_review", description: "iPad extraction review at normal text size")
+        let reviewScrollView = app.scrollViews[AccessibilityIdentifiers.Capture.extractionReviewScrollView]
+        XCTAssertTrue(reviewScrollView.waitForExistence(timeout: 5), "Passages should stay a stacked list at any width")
+        XCTAssertFalse(
+            app.descendants(matching: .any)
+                .matching(identifier: AccessibilityIdentifiers.Capture.extractionPageSelector)
+                .firstMatch.exists,
+            "Regular-width Passages must not restore a thumbnail column"
+        )
+        XCTAssertTrue(
+            app.buttons[AccessibilityIdentifiers.Capture.addManualPassage].waitForExistence(timeout: 5),
+            "Passages should provide Add a passage manually"
+        )
+        captureScreenshot(named: "ipad_side_by_side_review", description: "iPad stacked Passages at normal text size")
     }
 }

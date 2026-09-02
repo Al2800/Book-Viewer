@@ -184,7 +184,7 @@ struct LegalDocumentView: View {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
                     VStack(alignment: .leading, spacing: Spacing.xs) {
                         Text(document.title)
-                            .font(.title2.weight(.bold))
+                            .font(.serifHeadline)
                             .foregroundStyle(Color.textPrimary)
 
                         Text("Last updated: \(AppReleaseConfiguration.legalLastUpdated)")
@@ -195,7 +195,7 @@ struct LegalDocumentView: View {
                     ForEach(document.sections) { section in
                         VStack(alignment: .leading, spacing: Spacing.sm) {
                             Text(section.title)
-                                .font(.headline)
+                                .font(.uiLabel)
                                 .foregroundStyle(Color.textPrimary)
 
                             ForEach(Array(section.paragraphs.enumerated()), id: \.offset) { _, paragraph in

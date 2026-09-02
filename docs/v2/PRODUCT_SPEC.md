@@ -25,11 +25,12 @@ The product is organised around three verbs:
 
 The primary product surfaces are therefore:
 
-- **Reading:** the user's passage-first reading memory.
+- **Reading:** the user's passage-first reading memory, including search.
 - **Capture:** a direct active-book camera interface.
-- **Explore:** search, resurfacing, themes and later semantic connections.
-- **Studio:** a contextual action from a passage, not a primary tab.
-- **Settings:** a secondary destination rather than a primary product surface.
+- **Studio:** the third primary tab for turning a saved passage into a shareable card (`sparkles.rectangle.stack`).
+- **Settings:** a secondary destination opened from the Reading toolbar, not a primary product surface.
+
+Search, resurfacing and later semantic connections remain product verbs. They are Reading capabilities, not an Explore tab.
 
 This is a deliberate product reset. The recent v2 builds provide useful services, models, capture infrastructure, tests and components, but their current navigation and visual hierarchy do not define the target product.
 
@@ -169,7 +170,7 @@ The normal application should feel like a well-typeset reading notebook, not a l
 - Review: Save Passages.
 - Book: Browse Passages.
 - Passage: Read, Edit or Use.
-- Explore: Search or Open a Connection.
+- Reading search: Find a passage, book or note.
 - Studio: Export.
 
 ### Recoverable failure
@@ -203,21 +204,21 @@ The user's saved reading memory.
 
 The active-book camera and capture workflow. This occupies the central tab position.
 
-#### Explore
+#### Studio
 
-Search, resurfacing and later grounded connection features.
+The quote-card studio. Third primary tab, system image `sparkles.rectangle.stack`. Passage detail still offers Create Card as a contextual entry into the same studio, which never owns a separate copy of a passage.
 
-Studio is accessed through Passage -> Use or Share -> Create Card.
-
-Settings is opened from a secondary control in Reading or Explore.
+Settings is opened from a gear in the Reading toolbar.
 
 ### 7.2 Navigation rules
 
 - Adding a book from Capture returns to Capture with that book active.
 - A search result opens the canonical Passage or Book destination.
 - Studio never owns a separate copy of a passage.
+- The Studio empty-state CTA switches to the Capture tab. It does not create a second capture coordinator.
 - Source provenance always links back to the saved passage.
 - Batch is a Capture mode, not a separate top-level destination.
+- Search is a Reading capability, not a restored Explore tab.
 
 ## 8. Reading home
 
@@ -485,33 +486,26 @@ Actions:
 
 Studio begins here as a contextual use of the passage.
 
-## 15. Explore
+## 15. Search and connection (Reading capability)
+
+Search is not a primary tab. Reading already hosts search. Revisit and later connection features stay future Reading work; they are not restored as an Explore destination in this reshape.
 
 ### 15.1 Initial release
 
-Explore initially contains:
+Reading search contains:
 
 - grounded passage search;
 - filters;
-- Revisit;
+- later, Revisit;
 - topics only when quality is reliable.
 
 ```text
-EXPLORE
+READING SEARCH
 
 [ Search your reading... ]
 
 FILTERS
 All · Favorites · Notes · Books · Date
-
-REVISIT
-Three passages worth returning to
-
-TOPICS
-Decision making
-Uncertainty
-Institutions
-Technology
 ```
 
 ### 15.2 Later capabilities
@@ -525,10 +519,12 @@ AI-generated answers must cite actual saved passages. When evidence is insuffici
 
 ## 16. Studio
 
-Studio remains useful but is removed from the primary v2 tab bar.
+Studio is the third primary v2 tab. It is also reachable from a saved passage.
 
 Entry points:
 
+- Primary tab: Studio (`sparkles.rectangle.stack`).
+- Empty Studio CTA: Capture your first passage, which switches to the Capture tab.
 - Passage detail -> Create Card.
 - Passage share menu -> Design Card.
 
@@ -743,8 +739,8 @@ Accessibility is part of acceptance, not a separate polish stage.
 - Existing-book capture begins without mode-selection ceremony.
 - The normal path is Photo -> Passages -> Save.
 - Reading is passage-first.
-- Studio is contextual.
-- Explore provides useful grounded search before advanced AI launches.
+- Studio is a primary tab for card export.
+- Reading search provides useful grounded retrieval before advanced AI launches.
 
 ### Reliability
 
@@ -780,13 +776,13 @@ Accessibility is part of acceptance, not a separate polish stage.
 ## 23. Immediate implementation sequence
 
 1. Commit product, architecture and agent contracts.
-2. Add a default-off Reading / Capture / Explore shell using existing data and services.
+2. Add a default-off Reading / Capture / Studio shell using existing data and services.
 3. Define the reduced v2 design system from low-fidelity target screens.
 4. Build Reading data adapters and passage-first home.
 5. Create canonical Book and Passage destinations.
 6. Introduce the explicit Capture coordinator.
 7. Compress capture into Photo -> Passages -> Save.
-8. Correct search indexing and build grounded Explore.
+8. Correct search indexing as a Reading capability. Do not restore an Explore tab.
 9. Build the extraction evaluation harness.
 10. Develop OCR-anchored local detection in shadow mode.
 11. Add semantic connections only after capture and retrieval are trustworthy.

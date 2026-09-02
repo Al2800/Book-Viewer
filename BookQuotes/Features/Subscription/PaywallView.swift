@@ -96,7 +96,7 @@ struct PaywallView: View {
     private var headerSection: some View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "sparkles")
-                .font(.system(size: 48))
+                .font(.largeTitle)
                 .foregroundStyle(Color.gildedAccent)
 
             Text("Capture the wisdom\nin your books")
@@ -238,11 +238,11 @@ struct PaywallView: View {
     private var unavailableSection: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "checkmark.seal")
-                .font(.system(size: 48))
+                .font(.largeTitle)
                 .foregroundStyle(Color.brand)
 
             Text("Premium plans are not enabled in this build")
-                .font(.title3.weight(.semibold))
+                .font(.serifHeadline)
                 .multilineTextAlignment(.center)
 
             Text("Subscriptions are temporarily unavailable on this device.")
@@ -262,11 +262,11 @@ struct PaywallView: View {
     private var accountLinkingRequiredSection: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "person.crop.circle.badge.exclamationmark")
-                .font(.system(size: 48))
+                .font(.largeTitle)
                 .foregroundStyle(Color.brand)
 
             Text("Sign In Before Purchasing")
-                .font(.title3.weight(.semibold))
+                .font(.serifHeadline)
                 .multilineTextAlignment(.center)
 
             Text("Subscriptions are linked to a BookQuotes account so your purchase can be verified and restored. Sign in with Apple, then return here to choose a plan.")

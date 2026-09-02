@@ -166,25 +166,4 @@ final class CameraServiceTests: XCTestCase {
     func testCaptureConfigurationUsesPortraitRotationAngle() {
         XCTAssertEqual(CameraCaptureConfiguration.portraitRotationAngle, 90)
     }
-
-    func testVisionBoundingBoxTransformerTransformsVisionRectToUIPortrait() {
-        let visionRect = CGRect(x: 0.2, y: 0.3, width: 0.4, height: 0.1)
-        let uiRect = VisionBoundingBoxTransformer.transformVisionRectToUIPortrait(visionRect)
-
-        XCTAssertEqual(uiRect.origin.x, 0.3, accuracy: 0.001)
-        XCTAssertEqual(uiRect.origin.y, 0.4, accuracy: 0.001)
-        XCTAssertEqual(uiRect.size.width, 0.1, accuracy: 0.001)
-        XCTAssertEqual(uiRect.size.height, 0.4, accuracy: 0.001)
-    }
-
-    func testVisionBoundingBoxTransformerScalesToViewSize() {
-        let normRect = CGRect(x: 0.1, y: 0.2, width: 0.5, height: 0.3)
-        let viewSize = CGSize(width: 400, height: 800)
-        let scaled = VisionBoundingBoxTransformer.scaleNormalizedRect(normRect, to: viewSize)
-
-        XCTAssertEqual(scaled.origin.x, 40)
-        XCTAssertEqual(scaled.origin.y, 160)
-        XCTAssertEqual(scaled.size.width, 200)
-        XCTAssertEqual(scaled.size.height, 240)
-    }
 }

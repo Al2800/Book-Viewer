@@ -4,118 +4,70 @@ import UIKit
 // MARK: - Quote Edit Row
 
 /// Row component for editing an extracted quote inline.
-/// Shows confidence indicator, text editor, and delete option.
+/// Paper vellum card with a leading confidence bar and overflow actions.
 struct QuoteEditRow: View {
     @Binding var quote: EditableQuote
-    var isSelected: Bool = false
-    var onSelect: (() -> Void)? = nil
     let onDelete: () -> Void
 
     @State private var showEditor = false
     @State private var draftText = ""
     @State private var draftMarginNote = ""
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            quoteHeader
+        HStack(alignment: .top, spacing: 0) {
+            RoundedRectangle(cornerRadius: CornerRadius.xs)
+                .fill(Self.confidenceBarColor(for: quote.confidence))
+                .frame(width: 3)
+                .frame(maxHeight: .infinity)
 
-            // Quote text editor
-            Text(quote.text)
-                .font(.quoteBody)
-                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 3)
-                .fixedSize(horizontal: false, vertical: true)
-                .foregroundStyle(Color.textPrimary)
-                .textSelection(.enabled)
-                .onTapGesture {
-                    onSelect?()
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                Button {
                     openEditor()
-                }
-
-            Text("Tap to edit or select text")
-                .font(.caption2)
-                .foregroundStyle(Color.textTertiary)
-
-            if dynamicTypeSize.isAccessibilitySize {
-                accessibilityActions
-            }
-
-            // Organic handwritten margin note card if present
-            if let marginNote = quote.marginNote, !marginNote.isEmpty {
-                HStack(alignment: .top, spacing: Spacing.xs) {
-                    Image(systemName: "pencil.line")
-                        .font(.caption2)
-                        .foregroundStyle(Color.goldFoil)
-                        .padding(.top, 2)
-
-                    Text(marginNote)
-                        .font(.marginScript)
+                } label: {
+                    Text(quote.text)
+                        .font(.quoteBody)
+                        .lineSpacing(4)
                         .foregroundStyle(Color.textPrimary)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(Spacing.sm)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: CornerRadius.xs)
-                        .fill(Color.warmVellum)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: CornerRadius.xs)
-                                .stroke(Color.quoteBorder.opacity(0.4), lineWidth: Stroke.hairline.width)
-                        )
-                )
-            }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
 
-            // AI-suggested Topic Tags Strip
-            if let tags = quote.suggestedTags, !tags.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: Spacing.xs) {
-                        Image(systemName: "sparkle")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color.gildedAccent)
+                if let marginNote = quote.marginNote, !marginNote.isEmpty {
+                    HStack(alignment: .top, spacing: Spacing.xs) {
+                        Image(systemName: "pencil.line")
+                            .font(.caption2)
+                            .foregroundStyle(Color.goldFoil)
+                            .padding(.top, 2)
+                            .accessibilityHidden(true)
 
-                        ForEach(tags, id: \.self) { tag in
-                            HStack(spacing: 4) {
-                                Text("#\(tag)")
-                                    .font(.caption2.weight(.medium))
-                                    .foregroundStyle(Color.textSecondary)
-
-                                Button {
-                                    withAnimation(.snappy) {
-                                        quote.suggestedTags?.removeAll(where: { $0 == tag })
-                                    }
-                                } label: {
-                                    Image(systemName: "xmark")
-                                        .font(.system(size: 8, weight: .bold))
-                                        .foregroundStyle(Color.textTertiary)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                            .padding(.horizontal, Spacing.xs)
-                            .padding(.vertical, 3)
-                            .background(
-                                Capsule()
-                                    .fill(Color.backgroundSecondary)
-                                    .overlay(
-                                        Capsule()
-                                            .stroke(Color.quoteBorder.opacity(0.5), lineWidth: Stroke.hairline.width)
-                                    )
-                            )
-                        }
+                        Text(marginNote)
+                            .font(.marginScript)
+                            .foregroundStyle(Color.textPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(.vertical, 2)
+                }
+
+                metaRow
+
+                if let tags = quote.suggestedTags, !tags.isEmpty {
+                    tagStrip(tags)
                 }
             }
+            .padding(Spacing.md)
         }
-        .padding(Spacing.md)
-        .paperCard(cornerRadius: CornerRadius.md)
+        .background(Color.warmVellum)
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
         .overlay(
             RoundedRectangle(cornerRadius: CornerRadius.md)
-                .stroke(isSelected ? Color.gildedAccent : Color.clear, lineWidth: 1.5)
+                .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
         )
-        .contentShape(Rectangle())
-        .onTapGesture {
-            onSelect?()
-        }
+        .elevation(.xs)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(accessibilitySummary)
+        .accessibilityIdentifier("\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_\(quote.extractionSource.rawValue)")
         .sheet(isPresented: $showEditor) {
             QuoteEditorSheet(
                 text: $draftText,
@@ -125,119 +77,84 @@ struct QuoteEditRow: View {
         }
     }
 
-    @ViewBuilder
-    private var quoteHeader: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            VStack(alignment: .leading, spacing: Spacing.xs) {
-                HStack {
-                    ConfidenceBadge(confidence: quote.confidence)
-                    Spacer()
-                    pageNumberLabel
-                }
-
-                MarkingTypeStringBadge(
-                    type: quote.markingType,
-                    displayName: quote.customMarkingDisplayName
-                )
-                ExtractionSourceBadge(source: quote.extractionSource)
-            }
-        } else {
-            ViewThatFits(in: .horizontal) {
-                HStack {
-                    regularQuoteMetadata
-                    Spacer()
-                    pageNumberLabel
-                    compactEditButton
-                    compactDeleteButton
-                }
-
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    HStack {
-                        regularQuoteMetadata
-                        Spacer()
-                        pageNumberLabel
-                    }
-                    HStack {
-                        Spacer()
-                        compactEditButton
-                        compactDeleteButton
-                    }
-                }
-            }
-        }
-    }
-
-    private var regularQuoteMetadata: some View {
-        HStack {
-            ConfidenceBadge(confidence: quote.confidence)
-            MarkingTypeStringBadge(
-                type: quote.markingType,
-                displayName: quote.customMarkingDisplayName
-            )
-            ExtractionSourceBadge(source: quote.extractionSource)
-        }
-    }
-
-    @ViewBuilder
-    private var pageNumberLabel: some View {
-        if let pageNumber = quote.pageNumber {
-            Text("p. \(pageNumber)")
-                .font(.caption)
-                .foregroundStyle(Color.textTertiary)
-        }
-    }
-
-    private var compactEditButton: some View {
-        Button {
-            openEditor()
-        } label: {
-            Image(systemName: "pencil")
-                .font(.caption)
-                .foregroundStyle(Color.textSecondary)
-                .frame(width: 44, height: 44)
-        }
-        .buttonStyle(.plain)
-        .frame(width: 44, height: 44)
-        .contentShape(Rectangle())
-        .accessibilityLabel("Edit quote")
-        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
-    }
-
-    private var compactDeleteButton: some View {
-        Button {
-            onDelete()
-        } label: {
-            Image(systemName: "trash")
-                .font(.caption)
-                .foregroundStyle(Color.error)
-                .frame(width: 44, height: 44)
-        }
-        .buttonStyle(.plain)
-        .frame(width: 44, height: 44)
-        .contentShape(Rectangle())
-        .accessibilityLabel("Delete quote")
-    }
-
-    private var accessibilityActions: some View {
+    private var metaRow: some View {
         HStack(spacing: Spacing.sm) {
-            Button {
-                openEditor()
-            } label: {
-                Label("Edit quote", systemImage: "pencil")
-                    .frame(minHeight: 44)
+            if let pageNumber = quote.pageNumber {
+                Text("p. \(pageNumber)")
+                    .font(.attributionSmall)
+                    .foregroundStyle(Color.textSecondary)
             }
-            .buttonStyle(.secondaryCompact)
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
 
-            Button(role: .destructive) {
-                onDelete()
+            Spacer(minLength: 0)
+
+            Menu {
+                Button("Edit") {
+                    openEditor()
+                }
+                Button("Delete", role: .destructive) {
+                    onDelete()
+                }
             } label: {
-                Label("Delete quote", systemImage: "trash")
-                    .frame(minHeight: 44)
+                Image(systemName: "ellipsis.circle")
+                    .font(.body)
+                    .foregroundStyle(Color.textSecondary)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
-            .foregroundStyle(Color.error)
+            .accessibilityLabel("Passage actions")
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.passageActionsMenu)
         }
+    }
+
+    private func tagStrip(_ tags: [String]) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: Spacing.xs) {
+                Image(systemName: "sparkle")
+                    .font(.uiBadge)
+                    .foregroundStyle(Color.gildedAccent)
+                    .accessibilityHidden(true)
+
+                ForEach(tags, id: \.self) { tag in
+                    HStack(spacing: Spacing.xs) {
+                        Text("#\(tag)")
+                            .font(.uiBadge)
+                            .foregroundStyle(Color.textSecondary)
+
+                        Button {
+                            withAnimation(.snappy) {
+                                quote.suggestedTags?.removeAll(where: { $0 == tag })
+                            }
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(Color.textTertiary)
+                                .frame(width: 28, height: 28)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Remove \(tag)")
+                    }
+                    .padding(.leading, Spacing.sm)
+                    .padding(.trailing, Spacing.xs)
+                    .frame(minHeight: 44)
+                    .background(Color.backgroundSecondary, in: Capsule())
+                }
+            }
+        }
+    }
+
+    private var accessibilitySummary: String {
+        if let pageNumber = quote.pageNumber {
+            return "\(quote.text), p. \(pageNumber)"
+        }
+        return quote.text
+    }
+
+    static func confidenceBarColor(for confidence: Double?) -> Color {
+        let value = confidence ?? 0
+        if value >= 0.8 { return .success }
+        if value >= 0.5 { return .warning }
+        return .error
     }
 
     private func openEditor() {
@@ -256,18 +173,6 @@ struct QuoteEditRow: View {
             quote.isModified = true
         }
         showEditor = false
-    }
-}
-
-private struct ExtractionSourceBadge: View {
-    let source: QuoteExtractionSource
-
-    var body: some View {
-        Label(source.reviewLabel, systemImage: source.reviewSymbol)
-            .font(.caption2)
-            .foregroundStyle(Color.textSecondary)
-            .accessibilityIdentifier("\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_\(source.rawValue)")
-            .accessibilityLabel("Extraction source: \(source.reviewLabel)")
     }
 }
 
@@ -290,7 +195,7 @@ private struct QuoteEditorSheet: View {
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Margin note (optional)")
-                        .font(.caption)
+                        .font(.uiCaption)
                         .foregroundStyle(Color.textSecondary)
                     TextField("Add a note…", text: $marginNote, axis: .vertical)
                         .textFieldStyle(.plain)

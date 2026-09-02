@@ -143,7 +143,7 @@ struct BookmarkRibbon: View {
             .frame(width: width, height: height)
             .overlay(alignment: .center) {
                 Image(systemName: "sparkle")
-                    .font(.system(size: 8, weight: .bold))
+                    .font(.uiBadge)
                     .foregroundStyle(Color.black.opacity(0.35))
                     .offset(y: -3)
             }
@@ -283,7 +283,7 @@ struct ContinueReadingCard: View {
                     .frame(width: 48, height: 68)
 
                 Image(systemName: "book.closed")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.uiLabel)
                     .foregroundStyle(Color.gildedAccent)
             }
             .shadow(color: Color.black.opacity(0.1), radius: 2, y: 1)
@@ -590,7 +590,7 @@ struct EmptyLibraryView: View {
                         .frame(width: 90, height: 90)
 
                     Image(systemName: "books.vertical")
-                        .font(.system(size: 38, weight: .light))
+                        .font(.largeTitle.weight(.light))
                         .foregroundStyle(Color.gildedAccent)
                 }
 
@@ -614,7 +614,7 @@ struct EmptyLibraryView: View {
                         Image(systemName: "camera.viewfinder")
                         Text("Add Your First Book")
                     }
-                    .font(.headline)
+                    .font(.uiLabel)
                     .foregroundStyle(Color.darkLinen)
                     .padding(.horizontal, Spacing.xl)
                     .padding(.vertical, Spacing.md)

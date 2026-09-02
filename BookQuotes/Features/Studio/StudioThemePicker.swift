@@ -6,12 +6,14 @@ import SwiftUI
 struct StudioThemePicker: View {
     @Binding var selectedTheme: StudioTheme
     @Binding var selectedAspect: StudioAspectRatio
+    var showsAspectPicker: Bool = true
 
     var body: some View {
         VStack(spacing: Spacing.md) {
-            // Aspect Ratio Segmented Control
-            StudioAspectRatioPicker(selectedAspect: $selectedAspect)
-                .padding(.horizontal, Spacing.lg)
+            if showsAspectPicker {
+                StudioAspectRatioPicker(selectedAspect: $selectedAspect)
+                    .padding(.horizontal, Spacing.lg)
+            }
 
             // Theme Swatches
             ScrollView(.horizontal, showsIndicators: false) {

@@ -181,6 +181,8 @@ struct BookDetailView: View {
         .fullScreenCover(isPresented: $showQuoteCaptureSheet) {
             QuoteCaptureView(
                 book: book,
+                hidesHeaderBar: true,
+                hidesTabBar: true,
                 onComplete: {
                     showQuoteCaptureSheet = false
                 },
@@ -189,6 +191,20 @@ struct BookDetailView: View {
                 }
             )
             .id(quoteCaptureSheetID)
+            .overlay(alignment: .top) {
+                HStack(alignment: .top, spacing: Spacing.xs) {
+                    ActiveBookHUDView(
+                        book: book,
+                        onSwitchBook: {},
+                        onClose: {
+                            showQuoteCaptureSheet = false
+                        }
+                    )
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, Spacing.md)
+                .padding(.top, Spacing.sm)
+            }
         }
         .confirmationDialog(
             deletionPrompt.title,

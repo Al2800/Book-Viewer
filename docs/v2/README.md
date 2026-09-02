@@ -16,7 +16,7 @@ The product is organised around three user outcomes:
 2. **Remember:** preserve passages with source context and provenance.
 3. **Connect:** search, resurface and eventually compare ideas across books.
 
-The intended primary surfaces are **Reading**, **Capture** and **Explore**. Studio becomes a contextual action from an individual passage.
+The intended primary surfaces are **Reading**, **Capture** and **Studio**. Search and later connection work remain capabilities inside Reading, not a primary tab. Settings is a secondary sheet from Reading.
 
 ## Documents
 

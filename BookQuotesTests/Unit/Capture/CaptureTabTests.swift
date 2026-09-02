@@ -20,6 +20,24 @@ final class CaptureTabTests: XCTestCase {
         XCTAssertFalse(didExit)
     }
 
+    func testCaptureStateEqualityUsesPreviewingProcessingAndCompletedOnly() {
+        XCTAssertEqual(QuoteCaptureView.CaptureState.previewing, .previewing)
+        XCTAssertEqual(QuoteCaptureView.CaptureState.processing, .processing)
+        XCTAssertNotEqual(QuoteCaptureView.CaptureState.previewing, .processing)
+    }
+
+    func testQuietCaptureRetakeThreshold() {
+        XCTAssertTrue(
+            QuoteCaptureView.shouldSuggestRetake(isAcceptable: false, overallScore: 0.39)
+        )
+        XCTAssertFalse(
+            QuoteCaptureView.shouldSuggestRetake(isAcceptable: false, overallScore: 0.41)
+        )
+        XCTAssertFalse(
+            QuoteCaptureView.shouldSuggestRetake(isAcceptable: true, overallScore: 0.2)
+        )
+    }
+
     func testCaptureFlowStateDirectsToActiveReadingByDefault() {
         let state = CaptureFlowState(mode: .quoteCapture)
         XCTAssertEqual(state.mode, .quoteCapture)

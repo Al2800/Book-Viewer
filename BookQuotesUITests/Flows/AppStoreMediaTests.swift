@@ -12,6 +12,7 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
             "--mock-extraction-scenario",
             "remote",
             "--app-store-media",
+            "--product-experience-v2",
             "--disable-animations"
         ]
     }
@@ -45,14 +46,14 @@ final class AppStoreScreenshotsTests: BaseUITestCase {
         showAddBookISBNForMedia()
         captureScreenshot(named: "05_add_book_isbn", description: "Add a book by ISBN barcode")
 
-        logger.step(6, "Captured page")
+        logger.step(6, "Quiet capture")
         closePresentedMediaFlow()
-        showQuoteImageReviewForMedia()
-        captureScreenshot(named: "06_captured_page", description: "Captured marked page and quality review")
+        showQuietCaptureForMedia()
+        captureScreenshot(named: "06_captured_page", description: "Quiet capture viewfinder")
 
-        logger.step(7, "Extraction review")
-        showExtractionReviewForMedia()
-        captureScreenshot(named: "07_extraction_review", description: "Review the extracted marked passage")
+        logger.step(7, "Passages")
+        showPassagesSheetForMedia()
+        captureScreenshot(named: "07_extraction_review", description: "Passages sheet for extracted quotes")
 
         logger.step(8, "Quote Studio")
         closePresentedMediaFlow()
@@ -71,6 +72,7 @@ final class AppStorePreviewsTests: BaseUITestCase {
             "--preload-search-test-data",
             "--mock-camera",
             "--app-store-media",
+            "--product-experience-v2",
             "--disable-animations"
         ]
     }
@@ -252,8 +254,10 @@ fileprivate extension BaseUITestCase {
     }
 
     func waitForCaptureLandingLoadedForMedia() {
-        let quoteMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-        assertExists(quoteMode, timeout: 6, "Capture landing not loaded (quote mode button missing)")
+        let shutter = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        let modeMenu = app.buttons[AccessibilityIdentifiers.Capture.modeMenu]
+        let ready = shutter.waitForExistence(timeout: 6) || modeMenu.waitForExistence(timeout: 2)
+        XCTAssertTrue(ready, "Capture landing not loaded (quiet camera missing)")
     }
 
     func openFirstBookDetailForMedia() {
@@ -421,29 +425,14 @@ fileprivate extension BaseUITestCase {
 
         _ = tapTab(.capture, timeout: 3)
 
-        // For App Store media, capture the "Capture" landing screen (options list). This is stable,
-        // looks good in marketing, and avoids simulator camera permission/state flakiness.
-        let quoteMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-        assertExists(quoteMode, timeout: 5, "Capture options not visible")
+        let shutter = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        let modeMenu = app.buttons[AccessibilityIdentifiers.Capture.modeMenu]
+        let ready = shutter.waitForExistence(timeout: 5) || modeMenu.waitForExistence(timeout: 2)
+        XCTAssertTrue(ready, "Quiet capture camera not visible")
     }
 
     func showAddBookISBNForMedia() {
-        dismissKeyboard()
-        _ = tapTab(.capture, timeout: 4)
-
-        let coverMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
-        assertExists(coverMode, timeout: 5, "Add New Book option not visible")
-        coverMode.tap()
-
-        let nav = app.navigationBars["Add Book"]
-        let header = app.staticTexts["Add Book"]
-        let manualEntryButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'manually'")
-        ).firstMatch
-        let shown = nav.waitForExistence(timeout: 2) ||
-            header.waitForExistence(timeout: 3) ||
-            manualEntryButton.exists
-        XCTAssertTrue(shown, "Add Book flow not shown")
+        openAddBookFlowForMedia()
     }
 
     func closePresentedMediaFlow() {
@@ -459,35 +448,37 @@ fileprivate extension BaseUITestCase {
         navigateToLibraryTabIfNeeded()
     }
 
-    func showQuoteImageReviewForMedia() {
-        _ = tapTab(.capture, timeout: 4)
-
-        let quoteMode = app.buttons[AccessibilityIdentifiers.Capture.modeSelectQuote]
-        assertExists(quoteMode, timeout: 5, "Quote capture option not visible")
-        quoteMode.tap()
-
-        let book = app.buttons[AccessibilityIdentifiers.Capture.bookSelectionCard].firstMatch
-        assertExists(book, timeout: 5, "Media library should provide a book for quote capture")
-        book.tap()
+    func showQuietCaptureForMedia() {
+        _ = app.buttons[AccessibilityIdentifiers.V2.captureTab].waitForExistence(timeout: 4)
+            ? tapV2Capture()
+            : tapTab(.capture, timeout: 4)
 
         let shutter = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
-        assertExists(shutter, timeout: 6, "Quote camera shutter not visible")
-        XCTAssertTrue(shutter.isEnabled, "Quote camera shutter should be enabled in media mode")
-        shutter.tap()
-
-        let usePhoto = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        assertExists(usePhoto, timeout: 10, "Captured-page review not shown")
+        let modeMenu = app.buttons[AccessibilityIdentifiers.Capture.modeMenu]
+        let cameraReady = shutter.waitForExistence(timeout: 6) || modeMenu.waitForExistence(timeout: 2)
+        XCTAssertTrue(cameraReady, "Quote camera shutter not visible")
+        if shutter.exists {
+            XCTAssertTrue(shutter.isEnabled, "Quote camera shutter should be enabled in media mode")
+        }
     }
 
-    func showExtractionReviewForMedia() {
-        let usePhoto = app.buttons[AccessibilityIdentifiers.ImageReview.usePhotoButton]
-        assertExists(usePhoto, timeout: 3, "Use Photo action not available")
-        usePhoto.tap()
+    func showPassagesSheetForMedia() {
+        let shutter = app.buttons[AccessibilityIdentifiers.Capture.captureButton]
+        if shutter.waitForExistence(timeout: 3) && shutter.isEnabled {
+            shutter.tap()
+        }
 
-        let review = app.navigationBars["Review Extractions"]
-        let saveAll = app.buttons["Save All"]
-        assertExists(review, timeout: 15, "Extraction review not shown")
-        assertExists(saveAll, timeout: 5, "Extraction result did not provide a save action")
+        let review = app.navigationBars["Passages"]
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        assertExists(review, timeout: 15, "Passages sheet not shown")
+        XCTAssertTrue(save.waitForExistence(timeout: 5), "Passages did not provide Save to Library")
+    }
+
+    private func tapV2Capture() -> Bool {
+        let capture = app.buttons[AccessibilityIdentifiers.V2.captureTab]
+        guard capture.waitForExistence(timeout: 4) else { return false }
+        capture.tap()
+        return true
     }
 
     func openAddBookFlowForMedia() {

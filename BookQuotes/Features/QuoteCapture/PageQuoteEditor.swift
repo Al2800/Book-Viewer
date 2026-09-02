@@ -20,10 +20,6 @@ struct PageQuoteEditor: View {
         VStack(spacing: 0) {
             imageSection
 
-            if let activeQuote = activeQuote, activeQuote.boundingBox != nil {
-                tetherBanner
-            }
-
             Divider()
             quotesSection
         }
@@ -81,40 +77,26 @@ struct PageQuoteEditor: View {
             Color.black
 
             if let image = page.loadFullImage() {
-                ZStack {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-
-                    IlluminatedPageOverlay(
-                        imageSize: image.size,
-                        quotes: quotes,
-                        selectedQuoteID: selectedQuoteID ?? quotes.first?.id,
-                        onSelectQuote: { id in
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                                selectedQuoteID = id
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .scaleEffect(imageScale)
+                    .gesture(
+                        MagnificationGesture()
+                            .onChanged { scale in
+                                imageScale = scale
                             }
-                            HapticManager.selection()
-                        }
+                            .onEnded { _ in
+                                withAnimation(.spring()) {
+                                    imageScale = max(1.0, min(imageScale, 3.0))
+                                }
+                            }
                     )
-                }
-                .scaleEffect(imageScale)
-                .gesture(
-                    MagnificationGesture()
-                        .onChanged { scale in
-                            imageScale = scale
+                    .onTapGesture(count: 2) {
+                        withAnimation(.spring()) {
+                            imageScale = imageScale > 1.5 ? 1.0 : 2.0
                         }
-                        .onEnded { _ in
-                            withAnimation(.spring()) {
-                                imageScale = max(1.0, min(imageScale, 3.0))
-                            }
-                        }
-                )
-                .onTapGesture(count: 2) {
-                    withAnimation(.spring()) {
-                        imageScale = imageScale > 1.5 ? 1.0 : 2.0
                     }
-                }
             } else if let thumbnail = page.loadThumbnail() {
                 Image(uiImage: thumbnail)
                     .resizable()
@@ -207,12 +189,6 @@ struct PageQuoteEditor: View {
             ForEach($quotes) { $quote in
                 QuoteEditRow(
                     quote: $quote,
-                    isSelected: quote.id == (selectedQuoteID ?? quotes.first?.id),
-                    onSelect: {
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                            selectedQuoteID = quote.id
-                        }
-                    },
                     onDelete: {
                         deleteQuote(quote)
                     }

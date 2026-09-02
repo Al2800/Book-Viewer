@@ -4,7 +4,7 @@ import SwiftData
 // MARK: - Extraction Review View
 
 /// Main view for reviewing, editing, and confirming extracted quotes before saving.
-/// Shows a split view with page thumbnails on the left and quote editor on the right.
+/// Stacked Passages sheet: page groups, quote cards, then add-manually.
 struct ExtractionReviewView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
@@ -25,9 +25,8 @@ struct ExtractionReviewView: View {
     @State private var hasAppeared = false
     @State private var hasStartedProcessing = false
     @State private var showingAIConsent = false
+    @State private var pageToView: PageCapture?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     // MARK: - Processing State
 
@@ -66,10 +65,6 @@ struct ExtractionReviewView: View {
 
     // MARK: - Computed Properties
 
-    private var quoteCounts: [UUID: Int] {
-        quoteState.quoteCounts
-    }
-
     private var totalQuoteCount: Int {
         quoteState.totalQuoteCount
     }
@@ -78,9 +73,12 @@ struct ExtractionReviewView: View {
         quoteState.hasChanges
     }
 
-    private var quotesForSelectedPage: [EditableQuote] {
-        guard let page = selectedPage else { return [] }
-        return quoteState.quotes(for: page.id)
+    private var orderedPages: [PageCapture] {
+        session.captures.sorted { $0.orderIndex < $1.orderIndex }
+    }
+
+    private var showsPageHeaders: Bool {
+        session.captures.count > 1
     }
 
     // MARK: - Body
@@ -100,7 +98,7 @@ struct ExtractionReviewView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.backgroundPrimary)
-            .navigationTitle("Review Extractions")
+            .navigationTitle("Passages")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 toolbarContent
@@ -122,7 +120,7 @@ struct ExtractionReviewView: View {
                 Text(saveError?.localizedDescription ?? "An unknown error occurred")
             }
             .sheet(isPresented: $showingAddQuoteSheet) {
-                if let page = selectedPage {
+                if let page = selectedPage ?? orderedPages.last {
                     AddManualQuoteSheet(
                         pageId: page.id,
                         pageNumber: page.detectedPageNumber,
@@ -153,13 +151,16 @@ struct ExtractionReviewView: View {
         }
         // Prevent swipe-to-dismiss. If the user dismisses this early (for example while processing),
         // the underlying capture view can be left in a "completed" state with no shutter controls.
+        .fullScreenCover(item: $pageToView) { page in
+            FullImageViewer(page: page)
+        }
         .interactiveDismissDisabled(true)
         .onAppear {
             loadExtractedQuotes()
             selectFirstPage()
             startProcessingIfNeeded()
             // Trigger entrance animation
-            guard !reduceMotion else {
+            guard !UITestConfiguration.isUITesting, !reduceMotion else {
                 hasAppeared = true
                 return
             }
@@ -174,72 +175,89 @@ struct ExtractionReviewView: View {
 
     // MARK: - Subviews
 
-    /// Main content view with page list and quote editor
+    /// Stacked Passages list grouped by page.
     @ViewBuilder
     private var mainContentView: some View {
-        if usesSideBySideReviewLayout {
-            HStack(spacing: Spacing.md) {
-                pageList(layout: .vertical)
-                editorContent(imageHeight: 260, scrollsQuotesIndependently: true)
+        ScrollView {
+            VStack(spacing: Spacing.md) {
+                ForEach(orderedPages) { page in
+                    if showsPageHeaders {
+                        pageGroupHeader(page)
+                    }
+
+                    ForEach(quoteState.quotes(for: page.id)) { quote in
+                        if let index = quoteState.editingQuotes.firstIndex(where: { $0.id == quote.id }) {
+                            QuoteEditRow(
+                                quote: $quoteState.editingQuotes[index],
+                                onDelete: {
+                                    deleteQuote(quote)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                addPassageManuallyRow
+            }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.vertical, Spacing.md)
+        }
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionReviewScrollView)
+    }
+
+    private func pageGroupHeader(_ page: PageCapture) -> some View {
+        HStack(spacing: Spacing.xs) {
+            Image(systemName: "doc.text")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(Color.gildedAccent)
+                .accessibilityHidden(true)
+            Text("PAGE \(page.detectedPageNumber ?? page.orderIndex + 1)")
+                .sectionHeaderStyle()
+
+            Spacer()
+
+            Button {
+                HapticManager.light()
+                pageToView = page
+            } label: {
+                Text("View page")
+                    .font(.uiPill)
+                    .foregroundStyle(Color.brand)
+                    .frame(minHeight: 44)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.viewPageButton)
+        }
+    }
+
+    private var addPassageManuallyRow: some View {
+        Button {
+            HapticManager.light()
+            if selectedPage == nil {
+                selectedPage = orderedPages.last
+            }
+            showingAddQuoteSheet = true
+        } label: {
+            HStack(spacing: Spacing.sm) {
+                Image(systemName: "plus.circle")
+                    .foregroundStyle(Color.gildedAccent)
+                Text("Add a passage manually")
+                    .font(.uiLabel)
+                    .foregroundStyle(Color.textPrimary)
+                Spacer()
             }
             .padding(Spacing.md)
-        } else {
-            ScrollView {
-                VStack(spacing: Spacing.sm) {
-                    pageList(layout: .horizontal)
-                    editorContent(
-                        imageHeight: dynamicTypeSize.isAccessibilitySize ? 150 : 180,
-                        scrollsQuotesIndependently: false
-                    )
-                }
-                .padding(Spacing.sm)
-            }
-            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionReviewScrollView)
+            .background(Color.warmVellum)
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+            .overlay(
+                RoundedRectangle(cornerRadius: CornerRadius.md)
+                    .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
+            )
+            .elevation(.xs)
         }
-    }
-
-    private var usesSideBySideReviewLayout: Bool {
-        horizontalSizeClass == .regular && !dynamicTypeSize.isAccessibilitySize
-    }
-
-    private func pageList(layout: PageListLayout) -> some View {
-        PageListView(
-            session: session,
-            selection: $selectedPage,
-            quoteCounts: quoteCounts,
-            layout: layout
-        )
-    }
-
-    @ViewBuilder
-    private func editorContent(imageHeight: CGFloat, scrollsQuotesIndependently: Bool) -> some View {
-        if let page = selectedPage {
-            if scrollsQuotesIndependently {
-                PageQuoteEditor(
-                    page: page,
-                    quotes: bindingForPage(page),
-                    onAddManualQuote: {
-                        showingAddQuoteSheet = true
-                    },
-                    imageHeight: imageHeight,
-                    scrollsQuotesIndependently: true
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                PageQuoteEditor(
-                    page: page,
-                    quotes: bindingForPage(page),
-                    onAddManualQuote: {
-                        showingAddQuoteSheet = true
-                    },
-                    imageHeight: imageHeight,
-                    scrollsQuotesIndependently: false
-                )
-                .frame(maxWidth: .infinity)
-            }
-        } else {
-            noSelectionView
-        }
+        .buttonStyle(.plain)
+        .frame(minHeight: 44)
+        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.addManualPassage)
     }
 
     /// Processing state view with progress
@@ -271,10 +289,6 @@ struct ExtractionReviewView: View {
         )
     }
 
-    private var noSelectionView: some View {
-        ExtractionReviewNoSelectionView()
-    }
-
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
@@ -286,18 +300,22 @@ struct ExtractionReviewView: View {
                     dismiss()
                 }
             }
+            .foregroundStyle(Color.brand)
             .accessibilityIdentifier(AccessibilityIdentifiers.Capture.cancelButton)
         }
 
         ToolbarItem(placement: .principal) {
             VStack(spacing: 2) {
-                Text("\(totalQuoteCount) Quotes")
-                    .font(.headline)
-                    .contentTransition(.numericText())
+                Text("Passages")
+                    .font(.serifHeadline)
                 Text(book.title)
                     .font(.authorNameSmall)
                     .foregroundStyle(Color.textSecondary)
+                    .lineLimit(1)
+                    .accessibilityHidden(true)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Passages, \(book.title)")
             .opacity(hasAppeared ? 1 : 0)
         }
 
@@ -307,36 +325,40 @@ struct ExtractionReviewView: View {
                 HapticManager.medium()
                 saveAllQuotes()
             } label: {
-                if isSaving {
-                    ProgressView()
-                } else {
-                    Text("Save to Library")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(canSave ? Color.brand : Color.textSecondary)
+                Group {
+                    if isSaving {
+                        ProgressView()
+                            .tint(Color.darkLinen)
+                    } else {
+                        Text("Save to Library")
+                            .font(.uiPill.weight(.semibold))
+                            .foregroundStyle(Color.darkLinen)
+                    }
                 }
+                .padding(.horizontal, Spacing.md)
+                .frame(height: 36)
+                .background(LinearGradient.foilAccent, in: Capsule())
+                .opacity(canSave ? 1 : 0.4)
             }
             .disabled(quoteState.editingQuotes.isEmpty || isSaving)
+            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.saveToLibraryButton)
         }
     }
 
     // MARK: - Bindings
 
-    private func bindingForPage(_ page: PageCapture) -> Binding<[EditableQuote]> {
-        Binding(
-            get: {
-                quoteState.quotes(for: page.id)
-            },
-            set: { newQuotes in
-                quoteState.replaceQuotes(for: page.id, with: newQuotes)
-            }
-        )
+    private func deleteQuote(_ quote: EditableQuote) {
+        quoteState.editingQuotes.removeAll { $0.id == quote.id }
+        HapticManager.light()
     }
 
     // MARK: - Actions
 
     private func addManualQuote() {
         HapticManager.light()
+        if selectedPage == nil {
+            selectedPage = orderedPages.last
+        }
         showingAddQuoteSheet = true
     }
 
