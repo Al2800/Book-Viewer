@@ -70,7 +70,7 @@ final class TabTests: XCTestCase {
     }
 
     func testStudioThemesAndAspectRatios() {
-        XCTAssertEqual(StudioTheme.allCases.count, 5)
+        XCTAssertEqual(StudioTheme.allCases.count, 7)
         XCTAssertEqual(StudioAspectRatio.allCases.count, 3)
 
         for theme in StudioTheme.allCases {
