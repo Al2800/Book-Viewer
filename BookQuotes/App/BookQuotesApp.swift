@@ -47,8 +47,10 @@ struct BookQuotesApp: App {
             return name
         }
 
-        // Use in-memory storage for UI tests to avoid mutating real user data
+        // UI tests use memory unless they explicitly request a UUID-namespaced
+        // disk store for relaunch verification; neither mode opens user data.
         let isUITesting = UITestConfiguration.isUITesting
+        let persistentTestStore = UITestConfiguration.persistentTestStoreName
         if isUITesting {
             if UITestConfiguration.shouldResetAuthentication {
                 KeychainService.shared.clearAllCredentials()
@@ -67,11 +69,11 @@ struct BookQuotesApp: App {
         // CloudKit-backed SwiftData is extremely sensitive to entitlements/capabilities and can fail
         // in ways that prevent the app from booting (often surfacing as SwiftDataError(1)).
         // We can re-introduce CloudKit behind a user-facing toggle once the app is stable in the wild.
-        let primaryLocalName = localStoreName()
+        let primaryLocalName = persistentTestStore ?? localStoreName()
         let config = ModelConfiguration(
             primaryLocalName,
             schema: schema,
-            isStoredInMemoryOnly: isUITesting,
+            isStoredInMemoryOnly: isUITesting && persistentTestStore == nil,
             cloudKitDatabase: .none
         )
 

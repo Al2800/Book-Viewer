@@ -46,6 +46,31 @@ final class CaptureSession {
 
     // MARK: - Computed Properties
 
+    var reviewCheckpointAnchor: PageCapture? {
+        captures.first(where: \.hasReviewCheckpoint) ?? captures.min {
+            if $0.orderIndex != $1.orderIndex { return $0.orderIndex < $1.orderIndex }
+            return $0.id.uuidString < $1.id.uuidString
+        }
+    }
+
+    var hasReviewCheckpoint: Bool { captures.contains(where: \.hasReviewCheckpoint) }
+
+    /// Resume only unfinished work. Completed extraction and its original bytes
+    /// must not be rerun over corrected review candidates.
+    func resumeReviewProcessing() {
+        captures.forEach { $0.resumeInterruptedProcessing() }
+        totalPages = captures.count
+        processedPages = captures.filter { $0.status == .completed }.count
+        failedPages = captures.filter { $0.status == .failed }.count
+        if captures.contains(where: { $0.status == .pending }) {
+            status = .readyToProcess
+            dateCompleted = nil
+        } else {
+            status = failedPages > 0 ? .partialFailure : .completed
+            dateCompleted = dateCompleted ?? Date()
+        }
+    }
+
     /// Number of pages pending processing
     var pendingPages: Int {
         totalPages - processedPages - failedPages

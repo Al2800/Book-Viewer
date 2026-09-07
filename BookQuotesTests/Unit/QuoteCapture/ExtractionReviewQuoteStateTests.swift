@@ -1,4 +1,5 @@
 import XCTest
+import SwiftData
 
 @testable import BookQuotes
 
@@ -217,5 +218,127 @@ final class ExtractionReviewQuoteStateTests: XCTestCase {
         XCTAssertFalse(summary.hasExtractionFailures)
         XCTAssertTrue(summary.hasNoQuotes)
         XCTAssertNil(summary.primaryFailureMessage)
+    }
+}
+
+final class ExtractionReviewCheckpointTests: SwiftDataTestCase {
+    private func fixture() throws -> (CaptureSession, PageCapture, Book) {
+        let book = Book(title: "Checkpoint book", author: "Reader")
+        let session = CaptureSession(book: book)
+        let page = PageCapture(imagePath: "captures/test/source.jpg", session: session)
+        modelContext.insert(book)
+        modelContext.insert(session)
+        modelContext.insert(page)
+        session.addCapture(page)
+        page.storeExtractedQuotes([ExtractedQuoteData(text: "Original source passage", pageNumber: 12, marginNote: nil, markingType: "underline", confidence: 0.7)])
+        page.completeProcessing(quoteCount: 1, avgConfidence: 0.7, pageNumber: 12)
+        session.resumeReviewProcessing()
+        try modelContext.save()
+        return (session, page, book)
+    }
+
+    func testNewContextRestoresEditsSelectionManualEntriesAndOriginalSourceBytes() throws {
+        let (session, page, _) = try fixture()
+        let original = page.extractedQuotesData
+        var state = ExtractionReviewQuoteState()
+        state.loadCompletedQuotes(from: [.init(capture: page)])
+        state.editingQuotes[0].text = "Corrected words"
+        state.editingQuotes[0].isModified = true
+        state.editingQuotes[0].marginNote = "Reader correction"
+        state.editingQuotes[0].pageNumber = 13
+        state.editingQuotes[0].customMarkingDefinitionID = UUID()
+        state.editingQuotes[0].customMarkingDisplayName = "My marking"
+        state.editingQuotes[0].boundingBox = CGRect(x: 0.1, y: 0.2, width: 0.3, height: 0.1)
+        state.editingQuotes[0].suggestedTags = ["memory", "reading"]
+        state.setSelected(false, id: state.editingQuotes[0].id)
+        state.append(EditableQuote(pageId: page.id, text: "Manual addition", markingType: "underline", isManual: true))
+        let store = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext)
+        try store.persist(state)
+
+        let fresh = ModelContext(modelContainer)
+        let reloaded = try XCTUnwrap(fresh.fetch(FetchDescriptor<CaptureSession>()).first)
+        var restored = try XCTUnwrap(ExtractionReviewCheckpointStore(session: reloaded, modelContext: fresh).restore())
+        XCTAssertEqual(restored, state)
+        restored.loadCompletedQuotes(from: reloaded.captures.map(ExtractionReviewPageQuoteSnapshot.init))
+        XCTAssertEqual(restored, state, "Polling after relaunch must not overwrite corrections or resurrect candidates")
+        XCTAssertEqual(page.loadExtractedQuotes().first?.text, "Original source passage")
+        try store.persist(nil)
+        XCTAssertEqual(page.extractedQuotesData, original, "Clearing restores the exact original extraction bytes")
+        XCTAssertEqual(page.imagePath, "captures/test/source.jpg")
+    }
+
+    func testPartialCommitPrunesCheckpointAtomicallyAndRetryDoesNotDuplicate() throws {
+        enum Failure: Error { case write }
+        let (session, page, book) = try fixture()
+        let a = EditableQuote(pageId: page.id, text: "First approved passage", markingType: "underline")
+        let b = EditableQuote(pageId: page.id, text: "Second approved passage", markingType: "underline")
+        let excluded = EditableQuote(pageId: page.id, text: "Excluded input", markingType: "underline")
+        var state = ExtractionReviewQuoteState(editingQuotes: [a, b, excluded], isLoading: false)
+        state.setSelected(false, id: excluded.id)
+        try ExtractionReviewCheckpointStore(session: session, modelContext: modelContext).persist(state)
+        var writes = 0
+        let store = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext, persistChanges: {
+            writes += 1
+            if writes == 2 { throw Failure.write }
+            try self.modelContext.save()
+        })
+        let result = store.save(candidates: [a, b], state: &state, to: book, markingDefinition: { _ in nil })
+        XCTAssertEqual(result.savedQuotes.count, 1)
+        XCTAssertEqual(result.failures.map(\.index), [1])
+        XCTAssertEqual(state.editingQuotes.map(\.id), [b.id, excluded.id])
+        try modelContext.save() // Must not commit a ghost insert from the failed operation.
+
+        let fresh = ModelContext(modelContainer)
+        let reloaded = try XCTUnwrap(fresh.fetch(FetchDescriptor<CaptureSession>()).first)
+        let freshStore = ExtractionReviewCheckpointStore(session: reloaded, modelContext: fresh)
+        var restored = try XCTUnwrap(freshStore.restore())
+        XCTAssertEqual(restored, state)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<Quote>()), 1)
+        let retry = freshStore.save(candidates: restored.selectedQuotes, state: &restored,
+                                    to: try XCTUnwrap(reloaded.book), markingDefinition: { _ in nil })
+        XCTAssertTrue(retry.isFullSuccess)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<Quote>()), 2)
+        XCTAssertEqual(restored.editingQuotes.map(\.id), [excluded.id])
+        XCTAssertTrue(restored.selectedQuotes.isEmpty)
+    }
+
+    func testRepeatedApprovedCandidateCannotCreateASecondQuote() throws {
+        let (session, page, book) = try fixture()
+        let candidate = EditableQuote(pageId: page.id, text: "Commit once", markingType: "underline")
+        var state = ExtractionReviewQuoteState(editingQuotes: [candidate], isLoading: false)
+        let store = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext)
+        let result = store.save(candidates: [candidate, candidate], state: &state, to: book, markingDefinition: { _ in nil })
+        XCTAssertEqual(result.savedQuotes.count, 1)
+        XCTAssertEqual(result.failures.map(\.index), [1])
+        XCTAssertEqual(try modelContext.fetchCount(FetchDescriptor<Quote>()), 1)
+        XCTAssertTrue(state.editingQuotes.isEmpty)
+        XCTAssertEqual(try store.restore(), state)
+    }
+
+    func testCorruptCheckpointIsRefusedWithoutOverwritingItsBytes() throws {
+        let (session, page, _) = try fixture()
+        try page.storeReviewCheckpointData(Data("not a checkpoint".utf8))
+        let original = page.extractedQuotesData
+        XCTAssertTrue(session.hasReviewCheckpoint)
+        XCTAssertThrowsError(try ExtractionReviewCheckpointStore(session: session, modelContext: modelContext).restore())
+        XCTAssertEqual(page.extractedQuotesData, original)
+        XCTAssertEqual(page.loadExtractedQuotes().first?.text, "Original source passage")
+    }
+
+    func testFailedRetryAndInterruptedProcessingPreserveCheckpoint() throws {
+        let (session, page, _) = try fixture()
+        let state = ExtractionReviewQuoteState(editingQuotes: [
+            EditableQuote(pageId: page.id, text: "Keep manual correction", markingType: "underline", isManual: true)
+        ], isLoading: false)
+        let store = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext)
+        try store.persist(state)
+        page.failProcessing(error: "Offline")
+        session.retryFailedCaptures()
+        XCTAssertEqual(try store.restore(), state)
+        page.beginProcessing()
+        session.resumeReviewProcessing()
+        XCTAssertEqual(page.status, .pending)
+        XCTAssertEqual(session.status, .readyToProcess)
+        XCTAssertEqual(try store.restore(), state)
     }
 }

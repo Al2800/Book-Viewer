@@ -81,6 +81,14 @@ enum UITestConfiguration {
 
     // MARK: - Data Preloading
 
+    /// Opt-in isolated disk store for actual process-relaunch tests. Never accepts
+    /// a path or a production store name; ordinary UI tests remain in memory.
+    static var persistentTestStoreName: String? {
+        guard isUITesting, let value = value(for: "--ui-test-store-id"),
+              let id = UUID(uuidString: value) else { return nil }
+        return "BookQuotesUITest-\(id.uuidString)"
+    }
+
     /// Whether to preload the library with test books and quotes.
     /// Set via `--preload-library-test-data` launch argument.
     static var shouldPreloadLibraryTestData: Bool {

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 struct ExtractionReviewPageQuoteSnapshot {
     let pageId: UUID
@@ -21,6 +22,85 @@ struct ExtractionReviewCaptureStatusSnapshot {
     let status: PageCapture.CaptureStatus
     let errorMessage: String?
     let quoteCount: Int
+}
+
+/// Checkpoint writes share the quote's ModelContext save, making partial saves
+/// crash-safe: a committed quote and its removed review candidate are atomic.
+@MainActor
+struct ExtractionReviewCheckpointStore {
+    let session: CaptureSession
+    let modelContext: ModelContext
+    var persistChanges: (() throws -> Void)?
+
+    private enum SaveError: LocalizedError {
+        case staleCandidate
+        var errorDescription: String? {
+            "This passage changed or was already saved. Review the remaining draft before trying again."
+        }
+    }
+
+    private struct Checkpoint: Codable {
+        let version: Int
+        let sessionID: UUID
+        let state: ExtractionReviewQuoteState
+    }
+
+    private var anchor: PageCapture? {
+        session.reviewCheckpointAnchor
+    }
+
+    func restore() throws -> ExtractionReviewQuoteState? {
+        guard let anchor, let data = try anchor.loadReviewCheckpointData() else { return nil }
+        let checkpoint = try JSONDecoder().decode(Checkpoint.self, from: data)
+        let pageIDs = Set(session.captures.map(\.id))
+        guard checkpoint.version == 1, checkpoint.sessionID == session.id,
+              checkpoint.state.isValid(for: pageIDs) else {
+            throw CocoaError(.coderReadCorrupt)
+        }
+        var state = checkpoint.state
+        state.isLoading = false
+        return state
+    }
+
+    func persist(_ state: ExtractionReviewQuoteState?) throws {
+        guard let anchor else { throw CocoaError(.fileNoSuchFile) }
+        let previous = anchor.extractedQuotesData
+        do {
+            let data = try state.map { try JSONEncoder().encode(Checkpoint(version: 1, sessionID: session.id, state: $0)) }
+            try anchor.storeReviewCheckpointData(data)
+            if let persistChanges { try persistChanges() } else { try modelContext.save() }
+        } catch {
+            anchor.extractedQuotesData = previous
+            throw error
+        }
+    }
+
+    func save(
+        candidates: [EditableQuote],
+        state: inout ExtractionReviewQuoteState,
+        to book: Book,
+        markingDefinition: (EditableQuote) -> MarkingDefinition?
+    ) -> BatchSaveResult {
+        var saved: [Quote] = []
+        var failures: [SaveFailure] = []
+        for (index, candidate) in candidates.enumerated() {
+            let extracted = candidate.toExtractedQuote(customMarkingDefinition: markingDefinition(candidate))
+            guard state.editingQuotes.contains(candidate), state.isSelected(candidate.id) else {
+                failures.append(SaveFailure(index: index, extractedQuote: extracted, error: SaveError.staleCandidate))
+                continue
+            }
+            var remaining = state
+            remaining.applySaveResult(submittedIDs: [candidate.id], failures: [])
+            let service = QuoteSaveService(modelContext: modelContext, persistQuoteChanges: { try persist(remaining) })
+            do {
+                saved.append(try service.save(extracted, to: book))
+                state = remaining
+            } catch {
+                failures.append(SaveFailure(index: index, extractedQuote: extracted, error: error))
+            }
+        }
+        return BatchSaveResult(savedQuotes: saved, failures: failures, book: book)
+    }
 }
 
 extension ExtractionReviewCaptureStatusSnapshot {
@@ -60,7 +140,7 @@ struct ExtractionReviewProcessingSummary {
     }
 }
 
-struct ExtractionReviewQuoteState {
+struct ExtractionReviewQuoteState: Codable, Equatable {
     var editingQuotes: [EditableQuote]
     var isLoading: Bool
     private var deselectedIDs: Set<UUID> = []
@@ -69,6 +149,12 @@ struct ExtractionReviewQuoteState {
     init(editingQuotes: [EditableQuote] = [], isLoading: Bool = true) {
         self.editingQuotes = editingQuotes
         self.isLoading = isLoading
+    }
+
+    func isValid(for pageIDs: Set<UUID>) -> Bool {
+        editingQuotes.allSatisfy { pageIDs.contains($0.pageId) }
+            && loadedPageIDs.isSubset(of: pageIDs)
+            && Set(editingQuotes.map(\.id)).count == editingQuotes.count
     }
 
     var quoteCounts: [UUID: Int] {

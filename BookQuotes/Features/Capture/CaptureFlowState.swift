@@ -11,6 +11,7 @@ struct CaptureFlowState: Equatable {
         case coverCapture
         case quoteCapture
         case batchCapture
+        case reviewDraft
     }
 
     enum Event: Equatable {
@@ -20,6 +21,8 @@ struct CaptureFlowState: Equatable {
         case selectBookForQuoteCapture
         case selectBookForBatchCapture
         case resumeBatchCapture
+        case resumeReviewDraft
+        case cancelReviewDraft
         case addNewBook
         case cancelBookSelection
         case completeCoverCapture
@@ -86,6 +89,15 @@ struct CaptureFlowState: Equatable {
                 batchCaptureFlowID = UUID()
                 mode = .batchCapture
             }
+            return .none
+
+        case .resumeReviewDraft:
+            mode = .reviewDraft
+            return .none
+
+        case .cancelReviewDraft:
+            quoteCaptureFlowID = UUID()
+            mode = .quoteCapture
             return .none
 
         case .resumeBatchCapture:

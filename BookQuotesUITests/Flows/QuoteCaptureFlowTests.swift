@@ -14,6 +14,9 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             extractionScenario,
             "--product-experience-v2"
         ]
+        if name.contains("ReviewDraft") {
+            arguments += ["--ui-test-store-id", UUID().uuidString]
+        }
         if name.contains("LowConfidence") {
             arguments.append("--mock-low-confidence")
         }
@@ -359,6 +362,90 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(app.staticTexts["No Matching Passages"].waitForExistence(timeout: 5))
     }
 
+    func testReviewDraftSurvivesProcessExitWithoutExplicitKeep() {
+        navigateToExtractionReview()
+        let first = app.switches.matching(NSPredicate(format: "label CONTAINS %@", "A model-assisted quote used for review testing.")).firstMatch
+        XCTAssertTrue(revealForInteraction(first))
+        first.tap()
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertEqual(save.label, "Save 1 passage")
+        app.terminate() // No Cancel/Keep Draft: the completed review change must already be durable.
+        app.launch()
+        waitForAppReady()
+        XCTAssertTrue(tapTab(.capture))
+        chooseCaptureModeMenuItem(identifier: AccessibilityIdentifiers.Capture.savedDraftsButton, label: "Saved Drafts (1)")
+        let resume = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'capture_resume_draft_'")).firstMatch
+        XCTAssertTrue(resume.waitForExistence(timeout: 5))
+        resume.tap()
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        XCTAssertEqual(save.label, "Save 1 passage")
+        XCTAssertEqual(first.value as? String, "0")
+        let source = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", AccessibilityIdentifiers.Capture.viewPageButton)).firstMatch
+        XCTAssertTrue(revealForInteraction(source))
+        source.tap()
+        XCTAssertTrue(app.buttons["Close image"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.images["Full source page image"].waitForExistence(timeout: 5),
+                      "Actual source pixels, not only the viewer, must survive process exit")
+        XCTAssertFalse(app.staticTexts["Image Not Found"].exists)
+    }
+
+    func testReviewDraftRestoresEditsManualEntriesAndSelectionAfterRelaunch() {
+        navigateToExtractionReview()
+        let edit = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].firstMatch
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        edit.tap()
+        let text = app.textViews[AccessibilityIdentifiers.Capture.extractionQuoteTextEditor]
+        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        text.tap()
+        text.typeText(" Restored correction.")
+        app.navigationBars["Edit Quote"].buttons["Save"].tap()
+        let excluded = app.switches.matching(NSPredicate(format: "label CONTAINS %@", "Restored correction.")).firstMatch
+        XCTAssertTrue(revealForInteraction(excluded))
+        excluded.tap()
+
+        let add = app.buttons["Add a passage manually"]
+        XCTAssertTrue(revealForInteraction(add))
+        add.tap()
+        let manualText = app.textViews.firstMatch
+        XCTAssertTrue(manualText.waitForExistence(timeout: 5))
+        manualText.tap()
+        manualText.typeText("Manual passage retained across relaunch.")
+        app.navigationBars["Add Quote"].buttons["Add"].tap()
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        XCTAssertEqual(save.label, "Save 2 passages")
+        app.navigationBars["Passages"].buttons[AccessibilityIdentifiers.Capture.passagesCancelButton].tap()
+        app.alerts.buttons["Keep Draft"].tap()
+        XCTAssertTrue(app.buttons[AccessibilityIdentifiers.Capture.testImageButton].waitForExistence(timeout: 5))
+
+        app.terminate()
+        app.launch() // Same UUID-namespaced disk store, not an in-memory reseed.
+        waitForAppReady()
+        XCTAssertTrue(tapTab(.capture))
+        chooseCaptureModeMenuItem(identifier: AccessibilityIdentifiers.Capture.savedDraftsButton, label: "Saved Drafts (1)")
+        let resume = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'capture_resume_draft_'")).firstMatch
+        XCTAssertTrue(resume.waitForExistence(timeout: 5))
+        resume.tap()
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        XCTAssertEqual(save.label, "Save 2 passages")
+        XCTAssertTrue(revealForInteraction(excluded))
+        XCTAssertEqual(excluded.value as? String, "0")
+        let manual = app.switches.matching(NSPredicate(format: "label CONTAINS %@", "Manual passage retained across relaunch.")).firstMatch
+        XCTAssertTrue(revealForInteraction(manual))
+        XCTAssertEqual(manual.value as? String, "1")
+        save.tap()
+        XCTAssertTrue(app.buttons["capture_view_passages_button"].waitForExistence(timeout: 8))
+
+        chooseCaptureModeMenuItem(identifier: AccessibilityIdentifiers.Capture.savedDraftsButton, label: "Saved Drafts (1)")
+        XCTAssertTrue(resume.waitForExistence(timeout: 5))
+        resume.tap()
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        XCTAssertEqual(save.label, "Save 0 passages", "Saved candidates must not reappear in the retained excluded draft")
+        XCTAssertFalse(save.isEnabled)
+        XCTAssertTrue(excluded.exists)
+        XCTAssertFalse(manual.exists)
+    }
+
     // MARK: - Save Flow Tests
 
     func testSavePassages_ReturnsToCameraWithOptionalBookNavigation() {
@@ -685,18 +772,13 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
     func testSourceImageAccessibleActionOpensFullScreen() throws {
         openExtractionReview()
 
-        XCTAssertFalse(
-            app.buttons[AccessibilityIdentifiers.Capture.viewPageButton].exists,
-            "Single-page Passages should not show a page header or View page"
-        )
-        XCTAssertTrue(
-            app.buttons[AccessibilityIdentifiers.Capture.addManualPassage].waitForExistence(timeout: 5),
-            "Stacked Passages should keep Add a passage manually reachable"
-        )
-        XCTAssertTrue(
-            app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton].waitForExistence(timeout: 5),
-            "Stacked Passages should keep Save to Library reachable"
-        )
+        let source = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", AccessibilityIdentifiers.Capture.viewPageButton)).firstMatch
+        XCTAssertTrue(revealForInteraction(source), "Single-page review must offer source inspection")
+        source.tap()
+        XCTAssertTrue(app.images["Full source page image"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["Image Not Found"].exists)
+        app.buttons["Close image"].tap()
+        XCTAssertTrue(app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton].waitForExistence(timeout: 5))
     }
 
     func testExtractionReviewRemainsUsableInLandscapeWithAccessibilityText() {

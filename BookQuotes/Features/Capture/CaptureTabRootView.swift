@@ -103,18 +103,24 @@ struct CaptureTabRootView: View {
 
     @ViewBuilder
     private var authorizedContent: some View {
-        NavigationStack {
-            ZStack {
-                Color.black.ignoresSafeArea()
+        if captureFlow.mode == .reviewDraft {
+            // Review owns its navigation chrome; do not nest it inside the
+            // camera stack whose navigation bar is intentionally hidden.
+            captureContent
+        } else {
+            NavigationStack {
+                ZStack {
+                    Color.black.ignoresSafeArea()
 
-                if books.isEmpty && captureFlow.mode != .coverCapture {
-                    emptyLibraryPrompt
-                } else {
-                    captureContent
+                    if books.isEmpty && captureFlow.mode != .coverCapture {
+                        emptyLibraryPrompt
+                    } else {
+                        captureContent
+                    }
                 }
+                .background(Color.black.ignoresSafeArea())
+                .toolbar(.hidden, for: .navigationBar)
             }
-            .background(Color.black.ignoresSafeArea())
-            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
@@ -239,6 +245,21 @@ struct CaptureTabRootView: View {
                 }
             )
 
+        case .reviewDraft:
+            if let session = selectedDraft, let book = session.book {
+                ExtractionReviewView(session: session, book: book, onComplete: {
+                    selectedDraft = nil
+                    handleCaptureFlowEvent(.completeQuoteCapture)
+                    savedBook = book
+                }, onExit: {
+                    if captureFlow.mode == .reviewDraft {
+                        selectedDraft = nil
+                        handleCaptureFlowEvent(.cancelReviewDraft)
+                    }
+                })
+                .toolbar(.hidden, for: .tabBar)
+            }
+
         case .batchCapture:
             BatchCaptureFlowView(
                 book: selectedBook,
@@ -319,7 +340,10 @@ struct CaptureTabRootView: View {
 
     private var resumableDrafts: [CaptureSession] {
         captureSessions
-            .filter { $0.status == .readyToProcess && !$0.captures.isEmpty && $0.book != nil }
+            .filter {
+                ($0.status == .readyToProcess || $0.hasReviewCheckpoint)
+                    && $0.status != .cancelled && !$0.captures.isEmpty && $0.book != nil
+            }
             .sorted { $0.dateStarted > $1.dateStarted }
     }
 
@@ -329,7 +353,7 @@ struct CaptureTabRootView: View {
         selectedBook = book
         selectedDraft = session
         ActiveReadingSessionStore.shared.setActiveBook(book)
-        handleCaptureFlowEvent(.resumeBatchCapture)
+        handleCaptureFlowEvent(session.hasReviewCheckpoint ? .resumeReviewDraft : .resumeBatchCapture)
     }
 
     private func deleteDraft(_ session: CaptureSession) {
@@ -381,7 +405,7 @@ private struct SavedCaptureDraftsSheet: View {
                                             .foregroundStyle(Color.textPrimary)
                                             .lineLimit(1)
 
-                                        Text("\(draft.totalPages) page\(draft.totalPages == 1 ? "" : "s") · \(draft.dateStarted.formatted(date: .abbreviated, time: .shortened))")
+                                        Text("\(draft.hasReviewCheckpoint ? "Review" : "Capture") · \(draft.totalPages) page\(draft.totalPages == 1 ? "" : "s") · \(draft.dateStarted.formatted(date: .abbreviated, time: .shortened))")
                                             .font(.subheadline)
                                             .foregroundStyle(Color.textSecondary)
                                     }

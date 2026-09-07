@@ -287,7 +287,7 @@ struct MarkingTypeStringBadge: View {
 // MARK: - Editable Quote
 
 /// Mutable wrapper for an extracted quote during review.
-struct EditableQuote: Identifiable, Equatable {
+struct EditableQuote: Identifiable, Equatable, Codable {
     let id: UUID
     let pageId: UUID
     var text: String

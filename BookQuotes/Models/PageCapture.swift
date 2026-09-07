@@ -157,7 +157,7 @@ final class PageCapture {
         errorMessage = nil
         extractedQuoteCount = 0
         averageConfidence = nil
-        extractedQuotesData = nil
+        try? replaceExtractionData(nil)
         extractionFallbackReason = nil
     }
 
@@ -165,8 +165,8 @@ final class PageCapture {
 
     /// Store extracted quote data from processing
     func storeExtractedQuotes(_ quotes: [ExtractedQuoteData]) {
-        let encoder = JSONEncoder()
-        extractedQuotesData = try? encoder.encode(quotes)
+        guard let encoded = try? JSONEncoder().encode(quotes) else { return }
+        do { try replaceExtractionData(encoded) } catch { return }
         extractedQuoteCount = quotes.count
 
         // Calculate average confidence from quotes that have confidence values
@@ -177,7 +177,7 @@ final class PageCapture {
 
     /// Complete processing after a valid extraction response, including a valid empty result.
     func completeExtraction(with result: QuoteExtractionResult) throws {
-        storeExtractedQuotes(result.quotes)
+        try replaceExtractionData(JSONEncoder().encode(result.quotes))
         completeProcessing(
             quoteCount: result.quoteCount,
             avgConfidence: result.averageConfidence,
@@ -188,9 +188,57 @@ final class PageCapture {
 
     /// Retrieve stored extracted quotes
     func loadExtractedQuotes() -> [ExtractedQuoteData] {
-        guard let data = extractedQuotesData else { return [] }
-        let decoder = JSONDecoder()
-        return (try? decoder.decode([ExtractedQuoteData].self, from: data)) ?? []
+        guard let data = try? storedResults().extractionData else { return [] }
+        return (try? JSONDecoder().decode([ExtractedQuoteData].self, from: data)) ?? []
+    }
+
+    // MARK: - Review Checkpoint
+
+    /// Existing result bytes remain intact inside the envelope. No SwiftData
+    /// schema change; raw extraction arrays from earlier versions remain readable.
+    private struct StoredResults: Codable {
+        var version: Int = 1
+        var extractionData: Data?
+        var reviewData: Data?
+    }
+
+    private func storedResults() throws -> StoredResults {
+        guard let data = extractedQuotesData else { return StoredResults() }
+        if (try? JSONDecoder().decode([ExtractedQuoteData].self, from: data)) != nil {
+            return StoredResults(extractionData: data)
+        }
+        let result = try JSONDecoder().decode(StoredResults.self, from: data)
+        guard result.version == 1 else { throw CocoaError(.coderReadCorrupt) }
+        return result
+    }
+
+    var hasReviewCheckpoint: Bool {
+        guard let data = extractedQuotesData,
+              let result = try? JSONDecoder().decode(StoredResults.self, from: data) else { return false }
+        return result.reviewData != nil
+    }
+
+    func loadReviewCheckpointData() throws -> Data? {
+        try storedResults().reviewData
+    }
+
+    func storeReviewCheckpointData(_ data: Data?) throws {
+        var result = try storedResults()
+        result.reviewData = data
+        extractedQuotesData = data == nil ? result.extractionData : try JSONEncoder().encode(result)
+    }
+
+    private func replaceExtractionData(_ data: Data?) throws {
+        var result = try storedResults()
+        result.extractionData = data
+        extractedQuotesData = result.reviewData == nil ? data : try JSONEncoder().encode(result)
+    }
+
+    func resumeInterruptedProcessing() {
+        guard status == .processing else { return }
+        status = .pending
+        dateProcessed = nil
+        errorMessage = nil
     }
 
     // MARK: - Image Management

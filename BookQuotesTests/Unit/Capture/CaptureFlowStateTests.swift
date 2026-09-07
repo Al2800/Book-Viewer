@@ -63,6 +63,16 @@ final class CaptureFlowStateTests: XCTestCase {
         XCTAssertFalse(batchCommand.clearsSelectedBook)
     }
 
+    func testReviewDraftResumeAndCancelUseCanonicalSingleCameraReturn() {
+        var state = CaptureFlowState(mode: .quoteCapture)
+        let previous = state.quoteCaptureFlowID
+        XCTAssertEqual(state.handle(.resumeReviewDraft), .none)
+        XCTAssertEqual(state.mode, .reviewDraft)
+        XCTAssertEqual(state.handle(.cancelReviewDraft), .none)
+        XCTAssertEqual(state.mode, .quoteCapture)
+        XCTAssertNotEqual(state.quoteCaptureFlowID, previous)
+    }
+
     func testResumeBatchCaptureEntersBatchModeWithFreshIdentity() {
         var state = CaptureFlowState()
         let originalID = state.batchCaptureFlowID

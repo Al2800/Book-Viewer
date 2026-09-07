@@ -24,6 +24,9 @@ struct ExtractionReviewView: View {
     @State private var approvedQuotes: [EditableQuote] = []
     @State private var currentDuplicateCheck: DuplicateCheckItem?
     @State private var hasStartedProcessing = false
+    @State private var processingTask: Task<Void, Never>?
+    @State private var checkpointReady = false
+    @Environment(\.scenePhase) private var scenePhase
     @State private var showingAIConsent = false
     @State private var pageToView: PageCapture?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -62,6 +65,7 @@ struct ExtractionReviewView: View {
 
     /// Completion handler called after successful save
     var onComplete: (() -> Void)?
+    var onExit: (() -> Void)?
 
     // MARK: - Computed Properties
 
@@ -96,23 +100,26 @@ struct ExtractionReviewView: View {
                     mainContentView
                 }
             }
-            .disabled(isSaving)
+            .disabled(isSaving || !checkpointReady)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.backgroundPrimary)
             .navigationTitle("Passages")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.visible, for: .navigationBar)
             .toolbar {
                 ExtractionReviewPassagesToolbar(
                     bookTitle: book.title,
                     passageCount: quoteState.selectedQuotes.count,
-                    canSave: !quoteState.selectedQuotes.isEmpty && !isSaving && !isProcessing && !quoteState.isLoading,
+                    canSave: checkpointReady && !quoteState.selectedQuotes.isEmpty && !isSaving && !isProcessing && !quoteState.isLoading,
                     isSaving: isSaving,
                     onCancel: {
                         HapticManager.light()
-                        if hasChanges {
+                        if !checkpointReady {
+                            leaveReview()
+                        } else if hasChanges || isProcessing {
                             showingDiscardAlert = true
                         } else {
-                            dismiss()
+                            discardReview()
                         }
                     },
                     onSave: {
@@ -121,18 +128,24 @@ struct ExtractionReviewView: View {
                     }
                 )
             }
-            .alert("Discard Changes?", isPresented: $showingDiscardAlert) {
+            .alert("Leave Review?", isPresented: $showingDiscardAlert) {
+                Button("Keep Draft") {
+                    if persistReview() { leaveReview() }
+                }
                 Button("Discard", role: .destructive) {
-                    dismiss()
+                    discardReview()
                 }
                 Button("Keep Editing", role: .cancel) {}
             } message: {
-                Text("You have \(totalQuoteCount) unsaved passages. Are you sure you want to discard them?")
+                Text("You have \(totalQuoteCount) unsaved passages. Keep a draft to resume your edits, selection and source pages later, or discard this review.")
             }
             .alert("Save Error", isPresented: .init(
                 get: { saveError != nil },
                 set: { if !$0 { saveError = nil } }
             )) {
+                if !checkpointReady {
+                    Button("Retry Opening Review") { restoreReview() }
+                }
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(saveError?.localizedDescription ?? "An unknown error occurred")
@@ -184,10 +197,15 @@ struct ExtractionReviewView: View {
         }
         .interactiveDismissDisabled(true)
         .onAppear {
-            loadExtractedQuotes()
-            selectFirstPage()
-            startProcessingIfNeeded()
+            if !checkpointReady { restoreReview() }
         }
+        .onChange(of: quoteState) { _, _ in
+            if checkpointReady { _ = persistReview() }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active && checkpointReady { _ = persistReview() }
+        }
+        .onDisappear { processingTask?.cancel() }
         // Animate quote count changes
         .animation(reduceMotion ? .none : .snappy, value: totalQuoteCount)
         .milestoneCelebration(manager: milestoneManager)
@@ -317,24 +335,24 @@ struct ExtractionReviewView: View {
     }
 
     private func closeReview() {
-        dismiss()
+        if hasChanges || isProcessing { showingDiscardAlert = true } else { discardReview() }
     }
 
     private func retryFailedExtractions() {
         HapticManager.medium()
         session.retryFailedCaptures()
         hasStartedProcessing = false
-        try? modelContext.save()
+        guard persistReview() else { return }
         startProcessingIfNeeded()
     }
 
     private func retryFailedExtractionsOnDevice() {
         HapticManager.medium()
         session.retryFailedCaptures()
+        guard persistReview() else { return }
         hasStartedProcessing = true
-        try? modelContext.save()
 
-        Task {
+        processingTask = Task {
             await processPendingCaptures(using: OnDeviceQuoteExtractor())
         }
     }
@@ -355,7 +373,7 @@ struct ExtractionReviewView: View {
     }
 
     private func startProcessingIfNeeded() {
-        guard !hasStartedProcessing else { return }
+        guard checkpointReady, !hasStartedProcessing else { return }
         let hasPending = session.captures.contains { $0.status == .pending }
         guard hasPending else { return }
 
@@ -369,7 +387,7 @@ struct ExtractionReviewView: View {
 
         hasStartedProcessing = true
 
-        Task {
+        processingTask = Task {
             await processPendingCaptures()
         }
     }
@@ -429,12 +447,9 @@ struct ExtractionReviewView: View {
 
     private func persistApprovedQuotes() {
         let candidatesToSave = approvedQuotes
-        let quotesToSave = candidatesToSave.map {
-            $0.toExtractedQuote(customMarkingDefinition: customMarkingDefinition(for: $0))
-        }
         approvedQuotes = []
 
-        guard !quotesToSave.isEmpty else {
+        guard !candidatesToSave.isEmpty else {
             // User skipped every flagged duplicate; leave the editor untouched.
             isSaving = false
             HapticManager.warning()
@@ -443,27 +458,38 @@ struct ExtractionReviewView: View {
 
         // Capture quote count before saving for milestone check
         let previousCount = existingQuotes.count
-        let savedCount = quotesToSave.count
+        let savedCount = candidatesToSave.count
 
         isSaving = true
 
         Task {
-            let saveService = QuoteSaveService(modelContext: modelContext)
-            let result = saveService.saveMultiple(quotesToSave, to: book)
+            let store = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext)
+            let result = store.save(candidates: candidatesToSave, state: &quoteState, to: book,
+                                    markingDefinition: customMarkingDefinition)
 
             await MainActor.run {
                 if result.isFullSuccess {
                     if processingSummary.failedPageCount > 0 {
                         // Saving successful candidates is not permission to delete
                         // source pages whose extraction failed.
-                        quoteState.applySaveResult(submittedIDs: candidatesToSave.map(\.id), failures: [])
                         isSaving = false
                         savedWithPendingPagesMessage = "Saved \(result.savedQuotes.count) passages. Failed pages and their source images remain available for retry."
                         HapticManager.success()
                         return
                     }
-                    session.deleteImageFiles()
-                    try? modelContext.save()
+                    if quoteState.editingQuotes.isEmpty {
+                        do {
+                            try store.persist(nil)
+                        } catch {
+                            isSaving = false
+                            saveError = error
+                            return
+                        }
+                        session.deleteImageFiles()
+                        try? modelContext.save()
+                    }
+                    // Excluded candidates remain a resumable draft with their sources.
+                    checkpointReady = false
 
                     // Check if we crossed any milestone
                     let newTotal = previousCount + savedCount
@@ -478,17 +504,16 @@ struct ExtractionReviewView: View {
                             try? await Task.sleep(for: .seconds(2.2))
                             await MainActor.run {
                                 onComplete?()
-                                dismiss()
+                                leaveReview()
                             }
                         }
                     } else {
                         HapticManager.success()
                         onComplete?()
-                        dismiss()
+                        leaveReview()
                     }
                 } else if result.isPartialSuccess {
                     // Show partial success - some quotes saved
-                    quoteState.applySaveResult(submittedIDs: candidatesToSave.map(\.id), failures: result.failures)
                     isSaving = false
                     saveError = QuoteSaveError.persistenceFailed(NSError(
                         domain: "ExtractionReview",
@@ -509,6 +534,57 @@ struct ExtractionReviewView: View {
                 }
             }
         }
+    }
+
+    private func restoreReview() {
+        do {
+            let store = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext)
+            if let restored = try store.restore() { quoteState = restored }
+            session.resumeReviewProcessing()
+            loadExtractedQuotes()
+            selectFirstPage()
+            try store.persist(quoteState)
+            checkpointReady = true
+            startProcessingIfNeeded()
+        } catch {
+            saveError = error
+        }
+    }
+
+    @discardableResult
+    private func persistReview() -> Bool {
+        guard checkpointReady else { return false }
+        do {
+            try ExtractionReviewCheckpointStore(session: session, modelContext: modelContext).persist(quoteState)
+            return true
+        } catch {
+            saveError = error
+            return false
+        }
+    }
+
+    private func discardReview() {
+        processingTask?.cancel()
+        let previousStatus = session.status
+        let previousDate = session.dateCompleted
+        session.cancel()
+        do {
+            try ExtractionReviewCheckpointStore(session: session, modelContext: modelContext).persist(nil)
+            checkpointReady = false
+            session.deleteImageFiles()
+            try? modelContext.save()
+            leaveReview()
+        } catch {
+            session.status = previousStatus
+            session.dateCompleted = previousDate
+            saveError = error
+        }
+    }
+
+    private func leaveReview() {
+        processingTask?.cancel()
+        checkpointReady = false
+        if let onExit { onExit() } else { dismiss() }
     }
 
     private func customMarkingDefinition(for quote: EditableQuote) -> MarkingDefinition? {

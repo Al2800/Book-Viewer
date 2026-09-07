@@ -29,6 +29,7 @@ struct ExtractionReviewProcessor {
             .map { PendingCapture(id: $0.id, imageURL: $0.imageURL) }
 
         for item in pending {
+            guard !Task.isCancelled, session.status != .cancelled else { return }
             guard let capture = session.captures.first(where: { $0.id == item.id }) else {
                 continue
             }
@@ -38,14 +39,18 @@ struct ExtractionReviewProcessor {
 
             do {
                 let image = try await loadImage(from: item.imageURL)
+                try Task.checkCancellation()
                 let result = try await quoteExtractor.extractQuotes(
                     from: image,
                     markings: markingPrompts
                 )
 
+                try Task.checkCancellation()
+                guard session.status != .cancelled else { return }
                 try complete(capture, with: result)
                 onCaptureChanged()
             } catch {
+                guard !Task.isCancelled, session.status != .cancelled else { return }
                 fail(capture, with: error)
                 onCaptureChanged()
             }
