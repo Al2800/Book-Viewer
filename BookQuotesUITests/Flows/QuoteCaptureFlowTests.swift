@@ -904,6 +904,17 @@ final class IPadExtractionReviewLayoutTests: BaseUITestCase {
             app.buttons[AccessibilityIdentifiers.Capture.addManualPassage].waitForExistence(timeout: 5),
             "Passages should provide Add a passage manually"
         )
-        captureScreenshot(named: "ipad_side_by_side_review", description: "iPad stacked Passages at normal text size")
+        let checking = app.staticTexts["capture_checking_summary"]
+        XCTAssertTrue(checking.exists)
+        XCTAssertTrue(checking.label.contains("1 of 2 flagged for extra checking"))
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertEqual(save.label, "Save 2 passages")
+        let source = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", AccessibilityIdentifiers.Capture.viewPageButton)).firstMatch
+        XCTAssertTrue(revealForInteraction(source))
+        source.tap()
+        XCTAssertTrue(app.images["Full source page image"].waitForExistence(timeout: 5))
+        app.buttons["Close image"].tap()
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        captureScreenshot(named: "ipad_stacked_review", description: "iPad stacked Passages with checking count and working source inspection")
     }
 }

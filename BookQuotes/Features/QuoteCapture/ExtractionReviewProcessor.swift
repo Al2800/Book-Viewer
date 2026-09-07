@@ -38,7 +38,7 @@ struct ExtractionReviewProcessor {
             saveContext()
 
             do {
-                let image = try await loadImage(from: item.imageURL)
+                let image = try await PageCapture.loadSourceImage(from: item.imageURL)
                 try Task.checkCancellation()
                 let result = try await quoteExtractor.extractQuotes(
                     from: image,
@@ -81,15 +81,6 @@ struct ExtractionReviewProcessor {
         try? modelContext.save()
     }
 
-    private nonisolated func loadImage(from url: URL?) async throws -> UIImage {
-        try await Task.detached(priority: .userInitiated) {
-            guard let url else { throw ExtractionError.invalidImage }
-            guard let image = UIImage(contentsOfFile: url.path) else {
-                throw ExtractionError.invalidImage
-            }
-            return image
-        }.value
-    }
 }
 
 private struct PendingCapture {

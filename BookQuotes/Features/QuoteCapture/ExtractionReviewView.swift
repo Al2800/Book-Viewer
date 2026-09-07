@@ -224,6 +224,14 @@ struct ExtractionReviewView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityIdentifier("capture_selection_summary")
 
+                if quoteState.extraCheckingCount > 0 {
+                    Text("\(quoteState.extraCheckingCount) of \(totalQuoteCount) flagged for extra checking. Compare every passage with its source.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.textPrimary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .accessibilityIdentifier("capture_checking_summary")
+                }
+
                 if processingSummary.failedPageCount > 0 {
                     VStack(alignment: .leading, spacing: Spacing.sm) {
                         Label("\(processingSummary.failedPageCount) pages could not be processed", systemImage: "exclamationmark.triangle")

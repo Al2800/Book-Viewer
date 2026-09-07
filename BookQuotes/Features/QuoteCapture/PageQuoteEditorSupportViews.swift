@@ -1,5 +1,35 @@
 import SwiftUI
 
+/// A single-view cache, released with the viewer. Pan/zoom redraws must not
+/// repeatedly read the file. A newer request or cancellation wins over late IO.
+@MainActor @Observable
+final class SourcePageImageState {
+    private(set) var image: UIImage?
+    private(set) var isLoading = true
+    private var loadedURL: URL?
+    private var requestID = UUID()
+
+    func load(
+        from url: URL?,
+        using loader: (URL?) async throws -> UIImage = PageCapture.loadSourceImage
+    ) async {
+        guard image == nil || loadedURL != url else { return }
+        let id = UUID()
+        requestID = id
+        image = nil
+        isLoading = true
+        defer { if requestID == id { isLoading = false } }
+        do {
+            let result = try await loader(url)
+            guard !Task.isCancelled, requestID == id else { return }
+            loadedURL = url
+            image = result
+        } catch {
+            // The viewer presents an explicit unavailable state, never stale pixels.
+        }
+    }
+}
+
 // MARK: - Full Image Viewer
 
 /// Full-screen image viewer with zoom and pan.
@@ -10,6 +40,7 @@ struct FullImageViewer: View {
     @State private var scale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
+    @State private var source = SourcePageImageState()
 
     var body: some View {
         NavigationStack {
@@ -17,7 +48,7 @@ struct FullImageViewer: View {
                 ZStack {
                     Color.black.ignoresSafeArea()
 
-                    if let image = page.loadFullImage() {
+                    if let image = source.image {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -63,6 +94,10 @@ struct FullImageViewer: View {
                                 }
                             }
                             .accessibilityLabel("Full source page image")
+                    } else if source.isLoading {
+                        ProgressView("Loading source page")
+                            .tint(.white)
+                            .foregroundStyle(.white)
                     } else {
                         ContentUnavailableView(
                             "Image Not Found",
@@ -112,6 +147,7 @@ struct FullImageViewer: View {
             }
             .toolbarBackground(.hidden, for: .navigationBar)
         }
+        .task(id: page.imageURL) { await source.load(from: page.imageURL) }
     }
 }
 

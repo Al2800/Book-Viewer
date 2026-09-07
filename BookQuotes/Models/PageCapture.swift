@@ -249,6 +249,28 @@ final class PageCapture {
         return UIImage(data: data)
     }
 
+    /// Shared asynchronous disk loading for extraction and source inspection.
+    /// Never access a live SwiftData model from the detached worker.
+    nonisolated static func loadSourceImage(from url: URL?) async throws -> UIImage {
+        try Task.checkCancellation()
+        let worker = Task.detached(priority: .userInitiated) {
+            try Task.checkCancellation()
+            guard let url, url.isFileURL,
+                  let image = UIImage(contentsOfFile: url.path) else {
+                throw ExtractionError.invalidImage
+            }
+            try Task.checkCancellation()
+            return image
+        }
+        return try await withTaskCancellationHandler {
+            let image = try await worker.value
+            try Task.checkCancellation()
+            return image
+        } onCancel: {
+            worker.cancel()
+        }
+    }
+
     /// Load the full image from disk
     func loadFullImage() -> UIImage? {
         guard let url = imageURL else { return nil }

@@ -232,6 +232,15 @@ enum PassageReviewGuidance: Equatable {
         }
     }
 
+    /// Extra attention is not the inverse of verification: even high scores
+    /// still require comparison, and manual entries do not have model scores.
+    var needsExtraChecking: Bool {
+        switch self {
+        case .unavailable, .checkSource, .checkCarefully: return true
+        case .manual, .compareWithSource: return false
+        }
+    }
+
     var explanation: String {
         switch self {
         case .manual: return "Compare your entry with the source page before saving."

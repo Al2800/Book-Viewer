@@ -3,6 +3,71 @@ import SwiftUI
 
 @testable import BookQuotes
 
+@MainActor
+final class SourcePageImageStateTests: XCTestCase {
+    func testRepeatedLoadsOfSameSourceReuseViewerImage() async {
+        let state = SourcePageImageState()
+        let image = UIImage()
+        let url = URL(fileURLWithPath: "/source.jpg")
+        var reads = 0
+        let loader: (URL?) async throws -> UIImage = { _ in reads += 1; return image }
+        await state.load(from: url, using: loader)
+        await state.load(from: url, using: loader)
+        XCTAssertEqual(reads, 1)
+        XCTAssertTrue(state.image === image)
+        XCTAssertFalse(state.isLoading)
+    }
+
+    func testMissingSourceClearsPreviousPixelsAndStopsLoading() async {
+        let state = SourcePageImageState()
+        await state.load(from: URL(fileURLWithPath: "/first.jpg"), using: { _ in UIImage() })
+        await state.load(from: nil)
+        XCTAssertNil(state.image)
+        XCTAssertFalse(state.isLoading)
+    }
+
+    func testCancelledUncooperativeLoaderCannotPublishPixels() async {
+        let state = SourcePageImageState()
+        let started = expectation(description: "Loader suspended")
+        var continuation: CheckedContinuation<UIImage, Never>?
+        let task = Task {
+            await state.load(from: URL(fileURLWithPath: "/cancelled.jpg"), using: { _ in
+                await withCheckedContinuation { pending in
+                    continuation = pending
+                    started.fulfill()
+                }
+            })
+        }
+        await fulfillment(of: [started], timeout: 2)
+        task.cancel()
+        continuation?.resume(returning: UIImage())
+        await task.value
+        XCTAssertNil(state.image)
+        XCTAssertFalse(state.isLoading)
+    }
+
+    func testNewSourceWinsOverOlderUncooperativeLoad() async {
+        let state = SourcePageImageState()
+        let started = expectation(description: "Old load suspended")
+        var continuation: CheckedContinuation<UIImage, Never>?
+        let old = Task {
+            await state.load(from: URL(fileURLWithPath: "/old.jpg"), using: { _ in
+                await withCheckedContinuation { pending in
+                    continuation = pending
+                    started.fulfill()
+                }
+            })
+        }
+        await fulfillment(of: [started], timeout: 2)
+        let current = UIImage()
+        await state.load(from: URL(fileURLWithPath: "/new.jpg"), using: { _ in current })
+        continuation?.resume(returning: UIImage())
+        await old.value
+        XCTAssertTrue(state.image === current)
+        XCTAssertFalse(state.isLoading)
+    }
+}
+
 final class PageQuoteEditorListTests: XCTestCase {
 
     func testCountTitleUsesSingularAndPluralQuoteLabels() {

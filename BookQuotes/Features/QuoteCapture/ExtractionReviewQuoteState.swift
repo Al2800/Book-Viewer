@@ -157,6 +157,12 @@ struct ExtractionReviewQuoteState: Codable, Equatable {
             && Set(editingQuotes.map(\.id)).count == editingQuotes.count
     }
 
+    /// Counts all displayed candidates, including excluded ones. Selection and
+    /// editing never convert extraction uncertainty into verification.
+    var extraCheckingCount: Int {
+        editingQuotes.filter { $0.reviewGuidance.needsExtraChecking }.count
+    }
+
     var quoteCounts: [UUID: Int] {
         Dictionary(grouping: editingQuotes, by: \.pageId)
             .mapValues { $0.count }

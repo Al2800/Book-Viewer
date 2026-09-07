@@ -4,6 +4,25 @@ import SwiftData
 @testable import BookQuotes
 
 final class ExtractionReviewQuoteStateTests: XCTestCase {
+    func testExtraCheckingCountsAllCandidatesWithoutChangingSelectionOrVerifyingEdits() {
+        let page = UUID()
+        let scores: [Double?] = [nil, .nan, -.infinity, -0.1, 1.1, 0.49, 0.5, 0.79, 0.8, 1]
+        var state = ExtractionReviewQuoteState(editingQuotes: scores.map {
+            EditableQuote(pageId: page, text: "Source", markingType: "underline", confidence: $0)
+        }, isLoading: false)
+        state.append(EditableQuote(pageId: page, text: "Manual", markingType: "underline", confidence: 0, isManual: true))
+        XCTAssertEqual(state.extraCheckingCount, 8)
+        XCTAssertEqual(state.selectedQuotes.count, 11)
+        let first = state.editingQuotes[0].id
+        state.setSelected(false, id: first)
+        state.editingQuotes[0].isModified = true
+        state.editingQuotes[0].text = "Corrected"
+        XCTAssertEqual(state.extraCheckingCount, 8)
+        XCTAssertEqual(state.selectedQuotes.count, 10)
+        state.applySaveResult(submittedIDs: [first], failures: [])
+        XCTAssertEqual(state.extraCheckingCount, 7)
+    }
+
 
     func testSelectionDefaultsToAllAndDoesNotDeleteExcludedCandidates() {
         let a = EditableQuote(pageId: UUID(), text: "First", markingType: "underline")
