@@ -178,8 +178,8 @@ struct BookQuotesApp: App {
         tabAppearance.configureWithOpaqueBackground()
         tabAppearance.backgroundColor = backgroundColor
 
-        // Selected tab - brand color (deep blue #2C3E50)
-        let brandColor = UIColor(red: 0.173, green: 0.243, blue: 0.314, alpha: 1.0)
+        // Selected tabs are unfilled actions, not filled-button backgrounds.
+        let brandColor = UIColor(Color.actionForeground)
         tabAppearance.stackedLayoutAppearance.selected.iconColor = brandColor
         tabAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: brandColor]
 
@@ -236,6 +236,7 @@ struct BookQuotesApp: App {
                         }
                     }
                     .modelContainer(container)
+                    .tint(Color.actionForeground)
             } else {
                 ErrorView(
                     error: containerError ?? NSError(

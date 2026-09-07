@@ -188,7 +188,7 @@ struct AccountView: View {
                     if subscriptionService.isInTrial {
                         Label("Free Trial Active", systemImage: "gift.fill")
                             .font(.subheadline)
-                            .foregroundStyle(Color.brand)
+                            .foregroundStyle(Color.actionForeground)
                     }
 
                     Text("Renews automatically")
@@ -207,7 +207,7 @@ struct AccountView: View {
                 } label: {
                     HStack {
                         Label("Manage Subscription", systemImage: "creditcard")
-                            .foregroundStyle(Color.brand)
+                            .foregroundStyle(Color.actionForeground)
                         Spacer()
                     }
                 }
@@ -268,7 +268,7 @@ struct AccountView: View {
                     } label: {
                         HStack {
                             Label("Restore Purchases", systemImage: "arrow.clockwise")
-                                .foregroundStyle(Color.brand)
+                                .foregroundStyle(Color.actionForeground)
 
                             Spacer()
 

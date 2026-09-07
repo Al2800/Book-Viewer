@@ -14,5 +14,6 @@ struct ExportOptionsView: View {
             Toggle("Include margin notes", isOn: $options.includeMarginNotes)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Export.includeMarginNotesToggle)
         }
+        .tint(Color.brand)
     }
 }

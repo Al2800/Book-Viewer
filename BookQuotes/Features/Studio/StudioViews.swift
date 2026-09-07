@@ -424,6 +424,7 @@ struct QuoteCanvasCard: View {
                     Image(systemName: "quote.opening")
                         .font(.system(size: max(14, quoteFontSize * 0.9), weight: .semibold))
                         .foregroundStyle(theme.accentColor)
+                        .accessibilityHidden(true)
                     Spacer()
                 }
 
@@ -442,6 +443,7 @@ struct QuoteCanvasCard: View {
                             .font(.system(size: 10))
                             .foregroundStyle(theme.accentColor)
                             .padding(.top, 2)
+                            .accessibilityHidden(true)
                         Text(marginNote)
                             .font(.system(size: max(11, quoteFontSize * 0.75), weight: .regular, design: .serif).italic())
                             .foregroundStyle(theme.textColor.opacity(0.9))
@@ -459,6 +461,7 @@ struct QuoteCanvasCard: View {
                 if let book = quote.book {
                     HStack(alignment: .center, spacing: Spacing.sm) {
                         miniBookCoverBadge(book: book)
+                            .accessibilityHidden(true)
 
                         VStack(alignment: .leading, spacing: 1) {
                             Text(book.title)
@@ -496,6 +499,7 @@ struct QuoteCanvasCard: View {
         ZStack(alignment: .topTrailing) {
             content
             BookmarkRibbon()
+                .accessibilityHidden(true)
                 .padding(.trailing, Spacing.md)
                 .offset(y: -2)
         }

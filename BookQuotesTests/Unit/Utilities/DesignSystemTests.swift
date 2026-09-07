@@ -4,6 +4,43 @@ import SwiftUI
 
 final class DesignSystemTests: XCTestCase {
 
+    @MainActor
+    func testFunctionalTextAndUnfilledActionsMeetContrastInBothAppearances() {
+        for style in [UIUserInterfaceStyle.light, .dark] {
+            for background in [Color.backgroundPrimary, .backgroundSecondary, .backgroundTertiary] {
+                for foreground in [Color.textPrimary, .textSecondary, .actionForeground] {
+                    XCTAssertGreaterThanOrEqual(contrast(foreground, background, style: style), 4.5,
+                                                "Functional text must remain readable in \(style.rawValue)")
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testFilledActionLabelsMeetContrastInBothAppearances() {
+        for style in [UIUserInterfaceStyle.light, .dark] {
+            XCTAssertGreaterThanOrEqual(contrast(.white, .brand, style: style), 4.5)
+            XCTAssertGreaterThanOrEqual(contrast(.white, .destructiveFill, style: style), 4.5)
+        }
+    }
+
+    @MainActor
+    private func contrast(_ first: Color, _ second: Color, style: UIUserInterfaceStyle) -> Double {
+        func luminance(_ color: Color) -> Double {
+            let resolved = UIColor(color).resolvedColor(with: UITraitCollection(userInterfaceStyle: style))
+            var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+            XCTAssertTrue(resolved.getRed(&red, green: &green, blue: &blue, alpha: &alpha))
+            XCTAssertEqual(alpha, 1)
+            func linear(_ component: CGFloat) -> Double {
+                let value = Double(component)
+                return value <= 0.04045 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4)
+            }
+            return 0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue)
+        }
+        let a = luminance(first), b = luminance(second)
+        return (max(a, b) + 0.05) / (min(a, b) + 0.05)
+    }
+
     // MARK: - Typography Tests
 
     func testSerifTypographyTokensAreDefined() {

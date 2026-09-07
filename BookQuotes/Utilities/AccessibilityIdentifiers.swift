@@ -579,5 +579,6 @@ enum AccessibilityIdentifiers {
 
         /// UI test visible book count marker
         static let uiTestBookCount = "ui_test_book_count"
+        static let uiTestMotionMode = "ui_test_motion_mode"
     }
 }

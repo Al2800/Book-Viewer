@@ -45,10 +45,12 @@ struct QuoteMarkingPickerSheet: View {
                             Spacer()
                             if markingType == type {
                                 Image(systemName: "checkmark")
-                                    .foregroundStyle(Color.brand)
+                                    .foregroundStyle(Color.actionForeground)
+                                    .accessibilityHidden(true)
                             }
                         }
                     }
+                    .accessibilityAddTraits(markingType == type ? .isSelected : [])
                 }
             }
             .scrollContentBackground(.hidden)

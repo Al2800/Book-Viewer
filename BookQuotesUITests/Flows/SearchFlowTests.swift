@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 
 /// Tests for the search functionality using seeded test data.
 final class SearchFlowTests: BaseUITestCase {
@@ -288,6 +289,20 @@ final class V2ProductShellTests: BaseUITestCase {
             "--preload-search-test-data",
             "--product-experience-v2"
         ]
+    }
+
+    func testSystemReduceMotionReachesTheCurrentShellAndNavigation() throws {
+        try XCTSkipUnless(UIAccessibility.isReduceMotionEnabled,
+                          "Enable simulator Reduce Motion for this opt-in system-preference check")
+        let probe = app.staticTexts[AccessibilityIdentifiers.Common.uiTestMotionMode]
+        XCTAssertTrue(probe.waitForExistence(timeout: 5))
+        XCTAssertEqual(probe.value as? String, "reduced", "Verify the real SwiftUI environment, not a fake launch flag")
+        let viewAll = app.buttons["reading_view_all_passages"]
+        reveal(viewAll)
+        viewAll.tap()
+        XCTAssertTrue(app.navigationBars["All Passages"].waitForExistence(timeout: 5))
+        tapBackButton()
+        XCTAssertTrue(app.navigationBars["Reading"].waitForExistence(timeout: 5))
     }
 
     func testViewAllPassagesOpensCanonicalDetailAndReturnsToList() {

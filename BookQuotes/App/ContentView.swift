@@ -12,6 +12,7 @@ struct ContentView: View {
     @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = ProductExperience.defaultEnabled
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(NetworkMonitor.self) private var networkMonitor
     @Environment(AuthService.self) private var authService
 
@@ -54,6 +55,12 @@ struct ContentView: View {
                     .font(.caption2)
                     .foregroundStyle(Color.clear)
                     .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestSeeded)
+                Text("UI Test Motion")
+                    .font(.caption2)
+                    .foregroundStyle(Color.clear)
+                    .allowsHitTesting(false)
+                    .accessibilityValue(reduceMotion ? "reduced" : "standard")
+                    .accessibilityIdentifier(AccessibilityIdentifiers.Common.uiTestMotionMode)
             }
 
             if showPersistenceBanner, !persistenceRecoveryMessage.isEmpty {
@@ -152,7 +159,6 @@ struct ContentView: View {
                 .tag(Tab.settings)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.settingsTab)
         }
-        .tint(Color.brand)
         .glassTabBar()
         .background(Color.backgroundPrimary.ignoresSafeArea())
     }
@@ -190,7 +196,6 @@ struct ContentView: View {
                 .tag(V2Tab.studio)
                 .accessibilityIdentifier(V2Tab.studio.accessibilityIdentifier)
         }
-        .tint(Color.brand)
         .glassTabBar()
         .background(Color.backgroundPrimary.ignoresSafeArea())
     }

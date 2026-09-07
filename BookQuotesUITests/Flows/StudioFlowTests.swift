@@ -49,6 +49,12 @@ final class V2StudioFlowTests: BaseUITestCase {
         ]
     }
 
+    func testStudioWorkspacePassesSystemAccessibilityAudit() throws {
+        XCTAssertTrue(tapTab(.studio))
+        XCTAssertTrue(app.buttons["studio_export_menu"].waitForExistence(timeout: 5))
+        try performSystemAccessibilityAudit()
+    }
+
     func testStudioWorkspacePreservesDesignAcrossPassageSelectionAndExports() {
         app.buttons[AccessibilityIdentifiers.V2.studioTab].tap()
         XCTAssertTrue(app.buttons["studio_export_menu"].waitForExistence(timeout: 5))

@@ -27,8 +27,9 @@ struct ExtractionReviewPageGroupHeader: View {
             } label: {
                 Text("View page")
                     .font(.uiPill)
-                    .foregroundStyle(Color.brand)
+                    .foregroundStyle(Color.actionForeground)
                     .frame(minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier(AccessibilityIdentifiers.Capture.viewPageButton(orderIndex: page.orderIndex))
@@ -75,7 +76,7 @@ struct ExtractionReviewPassagesToolbar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
             Button("Cancel", action: onCancel)
-                .foregroundStyle(Color.brand)
+                .foregroundStyle(Color.actionForeground)
                 .disabled(isSaving)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.passagesCancelButton)
         }

@@ -102,6 +102,7 @@ struct SettingsToggleRow: View {
             }
         }
         .toggleStyle(.switch)
+        .tint(Color.brand)
     }
 }
 

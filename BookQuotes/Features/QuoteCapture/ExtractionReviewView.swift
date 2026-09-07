@@ -290,6 +290,7 @@ struct ExtractionReviewView: View {
                                     set: { quoteState.setSelected($0, id: quote.id) }
                                 ))
                                 .font(.subheadline)
+                                .tint(Color.brand)
                                 .frame(minHeight: 44)
                                 .accessibilityLabel("Include passage: \(quote.text)")
                                 .accessibilityIdentifier("capture_passage_selection_toggle")

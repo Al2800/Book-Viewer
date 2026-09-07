@@ -8,6 +8,17 @@ extension Color {
     static let brand = Color("Brand")
     /// Lighter brand variant #34495E
     static let brandLight = Color("BrandLight")
+
+    /// Unfilled actions need a readable foreground, not the dark filled-button
+    /// brand swatch. Reuse the existing ink/paper palette in each appearance.
+    static let actionForeground = Color(uiColor: UIColor { traits in
+        let name = traits.userInterfaceStyle == .dark ? "TextPrimary" : "Brand"
+        return (UIColor(named: name) ?? .label).resolvedColor(with: traits)
+    })
+
+    /// The lighter dark-mode error swatch is for status text, not white labels.
+    static let destructiveFill = Color(uiColor: (UIColor(named: "Error") ?? .systemRed)
+        .resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)))
     /// Warm gold accent #D4A574
     static let accent = Color("Accent")
 

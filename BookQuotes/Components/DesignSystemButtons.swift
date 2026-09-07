@@ -75,14 +75,14 @@ struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.uiLabel)
-            .foregroundStyle(isEnabled ? Color.brand : Color.brand.opacity(0.5))
+            .foregroundStyle(isEnabled ? Color.actionForeground : Color.actionForeground.opacity(0.5))
             .padding(.horizontal, compact ? Spacing.md : Spacing.lg)
             .padding(.vertical, compact ? Spacing.sm : Spacing.md)
             .frame(maxWidth: compact ? nil : .infinity, minHeight: 44)
             .contentShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .stroke(isEnabled ? Color.brand : Color.brand.opacity(0.5), lineWidth: Stroke.thin.width)
+                    .stroke(isEnabled ? Color.actionForeground : Color.actionForeground.opacity(0.5), lineWidth: Stroke.thin.width)
             )
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
@@ -115,7 +115,7 @@ struct DestructiveButtonStyle: ButtonStyle {
             .contentShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .fill(isEnabled ? Color.error : Color.error.opacity(0.5))
+                    .fill(isEnabled ? Color.destructiveFill : Color.destructiveFill.opacity(0.5))
             )
             .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1.0)
             .opacity(configuration.isPressed ? 0.9 : 1.0)
@@ -138,7 +138,7 @@ struct GhostButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.subheadline.weight(.medium))
-            .foregroundStyle(isEnabled ? Color.brand : Color.brand.opacity(0.5))
+            .foregroundStyle(isEnabled ? Color.actionForeground : Color.actionForeground.opacity(0.5))
             .padding(.horizontal, Spacing.sm)
             .padding(.vertical, Spacing.xs)
             .frame(minWidth: 44, minHeight: 44)

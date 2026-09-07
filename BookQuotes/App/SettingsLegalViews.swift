@@ -169,7 +169,7 @@ struct LegalLinksRow: View {
             }
             .buttonStyle(.plain)
         }
-        .foregroundStyle(Color.brand)
+        .foregroundStyle(Color.actionForeground)
     }
 }
 

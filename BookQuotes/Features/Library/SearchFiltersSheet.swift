@@ -162,10 +162,12 @@ struct SearchFiltersSheet: View {
             Toggle(isOn: $filters.favoritesOnly) {
                 Label("Favorites Only", systemImage: "star.fill")
             }
+            .tint(Color.brand)
 
             Toggle(isOn: highConfidenceBinding) {
                 Label("High Confidence Only", systemImage: "checkmark.seal.fill")
             }
+            .tint(Color.brand)
 
             if filters.minConfidence != nil {
                 HStack {

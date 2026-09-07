@@ -189,7 +189,7 @@ class BaseUITestCase: XCTestCase {
     }
 
     /// Runs Apple's production-facing accessibility checks while ignoring the two invisible
-    /// synchronization markers that exist only in UI-test builds. Dynamic Type has dedicated
+    /// synchronization markers and the motion probe that exist only in UI-test builds. Dynamic Type has dedicated
     /// Accessibility XXXL workflow tests because Apple's audit loses element identity when
     /// `ViewThatFits` changes presentation during its font-size sweep. Contrast is validated
     /// deterministically from the asset colors because iOS 26 falsely flags opaque black serif
@@ -201,7 +201,8 @@ class BaseUITestCase: XCTestCase {
     func performSystemAccessibilityAudit() throws {
         let testOnlyIdentifiers: Set<String> = [
             AccessibilityIdentifiers.Common.uiTestSeeded,
-            AccessibilityIdentifiers.Common.uiTestBookCount
+            AccessibilityIdentifiers.Common.uiTestBookCount,
+            AccessibilityIdentifiers.Common.uiTestMotionMode
         ]
 
         try app.performAccessibilityAudit(for: [
@@ -212,6 +213,7 @@ class BaseUITestCase: XCTestCase {
             guard let element = issue.element else { return false }
             return testOnlyIdentifiers.contains(element.identifier)
         }
+        captureScreenshot(named: "accessibility_audit", description: "Hit-region, label and trait audit; contrast checked separately")
     }
 
     private var shouldWaitForSeedData: Bool {
@@ -1070,6 +1072,7 @@ enum AccessibilityIdentifiers {
         static let moreMenuButton = "more_menu_button"
         static let uiTestSeeded = "ui_test_seeded"
         static let uiTestBookCount = "ui_test_book_count"
+        static let uiTestMotionMode = "ui_test_motion_mode"
     }
 }
 
