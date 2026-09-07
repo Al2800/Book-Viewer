@@ -66,7 +66,7 @@ struct ExtractionReviewAddPassageRow: View {
 
 struct ExtractionReviewPassagesToolbar: ToolbarContent {
     let bookTitle: String
-    let hasAppeared: Bool
+    let passageCount: Int
     let canSave: Bool
     let isSaving: Bool
     let onCancel: () -> Void
@@ -76,6 +76,7 @@ struct ExtractionReviewPassagesToolbar: ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
             Button("Cancel", action: onCancel)
                 .foregroundStyle(Color.brand)
+                .disabled(isSaving)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Capture.passagesCancelButton)
         }
 
@@ -91,7 +92,6 @@ struct ExtractionReviewPassagesToolbar: ToolbarContent {
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Passages, \(bookTitle)")
-            .opacity(hasAppeared ? 1 : 0)
         }
 
         ToolbarItem(placement: .confirmationAction) {
@@ -99,19 +99,17 @@ struct ExtractionReviewPassagesToolbar: ToolbarContent {
                 Group {
                     if isSaving {
                         ProgressView()
-                            .tint(Color.darkLinen)
+                            .tint(.white)
+                            .accessibilityLabel("Saving passages")
                     } else {
-                        Text("Save to Library")
-                            .font(.uiPill.weight(.semibold))
-                            .foregroundStyle(Color.darkLinen)
+                        Text("Save \(passageCount)")
                     }
                 }
-                .padding(.horizontal, Spacing.md)
-                .frame(height: 36)
-                .background(LinearGradient.foilAccent, in: Capsule())
-                .opacity(canSave ? 1 : 0.4)
+
             }
+            .buttonStyle(.primaryCompact)
             .disabled(!canSave)
+            .accessibilityLabel(isSaving ? "Saving passages" : "Save \(passageCount) \(passageCount == 1 ? "passage" : "passages")")
             .accessibilityIdentifier(AccessibilityIdentifiers.Capture.saveToLibraryButton)
         }
     }

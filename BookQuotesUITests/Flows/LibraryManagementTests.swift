@@ -131,7 +131,7 @@ final class LibraryManagementTests: BaseUITestCase {
         menuButton.tap()
 
         logger.step(3, "Opening export sheet")
-        let exportItem = app.buttons["Export Quotes"]
+        let exportItem = app.buttons["Export Passages"]
         XCTAssertTrue(exportItem.waitForExistence(timeout: 2), "Export option should be available")
         exportItem.tap()
 

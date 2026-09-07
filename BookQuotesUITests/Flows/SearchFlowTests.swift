@@ -68,7 +68,7 @@ final class SearchFlowTests: BaseUITestCase {
         logger.step(2, "Checking search scope buttons")
         let allScope = app.buttons["All"]
         let booksScope = app.buttons["Books"]
-        let quotesScope = app.buttons["Quotes"]
+        let quotesScope = app.buttons["Passages"]
 
         XCTAssertTrue(allScope.waitForExistence(timeout: 3))
         XCTAssertTrue(booksScope.exists)
@@ -125,9 +125,9 @@ final class SearchFlowTests: BaseUITestCase {
 
         logger.step(3, "Verifying navigation to detail")
         // Should navigate to either book detail or quote detail
-        let quotesLabel = app.staticTexts["Quotes"]
-        let quoteNav = app.navigationBars["Quote"]
-        let navigated = quotesLabel.waitForExistence(timeout: 3) || quoteNav.exists
+        let bookTitle = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        let quoteNav = app.navigationBars["Passage"]
+        let navigated = bookTitle.waitForExistence(timeout: 3) || quoteNav.exists
         XCTAssertTrue(navigated, "Should navigate to detail view")
 
         logger.success("Navigated to detail view")
@@ -145,7 +145,7 @@ final class SearchFlowTests: BaseUITestCase {
 
     private func searchFor(_ query: String) {
         let searchField = activateSearchField()
-        searchField.typeText(query)
+        searchField.typeText(query + "\n")
     }
 
     private func hasResults() -> Bool {

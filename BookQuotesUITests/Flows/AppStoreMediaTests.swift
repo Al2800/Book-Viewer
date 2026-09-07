@@ -331,7 +331,7 @@ fileprivate extension BaseUITestCase {
 
         let editor = app.textViews[AccessibilityIdentifiers.QuoteDetail.textEditor]
         let favoriteButton = app.buttons[AccessibilityIdentifiers.QuoteDetail.favoriteButton]
-        let navTitle = app.navigationBars["Quote"]
+        let navTitle = app.navigationBars["Passage"]
         let moreMenu = app.buttons[AccessibilityIdentifiers.Common.moreMenuButton]
 
         // If the first tap didn't navigate, retry once with a coordinate-tap (more reliable for SwiftUI).

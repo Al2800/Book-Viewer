@@ -13,7 +13,7 @@ struct QuoteDetailOrganizeSection: View {
                 .sectionHeaderStyle()
 
             if quote.collections.isEmpty && quote.tags.isEmpty {
-                Text("Group this quote into collections or label it with tags.")
+                Text("Group this passage into collections or label it with tags.")
                     .font(.caption)
                     .foregroundStyle(Color.textSecondary)
             }

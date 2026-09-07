@@ -35,7 +35,6 @@ struct QuoteDetailView: View {
 
     // MARK: - Animation State
 
-    @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Focus State
@@ -47,65 +46,14 @@ struct QuoteDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Spacing.xl) {
-                // Design Quote Card in Studio Action Card
-                if !isEditing {
-                    Button {
-                        HapticManager.light()
-                        showStudioSheet = true
-                    } label: {
-                        HStack(spacing: Spacing.md) {
-                            Image(systemName: "sparkles.rectangle.stack")
-                                .font(.uiLabel)
-                                .foregroundStyle(Color.gildedAccent)
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Design Quote Card")
-                                    .font(.uiLabel)
-                                    .foregroundStyle(Color.textPrimary)
-
-                                Text("Style with v2 editorial themes & export to social, Obsidian or Notion")
-                                    .font(.caption)
-                                    .foregroundStyle(Color.textSecondary)
-                            }
-
-                            Spacer()
-
-                            Image(systemName: "chevron.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Color.textTertiary)
-                        }
-                        .padding(Spacing.md)
-                        .background(
-                            RoundedRectangle(cornerRadius: CornerRadius.lg)
-                                .fill(Color.warmVellum)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: CornerRadius.lg)
-                                        .stroke(Color.gildedAccent.opacity(0.4), lineWidth: 1)
-                                )
-                        )
-                        .shadow(color: Color.black.opacity(0.04), radius: 4, y: 2)
-                    }
-                    .buttonStyle(.plain)
-                    .opacity(hasAppeared ? 1 : 0)
-                    .offset(y: hasAppeared ? 0 : 15)
-                }
-
-                // Quote text
+                // Authored content appears immediately; Studio remains an explicit menu action.
                 quoteSection
-                    .opacity(hasAppeared ? 1 : 0)
-                    .offset(y: hasAppeared ? 0 : 15)
 
-                // Margin note if present
                 if quote.marginNote != nil || isEditing {
                     marginNoteSection
-                        .opacity(hasAppeared ? 1 : 0)
-                        .offset(y: hasAppeared ? 0 : 15)
                 }
 
-                // Metadata section
                 metadataSection
-                    .opacity(hasAppeared ? 1 : 0)
-                    .offset(y: hasAppeared ? 0 : 15)
 
                 // Collections and tags
                 QuoteDetailOrganizeSection(
@@ -119,41 +67,25 @@ struct QuoteDetailView: View {
                         organizationSheet = .tags
                     }
                 )
-                    .opacity(hasAppeared ? 1 : 0)
-                    .offset(y: hasAppeared ? 0 : 15)
 
                 // Source image button
                 if quote.sourceImageData != nil {
                     QuoteDetailSourceImageButton {
                         showSourceImage = true
                     }
-                        .opacity(hasAppeared ? 1 : 0)
-                        .offset(y: hasAppeared ? 0 : 15)
                 }
 
                 // Book info
                 if let book = quote.book {
                     QuoteDetailBookSection(book: book)
-                        .opacity(hasAppeared ? 1 : 0)
-                        .offset(y: hasAppeared ? 0 : 15)
                 }
             }
             .padding()
-            .animation(reduceMotion ? .none : .smoothSpring.delay(0.1), value: hasAppeared)
         }
         .background(Color.backgroundPrimary)
         // Edit mode transition animation
         .animation(reduceMotion ? .none : .smoothSpring, value: isEditing)
-        .onAppear {
-            guard !reduceMotion else {
-                hasAppeared = true
-                return
-            }
-            withAnimation(.smoothSpring.delay(0.15)) {
-                hasAppeared = true
-            }
-        }
-        .navigationTitle("Quote")
+        .navigationTitle("Passage")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             // Favorite button (only when not editing)
@@ -186,13 +118,13 @@ struct QuoteDetailView: View {
                         Button {
                             copyToClipboard()
                         } label: {
-                            Label("Copy Quote", systemImage: "doc.on.doc")
+                            Label("Copy Passage", systemImage: "doc.on.doc")
                         }
 
                         Button {
                             showStudioSheet = true
                         } label: {
-                            Label("Design Quote Card", systemImage: "sparkles.rectangle.stack")
+                            Label("Design Card in Studio", systemImage: "sparkles.rectangle.stack")
                         }
 
                         Button {
@@ -220,7 +152,7 @@ struct QuoteDetailView: View {
                         Button(role: .destructive) {
                             showDeleteConfirmation = true
                         } label: {
-                            Label("Delete Quote", systemImage: "trash")
+                            Label("Delete Passage", systemImage: "trash")
                         }
                         .accessibilityIdentifier(AccessibilityIdentifiers.QuoteDetail.deleteButton)
                     } label: {

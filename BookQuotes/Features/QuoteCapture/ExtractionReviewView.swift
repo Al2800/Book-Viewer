@@ -22,7 +22,6 @@ struct ExtractionReviewView: View {
     @State private var pendingDuplicateChecks: [QuoteSaveService.PreSaveCheckResult] = []
     @State private var approvedQuotes: [ExtractedQuote] = []
     @State private var currentDuplicateCheck: DuplicateCheckItem?
-    @State private var hasAppeared = false
     @State private var hasStartedProcessing = false
     @State private var showingAIConsent = false
     @State private var pageToView: PageCapture?
@@ -78,7 +77,7 @@ struct ExtractionReviewView: View {
     }
 
     private var showsPageHeaders: Bool {
-        session.captures.count > 1
+        !session.captures.isEmpty
     }
 
     // MARK: - Body
@@ -103,8 +102,8 @@ struct ExtractionReviewView: View {
             .toolbar {
                 ExtractionReviewPassagesToolbar(
                     bookTitle: book.title,
-                    hasAppeared: hasAppeared,
-                    canSave: !quoteState.editingQuotes.isEmpty && !isSaving,
+                    passageCount: totalQuoteCount,
+                    canSave: totalQuoteCount > 0 && !isSaving && !isProcessing && !quoteState.isLoading,
                     isSaving: isSaving,
                     onCancel: {
                         HapticManager.light()
@@ -126,7 +125,7 @@ struct ExtractionReviewView: View {
                 }
                 Button("Keep Editing", role: .cancel) {}
             } message: {
-                Text("You have \(totalQuoteCount) unsaved quotes. Are you sure you want to discard them?")
+                Text("You have \(totalQuoteCount) unsaved passages. Are you sure you want to discard them?")
             }
             .alert("Save Error", isPresented: .init(
                 get: { saveError != nil },
@@ -176,14 +175,6 @@ struct ExtractionReviewView: View {
             loadExtractedQuotes()
             selectFirstPage()
             startProcessingIfNeeded()
-            // Trigger entrance animation
-            guard !UITestConfiguration.isUITesting, !reduceMotion else {
-                hasAppeared = true
-                return
-            }
-            withAnimation(.smoothSpring.delay(0.2)) {
-                hasAppeared = true
-            }
         }
         // Animate quote count changes
         .animation(reduceMotion ? .none : .snappy, value: totalQuoteCount)

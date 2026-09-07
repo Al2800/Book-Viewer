@@ -125,7 +125,7 @@ struct BookDetailView: View {
         .searchable(
             text: $quoteSearchText,
             placement: .navigationBarDrawer(displayMode: .automatic),
-            prompt: "Search quotes in this book"
+            prompt: "Search passages in this book"
         )
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -134,7 +134,7 @@ struct BookDetailView: View {
                         HapticManager.light()
                         showExportSheet = true
                     } label: {
-                        Label("Export Quotes", systemImage: "square.and.arrow.up")
+                        Label("Export Passages", systemImage: "square.and.arrow.up")
                     }
 
                     Button {
@@ -153,7 +153,7 @@ struct BookDetailView: View {
                         quoteCaptureSheetID = UUID()
                         showQuoteCaptureSheet = true
                     } label: {
-                        Label("Add Quotes", systemImage: "camera")
+                        Label("Capture Passages", systemImage: "camera")
                     }
                     .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.captureQuotesButton)
 
@@ -210,7 +210,7 @@ struct BookDetailView: View {
     private var statsBar: some View {
         HStack(spacing: Spacing.md) {
             StatBadge(
-                label: "Quotes",
+                label: "Passages",
                 value: "\(book.quoteCount)",
                 icon: "quote.opening"
             )
@@ -323,16 +323,16 @@ struct BookDetailView: View {
 
     private var emptyQuotesView: some View {
         ContentUnavailableView {
-            Label("No Quotes Yet", systemImage: "quote.opening")
+            Label("No Passages Yet", systemImage: "quote.opening")
         } description: {
-            Text("Capture pages from this book to start extracting quotes.")
+            Text("Capture a marked page from this book to save your first passage.")
         } actions: {
             Button {
                 HapticManager.light()
                 quoteCaptureSheetID = UUID()
                 showQuoteCaptureSheet = true
             } label: {
-                Label("Capture Quotes", systemImage: "camera")
+                Label("Capture Passages", systemImage: "camera")
             }
             .glassButton()
             .accessibilityIdentifier(AccessibilityIdentifiers.BookDetail.captureQuotesButton)
@@ -341,12 +341,12 @@ struct BookDetailView: View {
 
     private var noFilterResultsView: some View {
         ContentUnavailableView {
-            Label("No Matching Quotes", systemImage: "magnifyingglass")
+            Label("No Matching Passages", systemImage: "magnifyingglass")
         } description: {
             if isSearchingQuotes {
-                Text("No quotes in this book match \u{201C}\(quoteSearchText)\u{201D}.")
+                Text("No passages in this book match \u{201C}\(quoteSearchText)\u{201D}.")
             } else {
-                Text("No quotes match the current filter.")
+                Text("No passages match the current filter.")
             }
         } actions: {
             if isSearchingQuotes {

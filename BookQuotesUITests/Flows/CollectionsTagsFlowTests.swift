@@ -435,7 +435,7 @@ final class CollectionsTagsFlowTests: BaseUITestCase {
         quote.tap()
 
         // Wait for quote detail
-        XCTAssertTrue(app.navigationBars["Quote"].waitForExistence(timeout: 3), "Quote detail should open")
+        XCTAssertTrue(app.navigationBars["Passage"].waitForExistence(timeout: 3), "Quote detail should open")
     }
 
     private func openFirstBook() {
@@ -658,6 +658,6 @@ final class AdaptiveCollectionsTagsLayoutTests: BaseUITestCase {
         }
         quote.tap()
 
-        XCTAssertTrue(app.navigationBars["Quote"].waitForExistence(timeout: 5), "Quote detail should open")
+        XCTAssertTrue(app.navigationBars["Passage"].waitForExistence(timeout: 5), "Quote detail should open")
     }
 }

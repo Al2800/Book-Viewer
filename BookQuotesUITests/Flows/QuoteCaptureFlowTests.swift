@@ -283,6 +283,20 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.success("Detected page number is displayed")
     }
 
+    func testSinglePageReview_ExposesSourceAndCountedSave() {
+        navigateToExtractionReview()
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertTrue(save.waitForExistence(timeout: 10))
+        XCTAssertTrue(save.label.hasPrefix("Save ") && save.label.contains("passage"))
+        let viewPage = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", AccessibilityIdentifiers.Capture.viewPageButton)).firstMatch
+        XCTAssertTrue(viewPage.waitForExistence(timeout: 5))
+        viewPage.tap()
+        let close = app.buttons["Close image"]
+        XCTAssertTrue(close.waitForExistence(timeout: 5))
+        close.tap()
+        XCTAssertTrue(save.waitForExistence(timeout: 5) && save.isEnabled)
+    }
+
     // MARK: - Save Flow Tests
 
     func testSavePassages_ReturnsToCameraWithOptionalBookNavigation() {
