@@ -2,6 +2,14 @@
 
 This document explains the end-to-end capture system in BookQuotes—from photographing a book page to having quotes saved in your library.
 
+## Current journey — 2026-09-07
+
+Capture tab, Continue Reading and Book Detail now present the existing `CaptureTabRootView` orchestration rather than independent HUD/book-switcher wrappers. The presenting owner supplies the initial book and explicit exit action; Book Detail retains its fresh-presentation ID. Saving a single page or batch returns to the same-book single-page camera with a saved confirmation and optional **View passages** action. Registration inside capture stays in capture. Close returns to the presenting owner; dismissing review is not a successful save.
+
+Single-page HUD navigation is disabled while the camera is capturing, processing or holding a review session. A non-empty batch asks the user to process/save its draft before switching books. Batch Finish and Save Draft only navigate after successful persistence; failures retain the session/pages and display a retryable error instead of silently succeeding. Source files are not deleted by these changes.
+
+Verification: iPhone 17 Pro iOS 26.5 simulator, mocked camera/extraction. `capture-loop-20260907-4.xcresult` under `artifacts/coherent-ui/` records 739 unit tests (one optional fixture skipped, zero failures), plus passing tab-save/optional-navigation, review-dismissal and two batch journeys. Its new repeated-page UI test initially failed on a transient hidden-element AX hittability query; corrected to observe the completion control. `capture-loop-20260907-5.xcresult` then passes three successive captures/saves, explicit duplicate approval, same active-book identity and return to the originating Book Detail. Physical camera/flash/lifecycle, forced persistence failure, additional entry-point/registration E2E and full workflow retirement remain acceptance gates on `book-quote-coherent-ui-5sy4.2`. Older sections below contain historical designs, not instructions to revive mode-selection or image-review gates.
+
 ---
 
 ## Table of Contents

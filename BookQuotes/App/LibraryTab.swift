@@ -93,7 +93,6 @@ struct LibraryView: View {
     @State private var showEditSheet = false
     @State private var showAddBookCapture = false
     @State private var activeBookToCapture: Book?
-    @State private var showingCaptureBookSwitcher = false
     @State private var hasAppeared = false
     @State private var isRefreshing = false
     @State private var selectedCollectionIds: Set<UUID> = []
@@ -224,50 +223,14 @@ struct LibraryView: View {
             )
         }
         .fullScreenCover(item: $activeBookToCapture) { book in
-            QuoteCaptureFlowView(
-                book: book,
-                hidesHeaderBar: true,
-                hidesTabBar: true,
-                onComplete: {
+            CaptureTabRootView(
+                initialBook: book,
+                onViewPassages: { savedBook in
                     activeBookToCapture = nil
+                    router.navigate(to: savedBook)
                 },
-                onCancel: {
-                    activeBookToCapture = nil
-                },
-                onChooseBook: {
-                    showingCaptureBookSwitcher = true
-                }
+                onExit: { activeBookToCapture = nil }
             )
-            .overlay(alignment: .top) {
-                HStack(alignment: .top, spacing: Spacing.xs) {
-                    ActiveBookHUDView(
-                        book: book,
-                        onSwitchBook: {
-                            showingCaptureBookSwitcher = true
-                        },
-                        onClose: {
-                            activeBookToCapture = nil
-                        }
-                    )
-
-                    Spacer(minLength: 0)
-                }
-                .padding(.horizontal, Spacing.md)
-                .padding(.top, Spacing.sm)
-            }
-            .sheet(isPresented: $showingCaptureBookSwitcher) {
-                ActiveBookSwitcherSheet(
-                    currentBook: book,
-                    onSelectBook: { selected in
-                        ActiveReadingSessionStore.shared.setActiveBook(selected)
-                        activeBookToCapture = selected
-                    },
-                    onScanNewBook: {
-                        activeBookToCapture = nil
-                        showAddBookCapture = true
-                    }
-                )
-            }
         }
         .sheet(isPresented: $showEditSheet) {
             if let book = bookToEdit {

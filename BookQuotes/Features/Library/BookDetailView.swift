@@ -27,8 +27,6 @@ struct BookDetailView: View {
     @State private var showEditSheet = false
     @State private var showQuoteCaptureSheet = false
     @State private var quoteCaptureSheetID = UUID()
-    @State private var captureBook: Book?
-    @State private var showingCaptureBookSwitcher = false
     @State private var showDeleteConfirmation = false
     @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -153,7 +151,6 @@ struct BookDetailView: View {
                         // SwiftUI may preserve sheet state across presentations, which can leave the capture
                         // view in a non-preview state (camera visible but no shutter controls).
                         quoteCaptureSheetID = UUID()
-                        captureBook = book
                         showQuoteCaptureSheet = true
                     } label: {
                         Label("Add Quotes", systemImage: "camera")
@@ -182,48 +179,17 @@ struct BookDetailView: View {
             BookEditView(mode: .edit(book))
         }
         .fullScreenCover(isPresented: $showQuoteCaptureSheet) {
-            QuoteCaptureView(
-                book: captureBook ?? book,
-                hidesHeaderBar: true,
-                hidesTabBar: true,
-                onComplete: {
+            CaptureTabRootView(
+                initialBook: book,
+                onViewPassages: { savedBook in
                     showQuoteCaptureSheet = false
+                    if savedBook.id != book.id {
+                        router.navigate(to: savedBook)
+                    }
                 },
-                onCancel: {
-                    showQuoteCaptureSheet = false
-                }
+                onExit: { showQuoteCaptureSheet = false }
             )
             .id(quoteCaptureSheetID)
-            .overlay(alignment: .top) {
-                HStack(alignment: .top, spacing: Spacing.xs) {
-                    ActiveBookHUDView(
-                        book: captureBook ?? book,
-                        onSwitchBook: {
-                            showingCaptureBookSwitcher = true
-                        },
-                        onClose: {
-                            showQuoteCaptureSheet = false
-                        }
-                    )
-                    Spacer(minLength: 0)
-                }
-                .padding(.horizontal, Spacing.md)
-                .padding(.top, Spacing.sm)
-            }
-            .sheet(isPresented: $showingCaptureBookSwitcher) {
-                ActiveBookSwitcherSheet(
-                    currentBook: captureBook ?? book,
-                    onSelectBook: { selected in
-                        ActiveReadingSessionStore.shared.setActiveBook(selected)
-                        captureBook = selected
-                        quoteCaptureSheetID = UUID()
-                    },
-                    onScanNewBook: {
-                        showingCaptureBookSwitcher = false
-                        showQuoteCaptureSheet = false
-                    }
-                )
-            }
         }
         .confirmationDialog(
             deletionPrompt.title,
@@ -364,7 +330,6 @@ struct BookDetailView: View {
             Button {
                 HapticManager.light()
                 quoteCaptureSheetID = UUID()
-                captureBook = book
                 showQuoteCaptureSheet = true
             } label: {
                 Label("Capture Quotes", systemImage: "camera")

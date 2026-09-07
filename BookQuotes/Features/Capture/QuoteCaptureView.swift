@@ -16,6 +16,7 @@ struct QuoteCaptureView: View {
     var hidesTabBar: Bool = true
     var onComplete: (() -> Void)?
     var onCancel: (() -> Void)?
+    var onNavigationAvailabilityChanged: ((Bool) -> Void)?
 
     // MARK: - State
 
@@ -91,6 +92,9 @@ struct QuoteCaptureView: View {
         .onAppear {
             cameraPermission.checkStatus()
             setupCamera()
+        }
+        .onChange(of: captureState == .previewing && !cameraService.isCapturing && capturedSession == nil, initial: true) { _, available in
+            onNavigationAvailabilityChanged?(available)
         }
         .onChange(of: scenePhase) { _, phase in
             handleScenePhase(phase)

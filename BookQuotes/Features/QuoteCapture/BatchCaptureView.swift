@@ -157,7 +157,12 @@ struct BatchCaptureView: View {
             ActiveBookHUDView(
                 book: book,
                 onSwitchBook: {
-                    onSwitchBook?()
+                    // A non-empty batch must be processed or saved as a draft before switching.
+                    if session.totalPages > 0 {
+                        cancelBatchCapture()
+                    } else {
+                        onSwitchBook?()
+                    }
                 },
                 onClose: cancelBatchCapture
             )
@@ -430,18 +435,32 @@ struct BatchCaptureView: View {
     }
 
     private func finishAndProcess() {
-        session.finishCapturing()
-        modelContext.insert(session)
-        try? modelContext.save()
+        guard persistReadySession() else { return }
         onComplete(session)
     }
 
     private func saveDraft() {
-        session.finishCapturing()
-        modelContext.insert(session)
-        try? modelContext.save()
+        guard persistReadySession() else { return }
         HapticManager.success()
         onCancel()
+    }
+
+    private func persistReadySession() -> Bool {
+        let previousStatus = session.status
+        session.finishCapturing()
+        modelContext.insert(session)
+        do {
+            try modelContext.save()
+            return true
+        } catch {
+            // Keep the same pages and session available to retry; do not roll back
+            // the whole context or delete recoverable source images.
+            session.status = previousStatus
+            errorMessage = "Your pages are still here. Could not save this capture session: \(error.localizedDescription)"
+            showError = true
+            HapticManager.error()
+            return false
+        }
     }
 
     @MainActor

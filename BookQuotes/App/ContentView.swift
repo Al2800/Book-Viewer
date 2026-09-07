@@ -119,8 +119,7 @@ struct ContentView: View {
                 .accessibilityIdentifier(AccessibilityIdentifiers.Tabs.libraryTab)
 
             CaptureTab(
-                onBookCreated: openBookInReading,
-                onQuotesSaved: openBookInReading,
+                onViewPassages: openBookInReading,
                 onExit: { selectedTab = .library }
             )
                 .tabItem {
@@ -166,8 +165,7 @@ struct ContentView: View {
                 .accessibilityIdentifier(V2Tab.reading.accessibilityIdentifier)
 
             CaptureTab(
-                onBookCreated: openBookInReading,
-                onQuotesSaved: openBookInReading,
+                onViewPassages: openBookInReading,
                 onExit: { selectedV2Tab = .reading }
             )
                 .tabItem {

@@ -285,7 +285,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     // MARK: - Save Flow Tests
 
-    func testSaveQuotes_NavigatesToBookDetail() {
+    func testSavePassages_ReturnsToCameraWithOptionalBookNavigation() {
         navigateToExtractionReview()
 
         logger.step(1, "Finding save button")
@@ -294,11 +294,55 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(saveAllButton.isEnabled, "Save to Library should be enabled for extracted quotes")
         saveAllButton.tap()
 
-        logger.step(2, "Verifying navigation after save")
+        logger.step(2, "Verifying the continuous camera loop")
+        let camera = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+        XCTAssertTrue(camera.waitForExistence(timeout: 8), "Saving must return to the same-book camera")
+        XCTAssertTrue(camera.isEnabled)
+        let viewPassages = app.buttons["capture_view_passages_button"]
+        XCTAssertTrue(viewPassages.waitForExistence(timeout: 5), "Book navigation must be optional")
+        viewPassages.tap()
         let bookDetailTitle = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
-        XCTAssertTrue(bookDetailTitle.waitForExistence(timeout: 8), "Saving quotes should return to the captured book")
+        XCTAssertTrue(bookDetailTitle.waitForExistence(timeout: 8), "View passages should open the captured book")
 
-        logger.success("Quotes saved and navigated successfully")
+        logger.success("Passages saved; camera retained; explicit navigation verified")
+    }
+
+    func testBookDetailCapture_ThreeSuccessivePagesKeepActiveBook() {
+        navigateToLibrary()
+        openFirstBook()
+        let sourceTitle = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].label
+        openCaptureFromBookDetail()
+        let activeBook = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Active Book:'")).firstMatch
+        XCTAssertTrue(activeBook.waitForExistence(timeout: 5))
+        let initialLabel = activeBook.label
+        XCTAssertTrue(initialLabel.contains(sourceTitle))
+
+        for _ in 0..<3 {
+            triggerCapture()
+            XCTAssertTrue(waitForPassagesSheet())
+            let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+            XCTAssertTrue(save.waitForExistence(timeout: 10))
+            XCTAssertTrue(save.isEnabled)
+            save.tap()
+
+            // Reusing the deterministic page fixture deliberately exercises duplicate review.
+            let camera = app.buttons[AccessibilityIdentifiers.Capture.testImageButton]
+            for _ in 0..<12 {
+                // Observe the completion control, not hittability of a camera behind
+                // a dismissing sheet (iOS 26 AX can throw for that hidden element).
+                if app.buttons["capture_view_passages_button"].waitForExistence(timeout: 1) { break }
+                let saveAnyway = app.buttons.matching(NSPredicate(format: "label IN %@", ["Save Anyway", "Save Duplicate Anyway"])).firstMatch
+                if saveAnyway.waitForExistence(timeout: 2) { saveAnyway.tap() }
+            }
+            XCTAssertTrue(app.buttons["capture_view_passages_button"].waitForExistence(timeout: 5))
+            XCTAssertTrue(camera.waitForExistence(timeout: 5) && camera.isEnabled)
+            XCTAssertEqual(activeBook.label, initialLabel)
+            XCTAssertTrue(app.buttons["capture_view_passages_button"].exists)
+        }
+
+        app.buttons[AccessibilityIdentifiers.Capture.cancelButton].tap()
+        XCTAssertTrue(app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].label, sourceTitle)
     }
 
     // MARK: - Cancel Flow Tests

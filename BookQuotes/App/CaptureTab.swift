@@ -3,14 +3,12 @@ import SwiftData
 
 /// Capture tab - ISBN scanning and marked-page capture
 struct CaptureTab: View {
-    var onBookCreated: ((Book) -> Void)?
-    var onQuotesSaved: ((Book) -> Void)?
+    var onViewPassages: ((Book) -> Void)?
     var onExit: (() -> Void)?
 
     var body: some View {
         CaptureTabRootView(
-            onBookCreated: onBookCreated,
-            onQuotesSaved: onQuotesSaved,
+            onViewPassages: onViewPassages,
             onExit: onExit
         )
     }

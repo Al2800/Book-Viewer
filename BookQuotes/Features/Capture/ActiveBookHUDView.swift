@@ -49,11 +49,13 @@ struct ActiveBookHUDView: View {
                 .padding(.leading, Spacing.md)
                 .padding(.trailing, onClose == nil ? Spacing.md : Spacing.xs)
                 .padding(.vertical, Spacing.xs)
+                .frame(minHeight: 44)
                 .contentShape(Capsule())
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(book != nil ? "Active Book: \(book!.title). Tap to switch" : "Select active book")
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(book.map { "Active Book: \($0.title). Tap to switch" } ?? "Select active book")
 
             if let onClose {
                 Button(action: onClose) {

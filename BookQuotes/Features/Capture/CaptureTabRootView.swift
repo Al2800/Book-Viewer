@@ -16,9 +16,11 @@ struct CaptureTabRootView: View {
     @State private var showingBookSwitcher = false
     @State private var showingDrafts = false
     @State private var draftErrorMessage: String?
-    var onBookCreated: ((Book) -> Void)?
-    var onQuotesSaved: ((Book) -> Void)?
+    var initialBook: Book?
+    var onViewPassages: ((Book) -> Void)?
     var onExit: (() -> Void)?
+    @State private var savedBook: Book?
+    @State private var captureNavigationAvailable = true
     @State private var showCoaching = false
     @AppStorage("hasCompletedCaptureCoaching") private var hasCompletedCoaching = false
     @Environment(\.scenePhase) private var scenePhase
@@ -181,21 +183,47 @@ struct CaptureTabRootView: View {
                 onComplete: {
                     let completedBook = selectedBook
                     handleCaptureFlowEvent(.completeQuoteCapture)
-                    if let completedBook {
-                        onQuotesSaved?(completedBook)
-                    }
+                    savedBook = completedBook
                 },
                 onCancel: exitCapture,
                 onChooseBook: {
                     showingBookSwitcher = true
+                },
+                onNavigationAvailabilityChanged: { available in
+                    captureNavigationAvailable = available
+                    if !available { savedBook = nil }
                 }
             )
             .id(captureFlow.quoteCaptureFlowID)
             .overlay(alignment: .top) {
                 if selectedBook != nil {
-                    quoteCaptureHUD
-                        .padding(.horizontal, Spacing.md)
-                        .padding(.top, Spacing.sm)
+                    VStack(spacing: Spacing.sm) {
+                        quoteCaptureHUD
+                        if let savedBook {
+                            HStack {
+                                Label("Passages saved", systemImage: "checkmark.circle.fill")
+                                    .font(.subheadline)
+                                    .accessibilityIdentifier("capture_saved_confirmation")
+                                Spacer()
+                                if let onViewPassages {
+                                    Button { onViewPassages(savedBook) } label: {
+                                        Text("View passages")
+                                            .font(.subheadline.weight(.semibold))
+                                            .frame(minHeight: 44)
+                                            .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityIdentifier("capture_view_passages_button")
+                                }
+                            }
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, Spacing.md)
+                            .cameraChrome(cornerRadius: CornerRadius.md)
+                        }
+                    }
+                    .padding(.horizontal, Spacing.md)
+                    .padding(.top, Spacing.sm)
+                    .disabled(!captureNavigationAvailable)
                 }
             }
 
@@ -205,7 +233,6 @@ struct CaptureTabRootView: View {
                     selectedBook = book
                     ActiveReadingSessionStore.shared.setActiveBook(book)
                     handleCaptureFlowEvent(.completeCoverCapture)
-                    onBookCreated?(book)
                 },
                 onCancel: {
                     handleCaptureFlowEvent(.cancelCoverCapture)
@@ -222,9 +249,7 @@ struct CaptureTabRootView: View {
                     let completedBook = selectedBook
                     selectedDraft = nil
                     handleCaptureFlowEvent(.completeBatchCapture)
-                    if let completedBook {
-                        onQuotesSaved?(completedBook)
-                    }
+                    savedBook = completedBook
                 },
                 onCancel: returnToSingleCapture,
                 onChooseBook: {
@@ -277,11 +302,15 @@ struct CaptureTabRootView: View {
 
     private func ensureActiveBook() {
         if selectedBook == nil {
-            selectedBook = ActiveReadingSessionStore.shared.resolveActiveBook(from: books)
+            selectedBook = initialBook ?? ActiveReadingSessionStore.shared.resolveActiveBook(from: books)
+            if let selectedBook {
+                ActiveReadingSessionStore.shared.setActiveBook(selectedBook)
+            }
         }
     }
 
     private func handleCaptureFlowEvent(_ event: CaptureFlowState.Event) {
+        savedBook = nil
         let command = captureFlow.handle(event)
         if command.clearsSelectedBook {
             selectedBook = nil

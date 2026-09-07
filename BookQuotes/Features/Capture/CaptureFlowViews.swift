@@ -21,6 +21,7 @@ struct QuoteCaptureFlowView: View {
     let onComplete: () -> Void
     let onCancel: () -> Void
     var onChooseBook: (() -> Void)? = nil
+    var onNavigationAvailabilityChanged: ((Bool) -> Void)? = nil
 
     var body: some View {
         if let book {
@@ -29,7 +30,8 @@ struct QuoteCaptureFlowView: View {
                 hidesHeaderBar: hidesHeaderBar,
                 hidesTabBar: hidesTabBar,
                 onComplete: onComplete,
-                onCancel: onCancel
+                onCancel: onCancel,
+                onNavigationAvailabilityChanged: onNavigationAvailabilityChanged
             )
         } else {
             MissingSelectedBookView(
