@@ -1,5 +1,9 @@
 # BookQuotes v2 architecture
 
+## Current implementation note — 2026-09-07
+
+Normal launch uses the three-tab shell by default; legacy UI-test/explicit preference routes are still retained pending parity verification, not a second long-term architecture. `LibraryViewMode` owns the shared preference key, default and presentation names; both Reading and Settings bind that same enum through `@AppStorage`. Raw persisted values remain unchanged. The Settings sheet passes an optional close action into the existing `SettingsTab`; legacy tab presentation does not acquire a dismiss button. Shared controls are changed in place rather than wrapped in a new UI version. See [current UI contract](../UI_COMPONENTS.md#current-coherent-ui-contract-2026-09-07) and bead `book-quote-coherent-ui-5sy4.1` for the remaining retirement gate.
+
 ## 1. Decision context
 
 BookQuotes already contains the engineering required for the product reset:

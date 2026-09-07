@@ -5,6 +5,18 @@ enum LibraryViewMode: String, Equatable, CaseIterable {
     case grid
     case list
 
+    /// Shared by Reading and Settings. Existing raw values remain unchanged.
+    static let storageKey = "libraryViewMode"
+    static let defaultMode: LibraryViewMode = .list
+
+    var displayName: String {
+        switch self {
+        case .shelves: return "Shelves"
+        case .grid: return "Grid"
+        case .list: return "List"
+        }
+    }
+
     var systemImageName: String {
         switch self {
         case .shelves:

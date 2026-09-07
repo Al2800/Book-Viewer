@@ -82,7 +82,7 @@ struct ContentView: View {
             handleConnectivityChange(wasConnected: wasConnected, isConnected: isConnected)
         }
         .sheet(isPresented: $showV2Settings) {
-            SettingsTab()
+            SettingsTab(onClose: { showV2Settings = false })
         }
         .fullScreenCover(isPresented: $showOnboarding) {
             if let subscriptionService {

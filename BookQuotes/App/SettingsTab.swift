@@ -11,6 +11,7 @@ struct SettingsTab: View {
 
     @State private var router = RouterPath()
     @State private var subscriptionService: SubscriptionService?
+    var onClose: (() -> Void)? = nil
 
     // MARK: - Body
 
@@ -20,6 +21,14 @@ struct SettingsTab: View {
 
             NavigationStack(path: $router.path) {
                 SettingsView()
+                    .toolbar {
+                        if let onClose {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done", action: onClose)
+                                    .accessibilityIdentifier(AccessibilityIdentifiers.Settings.doneButton)
+                            }
+                        }
+                    }
                     .navigationDestination(for: SettingsDestination.self) { destination in
                         switch destination {
                         case .account:
@@ -72,7 +81,7 @@ struct SettingsView: View {
 
     // MARK: - App Storage
 
-    @AppStorage("libraryViewMode") private var libraryViewMode: String = "grid"
+    @AppStorage(LibraryViewMode.storageKey) private var libraryViewMode: LibraryViewMode = .defaultMode
     @AppStorage("autoProcessQueue") private var autoProcessQueue = true
     @AppStorage("hapticFeedbackEnabled") private var hapticFeedbackEnabled = true
     @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = ProductExperience.defaultEnabled
@@ -124,13 +133,14 @@ struct SettingsView: View {
                             title: "Library View"
                         )
 
-                        Picker(selection: $libraryViewMode) {
-                            Text("Grid").tag("grid")
-                            Text("List").tag("list")
-                        } label: {
-                            EmptyView()
+                        Picker("Library View", selection: $libraryViewMode) {
+                            ForEach(LibraryViewMode.allCases, id: \.self) { mode in
+                                Text(mode.displayName).tag(mode)
+                            }
                         }
-                        .pickerStyle(.segmented)
+                        .pickerStyle(.menu)
+                        .frame(minHeight: 44)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Settings.libraryViewPicker)
                     }
 
                     SettingsToggleRow(
@@ -141,8 +151,8 @@ struct SettingsView: View {
 
                     SettingsToggleRow(
                         icon: "rectangle.split.3x1",
-                        title: "Reading, Capture & Explore",
-                        subtitle: "Use the new three-tab layout. Turn off to restore Library, Studio and Settings tabs.",
+                        title: "Reading, Capture & Studio",
+                        subtitle: "Use the three-tab layout. Turn off to restore the legacy Library, Capture, Studio and Settings tabs.",
                         isOn: $productExperienceV2Enabled
                     )
                 }

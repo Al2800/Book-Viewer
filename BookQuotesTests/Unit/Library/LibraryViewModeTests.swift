@@ -3,6 +3,19 @@ import XCTest
 @testable import BookQuotes
 
 final class LibraryViewModeTests: XCTestCase {
+    func testSharedPreferenceDefaultsToListWithoutChangingStoredValues() {
+        XCTAssertEqual(LibraryViewMode.storageKey, "libraryViewMode")
+        XCTAssertEqual(LibraryViewMode.defaultMode, .list)
+        XCTAssertEqual(LibraryViewMode.allCases.map(\.rawValue), ["shelves", "grid", "list"])
+        for mode in LibraryViewMode.allCases {
+            XCTAssertEqual(LibraryViewMode(rawValue: mode.rawValue), mode)
+        }
+    }
+
+    func testSettingsNamesIncludeAllBrowseModes() {
+        XCTAssertEqual(LibraryViewMode.allCases.map(\.displayName), ["Shelves", "Grid", "List"])
+    }
+
     func testShelvesModePreservesStoredValueAndPresentation() {
         let mode = LibraryViewMode.shelves
 

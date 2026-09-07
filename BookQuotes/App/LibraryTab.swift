@@ -80,7 +80,7 @@ struct LibraryView: View {
 
     // MARK: - State
 
-    @AppStorage("libraryViewMode") private var viewMode: LibraryViewMode = .shelves
+    @AppStorage(LibraryViewMode.storageKey) private var viewMode: LibraryViewMode = .defaultMode
     @AppStorage("librarySortOrder") private var sortOrder: LibrarySortOrder = .recent
     @AppStorage(ProductExperience.v2StorageKey) private var productExperienceV2Enabled = ProductExperience.defaultEnabled
     @State private var searchText = ""
@@ -128,12 +128,12 @@ struct LibraryView: View {
             text: $searchText,
             isPresented: $isSearchActive,
             placement: .navigationBarDrawer(displayMode: .always),
-            prompt: "Search books and quotes"
+            prompt: "Search your reading"
         )
         .searchScopes($searchScope, activation: .onSearchPresentation) {
             Text("All").tag(SearchScope.all)
             Text("Books").tag(SearchScope.books)
-            Text("Quotes").tag(SearchScope.quotes)
+            Text("Passages").tag(SearchScope.quotes)
         }
         .searchSuggestions {
             if let searchServices {

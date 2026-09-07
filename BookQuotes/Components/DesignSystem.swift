@@ -97,7 +97,7 @@ extension ShapeStyle where Self == Color {
 extension Font {
     // MARK: - Display & Hero Headlines
     /// Extra large display serif for hero quote cards and prominent headers
-    static let serifTitleLarge = Font.system(size: 34, weight: .semibold, design: .serif)
+    static let serifTitleLarge = Font.system(.largeTitle, design: .serif).weight(.semibold)
     /// Large headline serif font for section headers and book cards
     static let serifHeadline = Font.system(.headline, design: .serif).weight(.semibold)
     /// Title-sized serif font for featured quotes
@@ -138,9 +138,9 @@ extension Font {
     /// Semibold footnote for chapter/section headers
     static let sectionHeader = Font.system(.footnote).weight(.semibold)
     /// Small UI badge font for counts, status, and tags
-    static let uiBadge = Font.system(size: 11, weight: .semibold)
+    static let uiBadge = Font.system(.caption2).weight(.semibold)
     /// Compact UI pill font for filters and navigation
-    static let uiPill = Font.system(size: 13, weight: .medium)
+    static let uiPill = Font.system(.footnote).weight(.medium)
     /// Semibold subheadline for control labels and actions
     static let uiLabel = Font.system(.subheadline).weight(.semibold)
     /// Caption for helper text on controls

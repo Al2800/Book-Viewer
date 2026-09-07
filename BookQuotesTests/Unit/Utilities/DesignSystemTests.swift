@@ -25,6 +25,27 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertEqual(String(describing: Font.screenTitle), String(describing: Font.serifTitleLarge))
     }
 
+    func testFunctionalTypographyUsesScalableSystemStyles() {
+        XCTAssertEqual(Font.serifTitleLarge, Font.system(.largeTitle, design: .serif).weight(.semibold))
+        XCTAssertEqual(Font.uiBadge, Font.system(.caption2).weight(.semibold))
+        XCTAssertEqual(Font.uiPill, Font.system(.footnote).weight(.medium))
+    }
+
+    @MainActor
+    func testCompactSemanticButtonsHaveMinimumTouchHeight() throws {
+        let primary = ImageRenderer(content: Button("Save") {}.buttonStyle(.primaryCompact))
+        let secondary = ImageRenderer(content: Button("Cancel") {}.buttonStyle(.secondaryCompact))
+        let ghost = ImageRenderer(content: Button("View all") {}.buttonStyle(.ghost))
+        let icon = ImageRenderer(content: Button {} label: {
+            Image(systemName: "xmark").font(.caption2)
+        }.buttonStyle(.iconSmall))
+
+        for image in [primary.uiImage, secondary.uiImage, ghost.uiImage, icon.uiImage] {
+            XCTAssertGreaterThanOrEqual(try XCTUnwrap(image).size.height, 44)
+        }
+        XCTAssertGreaterThanOrEqual(try XCTUnwrap(icon.uiImage).size.width, 44)
+    }
+
     // MARK: - Palette & Color Tests
 
     func testV2ThemePaletteColorsAreDefined() {

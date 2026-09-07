@@ -10,6 +10,21 @@ BookQuotes presents literary content with elegance and respect. The UI should fe
 
 ---
 
+## Current coherent-UI contract (2026-09-07)
+
+Implementation is tracked by `book-quote-coherent-ui-5sy4`; this is an incremental migration, not a completed redesign. The code in `Components/DesignSystem*.swift` is authoritative; the longer examples below include historical designs, not a requirement to reintroduce them.
+
+- **Reading:** warm adaptive paper, primary ink, scalable serif authored passages; system sans controls and metadata. Search says “Search your reading” and its content scope says “Passages”.
+- **Capture:** functional dark chrome and white controls must stay readable over arbitrary camera content. Do not replace `cameraChrome` with translucent Reading paper.
+- **Review:** precise source/selection/status information on neutral adaptive surfaces. Never imply saved before persistence succeeds.
+- **Studio:** theme decoration belongs to the export artwork, not the functional action controls. Keep export typography distinct from Dynamic Type interface typography.
+- Reuse the existing spacing/radius scale. Primary and destructive actions use a filled surface; secondary uses `Stroke.thin`; tertiary is text-only. Shared actions use scalable `uiLabel`; badges and pills use caption2/footnote text styles. Ordinary primary buttons no longer cast an elevation shadow.
+- Compact semantic controls have at least 44pt height; icon/ghost controls also have at least 44pt width. Reduce Motion suppresses shared button press scaling as well as its animation. Existing disabled state and haptic preference handling remain in effect.
+- `SemanticButtonsPreview` in `DesignSystemButtons.swift` covers short/long labels, disabled/saving/error/success presentations, light/dark appearance and accessibility5. Reduce Motion must be enabled on the preview device; it is a read-only system environment value. These previews describe presentations, not a replacement persistence implementation.
+- Reading and Settings share the typed `LibraryViewMode.storageKey` and `.defaultMode` (List). Explicit stored `shelves`, `grid` and `list` values survive unchanged. Settings offers all three modes in a menu that can grow with Dynamic Type, and its modal presentation has an explicit Done action.
+
+**Retirement disposition:** replaced fixed-size functional font definitions, conflicting browse defaults, incomplete Settings picker and stale Explore copy in place; no new UI version or files. The legacy shell and its setting remain temporarily until the existing legacy UI tests, entry-point routes and Settings access have v2 parity. Retirement is gated by the foundation bead's route/test inventory and E2E evidence; it must not be silently treated as finished or removed by a bulk cleanup.
+
 ## Design System
 
 ### Color Tokens

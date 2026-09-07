@@ -16,7 +16,7 @@ struct PressableButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? scale : 1.0)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? scale : 1.0)
             .opacity(configuration.isPressed ? 0.85 : 1.0)
             .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
             .onChange(of: configuration.isPressed) { _, isPressed in
@@ -37,21 +37,20 @@ struct PrimaryButtonStyle: ButtonStyle {
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.colorScheme) private var colorScheme
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(compact ? .subheadline.weight(.semibold) : .headline)
+            .font(.uiLabel)
             .foregroundStyle(.white)
             .padding(.horizontal, compact ? Spacing.md : Spacing.lg)
             .padding(.vertical, compact ? Spacing.sm : Spacing.md)
-            .frame(maxWidth: compact ? nil : .infinity)
+            .frame(maxWidth: compact ? nil : .infinity, minHeight: 44)
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
                     .fill(isEnabled ? Color.brand : Color.brand.opacity(0.5))
             )
-            .elevation(configuration.isPressed ? .xs : .sm, colorScheme: colorScheme)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .contentShape(RoundedRectangle(cornerRadius: CornerRadius.md))
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1.0)
             .opacity(configuration.isPressed ? 0.9 : 1.0)
             .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
             .onChange(of: configuration.isPressed) { _, isPressed in
@@ -75,20 +74,21 @@ struct SecondaryButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(compact ? .subheadline.weight(.semibold) : .headline)
+            .font(.uiLabel)
             .foregroundStyle(isEnabled ? Color.brand : Color.brand.opacity(0.5))
             .padding(.horizontal, compact ? Spacing.md : Spacing.lg)
             .padding(.vertical, compact ? Spacing.sm : Spacing.md)
-            .frame(maxWidth: compact ? nil : .infinity)
+            .frame(maxWidth: compact ? nil : .infinity, minHeight: 44)
+            .contentShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
-                    .stroke(isEnabled ? Color.brand : Color.brand.opacity(0.5), lineWidth: 1.5)
+                    .stroke(isEnabled ? Color.brand : Color.brand.opacity(0.5), lineWidth: Stroke.thin.width)
             )
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
                     .fill(configuration.isPressed ? Color.brand.opacity(0.08) : Color.clear)
             )
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1.0)
             .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
             .onChange(of: configuration.isPressed) { _, isPressed in
                 if isPressed {
@@ -107,16 +107,17 @@ struct DestructiveButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline)
+            .font(.uiLabel)
             .foregroundStyle(.white)
             .padding(.horizontal, Spacing.lg)
             .padding(.vertical, Spacing.md)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .contentShape(RoundedRectangle(cornerRadius: CornerRadius.md))
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.md)
                     .fill(isEnabled ? Color.error : Color.error.opacity(0.5))
             )
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1.0)
             .opacity(configuration.isPressed ? 0.9 : 1.0)
             .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
             .onChange(of: configuration.isPressed) { _, isPressed in
@@ -140,11 +141,13 @@ struct GhostButtonStyle: ButtonStyle {
             .foregroundStyle(isEnabled ? Color.brand : Color.brand.opacity(0.5))
             .padding(.horizontal, Spacing.sm)
             .padding(.vertical, Spacing.xs)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(RoundedRectangle(cornerRadius: CornerRadius.sm))
             .background(
                 RoundedRectangle(cornerRadius: CornerRadius.sm)
                     .fill(configuration.isPressed ? Color.brand.opacity(0.08) : Color.clear)
             )
-            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.96 : 1.0)
             .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
             .onChange(of: configuration.isPressed) { _, isPressed in
                 if isPressed {
@@ -178,11 +181,13 @@ struct IconButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(size.padding)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Circle())
             .background(
                 Circle()
                     .fill(configuration.isPressed ? Color.backgroundSecondary : Color.clear)
             )
-            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.9 : 1.0)
             .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
             .onChange(of: configuration.isPressed) { _, isPressed in
                 if isPressed {
@@ -234,4 +239,55 @@ extension ButtonStyle where Self == IconButtonStyle {
 
     /// Large icon button
     static var iconLarge: IconButtonStyle { IconButtonStyle(size: .large) }
+}
+
+// Shared functional controls, deliberately separate from Studio's export artwork.
+private struct SemanticButtonsPreview: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Spacing.lg) {
+                Text("Passages").font(.screenTitle)
+                Text("We read to know we are not alone.").font(.quoteBody)
+                Text("Selected passage · Page 24").font(.uiPill)
+                Button("Save 3 passages") {}.buttonStyle(.primary)
+                Button("Inspect source page") {}.buttonStyle(.secondary)
+                Button("Save passages") {}.buttonStyle(.primary).disabled(true)
+                Button {} label: {
+                    HStack {
+                        ProgressView().tint(.white)
+                        Text("Saving passages…")
+                    }
+                }
+                .buttonStyle(.primary)
+                .disabled(true)
+                Label("Could not save. Your selection is still here.", systemImage: "exclamationmark.circle")
+                    .font(.body).foregroundStyle(Color.error)
+                Button("Retry saving") {}.buttonStyle(.primaryCompact)
+                Label("3 passages saved", systemImage: "checkmark.circle")
+                    .font(.body).foregroundStyle(Color.success)
+                Button("Discard draft") {}.buttonStyle(.destructive)
+                Button("View all passages") {}.buttonStyle(.ghost)
+                Button {} label: { Image(systemName: "xmark") }
+                    .buttonStyle(.iconSmall)
+                    .accessibilityLabel("Close")
+            }
+            .padding(Spacing.lg)
+        }
+        .foregroundStyle(Color.textPrimary)
+        .background(Color.backgroundPrimary)
+    }
+}
+
+#Preview("Functional controls — light") {
+    SemanticButtonsPreview().preferredColorScheme(.light)
+}
+
+#Preview("Functional controls — dark") {
+    SemanticButtonsPreview().preferredColorScheme(.dark)
+}
+
+#Preview("Functional controls — accessibility XXXL") {
+    // Reduce Motion is read-only in EnvironmentValues; use the preview device's setting.
+    SemanticButtonsPreview()
+        .dynamicTypeSize(.accessibility5)
 }

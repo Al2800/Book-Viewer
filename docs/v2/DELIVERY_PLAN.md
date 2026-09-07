@@ -1,5 +1,9 @@
 # BookQuotes v2 delivery plan
 
+## Active delivery update — 2026-09-07
+
+The default-off shell below is historical. Normal launch currently uses Reading / Capture / Studio. The five refinement workstreams are tracked by `book-quote-coherent-ui-5sy4`; foundation `.1` is in progress, not complete. Its first slice replaces conflicting browse defaults/Settings options, stale Explore/search terminology, fixed-size shared typography and undersized shared controls. Capture, review, Reading hierarchy and unified Studio delivery remain dependent work. The legacy shell's retirement requires route/test parity evidence before removal. Executed checks and artifact paths are recorded on the foundation bead; a simulator check must not be represented as physical-camera or live extraction validation.
+
 ## 1. Delivery strategy
 
 The reset is delivered as a sequence of mergeable pull requests. Each PR should be understandable and reversible in isolation. Product structure changes and extraction research remain in the same repository, but are separated by feature boundaries and verification gates.

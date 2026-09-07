@@ -457,6 +457,9 @@ enum AccessibilityIdentifiers {
     // MARK: - Settings
 
     enum Settings {
+        static let doneButton = "settings_done_button"
+        static let libraryViewPicker = "settings_library_view_picker"
+
         /// Account section
         static let accountSection = "settings_account_section"
 

@@ -263,6 +263,61 @@ final class V2ProductShellTests: BaseUITestCase {
         ]
     }
 
+    func testBrowsePreferenceRoundTripsBetweenSettingsAndReading() {
+        assertBrowsePreferenceRoundTrip()
+    }
+
+    func testBrowsePreferenceAtAccessibilityXXXL() {
+        app.terminate()
+        app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
+        app.launch()
+        waitForAppReady()
+        assertBrowsePreferenceRoundTrip()
+    }
+
+    private func assertBrowsePreferenceRoundTrip() {
+        for (name, summary) in [("Shelves", "3D Shelves"), ("Grid", "Grid View"), ("List", "List View")] {
+            let settings = app.buttons[AccessibilityIdentifiers.V2.settingsButton]
+            XCTAssertTrue(settings.waitForExistence(timeout: 5))
+            settings.tap()
+
+            let picker = app.buttons[AccessibilityIdentifiers.Settings.libraryViewPicker]
+            reveal(picker)
+            picker.tap()
+            let option = app.buttons[name]
+            XCTAssertTrue(option.waitForExistence(timeout: 3), "Settings must offer \(name)")
+            option.tap()
+            XCTAssertFalse(app.staticTexts["Reading, Capture & Explore"].exists)
+
+            let done = app.buttons[AccessibilityIdentifiers.Settings.doneButton]
+            XCTAssertTrue(done.waitForExistence(timeout: 3))
+            done.tap()
+
+            let mode = app.buttons[AccessibilityIdentifiers.Library.viewModeToggle]
+            reveal(mode)
+            XCTAssertEqual(mode.label, "View mode: \(summary)")
+            if let attachment = screenshots.capture(name: "reading_\(name.lowercased())", description: "Browse preference selected in Settings") {
+                add(attachment)
+            }
+        }
+
+        // No reset or launch override: the actual preference must survive a new process.
+        app.terminate()
+        app.launch()
+        waitForAppReady()
+        let mode = app.buttons[AccessibilityIdentifiers.Library.viewModeToggle]
+        reveal(mode)
+        XCTAssertEqual(mode.label, "View mode: List View")
+    }
+
+    private func reveal(_ element: XCUIElement) {
+        for _ in 0..<12 {
+            if element.exists && element.isHittable { return }
+            app.swipeUp()
+        }
+        XCTAssertTrue(element.exists && element.isHittable, "Expected control to be reachable: \(element)")
+    }
+
     func testV2ShellExposesReadingCaptureAndStudio() {
         let reading = app.buttons[AccessibilityIdentifiers.V2.readingTab]
         let capture = app.buttons[AccessibilityIdentifiers.V2.captureTab]

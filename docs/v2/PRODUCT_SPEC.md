@@ -5,6 +5,10 @@
 **Working concept:** A personal reading memory for physical books  
 **Baseline:** The existing App Store version remains live. TestFlight Build 51 and current `main` provide the engineering baseline, but do not constrain the v2 product structure or visual direction.
 
+## Implementation update — 2026-09-07
+
+The normal launch now defaults to Reading / Capture / Studio; early default-off language describes the historical rollout. Coherent-UI refinements are tracked in `book-quote-coherent-ui-5sy4`, not a new shell version. Reading and Settings now share List as the unset browse preference, preserving explicit Shelves/Grid/List selections. Settings includes every browse mode and explicit dismissal when presented from Reading. The broader capture loop, review hierarchy, Reading structure and unified Studio workspace remain planned, not implemented by this foundation slice. See [current UI contract](../UI_COMPONENTS.md#current-coherent-ui-contract-2026-09-07).
+
 ## 1. Executive decision
 
 BookQuotes v2 should stop presenting itself primarily as a digital bookshelf, reading tracker, AI extraction demonstration or quote-card generator.

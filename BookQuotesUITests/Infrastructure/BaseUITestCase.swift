@@ -1007,6 +1007,8 @@ enum AccessibilityIdentifiers {
     }
 
     enum Settings {
+        static let doneButton = "settings_done_button"
+        static let libraryViewPicker = "settings_library_view_picker"
         static let accountSection = "settings_account_section"
         static let signOutButton = "settings_sign_out_button"
         static let deleteAccountButton = "settings_delete_account_button"
