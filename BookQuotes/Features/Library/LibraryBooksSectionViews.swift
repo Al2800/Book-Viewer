@@ -21,8 +21,6 @@ struct LibraryBooksSection: View {
 
     let books: [Book]
     @Binding var viewMode: LibraryViewMode
-    let hasAppeared: Bool
-    let reduceMotion: Bool
     let onTap: (Book) -> Void
     let onEdit: (Book) -> Void
     let onDelete: (Book) -> Void
@@ -32,22 +30,10 @@ struct LibraryBooksSection: View {
             switch viewMode {
             case .shelves:
                 bookShelvesContent
-                    .transition(.asymmetric(
-                        insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                        removal: .opacity
-                    ))
             case .grid:
                 bookGridContent
-                    .transition(.asymmetric(
-                        insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                        removal: .opacity
-                    ))
             case .list:
                 bookListContent
-                    .transition(.asymmetric(
-                        insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                        removal: .opacity
-                    ))
             }
         }
     }
@@ -78,30 +64,36 @@ struct LibraryBooksSection: View {
             }
             .padding(.horizontal, Spacing.xs)
 
-            ZStack(alignment: .bottom) {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(alignment: .bottom, spacing: Spacing.md) {
-                        ForEach(books) { book in
-                            BookshelfItemView(book: book) {
-                                HapticManager.light()
-                                onTap(book)
+            if dynamicTypeSize >= .xxxLarge {
+                // Preserve the shelf preference and status grouping without forcing
+                // large text into fixed-width decorative covers and captions.
+                bookRows(books)
+            } else {
+                ZStack(alignment: .bottom) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(alignment: .bottom, spacing: Spacing.md) {
+                            ForEach(books) { book in
+                                BookshelfItemView(book: book) {
+                                    HapticManager.light()
+                                    onTap(book)
+                                }
+                                .accessibilityIdentifier("library_shelf_book")
+                                .contextMenu {
+                                    Button("Edit Book", systemImage: "pencil") { onEdit(book) }
+                                    Button("Delete Book", systemImage: "trash", role: .destructive) { onDelete(book) }
+                                }
+                                .accessibilityAction(named: "Edit Book") { onEdit(book) }
+                                .accessibilityAction(named: "Delete Book") { onDelete(book) }
                             }
-                            .accessibilityIdentifier("library_shelf_book")
-                            .contextMenu {
-                                Button("Edit Book", systemImage: "pencil") { onEdit(book) }
-                                Button("Delete Book", systemImage: "trash", role: .destructive) { onDelete(book) }
-                            }
-                            .accessibilityAction(named: "Edit Book") { onEdit(book) }
-                            .accessibilityAction(named: "Delete Book") { onDelete(book) }
                         }
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.top, Spacing.sm)
+                        .padding(.bottom, 6)
                     }
-                    .padding(.horizontal, Spacing.sm)
-                    .padding(.top, Spacing.sm)
-                    .padding(.bottom, 6)
-                }
 
-                BookshelfLedge()
-                    .padding(.bottom, BookshelfItemView.captionReserve)
+                    BookshelfLedge()
+                        .padding(.bottom, BookshelfItemView.captionReserve)
+                }
             }
         }
         .padding(Spacing.sm)
@@ -114,7 +106,7 @@ struct LibraryBooksSection: View {
             columns: gridColumns,
             spacing: Spacing.lg
         ) {
-            ForEach(Array(books.enumerated()), id: \.element.id) { index, book in
+            ForEach(books) { book in
                 BookCoverCard(
                     book: book,
                     onTap: {
@@ -132,12 +124,6 @@ struct LibraryBooksSection: View {
                 .accessibilityLabel("\(book.title) by \(book.author)")
                 .accessibilityHint("Open book details")
                 .accessibilityAddTraits(.isButton)
-                .opacity(hasAppeared ? 1 : 0)
-                .offset(y: hasAppeared ? 0 : 20)
-                .animation(
-                    reduceMotion ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.05),
-                    value: hasAppeared
-                )
             }
         }
     }
@@ -150,9 +136,11 @@ struct LibraryBooksSection: View {
         return [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: Spacing.md)]
     }
 
-    private var bookListContent: some View {
+    private var bookListContent: some View { bookRows(books) }
+
+    private func bookRows(_ rows: [Book]) -> some View {
         LazyVStack(spacing: Spacing.sm) {
-            ForEach(books) { book in
+            ForEach(rows) { book in
                 BookListRow(
                     book: book,
                     onTap: {

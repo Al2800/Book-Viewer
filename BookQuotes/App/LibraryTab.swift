@@ -27,12 +27,14 @@ struct LibraryTab: View {
                     .navigationDestination(for: Quote.self) { quote in
                         QuoteDetailView(quote: quote)
                     }
-                    .navigationDestination(for: LibraryOrganizeDestination.self) { destination in
+                    .navigationDestination(for: LibraryDestination.self) { destination in
                         switch destination {
                         case .collections:
                             CollectionsView()
                         case .tags:
                             TagsView()
+                        case .allPassages:
+                            LibraryAllPassagesView()
                         }
                     }
                     .navigationDestination(for: Collection.self) { collection in
@@ -57,10 +59,11 @@ struct LibraryTab: View {
     }
 }
 
-/// Organization destinations reachable from the Library tab
-enum LibraryOrganizeDestination: Hashable {
+/// Non-model destinations within the canonical Reading navigation stack.
+enum LibraryDestination: Hashable {
     case collections
     case tags
+    case allPassages
 }
 
 // MARK: - Placeholder Views
@@ -92,11 +95,11 @@ struct LibraryView: View {
     @State private var showDeleteConfirmation = false
     @State private var showAddBookCapture = false
     @State private var activeBookToCapture: Book?
-    @State private var hasAppeared = false
     @State private var isRefreshing = false
     @State private var selectedCollectionIds: Set<UUID> = []
     @State private var selectedTagIds: Set<UUID> = []
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var readingHomeTitle: String {
         ProductExperience.usesV2(storedValue: productExperienceV2Enabled) ? "Reading" : "Library"
@@ -157,14 +160,6 @@ struct LibraryView: View {
             syncSearchIndex()
             if UITestConfiguration.isUITesting {
                 print("UITest library books count: \(books.count)")
-            }
-            // Trigger entrance animation
-            guard !UITestConfiguration.isUITesting, !reduceMotion else {
-                hasAppeared = true
-                return
-            }
-            withAnimation(.smoothSpring.delay(0.1)) {
-                hasAppeared = true
             }
         }
         .onChange(of: books.count) { _, newValue in
@@ -343,29 +338,7 @@ struct LibraryView: View {
                 // 4. Books Section with clean inline browse controls
                 if !books.isEmpty {
                     VStack(alignment: .leading, spacing: Spacing.md) {
-                        HStack(alignment: .center) {
-                            HStack(spacing: Spacing.xs) {
-                                Image(systemName: "books.vertical")
-                                    .font(.caption2.weight(.semibold))
-                                    .foregroundStyle(Color.gildedAccent)
-                                Text("Books")
-                                    .sectionHeaderStyle()
-
-                                Text("\(organizationFilteredBooks.count)")
-                                    .font(.uiBadge)
-                                    .foregroundStyle(Color.textSecondary)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Capsule().fill(Color.backgroundSecondary))
-                            }
-
-                            Spacer()
-
-                            LibraryBrowseControls(
-                                viewMode: $viewMode,
-                                sortOrder: $sortOrder
-                            )
-                        }
+                        booksHeader
 
                         OrganizationFilterBar(
                             selectedCollectionIds: $selectedCollectionIds,
@@ -378,8 +351,6 @@ struct LibraryView: View {
                             LibraryBooksSection(
                                 books: sortOrder.sorted(organizationFilteredBooks),
                                 viewMode: $viewMode,
-                                hasAppeared: hasAppeared,
-                                reduceMotion: reduceMotion,
                                 onTap: { book in
                                     router.navigate(to: book)
                                 },
@@ -406,6 +377,23 @@ struct LibraryView: View {
             await refreshLibrary()
         }
         .animation(reduceMotion ? .none : .smoothSpring, value: viewMode)
+    }
+
+    private var booksHeader: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Spacing.sm))
+            : AnyLayout(HStackLayout(spacing: Spacing.md))
+        return layout {
+            HStack(spacing: Spacing.sm) {
+                Text("Books").sectionHeaderStyle()
+                Text("\(organizationFilteredBooks.count)")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            LibraryBrowseControls(viewMode: $viewMode, sortOrder: $sortOrder)
+        }
     }
 
     // MARK: - Toolbar
@@ -503,34 +491,13 @@ struct LibraryView: View {
         isRefreshing = true
         HapticManager.light()
 
-        // Small delay for visual feedback
-        try? await Task.sleep(for: .milliseconds(300))
-
         // Rebuild search index from the current library contents
         if let searchServices {
             await searchServices.syncIndex(books: books)
         }
 
-        // Reset entrance animation for refreshed content
-        await MainActor.run {
-            hasAppeared = false
-        }
-
-        // Brief delay then re-trigger entrance animation
-        try? await Task.sleep(for: .milliseconds(100))
-
-        await MainActor.run {
-            guard !reduceMotion else {
-                hasAppeared = true
-                isRefreshing = false
-                return
-            }
-            withAnimation(.smoothSpring) {
-                hasAppeared = true
-            }
-            isRefreshing = false
-            HapticManager.success()
-        }
+        isRefreshing = false
+        HapticManager.success()
     }
 
     private func deleteBook(_ book: Book) {

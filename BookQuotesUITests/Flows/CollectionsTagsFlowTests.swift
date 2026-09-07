@@ -580,14 +580,21 @@ final class AdaptiveCollectionsTagsLayoutTests: BaseUITestCase {
                       "Book filters must not filter the recent passages section")
         let clear = app.buttons["library_clear_book_filters"]
         XCTAssertTrue(clear.waitForExistence(timeout: 3))
-        for _ in 0..<8 where !clear.isHittable { app.swipeDown() }
+        for _ in 0..<12 {
+            let frame = clear.frame
+            if frame.minY >= visibleTop && frame.maxY <= visibleBottom { break }
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.65))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: frame.minY < visibleTop ? 0.8 : 0.5))
+            start.press(forDuration: 0.05, thenDragTo: end)
+        }
+        XCTAssertGreaterThanOrEqual(clear.frame.minY, visibleTop)
         XCTAssertTrue(clear.isHittable)
         clear.tap()
         XCTAssertTrue(waitUntil("Clearing restores unfiltered books", timeout: 5) {
             !self.app.staticTexts["No books match the selected filters."].exists
         })
         XCTAssertTrue(filterBar.waitForExistence(timeout: 3), "The organization filter strip should be available")
-        filterBar.swipeLeft()
+        for _ in 0..<4 where !tagFilter.isHittable { filterBar.swipeLeft() }
         XCTAssertTrue(tagFilter.exists && tagFilter.isHittable, "Tag filters should remain reachable by scrolling")
         captureScreenshot(
             named: "accessibility_text_organization_filters",

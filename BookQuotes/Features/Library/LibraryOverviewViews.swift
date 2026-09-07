@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // MARK: - Daily Passage
 
@@ -37,80 +38,52 @@ struct LibraryHomeSnapshot {
     init(books: [Book], on date: Date = Date(), calendar: Calendar = .current) {
         let quotes = books.flatMap(\.quotes)
         totalQuoteCount = quotes.count
-        let passage = DailyPassage.passage(from: quotes, on: date, calendar: calendar)
-        dailyPassage = passage
-
-        // Sort by most recently captured; deduplicate against daily passage so the same
-        // quote is not shown in both places when the library has few quotes.
-        let sorted = quotes.sorted(by: { $0.captureDate > $1.captureDate })
-        if let passage {
-            let withoutDaily = sorted.filter { $0.id != passage.id }
-            recentQuotes = Array(withoutDaily.prefix(3))
-        } else {
-            recentQuotes = Array(sorted.prefix(3))
+        let sorted = quotes.sorted {
+            if $0.captureDate != $1.captureDate { return $0.captureDate > $1.captureDate }
+            return $0.id.uuidString < $1.id.uuidString
         }
+        recentQuotes = Array(sorted.prefix(3))
+        // Recent passages take precedence. Revisit only genuinely older material,
+        // never displacing a recent passage or duplicating it in a small library.
+        let oldestRecentDate = recentQuotes.last?.captureDate ?? .distantPast
+        let older = sorted.dropFirst(3).filter { $0.captureDate < oldestRecentDate }
+        dailyPassage = DailyPassage.passage(from: older, on: date, calendar: calendar)
 
         activeBook = ActiveReadingSessionStore.shared.activeBook(from: books)
     }
 }
 
-/// Epigraph-style card resurfacing one passage per day with gold bookmark ribbon.
+/// Bounded older-passage preview; the canonical detail shows the complete text.
 struct DailyPassageCard: View {
     let quote: Quote
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            VStack(alignment: .leading, spacing: Spacing.md) {
-                HStack(spacing: Spacing.xs) {
-                    Image(systemName: "sparkle")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(Color.gildedAccent)
-                    Text("Daily Serendipity")
-                        .sectionHeaderStyle()
-                }
-
-                Text("\u{201C}\(quote.text)\u{201D}")
-                    .font(.quoteLarge)
-                    .foregroundStyle(Color.textPrimary)
-                    .lineSpacing(5)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                if let book = quote.book {
-                    Text("— \(book.title), \(book.author)")
-                        .font(.attribution)
-                        .foregroundStyle(Color.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text("Revisit")
+                .sectionHeaderStyle()
+            Text("\u{201C}\(quote.text)\u{201D}")
+                .font(.quoteBody)
+                .foregroundStyle(Color.textPrimary)
+                .lineSpacing(4)
+                .lineLimit(4)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            if let book = quote.book {
+                Text("\(book.title) · \(book.author)")
+                    .font(.caption)
+                    .foregroundStyle(Color.textSecondary)
+                    .lineLimit(2)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(Spacing.lg)
-            .padding(.trailing, Spacing.lg)
-
-            BookmarkRibbon()
-                .padding(.trailing, Spacing.lg)
-                .offset(y: -4)
+            Divider()
         }
-        .background(
-            RoundedRectangle(cornerRadius: CornerRadius.lg)
-                .fill(Color.warmVellum)
-                .overlay {
-                    LinearGradient.cardHighlight
-                        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.lg))
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: CornerRadius.lg)
-                        .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
-                }
-        )
-        .elevation(.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint("Open quote")
+        .accessibilityHint("Open the complete passage")
     }
 
     private var accessibilityLabel: String {
-        var label = "Daily Serendipity. \"\(quote.text)\""
+        var label = "Revisit. \"\(quote.text)\""
         if let book = quote.book {
             label += ", by \(book.author), from \(book.title)"
         }
@@ -256,15 +229,24 @@ struct ContinueReadingCard: View {
 struct RecentPassagesSection: View {
     let quotes: [Quote]
     let onSelectQuote: (Quote) -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: "text.quote")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Color.gildedAccent)
+            let layout = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: Spacing.xs))
+                : AnyLayout(HStackLayout(spacing: Spacing.sm))
+            layout {
                 Text("Recent Passages")
                     .sectionHeaderStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                NavigationLink(value: LibraryDestination.allPassages) {
+                    Text("View All")
+                        .font(.uiLabel)
+                        .frame(minWidth: 44, minHeight: 44)
+                }
+                .accessibilityLabel("View all passages")
+                .accessibilityIdentifier("reading_view_all_passages")
             }
 
             VStack(spacing: Spacing.sm) {
@@ -296,15 +278,13 @@ struct RecentPassageRow: View {
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
 
-            HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 if let book = quote.book {
                     Text("— \(book.title)\(pageSuffix)")
-                        .font(.attribution)
+                        .font(.caption)
                         .foregroundStyle(Color.textSecondary)
-                        .lineLimit(1)
+                        .lineLimit(2)
                 }
-
-                Spacer()
 
                 if let marginNote = quote.marginNote, !marginNote.isEmpty {
                     HStack(spacing: 3) {
@@ -312,27 +292,19 @@ struct RecentPassageRow: View {
                             .font(.caption2)
                             .foregroundStyle(Color.goldFoil)
                         Text(marginNote)
-                            .font(.marginScriptSmall)
+                            .font(.caption)
                             .foregroundStyle(Color.textSecondary)
-                            .lineLimit(1)
+                            .lineLimit(2)
                     }
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Spacing.md)
-        .background(
-            RoundedRectangle(cornerRadius: CornerRadius.md)
-                .fill(Color.warmVellum)
-                .overlay {
-                    RoundedRectangle(cornerRadius: CornerRadius.md)
-                        .stroke(Color.quoteBorder.opacity(0.6), lineWidth: Stroke.hairline.width)
-                }
-        )
-        .elevation(.xs)
+        .padding(.vertical, Spacing.sm)
+        .overlay(alignment: .bottom) { Divider() }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint("Open quote details")
+        .accessibilityHint("Open the complete passage")
     }
 
     private var pageSuffix: String {
@@ -355,12 +327,46 @@ struct RecentPassageRow: View {
     }
 }
 
+/// Unfiltered, live SwiftData list. Destinations are the same Quote routes as search.
+struct LibraryAllPassagesView: View {
+    @Query(sort: \Quote.captureDate, order: .reverse) private var quotes: [Quote]
+
+    var body: some View {
+        List {
+            Section {
+                if quotes.isEmpty {
+                    ContentUnavailableView("No Passages Yet", systemImage: "text.quote",
+                                           description: Text("Captured passages will appear here."))
+                }
+                ForEach(quotes) { quote in
+                    NavigationLink(value: quote) {
+                        RecentPassageRow(quote: quote)
+                    }
+                    .accessibilityIdentifier("reading_all_passage_row")
+                }
+            } header: {
+                Text("\(quotes.count) passages · All books")
+            } footer: {
+                Text("Reading’s book filters do not apply to this list.")
+            }
+            .listRowBackground(Color.backgroundPrimary)
+            .listRowSeparator(.hidden)
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.backgroundPrimary)
+        .navigationTitle("All Passages")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
 // MARK: - Browse Controls
 
 /// Compact browse controls for the books section header: 3D shelves / grid / list toggle and sort menu with accessible 44pt hit targets.
 struct LibraryBrowseControls: View {
     @Binding var viewMode: LibraryViewMode
     @Binding var sortOrder: LibrarySortOrder
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: Spacing.xs) {
@@ -369,7 +375,7 @@ struct LibraryBrowseControls: View {
                 ForEach(LibraryViewMode.allCases, id: \.self) { mode in
                     Button {
                         HapticManager.selection()
-                        withAnimation(.smoothSpring) {
+                        withAnimation(reduceMotion ? .none : .smoothSpring) {
                             viewMode = mode
                         }
                     } label: {
@@ -382,7 +388,7 @@ struct LibraryBrowseControls: View {
                 }
             } label: {
                 Image(systemName: viewMode.systemImageName)
-                    .font(.caption.weight(.semibold))
+                    .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(Color.textSecondary)
                     .frame(width: 36, height: 36)
                     .background(Circle().fill(Color.backgroundSecondary))
@@ -408,7 +414,7 @@ struct LibraryBrowseControls: View {
                 }
             } label: {
                 Image(systemName: "arrow.up.arrow.down")
-                    .font(.caption.weight(.semibold))
+                    .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(Color.textSecondary)
                     .frame(width: 36, height: 36)
                     .background(Circle().fill(Color.backgroundSecondary))
@@ -452,7 +458,7 @@ struct LibraryOrganizeSection: View {
     }
 
     private var collectionsLink: some View {
-        NavigationLink(value: LibraryOrganizeDestination.collections) {
+        NavigationLink(value: LibraryDestination.collections) {
             HStack(spacing: Spacing.sm) {
                 Image(systemName: "folder")
                     .font(.subheadline.weight(.semibold))
@@ -484,7 +490,7 @@ struct LibraryOrganizeSection: View {
     }
 
     private var tagsLink: some View {
-        NavigationLink(value: LibraryOrganizeDestination.tags) {
+        NavigationLink(value: LibraryDestination.tags) {
             HStack(spacing: Spacing.sm) {
                 Image(systemName: "tag")
                     .font(.subheadline.weight(.semibold))

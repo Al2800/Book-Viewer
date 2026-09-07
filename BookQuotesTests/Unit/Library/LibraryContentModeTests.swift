@@ -47,7 +47,7 @@ final class LibraryContentModeTests: XCTestCase {
 @MainActor
 final class LibraryHomeSnapshotTests: SwiftDataTestCase {
 
-    func testSnapshotCountsQuotesAcrossBooksAndPicksDailyPassage() throws {
+    func testSnapshotCountsQuotesAcrossBooksWithoutDisplacingRecentPassages() throws {
         let bookA = TestFixtures.book { $0.title = "Book A" }
         let bookB = TestFixtures.book { $0.title = "Book B" }
         modelContext.insert(bookA)
@@ -64,7 +64,8 @@ final class LibraryHomeSnapshotTests: SwiftDataTestCase {
         let snapshot = LibraryHomeSnapshot(books: [bookA, bookB])
 
         XCTAssertEqual(snapshot.totalQuoteCount, 3)
-        XCTAssertNotNil(snapshot.dailyPassage)
+        XCTAssertEqual(snapshot.recentQuotes.count, 3)
+        XCTAssertNil(snapshot.dailyPassage)
     }
 
     func testSnapshotIsEmptyForBooksWithoutQuotes() throws {

@@ -134,7 +134,7 @@ struct LibraryBookshelfView: View {
 
 /// Single standing book item on the 3D shelf with 3D perspective projection.
 struct BookshelfItemView: View {
-    static let captionReserve: CGFloat = 40
+    static let captionReserve: CGFloat = 76
 
     let book: Book
     let onTap: () -> Void
@@ -159,19 +159,19 @@ struct BookshelfItemView: View {
                     Text(book.title)
                         .font(.caption.weight(.medium))
                         .foregroundStyle(Color.textPrimary)
-                        .lineLimit(1)
+                        .lineLimit(2)
 
                     Text(book.author)
                         .font(.caption2)
                         .foregroundStyle(Color.textSecondary)
-                        .lineLimit(1)
+                        .lineLimit(2)
                 }
                 .frame(width: 110, height: Self.captionReserve - 4, alignment: .top)
             }
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(book.title) by \(book.author), \(book.quoteCount) quotes")
+        .accessibilityLabel("\(book.title) by \(book.author), \(book.quoteCount) \(book.quoteCount == 1 ? "passage" : "passages")")
         .accessibilityHint("Open book details")
     }
 }

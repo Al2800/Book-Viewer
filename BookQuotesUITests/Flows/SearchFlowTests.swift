@@ -275,6 +275,24 @@ final class V2ProductShellTests: BaseUITestCase {
         ]
     }
 
+    func testViewAllPassagesOpensCanonicalDetailAndReturnsToList() {
+        let viewAll = app.buttons["reading_view_all_passages"]
+        reveal(viewAll)
+        viewAll.tap()
+        XCTAssertTrue(app.navigationBars["All Passages"].waitForExistence(timeout: 5))
+        let row = app.buttons["reading_all_passage_row"].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        let sourceLabel = row.label
+        row.tap()
+        XCTAssertTrue(app.navigationBars["Passage"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons[AccessibilityIdentifiers.QuoteDetail.favoriteButton].exists)
+        tapBackButton()
+        XCTAssertTrue(app.navigationBars["All Passages"].waitForExistence(timeout: 5))
+        XCTAssertEqual(row.label, sourceLabel)
+        tapBackButton()
+        XCTAssertTrue(app.buttons["reading_view_all_passages"].waitForExistence(timeout: 5))
+    }
+
     func testBrowsePreferenceRoundTripsBetweenSettingsAndReading() {
         assertBrowsePreferenceRoundTrip()
     }

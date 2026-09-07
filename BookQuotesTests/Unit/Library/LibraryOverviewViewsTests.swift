@@ -44,7 +44,8 @@ final class LibraryOverviewViewsTests: XCTestCase {
 
         let snapshot = LibraryHomeSnapshot(books: [book])
         XCTAssertEqual(snapshot.totalQuoteCount, 1)
-        XCTAssertEqual(snapshot.dailyPassage?.id, quote.id)
+        XCTAssertNil(snapshot.dailyPassage)
+        XCTAssertEqual(snapshot.recentQuotes.map(\.id), [quote.id])
         XCTAssertEqual(snapshot.activeBook?.id, book.id)
     }
 
@@ -62,6 +63,37 @@ final class LibraryOverviewViewsTests: XCTestCase {
         if let dailyID = snapshot.dailyPassage?.id {
             XCTAssertFalse(snapshot.recentQuotes.contains(where: { $0.id == dailyID }))
         }
+    }
+
+    func testRecentPrecedesRevisitAndOnlyOlderPassagesAreEligible() {
+        let book = Book(title: "Reading", author: "Reader")
+        let quotes = (0..<6).map { index in
+            let quote = Quote(text: "Passage \(index)", book: book)
+            quote.captureDate = Date(timeIntervalSince1970: Double(index))
+            return quote
+        }
+        book.quotes = quotes
+        quotes[5].isFavorite = true // A favourite must not displace a recent item.
+        let first = LibraryHomeSnapshot(books: [book])
+        XCTAssertEqual(first.recentQuotes.map(\.id), [quotes[5].id, quotes[4].id, quotes[3].id])
+        XCTAssertNotNil(first.dailyPassage)
+        XCTAssertTrue(quotes.prefix(3).contains { $0.id == first.dailyPassage?.id })
+        book.quotes = quotes.reversed()
+        let reordered = LibraryHomeSnapshot(books: [book])
+        XCTAssertEqual(reordered.recentQuotes.map(\.id), first.recentQuotes.map(\.id))
+        XCTAssertEqual(reordered.dailyPassage?.id, first.dailyPassage?.id)
+    }
+
+    func testEqualDatePassagesAreNotMisrepresentedAsOlder() {
+        let book = Book(title: "Reading", author: "Reader")
+        book.quotes = (0..<5).map { index in
+            let quote = Quote(text: "Passage \(index)", book: book)
+            quote.captureDate = Date(timeIntervalSince1970: 1)
+            return quote
+        }
+        let snapshot = LibraryHomeSnapshot(books: [book])
+        XCTAssertEqual(snapshot.recentQuotes.count, 3)
+        XCTAssertNil(snapshot.dailyPassage)
     }
 
     func testShelfGroupsIncludeEveryStatusOnceAndPreserveInputOrder() {

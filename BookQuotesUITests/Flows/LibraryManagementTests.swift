@@ -382,10 +382,7 @@ final class AdaptiveLibraryLayoutTests: BaseUITestCase {
     }
 
     func testLibraryBookCardsRemainLegibleWithAccessibilityText() {
-        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
-        XCTAssertTrue(viewModeToggle.waitForExistence(timeout: 5), "Library should provide a view mode control")
-        XCTAssertGreaterThan(viewModeToggle.buttons.count, 1, "Library view mode control should include grid and list")
-        viewModeToggle.buttons.element(boundBy: 0).tap()
+        selectBrowseMode("Grid View")
         captureScreenshot(named: "accessibility_text_grid", description: "Library grid at accessibility text size")
 
         let card = app.descendants(matching: .any)
@@ -411,11 +408,35 @@ final class AdaptiveLibraryLayoutTests: BaseUITestCase {
         )
     }
 
+    func testShelvesUseReadableGroupedRowsWithoutChangingPreference() {
+        selectBrowseMode("3D Shelves")
+        let mode = app.buttons[AccessibilityIdentifiers.Library.viewModeToggle]
+        let sort = app.buttons[AccessibilityIdentifiers.Library.sortMenu]
+        XCTAssertTrue(mode.frame.intersection(sort.frame).isEmpty,
+                      "Browse controls must not overlap at XXXL")
+        let row = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        XCTAssertTrue(revealForInteraction(row, maxSwipes: 12))
+        XCTAssertGreaterThan(row.frame.width, app.frame.width * 0.7)
+        XCTAssertEqual(mode.label, "View mode: 3D Shelves", "Accessible presentation must preserve the chosen preference")
+        captureScreenshot(named: "accessible_grouped_shelves", description: "Large-text shelf preference uses readable grouped book rows")
+        let sourceLabel = row.label
+        row.tap()
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        XCTAssertTrue(sourceLabel.contains(title.label))
+    }
+
+    private func selectBrowseMode(_ name: String) {
+        let mode = app.buttons[AccessibilityIdentifiers.Library.viewModeToggle]
+        XCTAssertTrue(revealForInteraction(mode, maxSwipes: 12))
+        mode.tap()
+        let option = app.buttons[name]
+        XCTAssertTrue(option.waitForExistence(timeout: 3))
+        option.tap()
+    }
+
     func testLibraryListRowsRemainLegibleWithAccessibilityText() {
-        let viewModeToggle = app.segmentedControls[AccessibilityIdentifiers.Library.viewModeToggle]
-        XCTAssertTrue(viewModeToggle.waitForExistence(timeout: 5), "Library should provide a view mode control")
-        XCTAssertGreaterThan(viewModeToggle.buttons.count, 1, "Library view mode control should include grid and list")
-        viewModeToggle.buttons.element(boundBy: 1).tap()
+        selectBrowseMode("List View")
         captureScreenshot(named: "accessibility_text_list", description: "Library list at accessibility text size")
 
         let row = app.descendants(matching: .any)
