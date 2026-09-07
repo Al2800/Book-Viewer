@@ -19,8 +19,9 @@ struct ExtractionReviewView: View {
     @State private var showingDiscardAlert = false
     @State private var isSaving = false
     @State private var saveError: Error?
-    @State private var pendingDuplicateChecks: [QuoteSaveService.PreSaveCheckResult] = []
-    @State private var approvedQuotes: [ExtractedQuote] = []
+    @State private var savedWithPendingPagesMessage: String?
+    @State private var pendingDuplicateChecks: [DuplicateCheckItem] = []
+    @State private var approvedQuotes: [EditableQuote] = []
     @State private var currentDuplicateCheck: DuplicateCheckItem?
     @State private var hasStartedProcessing = false
     @State private var showingAIConsent = false
@@ -95,6 +96,7 @@ struct ExtractionReviewView: View {
                     mainContentView
                 }
             }
+            .disabled(isSaving)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.backgroundPrimary)
             .navigationTitle("Passages")
@@ -102,8 +104,8 @@ struct ExtractionReviewView: View {
             .toolbar {
                 ExtractionReviewPassagesToolbar(
                     bookTitle: book.title,
-                    passageCount: totalQuoteCount,
-                    canSave: totalQuoteCount > 0 && !isSaving && !isProcessing && !quoteState.isLoading,
+                    passageCount: quoteState.selectedQuotes.count,
+                    canSave: !quoteState.selectedQuotes.isEmpty && !isSaving && !isProcessing && !quoteState.isLoading,
                     isSaving: isSaving,
                     onCancel: {
                         HapticManager.light()
@@ -135,6 +137,14 @@ struct ExtractionReviewView: View {
             } message: {
                 Text(saveError?.localizedDescription ?? "An unknown error occurred")
             }
+            .alert("Passages Saved", isPresented: .init(
+                get: { savedWithPendingPagesMessage != nil },
+                set: { if !$0 { savedWithPendingPagesMessage = nil } }
+            )) {
+                Button("Continue Reviewing", role: .cancel) {}
+            } message: {
+                Text(savedWithPendingPagesMessage ?? "Unprocessed pages remain available for retry.")
+            }
             .sheet(isPresented: $showingAddQuoteSheet) {
                 if let page = selectedPage ?? orderedPages.last {
                     AddManualQuoteSheet(
@@ -152,9 +162,11 @@ struct ExtractionReviewView: View {
                     newQuoteText: item.check.extractedQuote.text,
                     book: book,
                     onSaveAnyway: {
-                        approvedQuotes.append(item.check.extractedQuote)
+                        if let candidate = quoteState.editingQuotes.first(where: { $0.id == item.id }) {
+                            approvedQuotes.append(candidate)
+                        }
                     },
-                    onCancel: {}
+                    onCancel: { quoteState.setSelected(false, id: item.id) }
                 )
             }
         }
@@ -188,6 +200,26 @@ struct ExtractionReviewView: View {
     private var mainContentView: some View {
         ScrollView {
             VStack(spacing: Spacing.md) {
+                Text("\(quoteState.selectedQuotes.count) of \(totalQuoteCount) passages selected")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityIdentifier("capture_selection_summary")
+
+                if processingSummary.failedPageCount > 0 {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        Label("\(processingSummary.failedPageCount) pages could not be processed", systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(Color.textPrimary)
+                        Text("You can save selected passages now. Failed pages will stay here for retry or manual entry.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.textSecondary)
+                        Button("Retry failed pages", action: retryFailedExtractions)
+                            .buttonStyle(.secondary)
+                        Button("Try on-device for failed pages", action: retryFailedExtractionsOnDevice)
+                            .buttonStyle(.secondary)
+                    }
+                }
+
                 ForEach(orderedPages) { page in
                     if showsPageHeaders {
                         ExtractionReviewPageGroupHeader(page: page) {
@@ -195,14 +227,31 @@ struct ExtractionReviewView: View {
                         }
                     }
 
+                    if page.status == .failed {
+                        Button("Add passage for this page") {
+                            selectedPage = page
+                            showingAddQuoteSheet = true
+                        }
+                        .buttonStyle(.secondary)
+                    }
+
                     ForEach(quoteState.quotes(for: page.id)) { quote in
                         if let index = quoteState.editingQuotes.firstIndex(where: { $0.id == quote.id }) {
-                            QuoteEditRow(
-                                quote: $quoteState.editingQuotes[index],
-                                onDelete: {
-                                    deleteQuote(quote)
-                                }
-                            )
+                            VStack(alignment: .leading, spacing: Spacing.xs) {
+                                Toggle("Include passage", isOn: Binding(
+                                    get: { quoteState.isSelected(quote.id) },
+                                    set: { quoteState.setSelected($0, id: quote.id) }
+                                ))
+                                .font(.subheadline)
+                                .frame(minHeight: 44)
+                                .accessibilityLabel("Include passage: \(quote.text)")
+                                .accessibilityIdentifier("capture_passage_selection_toggle")
+
+                                QuoteEditRow(
+                                    quote: $quoteState.editingQuotes[index],
+                                    onDelete: { deleteQuote(quote) }
+                                )
+                            }
                         }
                     }
                 }
@@ -342,41 +391,52 @@ struct ExtractionReviewView: View {
     }
 
     private func saveAllQuotes() {
-        guard !quoteState.editingQuotes.isEmpty else { return }
+        let selectedQuotes = quoteState.selectedQuotes
+        guard !selectedQuotes.isEmpty, !isSaving, !isProcessing, !quoteState.isLoading else { return }
+        // Lock the review before duplicate prompts, not only when persistence begins.
+        isSaving = true
 
         let saveService = QuoteSaveService(modelContext: modelContext)
-        let extractedQuotes = quoteState.editingQuotes.map { quote in
+        let extractedQuotes = selectedQuotes.map { quote in
             quote.toExtractedQuote(
                 customMarkingDefinition: customMarkingDefinition(for: quote)
             )
         }
         let checks = saveService.checkBatchForDuplicates(extractedQuotes, to: book)
 
-        approvedQuotes = checks.filter { !$0.hasDuplicates }.map(\.extractedQuote)
-        pendingDuplicateChecks = checks.filter(\.hasDuplicates)
+        approvedQuotes = zip(selectedQuotes, checks).compactMap { candidate, check in
+            check.hasDuplicates ? nil : candidate
+        }
+        pendingDuplicateChecks = zip(selectedQuotes, checks).compactMap { candidate, check in
+            check.hasDuplicates ? DuplicateCheckItem(id: candidate.id, check: check) : nil
+        }
 
         if pendingDuplicateChecks.isEmpty {
             persistApprovedQuotes()
         } else {
-            currentDuplicateCheck = DuplicateCheckItem(check: pendingDuplicateChecks.removeFirst())
+            currentDuplicateCheck = pendingDuplicateChecks.removeFirst()
         }
     }
 
     /// Presents the next duplicate warning, or persists once all duplicates are reviewed.
     private func advanceDuplicateReview() {
         if !pendingDuplicateChecks.isEmpty {
-            currentDuplicateCheck = DuplicateCheckItem(check: pendingDuplicateChecks.removeFirst())
+            currentDuplicateCheck = pendingDuplicateChecks.removeFirst()
         } else {
             persistApprovedQuotes()
         }
     }
 
     private func persistApprovedQuotes() {
-        let quotesToSave = approvedQuotes
+        let candidatesToSave = approvedQuotes
+        let quotesToSave = candidatesToSave.map {
+            $0.toExtractedQuote(customMarkingDefinition: customMarkingDefinition(for: $0))
+        }
         approvedQuotes = []
 
         guard !quotesToSave.isEmpty else {
             // User skipped every flagged duplicate; leave the editor untouched.
+            isSaving = false
             HapticManager.warning()
             return
         }
@@ -392,9 +452,16 @@ struct ExtractionReviewView: View {
             let result = saveService.saveMultiple(quotesToSave, to: book)
 
             await MainActor.run {
-                isSaving = false
-
                 if result.isFullSuccess {
+                    if processingSummary.failedPageCount > 0 {
+                        // Saving successful candidates is not permission to delete
+                        // source pages whose extraction failed.
+                        quoteState.applySaveResult(submittedIDs: candidatesToSave.map(\.id), failures: [])
+                        isSaving = false
+                        savedWithPendingPagesMessage = "Saved \(result.savedQuotes.count) passages. Failed pages and their source images remain available for retry."
+                        HapticManager.success()
+                        return
+                    }
                     session.deleteImageFiles()
                     try? modelContext.save()
 
@@ -421,9 +488,16 @@ struct ExtractionReviewView: View {
                     }
                 } else if result.isPartialSuccess {
                     // Show partial success - some quotes saved
-                    quoteState.replaceAfterPartialSave(with: result.failures)
+                    quoteState.applySaveResult(submittedIDs: candidatesToSave.map(\.id), failures: result.failures)
+                    isSaving = false
+                    saveError = QuoteSaveError.persistenceFailed(NSError(
+                        domain: "ExtractionReview",
+                        code: -1,
+                        userInfo: [NSLocalizedDescriptionKey: "Saved \(result.savedQuotes.count) passages. \(result.failures.count) could not be saved and remain selected for retry. Excluded passages are unchanged."]
+                    ))
                     HapticManager.warning()
                 } else {
+                    isSaving = false
                     saveError = QuoteSaveError.persistenceFailed(
                         NSError(
                             domain: "ExtractionReview",
@@ -447,6 +521,6 @@ struct ExtractionReviewView: View {
 
 /// Identifiable wrapper so duplicate checks can drive a `sheet(item:)` one at a time.
 private struct DuplicateCheckItem: Identifiable {
-    let id = UUID()
+    let id: UUID
     let check: QuoteSaveService.PreSaveCheckResult
 }

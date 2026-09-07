@@ -4,6 +4,79 @@ import XCTest
 
 final class ExtractionReviewQuoteStateTests: XCTestCase {
 
+    func testSelectionDefaultsToAllAndDoesNotDeleteExcludedCandidates() {
+        let a = EditableQuote(pageId: UUID(), text: "First", markingType: "underline")
+        let b = EditableQuote(pageId: UUID(), text: "Second", markingType: "highlight")
+        var state = ExtractionReviewQuoteState(editingQuotes: [a, b])
+        XCTAssertEqual(state.selectedQuotes.map(\.id), [a.id, b.id])
+        state.setSelected(false, id: a.id)
+        XCTAssertEqual(state.selectedQuotes.map(\.id), [b.id])
+        XCTAssertEqual(state.totalQuoteCount, 2)
+        state.setSelected(false, id: b.id)
+        XCTAssertTrue(state.selectedQuotes.isEmpty)
+        XCTAssertTrue(state.hasChanges)
+        state.setSelected(true, id: a.id)
+        XCTAssertEqual(state.selectedQuotes.map(\.id), [a.id])
+    }
+
+    func testPartialSaveUsesSubmittedIdentityOrderAndPreservesExcludedAndSkippedCandidates() {
+        let page = UUID()
+        let excluded = EditableQuote(pageId: page, text: "Excluded", markingType: "underline")
+        let failed = EditableQuote(pageId: page, text: "Duplicate approved later", markingType: "underline")
+        let saved = EditableQuote(pageId: page, text: "Nonduplicate saved first", markingType: "underline")
+        let skipped = EditableQuote(pageId: page, text: "Duplicate skipped", markingType: "underline")
+        var state = ExtractionReviewQuoteState(editingQuotes: [excluded, failed, saved, skipped])
+        state.setSelected(false, id: excluded.id)
+        let failure = SaveFailure(index: 1, extractedQuote: failed.toExtractedQuote(), error: QuoteSaveError.invalidQuoteData("Test failure"))
+        state.applySaveResult(submittedIDs: [saved.id, failed.id], failures: [failure])
+        XCTAssertEqual(state.editingQuotes.map(\.id), [excluded.id, failed.id, skipped.id])
+        XCTAssertEqual(state.selectedQuotes.map(\.id), [failed.id, skipped.id])
+        XCTAssertFalse(state.isSelected(excluded.id))
+    }
+
+    func testFullSaveFailurePreservesSelectionAndTextForRetry() {
+        let quote = EditableQuote(pageId: UUID(), text: "Keep this edit", markingType: "underline")
+        var state = ExtractionReviewQuoteState(editingQuotes: [quote])
+        state.applySaveResult(submittedIDs: [quote.id], failures: [
+            SaveFailure(index: 0, extractedQuote: quote.toExtractedQuote(), error: QuoteSaveError.invalidQuoteData("Test failure"))
+        ])
+        XCTAssertEqual(state.selectedQuotes, [quote])
+    }
+
+    func testPollingNewPagesPreservesEditsSelectionManualAndDeletedCandidates() {
+        let first = snapshot(page: UUID(), text: "Original")
+        let second = snapshot(page: UUID(), text: "Second page")
+        var state = ExtractionReviewQuoteState()
+        state.loadCompletedQuotes(from: [first])
+        let firstID = state.editingQuotes[0].id
+        state.editingQuotes[0].text = "Corrected by reader"
+        state.setSelected(false, id: firstID)
+        let manual = EditableQuote(pageId: first.pageId, text: "Manual", markingType: "underline", isManual: true)
+        state.append(manual)
+        state.loadCompletedQuotes(from: [first, second])
+        XCTAssertEqual(state.editingQuotes.map(\.text), ["Corrected by reader", "Manual", "Second page"])
+        XCTAssertFalse(state.isSelected(firstID))
+        XCTAssertTrue(state.isSelected(manual.id))
+        state.editingQuotes.removeAll { $0.id == firstID }
+        state.loadCompletedQuotes(from: [first, second])
+        XCTAssertEqual(state.editingQuotes.map(\.text), ["Manual", "Second page"])
+    }
+
+    func testPollingDoesNotResurrectSuccessfullySavedCandidates() {
+        let page = snapshot(page: UUID(), text: "Already saved")
+        var state = ExtractionReviewQuoteState()
+        state.loadCompletedQuotes(from: [page])
+        state.applySaveResult(submittedIDs: state.editingQuotes.map(\.id), failures: [])
+        state.loadCompletedQuotes(from: [page])
+        XCTAssertTrue(state.editingQuotes.isEmpty)
+    }
+
+    private func snapshot(page: UUID, text: String) -> ExtractionReviewPageQuoteSnapshot {
+        ExtractionReviewPageQuoteSnapshot(pageId: page, detectedPageNumber: 42, quotes: [
+            ExtractedQuoteData(text: text, pageNumber: nil, marginNote: nil, markingType: "underline", confidence: 0.8)
+        ])
+    }
+
     func testLoadingPageSnapshotsMapsExtractedQuotesIntoEditableReviewState() {
         let firstPageId = UUID()
         let secondPageId = UUID()
@@ -109,6 +182,21 @@ final class ExtractionReviewQuoteStateTests: XCTestCase {
         XCTAssertTrue(summary.hasExtractionFailures)
         XCTAssertFalse(summary.hasNoQuotes)
         XCTAssertEqual(summary.primaryFailureMessage, "Please sign in to continue")
+    }
+
+    func testMixedExtractionSuccessStillReportsFailedPagesForRecovery() {
+        let summary = ExtractionReviewProcessingSummary(
+            isQuoteStateLoading: false,
+            isProcessing: false,
+            totalQuoteCount: 2,
+            captures: [
+                ExtractionReviewCaptureStatusSnapshot(pageId: UUID(), status: .completed, errorMessage: nil, quoteCount: 2),
+                ExtractionReviewCaptureStatusSnapshot(pageId: UUID(), status: .failed, errorMessage: "Network unavailable", quoteCount: 0)
+            ]
+        )
+        XCTAssertFalse(summary.hasExtractionFailures, "Mixed success uses the review list, not the empty failure screen")
+        XCTAssertEqual(summary.failedPageCount, 1, "Successful passages must not hide a failed page")
+        XCTAssertFalse(summary.hasNoQuotes)
     }
 
     func testProcessingSummaryTreatsCompletedEmptyPagesAsNoQuotes() {

@@ -40,8 +40,12 @@ struct ExtractionReviewProcessingSummary {
     let totalQuoteCount: Int
     let captures: [ExtractionReviewCaptureStatusSnapshot]
 
+    var failedPageCount: Int {
+        captures.filter { $0.status == .failed }.count
+    }
+
     var hasExtractionFailures: Bool {
-        !isQuoteStateLoading && !isProcessing && totalQuoteCount == 0 && captures.contains { $0.status == .failed }
+        !isQuoteStateLoading && !isProcessing && totalQuoteCount == 0 && failedPageCount > 0
     }
 
     var hasNoQuotes: Bool {
@@ -59,6 +63,8 @@ struct ExtractionReviewProcessingSummary {
 struct ExtractionReviewQuoteState {
     var editingQuotes: [EditableQuote]
     var isLoading: Bool
+    private var deselectedIDs: Set<UUID> = []
+    private var loadedPageIDs: Set<UUID> = []
 
     init(editingQuotes: [EditableQuote] = [], isLoading: Bool = true) {
         self.editingQuotes = editingQuotes
@@ -72,6 +78,23 @@ struct ExtractionReviewQuoteState {
 
     var totalQuoteCount: Int {
         editingQuotes.count
+    }
+
+    var selectedQuotes: [EditableQuote] {
+        editingQuotes.filter { !deselectedIDs.contains($0.id) }
+    }
+
+    func isSelected(_ id: UUID) -> Bool {
+        editingQuotes.contains { $0.id == id } && !deselectedIDs.contains(id)
+    }
+
+    mutating func setSelected(_ selected: Bool, id: UUID) {
+        guard editingQuotes.contains(where: { $0.id == id }) else { return }
+        if selected {
+            deselectedIDs.remove(id)
+        } else {
+            deselectedIDs.insert(id)
+        }
     }
 
     var hasChanges: Bool {
@@ -91,14 +114,22 @@ struct ExtractionReviewQuoteState {
         editingQuotes.append(contentsOf: newQuotes)
     }
 
-    mutating func replaceAfterPartialSave(with failures: [SaveFailure]) {
-        editingQuotes = editingQuotes.filter { quote in
-            failures.contains { $0.index == editingQuotes.firstIndex(of: quote) }
-        }
+    /// Failure indices belong to the submitted batch, not the full review array.
+    /// Remove only confirmed successes; retain excluded/skipped candidates and failures.
+    mutating func applySaveResult(submittedIDs: [UUID], failures: [SaveFailure]) {
+        let failedIndices = Set(failures.map(\.index))
+        let successfulIDs = Set(submittedIDs.enumerated().compactMap { index, id in
+            failedIndices.contains(index) ? nil : id
+        })
+        editingQuotes.removeAll { successfulIDs.contains($0.id) }
+        deselectedIDs.subtract(successfulIDs)
     }
 
     mutating func loadCompletedQuotes(from snapshots: [ExtractionReviewPageQuoteSnapshot]) {
-        let loadedQuotes = snapshots.flatMap { snapshot in
+        // A completed page is imported once per review. Polling or another page
+        // completing must not resurrect saved/deleted candidates or overwrite edits.
+        let newSnapshots = snapshots.filter { !loadedPageIDs.contains($0.pageId) }
+        let loadedQuotes = newSnapshots.flatMap { snapshot in
             snapshot.quotes.map { data in
                 EditableQuote(
                     pageId: snapshot.pageId,
@@ -117,14 +148,8 @@ struct ExtractionReviewQuoteState {
             }
         }
 
-        if identitySet(for: loadedQuotes) != identitySet(for: editingQuotes) {
-            editingQuotes = loadedQuotes
-        }
-
+        editingQuotes.append(contentsOf: loadedQuotes)
+        loadedPageIDs.formUnion(newSnapshots.map(\.pageId))
         isLoading = false
-    }
-
-    private func identitySet(for quotes: [EditableQuote]) -> Set<String> {
-        Set(quotes.map { "\($0.pageId)-\($0.text.prefix(50))" })
     }
 }

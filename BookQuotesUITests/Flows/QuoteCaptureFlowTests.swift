@@ -297,6 +297,44 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(save.waitForExistence(timeout: 5) && save.isEnabled)
     }
 
+    func testReviewSelection_ZeroDisablesSaveAndOnlyIncludedPassageIsSaved() {
+        navigateToExtractionReview()
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertTrue(save.waitForExistence(timeout: 10))
+        XCTAssertEqual(save.label, "Save 2 passages")
+
+        let remote = app.switches.matching(NSPredicate(format: "label CONTAINS %@", "A model-assisted quote used for review testing.")).firstMatch
+        let local = app.switches.matching(NSPredicate(format: "label CONTAINS %@", "An on-device quote used for review testing.")).firstMatch
+        XCTAssertTrue(revealForInteraction(remote))
+        remote.tap()
+        XCTAssertEqual(save.label, "Save 1 passage")
+        XCTAssertTrue(revealForInteraction(local))
+        local.tap()
+        XCTAssertEqual(save.label, "Save 0 passages")
+        XCTAssertFalse(save.isEnabled)
+        local.tap()
+        XCTAssertEqual(save.label, "Save 1 passage")
+        XCTAssertTrue(save.isEnabled)
+        save.tap()
+
+        let viewPassages = app.buttons["capture_view_passages_button"]
+        XCTAssertTrue(viewPassages.waitForExistence(timeout: 10))
+        viewPassages.tap()
+        XCTAssertTrue(app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].waitForExistence(timeout: 5))
+        let included = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "An on-device quote used for review testing.")).firstMatch
+        XCTAssertTrue(revealForInteraction(included), "Selected passage should be in the book")
+        let search = app.searchFields.firstMatch
+        // The book's search verifies exclusion, rather than relying on an off-screen row being absent.
+        for _ in 0..<8 {
+            if search.exists && search.isHittable { break }
+            app.swipeDown()
+        }
+        XCTAssertTrue(search.exists && search.isHittable)
+        search.tap()
+        search.typeText("A model-assisted quote used for review testing.\n")
+        XCTAssertTrue(app.staticTexts["No Matching Passages"].waitForExistence(timeout: 5))
+    }
+
     // MARK: - Save Flow Tests
 
     func testSavePassages_ReturnsToCameraWithOptionalBookNavigation() {
@@ -656,7 +694,7 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
         let reviewScrollView = app.scrollViews[AccessibilityIdentifiers.Capture.extractionReviewScrollView]
         XCTAssertTrue(reviewScrollView.waitForExistence(timeout: 5), "Compact review should expose its vertical scroll surface")
 
-        for _ in 0..<3 {
+        for _ in 0..<12 {
             if let editButton = visibleQuoteEditButton() {
                 editButton.tap()
                 XCTAssertTrue(
@@ -665,14 +703,23 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
                 )
                 return
             }
-            reviewScrollView.swipeUp()
+            // Use the presented sheet's navigation bar, not the underlying
+            // Library bar. Reverse if a gesture passed the first edit row.
+            let first = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].firstMatch
+            let top = app.navigationBars["Passages"].frame.maxY
+            let moveDown = first.exists && first.frame.minY < top
+            reviewScrollView.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1,
+                       thenDragTo: reviewScrollView.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: moveDown ? 0.6 : 0.4)),
+                       withVelocity: .slow,
+                       thenHoldForDuration: 0.2)
         }
 
         XCTFail("A visible edit control should be available after scrolling the extraction review")
     }
 
     private func visibleQuoteEditButton() -> XCUIElement? {
-        let navBar = app.navigationBars.firstMatch
+        let navBar = app.navigationBars["Passages"]
         let topBound = navBar.exists ? navBar.frame.maxY : app.frame.minY
         let editButtons = app.buttons.matching(identifier: AccessibilityIdentifiers.Capture.extractionQuoteEditButton)
         for index in 0..<editButtons.count {

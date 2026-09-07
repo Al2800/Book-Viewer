@@ -13,18 +13,21 @@ final class QuoteSaveService {
 
     private let modelContext: ModelContext
     private let duplicateDetector: DuplicateDetector
+    private let persistQuoteChanges: () throws -> Void
 
     // MARK: - Initialization
 
-    init(modelContext: ModelContext) {
+    init(modelContext: ModelContext, persistQuoteChanges: (() throws -> Void)? = nil) {
         self.modelContext = modelContext
         self.duplicateDetector = DuplicateDetector(modelContext: modelContext)
+        self.persistQuoteChanges = persistQuoteChanges ?? { try modelContext.save() }
     }
 
     /// Initialize with a custom duplicate detector configuration
     init(modelContext: ModelContext, duplicateConfig: DuplicateDetector.Configuration) {
         self.modelContext = modelContext
         self.duplicateDetector = DuplicateDetector(modelContext: modelContext, configuration: duplicateConfig)
+        self.persistQuoteChanges = { try modelContext.save() }
     }
 
     // MARK: - Save Operations
@@ -51,10 +54,17 @@ final class QuoteSaveService {
         // Insert and save
         modelContext.insert(quote)
 
-        // Update book's last quote date
+        // Restore only this operation on failure, not unrelated edits in the context.
+        let previousQuoteDate = book.dateLastQuoteAdded
         book.dateLastQuoteAdded = Date()
-
-        try modelContext.save()
+        do {
+            try persistQuoteChanges()
+        } catch {
+            quote.book = nil
+            modelContext.delete(quote)
+            book.dateLastQuoteAdded = previousQuoteDate
+            throw error
+        }
 
         HapticManager.quoteAdded()
 
@@ -89,13 +99,8 @@ final class QuoteSaveService {
             }
         }
 
-        // Attempt to persist all successful saves
-        do {
-            try modelContext.save()
-        } catch {
-            // If final save fails, all quotes may have failed
-            // Return what we attempted
-        }
+        // Each successful candidate has already been persisted. An extra context
+        // save here could accidentally commit changes left by a failed operation.
 
         return BatchSaveResult(
             savedQuotes: savedQuotes,

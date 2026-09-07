@@ -8,7 +8,7 @@ struct QuoteSaveDraft {
     func makeQuote() throws -> Quote {
         let quote = Quote(
             text: extractedQuote.text,
-            book: book,
+            book: nil,
             markingType: extractedQuote.markingType
         )
 
@@ -24,6 +24,8 @@ struct QuoteSaveDraft {
         }
 
         try quote.validate()
+        // Invalid candidates must never enter the book's inverse relationship.
+        quote.book = book
         return quote
     }
 }
