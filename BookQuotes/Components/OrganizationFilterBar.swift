@@ -10,6 +10,7 @@ struct OrganizationFilterBar: View {
 
     @Query(sort: \Collection.sortOrder) private var collections: [Collection]
     @Query(sort: \Tag.name) private var tags: [Tag]
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // MARK: - Bindings
 
@@ -19,40 +20,35 @@ struct OrganizationFilterBar: View {
     // MARK: - Body
 
     var body: some View {
-        if !collections.isEmpty || !tags.isEmpty {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: Spacing.sm) {
-                    // "All" Pill
-                    allPill
-
-                    // Collections
-                    collectionsSection
-
-                    // Divider if both exist
-                    if !collections.isEmpty && !tags.isEmpty {
-                        divider
-                    }
-
-                    // Tags
-                    tagsSection
-
-                    // Clear all if any selected
+        if !collections.isEmpty || !tags.isEmpty || activeFilterCount > 0 {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                HStack {
+                    Text(activeFilterCount == 0 ? "Filter books" : "Filter books · \(activeFilterCount) active")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                        .accessibilityIdentifier("library_book_filter_scope")
+                    Spacer()
                     clearAllButton
                 }
-                .padding(.horizontal, Spacing.lg)
-                .padding(.vertical, Spacing.xs)
-            }
-            .accessibilityIdentifier(AccessibilityIdentifiers.Library.organizationFilterBar)
-            .background(
-                Rectangle()
-                    .fill(Color.backgroundPrimary)
-                    .overlay(alignment: .bottom) {
-                        Rectangle()
-                            .fill(Color.quoteBorder.opacity(0.4))
-                            .frame(height: Stroke.hairline.width)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: Spacing.sm) {
+                        allPill
+                        collectionsSection
+                        if !collections.isEmpty && !tags.isEmpty {
+                            divider
+                        }
+                        tagsSection
                     }
-            )
+                    .padding(.horizontal, Spacing.xxs)
+                    .padding(.vertical, Spacing.xs)
+                }
+                .accessibilityIdentifier(AccessibilityIdentifiers.Library.organizationFilterBar)
+            }
         }
+    }
+
+    private var activeFilterCount: Int {
+        selectedCollectionIds.count + selectedTagIds.count
     }
 
     // MARK: - All Pill
@@ -61,7 +57,7 @@ struct OrganizationFilterBar: View {
         let isAllSelected = selectedCollectionIds.isEmpty && selectedTagIds.isEmpty
         return Button {
             HapticManager.selection()
-            withAnimation(.quickSpring) {
+            withAnimation(reduceMotion ? .none : .quickSpring) {
                 selectedCollectionIds.removeAll()
                 selectedTagIds.removeAll()
             }
@@ -69,11 +65,12 @@ struct OrganizationFilterBar: View {
             HStack(spacing: Spacing.xs) {
                 Image(systemName: "books.vertical")
                     .font(.caption2)
-                Text("All")
+                Text("All books")
                     .font(.caption.weight(isAllSelected ? .semibold : .regular))
             }
             .padding(.horizontal, Spacing.md)
             .padding(.vertical, Spacing.xs)
+            .frame(minHeight: 44)
             .background(
                 Capsule()
                     .fill(isAllSelected ? Color.brand : Color.backgroundSecondary)
@@ -85,6 +82,7 @@ struct OrganizationFilterBar: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isAllSelected ? .isSelected : [])
     }
 
     // MARK: - Collections Section
@@ -132,7 +130,7 @@ struct OrganizationFilterBar: View {
     private var clearAllButton: some View {
         if !selectedCollectionIds.isEmpty || !selectedTagIds.isEmpty {
             Button {
-                withAnimation {
+                withAnimation(reduceMotion ? .none : .quickSpring) {
                     selectedCollectionIds.removeAll()
                     selectedTagIds.removeAll()
                 }
@@ -140,9 +138,12 @@ struct OrganizationFilterBar: View {
                 Text("Clear")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .padding(.leading, Spacing.xs)
+            .accessibilityLabel("Clear book filters")
+            .accessibilityIdentifier("library_clear_book_filters")
         }
     }
 
@@ -150,7 +151,7 @@ struct OrganizationFilterBar: View {
 
     private func toggleCollection(_ id: UUID) {
         HapticManager.selection()
-        withAnimation(.quickSpring) {
+        withAnimation(reduceMotion ? .none : .quickSpring) {
             if selectedCollectionIds.contains(id) {
                 _ = selectedCollectionIds.remove(id)
             } else {
@@ -161,7 +162,7 @@ struct OrganizationFilterBar: View {
 
     private func toggleTag(_ id: UUID) {
         HapticManager.selection()
-        withAnimation(.quickSpring) {
+        withAnimation(reduceMotion ? .none : .quickSpring) {
             if selectedTagIds.contains(id) {
                 _ = selectedTagIds.remove(id)
             } else {
@@ -192,11 +193,13 @@ struct CollectionFilterChip: View {
             }
             .padding(.horizontal, Spacing.sm)
             .padding(.vertical, Spacing.xs)
+            .frame(minHeight: 44)
             .background(isSelected ? collectionColor : collectionColor.opacity(0.15))
             .foregroundStyle(isSelected ? .white : collectionColor)
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private var collectionColor: Color {
@@ -225,11 +228,13 @@ struct TagFilterChip: View {
             }
             .padding(.horizontal, Spacing.sm)
             .padding(.vertical, Spacing.xs)
+            .frame(minHeight: 44)
             .background(isSelected ? tagColor : tagColor.opacity(0.15))
             .foregroundStyle(isSelected ? .white : tagColor)
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private var tagColor: Color {

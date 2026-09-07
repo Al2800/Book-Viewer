@@ -183,6 +183,7 @@
 		CFB700000000000000000003 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB700000000000000000004 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift */; };
 		CF3DB0000000000000000003 /* BookQuotesTests/Unit/Library/ThreeDimensionalBookViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3DB0000000000000000004 /* BookQuotesTests/Unit/Library/ThreeDimensionalBookViewTests.swift */; };
 		CFB700000000000000000005 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB700000000000000000006 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift */; };
+		C0E700000000000000000001 /* LibraryOverviewViewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E700000000000000000002 /* LibraryOverviewViewsTests.swift */; };
 		CFB700000000000000000007 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB700000000000000000008 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift */; };
 		CFB700000000000000000009 /* StudioViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB70000000000000000000A /* StudioViews.swift */; };
 		CFB70000000000000000000B /* BookQuotesTests/Unit/Utilities/TabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB70000000000000000000C /* BookQuotesTests/Unit/Utilities/TabTests.swift */; };
@@ -732,6 +733,7 @@
 		CFB700000000000000000004 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift; sourceTree = SOURCE_ROOT; };
 		CF3DB0000000000000000004 /* BookQuotesTests/Unit/Library/ThreeDimensionalBookViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Library/ThreeDimensionalBookViewTests.swift; sourceTree = SOURCE_ROOT; };
 		CFB700000000000000000006 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Utilities/DesignSystemTests.swift; sourceTree = SOURCE_ROOT; };
+		C0E700000000000000000002 /* LibraryOverviewViewsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Library/LibraryOverviewViewsTests.swift; sourceTree = SOURCE_ROOT; };
 		CFB700000000000000000008 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift; sourceTree = SOURCE_ROOT; };
 		CFB70000000000000000000A /* StudioViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotes/Features/Studio/StudioViews.swift; sourceTree = SOURCE_ROOT; };
 		CFB70000000000000000000C /* BookQuotesTests/Unit/Utilities/TabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookQuotesTests/Unit/Utilities/TabTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1216,6 +1218,7 @@
 					CFB700000000000000000004 /* BookQuotesTests/Unit/Library/LibraryBookshelfViewTests.swift */,
 					CF3DB0000000000000000004 /* BookQuotesTests/Unit/Library/ThreeDimensionalBookViewTests.swift */,
 					CFB700000000000000000008 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift */,
+					C0E700000000000000000002 /* LibraryOverviewViewsTests.swift */,
 				);
 				name = "Recovered References";
 				sourceTree = "<group>";
@@ -1662,6 +1665,7 @@
 					CF3DB0000000000000000003 /* BookQuotesTests/Unit/Library/ThreeDimensionalBookViewTests.swift in Sources */,
 					CFB700000000000000000005 /* BookQuotesTests/Unit/Utilities/DesignSystemTests.swift in Sources */,
 					CFB700000000000000000007 /* BookQuotesTests/Unit/Library/OrganizationFilterBarTests.swift in Sources */,
+					C0E700000000000000000001 /* LibraryOverviewViewsTests.swift in Sources */,
 					CFB70000000000000000000B /* BookQuotesTests/Unit/Utilities/TabTests.swift in Sources */,
 					CFB800000000000000000009 /* BookQuotesTests/Unit/Studio/StudioThemePickerTests.swift in Sources */,
 					CFB80000000000000000000B /* BookQuotesTests/Unit/Studio/QuoteStudioExportServiceTests.swift in Sources */,

@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import BookQuotes
 
+@MainActor
 final class LibraryOverviewViewsTests: XCTestCase {
 
     func testDailyPassageReturnsDeterministicPick() {
@@ -61,6 +62,33 @@ final class LibraryOverviewViewsTests: XCTestCase {
         if let dailyID = snapshot.dailyPassage?.id {
             XCTAssertFalse(snapshot.recentQuotes.contains(where: { $0.id == dailyID }))
         }
+    }
+
+    func testShelfGroupsIncludeEveryStatusOnceAndPreserveInputOrder() {
+        let books = ReadingStatus.allCases.flatMap { status in
+            (0..<2).map { index in
+                let book = Book(title: "\(status.rawValue) \(index)", author: "Reader")
+                book.status = status
+                return book
+            }
+        }
+        let groups = LibraryShelfGroup.groups(for: books)
+        XCTAssertEqual(groups.first?.status, .currentlyReading)
+        XCTAssertEqual(Set(groups.map(\.status)), Set(ReadingStatus.allCases))
+        XCTAssertEqual(groups.flatMap(\.books).count, books.count)
+        XCTAssertEqual(Set(groups.flatMap(\.books).map(\.id)), Set(books.map(\.id)))
+        for group in groups {
+            XCTAssertEqual(group.books.map(\.id), books.filter { $0.status == group.status }.map(\.id))
+        }
+    }
+
+    func testShelfGroupsOmitEmptyStatusesButKeepAbandonedOnlyLibraries() {
+        XCTAssertTrue(LibraryShelfGroup.groups(for: []).isEmpty)
+        let book = Book(title: "Paused indefinitely", author: "Reader")
+        book.status = .abandoned
+        let groups = LibraryShelfGroup.groups(for: [book])
+        XCTAssertEqual(groups.map(\.status), [.abandoned])
+        XCTAssertEqual(groups.first?.books.map(\.id), [book.id])
     }
 
     func testActiveReadingSessionStorePureQueryDoesNotMutatePersistedID() {

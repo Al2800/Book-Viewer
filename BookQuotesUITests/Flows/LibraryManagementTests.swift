@@ -94,6 +94,39 @@ final class LibraryManagementTests: BaseUITestCase {
         logger.success("Found Atomic Habits book")
     }
 
+    func testShelvesKeepAbandonedBooksAndEditingReachable() {
+        app.terminate()
+        app.launchArguments += ["--product-experience-v2"]
+        app.launch()
+        waitForAppReady()
+        let mode = app.buttons[AccessibilityIdentifiers.Library.viewModeToggle]
+        XCTAssertTrue(revealForInteraction(mode, maxSwipes: 12))
+        mode.tap()
+        app.buttons["3D Shelves"].tap()
+        let shelfBook = app.buttons["library_shelf_book"].firstMatch
+        XCTAssertTrue(revealForInteraction(shelfBook))
+        let sourceLabel = shelfBook.label
+        shelfBook.press(forDuration: 1)
+        XCTAssertTrue(app.buttons["Delete Book"].waitForExistence(timeout: 3))
+        let edit = app.buttons["Edit Book"]
+        XCTAssertTrue(edit.exists)
+        edit.tap()
+        let status = app.segmentedControls[AccessibilityIdentifiers.BookDetail.statusPicker]
+        XCTAssertTrue(revealForInteraction(status, maxSwipes: 12))
+        status.buttons["Abandoned"].tap()
+        app.buttons[AccessibilityIdentifiers.BookEdit.saveButton].tap()
+        XCTAssertTrue(mode.waitForExistence(timeout: 5))
+
+        let abandoned = app.buttons.matching(NSPredicate(format: "identifier == %@ AND label == %@", "library_shelf_book", sourceLabel)).firstMatch
+        XCTAssertTrue(revealForInteraction(abandoned, maxSwipes: 12),
+                      "Changing status must not hide the book among other nonempty shelves")
+        XCTAssertTrue(app.staticTexts["Abandoned"].exists)
+        abandoned.tap()
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        XCTAssertTrue(sourceLabel.contains(title.label))
+    }
+
     func testLibrary_PassesSystemAccessibilityAudit() throws {
         try performSystemAccessibilityAudit()
     }
@@ -320,6 +353,7 @@ final class AdaptiveLibraryLayoutTests: BaseUITestCase {
     override var additionalLaunchArguments: [String] {
         [
             "--preload-library-test-data",
+            "--product-experience-v2",
             "-UIPreferredContentSizeCategoryName",
             "UICTContentSizeCategoryAccessibilityXXXL"
         ]
@@ -328,6 +362,23 @@ final class AdaptiveLibraryLayoutTests: BaseUITestCase {
     override func waitForAppReady() {
         super.waitForAppReady()
         XCTAssertTrue(tapTab(.library), "Library tab should be available")
+    }
+
+    func testContinueReadingUsesFullWidthTextAndSeparateCaptureAtAccessibilitySize() {
+        let open = app.buttons[AccessibilityIdentifiers.Library.continueReadingOpenButton]
+        let capture = app.buttons["continue_reading_capture_button"]
+        XCTAssertTrue(open.waitForExistence(timeout: 5) && open.isHittable)
+        XCTAssertTrue(capture.exists && capture.isHittable)
+        XCTAssertGreaterThan(open.frame.width, app.frame.width * 0.8)
+        XCTAssertGreaterThanOrEqual(capture.frame.minY, open.frame.maxY)
+        XCTAssertGreaterThanOrEqual(capture.frame.height, 44)
+        let expectedTitle = String(capture.label.dropFirst("Capture passage for ".count))
+        XCTAssertTrue(open.label.contains(expectedTitle))
+        captureScreenshot(named: "compact_continue_reading_xxxl", description: "Full-width active-book text with separate capture action")
+        open.tap()
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        XCTAssertEqual(title.label, expectedTitle)
     }
 
     func testLibraryBookCardsRemainLegibleWithAccessibilityText() {

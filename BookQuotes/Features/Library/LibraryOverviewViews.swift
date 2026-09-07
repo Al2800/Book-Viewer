@@ -151,117 +151,75 @@ struct BookmarkRibbon: View {
     }
 }
 
-// MARK: - Continue Reading Hero Card
+// MARK: - Continue Reading
 
-/// Hero card highlighting the currently active book with 1-tap capture action.
+/// Compact active-book destination with a separate capture action.
 struct ContinueReadingCard: View {
     let book: Book
     let onOpenBook: () -> Void
     let onCapture: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: "bookmark.fill")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Color.gildedAccent)
-                Text("Continue Reading")
-                    .sectionHeaderStyle()
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text("Continue Reading")
+                .sectionHeaderStyle()
 
-                Spacer()
-
-                Button(action: onOpenBook) {
-                    Image(systemName: "arrow.up.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.textSecondary)
-                        .frame(width: 32, height: 32)
-                        .frame(minWidth: 44, minHeight: 44)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Open \(book.title)")
-                .accessibilityHint("Opens book details")
-            }
-
-            HStack(alignment: .center, spacing: Spacing.md) {
-                // Book cover thumbnail with spine depth
-                Button(action: onOpenBook) {
-                    bookThumbnail
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(book.title) cover")
-                .accessibilityHint("Opens book details")
-                .accessibilityIdentifier(AccessibilityIdentifiers.Library.continueReadingOpenButton)
-
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Button(action: onOpenBook) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(book.title)
-                                .font(.serifHeadline)
-                                .foregroundStyle(Color.textPrimary)
-                                .lineLimit(2)
-                                .multilineTextAlignment(.leading)
-
-                            Text(book.author)
-                                .font(.authorName)
-                                .foregroundStyle(Color.textSecondary)
-                                .lineLimit(1)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(book.title) by \(book.author)")
-                    .accessibilityHint("Opens book details")
-
-                    HStack(spacing: Spacing.sm) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "text.quote")
-                                .font(.caption2)
-                            Text("\(book.quotes.count) \(book.quotes.count == 1 ? "passage" : "passages")")
-                                .font(.caption)
-                        }
-                        .foregroundStyle(Color.textSecondary)
-
-                        Spacer()
-
-                        Button {
-                            HapticManager.selection()
-                            onCapture()
-                        } label: {
-                            HStack(spacing: Spacing.xs) {
-                                Image(systemName: "camera.fill")
-                                    .font(.caption.weight(.semibold))
-                                Text("Capture")
-                                    .font(.uiPill)
-                            }
-                            .foregroundStyle(Color.darkLinen)
-                            .padding(.horizontal, Spacing.md)
-                            .padding(.vertical, Spacing.sm)
-                            .background(
-                                Capsule()
-                                    .fill(LinearGradient.foilAccent)
-                            )
-                            .shadow(color: Color.gildedAccent.opacity(0.3), radius: 4, y: 2)
-                        }
-                        .frame(minHeight: 44)
-                        .contentShape(Rectangle())
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Capture passage for \(book.title)")
-                        .accessibilityHint("Opens camera to capture a new quote")
-                        .accessibilityIdentifier("continue_reading_capture_button")
-                    }
+            if dynamicTypeSize.isAccessibilitySize {
+                bookLink
+                captureButton
+            } else {
+                HStack(spacing: Spacing.md) {
+                    bookLink
+                    captureButton
                 }
             }
+            Divider()
         }
-        .padding(Spacing.lg)
-        .background(
-            RoundedRectangle(cornerRadius: CornerRadius.lg)
-                .fill(Color.warmVellum)
-                .overlay {
-                    RoundedRectangle(cornerRadius: CornerRadius.lg)
-                        .stroke(Color.quoteBorder.opacity(0.7), lineWidth: Stroke.hairline.width)
+    }
+
+    private var bookLink: some View {
+        Button(action: onOpenBook) {
+            HStack(spacing: Spacing.md) {
+                if !dynamicTypeSize.isAccessibilitySize {
+                    bookThumbnail.accessibilityHidden(true)
                 }
-        )
-        .elevation(.sm)
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Text(book.title)
+                        .font(.serifHeadline)
+                        .foregroundStyle(Color.textPrimary)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 3)
+                    Text(book.author)
+                        .font(.authorName)
+                        .foregroundStyle(Color.textSecondary)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                    Text("\(book.quotes.count) \(book.quotes.count == 1 ? "passage" : "passages")")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Opens book details")
+        .accessibilityIdentifier(AccessibilityIdentifiers.Library.continueReadingOpenButton)
+    }
+
+    private var captureButton: some View {
+        Button {
+            HapticManager.selection()
+            onCapture()
+        } label: {
+            Label("Capture", systemImage: "camera")
+                .fixedSize(horizontal: true, vertical: false)
+        }
+        .buttonStyle(.primaryCompact)
+        .accessibilityLabel("Capture passage for \(book.title)")
+        .accessibilityHint("Opens the camera for this book")
+        .accessibilityIdentifier("continue_reading_capture_button")
     }
 
     @ViewBuilder

@@ -383,6 +383,31 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         logger.success("Passages saved; camera retained; explicit navigation verified")
     }
 
+    func testContinueReadingCaptureSavesAndReturnsToReading() {
+        navigateToLibrary()
+        let capture = app.buttons["continue_reading_capture_button"]
+        XCTAssertTrue(capture.waitForExistence(timeout: 5))
+        let expectedTitle = String(capture.label.dropFirst("Capture passage for ".count))
+        XCTAssertFalse(expectedTitle.isEmpty)
+        capture.tap()
+        let activeBook = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Active Book:'")).firstMatch
+        XCTAssertTrue(activeBook.waitForExistence(timeout: 5))
+        XCTAssertTrue(activeBook.label.contains(expectedTitle))
+        triggerCapture()
+        XCTAssertTrue(waitForPassagesSheet())
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertTrue(save.waitForExistence(timeout: 5) && save.isEnabled)
+        save.tap()
+        XCTAssertTrue(app.buttons["capture_view_passages_button"].waitForExistence(timeout: 8))
+        XCTAssertTrue(activeBook.label.contains(expectedTitle))
+        app.buttons[AccessibilityIdentifiers.Capture.cancelButton].tap()
+        XCTAssertTrue(capture.waitForExistence(timeout: 5))
+        XCTAssertEqual(capture.label, "Capture passage for \(expectedTitle)")
+        XCTAssertTrue(app.buttons[AccessibilityIdentifiers.Library.continueReadingOpenButton].isHittable)
+        XCTAssertFalse(app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle].exists,
+                       "Closing must restore Reading rather than navigate automatically")
+    }
+
     func testBookDetailCapture_ThreeSuccessivePagesKeepActiveBook() {
         navigateToLibrary()
         openFirstBook()

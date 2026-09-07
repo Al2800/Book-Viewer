@@ -1,5 +1,21 @@
 import SwiftUI
 
+/// Nonempty shelves in reading order; every model status remains discoverable.
+struct LibraryShelfGroup: Identifiable {
+    let status: ReadingStatus
+    let books: [Book]
+    var id: ReadingStatus { status }
+
+    static func groups(for books: [Book]) -> [LibraryShelfGroup] {
+        let preferred: [ReadingStatus] = [.currentlyReading, .finished, .wantToRead]
+        let order = preferred + ReadingStatus.allCases.filter { !preferred.contains($0) }
+        return order.compactMap { status in
+            let matching = books.filter { $0.status == status }
+            return matching.isEmpty ? nil : LibraryShelfGroup(status: status, books: matching)
+        }
+    }
+}
+
 struct LibraryBooksSection: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -38,24 +54,8 @@ struct LibraryBooksSection: View {
 
     private var bookShelvesContent: some View {
         VStack(spacing: Spacing.xl) {
-            let currentlyReading = books.filter { $0.status == .currentlyReading }
-            let finishedBooks = books.filter { $0.status == .finished }
-            let wantToRead = books.filter { $0.status == .wantToRead }
-
-            if !currentlyReading.isEmpty {
-                shelfTier(title: "Currently Reading", icon: "book.fill", books: currentlyReading)
-            }
-
-            if !finishedBooks.isEmpty {
-                shelfTier(title: "Finished", icon: "checkmark.circle.fill", books: finishedBooks)
-            }
-
-            if !wantToRead.isEmpty {
-                shelfTier(title: "To Read", icon: "bookmark.fill", books: wantToRead)
-            }
-
-            if currentlyReading.isEmpty && finishedBooks.isEmpty && wantToRead.isEmpty {
-                shelfTier(title: "All Books", icon: "books.vertical.fill", books: books)
+            ForEach(LibraryShelfGroup.groups(for: books)) { group in
+                shelfTier(title: group.status.displayName, icon: group.status.systemImage, books: group.books)
             }
         }
     }
@@ -86,6 +86,13 @@ struct LibraryBooksSection: View {
                                 HapticManager.light()
                                 onTap(book)
                             }
+                            .accessibilityIdentifier("library_shelf_book")
+                            .contextMenu {
+                                Button("Edit Book", systemImage: "pencil") { onEdit(book) }
+                                Button("Delete Book", systemImage: "trash", role: .destructive) { onDelete(book) }
+                            }
+                            .accessibilityAction(named: "Edit Book") { onEdit(book) }
+                            .accessibilityAction(named: "Delete Book") { onDelete(book) }
                         }
                     }
                     .padding(.horizontal, Spacing.sm)

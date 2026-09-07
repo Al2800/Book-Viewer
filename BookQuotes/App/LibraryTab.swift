@@ -90,7 +90,6 @@ struct LibraryView: View {
     @State private var bookToDelete: Book?
     @State private var bookToEdit: Book?
     @State private var showDeleteConfirmation = false
-    @State private var showEditSheet = false
     @State private var showAddBookCapture = false
     @State private var activeBookToCapture: Book?
     @State private var hasAppeared = false
@@ -235,10 +234,8 @@ struct LibraryView: View {
                 onExit: { activeBookToCapture = nil }
             )
         }
-        .sheet(isPresented: $showEditSheet) {
-            if let book = bookToEdit {
-                BookEditView(mode: .edit(book))
-            }
+        .sheet(item: $bookToEdit) { book in
+            BookEditView(mode: .edit(book))
         }
     }
 
@@ -300,23 +297,16 @@ struct LibraryView: View {
     }
 
     private func libraryContent(snapshot: LibraryHomeSnapshot) -> some View {
-        // ScrollView must be the navigation stack root's primary content for the
-        // large title to expand/collapse correctly; the filter bar rides above it
-        // as a safe-area inset instead of wrapping it in a VStack.
+        // Keep the ScrollView primary for native large-title behaviour.
+        // Organization filters belong inside the Books section they affect.
         libraryScrollContent(snapshot: snapshot)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                OrganizationFilterBar(
-                    selectedCollectionIds: $selectedCollectionIds,
-                    selectedTagIds: $selectedTagIds
-                )
-            }
             .background(Color.backgroundPrimary)
     }
 
     private func libraryScrollContent(snapshot: LibraryHomeSnapshot) -> some View {
         ScrollView {
             VStack(spacing: Spacing.xl) {
-                // 1. Continue Reading (Hero active book card with direct capture)
+                // 1. Compact active book with direct capture
                 if let activeBook = snapshot.activeBook {
                     ContinueReadingCard(
                         book: activeBook,
@@ -377,6 +367,11 @@ struct LibraryView: View {
                             )
                         }
 
+                        OrganizationFilterBar(
+                            selectedCollectionIds: $selectedCollectionIds,
+                            selectedTagIds: $selectedTagIds
+                        )
+
                         if hasOrganizationFilters && organizationFilteredBooks.isEmpty {
                             LibraryFilteredBooksEmptyCard()
                         } else {
@@ -390,7 +385,6 @@ struct LibraryView: View {
                                 },
                                 onEdit: { book in
                                     bookToEdit = book
-                                    showEditSheet = true
                                 },
                                 onDelete: { book in
                                     bookToDelete = book

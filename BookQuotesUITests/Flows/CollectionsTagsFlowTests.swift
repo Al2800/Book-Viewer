@@ -491,6 +491,7 @@ final class AdaptiveCollectionsTagsLayoutTests: BaseUITestCase {
     override var additionalLaunchArguments: [String] {
         [
             "--preload-library-test-data",
+            "--product-experience-v2",
             "-UIPreferredContentSizeCategoryName",
             "UICTContentSizeCategoryAccessibilityXXXL"
         ]
@@ -552,9 +553,39 @@ final class AdaptiveCollectionsTagsLayoutTests: BaseUITestCase {
         tapBackButton()
         let collectionFilter = app.buttons[AccessibilityIdentifiers.Collections.collectionRow].firstMatch
         let tagFilter = app.buttons[AccessibilityIdentifiers.Tags.tagChip].firstMatch
-        XCTAssertTrue(collectionFilter.waitForExistence(timeout: 5), "The new collection filter should appear")
-        XCTAssertTrue(collectionFilter.isHittable, "Collection filters should remain reachable")
+        // Bring the strip itself into view before scrolling horizontally to a
+        // chip. Full-screen swipes can skip the short strip between tall XXXL rows.
         let filterBar = app.scrollViews[AccessibilityIdentifiers.Library.organizationFilterBar]
+        XCTAssertTrue(filterBar.waitForExistence(timeout: 3))
+        let screen = app.frame
+        let visibleTop = max(app.navigationBars.firstMatch.frame.maxY, app.searchFields.firstMatch.frame.maxY) + 8
+        let visibleBottom = screen.maxY - 110
+        for _ in 0..<40 {
+            let frame = filterBar.frame
+            if frame.minY >= visibleTop && frame.maxY <= visibleBottom { break }
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.65))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: frame.minY < visibleTop ? 0.8 : 0.5))
+            start.press(forDuration: 0.05, thenDragTo: end)
+        }
+        XCTAssertTrue(filterBar.isHittable)
+        for _ in 0..<4 where !collectionFilter.isHittable { filterBar.swipeLeft() }
+        XCTAssertTrue(collectionFilter.waitForExistence(timeout: 5) && collectionFilter.isHittable,
+                      "Book filters should remain reachable by vertical and horizontal scrolling")
+        collectionFilter.tap()
+        XCTAssertTrue(app.staticTexts["Filter books · 1 active"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["No books match the selected filters."].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons[AccessibilityIdentifiers.Library.continueReadingOpenButton].exists,
+                      "Book filters must not remove Continue Reading")
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label ==[c] %@", "Recent Passages")).firstMatch.exists,
+                      "Book filters must not filter the recent passages section")
+        let clear = app.buttons["library_clear_book_filters"]
+        XCTAssertTrue(clear.waitForExistence(timeout: 3))
+        for _ in 0..<8 where !clear.isHittable { app.swipeDown() }
+        XCTAssertTrue(clear.isHittable)
+        clear.tap()
+        XCTAssertTrue(waitUntil("Clearing restores unfiltered books", timeout: 5) {
+            !self.app.staticTexts["No books match the selected filters."].exists
+        })
         XCTAssertTrue(filterBar.waitForExistence(timeout: 3), "The organization filter strip should be available")
         filterBar.swipeLeft()
         XCTAssertTrue(tagFilter.exists && tagFilter.isHittable, "Tag filters should remain reachable by scrolling")
