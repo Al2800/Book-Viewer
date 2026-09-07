@@ -104,6 +104,33 @@ final class V2StudioFlowTests: BaseUITestCase {
         XCTAssertTrue(app.staticTexts["Copied Obsidian Markdown"].waitForExistence(timeout: 5))
     }
 
+    func testCroppingAdjustmentBlocksImagesButPreservesMarkdownAndReset() {
+        app.buttons[AccessibilityIdentifiers.V2.studioTab].tap()
+        let adjust = app.buttons["studio_adjust_menu"]
+        XCTAssertTrue(revealForInteraction(adjust))
+        adjust.tap()
+        app.buttons["Zoom In"].tap()
+        adjust.tap()
+        app.buttons["Zoom In"].tap()
+        let warning = app.staticTexts["studio_image_fit_issue"]
+        XCTAssertTrue(warning.waitForExistence(timeout: 5))
+        app.buttons["studio_export_menu"].tap()
+        XCTAssertFalse(app.buttons["Copy Image"].isEnabled)
+        XCTAssertFalse(app.buttons["Share Image"].isEnabled)
+        XCTAssertFalse(app.buttons["Save to Photos"].isEnabled)
+        XCTAssertTrue(app.buttons["Export for Obsidian"].isEnabled)
+        app.buttons["Export for Obsidian"].tap()
+        XCTAssertTrue(app.staticTexts["Copied Obsidian Markdown"].waitForExistence(timeout: 5))
+        XCTAssertTrue(revealForInteraction(adjust))
+        adjust.tap()
+        app.buttons["Center and Reset"].tap()
+        XCTAssertTrue(waitUntil("Reset removes the crop warning", timeout: 5) { !warning.exists })
+        app.buttons["studio_export_menu"].tap()
+        XCTAssertTrue(app.buttons["Copy Image"].isEnabled)
+        app.buttons["Copy Image"].tap()
+        XCTAssertTrue(app.staticTexts["Copied card to clipboard"].waitForExistence(timeout: 5))
+    }
+
     func testStudioWorkspaceAtAccessibilityXXXL() {
         app.terminate()
         app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]

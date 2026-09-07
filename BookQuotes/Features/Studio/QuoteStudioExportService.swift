@@ -9,7 +9,79 @@ import Photos
 final class QuoteStudioExportService {
     static let shared = QuoteStudioExportService()
 
-    private init() {}
+    enum PhotoAccessError: LocalizedError {
+        case denied
+
+        var errorDescription: String? {
+            "Photos access is not allowed. Enable Add Photos access for BookQuotes in Settings, or use Share Image."
+        }
+    }
+
+    private let authorizePhotos: () async -> PHAuthorizationStatus
+    private let writePhoto: (UIImage) async throws -> Void
+    private let writeClipboard: (UIImage) -> Bool
+
+    init(
+        authorizePhotos: @escaping () async -> PHAuthorizationStatus = {
+            await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        },
+        writePhoto: @escaping (UIImage) async throws -> Void = { image in
+            try await PHPhotoLibrary.shared().performChanges {
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            }
+        },
+        writeClipboard: @escaping (UIImage) -> Bool = { image in
+            UIPasteboard.general.image = image
+            return UIPasteboard.general.hasImages
+        }
+    ) {
+        self.authorizePhotos = authorizePhotos
+        self.writePhoto = writePhoto
+        self.writeClipboard = writeClipboard
+    }
+
+    // MARK: - Image Validation
+
+    /// Measure the actual shared SwiftUI content, not character-count estimates.
+    func contentIssue(quote: Quote, theme: StudioTheme, aspectRatio: StudioAspectRatio) -> String? {
+        let card = QuoteCanvasCard(quote: quote, theme: theme, aspectRatio: aspectRatio)
+        let width = QuoteCanvasCard.renderingWidth
+        let content = card.content
+            .environment(\.displayScale, QuoteCanvasCard.renderingDisplayScale)
+            .environment(\.dynamicTypeSize, .large)
+            .environment(\.colorScheme, theme.colorScheme)
+            .frame(width: width)
+            .fixedSize(horizontal: false, vertical: true)
+        let host = UIHostingController(rootView: content)
+        let required = host.sizeThatFits(in: CGSize(width: width, height: .greatestFiniteMagnitude))
+        guard required.height.isFinite, required.height <= width / aspectRatio.ratioValue else {
+            return "This passage, note and attribution do not fit this card. Choose a taller aspect or another passage, or export Markdown. Your passage is unchanged."
+        }
+        return nil
+    }
+
+    /// Conservative content bounds protect text/attribution even when decorative
+    /// borders extend outside the crop. No confidence or character-count policy.
+    func transformIssue(_ transform: StudioCanvasTransform, aspectRatio: StudioAspectRatio) -> String? {
+        let width = QuoteCanvasCard.renderingWidth
+        let height = width / aspectRatio.ratioValue
+        let padding = QuoteCanvasCard.padding(for: aspectRatio)
+        let scale = transform.scale
+        let offset = transform.pointOffset(in: CGSize(width: width, height: height))
+        guard scale.isFinite, scale > 0, offset.width.isFinite, offset.height.isFinite else {
+            return "The card adjustment is invalid. Use Adjust → Center and Reset before exporting an image."
+        }
+        let content = CGRect(
+            x: (padding - width / 2) * scale + width / 2 + offset.width,
+            y: (padding - height / 2) * scale + height / 2 + offset.height,
+            width: (width - padding * 2) * scale,
+            height: (height - padding * 2) * scale
+        )
+        guard CGRect(x: 0, y: 0, width: width, height: height).contains(content) else {
+            return "This adjustment may crop passage text or attribution. Use Adjust → Center and Reset, or zoom out and centre the card."
+        }
+        return nil
+    }
 
     // MARK: - Image Rendering
 
@@ -21,7 +93,12 @@ final class QuoteStudioExportService {
         transform: StudioCanvasTransform = .identity,
         scale: CGFloat = 3.0
     ) -> UIImage? {
-        let cardWidth: CGFloat = 400
+        guard scale.isFinite, scale > 0,
+              transformIssue(transform, aspectRatio: aspectRatio) == nil,
+              contentIssue(quote: quote, theme: theme, aspectRatio: aspectRatio) == nil else {
+            return nil
+        }
+        let cardWidth = QuoteCanvasCard.renderingWidth
         let cardHeight: CGFloat = cardWidth / aspectRatio.ratioValue
         let cardSize = CGSize(width: cardWidth, height: cardHeight)
 
@@ -62,7 +139,7 @@ final class QuoteStudioExportService {
         ) else {
             return false
         }
-        UIPasteboard.general.image = image
+        guard writeClipboard(image) else { return false }
         HapticManager.notification(.success)
         return true
     }
@@ -84,14 +161,12 @@ final class QuoteStudioExportService {
             throw ExportError.writeFailed
         }
 
-        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        let status = await authorizePhotos()
         guard status == .authorized || status == .limited else {
-            throw ExportError.writeFailed
+            throw PhotoAccessError.denied
         }
 
-        try await PHPhotoLibrary.shared().performChanges {
-            PHAssetChangeRequest.creationRequestForAsset(from: image)
-        }
+        try await writePhoto(image)
         HapticManager.notification(.success)
     }
 

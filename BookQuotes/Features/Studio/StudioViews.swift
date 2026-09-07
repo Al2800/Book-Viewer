@@ -7,7 +7,7 @@ import SwiftData
 struct StudioTab: View {
     @Query(sort: \Quote.dateModified, order: .reverse) private var quotes: [Quote]
     @Query(sort: \Book.dateModified, order: .reverse) private var books: [Book]
-    @State private var selectedQuote: Quote?
+    @State private var selectedQuoteID: UUID?
     @State private var showingPassagePicker = false
     @State private var searchText: String = ""
     @State private var selectedBook: Book?
@@ -33,7 +33,12 @@ struct StudioTab: View {
 
     private var featuredQuote: Quote? {
         // Filters narrow the picker, never silently replace the passage being designed.
-        quotes.first { $0.id == selectedQuote?.id } ?? quotes.first
+        Self.selectedPassage(in: quotes, id: selectedQuoteID)
+    }
+
+    static func selectedPassage(in quotes: [Quote], id: UUID?) -> Quote? {
+        guard let id else { return quotes.first }
+        return quotes.first { $0.id == id }
     }
 
     var body: some View {
@@ -43,12 +48,27 @@ struct StudioTab: View {
                     quote: featuredQuote,
                     onChoosePassage: { showingPassagePicker = true }
                 )
+            } else if !quotes.isEmpty {
+                NavigationStack {
+                    ContentUnavailableView {
+                        Label("Passage No Longer Available", systemImage: "text.quote")
+                    } description: {
+                        Text("Choose another passage to start a new card. Nothing has been exported.")
+                    } actions: {
+                        Button("Choose passage") { showingPassagePicker = true }
+                            .buttonStyle(.primaryCompact)
+                    }
+                    .navigationTitle("Studio")
+                }
             } else {
                 NavigationStack {
                     emptyStudioState
                         .background(Color.darkLinen.ignoresSafeArea())
                 }
             }
+        }
+        .onChange(of: quotes.map(\.id), initial: true) { _, ids in
+            if selectedQuoteID == nil { selectedQuoteID = ids.first }
         }
         .sheet(isPresented: $showingPassagePicker) {
             NavigationStack {
@@ -250,7 +270,7 @@ struct StudioTab: View {
                     ForEach(filteredQuotes) { quote in
                         Button {
                             HapticManager.selection()
-                            selectedQuote = quote
+                            selectedQuoteID = quote.id
                             showingPassagePicker = false
                         } label: {
                             HStack(spacing: Spacing.md) {
@@ -343,6 +363,9 @@ struct StudioTab: View {
 
 /// Typographic card rendering for canvas and live previews.
 struct QuoteCanvasCard: View {
+    static let renderingWidth: CGFloat = 400
+    static let renderingDisplayScale: CGFloat = 3
+
     let quote: Quote
     let theme: StudioTheme
     let aspectRatio: StudioAspectRatio
@@ -375,7 +398,9 @@ struct QuoteCanvasCard: View {
         max(3, quoteFontSize * 0.28)
     }
 
-    private var cardPadding: CGFloat {
+    private var cardPadding: CGFloat { Self.padding(for: aspectRatio) }
+
+    static func padding(for aspectRatio: StudioAspectRatio) -> CGFloat {
         switch aspectRatio {
         case .story: return Spacing.lg
         case .square, .portrait: return Spacing.md
@@ -383,8 +408,18 @@ struct QuoteCanvasCard: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            VStack(alignment: .leading, spacing: Spacing.sm) {
+        GeometryReader { geometry in
+            artwork
+                .environment(\.displayScale, Self.renderingDisplayScale)
+                .environment(\.dynamicTypeSize, .large)
+                .environment(\.colorScheme, theme.colorScheme)
+                .frame(width: Self.renderingWidth, height: Self.renderingWidth / aspectRatio.ratioValue)
+                .scaleEffect(geometry.size.width / Self.renderingWidth, anchor: .topLeading)
+        }
+    }
+
+    var content: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
                 HStack {
                     Image(systemName: "quote.opening")
                         .font(.system(size: max(14, quoteFontSize * 0.9), weight: .semibold))
@@ -399,8 +434,7 @@ struct QuoteCanvasCard: View {
                     .foregroundStyle(theme.textColor)
                     .lineSpacing(quoteLineSpacing)
                     .multilineTextAlignment(.leading)
-                    .minimumScaleFactor(0.7)
-                    .allowsTightening(true)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 if let marginNote = quote.marginNote, !marginNote.isEmpty {
                     HStack(alignment: .top, spacing: Spacing.xs) {
@@ -411,7 +445,7 @@ struct QuoteCanvasCard: View {
                         Text(marginNote)
                             .font(.system(size: max(11, quoteFontSize * 0.75), weight: .regular, design: .serif).italic())
                             .foregroundStyle(theme.textColor.opacity(0.9))
-                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .padding(.horizontal, Spacing.sm)
                     .padding(.vertical, 4)
@@ -430,13 +464,13 @@ struct QuoteCanvasCard: View {
                             Text(book.title)
                                 .font(.system(size: max(11, quoteFontSize * 0.7), weight: .semibold, design: .serif))
                                 .foregroundStyle(theme.textColor)
-                                .lineLimit(1)
+                                .fixedSize(horizontal: false, vertical: true)
 
                             HStack(spacing: Spacing.xs) {
                                 Text(book.author)
                                     .font(.system(size: max(9.5, quoteFontSize * 0.6), design: .serif))
                                     .foregroundStyle(theme.secondaryTextColor)
-                                    .lineLimit(1)
+                                    .fixedSize(horizontal: false, vertical: true)
 
                                 if let page = quote.pageNumber {
                                     Text("· p. \(page)")
@@ -455,8 +489,12 @@ struct QuoteCanvasCard: View {
                     Spacer()
                 }
             }
-            .padding(cardPadding)
+        .padding(cardPadding)
+    }
 
+    private var artwork: some View {
+        ZStack(alignment: .topTrailing) {
+            content
             BookmarkRibbon()
                 .padding(.trailing, Spacing.md)
                 .offset(y: -2)
@@ -526,6 +564,17 @@ struct QuoteCardStudioView: View {
     var onChoosePassage: (() -> Void)?
     @State private var exportError: String?
     @State private var isExporting = false
+    @State private var contentIssue: String?
+
+    private var fittingInputs: [String] {
+        [quote.id.uuidString, quote.text, quote.marginNote ?? "", quote.book?.id.uuidString ?? "",
+         quote.book?.title ?? "", quote.book?.author ?? "", quote.pageNumber.map(String.init) ?? "",
+         currentAspect.rawValue, currentTheme.rawValue]
+    }
+
+    private var imageIssue: String? {
+        contentIssue ?? QuoteStudioExportService.shared.transformIssue(canvasTransform, aspectRatio: currentAspect)
+    }
 
     init(quote: Quote, initialTheme: StudioTheme = .darkLinen, initialAspect: StudioAspectRatio = .story, onChoosePassage: (() -> Void)? = nil) {
         self.quote = quote
@@ -551,6 +600,14 @@ struct QuoteCardStudioView: View {
                     .allowsHitTesting(!isExporting)
                     .padding(.horizontal, Spacing.lg)
                     .padding(.top, Spacing.sm)
+
+                    if let imageIssue {
+                        Text(imageIssue)
+                            .font(.subheadline)
+                            .foregroundStyle(Color.textPrimary)
+                            .padding(.horizontal, Spacing.lg)
+                            .accessibilityIdentifier("studio_image_fit_issue")
+                    }
 
                     Menu {
                         Button("Zoom In") { canvasTransform.scale = min(2, canvasTransform.scale + 0.1) }
@@ -590,6 +647,11 @@ struct QuoteCardStudioView: View {
                     .background(.regularMaterial)
                 }
             }
+            .task(id: fittingInputs) {
+                contentIssue = QuoteStudioExportService.shared.contentIssue(
+                    quote: quote, theme: currentTheme, aspectRatio: currentAspect
+                )
+            }
             .onChange(of: currentAspect) { _, _ in
                 canvasTransform = .identity
             }
@@ -628,12 +690,14 @@ struct QuoteCardStudioView: View {
                         } label: {
                             Label("Share Image", systemImage: "square.and.arrow.up")
                         }
+                        .disabled(imageIssue != nil)
 
                         Button {
                             copyImage()
                         } label: {
                             Label("Copy Image", systemImage: "doc.on.doc")
                         }
+                        .disabled(imageIssue != nil)
 
                         Button {
                             Task {
@@ -642,6 +706,7 @@ struct QuoteCardStudioView: View {
                         } label: {
                             Label("Save to Photos", systemImage: "photo")
                         }
+                        .disabled(imageIssue != nil)
 
                         Divider()
 

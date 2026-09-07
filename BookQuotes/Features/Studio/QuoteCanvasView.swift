@@ -99,6 +99,8 @@ struct QuoteCanvasView: View {
                 .frame(width: cardDimensions.width, height: cardDimensions.height)
                 .scaleEffect(transform.scale)
                 .offset(transform.pointOffset(in: cardDimensions))
+                .frame(width: cardDimensions.width, height: cardDimensions.height)
+                .clipped()
                 .gesture(
                     SimultaneousGesture(
                         MagnificationGesture()
