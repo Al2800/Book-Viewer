@@ -81,6 +81,26 @@ final class QuoteStudioExportServiceTests: XCTestCase {
         }
     }
 
+    func testEveryThemeAndFormatPreservesExistingExportGeometry() throws {
+        let quote = Quote(text: "A passage worth keeping.", book: Book(title: "A Book", author: "An Author"))
+        for theme in StudioTheme.allCases {
+            for aspect in StudioAspectRatio.allCases {
+                try autoreleasepool {
+                    let image = try XCTUnwrap(QuoteStudioExportService.shared.renderImage(
+                        quote: quote,
+                        theme: theme,
+                        aspectRatio: aspect
+                    ))
+                    // Existing renderer contract: a 400pt canvas at 3x, not the
+                    // currently unused 1080px targetSize metadata on the enum.
+                    let pixels = try XCTUnwrap(image.cgImage)
+                    XCTAssertEqual(pixels.width, 1200, "\(theme) / \(aspect)")
+                    XCTAssertEqual(Double(pixels.height), 1200 / Double(aspect.ratioValue), accuracy: 1, "\(theme) / \(aspect)")
+                }
+            }
+        }
+    }
+
     func testRenderImageAppliesCanvasTransformWithoutChangingOutputSize() throws {
         let book = Book(title: "Dune", author: "Frank Herbert")
         let quote = Quote(text: "Fear is the mind-killer.", book: book)

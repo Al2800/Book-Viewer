@@ -8,9 +8,7 @@ struct StudioTab: View {
     @Query(sort: \Quote.dateModified, order: .reverse) private var quotes: [Quote]
     @Query(sort: \Book.dateModified, order: .reverse) private var books: [Book]
     @State private var selectedQuote: Quote?
-    @State private var studioSheetQuote: Quote?
-    @State private var selectedTheme: StudioTheme = .darkLinen
-    @State private var selectedAspect: StudioAspectRatio = .story
+    @State private var showingPassagePicker = false
     @State private var searchText: String = ""
     @State private var selectedBook: Book?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -22,7 +20,7 @@ struct StudioTab: View {
                 return false
             }
             if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                let term = searchText.lowercased()
+                let term = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                 let matchesText = quote.text.lowercased().contains(term)
                 let matchesAuthor = quote.book?.author.lowercased().contains(term) ?? false
                 let matchesTitle = quote.book?.title.lowercased().contains(term) ?? false
@@ -34,50 +32,43 @@ struct StudioTab: View {
     }
 
     private var featuredQuote: Quote? {
-        selectedQuote ?? filteredQuotes.first ?? quotes.first
+        // Filters narrow the picker, never silently replace the passage being designed.
+        quotes.first { $0.id == selectedQuote?.id } ?? quotes.first
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.darkLinen.ignoresSafeArea()
-
-                if quotes.isEmpty {
-                    emptyStudioState
-                } else {
-                    studioContent
-                }
-            }
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .preferredColorScheme(.dark)
-            .sheet(item: $studioSheetQuote) { quote in
+        Group {
+            if let featuredQuote {
                 QuoteCardStudioView(
-                    quote: quote,
-                    initialTheme: selectedTheme,
-                    initialAspect: selectedAspect
+                    quote: featuredQuote,
+                    onChoosePassage: { showingPassagePicker = true }
                 )
+            } else {
+                NavigationStack {
+                    emptyStudioState
+                        .background(Color.darkLinen.ignoresSafeArea())
+                }
             }
         }
-    }
-
-    private var studioContent: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.xl) {
-                studioHeader
-
-                if let featured = featuredQuote {
-                    canvasHero(featured)
+        .sheet(isPresented: $showingPassagePicker) {
+            NavigationStack {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: Spacing.xl) {
+                        searchAndBookFilterSection
+                        passagePicker
+                    }
+                    .padding(.vertical, Spacing.lg)
                 }
-
-                themeSection
-                formatSection
-                searchAndBookFilterSection
-                passagePicker
+                .background(Color.darkLinen.ignoresSafeArea())
+                .preferredColorScheme(.dark)
+                .navigationTitle("Choose a passage")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { showingPassagePicker = false }
+                    }
+                }
             }
-            .padding(.vertical, Spacing.lg)
         }
     }
 
@@ -97,9 +88,10 @@ struct StudioTab: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(Color.gildedAccent.opacity(0.8))
 
-                TextField("Search quotes, books, or authors...", text: $searchText)
+                TextField("Search passages, books, or authors", text: $searchText)
                     .foregroundStyle(.white)
                     .tint(Color.gildedAccent)
+                    .accessibilityIdentifier("studio_passage_search")
 
                 if !searchText.isEmpty {
                     Button {
@@ -221,81 +213,6 @@ struct StudioTab: View {
             .accessibilityIdentifier(AccessibilityIdentifiers.Studio.rootTitle)
     }
 
-    private func canvasHero(_ quote: Quote) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            QuoteCanvasCard(
-                quote: quote,
-                theme: selectedTheme,
-                aspectRatio: selectedAspect
-            )
-            .aspectRatio(selectedAspect.ratioValue, contentMode: .fit)
-            .frame(maxWidth: .infinity)
-            .clipped()
-            .elevation(.lg)
-            .onTapGesture {
-                HapticManager.light()
-                studioSheetQuote = quote
-            }
-
-            HStack {
-                if let book = quote.book {
-                    Text("— \(book.title)")
-                        .font(.attribution)
-                        .foregroundStyle(.white.opacity(0.75))
-                }
-
-                Spacer()
-
-                Button {
-                    HapticManager.light()
-                    studioSheetQuote = quote
-                } label: {
-                    Text("Open in Studio")
-                        .font(.uiPill)
-                        .foregroundStyle(Color.gildedAccent)
-                        .frame(minHeight: 44)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, Spacing.lg)
-    }
-
-    private var themeSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: "paintpalette")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Color.gildedAccent)
-                Text("THEME")
-                    .inkSectionHeaderStyle()
-            }
-            .padding(.horizontal, Spacing.lg)
-
-            StudioThemePicker(
-                selectedTheme: $selectedTheme,
-                selectedAspect: $selectedAspect,
-                showsAspectPicker: false
-            )
-        }
-    }
-
-    private var formatSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: "aspectratio")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Color.gildedAccent)
-                Text("FORMAT")
-                    .inkSectionHeaderStyle()
-            }
-            .padding(.horizontal, Spacing.lg)
-
-            StudioAspectRatioPicker(selectedAspect: $selectedAspect)
-                .padding(.horizontal, Spacing.lg)
-        }
-    }
-
     private var passagePicker: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             HStack(spacing: Spacing.xs) {
@@ -319,7 +236,7 @@ struct StudioTab: View {
 
             if filteredQuotes.isEmpty {
                 VStack(spacing: Spacing.sm) {
-                    Text("No quotes match your search")
+                    Text("No passages match your search")
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.8))
                     Text("Try a different search term or select All Books.")
@@ -334,6 +251,7 @@ struct StudioTab: View {
                         Button {
                             HapticManager.selection()
                             selectedQuote = quote
+                            showingPassagePicker = false
                         } label: {
                             HStack(spacing: Spacing.md) {
                                 RoundedRectangle(cornerRadius: CornerRadius.xs)
@@ -371,6 +289,7 @@ struct StudioTab: View {
                             .elevation(.xs)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityIdentifier("studio_passage_row")
                     }
                 }
                 .padding(.horizontal, Spacing.lg)
@@ -602,11 +521,17 @@ struct QuoteCardStudioView: View {
     @State private var shareItems: [Any] = []
     @State private var toastMessage: String?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
+    var onChoosePassage: (() -> Void)?
+    @State private var exportError: String?
+    @State private var isExporting = false
 
-    init(quote: Quote, initialTheme: StudioTheme = .darkLinen, initialAspect: StudioAspectRatio = .story) {
+    init(quote: Quote, initialTheme: StudioTheme = .darkLinen, initialAspect: StudioAspectRatio = .story, onChoosePassage: (() -> Void)? = nil) {
         self.quote = quote
         self._currentTheme = State(initialValue: initialTheme)
         self._currentAspect = State(initialValue: initialAspect)
+        self.onChoosePassage = onChoosePassage
     }
 
     var body: some View {
@@ -614,47 +539,85 @@ struct QuoteCardStudioView: View {
             ZStack {
                 Color.backgroundPrimary.ignoresSafeArea()
 
-                VStack(spacing: Spacing.md) {
+                ScrollView {
+                    VStack(spacing: Spacing.md) {
                     QuoteCanvasView(
                         quote: quote,
                         theme: currentTheme,
                         aspectRatio: currentAspect,
                         transform: $canvasTransform
                     )
+                    .frame(height: 420)
+                    .allowsHitTesting(!isExporting)
                     .padding(.horizontal, Spacing.lg)
                     .padding(.top, Spacing.sm)
+
+                    Menu {
+                        Button("Zoom In") { canvasTransform.scale = min(2, canvasTransform.scale + 0.1) }
+                        Button("Zoom Out") { canvasTransform.scale = max(0.85, canvasTransform.scale - 0.1) }
+                        Button("Center and Reset") { canvasTransform = .identity }
+                    } label: {
+                        Label("Adjust", systemImage: "slider.horizontal.3")
+                            .frame(minHeight: 44)
+                    }
+                    .disabled(isExporting)
+                    .accessibilityValue("\(Int((canvasTransform.scale * 100).rounded())) percent")
+                    .accessibilityIdentifier("studio_adjust_menu")
 
                     StudioThemePicker(
                         selectedTheme: $currentTheme,
                         selectedAspect: $currentAspect
                     )
+                    .disabled(isExporting)
                     .padding(.bottom, Spacing.md)
+                    }
                 }
 
+            }
+            .safeAreaInset(edge: .bottom) {
                 if let toastMessage {
-                    VStack {
-                        Spacer()
+                    HStack {
                         Text(toastMessage)
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, Spacing.lg)
-                            .padding(.vertical, Spacing.sm)
-                            .background(Color.black.opacity(0.85))
-                            .clipShape(Capsule())
-                            .padding(.bottom, Spacing.xl)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .font(.subheadline)
+                        Spacer()
+                        Button { self.toastMessage = nil } label: {
+                            Image(systemName: "xmark")
+                                .frame(width: 44, height: 44)
+                        }
+                        .accessibilityLabel("Dismiss export confirmation")
                     }
+                    .padding(.horizontal, Spacing.lg)
+                    .background(.regularMaterial)
                 }
             }
             .onChange(of: currentAspect) { _, _ in
                 canvasTransform = .identity
             }
-            .navigationTitle("Studio Canvas")
+            .onChange(of: quote.id) { _, _ in
+                canvasTransform = .identity
+                toastMessage = nil
+            }
+            .navigationTitle("Studio")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.backgroundPrimary, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(colorScheme, for: .navigationBar)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Studio")
+                        .font(.serifHeadline)
+                        .foregroundStyle(Color.textPrimary)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Studio.rootTitle)
+                }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") {
-                        dismiss()
+                    if let onChoosePassage {
+                        Button("Passage", action: onChoosePassage)
+                            .accessibilityLabel("Choose passage")
+                            .accessibilityIdentifier("studio_choose_passage_button")
+                            .disabled(isExporting)
+                    } else {
+                        Button("Done") { dismiss() }
+                            .disabled(isExporting)
                     }
                 }
 
@@ -694,10 +657,19 @@ struct QuoteCardStudioView: View {
                             Label("Export for Notion", systemImage: "list.bullet.rectangle")
                         }
                     } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .foregroundStyle(Color.gildedAccent)
+                        Label(isExporting ? "Exporting" : "Export", systemImage: "square.and.arrow.up")
                     }
+                    .disabled(isExporting)
+                    .accessibilityIdentifier("studio_export_menu")
                 }
+            }
+            .alert("Could Not Export", isPresented: .init(
+                get: { exportError != nil },
+                set: { if !$0 { exportError = nil } }
+            )) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(exportError ?? "Your passage and design are unchanged. Try the export again.")
             }
             .sheet(isPresented: $showingShareSheet) {
                 QuoteShareSheet(items: shareItems)
@@ -706,6 +678,7 @@ struct QuoteCardStudioView: View {
     }
 
     private func shareRenderedImage() {
+        toastMessage = nil
         if let image = QuoteStudioExportService.shared.renderImage(
             quote: quote,
             theme: currentTheme,
@@ -714,10 +687,13 @@ struct QuoteCardStudioView: View {
         ) {
             shareItems = [image, quote.text]
             showingShareSheet = true
+        } else {
+            exportError = "Could not render this card. Your design is unchanged; try Share Image again."
         }
     }
 
     private func copyImage() {
+        toastMessage = nil
         if QuoteStudioExportService.shared.copyImageToClipboard(
             quote: quote,
             theme: currentTheme,
@@ -725,10 +701,16 @@ struct QuoteCardStudioView: View {
             transform: canvasTransform
         ) {
             showToast("Copied card to clipboard")
+        } else {
+            exportError = "Could not copy this card. Your design is unchanged; try Copy Image again."
         }
     }
 
     private func saveToPhotos() async {
+        guard !isExporting else { return }
+        isExporting = true
+        toastMessage = nil
+        defer { isExporting = false }
         do {
             try await QuoteStudioExportService.shared.saveImageToPhotos(
                 quote: quote,
@@ -738,7 +720,7 @@ struct QuoteCardStudioView: View {
             )
             showToast("Saved to Photos")
         } catch {
-            showToast("Failed to save image")
+            exportError = "Could not save to Photos: \(error.localizedDescription). Your design is unchanged; you can retry from Export."
         }
     }
 
@@ -757,15 +739,8 @@ struct QuoteCardStudioView: View {
     }
 
     private func showToast(_ message: String) {
-        withAnimation(.spring()) {
+        withAnimation(reduceMotion ? .none : .spring()) {
             toastMessage = message
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            withAnimation(.spring()) {
-                if toastMessage == message {
-                    toastMessage = nil
-                }
-            }
         }
     }
 }

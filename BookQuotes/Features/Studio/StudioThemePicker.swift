@@ -4,6 +4,8 @@ import SwiftUI
 
 /// Horizontal theme selector bar with tactile preview swatches.
 struct StudioThemePicker: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var selectedTheme: StudioTheme
     @Binding var selectedAspect: StudioAspectRatio
     var showsAspectPicker: Bool = true
@@ -21,7 +23,7 @@ struct StudioThemePicker: View {
                     ForEach(StudioTheme.allCases) { theme in
                         Button {
                             HapticManager.selection()
-                            withAnimation(.quickSpring) {
+                            withAnimation(reduceMotion ? .none : .quickSpring) {
                                 selectedTheme = theme
                             }
                         } label: {
@@ -50,9 +52,11 @@ struct StudioThemePicker: View {
                                 Text(theme.displayName)
                                     .font(.caption2.weight(selectedTheme == theme ? .bold : .regular))
                                     .foregroundStyle(selectedTheme == theme ? Color.textPrimary : Color.textSecondary)
-                                    .lineLimit(1)
+                                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
-                            .frame(width: 66, height: 64)
+                            .frame(width: dynamicTypeSize.isAccessibilitySize ? 140 : 80)
+                            .frame(minHeight: 64)
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
@@ -71,13 +75,21 @@ struct StudioThemePicker: View {
 /// Pill selector for choosing aspect ratio format.
 struct StudioAspectRatioPicker: View {
     @Binding var selectedAspect: StudioAspectRatio
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var layout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: Spacing.xs))
+            : AnyLayout(HStackLayout(spacing: Spacing.xs))
+    }
 
     var body: some View {
-        HStack(spacing: Spacing.xs) {
+        layout {
             ForEach(StudioAspectRatio.allCases) { aspect in
                 Button {
                     HapticManager.selection()
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                    withAnimation(reduceMotion ? .none : .spring(response: 0.35, dampingFraction: 0.8)) {
                         selectedAspect = aspect
                     }
                 } label: {
@@ -85,7 +97,8 @@ struct StudioAspectRatioPicker: View {
                         .font(.caption.weight(selectedAspect == aspect ? .semibold : .regular))
                         .padding(.vertical, Spacing.xs)
                         .padding(.horizontal, Spacing.md)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .contentShape(Rectangle())
                         .background(
                             selectedAspect == aspect
                                 ? AnyShapeStyle(Color.brand)
@@ -101,6 +114,6 @@ struct StudioAspectRatioPicker: View {
         }
         .padding(Spacing.xxs)
         .background(Color.backgroundSecondary.opacity(0.6))
-        .clipShape(Capsule())
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
     }
 }

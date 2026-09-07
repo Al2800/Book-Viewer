@@ -166,28 +166,6 @@ struct QuoteCanvasView: View {
 
                         Spacer()
 
-                        if transform != .identity {
-                            Button {
-                                HapticManager.light()
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                    transform = .identity
-                                    magnificationStartScale = nil
-                                    dragStartOffset = nil
-                                }
-                            } label: {
-                                HStack(spacing: 3) {
-                                    Image(systemName: "arrow.counterclockwise")
-                                    Text("Reset")
-                                }
-                                .font(.caption2.weight(.semibold))
-                                .foregroundStyle(Color.gildedAccent)
-                                .padding(.horizontal, Spacing.xs)
-                                .padding(.vertical, 3)
-                                .background(Color.backgroundPrimary.opacity(0.9))
-                                .clipShape(Capsule())
-                                .shadow(color: Color.black.opacity(0.08), radius: 2, y: 1)
-                            }
-                        }
                     }
                     .padding(Spacing.md)
 

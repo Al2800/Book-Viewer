@@ -7,7 +7,7 @@
 
 ## Implementation update — 2026-09-07
 
-The normal launch now defaults to Reading / Capture / Studio; early default-off language describes the historical rollout. Coherent-UI refinements are tracked in `book-quote-coherent-ui-5sy4`, not a new shell version. Reading and Settings now share List as the unset browse preference, preserving explicit Shelves/Grid/List selections. Settings includes every browse mode and explicit dismissal when presented from Reading. The broader capture loop, review hierarchy, Reading structure and unified Studio workspace remain planned, not implemented by this foundation slice. See [current UI contract](../UI_COMPONENTS.md#current-coherent-ui-contract-2026-09-07).
+The normal launch now defaults to Reading / Capture / Studio; early default-off language describes the historical rollout. Coherent-UI refinements are tracked in `book-quote-coherent-ui-5sy4`, not a new shell version. Reading and Settings now share List as the unset browse preference, preserving explicit Shelves/Grid/List selections. Settings includes every browse mode and explicit dismissal when presented from Reading. Follow-up implementation now shares capture orchestration across tab/Reading/Book Detail, returns saved passages to the same-book camera, exposes single-page source inspection and counted review save, and hosts one shared Studio editor without a preview lobby. These are implemented portions, not completed beads: candidate selection/confidence review, Reading structure and the remaining accessibility/recovery/retirement evidence are still open. See [current UI contract](../UI_COMPONENTS.md#current-coherent-ui-contract-2026-09-07).
 
 ## 1. Executive decision
 
