@@ -308,6 +308,14 @@ final class V2ProductShellTests: BaseUITestCase {
         let mode = app.buttons[AccessibilityIdentifiers.Library.viewModeToggle]
         reveal(mode)
         XCTAssertEqual(mode.label, "View mode: List View")
+
+        let row = app.buttons[AccessibilityIdentifiers.Library.bookListRow].firstMatch
+        reveal(row)
+        let sourceLabel = row.label
+        row.tap()
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        XCTAssertTrue(title.waitForExistence(timeout: 5), "The accessible row must still open its book")
+        XCTAssertTrue(sourceLabel.contains(title.label), "Book detail must match the tapped source")
     }
 
     private func reveal(_ element: XCUIElement) {

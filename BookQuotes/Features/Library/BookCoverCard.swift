@@ -141,8 +141,6 @@ struct BookListRow: View {
     var onEdit: (() -> Void)?
     var onShare: (() -> Void)?
     var onDelete: (() -> Void)?
-
-    @State private var hasAppeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -171,8 +169,12 @@ struct BookListRow: View {
     }
 
     private var rowContent: some View {
-        HStack(spacing: Spacing.md) {
-            BookCoverArtwork(book: book, style: .list, reduceMotion: reduceMotion)
+        HStack(alignment: .top, spacing: Spacing.md) {
+            // At accessibility sizes, reserve the full width for the source text.
+            if !dynamicTypeSize.isAccessibilitySize {
+                BookCoverArtwork(book: book, style: .list, reduceMotion: reduceMotion)
+                    .accessibilityHidden(true)
+            }
 
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(book.title)
@@ -182,30 +184,22 @@ struct BookListRow: View {
                 Text(book.author)
                     .font(.authorName)
                     .foregroundStyle(.secondary)
-                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 listMetadata
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+            if !dynamicTypeSize.isAccessibilitySize {
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
         }
         .padding(Spacing.md)
         .paperCard(cornerRadius: CornerRadius.lg)
-        .opacity(hasAppeared ? 1.0 : 0.0)
-        .offset(x: hasAppeared ? 0 : -10)
-        .onAppear {
-            if UITestConfiguration.isUITesting || reduceMotion {
-                hasAppeared = true
-                return
-            }
-            withAnimation(.smoothSpring.delay(entranceDelay)) {
-                hasAppeared = true
-            }
-        }
     }
 
     @ViewBuilder
@@ -237,16 +231,12 @@ struct BookListRow: View {
     @ViewBuilder
     private var listQuoteCountLabel: some View {
         if book.hasQuotes {
-            Text("\(book.quoteCount) quotes")
+            Text(book.quoteCount == 1 ? "1 passage" : "\(book.quoteCount) passages")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
                 .contentTransition(.numericText())
                 .fixedSize(horizontal: false, vertical: true)
         }
-    }
-
-    private var entranceDelay: Double {
-        Double.random(in: 0.0...0.1)
     }
 
     private var hasContextMenu: Bool {
@@ -270,7 +260,7 @@ private struct BookCardButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? pressedScale : 1)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? pressedScale : 1)
             .animation(reduceMotion ? .none : .quickSpring, value: configuration.isPressed)
     }
 }

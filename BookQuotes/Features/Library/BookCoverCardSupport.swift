@@ -92,6 +92,8 @@ struct BookCoverArtwork: View {
 }
 
 struct BookReadingStatusBadge: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     enum Style {
         case grid
         case list
@@ -103,7 +105,8 @@ struct BookReadingStatusBadge: View {
     var body: some View {
         Text(label)
             .font(.caption2)
-            .lineLimit(1)
+            .lineLimit(style == .list && dynamicTypeSize.isAccessibilitySize ? nil : 1)
+            .fixedSize(horizontal: false, vertical: true)
             .layoutPriority(style == .grid ? 1 : 0)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)

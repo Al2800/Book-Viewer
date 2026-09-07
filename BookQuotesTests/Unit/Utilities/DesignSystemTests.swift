@@ -46,6 +46,24 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(try XCTUnwrap(icon.uiImage).size.width, 44)
     }
 
+    @MainActor
+    func testAccessibleListStatusWrapsInsteadOfTruncating() throws {
+        let regular = ImageRenderer(content:
+            BookReadingStatusBadge(status: .currentlyReading, style: .list)
+                .dynamicTypeSize(.large)
+                .frame(width: 110)
+        )
+        let accessible = ImageRenderer(content:
+            BookReadingStatusBadge(status: .currentlyReading, style: .list)
+                .dynamicTypeSize(.accessibility5)
+                .frame(width: 110)
+        )
+        let regularHeight = try XCTUnwrap(regular.uiImage).size.height
+        let accessibleHeight = try XCTUnwrap(accessible.uiImage).size.height
+        XCTAssertGreaterThan(accessibleHeight, regularHeight * 3,
+                             "The status must grow vertically rather than remain a truncated single line")
+    }
+
     // MARK: - Palette & Color Tests
 
     func testV2ThemePaletteColorsAreDefined() {

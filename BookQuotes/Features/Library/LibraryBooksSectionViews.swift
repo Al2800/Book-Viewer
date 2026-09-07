@@ -145,7 +145,7 @@ struct LibraryBooksSection: View {
 
     private var bookListContent: some View {
         LazyVStack(spacing: Spacing.sm) {
-            ForEach(Array(books.enumerated()), id: \.element.id) { index, book in
+            ForEach(books) { book in
                 BookListRow(
                     book: book,
                     onTap: {
@@ -163,12 +163,7 @@ struct LibraryBooksSection: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(AccessibilityIdentifiers.Library.bookListRow)
                 .accessibilityAddTraits(.isButton)
-                .opacity(hasAppeared ? 1 : 0)
-                .offset(x: hasAppeared ? 0 : -20)
-                .animation(
-                    reduceMotion ? .none : .smoothSpring.delay(Double(min(index, 8)) * 0.05),
-                    value: hasAppeared
-                )
+
             }
         }
     }
