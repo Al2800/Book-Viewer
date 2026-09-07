@@ -240,6 +240,30 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(onDeviceSource.waitForExistence(timeout: 5), "Local-fallback extraction should mark the on-device source")
     }
 
+    func testReviewGuidance_ExplainsScoresAndDoesNotVerifyEdits() {
+        navigateToExtractionReview()
+        let edit = app.buttons[AccessibilityIdentifiers.Capture.extractionQuoteEditButton].firstMatch
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        edit.tap()
+        let text = app.textViews[AccessibilityIdentifiers.Capture.extractionQuoteTextEditor]
+        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        text.tap()
+        text.typeText(" Reader correction.")
+        app.navigationBars["Edit Quote"].buttons["Save"].tap()
+
+        let compare = app.staticTexts["Compare with source"].firstMatch
+        XCTAssertTrue(revealForInteraction(compare), "High confidence still requires comparison, not a verified badge")
+        let edited = app.staticTexts["Edited by you"].firstMatch
+        XCTAssertTrue(revealForInteraction(edited))
+        let check = app.staticTexts["Check this passage"].firstMatch
+        XCTAssertTrue(revealForInteraction(check), "Uncertainty must be explained in text rather than colour alone")
+        XCTAssertTrue(app.staticTexts["On-device"].firstMatch.exists)
+        XCTAssertEqual(app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton].label, "Save 2 passages")
+        XCTAssertFalse(app.staticTexts["Verified"].exists)
+        XCTAssertFalse(app.staticTexts["94%"].exists)
+        if let attachment = screenshots.capture(name: "review_guidance") { add(attachment) }
+    }
+
     // MARK: - Quote Editing Tests
 
     func testQuoteEditor_CanEditText() {
@@ -449,7 +473,9 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
             app.staticTexts["48%"].exists,
             "Passages cards must not show a confidence percentage"
         )
-        logger.success("Low-confidence extraction is visible without a percentage badge")
+        XCTAssertTrue(revealForInteraction(app.staticTexts["Check carefully"].firstMatch),
+                      "Low confidence must have an explicit checking instruction")
+        logger.success("Low-confidence extraction has text guidance without a percentage badge")
     }
 
     // MARK: - Helpers

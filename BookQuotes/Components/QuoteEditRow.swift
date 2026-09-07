@@ -13,6 +13,7 @@ struct QuoteEditRow: View {
     @State private var draftMarginNote = ""
     @State private var draftMarkingType = MarkingType.underline.rawValue
     @State private var markingStartsConfigurable = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
@@ -45,6 +46,22 @@ struct QuoteEditRow: View {
                     }
                 }
 
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Label {
+                        Text(quote.reviewGuidance.title)
+                            .foregroundStyle(Color.textPrimary)
+                    } icon: {
+                        Image(systemName: quote.reviewGuidance.systemImage)
+                            .foregroundStyle(quote.reviewGuidance.color)
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .accessibilityIdentifier("capture_review_guidance")
+                    Text(quote.reviewGuidance.explanation)
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
                 metaRow
 
                 if let tags = quote.suggestedTags, !tags.isEmpty {
@@ -58,7 +75,7 @@ struct QuoteEditRow: View {
         .clipShape(RoundedRectangle(cornerRadius: CornerRadius.md))
         .overlay(alignment: .leading) {
             Rectangle()
-                .fill(Self.confidenceBarColor(for: quote.confidence))
+                .fill(quote.reviewGuidance.color)
                 .frame(width: 3)
         }
         .overlay(
@@ -82,10 +99,20 @@ struct QuoteEditRow: View {
 
     private var metaRow: some View {
         HStack(spacing: Spacing.sm) {
-            if let pageNumber = quote.pageNumber {
-                Text("p. \(pageNumber)")
-                    .font(.attributionSmall)
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                if let pageNumber = quote.pageNumber {
+                    Text("p. \(pageNumber)")
+                        .font(.attributionSmall)
+                        .foregroundStyle(Color.textSecondary)
+                }
+                Label(quote.extractionSource.reviewLabel, systemImage: quote.extractionSource.reviewSymbol)
+                    .font(.caption)
                     .foregroundStyle(Color.textSecondary)
+                if quote.isModified {
+                    Text("Edited by you")
+                        .font(.caption)
+                        .foregroundStyle(Color.textSecondary)
+                }
             }
 
             Spacer(minLength: 0)
@@ -124,14 +151,14 @@ struct QuoteEditRow: View {
                             .foregroundStyle(Color.textSecondary)
 
                         Button {
-                            withAnimation(.snappy) {
+                            withAnimation(reduceMotion ? .none : .snappy) {
                                 quote.suggestedTags?.removeAll(where: { $0 == tag })
                             }
                         } label: {
                             Image(systemName: "xmark")
                                 .font(.caption2.weight(.bold))
                                 .foregroundStyle(Color.textTertiary)
-                                .frame(width: 28, height: 28)
+                                .frame(width: 44, height: 44)
                                 .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
@@ -151,13 +178,6 @@ struct QuoteEditRow: View {
             return "\(quote.text), p. \(pageNumber)"
         }
         return quote.text
-    }
-
-    static func confidenceBarColor(for confidence: Double?) -> Color {
-        let value = confidence ?? 0
-        if value >= 0.8 { return .success }
-        if value >= 0.5 { return .warning }
-        return .error
     }
 
     private func openEditor() {
@@ -195,49 +215,49 @@ struct QuoteEditRow: View {
     }
 }
 
-// MARK: - Confidence Badge
+// MARK: - Review Guidance
 
-/// Small badge showing AI confidence level with color coding.
-struct ConfidenceBadge: View {
-    let confidence: Double?
+/// Display guidance, not a correctness verdict or a selection policy.
+/// Retains the active review's 0.5/0.8 boundaries for finite, in-range scores.
+enum PassageReviewGuidance: Equatable {
+    case manual, unavailable, compareWithSource, checkSource, checkCarefully
 
-    private var displayConfidence: Double {
-        confidence ?? 0
-    }
-
-    private var color: Color {
-        guard let conf = confidence else { return .textTertiary }
-        if conf >= 0.9 {
-            return .success
-        } else if conf >= 0.7 {
-            return .accent
-        } else if conf >= 0.5 {
-            return .warning
-        } else {
-            return .error
+    var title: String {
+        switch self {
+        case .manual: return "Manual entry"
+        case .unavailable: return "Confidence unavailable"
+        case .compareWithSource: return "Compare with source"
+        case .checkSource: return "Check this passage"
+        case .checkCarefully: return "Check carefully"
         }
     }
 
-    private var label: String {
-        guard let conf = confidence else { return "?" }
-        return String(format: "%.0f%%", conf * 100)
+    var explanation: String {
+        switch self {
+        case .manual: return "Compare your entry with the source page before saving."
+        case .unavailable: return "No usable confidence score was supplied. Compare the text with the source page."
+        case .compareWithSource: return "An extraction score is not verification. Compare the text with the source page."
+        case .checkSource: return "The extraction may contain errors. Check the words and punctuation against the source page."
+        case .checkCarefully: return "The extraction score is low. Check every word against the source page, then edit or exclude this passage."
+        }
     }
 
-    var body: some View {
-        HStack(spacing: 2) {
-            Circle()
-                .fill(color)
-                .frame(width: 6, height: 6)
-
-            Text(label)
-                .font(.caption2)
-                .fontWeight(.medium)
-                .foregroundStyle(color)
+    var systemImage: String {
+        switch self {
+        case .manual: return "pencil"
+        case .unavailable: return "questionmark.circle"
+        case .compareWithSource: return "doc.text.magnifyingglass"
+        case .checkSource: return "exclamationmark.circle"
+        case .checkCarefully: return "exclamationmark.triangle"
         }
-        .padding(.horizontal, Spacing.xs)
-        .padding(.vertical, 2)
-        .background(color.opacity(0.15))
-        .clipShape(Capsule())
+    }
+
+    var color: Color {
+        switch self {
+        case .manual, .unavailable, .compareWithSource: return .textSecondary
+        case .checkSource: return .warning
+        case .checkCarefully: return .error
+        }
     }
 }
 
@@ -336,6 +356,16 @@ struct EditableQuote: Identifiable, Equatable {
         self.isManual = false
         self.extractionSource = data.extractionSource
         self.isModified = false
+    }
+
+    var reviewGuidance: PassageReviewGuidance {
+        if isManual || extractionSource == .manual { return .manual }
+        guard let confidence, confidence.isFinite, (0...1).contains(confidence) else {
+            return .unavailable
+        }
+        if confidence >= 0.8 { return .compareWithSource }
+        if confidence >= 0.5 { return .checkSource }
+        return .checkCarefully
     }
 
     /// Convert to ExtractedQuote for saving

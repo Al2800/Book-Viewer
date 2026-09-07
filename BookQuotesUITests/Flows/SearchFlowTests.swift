@@ -102,6 +102,18 @@ final class SearchFlowTests: BaseUITestCase {
         logger.success("Found seeded quote matching 'improvement'")
     }
 
+    func testLiveSearchResultOpensBookWithoutSubmittingQuery() {
+        let search = activateSearchField()
+        search.typeText(UITestData.Books.atomicHabitsTitle)
+        let result = app.buttons[AccessibilityIdentifiers.Search.bookResultRow].firstMatch
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        XCTAssertTrue(result.isHittable)
+        result.tap()
+        let title = app.staticTexts[AccessibilityIdentifiers.BookDetail.bookTitle]
+        XCTAssertTrue(title.waitForExistence(timeout: 5), "Live results must not require keyboard submission before navigation")
+        XCTAssertEqual(title.label, UITestData.Books.atomicHabitsTitle)
+    }
+
     func testSearchResult_TapFirstCell_NavigatesToDetail() {
         logger.step(1, "Searching for seeded content")
         searchFor(UITestData.Books.atomicHabitsTitle)

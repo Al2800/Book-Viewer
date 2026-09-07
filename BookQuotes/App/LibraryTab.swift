@@ -135,7 +135,10 @@ struct LibraryView: View {
             Text("Passages").tag(SearchScope.quotes)
         }
         .searchSuggestions {
-            if let searchServices {
+            // Native suggestions sit above the result list on iOS. Keep history
+            // available before typing, but do not intercept taps on live results.
+            if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+               let searchServices {
                 SearchSuggestionsContent(
                     appeared: true,
                     onSelect: { text in
