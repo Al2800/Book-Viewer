@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 26 August 2026
+Updated: 7 September 2026
 
 ## Purpose
 
@@ -121,6 +121,22 @@ partnerships, rights-uncertain material and sensitive community responses remain
 - Keep the single-writer, duplicate and second-slot holds active. Do not
   delete, edit, re-upload, schedule or publish another TikTok copy
   automatically. Manual recovery of public rows remains user-approved work.
+
+### Metadata reconciliation audit: 7 September 2026, 19:26 Europe/London
+
+- The account is active as `@bookquotes.app` with 16 public rows, 3 followers and analytics access.
+  The latest analytics sync is `2026-09-07T18:37:56Z`; token health is currently `ok` through
+  `2026-09-08T10:12:40Z` (11:12 Europe/London). Reconnect is expected to become due before the
+  next morning audit.
+- The latest public rows are 2 September `7680815050273197334` at 202 views / 1 like / 0 comments,
+  31 August `7680189027781299478` at 203 / 1 / 0, and 27 August `7678826123786063137` at
+  226 / 1 / 0. The first two read back as `#Zernio`; the 27 August row has an empty caption.
+  These are metadata and attribution observations, not clean creative treatments.
+- The 27 August shelf post also has a failed job record (`6a9089ac6947ad1a8cdfc652`) with the
+  intended reader caption. Do not retry it while native and Zernio state remain unresolved.
+- Keep the single-writer, duplicate, metadata and second-slot holds active. Do not upload, schedule,
+  edit, delete or re-upload another TikTok copy automatically. The general routine authority above
+  is superseded by this active hold.
 
 ### Audit: 20 August 2026, 09:04 Europe/London
 

@@ -1,6 +1,40 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 28 August 2026, 09:48 Europe/London
+Updated: 7 September 2026, 19:26 Europe/London
+
+### Audit: 7 September 2026, 19:26 Europe/London
+
+- Identity remains verified for Facebook Page `BookQuotes` (`1246405755221229`), Instagram
+  `bookquotes.app` (`17841434821362428`) and TikTok `@bookquotes.app`.
+- Facebook's latest verified published Page item is the 2 September reader-menu post,
+  `122108483805415831`. The Page feed is readable, but the current per-post Graph insights
+  requests return HTTP 400, `The value must be a valid insights metric`. Facebook views, reach,
+  clicks, comments and shares are therefore Not available via this read path. A direct text-only
+  recovery queue is now verified for 8–14 September at 13:00 Europe/London, with seven rows:
+  `122112699483415831`, `122112699507415831`, `122112699537415831`, `122112699579415831`,
+  `122112699609415831`, `122112699639415831` and `122112699669415831`. They are scheduled, not
+  yet published, and contain original BookQuotes reader prompts with no third-party assets.
+- Instagram's latest media is the 1 September `bq14-14` still,
+  `18125822551699434`, at measured 0 views / 0 reach / 0 likes / 0 comments / 0 saves / 0 shares.
+  No newer Instagram media was exposed. The latest Reel remains the 25 August pairing Reel,
+  `17972676695932383`, at 14 views / 15 reach / 0 likes / 0 comments / 0 saves / 0 shares. The
+  26 August–1 September bank stills read as measured zeros; this is a delivery observation, not
+  a creative verdict.
+- TikTok is active as `@bookquotes.app` with 16 public rows, 3 followers and analytics sync at
+  `2026-09-07T18:37:56Z`. The latest public rows are 2 September `7680815050273197334`
+  (202 / 1 / 0), 31 August `7680189027781299478` (203 / 1 / 0) and 27 August
+  `7678826123786063137` (226 / 1 / 0), in views / likes / comments. The former two read back
+  `#Zernio` and the latter has an empty caption, so they remain excluded from creative scoring.
+  The 27 August shelf job `6a9089ac6947ad1a8cdfc652` is recorded as failed. The TikTok holds remain.
+- No comments or messages were exposed on any connected channel. No routine replies were made and
+  no reply requires approval from this audit.
+
+### Queue recovery: 7 September 2026, 19:26 Europe/London
+
+Seven original text-only Facebook reader prompts were scheduled at 13:00 Europe/London for
+8–14 September after the live queue was found empty. This was within the standing low-risk
+Facebook authority and passed identity, visibility, time, duplication and media preflight checks.
+The prompts are intentionally not added to the historical ContentBank records.
 
 ### Audit: 28 August 2026, 09:48 Europe/London
 

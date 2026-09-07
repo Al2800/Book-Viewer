@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 26 August 2026, 09:01 Europe/London
+Updated: 7 September 2026, 19:26 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,50 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 7 September 2026, 19:26 Europe/London
+
+**Platforms checked:** Meta identity, Facebook Page feed and scheduled rows, Instagram media and
+lifetime insights, TikTok account and Zernio inventory, and the official TikTok Trends and Creative
+Codes references.
+
+**Observation**
+
+- Facebook had three verified published Page items in the 31 August–6 September review window:
+  31 August, 1 September and 2 September. The current Page feed is readable, but the per-post
+  insights path rejects the requested metric set with HTTP 400, so views, reach, clicks, comments,
+  shares and saves are Not available rather than zero. The future queue was empty at audit time and
+  was restored to seven scheduled original text prompts for 8–14 September at 13:00 London.
+- Instagram had two bank stills in the review window, 31 August and 1 September, both measured at
+  0 views / 0 reach / 0 interactions. There has been no newer Instagram media since 1 September;
+  the latest Reel remains the 25 August pairing Reel at 14 views / 15 reach / 0 likes / 0 comments.
+  The sample is delivery-starved and does not establish a creative failure.
+- TikTok had two public rows in the review window: 2 September at 202 views / 1 like / 0 comments
+  and 31 August at 203 / 1 / 0. Both read back as `#Zernio`, so neither is a valid creative
+  comparison. The 27 August shelf job is recorded as failed. The account is active with 16 public
+  rows, 3 followers and analytics access; its token is currently healthy but will need reconnection
+  attention before the next morning run.
+- No comments or messages were exposed. App Store and install outcomes were Not available in this
+  social audit.
+
+**Monday review: 31 August–6 September**
+
+No creative winner, loser or cadence conclusion is justified. The Facebook read confirms delivery
+through 2 September and the queue recovery protects continuity, but invalid insights prevent a
+downstream comparison. Instagram needs a separate due-agent or connection follow-up. TikTok's
+recent rows must be excluded from creative learning until caption, cover, audience and content ID
+are atomically verified.
+
+**Learning update**
+
+- Repeat practical, reader-led prompts after clean delivery, with the 13:00 Facebook baseline
+  retained for now.
+- Modify the TikTok publishing path so caption, cover, audience and final public content ID are
+  checked together immediately after publication.
+- Hold TikTok uploads and the second daily slot; do not treat the recent `#Zernio` rows as evidence
+  for changing content or timing.
+- No hypothesis confidence changed. The available data describes delivery and metadata quality,
+  not creative performance.
 
 ### 26 August 2026, 09:01 Europe/London
 

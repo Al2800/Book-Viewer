@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 18 August 2026
+Updated: 7 September 2026
 
 ## Purpose
 
@@ -169,7 +169,11 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 17 August 2026, Graph scheduled posts are the source of truth for Facebook. The queue is
-the 18 August text item plus approved bank cards `bq14-01`–`bq14-14` at 13:00 Europe/London
-through 1 September. Instagram due and TikTok reconnect are separate launchd agents, not this
-09:00 publisher. The 28 July Planner/Library disagreement is historical.
+As of 7 September 2026, the Graph Page feed confirms `bq14-14` published on 2 September. A
+direct text-only recovery queue now has seven future Facebook rows for 8–14 September at 13:00
+Europe/London. The historical bank remains `bq14-01`–`bq14-14`; the recovery prompts are logged
+in `PublishingStatus.md` and are not being represented as new bank records. Instagram's latest
+verified media remains `bq14-14` on 1 September and is not verified as published by this audit.
+TikTok remains held by the metadata reconciliation audit in `TikTokOperatingRunbook.md`; no new
+TikTok upload may occur until the intended caption, cover, audience and single attributable
+content ID are reconciled.

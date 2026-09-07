@@ -1,13 +1,13 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-08-26T09:01:36+01:00</code>.
+Generated from structured evidence updated <code>2026-09-07T19:26:09+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-08-19T09:01:36+01:00</code> to <code>2026-08-26T09:01:36+01:00</code>
-- Published Facebook items represented: 4
-- Visible views: 1012
-- Visible reach: 72
+- Reporting window: <code>2026-08-31T19:26:09+01:00</code> to <code>2026-09-07T19:26:09+01:00</code>
+- Published Facebook items represented: 0
+- Visible views: 202
+- Visible reach: 0
 - Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
@@ -16,6 +16,11 @@ Generated from structured evidence updated <code>2026-08-26T09:01:36+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-09-08 | scheduled | facebook | Facebook recovery queue | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-09-02 | published | tiktok | September metadata mismatch | reel | audit | 202 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-01 | published | instagram | Your reading notes should have an exit | image | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
+| 2026-08-31 | published | tiktok | August metadata mismatch | reel | 7d-audit | 203 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-08-27 | published | tiktok | Shelf post metadata mismatch | reel | audit | 226 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-25 | published | tiktok | Two front doors metadata mismatch | reel | audit | 231 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-08-25 | published | instagram | The Player of Games / The Three-Body Problem | reel | audit | 14 | 15 | 0.0 | 0.0 | Insufficient distribution |
 | 2026-08-24 | published | tiktok | Stoner metadata mismatch | reel | audit | 247 | Not available | Not available | Not available | Insufficient distribution |
@@ -94,8 +99,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 13
-- Channel-only items: 13
+- Durable published items: 2
+- Channel-only items: 2
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

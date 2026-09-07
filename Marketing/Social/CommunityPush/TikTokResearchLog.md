@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 26 August 2026
+Updated: 7 September 2026
 
 ## Purpose
 
@@ -63,6 +63,64 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-07, 19:26 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 16
+  public rows and 3 followers. The latest sync is `2026-09-07T18:37:56Z`; token health is `ok`
+  through `2026-09-08T10:12:40Z`.
+- Latest public rows: `7680815050273197334` from 2 September (202 views / 1 like / 0 comments),
+  `7680189027781299478` from 31 August (203 / 1 / 0) and `7678826123786063137` from 27 August
+  (226 / 1 / 0). The first two captions are `#Zernio`; the third is empty. The shelf-caption job
+  `6a9089ac6947ad1a8cdfc652` failed on 27 August. These rows are retained for publishing-integrity
+  evidence and excluded from creative comparison.
+- Publishing remains on hold. No TikTok item may advance and no second daily slot may be used until
+  one controlled path produces the intended caption, cover, audience and a single attributable
+  public content ID with analytics read-back.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Trend discovery | [TikTok for Business, How to Use Trends](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) | The existing official reference remains the appropriate place to inspect industry, time-frame, audience and regional signals. | Useful after the publishing path is repaired; it is not evidence that BookQuotes should increase cadence now. | Short | Re-run a UK sample after a clean attributable post exists. |
+| Creative structure and sound | [TikTok Creative Codes](https://ads.tiktok.com/business/en-US/creative-codes) | Hook-body-close, vertical production, stimulation and purposeful sound remain the relevant official principles. | Keep sound optional and purposeful; do not use it to paper over an attribution failure. | Medium | Preserve reader-first visual language until a clean audio or packaging test is possible. |
+
+No reliable new 15–20-post UK creator sample was available through the connected read. No new style or
+audio claim was added.
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: none; the new account evidence is a metadata and attribution failure.
+- Elements explicitly excluded from imitation: `#Zernio` fallback metadata, duplicate uploads and any
+  attempt to manufacture a second daily slot while attribution is unresolved.
+
+**Audience language**
+
+- Comments, searches or questions: no new attributable comments, messages or search language exposed.
+- Potential reader-need hooks: unchanged; use-condition, reader-fit and five-slide tension hooks remain
+  queued but cannot advance during the hold.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: intended caption and public content ID mismatch; the shelf-caption job failed; no new
+  rights blocker was found.
+
+**Performance**
+
+- 24-hour, 72-hour and seven-day checkpoints: no valid new creative checkpoint is available. The
+  recent public rows are metadata audits and are excluded from scoring.
+- Missing measures: reach, watch time, completion, saves, shares, profile visits, follows, search
+  terms and link taps remain Not available on this path.
+
+**Learning and queue**
+
+- No confidence change. Keep the single-writer, duplicate, metadata and second-slot holds active.
+- Queue status: no TikTok item may be scheduled or published automatically; research and quality work
+  may continue without advancing an item.
 
 ### 2026-08-26, 09:01 Europe/London
 

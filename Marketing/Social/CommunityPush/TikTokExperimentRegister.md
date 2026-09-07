@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 26 August 2026
+Updated: 7 September 2026
 
 ## Method
 
@@ -47,6 +47,19 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 7 September 2026, 19:26 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7680815050273197334` | Metadata reconciliation audit | 7d-plus audit | 202 views, 1 like, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Public caption reads `#Zernio`; exclude from creative comparison. |
+| `7680189027781299478` | Metadata reconciliation audit | 7d-plus audit | 203 views, 1 like, 0 comments | Same measures Not available | Public caption reads `#Zernio`; exclude from creative comparison. |
+| `7678826123786063137` | Cover and metadata hold audit | Audit | 226 views, 1 like, 0 comments | Same measures Not available | Public caption is empty; exclude from creative comparison. |
+
+The 27 August shelf-caption job `6a9089ac6947ad1a8cdfc652` is recorded as failed. The 31 August
+and 2 September rows are delivery observations only, not valid executions of their intended
+creative treatments. No confidence or result label changed. The single-writer, duplicate, metadata
+and second-slot holds remain active.
 
 ## Measurement Checkpoints
 
