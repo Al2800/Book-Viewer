@@ -15,7 +15,8 @@ struct ExtractionReviewView: View {
 
     @State private var quoteState = ExtractionReviewQuoteState()
     @State private var selectedPage: PageCapture?
-    @State private var showingAddQuoteSheet = false
+    @State private var manualEntryPage: PageCapture?
+    @State private var pageToFinishManually: PageCapture?
     @State private var showingDiscardAlert = false
     @State private var isSaving = false
     @State private var saveError: Error?
@@ -93,7 +94,7 @@ struct ExtractionReviewView: View {
                 if quoteState.isLoading || isProcessing {
                     processingView
                 } else if processingSummary.hasExtractionFailures {
-                    extractionFailureView
+                    mainContentView
                 } else if processingSummary.hasNoQuotes {
                     noQuotesView
                 } else {
@@ -158,16 +159,26 @@ struct ExtractionReviewView: View {
             } message: {
                 Text(savedWithPendingPagesMessage ?? "Unprocessed pages remain available for retry.")
             }
-            .sheet(isPresented: $showingAddQuoteSheet) {
-                if let page = selectedPage ?? orderedPages.last {
-                    AddManualQuoteSheet(
-                        pageId: page.id,
-                        pageNumber: page.detectedPageNumber,
-                        onAdd: { quote in
-                            quoteState.append(quote)
-                        }
-                    )
+            .alert("Finish manual review?", isPresented: Binding(
+                get: { pageToFinishManually != nil },
+                set: { if !$0 { pageToFinishManually = nil } }
+            ), presenting: pageToFinishManually) { page in
+                Button("Mark Page Reviewed") {
+                    do {
+                        try ExtractionReviewCheckpointStore(session: session, modelContext: modelContext)
+                            .finishManualReview(of: page, state: &quoteState)
+                    } catch { saveError = error }
                 }
+                Button("Keep Reviewing", role: .cancel) {}
+            } message: { page in
+                Text("Only finish after copying every wanted passage from PAGE \(page.orderIndex + 1). Existing passages, selection and source are kept. This does not verify an AI extraction.")
+            }
+            .sheet(item: $manualEntryPage) { page in
+                AddManualQuoteSheet(
+                    pageId: page.id,
+                    pageNumber: page.detectedPageNumber,
+                    onAdd: { quote in quoteState.append(quote) }
+                )
             }
             .sheet(item: $currentDuplicateCheck, onDismiss: advanceDuplicateReview) { item in
                 DuplicateWarningSheet(
@@ -254,11 +265,21 @@ struct ExtractionReviewView: View {
                     }
 
                     if page.status == .failed {
+                        Text(page.errorMessage ?? "This page could not be processed.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.textPrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         Button("Add passage for this page") {
                             selectedPage = page
-                            showingAddQuoteSheet = true
+                            manualEntryPage = page
                         }
                         .buttonStyle(.secondary)
+                        .accessibilityIdentifier("capture_manual_failed_page_\(page.orderIndex + 1)")
+                        Button("Finish manual review for PAGE \(page.orderIndex + 1)") {
+                            pageToFinishManually = page
+                        }
+                        .buttonStyle(.secondary)
+                        .accessibilityIdentifier("capture_finish_failed_page_\(page.orderIndex + 1)")
                     }
 
                     ForEach(quoteState.quotes(for: page.id)) { quote in
@@ -287,7 +308,7 @@ struct ExtractionReviewView: View {
                     if selectedPage == nil {
                         selectedPage = orderedPages.last
                     }
-                    showingAddQuoteSheet = true
+                    manualEntryPage = selectedPage
                 }
             }
             .padding(.horizontal, Spacing.lg)
@@ -315,16 +336,6 @@ struct ExtractionReviewView: View {
         )
     }
 
-    private var extractionFailureView: some View {
-        ExtractionReviewFailureView(
-            primaryFailureMessage: processingSummary.primaryFailureMessage,
-            onRetry: retryFailedExtractions,
-            onUseOnDevice: retryFailedExtractionsOnDevice,
-            onAddManualQuote: addManualQuote,
-            onClose: closeReview
-        )
-    }
-
     // MARK: - Bindings
 
     private func deleteQuote(_ quote: EditableQuote) {
@@ -339,7 +350,7 @@ struct ExtractionReviewView: View {
         if selectedPage == nil {
             selectedPage = orderedPages.last
         }
-        showingAddQuoteSheet = true
+        manualEntryPage = selectedPage
     }
 
     private func closeReview() {

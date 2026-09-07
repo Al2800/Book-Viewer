@@ -29,6 +29,19 @@ struct QuoteCaptureSessionStore {
 
         if seedForUITest {
             seedExtractionForUITest(pageCapture: pageCapture, session: session)
+            if UITestConfiguration.mockExtractionScenario == "missing-source" {
+                // Simulate an unavailable reference without deleting the fixture file.
+                pageCapture.imagePath = ""
+            }
+            if UITestConfiguration.mockExtractionScenario == "partial-failure" {
+                let failedImage = try await prepareImageFiles(for: image, sessionID: sessionID)
+                let failed = PageCapture(imagePath: failedImage.imagePath, session: session)
+                failed.thumbnailData = failedImage.thumbnailData
+                modelContext.insert(failed)
+                session.addCapture(failed)
+                failed.failProcessing(error: "Fixture extraction unavailable for PAGE 2")
+                session.resumeReviewProcessing()
+            }
         } else {
             session.finishCapturing()
         }
@@ -102,7 +115,7 @@ struct QuoteCaptureSessionStore {
                     )
                 ]
                 pageCapture.extractionFallbackReason = .remoteUnavailable
-            case "mixed":
+            case "mixed", "partial-failure", "missing-source":
                 quotes = [
                     ExtractedQuoteData(
                         text: "A model-assisted quote used for review testing.",

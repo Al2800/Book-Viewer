@@ -140,7 +140,7 @@ enum UITestConfiguration {
     static var mockExtractionScenario: String? {
         guard isUITesting, shouldMockCamera,
               let scenario = value(for: "--mock-extraction-scenario"),
-              ["remote", "local-fallback", "mixed"].contains(scenario) else {
+              ["remote", "local-fallback", "mixed", "partial-failure", "missing-source"].contains(scenario) else {
             return nil
         }
         return scenario

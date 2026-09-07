@@ -24,6 +24,8 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
     }
 
     private var extractionScenario: String {
+        if name.contains("MixedFailure") { return "partial-failure" }
+        if name.contains("MissingSource") { return "missing-source" }
         if name.contains("RemoteSource") {
             return "remote"
         }
@@ -360,6 +362,77 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         search.tap()
         search.typeText("A model-assisted quote used for review testing.\n")
         XCTAssertTrue(app.staticTexts["No Matching Passages"].waitForExistence(timeout: 5))
+    }
+
+    func testMissingSourceShowsUnavailableWithoutDiscardingReview() {
+        navigateToExtractionReview()
+        let source = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", AccessibilityIdentifiers.Capture.viewPageButton)).firstMatch
+        XCTAssertTrue(revealForInteraction(source))
+        source.tap()
+        XCTAssertTrue(app.staticTexts["Image Not Found"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.images["Full source page image"].exists)
+        app.buttons["Close image"].tap()
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        XCTAssertEqual(save.label, "Save 2 passages")
+        XCTAssertEqual(app.switches.matching(identifier: "capture_passage_selection_toggle").count, 2)
+    }
+
+    func testMixedFailureOnDeviceRetryDoesNotResurrectSavedCandidates() {
+        navigateToExtractionReview()
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        save.tap()
+        let continueReviewing = app.alerts.buttons["Continue Reviewing"]
+        XCTAssertTrue(continueReviewing.waitForExistence(timeout: 5))
+        continueReviewing.tap()
+        let retry = app.buttons["Try on-device for failed pages"]
+        XCTAssertTrue(revealForInteraction(retry))
+        retry.tap()
+        let local = app.descendants(matching: .any)
+            .matching(identifier: "\(AccessibilityIdentifiers.Capture.extractionQuoteSourceLabel)_on_device").firstMatch
+        XCTAssertTrue(local.waitForExistence(timeout: 20))
+        XCTAssertFalse(app.switches.matching(NSPredicate(format: "label CONTAINS %@", "A model-assisted quote used for review testing.")).firstMatch.exists)
+        XCTAssertFalse(app.switches.matching(NSPredicate(format: "label CONTAINS %@", "An on-device quote used for review testing.")).firstMatch.exists)
+        XCTAssertTrue(save.isEnabled)
+        save.tap()
+        XCTAssertTrue(app.buttons["capture_view_passages_button"].waitForExistence(timeout: 8))
+    }
+
+    func testMixedFailureSavesSuccessesThenResolvesTheCorrectPageManually() {
+        navigateToExtractionReview()
+        let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
+        XCTAssertEqual(save.label, "Save 2 passages")
+        save.tap()
+        let continueReviewing = app.alerts.buttons["Continue Reviewing"]
+        XCTAssertTrue(continueReviewing.waitForExistence(timeout: 5))
+        continueReviewing.tap()
+        XCTAssertEqual(save.label, "Save 0 passages")
+        XCTAssertFalse(save.isEnabled)
+        let source = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", AccessibilityIdentifiers.Capture.viewPageButton)).element(boundBy: 1)
+        XCTAssertTrue(revealForInteraction(source))
+        source.tap()
+        XCTAssertTrue(app.images["Full source page image"].waitForExistence(timeout: 5))
+        app.buttons["Close image"].tap()
+        let manual = app.buttons["capture_manual_failed_page_2"]
+        XCTAssertTrue(revealForInteraction(manual))
+        manual.tap()
+        let editor = app.textViews.firstMatch
+        XCTAssertTrue(editor.waitForExistence(timeout: 5))
+        editor.tap()
+        editor.typeText("Manually recovered from the second source page.")
+        app.navigationBars["Add Quote"].buttons["Add"].tap()
+        XCTAssertEqual(save.label, "Save 1 passage")
+        let finish = app.buttons["capture_finish_failed_page_2"]
+        XCTAssertTrue(revealForInteraction(finish))
+        finish.tap()
+        app.alerts.buttons["Keep Reviewing"].tap()
+        XCTAssertTrue(finish.exists, "Cancelling must leave the failed page unresolved")
+        finish.tap()
+        app.alerts.buttons["Mark Page Reviewed"].tap()
+        XCTAssertFalse(finish.exists)
+        XCTAssertEqual(save.label, "Save 1 passage", "Completed source results must not be imported again")
+        save.tap()
+        XCTAssertTrue(app.buttons["capture_view_passages_button"].waitForExistence(timeout: 8))
     }
 
     func testReviewDraftSurvivesProcessExitWithoutExplicitKeep() {

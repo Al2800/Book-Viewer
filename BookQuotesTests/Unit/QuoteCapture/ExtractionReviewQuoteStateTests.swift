@@ -321,6 +321,39 @@ final class ExtractionReviewCheckpointTests: SwiftDataTestCase {
         XCTAssertTrue(restored.selectedQuotes.isEmpty)
     }
 
+    func testManualFailureResolutionRollsBackOnWriteFailureAndDoesNotReimportSource() throws {
+        enum Failure: Error { case write }
+        let (session, page, _) = try fixture()
+        page.failProcessing(error: "Offline")
+        session.resumeReviewProcessing()
+        let manual = EditableQuote(pageId: page.id, text: "Manually copied", markingType: "underline", isManual: true)
+        var state = ExtractionReviewQuoteState(editingQuotes: [manual], isLoading: false)
+        let store = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext)
+        try store.persist(state)
+        let originalPayload = page.extractedQuotesData
+        let failing = ExtractionReviewCheckpointStore(session: session, modelContext: modelContext,
+                                                       persistChanges: { throw Failure.write })
+        XCTAssertThrowsError(try failing.finishManualReview(of: page, state: &state))
+        XCTAssertEqual(page.status, .failed)
+        XCTAssertEqual(page.errorMessage, "Offline")
+        XCTAssertEqual(session.failedPages, 1)
+        XCTAssertEqual(session.status, .partialFailure)
+        XCTAssertEqual(page.extractedQuotesData, originalPayload)
+        try modelContext.save()
+        try store.finishManualReview(of: page, state: &state)
+        XCTAssertEqual(session.failedPages, 0)
+        XCTAssertEqual(session.status, .completed)
+        XCTAssertEqual(page.imagePath, "captures/test/source.jpg")
+        XCTAssertEqual(page.loadExtractedQuotes().first?.text, "Original source passage")
+        let fresh = ModelContext(modelContainer)
+        let reloaded = try XCTUnwrap(fresh.fetch(FetchDescriptor<CaptureSession>()).first)
+        var recovered = try XCTUnwrap(ExtractionReviewCheckpointStore(session: reloaded, modelContext: fresh).restore())
+        recovered.loadCompletedQuotes(from: reloaded.captures.map(ExtractionReviewPageQuoteSnapshot.init))
+        XCTAssertEqual(recovered.editingQuotes.map(\.id), [manual.id])
+        XCTAssertTrue(recovered.editingQuotes[0].isManual)
+        XCTAssertEqual(reloaded.failedPages, 0)
+    }
+
     func testRepeatedApprovedCandidateCannotCreateASecondQuote() throws {
         let (session, page, book) = try fixture()
         let candidate = EditableQuote(pageId: page.id, text: "Commit once", markingType: "underline")

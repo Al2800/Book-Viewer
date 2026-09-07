@@ -75,6 +75,31 @@ struct ExtractionReviewCheckpointStore {
         }
     }
 
+    /// Explicit user resolution, not a successful AI extraction. Keep original
+    /// payload/source and checkpoint the decision before enabling final completion.
+    func finishManualReview(of page: PageCapture, state: inout ExtractionReviewQuoteState) throws {
+        guard session.captures.contains(where: { $0.id == page.id }), page.status == .failed,
+              !session.captures.contains(where: { $0.status == .pending || $0.status == .processing }) else {
+            throw CocoaError(.validationMissingMandatoryProperty)
+        }
+        let oldPage = (page.status, page.errorMessage, page.dateProcessed)
+        let oldSession = (session.status, session.dateCompleted, session.totalPages, session.processedPages, session.failedPages)
+        var remaining = state
+        remaining.recordManuallyReviewedPage(page.id)
+        page.status = .completed
+        page.errorMessage = nil
+        page.dateProcessed = Date()
+        session.resumeReviewProcessing()
+        do {
+            try persist(remaining)
+            state = remaining
+        } catch {
+            (page.status, page.errorMessage, page.dateProcessed) = oldPage
+            (session.status, session.dateCompleted, session.totalPages, session.processedPages, session.failedPages) = oldSession
+            throw error
+        }
+    }
+
     func save(
         candidates: [EditableQuote],
         state: inout ExtractionReviewQuoteState,
@@ -155,6 +180,10 @@ struct ExtractionReviewQuoteState: Codable, Equatable {
         editingQuotes.allSatisfy { pageIDs.contains($0.pageId) }
             && loadedPageIDs.isSubset(of: pageIDs)
             && Set(editingQuotes.map(\.id)).count == editingQuotes.count
+    }
+
+    mutating func recordManuallyReviewedPage(_ id: UUID) {
+        loadedPageIDs.insert(id)
     }
 
     /// Counts all displayed candidates, including excluded ones. Selection and
