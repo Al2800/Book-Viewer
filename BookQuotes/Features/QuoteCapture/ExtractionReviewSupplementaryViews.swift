@@ -14,9 +14,6 @@ struct AddManualQuoteSheet: View {
     @State private var quoteText = ""
     @State private var selectedMarkingType = "underline"
     @State private var marginNote = ""
-    @State private var hasAppeared = false
-    @State private var quoteTextShakeTrigger = 0
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let markingTypes = [
         "underline",
@@ -33,10 +30,10 @@ struct AddManualQuoteSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Quote Text") {
+                Section("Passage Text") {
                     TextEditor(text: $quoteText)
                         .frame(minHeight: 100)
-                        .shake(trigger: quoteTextShakeTrigger)
+                        .accessibilityLabel("Passage text")
                 }
 
                 Section("Marking Type") {
@@ -66,7 +63,7 @@ struct AddManualQuoteSheet: View {
             }
             .scrollContentBackground(.hidden)
             .background(Color.backgroundPrimary)
-            .navigationTitle("Add Quote")
+            .navigationTitle("Add Passage")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -78,37 +75,18 @@ struct AddManualQuoteSheet: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        validateAndAddQuote()
+                        addQuote()
                     }
                     .fontWeight(.semibold)
+                    .disabled(!isQuoteTextValid)
                 }
             }
         }
         .presentationDetents([.medium, .large])
-        .opacity(hasAppeared ? 1 : 0)
-        .offset(y: hasAppeared ? 0 : 10)
-        .onAppear {
-            guard !reduceMotion else {
-                hasAppeared = true
-                return
-            }
-            withAnimation(.smoothSpring) {
-                hasAppeared = true
-            }
-        }
     }
 
     private var isQuoteTextValid: Bool {
         !quoteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
-
-    private func validateAndAddQuote() {
-        guard isQuoteTextValid else {
-            quoteTextShakeTrigger += 1
-            HapticManager.error()
-            return
-        }
-        addQuote()
     }
 
     private func addQuote() {
@@ -171,7 +149,7 @@ struct ReviewSummaryView: View {
 
             HStack {
                 Image(systemName: "text.quote")
-                Text("\(quotes.count) quotes to save")
+                Text("\(quotes.count) passages to save")
                     .font(.subheadline)
             }
 

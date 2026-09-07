@@ -41,7 +41,13 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            productShell
+            if UITestConfiguration.isUITesting && !uiTestSeeded {
+                // Fixture insertion/removal must finish before tab @Query
+                // wrappers begin observing the test context.
+                ProgressView("Preparing test library")
+            } else {
+                productShell
+            }
 
             if UITestConfiguration.isUITesting && uiTestSeeded && !UITestConfiguration.isAppStoreMediaMode {
                 Text("UI Test Seeded")

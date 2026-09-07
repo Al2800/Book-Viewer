@@ -103,7 +103,7 @@ struct LibraryBookshelfView: View {
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(Color.textPrimary)
 
-                Text("Start a book to track quotes and notes")
+                Text("Start a book to collect passages and notes")
                     .font(.caption)
                     .foregroundStyle(Color.textSecondary)
             }

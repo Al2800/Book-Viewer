@@ -329,7 +329,7 @@ struct StudioTab: View {
                 .frame(width: 48, height: 48)
                 .foregroundStyle(Color.gildedAccent)
 
-            Text("Quote Card Studio")
+            Text("Passage Card Studio")
                 .font(.serifHeadline)
                 .foregroundStyle(.white)
 

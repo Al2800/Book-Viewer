@@ -17,7 +17,7 @@ enum WelcomePage: Int, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .capture: return "Capture Quotes Instantly"
+        case .capture: return "Capture Marked Passages"
         case .organize: return "Build Your Library"
         case .discover: return "Rediscover Wisdom"
         }
@@ -28,7 +28,7 @@ enum WelcomePage: Int, CaseIterable, Identifiable {
         case .capture:
             return "Point your camera at any marked page. Our AI extracts underlines, highlights, and margin notes automatically."
         case .organize:
-            return "Organize quotes by book, topic, or custom collections. Your library stays available on this device, with exports ready whenever you want a backup."
+            return "Organize passages by book, topic, or custom collections. Your library stays available on this device, with exports ready whenever you want a backup."
         case .discover:
             return "Search your entire library instantly. Surface forgotten insights and share your favorite passages."
         }

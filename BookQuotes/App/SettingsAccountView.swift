@@ -133,8 +133,8 @@ struct AccountView: View {
 
                 Text(
                     subscriptionsEnabled
-                        ? "Your library, search, exports, and on-device quote extraction work without an account. Sign in with Apple only to use remote AI processing or manage a subscription."
-                        : "Your library, search, exports, and on-device quote extraction work without an account. Sign in with Apple only to use remote AI processing."
+                        ? "Your library, search, exports, and on-device passage extraction work without an account. Sign in with Apple only to use remote AI processing or manage a subscription."
+                        : "Your library, search, exports, and on-device passage extraction work without an account. Sign in with Apple only to use remote AI processing."
                 )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

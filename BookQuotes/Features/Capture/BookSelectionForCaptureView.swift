@@ -75,7 +75,7 @@ struct BookSelectionForCaptureView: View {
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Color.textPrimary)
 
-                        Text("Add a book first so quote capture has somewhere to save your passages.")
+                        Text("Add a book first so capture has somewhere to save your passages.")
                             .font(.caption)
                             .foregroundStyle(Color.textSecondary)
                     }

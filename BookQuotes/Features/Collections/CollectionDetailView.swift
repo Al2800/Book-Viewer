@@ -31,7 +31,7 @@ struct CollectionDetailView: View {
             .navigationBarTitleDisplayMode(.large)
             .accessibilityIdentifier(AccessibilityIdentifiers.Collections.detailView)
             .toolbar { toolbarContent }
-            .searchable(text: $searchText, prompt: "Search quotes")
+            .searchable(text: $searchText, prompt: "Search passages")
             .sheet(isPresented: $showEditSheet) {
                 CollectionEditorSheet(mode: .edit(collection))
             }
@@ -45,7 +45,7 @@ struct CollectionDetailView: View {
             ) {
                 deleteConfirmationActions
             } message: {
-                Text("This will delete the collection but keep all quotes. This cannot be undone.")
+                Text("This will delete the collection but keep all passages. This cannot be undone.")
             }
     }
 

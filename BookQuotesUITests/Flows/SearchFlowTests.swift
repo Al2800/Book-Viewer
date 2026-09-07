@@ -266,6 +266,21 @@ final class AdaptiveSearchAndQuoteDetailLayoutTests: BaseUITestCase {
 }
 
 /// Smoke coverage for the default-off v2 product shell.
+/// The retained fallback is deliberate and opt-in, not the default test shell.
+final class LegacyShellAccessTests: BaseUITestCase {
+    override var additionalLaunchArguments: [String] {
+        ["--product-experience-legacy", "--preload-library-test-data"]
+    }
+
+    func testExplicitLegacyShellRetainsLibraryAndSettingsAccess() {
+        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
+        XCTAssertTrue(tapTab(.settings))
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(tapTab(.library))
+        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
+    }
+}
+
 final class V2ProductShellTests: BaseUITestCase {
 
     override var additionalLaunchArguments: [String] {
@@ -371,7 +386,7 @@ final class V2ProductShellTests: BaseUITestCase {
         studio.tap()
         XCTAssertTrue(
             app.staticTexts[AccessibilityIdentifiers.Studio.rootTitle].waitForExistence(timeout: 5)
-                || app.staticTexts["Quote Card Studio"].waitForExistence(timeout: 5),
+                || app.staticTexts["Passage Card Studio"].waitForExistence(timeout: 5),
             "Studio tab should show the Studio title"
         )
     }

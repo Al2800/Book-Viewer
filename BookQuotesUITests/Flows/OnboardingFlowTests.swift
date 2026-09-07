@@ -12,7 +12,7 @@ final class OnboardingFlowTests: BaseUITestCase {
 
     override func waitForAppReady() {
         // For onboarding tests, we expect to land on the welcome screen
-        let welcomeTitle = app.staticTexts["Capture Quotes Instantly"]
+        let welcomeTitle = app.staticTexts["Capture Marked Passages"]
         if welcomeTitle.waitForExistence(timeout: 5) {
             logger.info("Landed on welcome screen")
         } else {
@@ -28,7 +28,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         logger.step(1, "Verifying first welcome page")
 
         // First page: Capture
-        let captureTitle = app.staticTexts["Capture Quotes Instantly"]
+        let captureTitle = app.staticTexts["Capture Marked Passages"]
         XCTAssertTrue(captureTitle.waitForExistence(timeout: 5), "First page should show Capture title")
 
         logger.step(2, "Swiping to second page")
@@ -50,7 +50,7 @@ final class OnboardingFlowTests: BaseUITestCase {
 
     func testOnboarding_WelcomeCarousel_ContinueButtonAdvancesPages() {
         logger.step(1, "Verifying initial page")
-        XCTAssertTrue(app.staticTexts["Capture Quotes Instantly"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Capture Marked Passages"].waitForExistence(timeout: 5))
 
         logger.step(2, "Tapping Continue to advance")
         let continueButton = app.buttons["Continue"]
@@ -198,7 +198,7 @@ final class OnboardingFlowTests: BaseUITestCase {
 
         // Description
         let description = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS 'capturing quotes'")
+            NSPredicate(format: "label CONTAINS 'capturing passages'")
         ).firstMatch
         XCTAssertTrue(description.exists, "Success description should be visible")
 
@@ -219,7 +219,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         startButton.tap()
 
         logger.step(3, "Verifying onboarding dismissed")
-        let libraryRoot = app.navigationBars["Library"]
+        let libraryRoot = app.navigationBars["Reading"]
         XCTAssertTrue(libraryRoot.waitForExistence(timeout: 5), "Library should be visible after onboarding")
 
         logger.success("Start Capturing dismisses onboarding")
@@ -236,7 +236,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         accountRow.tap()
         XCTAssertTrue(waitForText("Optional Account", timeout: 5))
         XCTAssertTrue(
-            waitForText("library, search, exports, and on-device quote extraction work without an account", timeout: 3),
+            waitForText("library, search, exports, and on-device passage extraction work without an account", timeout: 3),
             "The account screen should explain that local features do not require sign-in"
         )
         tapBackButton()
@@ -250,7 +250,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         exportButton.tap()
         XCTAssertTrue(
             app.buttons[AccessibilityIdentifiers.Export.formatPicker].waitForExistence(timeout: 5)
-                || app.staticTexts["No Quotes"].waitForExistence(timeout: 1)
+                || app.staticTexts["No Passages"].waitForExistence(timeout: 1)
         )
 
         logger.success("Local-only onboarding keeps Settings and export available")
@@ -262,9 +262,9 @@ final class OnboardingFlowTests: BaseUITestCase {
 
         logger.step(2, "Opening manual book entry without an account")
         XCTAssertTrue(tapTab(.capture), "Capture should be available without an account")
-        let coverOption = app.buttons[AccessibilityIdentifiers.Capture.modeSelectCover]
-        XCTAssertTrue(coverOption.waitForExistence(timeout: 5))
-        coverOption.tap()
+        let addFirstBook = app.buttons["Add Your First Book"]
+        XCTAssertTrue(addFirstBook.waitForExistence(timeout: 5))
+        addFirstBook.tap()
         let manualEntry = app.buttons[AccessibilityIdentifiers.Capture.manualEntryButton]
         XCTAssertTrue(manualEntry.waitForExistence(timeout: 5))
         manualEntry.tap()
@@ -276,7 +276,7 @@ final class OnboardingFlowTests: BaseUITestCase {
     func testOnboarding_LocalOnlyRemoteAISettingsExplainActivationRequirements() {
         navigateToCompletionStep()
         app.buttons["Start Capturing"].tap()
-        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Reading"].waitForExistence(timeout: 5))
 
         XCTAssertTrue(tapTab(.settings), "Settings should be available after onboarding")
         let remoteAISettings = app.buttons[AccessibilityIdentifiers.Settings.remoteAIProcessingRow]
@@ -298,7 +298,7 @@ final class OnboardingFlowTests: BaseUITestCase {
 
         // There should be 3 dots for 3 pages
         // Look for circle shapes (page indicators)
-        let firstPage = app.staticTexts["Capture Quotes Instantly"]
+        let firstPage = app.staticTexts["Capture Marked Passages"]
         XCTAssertTrue(firstPage.waitForExistence(timeout: 5))
 
         logger.step(2, "Swiping through pages and checking indicators update")
@@ -327,7 +327,7 @@ final class OnboardingFlowTests: BaseUITestCase {
         let startButton = app.buttons["Start Capturing"]
         XCTAssertTrue(startButton.waitForExistence(timeout: 5))
         startButton.tap()
-        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Reading"].waitForExistence(timeout: 5))
     }
 
     private func navigateToMarkingSetup() {
@@ -374,7 +374,7 @@ final class AdaptiveOnboardingLayoutTests: BaseUITestCase {
 
     override func waitForAppReady() {
         XCTAssertTrue(
-            app.staticTexts["Capture Quotes Instantly"].waitForExistence(timeout: 8),
+            app.staticTexts["Capture Marked Passages"].waitForExistence(timeout: 8),
             "Accessibility onboarding should open on the welcome step"
         )
     }
@@ -409,7 +409,7 @@ final class AdaptiveOnboardingLayoutTests: BaseUITestCase {
         )
         startCapturing.tap()
 
-        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Reading"].waitForExistence(timeout: 5))
     }
 
     private func reveal(_ element: XCUIElement) -> Bool {

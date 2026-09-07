@@ -103,7 +103,7 @@ struct ExportView: View {
                 .padding(.bottom, Spacing.xxxl)
             }
             .background(Color.backgroundPrimary)
-            .navigationTitle("Export \(exportQuotes.count) Quotes")
+            .navigationTitle("Export \(exportQuotes.count) \(exportQuotes.count == 1 ? "Passage" : "Passages")")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Export") {
@@ -118,9 +118,9 @@ struct ExportView: View {
             .overlay {
                 if exportQuotes.isEmpty {
                     ContentUnavailableView {
-                        Label("No Quotes", systemImage: "quote.opening")
+                        Label("No Passages", systemImage: "quote.opening")
                     } description: {
-                        Text("Add quotes before exporting.")
+                        Text("Add passages before exporting.")
                     }
                 }
             }
@@ -162,7 +162,7 @@ struct ExportView: View {
         case .json:
             return "Structured export for automation or backups."
         case .notion:
-            return "Send quotes to a connected Notion database."
+            return "Send passages to a connected Notion database."
         case .obsidian:
             return "Markdown bundle optimized for Obsidian vaults."
         }

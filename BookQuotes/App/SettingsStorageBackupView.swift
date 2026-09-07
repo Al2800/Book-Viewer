@@ -56,7 +56,7 @@ struct StorageBackupView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This will remove unused capture images and temporary exports. Pending captures, drafts, quotes, and book covers will not be affected.")
+            Text("This will remove unused capture images and temporary exports. Pending captures, drafts, passages, and book covers will not be affected.")
         }
         .alert("Export", isPresented: $showExportResult) {
             if let url = exportURL {
@@ -107,12 +107,12 @@ struct StorageBackupView: View {
             Button {
                 showExportOptions = true
             } label: {
-                Label("Export Quotes", systemImage: "square.and.arrow.up")
+                Label("Export Passages", systemImage: "square.and.arrow.up")
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .glassButton()
 
-            Text("Share your saved quotes and their book details as JSON or Markdown.")
+            Text("Share your saved passages and their book details as JSON or Markdown.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

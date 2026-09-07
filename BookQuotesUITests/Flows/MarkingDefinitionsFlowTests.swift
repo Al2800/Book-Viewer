@@ -19,7 +19,7 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         logger.step(2, "Verifying lower Settings sections by scrolling")
         XCTAssertTrue(findTextByScrolling("Library View"), "Library view setting should be visible")
         XCTAssertTrue(findTextByScrolling("Haptic Feedback"), "Haptic feedback setting should be visible")
-        XCTAssertTrue(findTextByScrolling("Export Quotes"), "Export quotes row should be visible")
+        XCTAssertTrue(findTextByScrolling("Export Passages"), "Export passages row should be visible")
         XCTAssertTrue(findTextByScrolling("Storage & Export"), "Storage and export row should be visible")
         XCTAssertTrue(findTextByScrolling("About BookQuotes"), "About row should be visible")
         XCTAssertTrue(findElementByScrolling(app.buttons[AccessibilityIdentifiers.Settings.privacyPolicyButton]), "Privacy policy row should be visible")
@@ -121,7 +121,7 @@ final class MarkingDefinitionsFlowTests: BaseUITestCase {
         logger.step(2, "Verifying Export Quotes sheet")
         XCTAssertTrue(
             app.buttons[AccessibilityIdentifiers.Export.formatPicker].waitForExistence(timeout: 5) ||
-            app.staticTexts["No Quotes"].waitForExistence(timeout: 1),
+            app.staticTexts["No Passages"].waitForExistence(timeout: 1),
             "Export sheet should show export controls or the no-quotes empty state"
         )
 
@@ -357,7 +357,8 @@ final class AdaptiveSettingsLayoutTests: BaseUITestCase {
             .matching(identifier: AccessibilityIdentifiers.Settings.remoteAIProcessingToggle)
             .firstMatch
         XCTAssertTrue(remoteToggle.waitForExistence(timeout: 5), "Remote processing toggle should exist")
-        XCTAssertTrue(remoteToggle.isHittable, "Remote processing toggle should remain reachable")
+        XCTAssertTrue(scrollToHittable(AccessibilityIdentifiers.Settings.remoteAIProcessingToggle),
+                      "Remote processing toggle should remain reachable by scrolling")
         XCTAssertFalse(remoteToggle.isEnabled, "Activation should remain gated while signed out")
 
         tapBackButton()

@@ -25,7 +25,7 @@ struct SearchEmptyStateView: View {
             Text("Search your library")
                 .font(.headline)
 
-            Text("Find quotes and books by title, author, or content")
+            Text("Find passages and books by title, author, or content")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

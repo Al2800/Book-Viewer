@@ -425,14 +425,16 @@ final class UITestDataSeeder {
         isFavorite: Bool = false,
         confidence: Double? = nil
     ) -> Quote {
-        let quote = Quote(text: text, book: book, markingType: markingType)
-        // Override the auto-generated UUID with our deterministic one
+        let quote = Quote(text: text, markingType: markingType)
+        // Set identity before joining a managed relationship: assigning book
+        // can implicitly register the object with SwiftData.
         quote.id = id
         quote.pageNumber = pageNumber
         quote.marginNote = marginNote
         quote.isFavorite = isFavorite
         quote.confidence = confidence ?? 0.95
         modelContext.insert(quote)
+        quote.book = book
         return quote
     }
 

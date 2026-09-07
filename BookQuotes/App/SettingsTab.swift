@@ -163,7 +163,7 @@ struct SettingsView: View {
                     } label: {
                         SettingsRow(
                             icon: "square.and.arrow.up",
-                            title: "Export Quotes",
+                            title: "Export Passages",
                             subtitle: "Markdown, text, JSON, and more"
                         )
                     }
@@ -258,7 +258,7 @@ struct AIProcessingSettingsView: View {
                     SettingsToggleRow(
                         icon: "sparkles",
                         title: "Allow Remote AI Processing",
-                        subtitle: "Send marked-page images to the approved quote model",
+                        subtitle: "Send marked-page images to the approved extraction model",
                         isOn: consentBinding
                     )
                     .disabled(!canEnableRemoteAI)
@@ -268,7 +268,7 @@ struct AIProcessingSettingsView: View {
                 SectionCard(title: "Your Choice") {
                     Text(hasCurrentConsent
                          ? "Remote AI is the default for marked-page extraction. You can turn it off at any time; OCR will then run on your device."
-                         : "Remote processing is off. Quote capture will use on-device OCR, and books can still be added by ISBN or manual entry.")
+                         : "Remote processing is off. Passage capture will use on-device OCR, and books can still be added by ISBN or manual entry.")
                         .font(.subheadline)
                         .foregroundStyle(Color.textSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -325,7 +325,7 @@ struct AIProcessingSettingsView: View {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Label("Subscription required", systemImage: "sparkles")
                         .font(.uiLabel)
-                    Text("Choose a plan or restore an existing purchase to use AI-first quote extraction.")
+                    Text("Choose a plan or restore an existing purchase to use AI-first passage extraction.")
                         .font(.subheadline)
                         .foregroundStyle(Color.textSecondary)
 
@@ -404,7 +404,7 @@ struct AIProcessingConsentView: View {
                         .font(.serifHeadline)
                         .foregroundStyle(Color.textPrimary)
 
-                    Text("BookQuotes can use remote AI as the primary way to identify marked quotes. This is optional.")
+                    Text("BookQuotes can use remote AI as the primary way to identify marked passages. This is optional.")
                         .font(.body)
                         .foregroundStyle(Color.textSecondary)
 
@@ -420,7 +420,7 @@ struct AIProcessingConsentView: View {
 
                     disclosureSection(
                         title: "Your alternatives",
-                        text: "You can use on-device OCR for quote pages, scan books by ISBN, or add books and quotes manually. You can change this choice at any time in Settings."
+                        text: "You can use on-device OCR for marked pages, scan books by ISBN, or add books and passages manually. You can change this choice at any time in Settings."
                     )
 
                     Button("Allow Remote AI Processing") {

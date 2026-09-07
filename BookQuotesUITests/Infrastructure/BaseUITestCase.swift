@@ -162,6 +162,7 @@ class BaseUITestCase: XCTestCase {
     var defaultLaunchArguments: [String] {
         [
             "--uitesting",
+            "--product-experience-v2",
             "-AppleLanguages", "(en)",
             "-AppleLocale", "en_US"
         ]

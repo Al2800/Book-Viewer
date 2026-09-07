@@ -108,7 +108,7 @@ struct MarkingDefinitionsView: View {
                     .foregroundStyle(Color.textTertiary)
             }
         } footer: {
-            Text("The AI looks for these patterns when extracting quotes from your book photos.")
+            Text("The AI looks for these patterns when extracting passages from your book photos.")
                 .font(.caption)
                 .foregroundStyle(Color.textSecondary)
         }

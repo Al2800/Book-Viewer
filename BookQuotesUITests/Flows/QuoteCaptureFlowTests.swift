@@ -254,7 +254,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
         text.typeText(" Reader correction.")
-        app.navigationBars["Edit Quote"].buttons["Save"].tap()
+        app.navigationBars["Edit Passage"].buttons["Save"].tap()
 
         let compare = app.staticTexts["Compare with source"].firstMatch
         XCTAssertTrue(revealForInteraction(compare), "High confidence still requires comparison, not a verified badge")
@@ -418,9 +418,12 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         manual.tap()
         let editor = app.textViews.firstMatch
         XCTAssertTrue(editor.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["Add Passage"].buttons["Add"].isEnabled)
         editor.tap()
+        editor.typeText("  ")
+        XCTAssertFalse(app.navigationBars["Add Passage"].buttons["Add"].isEnabled)
         editor.typeText("Manually recovered from the second source page.")
-        app.navigationBars["Add Quote"].buttons["Add"].tap()
+        app.navigationBars["Add Passage"].buttons["Add"].tap()
         XCTAssertEqual(save.label, "Save 1 passage")
         let finish = app.buttons["capture_finish_failed_page_2"]
         XCTAssertTrue(revealForInteraction(finish))
@@ -471,7 +474,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
         text.typeText(" Restored correction.")
-        app.navigationBars["Edit Quote"].buttons["Save"].tap()
+        app.navigationBars["Edit Passage"].buttons["Save"].tap()
         let excluded = app.switches.matching(NSPredicate(format: "label CONTAINS %@", "Restored correction.")).firstMatch
         XCTAssertTrue(revealForInteraction(excluded))
         excluded.tap()
@@ -483,7 +486,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
         XCTAssertTrue(manualText.waitForExistence(timeout: 5))
         manualText.tap()
         manualText.typeText("Manual passage retained across relaunch.")
-        app.navigationBars["Add Quote"].buttons["Add"].tap()
+        app.navigationBars["Add Passage"].buttons["Add"].tap()
         let save = app.buttons[AccessibilityIdentifiers.Capture.saveToLibraryButton]
         XCTAssertTrue(save.waitForExistence(timeout: 5))
         XCTAssertEqual(save.label, "Save 2 passages")
@@ -759,7 +762,7 @@ final class QuoteCaptureFlowTests: BaseUITestCase {
 
     private func openCaptureFromBookDetail() {
         let captureQuotesButton = app.buttons[AccessibilityIdentifiers.BookDetail.captureQuotesButton]
-        let addQuoteButton = app.buttons["Add Quote"]
+        let addQuoteButton = app.buttons["Add Passage"]
         let captureLabelButton = app.buttons["Capture Quotes"]
 
         if captureQuotesButton.waitForExistence(timeout: 3) {
@@ -904,7 +907,7 @@ final class AdaptiveExtractionReviewLayoutTests: BaseUITestCase {
             if let editButton = visibleQuoteEditButton() {
                 editButton.tap()
                 XCTAssertTrue(
-                    app.navigationBars["Edit Quote"].waitForExistence(timeout: 5),
+                    app.navigationBars["Edit Passage"].waitForExistence(timeout: 5),
                     "Extracted quotes should remain editable"
                 )
                 return

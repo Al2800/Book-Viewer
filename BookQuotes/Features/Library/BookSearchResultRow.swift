@@ -35,7 +35,7 @@ struct BookSearchResultRow: View {
 
                 // Quote count
                 if let book = book {
-                    Text("\(book.quoteCount) quotes")
+                    Text("\(book.quoteCount) \(book.quoteCount == 1 ? "passage" : "passages")")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }

@@ -178,7 +178,7 @@ private struct CollectionSelectionRow: View {
                     Text(collection.name)
                         .foregroundStyle(.primary)
 
-                    Text("\(collection.quoteCount) quotes")
+                    Text("\(collection.quoteCount) \(collection.quoteCount == 1 ? "passage" : "passages")")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -233,7 +233,7 @@ struct BatchAddToCollectionSheet: View {
                     HStack {
                         Image(systemName: "quote.opening")
                             .foregroundStyle(Color.brand)
-                        Text("\(quotes.count) quote\(quotes.count == 1 ? "" : "s") selected")
+                        Text("\(quotes.count) passage\(quotes.count == 1 ? "" : "s") selected")
                             .foregroundStyle(.secondary)
                     }
                 }

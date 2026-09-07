@@ -160,7 +160,7 @@ private struct MissingSelectedBookView: View {
                         .font(.serifTitleLarge)
                         .foregroundStyle(.white)
 
-                    Text("Please choose an active book or scan a new one to start capturing quotes.")
+                    Text("Choose an active book or scan a new one to start capturing passages.")
                         .font(.subheadline)
                         .foregroundStyle(Color.white.opacity(0.75))
                         .multilineTextAlignment(.center)

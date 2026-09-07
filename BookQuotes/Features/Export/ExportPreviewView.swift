@@ -31,7 +31,7 @@ enum ExportPreviewBuilder {
         options: ExportOptions
     ) -> String {
         guard let sample = quotes.first else {
-            return "No quotes available for preview."
+            return "No passages available for preview."
         }
 
         switch format {
@@ -42,7 +42,7 @@ enum ExportPreviewBuilder {
         case .json:
             return jsonPreview(quote: sample, options: options)
         case .notion:
-            return "Notion export will send your quotes to a Notion database."
+            return "Notion export will send your passages to a Notion database."
         case .obsidian:
             return obsidianPreview(quote: sample, options: options)
         }

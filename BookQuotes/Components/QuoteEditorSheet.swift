@@ -12,42 +12,45 @@ struct QuoteEditorSheet: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: Spacing.md) {
-                QuoteEditorTextView(text: $text)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 260)
-                    .fieldChrome()
-                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteTextEditor)
+            ScrollView {
+                VStack(spacing: Spacing.md) {
+                    QuoteEditorTextView(text: $text)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 260)
+                        .fieldChrome()
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteTextEditor)
 
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text("Marking type")
-                        .font(.uiCaption)
-                        .foregroundStyle(Color.textSecondary)
+                    VStack(alignment: .leading, spacing: Spacing.xs) {
+                        Text("Marking type")
+                            .font(.uiCaption)
+                            .foregroundStyle(Color.textSecondary)
 
-                    Picker("Marking type", selection: $markingType) {
-                        ForEach(MarkingType.configurableCases) { type in
-                            Text(type.displayName).tag(type.rawValue)
+                        Picker("Marking type", selection: $markingType) {
+                            ForEach(MarkingType.configurableCases) { type in
+                                Text(type.displayName).tag(type.rawValue)
+                            }
                         }
+                        .pickerStyle(.menu)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(minHeight: 44)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteMarkingPicker)
                     }
-                    .pickerStyle(.menu)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .frame(minHeight: 44)
-                    .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteMarkingPicker)
-                }
 
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text("Margin note (optional)")
-                        .font(.uiCaption)
-                        .foregroundStyle(Color.textSecondary)
-                    TextField("Add a note…", text: $marginNote, axis: .vertical)
-                        .textFieldStyle(.plain)
-                        .fieldChrome(minHeight: 56)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteMarginNoteField)
+                    VStack(alignment: .leading, spacing: Spacing.xs) {
+                        Text("Margin note (optional)")
+                            .font(.uiCaption)
+                            .foregroundStyle(Color.textSecondary)
+                        TextField("Add a note…", text: $marginNote, axis: .vertical)
+                            .textFieldStyle(.plain)
+                            .fieldChrome(minHeight: 56)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.Capture.extractionQuoteMarginNoteField)
+                    }
                 }
+                .padding(Spacing.md)
             }
-            .padding(Spacing.md)
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.backgroundPrimary)
-            .navigationTitle("Edit Quote")
+            .navigationTitle("Edit Passage")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -86,7 +89,7 @@ private struct QuoteEditorTextView: UIViewRepresentable {
         textView.textContainerInset = .zero
         textView.textContainer.lineFragmentPadding = 0
         textView.accessibilityIdentifier = AccessibilityIdentifiers.Capture.extractionQuoteTextEditor
-        textView.accessibilityLabel = "Quote text"
+        textView.accessibilityLabel = "Passage text"
         textView.focusWhenAttached = { [weak coordinator = context.coordinator] textView in
             coordinator?.requestInitialFocus(for: textView)
         }

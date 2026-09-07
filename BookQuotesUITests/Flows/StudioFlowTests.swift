@@ -33,9 +33,9 @@ final class StudioFlowTests: BaseUITestCase {
             warmVellumButton.tap()
         }
 
-        logger.step(4, "Navigate back to Library tab")
+        logger.step(4, "Navigate back to Reading tab")
         _ = tapTab(.library, timeout: 5)
-        XCTAssertTrue(app.navigationBars["Library"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Reading"].waitForExistence(timeout: 5))
     }
 }
 
@@ -166,7 +166,7 @@ final class V2StudioFlowTests: BaseUITestCase {
 
         XCTAssertTrue(
             app.staticTexts[AccessibilityIdentifiers.Studio.rootTitle].waitForExistence(timeout: 5)
-                || app.staticTexts["Quote Card Studio"].waitForExistence(timeout: 2),
+                || app.staticTexts["Passage Card Studio"].waitForExistence(timeout: 2),
             "Studio tab should show the Studio title"
         )
 

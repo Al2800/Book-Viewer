@@ -86,13 +86,13 @@ struct DuplicateWarningSheet: View {
                 .font(.system(size: 48))
                 .foregroundStyle(isExactDuplicate ? Color.warning : Color.brand)
 
-            Text(isExactDuplicate ? "Exact Duplicate Found" : "Similar Quote Found")
+            Text(isExactDuplicate ? "Exact Duplicate Found" : "Similar Passage Found")
                 .font(.title2)
                 .fontWeight(.semibold)
 
             Text(isExactDuplicate
-                ? "This quote already exists in your library."
-                : "This quote is similar to one you've already saved.")
+                ? "This passage already exists in your library."
+                : "This passage is similar to one you've already saved.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -104,7 +104,7 @@ struct DuplicateWarningSheet: View {
 
     private var newQuotePreview: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            Label("New Quote", systemImage: "text.quote")
+            Label("New Passage", systemImage: "text.quote")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -122,7 +122,7 @@ struct DuplicateWarningSheet: View {
 
     private var duplicatesSection: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
-            Label("Existing \(duplicates.count == 1 ? "Quote" : "Quotes")", systemImage: "doc.text.magnifyingglass")
+            Label("Existing \(duplicates.count == 1 ? "Passage" : "Passages")", systemImage: "doc.text.magnifyingglass")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -317,13 +317,13 @@ private struct ExistingQuoteDetailSheet: View {
                     }
                 } else {
                     ContentUnavailableView(
-                        "Quote Not Found",
+                        "Passage Not Found",
                         systemImage: "doc.questionmark",
-                        description: Text("The original quote could not be loaded.")
+                        description: Text("The original passage could not be loaded.")
                     )
                 }
             }
-            .navigationTitle("Existing Quote")
+            .navigationTitle("Existing Passage")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

@@ -146,7 +146,7 @@ struct QuoteCardView: View {
                 HapticManager.light()
                 onCopy()
             } label: {
-                Label("Copy Quote", systemImage: "doc.on.doc")
+                Label("Copy Passage", systemImage: "doc.on.doc")
             }
         }
 
@@ -178,7 +178,7 @@ struct QuoteCardView: View {
                 HapticManager.warning()
                 onDelete?()
             } label: {
-                Label("Delete Quote", systemImage: "trash")
+                Label("Delete Passage", systemImage: "trash")
             }
         }
     }

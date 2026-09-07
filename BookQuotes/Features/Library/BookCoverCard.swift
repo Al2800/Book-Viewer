@@ -105,7 +105,7 @@ struct BookCoverCard: View {
     @ViewBuilder
     private var quoteCountLabel: some View {
         if book.hasQuotes {
-            Text("\(book.quoteCount) quotes")
+            Text("\(book.quoteCount) \(book.quoteCount == 1 ? "passage" : "passages")")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .contentTransition(.numericText())

@@ -190,7 +190,7 @@ struct BookContextMenuPreview: View {
                     .foregroundStyle(.secondary)
 
                 if book.hasQuotes {
-                    Text("\(book.quoteCount) quotes")
+                    Text("\(book.quoteCount) \(book.quoteCount == 1 ? "passage" : "passages")")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }

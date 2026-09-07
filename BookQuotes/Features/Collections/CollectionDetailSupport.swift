@@ -71,7 +71,7 @@ struct CollectionDetailHeaderSection: View {
                     }
 
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
-                        Text("\(collection.quotes.count) \(collection.quotes.count == 1 ? "quote" : "quotes")")
+                        Text("\(collection.quotes.count) \(collection.quotes.count == 1 ? "passage" : "passages")")
                             .font(.subheadline)
                             .foregroundStyle(.primary)
 
@@ -110,9 +110,9 @@ struct CollectionDetailEmptyState: View {
     var body: some View {
         EmptyStateView(
             icon: "quote.opening",
-            title: "No Quotes Yet",
-            message: "Add quotes to this collection from your library.",
-            action: ("Add Quotes", onAddQuotes)
+            title: "No Passages Yet",
+            message: "Add passages to this collection from your library.",
+            action: ("Add Passages", onAddQuotes)
         )
     }
 }
@@ -128,7 +128,7 @@ struct CollectionDetailToolbarMenu: ToolbarContent {
                 Button {
                     onAddQuotes()
                 } label: {
-                    Label("Add Quotes", systemImage: "plus")
+                    Label("Add Passages", systemImage: "plus")
                 }
 
                 Button {
@@ -180,9 +180,9 @@ struct AddQuotesToCollectionSheet: View {
                         }
                 }
                 .listStyle(.plain)
-                .searchable(text: $searchText, prompt: "Search quotes")
+                .searchable(text: $searchText, prompt: "Search passages")
             }
-            .navigationTitle("Add Quotes")
+            .navigationTitle("Add Passages")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

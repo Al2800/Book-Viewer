@@ -257,7 +257,7 @@ struct OnboardingCompletionStepView: View {
             Text("You're All Set!")
                 .font(.screenTitle)
 
-            Text("Start capturing quotes from your favorite books")
+            Text("Start capturing passages from your favorite books")
                 .font(.subheadline)
                 .foregroundStyle(Color.textSecondary)
                 .multilineTextAlignment(.center)
