@@ -168,6 +168,12 @@ search. The approved monthly and yearly subscriptions remain unchanged.
 
 ## Latest TestFlight Verification
 
+**2.0.0 (61)** was uploaded on 2026-09-08 as an internal candidate for user device testing. Apple reports `VALID`, `usesNonExemptEncryption: false` and `internalBuildState: IN_BETA_TESTING`. The internal Test v1 group has access to all builds. Build ID: `e08eba6c-db19-41f1-9073-8db48043dc01`.
+
+See [Build 61 evidence and device handoff](refactor-foundation/verification/2026-09-08-testflight-build-61.md). Four feature acceptance beads remain open; this is not public App Store submission or a claim that hardware gates passed. Xcode account-based upload failed; retry using the existing external API-key configuration succeeded. Do not expose credentials in logs or source control.
+
+## Build 45 Verification
+
 Build 45 was uploaded on 2026-07-17 and verified through Apple's build API:
 
 - App: `BookQuotes`
