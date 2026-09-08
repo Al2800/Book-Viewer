@@ -13,7 +13,7 @@ Local collection: `/Users/skyhub/Downloads/BookQuotes-Reel-Collection-2026-09-08
 - `render_collection.py`: explicit batch assembly recipe; uses FFmpeg no-overwrite mode.
 - `review/`: original probes/contact sheets, normalized segments, final review sheets, and isolated imageio-ffmpeg tooling.
 
-The media and local tooling are intentionally not added to Git. Preserve the delivery folder alongside the source MOVs. No original file was overwritten or deleted. Nothing was uploaded, scheduled or published. Posting approval is not inferred from production approval.
+The media and local tooling are intentionally not added to Git. Preserve the delivery folder alongside the source MOVs. No original file was overwritten or deleted. At production handoff nothing had been uploaded, scheduled or published. The separately authorised Creator Inbox delivery is recorded below; no public publishing was requested.
 
 ## Reference and treatment
 
@@ -53,3 +53,25 @@ Footage provenance is the user's supplied physical-book recordings; jacket owner
 Choose either a pairing or a broader themed collection for a given posting slot; these intentionally reuse books and should not all be posted back-to-back as unique footage. Add music and optionally native text in the platform editor, then preview the final result before posting.
 
 Environment: cm and UBS were unavailable on PATH; Agent Mail was not exposed. Remotion's bundled FFmpeg lacks the necessary video timing filters, so a full imageio-ffmpeg 0.6.0 binary was installed only inside this delivery folder. Its first limited-build render attempt failed before any video output was written; the successful render used the full binary. Unrelated `feedback_downloads/` remains untouched.
+
+## Authorised Creator Inbox delivery — 8 September 2026
+
+User subsequently requested: “can you sned them to my account with zernio poeklase”. Interpreted in the music-ready context as Creator Inbox delivery, not public posting. Confirmed this scope in the conversation before writes.
+
+Verified @bookquotes.app account ID `6a7e30f977555aae0187cea3`, active connection and healthy token. Read the complete account-filtered Zernio list (23 posts, one page) and found no matching collection captions or hashes. The policy gate allowed delivery. Zernio documents a five-pending-draft cap; only five were attempted, once each, sequentially.
+
+| Reel | Zernio post ID | Read-back outcome |
+|---|---|---|
+| 01-pair-quantum-physics | 6a9fef020ddf6ed410e52862 | Creator Inbox accepted |
+| 02-pair-talent-and-success | 6a9fef1e310280ffb33773fc | Creator Inbox accepted |
+| 03-pair-business-investigations | 6a9fef3fa64c547b75986f92 | Creator Inbox accepted |
+| 08-collection-money-risk-and-data | 6a9fef5ecef0cd41c36fb3d3 | Creator Inbox accepted |
+| 09-collection-the-physics-shelf | 6a9fefa8fce09d36bb272b40 | Creator Inbox accepted |
+
+Every write explicitly used root `tiktokSettings.draft: true` and the single bound TikTok target. Each GET read-back matched the caption and account, returned platform status `published` **with `platformSpecificData.isDraft: true` and no public URL**. Per Zernio's contract, that status means the inbox upload was accepted, NOT that a public video was published. Source/output hashes were checked before upload. No ambiguous requests were retried.
+
+Receipts: `zernio-inbox-receipts/` inside the local collection folder. Batch recipe: `send_inbox_batch.py`; its exclusive receipt-directory creation prevents accidental reruns. These remain local, not in Git.
+
+Remaining reels **04, 05, 06, 07, 10, 11, 12** have not been sent. Tracking: `book-quote-48u7`, blocked pending the user processing current inbox drafts. Do not automatically retry, delete drafts, or publish to clear slots. User should open TikTok as @bookquotes.app, look for the upload notifications in Inbox, add music and review caption/cover/privacy in the TikTok editor. Captions and covers on native inbox drafts may still require manual selection; Zernio read-back does not prove the final native editor retained them.
+
+Reference checked: https://docs.zernio.com/platforms/tiktok.mdx and https://docs.zernio.com/guides/platform-settings.mdx. Local UBS remains unavailable; delivery validation is from hash checks, account/duplicate preflight and per-item API read-back.
