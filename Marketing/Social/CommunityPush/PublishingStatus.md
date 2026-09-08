@@ -1,6 +1,38 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 7 September 2026, 19:26 Europe/London
+Updated: 8 September 2026, 08:00 Europe/London
+
+## Current operating loop
+
+- Facebook: seven direct Graph scheduled rows remain for 8-14 September at 13:00 Europe/London.
+  Today's first row is present with `is_published=false` and is not due until 13:00; the latest
+  verified Page publication remains 2 September.
+- Instagram: the connected `bookquotes.app` identity is verified, but the latest media remains the
+  1 September still and no newer media is exposed. The separate Instagram due path remains distinct
+  from this 09:00 Facebook audit.
+- TikTok: `@bookquotes.app` is active with analytics access, but the metadata reconciliation hold
+  remains active. The current token read says `expiring_soon` and `reconnect_required=true`; the
+  scheduled 09:05 reconnect job must complete before relying on a later TikTok publish.
+
+### Audit: 8 September 2026, 08:00 Europe/London
+
+- The direct Facebook `scheduled_posts` edge still returns seven rows, all with `is_published=false`.
+  The first is `122112699483415831`, scheduled for 8 September at 13:00 Europe/London. The latest
+  verified published Page item remains `122108483805415831` from 2 September. No Facebook retry or
+  duplicate was created because today's status is clear and its slot is still in the future.
+- Instagram identity and permissions remain verified. The latest media remains the 1 September
+  `bq14-14` still `18125822551699434`; no new Instagram media was exposed in the current 21-row
+  read. The separate Instagram due path is not this morning's Facebook publisher.
+- TikTok analytics synced at `2026-09-08T08:01:45Z`; the account remains active with 16 public rows,
+  3 followers and analytics access. The current token expires at `2026-09-08T10:12:40Z` and the
+  read reports `reconnect_required=true`. The latest public rows remain 2 September `7680815050273197334`
+  at 203 views / 1 like / 0 comments, 31 August `7680189027781299478` at 203 / 1 / 0, and 27
+  August `7678826123786063137` at 226 / 1 / 0. The first two read `#Zernio`; the third has an
+  empty caption, so the metadata hold remains active.
+- No comments or messages were exposed. No routine replies were made and no reply requires approval.
+- No new GrowthEvidence checkpoint was created: Facebook remains preflight-scheduled, Instagram has
+  no new media, and TikTok has no valid new creative result. The previous evidence record remains
+  authoritative until a status transition or a valid checkpoint occurs.
 
 ### Audit: 7 September 2026, 19:26 Europe/London
 

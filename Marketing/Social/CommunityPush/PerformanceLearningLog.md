@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 7 September 2026, 19:26 Europe/London
+Updated: 8 September 2026, 08:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,37 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 8 September 2026, 08:00 Europe/London
+
+**Platforms checked:** Meta identity, Facebook Page feed and direct scheduled-posts edge, Instagram
+media, TikTok account and Zernio inventory, token health, and the current operating runbooks.
+
+**Observation**
+
+- Facebook's recovered queue remains intact with seven rows scheduled for 8-14 September at 13:00
+  Europe/London. Today's row `122112699483415831` is present and clearly scheduled, not published,
+  at the 08:00 check. The latest verified Page publication remains 2 September. No retry or
+  duplicate was warranted.
+- Instagram remains connected and readable with 21 media rows. The latest is the 1 September still
+  `18125822551699434`; no newer media was exposed. The separate due path remains responsible for
+  any 13:00 Instagram publication.
+- TikTok synced at `2026-09-08T08:01:45Z`, with 16 public rows, 3 followers and analytics access.
+  The token expires at 10:12 Europe/London and the current read marks reconnection required. The
+  latest public rows still have `#Zernio` or an empty caption, so they remain excluded from creative
+  learning and the publishing hold remains active.
+- No comments or messages were exposed. App Store and install outcomes remain Not available in this
+  social audit.
+
+**Learning update**
+
+- Keep the Facebook queue unchanged and check the 13:00 publication before considering any retry.
+- Allow the scheduled 09:05 TikTok reconnect job to handle token renewal; do not publish while the
+  metadata hold is active.
+- Keep Instagram on its separate due path; no creative or timing conclusion is justified from the
+  delivery gap.
+- No hypothesis confidence changed. No new GrowthEvidence checkpoint was due because no item moved
+  state and no valid new creative measurement appeared.
 
 ### 7 September 2026, 19:26 Europe/London
 

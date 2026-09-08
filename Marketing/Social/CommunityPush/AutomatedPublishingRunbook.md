@@ -169,11 +169,13 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 7 September 2026, the Graph Page feed confirms `bq14-14` published on 2 September. A
-direct text-only recovery queue now has seven future Facebook rows for 8–14 September at 13:00
-Europe/London. The historical bank remains `bq14-01`–`bq14-14`; the recovery prompts are logged
-in `PublishingStatus.md` and are not being represented as new bank records. Instagram's latest
-verified media remains `bq14-14` on 1 September and is not verified as published by this audit.
+As of 8 September 2026, the direct Graph `scheduled_posts` read still shows seven future
+Facebook rows for 8-14 September at 13:00 Europe/London. Today's row is present and remains
+unpublished at the 08:00 audit, so no retry is warranted. The latest verified Page publication is
+`bq14-14` on 2 September. The historical bank remains `bq14-01`-`bq14-14`; the recovery prompts
+are logged in `PublishingStatus.md` and are not being represented as new bank records. Instagram's
+latest verified media remains `bq14-14` on 1 September and is not verified as published by this
+audit.
 TikTok remains held by the metadata reconciliation audit in `TikTokOperatingRunbook.md`; no new
 TikTok upload may occur until the intended caption, cover, audience and single attributable
 content ID are reconciled.

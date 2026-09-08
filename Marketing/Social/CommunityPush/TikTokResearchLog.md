@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 7 September 2026
+Updated: 8 September 2026
 
 ## Purpose
 
@@ -63,6 +63,37 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-08, 08:00 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 16
+  public rows and 3 followers. The latest sync is `2026-09-08T08:01:45Z`. The token expires at
+  `2026-09-08T10:12:40Z`; the current read reports `reconnect_required=true` and the 09:05
+  reconnect job remains the next operational step.
+- No new TikTok post was published or scheduled. The latest rows remain the 2 September and 31
+  August `#Zernio` entries and the 27 August empty-caption entry. The failed shelf-caption job
+  `6a9089ac6947ad1a8cdfc652` remains unresolved.
+- Keep the single-writer, duplicate, metadata and second-slot holds active. Do not advance a draft
+  until token health, intended metadata and a single attributable public content ID are all clear.
+
+**External signals**
+
+- No new UK Creative Center or reliable 15-20-post creator sample changed a brief in this run.
+  The official Trends and Creative Codes references already recorded remain the active source set.
+
+**Audience language and evidence**
+
+- No new comments, messages, searches or audience language were exposed.
+- No style catalogue or evidence-ledger entry changed. No new rights blocker was found.
+
+**Performance and queue**
+
+- No valid 24-hour, 72-hour or seven-day creative checkpoint is due. Existing `#Zernio` and empty
+  caption rows remain publishing-integrity observations and are excluded from creative comparison.
+- Queue status: research and quality work may continue, but no TikTok item may advance to scheduling
+  or publication while the hold remains active.
 
 ### 2026-09-07, 19:26 Europe/London
 
