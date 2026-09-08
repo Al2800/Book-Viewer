@@ -75,3 +75,28 @@ Receipts: `zernio-inbox-receipts/` inside the local collection folder. Batch rec
 Remaining reels **04, 05, 06, 07, 10, 11, 12** have not been sent. Tracking: `book-quote-48u7`, blocked pending the user processing current inbox drafts. Do not automatically retry, delete drafts, or publish to clear slots. User should open TikTok as @bookquotes.app, look for the upload notifications in Inbox, add music and review caption/cover/privacy in the TikTok editor. Captions and covers on native inbox drafts may still require manual selection; Zernio read-back does not prove the final native editor retained them.
 
 Reference checked: https://docs.zernio.com/platforms/tiktok.mdx and https://docs.zernio.com/guides/platform-settings.mdx. Local UBS remains unavailable; delivery validation is from hash checks, account/duplicate preflight and per-item API read-back.
+
+## Batch 02 and Instagram handoff — evening 8 September 2026
+
+User requested more edits from existing footage, with new filming planned tomorrow, then added Instagram as a destination. Production completed under `book-quote-fv6d`. Instagram delivery is tracked separately under `book-quote-7dh3`: clarify native/manual draft workflow versus scheduling/publication after music selection. Do not infer approval to publish silent videos.
+
+Local batch: `/Users/skyhub/Downloads/BookQuotes-Reel-Collection-2026-09-08/batch-02/`. Contains eight MP4s in `reels/`, optional stills in `covers/`, a dual-platform `POSTING-GUIDE.md`, source/output hash manifest `collection.json`, `prepare_batch.py`, and visual review sheets. The recipe imports the original renderer rather than copying or modifying it.
+
+| File stem | Duration | Sources / grouping |
+|---|---:|---|
+| 13-pair-health-and-business | 5s | 8904, 9441 / Empire of Pain + Bad Blood |
+| 14-pair-chips-and-amazon | 5s | 8910, 9437 / Chip War + The Everything Store |
+| 15-pair-maths-and-statistics | 5s | 8912, 9435 / How Not to Be Wrong + The Art of Statistics |
+| 16-pair-risk-and-responsibility | 5s | 8909, 9430 / Against the Gods + Skin in the Game |
+| 17-collection-thinking-in-numbers | 7.5s | 9435, 8911, 8912 / statistics, calculus, everyday maths |
+| 18-pair-codes-and-calculus | 5s | 8913, 8911 / The Code Book + Infinite Powers |
+| 19-collection-leadership-and-public-service | 7.5s | 8906, 9433, 9424 / Truman + The Fifth Risk + The Premonition |
+| 20-collection-chance-and-consequences | 7.5s | 8914, 9430, 8909 / Randomness + Skin in the Game + Against the Gods |
+
+Eight usable older MOVs were identified from a ten-file IMG_89xx batch. Excluded 8907 (0.27-second American Prometheus shot) and 8908 (motion-obscured jacket). No identical book sets against the first 12 reels or four earlier posted pairs; shared books and some shared pairs within larger collections are intentional, not new footage. Space related edits apart.
+
+All eight outputs passed full decode, expected-duration, one-video/no-audio, 1080×1920, 30fps and yuv420p assertions. Every output shot was sampled in final visual review sheets. Verified source hashes unchanged. No extra overlays, watermark, music or additional crop. Original jacket-edge clipping remains visible where present in source footage.
+
+Read-only Meta identity check confirmed Instagram @bookquotes.app, ID `17841434821362428`, linked to the bound Facebook Page with publishing permission. No Instagram or additional TikTok write was made. `INSTAGRAM-GUIDE.md` in the parent collection folder now supplies Instagram-specific captions and local paths for **all 20 reels**. A Zernio draft is not a native Instagram app draft; manual import into the Instagram editor remains the clear path for adding music and saving a native draft. API music capabilities require separate account/rights checks if later requested.
+
+Tomorrow's filming guidance is in the batch posting guide: portrait, 6–8 seconds per book, whole jacket visible with margin, steady soft light, a still second at each end, two takes, and some shelf/two-book movement shots. Capture new genre groups rather than repeatedly expanding the same combinations. No source or existing output was deleted or overwritten. Local batch files remain outside Git; UBS and cm were unavailable.
