@@ -108,7 +108,12 @@ struct ExtractionReviewPassagesToolbar: ToolbarContent {
                 }
 
             }
-            .buttonStyle(.primaryCompact)
+            // Let the toolbar own its shape/material instead of nesting our
+            // custom filled rectangle inside iOS 26's native glass button.
+            .buttonStyle(.borderedProminent)
+            .tint(Color.brand)
+            .foregroundStyle(.white)
+            .font(.uiLabel)
             .disabled(!canSave)
             .accessibilityLabel(isSaving ? "Saving passages" : "Save \(passageCount) \(passageCount == 1 ? "passage" : "passages")")
             .accessibilityIdentifier(AccessibilityIdentifiers.Capture.saveToLibraryButton)

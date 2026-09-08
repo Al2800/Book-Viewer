@@ -5,7 +5,7 @@ import UIKit
 
 final class QuoteCaptureImageProcessorTests: XCTestCase {
 
-    func testQuotePageProcessingKeepsFullFrameBeforeDocumentPreparationAndAnalysis() async throws {
+    func testQuotePageProcessingNeverAutoCropsAndAnalyzesTheOriginalFrame() async throws {
         let sourceImage = makeImage(color: .white)
         let documentPreparedImage = makeImage(color: .green)
         let expectedQuality = makeQualityResult(isAcceptable: true)
@@ -35,9 +35,10 @@ final class QuoteCaptureImageProcessorTests: XCTestCase {
         )
 
         XCTAssertEqual(cropCallCount, 0)
-        XCTAssertTrue(autoCropInput === sourceImage)
-        XCTAssertTrue(qualityInput === documentPreparedImage)
-        XCTAssertTrue(result.image === documentPreparedImage)
+        XCTAssertNil(autoCropInput, "Quote capture must not silently replace the framed page with a detected rectangle")
+        XCTAssertTrue(qualityInput === sourceImage)
+        XCTAssertTrue(result.image === sourceImage)
+        XCTAssertEqual(result.image.pngData(), sourceImage.pngData())
         XCTAssertEqual(result.qualityResult?.overallScore, expectedQuality.overallScore)
         XCTAssertNil(result.qualityError)
     }
@@ -109,7 +110,7 @@ final class QuoteCaptureImageProcessorTests: XCTestCase {
         XCTAssertTrue(autoCropInput === sourceImage)
     }
 
-    func testProcessingKeepsPreparedImageWhenQualityAnalysisFails() async {
+    func testQuoteProcessingKeepsOriginalFrameWhenQualityAnalysisFails() async {
         struct ExpectedQualityFailure: Error {}
 
         let sourceImage = makeImage(color: .white)
@@ -126,9 +127,28 @@ final class QuoteCaptureImageProcessorTests: XCTestCase {
             framingProfile: .quotePage
         )
 
-        XCTAssertTrue(result.image === documentPreparedImage)
+        XCTAssertTrue(result.image === sourceImage)
+        XCTAssertEqual(result.image.pngData(), sourceImage.pngData())
         XCTAssertNil(result.qualityResult)
         XCTAssertNotNil(result.qualityError)
+    }
+
+    func testQuoteFramePreservesOrientationAndScaleWithoutPreviewGeometry() async throws {
+        let pixels = try XCTUnwrap(makeImage(color: .blue).cgImage)
+        let source = UIImage(cgImage: pixels, scale: 2, orientation: .right)
+        let processor = QuoteCaptureImageProcessor(
+            autoCropDocument: { image in
+                XCTFail("Document detection must not alter a quote source")
+                return image
+            },
+            analyzeQuality: { _ in self.makeQualityResult(isAcceptable: true) }
+        )
+
+        let result = await processor.process(source, previewSize: nil, framingProfile: .quotePage)
+        XCTAssertTrue(result.image === source)
+        XCTAssertEqual(result.image.imageOrientation, .right)
+        XCTAssertEqual(result.image.scale, 2)
+        XCTAssertEqual(result.image.size, source.size)
     }
 
     private func makeImage(color: UIColor) -> UIImage {

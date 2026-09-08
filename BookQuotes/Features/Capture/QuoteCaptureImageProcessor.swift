@@ -36,7 +36,15 @@ struct QuoteCaptureImageProcessor {
             prepared = (try? cropToVisibleArea(prepared, previewSize)) ?? prepared
         }
 
-        let documentPrepared = await autoCropDocument(prepared)
+        // A detected rectangle can be a text block rather than the page. Preserve
+        // the quote camera's full frame, including marginalia, as the source image.
+        let documentPrepared: UIImage
+        switch framingProfile {
+        case .quotePage:
+            documentPrepared = prepared
+        case .cover:
+            documentPrepared = await autoCropDocument(prepared)
+        }
         do {
             let qualityResult = try await analyzeQuality(documentPrepared)
             return Result(

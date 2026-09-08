@@ -150,11 +150,13 @@ BUILD_NUMBER=<build> node scripts/appstoreconnect_status.js --set-encryption-fal
 
 ## Current Production State
 
-Last verified production Worker deploy:
+Production deployment metadata rechecked on 2026-09-08:
 
 ```text
-Version ID: 68c35e56-9836-42f4-aa0f-0a79439d6290
+Version ID: ae5a598e-98e8-47c9-b48a-23d652aa697d (deployed 2026-07-17)
 Route: api.bookquotes.uk/*
-HF_API_TOKEN: configured as a Cloudflare production secret
-HF_MODEL_ID: configured as Qwen/Qwen2.5-VL-72B-Instruct:preferred
+HF_API_TOKEN: configured as a Cloudflare production secret (value not readable)
+HF_MODEL_ID: Qwen/Qwen2.5-VL-72B-Instruct:featherless-ai
 ```
+
+Incident `book-quote-cbjb`: a subscribed Build 61 tester reports failed-page processing. `/health` returned HTTP 200 and Hugging Face's model/provider mapping listed Featherless as live; neither is an end-to-end extraction check. A direct synthetic text-only inference using the existing **local cached** Hugging Face token returned HTTP 401, `OAuth token signature verification failed`. This does not establish that the deployed secret has the same value or that the tester's subscription was rejected. A bounded production log observation connected but saw no requests; correlate a user Retry AI and the displayed page error before changing credentials or diagnosing entitlement state. Do not rotate the production secret to the known-failing local token, expose tokens in chat/logs, bypass subscriptions or switch providers to work around this failure.
