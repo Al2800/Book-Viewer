@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 8 September 2026
+Updated: 9 September 2026
 
 ## Method
 
@@ -47,6 +47,17 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 9 September 2026, 08:01 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7683146385834708246` | Metadata/evidence audit | Initial audit | 697 views, 6 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Caption is ordinary rather than `#Zernio`, but no Carlo Rovelli source or current ledger entry is present; exclude from creative comparison. |
+| `7683196200740244758` | Metadata/evidence audit | Initial audit | 237 views, 1 like, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Caption is ordinary and the topic matches a local Outliers footage brief, but native cover, audio and audience metadata are not read back; exclude from creative comparison. |
+
+These are public-row audits, not new experiment executions. The 24-hour checkpoints are not yet due,
+no confidence or result label changed, and the single-writer, duplicate, metadata and second-slot
+holds remain active. The token reconnect is due before the next publishing decision.
 
 ### 8 September 2026, 08:00 Europe/London
 

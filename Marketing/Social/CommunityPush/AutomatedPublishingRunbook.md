@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 7 September 2026
+Updated: 9 September 2026
 
 ## Purpose
 
@@ -169,13 +169,16 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 8 September 2026, the direct Graph `scheduled_posts` read still shows seven future
-Facebook rows for 8-14 September at 13:00 Europe/London. Today's row is present and remains
-unpublished at the 08:00 audit, so no retry is warranted. The latest verified Page publication is
-`bq14-14` on 2 September. The historical bank remains `bq14-01`-`bq14-14`; the recovery prompts
-are logged in `PublishingStatus.md` and are not being represented as new bank records. Instagram's
-latest verified media remains `bq14-14` on 1 September and is not verified as published by this
-audit.
-TikTok remains held by the metadata reconciliation audit in `TikTokOperatingRunbook.md`; no new
-TikTok upload may occur until the intended caption, cover, audience and single attributable
-content ID are reconciled.
+As of 9 September 2026, the direct Graph Page feed confirms that the first recovery prompt
+published once on 8 September at 13:00 Europe/London as
+`122112699483415831` (`https://www.facebook.com/122107379391415831/posts/122112699483415831`).
+The direct Graph `scheduled_posts` read now shows seven future Facebook rows for 9-15 September
+at 13:00 Europe/London; the 15 September row was added after the first row moved to Published.
+Facebook post-level insights still reject the requested metric set with HTTP 400, so metrics stay
+Not available rather than zero. Instagram's latest verified media remains
+`18125822551699434` on 1 September and no newer media is exposed by this audit.
+TikTok now has two additional public rows from 8 September, but the metadata reconciliation hold
+remains active: `Outliers` matches a local September footage brief, while the Carlo Rovelli row has
+no matching current ledger or source record. No new TikTok upload may occur until both rows and the
+single-writer path have their intended caption, cover, audience, rights basis and attributable
+content ID reconciled. The token is expiring at 09:09 Europe/London and requires the reconnect job.

@@ -1,18 +1,45 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 8 September 2026, 08:00 Europe/London
+Updated: 9 September 2026, 08:00 Europe/London
 
 ## Current operating loop
 
-- Facebook: seven direct Graph scheduled rows remain for 8-14 September at 13:00 Europe/London.
-  Today's first row is present with `is_published=false` and is not due until 13:00; the latest
-  verified Page publication remains 2 September.
+- Facebook: the 8 September recovery prompt published once at 13:00 Europe/London as
+  `122112699483415831`. Seven direct Graph scheduled rows now remain for 9-15 September at 13:00
+  Europe/London; the added 15 September row is `122112925131415831`.
 - Instagram: the connected `bookquotes.app` identity is verified, but the latest media remains the
   1 September still and no newer media is exposed. The separate Instagram due path remains distinct
   from this 09:00 Facebook audit.
-- TikTok: `@bookquotes.app` is active with analytics access, but the metadata reconciliation hold
-  remains active. The current token read says `expiring_soon` and `reconnect_required=true`; the
-  scheduled 09:05 reconnect job must complete before relying on a later TikTok publish.
+- TikTok: `@bookquotes.app` is active with analytics access and now has 18 public rows, 4 followers
+  and no failed-post records. Two new 8 September rows are visible: `7683146385834708246` at
+  697 views / 6 likes / 0 comments (Carlo Rovelli caption) and `7683196200740244758` at 237 / 1 / 0
+  (Outliers caption). The metadata reconciliation hold remains active because the first has no
+  current ledger/source record and the second has not had native cover, audio or audience metadata
+  read back. The token expires at `2026-09-09T09:09:02.813Z`; the reconnect path is due.
+
+### Audit: 9 September 2026, 08:01 Europe/London
+
+- The Facebook Page feed confirms the first recovery prompt published once. ID
+  `122112699483415831` has `is_published=true`, was created at `2026-09-08T12:00:24+0000`, and
+  is live at `https://www.facebook.com/122107379391415831/posts/122112699483415831`. The direct
+  scheduled-post read now contains seven future rows for 9-15 September at 13:00 Europe/London;
+  the newly added 15 September row is `122112925131415831`. The requested Page insights metrics
+  still return HTTP 400 (`The value must be a valid insights metric`), so views, reach, clicks,
+  comments and shares remain Not available.
+- Instagram remains connected and readable with 21 media rows. The latest media is still the
+  1 September `bq14-14` still `18125822551699434`; the latest Reel remains the 25 August pairing
+  Reel `17972676695932383` at 14 views / 15 reach / 0 interactions. No newer Instagram media was
+  exposed, and no Instagram write was made by this job.
+- TikTok read-back now reports active `@bookquotes.app`, analytics access, sync at
+  `2026-09-09T07:28:24.190Z`, 18 public rows, 4 followers, no failed posts and a token expiring at
+  `2026-09-09T09:09:02.813Z`. The 8 September public rows are `7683146385834708246` at 697 views /
+  6 likes / 0 comments with caption `The incredible Carlo Rovelli books`, and
+  `7683196200740244758` at 237 / 1 / 0 with caption `Those that are Outliers`.
+  `Outliers` has a corresponding local September physical-book footage brief, but native cover,
+  audio and audience details were not read back. Carlo Rovelli has no matching current project
+  evidence-ledger or source entry. These are publishing-integrity observations, not clean creative
+  experiments; keep the single-writer, duplicate, metadata and second-slot holds active.
+- No comments or messages were exposed. No routine replies were made and no reply requires approval.
 
 ### Audit: 8 September 2026, 08:00 Europe/London
 

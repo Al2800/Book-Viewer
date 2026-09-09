@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 8 September 2026, 08:00 Europe/London
+Updated: 9 September 2026, 08:01 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,43 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 9 September 2026, 08:01 Europe/London
+
+**Platforms checked:** Meta identity, Facebook Page feed and direct scheduled-posts edge, Instagram
+media, TikTok account and Zernio inventory, token health, and the current publishing runbooks.
+
+**Observation**
+
+- Facebook's first recovery prompt published once: ID `122112699483415831`, live at
+  `https://www.facebook.com/122107379391415831/posts/122112699483415831`, created at 13:00:24
+  Europe/London on 8 September. The direct scheduled-post read now contains seven future rows for
+  9-15 September at 13:00; the 15 September extension is `122112925131415831`. The Page insights
+  request still returns HTTP 400 for the requested metric set, so post-level views, reach, clicks,
+  comments and shares are Not available rather than zero.
+- Instagram remains at 21 readable media rows, with the 1 September still
+  `18125822551699434` as the latest media and the 25 August Reel `17972676695932383` at 14 views /
+  15 reach / 0 interactions. No newer media was exposed and no Instagram write occurred in this
+  run.
+- TikTok now reports 18 public rows, 4 followers, analytics access, sync at
+  `2026-09-09T07:28:24.190Z` and no failed-post records. Two new 8 September rows are visible:
+  `7683146385834708246` (`The incredible Carlo Rovelli books`) at 697 views / 6 likes / 0 comments,
+  and `7683196200740244758` (`Those that are Outliers`) at 237 / 1 / 0. The token is expiring at
+  09:09 Europe/London. The Outliers topic matches a local September footage brief; the Carlo
+  Rovelli item has no matching current evidence-ledger/source record.
+- No comments or messages were exposed. App Store and install outcomes remain Not available in
+  this social audit.
+
+**Learning update**
+
+- Treat Facebook's 8 September transition as a successful delivery check and keep the seven-row
+  9-15 September queue. Do not retry or duplicate the published prompt. Continue to report Page
+  insights as unavailable until the Graph metric request is corrected.
+- Treat the two TikTok rows as publishing-integrity audits, not creative results. Ordinary captions
+  are a better signal than the earlier `#Zernio` fallback, but the Carlo Rovelli evidence/rights
+  basis and the Outliers native metadata are not verified. Keep TikTok uploads and the second daily
+  slot paused; let the 09:05 reconnect path renew the expiring token.
+- No hypothesis confidence changed. No routine replies were made.
 
 ### 8 September 2026, 08:00 Europe/London
 

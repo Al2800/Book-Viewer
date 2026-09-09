@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 7 September 2026
+Updated: 9 September 2026
 
 ## Purpose
 
@@ -137,6 +137,23 @@ partnerships, rights-uncertain material and sensitive community responses remain
 - Keep the single-writer, duplicate, metadata and second-slot holds active. Do not upload, schedule,
   edit, delete or re-upload another TikTok copy automatically. The general routine authority above
   is superseded by this active hold.
+
+### Metadata reconciliation audit: 9 September 2026, 08:01 Europe/London
+
+- The account is active as `@bookquotes.app` with analytics access, 18 public rows, 4 followers and
+  a latest analytics sync at `2026-09-09T07:28:24.190Z`. The failed-post list is empty, but the
+  token expires at `2026-09-09T09:09:02.813Z`; the reconnect path remains due.
+- Two new public rows from 8 September are now visible: `7683146385834708246` at 697 views / 6
+  likes / 0 comments with caption `The incredible Carlo Rovelli books`, and
+  `7683196200740244758` at 237 / 1 / 0 with caption `Those that are Outliers`.
+- The Outliers row has a corresponding local September physical-book footage brief, but native
+  cover, audio and audience metadata were not read back. Carlo Rovelli has no matching current
+  project source or Evidence Ledger entry, so its recommendation and rights basis are not verified.
+  The rows are publishing-integrity observations only and must not be scored as clean creative
+  executions.
+- The ordinary captions are a healthier signal than `#Zernio` or an empty caption, but they do not
+  clear the single-writer, duplicate or metadata hold. Do not upload, schedule, edit, delete or
+  re-upload another TikTok copy automatically. The second daily slot remains disabled.
 
 ### Audit: 20 August 2026, 09:04 Europe/London
 

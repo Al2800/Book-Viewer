@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 8 September 2026
+Updated: 9 September 2026
 
 ## Purpose
 
@@ -63,6 +63,75 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-09, 08:01 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 18
+  public rows and 4 followers. The latest sync is `2026-09-09T07:28:24.190Z`; the token expires at
+  `2026-09-09T09:09:02.813Z` and the reconnect path is due.
+- Two new public rows were read from 8 September. `7683146385834708246` was created at
+  `2026-09-08T12:52:05Z` with caption `The incredible Carlo Rovelli books`, 697 views, 6 likes
+  and 0 comments. `7683196200740244758` was created at `2026-09-08T16:05:23Z` with caption
+  `Those that are Outliers`, 237 views, 1 like and 0 comments. The failed-post list is empty.
+- The ordinary captions are a positive publishing-integrity signal compared with the earlier
+  `#Zernio` and empty-caption rows, but no further TikTok item may be uploaded, scheduled, edited,
+  deleted or re-uploaded automatically while the hold remains active.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| September footage match | `SeptemberFootageReels.md` | The local slate includes Outliers in the talent-and-success pair and the Malcolm Gladwell collection. | This supports an asset/brief match, not a native metadata or rights read-back. | Medium | Reconcile the public row's native cover, audio, audience and source before treating it as a clean execution. |
+| Carlo Rovelli row | Public TikTok read-back | The caption and metrics are visible, but no Carlo Rovelli source or current Evidence Ledger entry was found in the repository. | Do not imply a verified recommendation or clear rights basis from the public row alone. | Short | Keep it out of creative scoring until the title, author, source, rights basis and intended brief are recorded. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: ordinary captions may indicate a healthier writer path than the earlier
+  fallback metadata, but two rows are insufficient and their native packaging is not reconciled.
+- Elements explicitly excluded from imitation: `#Zernio` fallback metadata, empty captions,
+  duplicate uploads and any attempt to manufacture a second daily slot while attribution is
+  unresolved.
+
+**Audience language**
+
+- Comments, searches or questions: no new attributable comments, messages or search language
+  exposed.
+- Potential reader-need hooks: unchanged; use-condition, reader-fit and five-slide tension hooks
+  remain queued but cannot advance during the hold.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none. The Outliers match is recorded only as a brief reference;
+  the Carlo Rovelli row is not yet evidence-ledger-backed.
+- Blockers: token reconnect is due; native cover, audio and audience metadata are not read back for
+  the new rows; Carlo Rovelli source/rights/brief evidence is missing; the single-writer hold remains.
+
+**Performance**
+
+- 24-hour checkpoints: not yet due at this audit. Visible read-back is 697 views / 6 likes / 0
+  comments for the Carlo Rovelli row and 237 / 1 / 0 for Outliers.
+- 72-hour and seven-day checkpoints: not due.
+- Missing measures: reach, watch time, completion, saves, shares, profile visits, follows, search
+  terms and link taps remain Not available on this path.
+
+**Learning**
+
+- Experiment updates: record both rows as metadata/evidence audits and exclude them from clean
+  creative comparisons.
+- Confidence changes: none.
+- Repeat: ordinary, reader-specific captions once the writer path is verified.
+- Modify: reconcile native cover, audio, audience, rights and content-ID read-back before resuming.
+- Pause: automatic TikTok publishing and the second daily slot.
+
+**Queue**
+
+- Approved: none for automatic TikTok publication while the hold remains.
+- In production: research and quality work only.
+- Awaiting evidence or review: Outliers native metadata and Carlo Rovelli source/rights/brief.
+- Requires user approval: any recovery action that changes or republishes a public TikTok row.
 
 ### 2026-09-08, 08:00 Europe/London
 
