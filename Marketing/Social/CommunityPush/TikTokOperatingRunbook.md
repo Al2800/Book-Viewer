@@ -155,6 +155,28 @@ partnerships, rights-uncertain material and sensitive community responses remain
   clear the single-writer, duplicate or metadata hold. Do not upload, schedule, edit, delete or
   re-upload another TikTok copy automatically. The second daily slot remains disabled.
 
+### Metadata reconciliation audit: 10 September 2026, 08:05 Europe/London
+
+- The account is active as `@bookquotes.app` with 21 public rows, 6 followers and analytics access.
+  The latest sync is `2026-09-10T08:56:10.286Z`; token health is `ok` through
+  `2026-09-11T08:56:09.515Z`; the failed-post list is empty.
+- Three additional public rows from 9 September are visible: `7683456621573328150` (`BAD BLOOD`)
+  at 246 views / 1 like / 0 comments, `7683457013363281174` with an empty caption at 677 / 4 / 2,
+  and `7683552415836163350` (`SPACE`) at 234 / 2 / 0. The 8 September rows have reached their
+  24-hour read: Carlo Rovelli `7683146385834708246` at 697 / 6 / 0 and Outliers
+  `7683196200740244758` at 237 / 1 / 0.
+- `BAD BLOOD` matches a local physical-footage label, but native metadata and evidence are not
+  reconciled. `SPACE` has no matching current evidence record. Carlo Rovelli has no current source
+  or Evidence Ledger entry. The empty-caption row has two comments, but their text is not exposed.
+- Official [TikTok Next 2026](https://ads.tiktok.com/business/en-GB/next?level=0&redirected=1&tt4b_lang_redirect=1)
+  research supports a hypothesis around grounded reader situations, curiosity/search detours and
+  substantive comment follow-ups. It is a platform forecast, not BookQuotes account evidence;
+  `EXT-012` records it in the style catalogue without a performance claim.
+- The single-writer, duplicate, metadata and second-slot holds remain active. Do not upload, edit,
+  delete, re-upload or schedule another TikTok copy automatically until the intended caption, cover,
+  audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
+  label changed.
+
 ### Audit: 20 August 2026, 09:04 Europe/London
 
 - Zernio now reports active `@bookquotes.app`, analytics access true, latest sync at

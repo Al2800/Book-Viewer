@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 9 September 2026, 08:01 Europe/London
+Updated: 10 September 2026, 08:05 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,49 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 10 September 2026, 08:05 Europe/London
+
+**Platforms checked:** Meta identity, Facebook Page feed and direct scheduled-posts edge, Instagram
+media, TikTok account and Zernio inventory, token health, official TikTok Next 2026 signal and the
+current publishing runbooks.
+
+**Observation**
+
+- Facebook's 9 September reader prompt published once at
+  `https://www.facebook.com/122107379391415831/posts/122112699507415831`, at 13:00 Europe/London.
+  The direct scheduled-post read now contains seven future rows for 10-16 September at 13:00; the
+  new 16 September row is `122113080813415831`. The Page insights request still returns HTTP 400
+  (`The value must be a valid insights metric`), so post-level views, reach, clicks, comments and
+  shares are Not available rather than zero.
+- Instagram's connected `bookquotes.app` identity remains verified. The current read exposes 19
+  media rows with latest timestamp 30 August (`18102461696608755`), conflicting with the earlier
+  21-row read whose latest was the 1 September still `18125822551699434`. No deletion or Instagram
+  write was observed; this is a read-surface discrepancy, not evidence of a new publication.
+- TikTok read-back reports active `@bookquotes.app`, analytics access, sync at
+  `2026-09-10T08:56:10.286Z`, 21 public rows, 6 followers, no failed-post records and token health
+  through `2026-09-11T08:56:09.515Z`. Three new 9 September rows are visible: `BAD BLOOD` at
+  246 views / 1 like / 0 comments, an empty-caption row at 677 / 4 / 2, and `SPACE` at 234 / 2 / 0.
+  The 8 September rows are now at 24 hours: Carlo Rovelli 697 / 6 / 0 and Outliers 237 / 1 / 0.
+  Reach, watch completion, saves, shares, profile visits, follows and link taps remain Not
+  available on this read; the two comments on the empty-caption row are not exposed as text.
+- No comments or messages were exposed as readable text. App Store and install outcomes remain Not
+  available in this social audit.
+
+**Learning update**
+
+- Treat the 9 September Facebook publication as a successful delivery check and keep the seven-row
+  10-16 September queue. Do not retry or duplicate the published prompt.
+- Treat all five TikTok rows read across 8-9 September as publishing-integrity observations, not
+  clean creative results. Outliers matches a local footage brief but lacks a complete native
+  metadata read; Carlo Rovelli has no current source or Evidence Ledger entry; `BAD BLOOD` and
+  `SPACE` have no reconciled current brief/evidence; and the empty-caption row lacks a source/rights
+  basis. Keep automatic TikTok publishing and the second daily slot paused until the single-writer,
+  duplicate, metadata and evidence holds are cleared.
+- Official TikTok Next 2026 research supports a hypothesis around grounded reader situations,
+  curiosity/search detours and substantive comment follow-ups. It is a platform forecast, not
+  BookQuotes account evidence; it was added as `EXT-012` with no confidence change.
+- No routine replies were made. No hypothesis confidence or result label changed.
 
 ### 9 September 2026, 08:01 Europe/London
 

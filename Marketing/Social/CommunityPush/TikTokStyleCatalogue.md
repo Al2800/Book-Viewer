@@ -1,6 +1,6 @@
 # BookQuotes TikTok Style Catalogue
 
-Updated: 28 July 2026
+Updated: 10 September 2026
 
 ## Purpose
 
@@ -177,6 +177,7 @@ Add external examples only after direct inspection.
 | EXT-009 | `@samfallingbooks` and `@whatbritreads` | 30 Jul 2026 | Clear editorial recommendation with useful watchability | Spoken proposition, then book-specific explanation | Long-form recommendation/list with an original creator sound | Owned spoken sound; captions and book visuals do the work | Recent examples have visible likes, favourites and shares without trend music | Use BookQuotes-owned voice plus captions for reader routes; use music only as ambience for visual rituals | Voice, personal reading claims, recommendations, sound, wording or visual identity |
 | EXT-010 | `@harpercollinsuk` | 30 Jul 2026 | Promotional book discovery | Sales-led proposition | Short promotional post | Account-owned original sound | Recent early post has only two visible likes, showing sound alone does not rescue commercial packaging | Do not confuse an audio choice with the reader value and distribution conditions required for reach | Promotional wording, reviews, sales urgency, publisher assets or account authority |
 | EXT-011 | 11 BookTok accounts sampled from the live `booktok` search | 4 Aug 2026 | Immediate reader fit, belonging and browsing help | Direct question, named stack, current-read prompt or specific reader situation | Short native video, slideshow or creator-led explanation with a concise caption | Creator-owned voice, natural book handling and occasional humour; trend audio is secondary | Sample was descriptive rather than a controlled performance comparison; some cards exposed top-liked labels or large-account reach | Lead with a precise reader need and give one useful answer before inviting a real response | Creator wording, identity, artwork, audio, reading claims or distinctive execution |
+| EXT-012 | [TikTok Next 2026 trend report](https://ads.tiktok.com/business/en-GB/next?level=0&redirected=1&tt4b_lang_redirect=1) | 10 Sep 2026 | Grounded discovery, curiosity and community participation | A real reading situation or question that opens a useful detour | Show an honest process or physical book object, answer the question, then use substantive comments as follow-up prompts | Natural process and reader language, readable muted; sound remains purposeful rather than decorative | Official forecast, not BookQuotes account performance; no causal view or engagement result is claimed | Test grounded reader-life/BTS framing, search-led detours and comment-responsive follow-ups after the metadata hold clears | Report wording, case-study execution, branded trend tags, creator identity or polished trend bait |
 
 ## Existing Asset Mapping
 

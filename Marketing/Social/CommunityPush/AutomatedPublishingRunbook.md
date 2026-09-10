@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 9 September 2026
+Updated: 10 September 2026
 
 ## Purpose
 
@@ -169,16 +169,22 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 9 September 2026, the direct Graph Page feed confirms that the first recovery prompt
-published once on 8 September at 13:00 Europe/London as
-`122112699483415831` (`https://www.facebook.com/122107379391415831/posts/122112699483415831`).
-The direct Graph `scheduled_posts` read now shows seven future Facebook rows for 9-15 September
-at 13:00 Europe/London; the 15 September row was added after the first row moved to Published.
-Facebook post-level insights still reject the requested metric set with HTTP 400, so metrics stay
-Not available rather than zero. Instagram's latest verified media remains
-`18125822551699434` on 1 September and no newer media is exposed by this audit.
-TikTok now has two additional public rows from 8 September, but the metadata reconciliation hold
-remains active: `Outliers` matches a local September footage brief, while the Carlo Rovelli row has
-no matching current ledger or source record. No new TikTok upload may occur until both rows and the
-single-writer path have their intended caption, cover, audience, rights basis and attributable
-content ID reconciled. The token is expiring at 09:09 Europe/London and requires the reconnect job.
+As of 10 September 2026, the direct Graph Page feed confirms that the 9 September reader prompt
+published once at 13:00 Europe/London as
+`122112699507415831` (`https://www.facebook.com/122107379391415831/posts/122112699507415831`).
+The direct Graph `scheduled_posts` read now shows seven future Facebook rows for 10-16 September
+at 13:00 Europe/London; the 16 September row is
+`122113080813415831`. Facebook post-level insights still reject the requested metric set with
+HTTP 400, so metrics stay Not available rather than zero. Instagram's current read exposes 19
+media rows with the latest at 30 August (`18102461696608755`), which conflicts with the earlier
+21-row read whose latest was 1 September (`18125822551699434`); no Instagram deletion or write was
+observed, so this is recorded as a read-surface discrepancy rather than a publication change.
+TikTok now reports 21 public rows, 6 followers and analytics access. Three additional 9 September
+rows are visible: `7683456621573328150` (`BAD BLOOD`) at 246 views / 1 like / 0 comments,
+`7683457013363281174` (empty caption) at 677 / 4 / 2, and `7683552415836163350` (`SPACE`) at
+234 / 2 / 0. The 8 September rows have reached their 24-hour read: Carlo Rovelli 697 / 6 / 0 and
+Outliers 237 / 1 / 0. Reach, watch, saves, shares and downstream fields remain unavailable on
+the current Zernio read; the empty-caption row's two comment texts are not exposed. The token is
+healthy through 11 September, but the single-writer, duplicate, metadata and second-slot holds
+remain active. No new TikTok upload may occur until intended captions, covers, audio, audience,
+rights basis and attributable content IDs are reconciled.

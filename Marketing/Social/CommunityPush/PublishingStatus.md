@@ -1,8 +1,48 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 9 September 2026, 08:00 Europe/London
+Updated: 10 September 2026, 08:05 Europe/London
 
 ## Current operating loop
+
+- Facebook: the 9 September reader prompt published once at 13:00 Europe/London as
+  `122112699507415831`. Seven direct Graph scheduled rows now remain for 10-16 September at 13:00
+  Europe/London; the added 16 September row is `122113080813415831`.
+- Instagram: the connected `bookquotes.app` identity is verified. The current read exposes 19
+  media rows with the latest at 30 August (`18102461696608755`), conflicting with the earlier
+  21-row read whose latest was 1 September (`18125822551699434`). No deletion or write was observed;
+  treat this as a read-surface discrepancy and do not claim a new Instagram publication.
+- TikTok: `@bookquotes.app` is active with analytics access, 21 public rows, 6 followers and no
+  failed-post records. Three new 9 September rows are visible: `7683456621573328150` at 246 views /
+  1 like / 0 comments (`BAD BLOOD`), `7683457013363281174` at 677 / 4 / 2 (empty caption), and
+  `7683552415836163350` at 234 / 2 / 0 (`SPACE`). The 8 September rows are now at 24 hours:
+  Carlo Rovelli 697 / 6 / 0 and Outliers 237 / 1 / 0. The token is healthy through 11 September,
+  but the metadata reconciliation hold remains active.
+
+### Audit: 10 September 2026, 08:05 Europe/London
+
+- The Facebook Page feed confirms the 9 September reader prompt published once. ID
+  `122112699507415831` has `is_published=true`, was created at `2026-09-09T12:00:02+0000`, and is
+  live at `https://www.facebook.com/122107379391415831/posts/122112699507415831`. Direct
+  `scheduled_posts` read-back contains seven future rows for 10-16 September at 13:00 Europe/London;
+  the new 16 September row is `122113080813415831`. The requested Page insights metrics still
+  return HTTP 400 (`The value must be a valid insights metric`), so views, reach, clicks, comments
+  and shares remain Not available.
+- Instagram identity and permissions remain verified, but the current read exposes 19 media rows
+  with the latest at 30 August (`18102461696608755`). This conflicts with the earlier 21-row read
+  whose latest was the 1 September still `18125822551699434`. No Instagram deletion or write was
+  observed, so no new publication is claimed and the discrepancy is preserved for follow-up.
+- TikTok read-back reports active `@bookquotes.app`, analytics access, sync at
+  `2026-09-10T08:56:10.286Z`, 21 public rows, 6 followers, no failed posts and token health through
+  `2026-09-11T08:56:09.515Z`. The new 9 September rows are `7683456621573328150` (`BAD BLOOD`) at
+  246 views / 1 like / 0 comments, `7683457013363281174` (empty caption) at 677 / 4 / 2, and
+  `7683552415836163350` (`SPACE`) at 234 / 2 / 0. The 8 September rows are now at 24 hours:
+  `7683146385834708246` (Carlo Rovelli) at 697 / 6 / 0 and `7683196200740244758` (Outliers) at
+  237 / 1 / 0. The empty-caption row has two comments, but comment text is not exposed. These
+  public rows are audit observations, not clean creative experiments; the single-writer, duplicate,
+  metadata and second-slot holds remain active.
+- No comments or messages were exposed as readable text. No routine replies were made and no reply
+  requires approval from this audit. Official TikTok Next 2026 research was added to the style
+  catalogue as hypothesis `EXT-012`; no performance confidence changed.
 
 - Facebook: the 8 September recovery prompt published once at 13:00 Europe/London as
   `122112699483415831`. Seven direct Graph scheduled rows now remain for 9-15 September at 13:00

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 9 September 2026
+Updated: 10 September 2026
 
 ## Method
 
@@ -47,6 +47,21 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 10 September 2026, 08:05 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7683146385834708246` | Metadata/evidence audit | 24h | 697 views, 6 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Public caption is ordinary, but no Carlo Rovelli source/current ledger entry; exclude from creative comparison. |
+| `7683196200740244758` | Metadata/evidence audit | 24h | 237 views, 1 like, 0 comments | Same measures Not available | Public caption is ordinary and topic matches local Outliers brief, but native cover/audio/audience metadata not read back; exclude. |
+| `7683456621573328150` | Metadata/evidence audit | Initial audit | 246 views, 1 like, 0 comments | Same measures Not available | `BAD BLOOD` matches local slate, but native metadata not reconciled; exclude. |
+| `7683457013363281174` | Publishing-integrity audit | Initial audit | 677 views, 4 likes, 2 comments | Same measures Not available; comment text not exposed | Empty caption; no source/rights/metadata evidence; exclude. |
+| `7683552415836163350` | Metadata/evidence audit | Initial audit | 234 views, 2 likes, 0 comments | Same measures Not available | `SPACE` has no matching current evidence record; exclude. |
+
+The 8 September rows have passed the 24-hour checkpoint, but the 9 September rows are still
+initial audits where applicable. These public rows are not new experiment executions. No
+confidence/result label changed; the token is healthy through 11 September, but the single-writer,
+duplicate, metadata and second-slot holds remain active.
 
 ### 9 September 2026, 08:01 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 9 September 2026
+Updated: 10 September 2026
 
 ## Purpose
 
@@ -63,6 +63,81 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-10, 08:05 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 21
+  public rows and 6 followers. The latest sync is `2026-09-10T08:56:10.286Z`; token health is
+  `ok` through `2026-09-11T08:56:09.515Z`; the failed-post list is empty.
+- Three additional public rows from 9 September are visible: `7683456621573328150` (`BAD BLOOD`)
+  at 246 views / 1 like / 0 comments, `7683457013363281174` with an empty caption at 677 / 4 / 2,
+  and `7683552415836163350` (`SPACE`) at 234 / 2 / 0. The two 8 September rows are now at their
+  24-hour read: `7683146385834708246` (Carlo Rovelli) at 697 / 6 / 0 and `7683196200740244758`
+  (Outliers) at 237 / 1 / 0.
+- No new TikTok upload was made by this automation. The single-writer, duplicate, metadata and
+  second-slot holds remain active.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| TikTok Next 2026 | [Official TikTok Next 2026](https://ads.tiktok.com/business/en-GB/next?level=0&redirected=1&tt4b_lang_redirect=1) | TikTok frames 2026 around grounded stories, curiosity/search detours and community participation, including comments as a creative surface. | Useful as a platform-level packaging hypothesis, not proof of BookQuotes performance. | Medium | Test one grounded reader situation, one useful answer and one substantive follow-up after the metadata hold clears. |
+| September footage match | `SeptemberFootageReels.md` | The local slate includes Outliers in the talent-and-success pair and the Malcolm Gladwell collection. | Supports an asset/brief match, not a native metadata or rights read-back. | Medium | Reconcile native cover, audio, audience and source before creative scoring. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: `EXT-012`, grounded discovery, curiosity/search detours and
+  comment-responsive follow-ups from the official TikTok Next 2026 forecast.
+- Transferable patterns: start with a real reader situation; let the question create a useful
+  discovery path; answer plainly; use substantive comments to choose a follow-up. Keep the visual
+  treatment readable, human and muted, with sound serving the idea.
+- Elements explicitly excluded from imitation: report wording, case-study execution, branded trend
+  tags, creator identity, polished trend bait, `#Zernio` fallback metadata, empty captions and
+  duplicate uploads.
+
+**Audience language**
+
+- Comments, searches or questions: the empty-caption row shows 2 comments in the inventory, but
+  comment text is not exposed. No new messages, searches or attributable audience language were
+  readable.
+- Potential reader-need hooks: use-condition, reader-fit and five-slide tension hooks remain
+  queued, with a new grounded reader-situation/search question hypothesis from `EXT-012`.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none. `BAD BLOOD` matches a local physical-footage label, while
+  `SPACE` has no matching current evidence record; Carlo Rovelli has no current source or ledger
+  entry; Outliers lacks a complete native cover/audio/audience read-back.
+- Blockers: native caption/cover/audio/audience/source reconciliation remains incomplete; the empty
+  caption has no verified source/rights basis; the single-writer and duplicate holds remain active.
+
+**Performance**
+
+- 24-hour checkpoints: Carlo Rovelli 697 views / 6 likes / 0 comments; Outliers 237 / 1 / 0.
+- 72-hour checkpoints: not due for the 9 September rows.
+- Seven-day checkpoints: not due.
+- Missing measures: reach, watch time, completion, saves, shares, profile visits, follows, search
+  terms and link taps remain Not available on this path; the two visible comments have no text.
+
+**Learning**
+
+- Experiment updates: record all five public rows as metadata/evidence audits and exclude them from
+  clean creative comparisons.
+- Confidence changes: none. `EXT-012` is an external forecast and does not change account priors.
+- Repeat: grounded, reader-specific questions after a clean publishing path is verified.
+- Modify: reconcile caption, cover, audio, audience, rights and content-ID read-back before resuming.
+- Pause: automatic TikTok publishing and the second daily slot.
+
+**Queue**
+
+- Approved: none for automatic publication while the hold is active.
+- In production: existing category and reader-fit briefs only.
+- Awaiting evidence or review: Outliers metadata, Carlo Rovelli source/rights, `BAD BLOOD`, `SPACE`,
+  and the empty-caption row.
+- Requires user approval: any recovery, edit, delete, re-upload or manual response to the two
+  unreadable comments.
 
 ### 2026-09-09, 08:01 Europe/London
 
