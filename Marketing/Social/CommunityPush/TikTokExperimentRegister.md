@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 10 September 2026
+Updated: 11 September 2026
 
 ## Method
 
@@ -47,6 +47,17 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 11 September 2026, 08:00 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7683942886928436502` | Publishing-integrity audit | Initial audit | 250 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Caption is `Freak!`; no matching current brief, source or Evidence Ledger record. Exclude from creative comparison. |
+
+This is an unexpected public row, not a new experiment execution by the current automation. The
+token is in the reconnect window and the OAuth flow has been opened, but completion is not yet
+verified. No confidence/result label changed; the single-writer, duplicate, metadata and second-slot
+holds remain active.
 
 ### 10 September 2026, 08:05 Europe/London
 

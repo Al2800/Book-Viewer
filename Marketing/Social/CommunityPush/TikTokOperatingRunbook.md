@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 9 September 2026
+Updated: 11 September 2026
 
 ## Purpose
 
@@ -154,6 +154,26 @@ partnerships, rights-uncertain material and sensitive community responses remain
 - The ordinary captions are a healthier signal than `#Zernio` or an empty caption, but they do not
   clear the single-writer, duplicate or metadata hold. Do not upload, schedule, edit, delete or
   re-upload another TikTok copy automatically. The second daily slot remains disabled.
+
+### Metadata reconciliation audit: 11 September 2026, 08:00 Europe/London
+
+- The account is active as `@bookquotes.app` with 22 public rows, 7 followers and analytics access.
+  The latest sync is `2026-09-11T07:54:17.284Z`; the failed-post list is empty. The token expires at
+  `2026-09-11T08:56:09.515Z`; `reconnect --if-expiring` opened the OAuth flow and returned
+  `expiring_soon`, but completion is not yet verified.
+- A new public row `7683942886928436502` was published on 10 September at 16:22:55Z with caption
+  `Freak!`, 250 views, 0 likes and 0 comments. It has no matching current brief, source or Evidence
+  Ledger entry. Treat it as a publishing-integrity observation, not a creative result.
+- TikTok's [Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  confirms the public Trends and Inspiration surfaces, but the live GB Top Ads view returned no
+  public results without a signed-in session. Direct creator-profile sampling was blocked by robots.
+  The official UK [BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  is recorded as platform context only; `EXT-013` captures the transferable reader-fit/list-context
+  pattern without claiming BookQuotes performance.
+- The single-writer, duplicate, metadata and second-slot holds remain active. Do not upload, edit,
+  delete, re-upload or schedule another TikTok copy automatically until the intended caption, cover,
+  audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
+  label changed.
 
 ### Metadata reconciliation audit: 10 September 2026, 08:05 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 10 September 2026, 08:05 Europe/London
+Updated: 11 September 2026, 08:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,58 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 11 September 2026, 08:00 Europe/London
+
+**Platforms checked:** Meta identity, Facebook Page feed and direct scheduled-posts edge, Instagram
+media, TikTok account and Zernio inventory, token health, current TikTok Creative Centre/Next and UK
+BookTok research, and the current publishing runbooks.
+
+**Observation**
+
+- Facebook's 10 September reader prompt published once at
+  `https://www.facebook.com/122107379391415831/posts/122112699537415831`, at 13:00 Europe/London.
+  Direct `scheduled_posts` read-back now contains seven future rows for 11-17 September at 13:00;
+  the new 17 September row is `122113224375415831`. The Page insights request still returns HTTP
+  400, so post-level views, reach, clicks, comments and shares are Not available rather than zero.
+- Instagram's connected `bookquotes.app` identity remains verified. The current read still exposes
+  19 media rows with latest timestamp 30 August (`18102461696608755`), conflicting with the earlier
+  21-row read whose latest was the 1 September still `18125822551699434`. No deletion or Instagram
+  write was observed; this is a read-surface discrepancy, not evidence of a new publication.
+- TikTok read-back reports active `@bookquotes.app`, analytics access, sync at
+  `2026-09-11T07:54:17.284Z`, 22 public rows, 7 followers and no failed-post records. The new
+  `Freak!` row `7683942886928436502` reads 250 views / 0 likes / 0 comments. It has no matching
+  current brief, source or Evidence Ledger record, so it is an integrity observation rather than a
+  creative result. Reach, watch completion, saves, shares, profile visits, follows and link taps
+  remain Not available on this path.
+- The token expires at `2026-09-11T08:56:09.515Z`; the scheduled reconnect opened the OAuth flow and
+  returned `expiring_soon`, but completion is not yet verified. No TikTok upload, schedule, edit,
+  delete or re-upload was made by this automation.
+- No comments or messages were exposed as readable text. App Store and install outcomes remain Not
+  available in this social audit.
+
+**Research update**
+
+- TikTok's [Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  confirms that the public Trends and Inspiration surfaces are for current trend, keyword and
+  creative-pattern discovery. The live GB Top Ads page returned no public result without a signed-in
+  session, and direct TikTok creator-profile sampling was blocked by robots, so no new 15-20-account
+  creator sample was treated as evidence.
+- TikTok's [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  is a platform-level signal: it describes a list combining retail data with TikTok engagement and
+  reports broad UK BookTok discovery activity. It supports using timely list context as a discovery
+  prompt, not a claim about BookQuotes performance or a substitute for evidence-led title checks.
+- `EXT-013` was added to the style catalogue for specific reader-fit prompts with a genuine “what
+  would you add?” follow-up. No hypothesis confidence changed.
+
+**Learning update**
+
+- Treat the 10 September Facebook publication and 11-17 September queue as successful delivery
+  state. Do not retry or duplicate the live prompt.
+- Treat `Freak!` as a publishing-integrity audit. Its raw 250 views do not justify changing the
+  content mix, timing, cadence or second-slot decision. Keep the TikTok single-writer, duplicate,
+  metadata and second-slot holds active until the reconnect and native packaging are reconciled.
+- No routine replies were made. No hypothesis confidence or result label changed.
 
 ### 10 September 2026, 08:05 Europe/London
 

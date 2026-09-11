@@ -1,6 +1,6 @@
 # BookQuotes TikTok Style Catalogue
 
-Updated: 10 September 2026
+Updated: 11 September 2026
 
 ## Purpose
 
@@ -178,6 +178,7 @@ Add external examples only after direct inspection.
 | EXT-010 | `@harpercollinsuk` | 30 Jul 2026 | Promotional book discovery | Sales-led proposition | Short promotional post | Account-owned original sound | Recent early post has only two visible likes, showing sound alone does not rescue commercial packaging | Do not confuse an audio choice with the reader value and distribution conditions required for reach | Promotional wording, reviews, sales urgency, publisher assets or account authority |
 | EXT-011 | 11 BookTok accounts sampled from the live `booktok` search | 4 Aug 2026 | Immediate reader fit, belonging and browsing help | Direct question, named stack, current-read prompt or specific reader situation | Short native video, slideshow or creator-led explanation with a concise caption | Creator-owned voice, natural book handling and occasional humour; trend audio is secondary | Sample was descriptive rather than a controlled performance comparison; some cards exposed top-liked labels or large-account reach | Lead with a precise reader need and give one useful answer before inviting a real response | Creator wording, identity, artwork, audio, reading claims or distinctive execution |
 | EXT-012 | [TikTok Next 2026 trend report](https://ads.tiktok.com/business/en-GB/next?level=0&redirected=1&tt4b_lang_redirect=1) | 10 Sep 2026 | Grounded discovery, curiosity and community participation | A real reading situation or question that opens a useful detour | Show an honest process or physical book object, answer the question, then use substantive comments as follow-up prompts | Natural process and reader language, readable muted; sound remains purposeful rather than decorative | Official forecast, not BookQuotes account performance; no causal view or engagement result is claimed | Test grounded reader-life/BTS framing, search-led detours and comment-responsive follow-ups after the metadata hold clears | Report wording, case-study execution, branded trend tags, creator identity or polished trend bait |
+| EXT-013 | [TikTok BookTok Bestsellers UK, July 2026](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | 11 Sep 2026 | Discovery plus conversation, with a cultural signal rather than a ranking claim | Start with a reader need, then use a current BookTok list as context and invite an alternative | One precise reading route or use-condition, a small labelled stack, then a genuine question | Book-led visual, concise labels and reader language; list context supports the hook but does not replace it | Official newsroom reports a UK list combining retail data and TikTok engagement; this is platform context, not BookQuotes performance | Use bestseller/newsroom signals to choose discovery prompts and ask what readers would add, while preserving a specific reader-fit answer | Do not copy the list, claim current sales from the post, present platform scale as proof of a BookQuotes hook, or reuse newsroom wording |
 
 ## Existing Asset Mapping
 

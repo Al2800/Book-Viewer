@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 10 September 2026
+Updated: 11 September 2026
 
 ## Purpose
 
@@ -63,6 +63,83 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-11, 08:00 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 22
+  public rows and 7 followers. The latest sync is `2026-09-11T07:54:17.284Z`; the token expires at
+  `2026-09-11T08:56:09.515Z`; `reconnect --if-expiring` opened the OAuth flow, but completion is
+  not yet verified. The failed-post list is empty.
+- One additional public row from 10 September is visible: `7683942886928436502`, caption `Freak!`,
+  250 views, 0 likes and 0 comments. It has no matching current brief, source or Evidence Ledger
+  record. No TikTok upload, schedule, edit, delete or re-upload was made by this automation.
+- The single-writer, duplicate, metadata and second-slot holds remain active.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Centre access | [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB) | TikTok describes public Trends and Inspiration surfaces for current hashtags, keywords, patterns and high-performing examples; the live GB Top Ads view returned no public result without a signed-in session. | Confirms the right research surface, but not a current BookQuotes or creator result. | Medium | Recheck the signed-in UK Creative Centre when available; do not turn an empty public result into a trend claim. |
+| UK BookTok discovery context | [TikTok BookTok Bestsellers UK, July 2026](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | TikTok describes a UK list combining retail data and TikTok engagement and reports broad BookTok discovery activity. | Useful for selecting timely discovery prompts; it is platform context, not a BookQuotes performance benchmark. | Medium | Use current list context to ask what readers would add, while verifying each title and avoiding ranking claims. |
+| Direct creator sample | TikTok public creator profiles | Direct searches for 15-20 relevant creator posts were blocked by robots in this read. | No new creator-level pattern is promoted from inaccessible evidence. | Short | Keep the existing catalogue and revisit through a signed-in native or Creative Centre surface. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: `EXT-013`, current list context used to open a specific reader-fit
+  question and a genuine alternative prompt.
+- Transferable patterns: give one useful route or use-condition first; use a timely cultural signal
+  as context rather than the substance; invite readers to add an alternative without implying a
+  definitive ranking. Keep captions and on-screen language searchable but specific.
+- Elements explicitly excluded from imitation: newsroom wording, list reproduction, unsupported
+  sales claims, platform-scale claims as proof of BookQuotes performance, `Freak!` packaging until
+  its source is known, and any trend or creator execution that could not be inspected.
+
+**Audience language**
+
+- Comments, searches or questions: no new readable comments, messages or search language. The
+  current public inventory does not expose the text of the two comments previously seen on the
+  empty-caption row.
+- Potential reader-need hooks: use-condition, reader-fit, five-slide tension and “what would you
+  add?” list-context prompts remain queued.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none. `Freak!` is not evidence-ledger-backed; no title, author,
+  source, cover, audio or rights basis was inferred from its caption alone.
+- Blockers: OAuth reconnect completion, native packaging and content-ID reconciliation remain
+  incomplete; `Freak!` has no matching brief/source; the single-writer hold remains.
+
+**Performance**
+
+- 24-hour checkpoints: `Freak!` is an initial audit only at 250 views / 0 likes / 0 comments; no
+  clean creative checkpoint is recorded.
+- 72-hour checkpoints: not due.
+- Seven-day checkpoints: not due.
+- Missing measures: reach, watch time, completion, saves, shares, profile visits, follows, search
+  terms and link taps remain Not available on this path.
+
+**Learning**
+
+- Experiment updates: record `Freak!` as a metadata/evidence audit and exclude it from clean creative
+  comparisons.
+- Confidence changes: none. The UK BookTok signal and Creative Centre guidance are external context,
+  not BookQuotes account evidence.
+- Repeat: grounded, reader-specific routes with a clear answer after the publishing path is clean.
+- Modify: complete reconnect and reconcile caption, cover, audio, audience, rights and content-ID
+  read-back before resuming.
+- Pause: automatic TikTok publishing and the second daily slot.
+
+**Queue**
+
+- Approved: none for automatic publication while the hold and reconnect remain active.
+- In production: `cr-03` Foster, `cr-04` Tinker Tailor Soldier Spy and the prepared discovery/reset
+  briefs remain viable after their evidence and rights gates.
+- Awaiting evidence or review: `Freak!`, native metadata for earlier public rows, and the current
+  UK Creative Centre/creator sample.
+- Requires user approval: any recovery, edit, delete, re-upload or manual response to unreadable
+  comments.
 
 ### 2026-09-10, 08:05 Europe/London
 

@@ -1,8 +1,44 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 10 September 2026, 08:05 Europe/London
+Updated: 11 September 2026, 08:00 Europe/London
 
 ## Current operating loop
+
+- Facebook: the 10 September reader prompt published once at 13:00 Europe/London as
+  `122112699537415831`. Seven direct Graph scheduled rows now remain for 11-17 September at 13:00
+  Europe/London; the added 17 September row is `122113224375415831`.
+- Instagram: the connected `bookquotes.app` identity remains verified. The current read still
+  exposes 19 media rows with the latest at 30 August (`18102461696608755`), conflicting with the
+  earlier 21-row read whose latest was 1 September (`18125822551699434`). No deletion or write was
+  observed; treat this as a read-surface discrepancy and do not claim a new Instagram publication.
+- TikTok: `@bookquotes.app` is active with analytics access, 22 public rows, 7 followers and no
+  failed-post records. The new 10 September row `7683942886928436502` (`Freak!`) reads 250 views /
+  0 likes / 0 comments, but has no matching current brief or evidence record. The token expires at
+  `2026-09-11T08:56:09.515Z`; the scheduled reconnect opened the OAuth flow, but completion is not
+  yet verified. The metadata reconciliation hold remains active.
+
+### Audit: 11 September 2026, 08:00 Europe/London
+
+- The Facebook Page feed confirms the 10 September reader prompt published once. ID
+  `122112699537415831` has `is_published=true`, was created at `2026-09-10T12:00:16+0000`, and is
+  live at `https://www.facebook.com/122107379391415831/posts/122112699537415831`. Direct
+  `scheduled_posts` read-back contains seven future rows for 11-17 September at 13:00 Europe/London;
+  the new 17 September row is `122113224375415831`. The requested Page insights metrics still
+  return HTTP 400, so views, reach, clicks, comments and shares remain Not available.
+- Instagram identity and permissions remain verified, but the current read still exposes 19 media
+  rows with latest 30 August (`18102461696608755`), conflicting with the earlier 21-row read whose
+  latest was the 1 September still `18125822551699434`. No Instagram deletion or write was observed;
+  no new publication is claimed.
+- TikTok read-back reports active `@bookquotes.app`, analytics access, sync at
+  `2026-09-11T07:54:17.284Z`, 22 public rows, 7 followers and no failed posts. The new row
+  `7683942886928436502` (`Freak!`) was published at `2026-09-10T16:22:55Z` and reads 250 views /
+  0 likes / 0 comments. It has no matching current brief, source or Evidence Ledger record. The
+  token expires at `2026-09-11T08:56:09.515Z`; `reconnect --if-expiring` opened the OAuth flow and
+  returned `expiring_soon`, so reconnection is not yet evidenced complete.
+- No TikTok upload, schedule, edit, delete or re-upload was made by this automation. The new public
+  row is an integrity audit only. No comments or messages were exposed as readable text; no routine
+  replies were made and no reply requires approval from this audit. Official UK BookTok research was
+  recorded as external context, and `EXT-013` was added without changing performance confidence.
 
 - Facebook: the 9 September reader prompt published once at 13:00 Europe/London as
   `122112699507415831`. Seven direct Graph scheduled rows now remain for 10-16 September at 13:00
