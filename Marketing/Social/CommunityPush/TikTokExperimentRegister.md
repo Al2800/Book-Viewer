@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 11 September 2026
+Updated: 12 September 2026
 
 ## Method
 
@@ -47,6 +47,18 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 12 September 2026, 08:00 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7683942886928436502` | Publishing-integrity audit | Initial audit | 251 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Caption is `Freak!`; no matching current brief, source or Evidence Ledger record. Exclude from creative comparison. |
+| Not issued | Creator Inbox draft-cap failure | Initial audit | No public result | No public content ID or analytics row | Request `6aa4f018662ee2d345bceb39` for the Empire of Pain and Bad Blood Reel failed at TikTok's five-pending-drafts cap. Do not retry until pending drafts are reconciled. |
+
+This is an integrity audit, not a new creative experiment execution by the current automation. The
+token expires at `2026-09-12T08:50:53.157Z`; the reconnect flow was opened, but completion is not
+verified. No confidence/result label changed; the single-writer, duplicate, metadata, evidence and
+second-slot holds remain active.
 
 ### 11 September 2026, 08:00 Europe/London
 

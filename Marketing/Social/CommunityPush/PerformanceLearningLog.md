@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 11 September 2026, 08:00 Europe/London
+Updated: 12 September 2026, 08:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,63 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 12 September 2026, 08:00 Europe/London
+
+**Platforms checked:** Meta identity, Facebook Page feed and direct scheduled-posts edge, Instagram
+media, TikTok account and Zernio inventory, token health, current TikTok Creative Centre/Top Ads and
+UK BookTok research, and the current publishing runbooks.
+
+**Observation**
+
+- Facebook's 11 September reader prompt published once at 13:02 Europe/London as
+  `122112699579415831`, with live URL
+  `https://www.facebook.com/122107379391415831/posts/122112699579415831`. The direct
+  `scheduled_posts` read showed six future rows for 12-17 September before the queue was extended;
+  the new 18 September row is `122113388187415831` at 13:00 Europe/London. The Page insights request
+  still returns HTTP 400, so post-level views, reach, clicks, comments and shares are Not available.
+- Instagram's connected `bookquotes.app` identity and permissions remain verified. The current read
+  exposes 19 media rows, latest timestamp 30 August (`18102461696608755`), conflicting with the
+  earlier 21-row read whose latest was the 1 September still `18125822551699434`. No deletion or
+  Instagram write was observed; this is a read-surface discrepancy, not evidence of a new
+  publication.
+- TikTok read-back reports active `@bookquotes.app`, analytics access, 22 public rows and 7
+  followers. The latest public `Freak!` row `7683942886928436502` now reads 251 views / 0 likes /
+  0 comments. Reach, watch completion, saves, shares, profile visits, follows and link taps remain
+  Not available on this path, and the row has no matching current brief, source or Evidence Ledger
+  record.
+- Creator Inbox request `6aa4f018662ee2d345bceb39` was created at
+  `2026-09-12T06:24:24.755Z` for the Empire of Pain and Bad Blood Reel and failed at the
+  five-pending-drafts cap. No public TikTok content ID or analytics row was created; do not retry
+  until pending drafts are reconciled. The token expires at `2026-09-12T08:50:53.157Z`, and the
+  reconnect flow was opened again, but completion is not verified.
+- The current official [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  still identifies Top Ads, Trends and Inspiration as public research surfaces. The live GB Top Ads
+  view returned no public results without a signed-in session. The official [UK BookTok Bestsellers
+  update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains platform context only, not BookQuotes performance evidence. Direct creator-profile sampling
+  remains blocked by robots.
+
+**Community**
+
+- No readable Facebook, Instagram or TikTok comment or message text was exposed.
+- No routine replies were made and no reply requires approval from this audit.
+
+**Learning update**
+
+- No hypothesis confidence or result label changed. The `Freak!` row remains excluded from creative
+  comparison, and the draft-cap failure reinforces the need for a single-writer queue with explicit
+  pending-draft reconciliation.
+- Maintain the current TikTok preparation queue through verified `cr-03`, `cr-04` and the
+  Distribution Reset briefs, but keep them research/production-ready rather than scheduled while
+  the integrity holds remain active.
+
+**Next actions**
+
+- Automatic: verify the 12 September Facebook item publishes once, keep the direct queue at seven
+  future days, and record the next available metrics without converting unavailable values to zero.
+- Requires native recovery: complete TikTok OAuth in the opened browser, reconcile pending drafts and
+  native metadata, then re-run the validation gate before any TikTok upload or schedule.
 
 ### 11 September 2026, 08:00 Europe/London
 

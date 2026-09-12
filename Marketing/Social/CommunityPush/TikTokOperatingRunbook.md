@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 11 September 2026
+Updated: 12 September 2026
 
 ## Purpose
 
@@ -22,14 +22,17 @@ Read this file together with:
 The daily research, briefing, quality-control and learning stages may run automatically.
 
 These stages are active in the `bookquotes-daily-social-check` automation at 09:00
-Europe/London. After the native gate was cleared on 18 August, the automation may advance the
-next eligible TikTok item for the 19:30 Europe/London establishment slot. Token health is
-`uk.bookquotes.tiktok-reconnect` at 09:05 (`reconnect --if-expiring`). Facebook is a separate
-Graph queue at 13:00.
+Europe/London. The native gate was cleared on 18 August and activation was recorded, but the
+publishing-integrity holds recorded below currently supersede the general routine authority. The
+automation may research, brief and quality-check the next eligible TikTok item, but may not advance
+it to upload or scheduling until the single-writer, duplicate, metadata and evidence holds clear.
+Token health is checked by `uk.bookquotes.tiktok-reconnect` at 09:05
+(`reconnect --if-expiring`). Facebook is a separate Graph queue at 13:00.
 
 The user has authorised routine automatic TikTok publishing once the native validation below
 passes. The automation may record that activation without seeking another approval when every
-validation item is evidenced.
+validation item is evidenced, but an active publishing-integrity hold still blocks mutation until
+its recovery conditions are met.
 
 Before 18 August, TikTok publishing was approval-only until all of the following had been verified:
 
@@ -40,12 +43,14 @@ Before 18 August, TikTok publishing was approval-only until all of the following
 5. The post has an addressable analytics entry attributable to the correct content ID. The
    measurements may continue to mature through the 24-hour checkpoint.
 
-The gate is now recorded as satisfied for routine organic publishing. The controlled marked-page
-post is Public and appears once in the native content library, and the 17 August Commonplace Reel
-has a native addressable content ID with 855 views, 2 likes and 0 comments. The Account Check URL
-resolved to the signed-in Studio surface with no visible warning or restriction text; TikTok did
-not expose a formal account-health report, so that limitation remains recorded. Paid promotion,
-partnerships, rights-uncertain material and sensitive community responses remain approval-only.
+The native gate was recorded as satisfied for routine organic publishing on 18 August. The
+controlled marked-page post is Public and appears once in the native content library, and the 17
+August Commonplace Reel has a native addressable content ID with 855 views, 2 likes and 0 comments.
+The Account Check URL resolved to the signed-in Studio surface with no visible warning or
+restriction text; TikTok did not expose a formal account-health report, so that limitation remains
+recorded. Later duplicate and metadata failures supersede the general activation for now. Paid
+promotion, partnerships, rights-uncertain material and sensitive community responses remain
+approval-only.
 
 ### Validation Evidence, 17 August 2026
 
@@ -172,6 +177,31 @@ partnerships, rights-uncertain material and sensitive community responses remain
   pattern without claiming BookQuotes performance.
 - The single-writer, duplicate, metadata and second-slot holds remain active. Do not upload, edit,
   delete, re-upload or schedule another TikTok copy automatically until the intended caption, cover,
+  audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
+  label changed.
+
+### Metadata reconciliation audit: 12 September 2026, 08:00 Europe/London
+
+- The account is active as `@bookquotes.app` with 22 public rows, 7 followers and analytics access.
+  The latest sync is `2026-09-12T08:01:40.859Z`; the failed-post list contains one new Creator
+  Inbox failure. The token expires at `2026-09-12T08:50:53.157Z`, and the current read reports
+  `expiring_soon` with `reconnect_required=true`; the existing reconnect flow was opened, but
+  completion is not yet verified.
+- The latest public integrity row `7683942886928436502` (`Freak!`) reads 251 views / 0 likes /
+  0 comments. It has no matching current brief, source or Evidence Ledger record and remains
+  excluded from creative comparison.
+- Creator Inbox request `6aa4f018662ee2d345bceb39` was created at
+  `2026-09-12T06:24:24.755Z` for the Empire of Pain and Bad Blood Reel and failed at TikTok's
+  five-pending-drafts cap. No public TikTok content ID or analytics row was created. Do not retry,
+  delete, publish or create a second copy until pending drafts are reconciled.
+- The current [Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  still identifies Top Ads, Trends and Inspiration as public research surfaces, while the live GB
+  Top Ads view returned no public results without a signed-in session. The official UK
+  [BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains platform context only. No new account-level performance conclusion follows from either
+  source, and direct creator-profile sampling remains blocked by robots.
+- Keep the single-writer, duplicate, metadata, evidence and second-slot holds active. No TikTok
+  upload, schedule, edit, delete or re-upload may occur automatically until intended caption, cover,
   audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
   label changed.
 

@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 11 September 2026
+Updated: 12 September 2026
 
 ## Purpose
 
@@ -10,9 +10,9 @@ blind autoposter.
 
 Facebook is the first automatic channel. Approved bank cards are scheduled on Graph at 13:00
 Europe/London. Instagram publishes the same approved bank through a separate 13:00 due agent;
-Graph cannot schedule. TikTok routine publishing is now active in its measured establishment phase
-after the native validation gate recorded on 18 August; its cadence and quality gates live in
-`TikTokOperatingRunbook.md`.
+Graph cannot schedule. TikTok activation was recorded for the measured establishment phase on 18
+August, but later publishing-integrity holds currently pause TikTok mutations; its cadence and
+quality gates live in `TikTokOperatingRunbook.md`.
 
 ## Publishing Authority
 
@@ -32,7 +32,10 @@ Automatic authority covers:
 
 TikTok routine authority is limited to one reader-first post per day at 19:30 Europe/London during
 the establishment phase. The first seven comparable posts use the 60/20/15/5 editorial mix. A
-second daily slot remains a later controlled experiment, not a default cadence.
+second daily slot remains a later controlled experiment, not a default cadence. That authority is
+currently superseded by the active single-writer, duplicate, metadata and evidence holds recorded
+in `TikTokOperatingRunbook.md`; research and production planning may continue, but no TikTok
+upload, schedule, edit, delete or re-upload may occur automatically until those holds clear.
 
 The 19 August audit found a same-caption Player of Games duplicate in the native TikTok library.
 Until the single-writer path and duplicate guard are reconciled, TikTok uploads are held. Keep the
@@ -85,8 +88,9 @@ At 09:00 Europe/London:
    Instagram is not published by this 09:00 job. Name the separate path:
    `uk.bookquotes.instagram-due` at 13:00, with `pre-publish-awake` at 12:50. TikTok reconnect is
    `uk.bookquotes.tiktok-reconnect` at 09:05.
-   Once the TikTok validation gate is recorded as clear, the next eligible category Reel may publish
-   at 19:30 under `TikTokOperatingRunbook.md`; do not add a same-day second Reel.
+   Once the active TikTok integrity holds are cleared and the native validation gate is recorded as
+   clear, the next eligible category Reel may publish at 19:30 under `TikTokOperatingRunbook.md`;
+   do not add a same-day second Reel.
 7. Inspect comments and messages. Routine acknowledgements and verified factual answers may be
    posted automatically; sensitive or ambiguous replies must be drafted for review.
 8. Append the actions and evidence to `PerformanceLearningLog.md`, update `PublishingStatus.md`,
@@ -169,21 +173,22 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 11 September 2026, the direct Graph Page feed confirms that the 10 September reader prompt
-published once at 13:00 Europe/London as
-`122112699537415831` (`https://www.facebook.com/122107379391415831/posts/122112699537415831`).
-The direct Graph `scheduled_posts` read now shows seven future Facebook rows for 11-17 September
-at 13:00 Europe/London; the 17 September row is
-`122113224375415831`. Facebook post-level insights still reject the requested metric set with
-HTTP 400, so metrics stay Not available rather than zero. Instagram's current read still exposes
-19 media rows with the latest at 30 August (`18102461696608755`), conflicting with the earlier
-21-row read whose latest was 1 September (`18125822551699434`); no Instagram deletion or write was
-observed, so this remains a read-surface discrepancy rather than a publication change.
-TikTok now reports 22 public rows, 7 followers and analytics access. The new public row
-`7683942886928436502` is labelled `Freak!` and reads 250 views / 0 likes / 0 comments; it has no
-matching current brief or evidence-ledger record and is a publishing-integrity observation, not a
-creative result. The token expires at `2026-09-11T08:56:09.515Z` and is inside the six-hour
-reconnect window. The scheduled reconnect opened the OAuth flow, but completion is not yet verified.
-The single-writer, duplicate, metadata and second-slot holds remain active. No new TikTok upload
-may occur until intended captions, covers, audio, audience, rights basis and attributable content
-IDs are reconciled.
+As of 12 September 2026, the direct Graph Page feed confirms that the 11 September reader prompt
+published once at 13:02 Europe/London as
+`122112699579415831` (`https://www.facebook.com/122107379391415831/posts/122112699579415831`).
+The direct Graph `scheduled_posts` read initially showed six future rows for 12-17 September; the
+queue was extended with a seventh row for 18 September at 13:00 Europe/London as
+`122113388187415831`. Facebook post-level insights still reject the requested metric set with
+HTTP 400, so metrics stay Not available rather than zero. Instagram's current read exposes 19 media
+rows with the latest at 30 August (`18102461696608755`), conflicting with the earlier 21-row read
+whose latest was 1 September (`18125822551699434`); no Instagram deletion or write was observed,
+so this remains a read-surface discrepancy rather than a publication change.
+TikTok reports 22 public rows, 7 followers and analytics access. The public `Freak!` row
+`7683942886928436502` now reads 251 views / 0 likes / 0 comments; it has no matching current brief
+or Evidence Ledger record and remains an integrity observation, not a creative result. A separate
+12 September Creator Inbox request `6aa4f018662ee2d345bceb39` for the Empire of Pain and Bad Blood
+Reel failed at the five-pending-drafts cap and created no public TikTok content ID. The token expires
+at `2026-09-12T08:50:53.157Z`; the scheduled reconnect opened the OAuth flow, but completion is not
+yet verified. The single-writer, duplicate, metadata, evidence and second-slot holds remain active.
+No new TikTok upload, schedule, edit, delete or re-upload may occur until intended captions, covers,
+audio, audience, rights basis and attributable content IDs are reconciled.

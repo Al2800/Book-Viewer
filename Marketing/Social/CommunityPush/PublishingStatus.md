@@ -1,21 +1,48 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 11 September 2026, 08:00 Europe/London
+Updated: 12 September 2026, 08:00 Europe/London
 
 ## Current operating loop
 
-- Facebook: the 10 September reader prompt published once at 13:00 Europe/London as
-  `122112699537415831`. Seven direct Graph scheduled rows now remain for 11-17 September at 13:00
-  Europe/London; the added 17 September row is `122113224375415831`.
+- Facebook: the 11 September reader prompt published once at 13:02 Europe/London as
+  `122112699579415831`. Seven direct Graph scheduled rows now remain for 12-18 September at 13:00
+  Europe/London; the added 18 September row is `122113388187415831`.
 - Instagram: the connected `bookquotes.app` identity remains verified. The current read still
   exposes 19 media rows with the latest at 30 August (`18102461696608755`), conflicting with the
   earlier 21-row read whose latest was 1 September (`18125822551699434`). No deletion or write was
   observed; treat this as a read-surface discrepancy and do not claim a new Instagram publication.
-- TikTok: `@bookquotes.app` is active with analytics access, 22 public rows, 7 followers and no
-  failed-post records. The new 10 September row `7683942886928436502` (`Freak!`) reads 250 views /
-  0 likes / 0 comments, but has no matching current brief or evidence record. The token expires at
-  `2026-09-11T08:56:09.515Z`; the scheduled reconnect opened the OAuth flow, but completion is not
-  yet verified. The metadata reconciliation hold remains active.
+- TikTok: `@bookquotes.app` is active with analytics access, 22 public rows and 7 followers. The
+  10 September row `7683942886928436502` (`Freak!`) now reads 251 views / 0 likes / 0 comments,
+  but has no matching current brief or evidence record. A 12 September Creator Inbox request
+  `6aa4f018662ee2d345bceb39` failed at the five-pending-drafts cap and created no public content ID.
+  The token expires at `2026-09-12T08:50:53.157Z`; the scheduled reconnect opened the OAuth flow,
+  but completion is not yet verified. The metadata reconciliation hold remains active.
+
+### Audit: 12 September 2026, 08:00 Europe/London
+
+- Facebook: the 11 September reader prompt published once at
+  `https://www.facebook.com/122107379391415831/posts/122112699579415831`, with Page feed
+  `is_published=true` and created time `2026-09-11T12:02:40+0000`. The direct `scheduled_posts`
+  read initially contained six future rows for 12-17 September; a seventh row was added for 18
+  September at 13:00 Europe/London as `122113388187415831`, and its read-back is
+  `https://www.facebook.com/122107379391415831/posts/122113388187415831`. Page post-level insight
+  metrics still return HTTP 400, so views, reach, clicks, comments and shares remain Not available.
+- Instagram: the connected `bookquotes.app` identity and publishing permissions remain verified.
+  The current read exposes 19 media rows, latest 30 August (`18102461696608755`), conflicting with
+  the earlier 21-row read whose latest was 1 September (`18125822551699434`). No deletion or write
+  was observed and no new Instagram publication is claimed.
+- TikTok: the current sync is `2026-09-12T08:01:40.859Z`; the account is active with 22 public
+  rows, 7 followers and analytics access. The latest public row remains `Freak!` at 251 views /
+  0 likes / 0 comments, with deeper retention, reach, saves, shares, profile and link data Not
+  available. Creator Inbox request `6aa4f018662ee2d345bceb39` failed at
+  `2026-09-12T06:24:24.755Z` because the five-pending-drafts cap was reached; no public content ID
+  or analytics row was created. The token expires at `2026-09-12T08:50:53.157Z`; the reconnect
+  flow was opened, but completion is not verified.
+- No TikTok upload, schedule, edit, delete or re-upload was made by this automation. No comments or
+  messages were exposed as readable text; no routine replies were made and no reply requires
+  approval from this audit. The current official Creative Centre and UK BookTok research remains
+  platform context only; no hypothesis confidence changed. Keep the TikTok single-writer, duplicate,
+  metadata, evidence and second-slot holds active.
 
 ### Audit: 11 September 2026, 08:00 Europe/London
 

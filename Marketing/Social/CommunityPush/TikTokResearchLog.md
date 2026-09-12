@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 11 September 2026
+Updated: 12 September 2026
 
 ## Purpose
 
@@ -63,6 +63,85 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-12, 08:00 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 22
+  public rows and 7 followers. The latest sync is `2026-09-12T08:01:40.859Z`; the token expires at
+  `2026-09-12T08:50:53.157Z`; the current read reports `expiring_soon` and
+  `reconnect_required=true`. The existing reconnect flow was opened, but completion is not yet
+  verified.
+- The latest public row `7683942886928436502`, caption `Freak!`, now reads 251 views, 0 likes and
+  0 comments. It has no matching current brief, source or Evidence Ledger record, so it remains an
+  integrity observation rather than a creative result.
+- Creator Inbox request `6aa4f018662ee2d345bceb39` for the Empire of Pain and Bad Blood Reel was
+  created at `2026-09-12T06:24:24.755Z` and failed at TikTok's five-pending-drafts cap. No public
+  TikTok content ID or analytics row was created. No upload, schedule, edit, delete or re-upload was
+  made by this automation.
+- Keep the single-writer, duplicate, metadata, evidence and second-slot holds active.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Centre access | [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB) | TikTok describes public Trends, Inspiration and Top Ads surfaces; the current GB Top Ads view returned no public results without a signed-in session. | Confirms the correct research surface, but offers no new BookQuotes or creator-level performance result in this read. | Medium | Recheck the signed-in UK surface after access is restored; do not infer a trend from the empty public result. |
+| UK BookTok discovery context | [TikTok BookTok Bestsellers UK, July 2026](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | TikTok describes a list combining retail data with TikTok engagement and presents it as a discovery/community signal. | Useful for timely reader-fit prompts, not a BookQuotes performance benchmark. | Medium | Use list context only to open a specific reader question and verify any title before briefing. |
+| Direct creator sample | TikTok public creator profiles | Direct creator-profile sampling remains blocked by robots in this read. | No new creator-level pattern is promoted from inaccessible evidence. | Short | Preserve the current catalogue and revisit via a signed-in native or Creative Centre surface. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. `EXT-013` remains the current platform-context pattern.
+- Transferable patterns: none newly verified today. Keep reader-fit/list-context framing separate from
+  the failed Creator Inbox delivery and from the `Freak!` integrity row.
+- Elements explicitly excluded from imitation: the `Freak!` package, the failed draft-cap path,
+  unsupported captions, newsroom wording, list reproduction and any creator execution that could
+  not be inspected.
+
+**Audience language**
+
+- Comments, searches or questions: no new readable comments, messages or search language. The
+  inventory still does not expose the text of the two comments on the empty-caption row.
+- Potential reader-need hooks: use-condition, reader-fit, five-slide tension and grounded discovery
+  prompts remain queued for a clean publishing path.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none. No title, author, source, cover, audio or rights basis was
+  inferred from `Freak!` or the failed request.
+- Blockers: reconnect completion, pending-draft reconciliation, native packaging and content-ID
+  reconciliation remain incomplete. The failed draft must not be retried while the five-draft cap or
+  single-writer state is unresolved.
+
+**Performance**
+
+- 24-hour checkpoints: no new clean creative checkpoint. `Freak!` remains an integrity audit at 251
+  views / 0 likes / 0 comments.
+- 72-hour checkpoints: not due.
+- Seven-day checkpoints: not due.
+- Missing measures: reach, watch time, completion, saves, shares, profile visits, follows, search
+  terms and link taps remain Not available on this path.
+
+**Learning**
+
+- Experiment updates: record the failed Creator Inbox request as a publishing failure and keep it
+  separate from creative scoring.
+- Confidence changes: none. Current external research remains platform context, not account evidence.
+- Repeat: the existing grounded, reader-specific routes after the publishing path is clean.
+- Modify: complete OAuth, reconcile pending drafts and native metadata, then re-run the validation
+  gate before resuming.
+- Pause: automatic TikTok publishing and the second daily slot.
+
+**Queue**
+
+- Approved: none for automatic publication while the hold and reconnect remain active.
+- In production: `cr-03` Foster, `cr-04` Tinker Tailor Soldier Spy and the prepared discovery/reset
+  briefs remain viable after their evidence and rights gates.
+- Awaiting evidence or review: `Freak!`, earlier public-row metadata, pending Creator Inbox drafts,
+  and the current UK Creative Centre/creator sample.
+- Requires user approval: any recovery, edit, delete, re-upload or manual response to unreadable
+  comments.
 
 ### 2026-09-11, 08:00 Europe/London
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-11T08:00:38+01:00",
+  "updated_at": "2026-09-12T08:00:39+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -2254,6 +2254,90 @@
       },
       "metrics_unavailable_reason": "Zernio exposed views, likes and comments only in this read. Reach, watch completion, shares, saves, link clicks and follows were not exposed.",
       "notes": "Caption read-back is Freak!. No matching current brief, source or Evidence Ledger record was found. Retain as a publishing-integrity observation and exclude from creative comparison."
+    },
+    {
+      "observation_id": "fb-2026-09-12-11-sep-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122112699579415831",
+      "title": "Describe your current read as a weather report",
+      "format": "text",
+      "published_at": "2026-09-11T13:02:40+01:00",
+      "observed_at": "2026-09-12T08:00:39+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication, but the requested Graph post-insights metric set returns HTTP 400: The value must be a valid insights metric.",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122112699579415831. The direct scheduled_posts read before extension contained six future rows for 12-17 September."
+    },
+    {
+      "observation_id": "fb-2026-09-12-queue-extension",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122113388187415831",
+      "title": "Sentence or question",
+      "format": "text",
+      "published_at": "2026-09-18T13:00:00+01:00",
+      "observed_at": "2026-09-12T08:00:39+01:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 18 September; live metrics are not available. This observation represents the seven-day queue extension.",
+      "notes": "Read-back ID 122113388187415831 at https://www.facebook.com/122107379391415831/posts/122113388187415831. The direct scheduled_posts read after creation contains seven future rows for 12-18 September 2026 at 13:00 Europe/London."
+    },
+    {
+      "observation_id": "tk-2026-09-12-draft-cap-failure",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": null,
+      "title": "Empire of Pain and Bad Blood Creator Inbox draft",
+      "format": "reel",
+      "published_at": "2026-09-12T07:24:24+01:00",
+      "observed_at": "2026-09-12T08:00:39+01:00",
+      "checkpoint": "initial",
+      "status": "failed",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "BookQuotes-owned footage submission with verified local source and cover; TikTok content creation failed before a public content ID was issued.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio returned the TikTok five-pending-drafts-cap error; no TikTok content ID or public analytics exists.",
+      "notes": "Failed Creator Inbox request 6aa4f018662ee2d345bceb39 at 2026-09-12T06:24:24.755Z. Do not retry, delete or publish a second copy until pending drafts are reconciled."
     }
   ],
   "search_snapshots": [
