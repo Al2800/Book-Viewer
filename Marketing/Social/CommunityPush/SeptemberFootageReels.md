@@ -108,3 +108,19 @@ User chose Tailscale transfer to their phone so they can import the silent video
 Delivery task `book-quote-7dh3` is complete as a **phone handoff for manual Instagram editing**, not Instagram publication. The receiver's Photos import and in-app posting were not observed. No Instagram API write or further TikTok inbox upload was made. Source files remain untouched.
 
 Suggested audio directions: soft piano/ambient for science and philosophy; instrumental lo-fi for shelf compilations; restrained jazz/percussion for business and history. These are style suggestions, not claims that particular tracks are commercially licensed. Use Meta Sound Collection or another track explicitly cleared for the intended brand use. The user can save the received MP4s to Photos, select them in Instagram Create Reel, add cleared audio, and review/save a draft before posting.
+
+## Next TikTok Inbox delivery — 12 September 2026
+
+User requested more clips. Read the complete bound-account Zernio listing (31 posts, one page) and reconciled filenames, captions and hashes. Reels 04, 05 and 12 had already been delivered by intervening work; they were not resent. The connection was active with approximately 2.5 hours of token validity remaining, so no reconnect/account mutation was needed for this short batch.
+
+| Reel | Zernio post ID | Read-back result |
+|---|---|---|
+| 06-pair-words-and-speaking | 6aa4ef7fba36ae6f757e86af | Accepted inbox draft |
+| 07-pair-a-thinking-life | 6aa4ef9dba36ae6f757e8e2e | Accepted inbox draft |
+| 10-collection-malcolm-gladwell | 6aa4efb52bb4a6f7f741ae7d | Accepted inbox draft |
+| 11-collection-behind-the-business | 6aa4efde9cabde85abdadc41 | Accepted inbox draft |
+| 13-pair-health-and-business | 6aa4f018662ee2d345bceb39 | Failed: TikTok five-pending-drafts cap |
+
+All five requests were single-account Creator Inbox requests with `draft: true`; source video hashes were verified before upload. Four independent GET read-backs matched the account and caption, `status: published`, `platformSpecificData.isDraft: true`, and no public URL. The fifth GET read-back confirmed a failed platform entry with the explicit pending-draft-cap error. Stopped immediately: no retry, deletion, public publishing, or additional upload attempt.
+
+Receipts: `zernio-inbox-20260912T062147Z/` inside the local collection folder. The original 12-reel inbox delivery is now complete (`book-quote-48u7`). Follow-up `book-quote-59yp` tracks batch-two reels 13–20 after the user processes pending drafts. Reel 13 already has a failed Zernio object: reconcile it before any retry; do not blindly create another post. Reels 14–20 were not attempted. Zernio acceptance does not prove the user opened the draft or published it.
