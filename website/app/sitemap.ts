@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [...staticPages, ...guidePages, ...journalPages].map((path) => ({
     url: `${baseUrl}${path}`,
-    lastModified: new Date('2026-08-03'),
+    lastModified: new Date(),
     changeFrequency: path === '' ? 'weekly' : 'monthly',
     priority: path === '' ? 1 : path.startsWith('/guides/') ? 0.8 : 0.6,
   }))

@@ -30,7 +30,7 @@ export default function Home() {
             name: 'BookQuotes',
             applicationCategory: 'BooksApplication',
             operatingSystem: 'iOS, iPadOS',
-            description: 'Capture marked pages from physical books, review extracted passages, and build a searchable personal quote library.',
+            description: 'A privacy-first book quote finder and quote reader for physical books. Capture marked pages, review extracted passages, and build a searchable personal quote library.',
             url: 'https://bookquotes.uk',
             downloadUrl: 'https://apps.apple.com/app/id6758091579',
             publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },

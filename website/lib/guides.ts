@@ -35,7 +35,7 @@ export const guides: Guide[] = [
     updated: '3 August 2026',
     intro:
       'The easiest way to lose a good passage is to assume you will remember where it was. A photo in the camera roll helps, but it still leaves the wording, book, page, and reason for keeping the line scattered. A dependable capture ritual keeps those pieces together without asking you to stop reading and type everything out.',
-    relatedQueries: ['book quote app', 'save book highlights', 'capture quotes from paper books'],
+    relatedQueries: ['book quote app', 'save book highlights', 'capture quotes from paper books', 'book quote finder', 'quote reader'],
     sections: [
       {
         heading: '1. Mark the passage while you read',
@@ -99,7 +99,7 @@ export const guides: Guide[] = [
     updated: '3 August 2026',
     intro:
       'Scanning an underlined book page is less about taking a fast photograph and more about producing an image that can be checked. Good framing gives the text extractor a fair chance, while the review step protects the wording you actually meant to keep.',
-    relatedQueries: ['scan book page to text', 'OCR underlined book page', 'book page scanner app'],
+    relatedQueries: ['scan book page to text', 'OCR underlined book page', 'book page scanner app', 'quote reader for physical books'],
     sections: [
       {
         heading: 'Prepare the page before you open the camera',
@@ -269,7 +269,7 @@ export const guides: Guide[] = [
     updated: '3 August 2026',
     intro:
       'The best book-quote system is the one you will use while reading and trust when you return later. For some readers, Apple Notes is enough. For others, a dedicated library removes the repeated work of naming books, transcribing passages, and searching through screenshots.',
-    relatedQueries: ['book notes app iPhone', 'book quote organiser iPhone', 'app to save book highlights'],
+    relatedQueries: ['book notes app iPhone', 'book quote organiser iPhone', 'app to save book highlights', 'book quote search', 'book quotes finder'],
     sections: [
       {
         heading: 'Start by identifying the retrieval problem',
