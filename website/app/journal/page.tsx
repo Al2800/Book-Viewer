@@ -6,9 +6,25 @@ import { Footer } from '@/components/layout/Footer'
 import { journalArticles } from '@/lib/journal'
 
 export const metadata: Metadata = {
-  title: 'Journal | BookQuotes',
-  description: 'Practical ideas for book annotation, commonplace books, and remembering what you read.',
+  title: 'Journal: Reading, Marking & Commonplace Notes | BookQuotes',
+  description: 'Practical ideas for book annotation, quote readers, commonplace books, and remembering what you read from physical books.',
+  keywords: [
+    'book quotes',
+    'quote reader',
+    'commonplace book',
+    'book annotation',
+    'reading notes',
+    'physical books',
+  ],
   alternates: { canonical: '/journal' },
+  openGraph: {
+    title: 'Journal: Reading, Marking & Commonplace Notes | BookQuotes',
+    description: 'Practical ideas for book annotation, quote readers, commonplace books, and remembering what you read from physical books.',
+    url: 'https://bookquotes.uk/journal',
+    siteName: 'BookQuotes',
+    locale: 'en_GB',
+    type: 'website',
+  },
 }
 
 export default function JournalPage() {

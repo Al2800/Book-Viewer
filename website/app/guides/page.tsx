@@ -6,10 +6,28 @@ import { Footer } from '@/components/layout/Footer'
 import { guides } from '@/lib/guides'
 
 export const metadata: Metadata = {
-  title: 'Book Reading and Quote Guides | BookQuotes',
+  title: 'Book Quote Guides: Finding, Reading & Saving Quotes | BookQuotes',
   description:
-    'Practical guides for saving quotes from physical books, scanning marked pages, digitising notes, and building a searchable reading library.',
+    'Practical guides for using a book quote finder, scanning marked pages from physical books, digitising notes, and searching your personal quote library.',
+  keywords: [
+    'book quote finder',
+    'quote reader',
+    'book quote search',
+    'how to save book quotes',
+    'search physical book quotes',
+    'digitise book highlights',
+    'reading guides',
+  ],
   alternates: { canonical: '/guides' },
+  openGraph: {
+    title: 'Book Quote Guides: Finding, Reading & Saving Quotes | BookQuotes',
+    description:
+      'Practical guides for using a book quote finder, scanning marked pages from physical books, digitising notes, and searching your personal quote library.',
+    url: 'https://bookquotes.uk/guides',
+    siteName: 'BookQuotes',
+    locale: 'en_GB',
+    type: 'website',
+  },
 }
 
 export default function GuidesPage() {

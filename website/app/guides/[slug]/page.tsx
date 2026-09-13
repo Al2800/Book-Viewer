@@ -91,10 +91,32 @@ export default async function GuidePage({ params }: GuidePageProps) {
             <p className="font-ui text-sm text-ink-medium mb-4">{guide.category}</p>
             <h1 className="text-balance mb-6">{guide.title}</h1>
             <p className="text-xl text-ink-medium max-w-2xl mb-6">{guide.intro}</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2 font-ui text-sm text-ink-light">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 font-ui text-sm text-ink-light mb-8">
               <span>Updated {guide.updated}</span>
               <span>{guide.readingTime}</span>
               <span>Primary search: {guide.query}</span>
+            </div>
+
+            <div className="p-5 md:p-6 bg-paper-warm border border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <p className="font-display text-lg text-ink-black font-semibold mb-1">
+                  A quote reader for physical books
+                </p>
+                <p className="font-ui text-sm text-ink-medium">
+                  Photograph marked pages, extract your underlines, and build a searchable quote library on iPhone and iPad.
+                </p>
+              </div>
+              <a
+                href={seoAppStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0"
+              >
+                <Button size="default" className="w-full sm:w-auto">
+                  Get the app
+                  <ExternalLink className="w-4 h-4 ml-2" />
+                </Button>
+              </a>
             </div>
           </header>
 

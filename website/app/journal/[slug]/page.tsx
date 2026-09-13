@@ -90,9 +90,31 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </p>
             <h1 className="text-balance mb-6">{article.title}</h1>
             <p className="text-xl text-ink-medium max-w-2xl mb-6">{article.summary}</p>
-            <p className="font-ui text-sm text-ink-light">
+            <p className="font-ui text-sm text-ink-light mb-8">
               {article.published} · {article.readingTime}
             </p>
+
+            <div className="p-5 md:p-6 bg-paper-warm border border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <p className="font-display text-lg text-ink-black font-semibold mb-1">
+                  A quote reader for physical books
+                </p>
+                <p className="font-ui text-sm text-ink-medium">
+                  Photograph marked pages, extract your underlines, and build a searchable quote library on iPhone and iPad.
+                </p>
+              </div>
+              <a
+                href={seoAppStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0"
+              >
+                <Button size="default" className="w-full sm:w-auto">
+                  Get the app
+                  <ExternalLink className="w-4 h-4 ml-2" />
+                </Button>
+              </a>
+            </div>
           </header>
 
           <ProductEvidence
