@@ -1,12 +1,12 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-09-12T08:00:39+01:00</code>.
+Generated from structured evidence updated <code>2026-09-13T08:01:01+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-09-05T08:00:39+01:00</code> to <code>2026-09-12T08:00:39+01:00</code>
-- Published Facebook items represented: 4
-- Visible views: 2341
+- Reporting window: <code>2026-09-06T08:01:01+01:00</code> to <code>2026-09-13T08:01:01+01:00</code>
+- Published Facebook items represented: 5
+- Visible views: 2343
 - Visible reach: 0
 - Meaningful interactions: 2
 - Link clicks: 0
@@ -16,11 +16,16 @@ Generated from structured evidence updated <code>2026-09-12T08:00:39+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-09-19 | scheduled | facebook | Tell someone about a book before you finish it | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-18 | scheduled | facebook | Sentence or question | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-17 | scheduled | facebook | What makes you stop halfway through a book and return later | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-16 | scheduled | facebook | Which part of a book makes you want to recommend it | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-09-12 | published | tiktok | Gladwell public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-12 | published | facebook | Reading time is not a moral score | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | failed | tiktok | Empire of Pain and Bad Blood Creator Inbox draft | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-11 | published | facebook | Describe your current read as a weather report | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | audit | 252 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | initial | 250 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-10 | published | facebook | Some books are better borrowed than owned | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-09 | published | tiktok | Space public Reel | reel | initial | 234 | Not available | Not available | Not available | Insufficient distribution |
@@ -115,8 +120,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 10
-- Channel-only items: 10
+- Durable published items: 13
+- Channel-only items: 13
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

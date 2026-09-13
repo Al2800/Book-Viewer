@@ -1,22 +1,51 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 12 September 2026, 08:00 Europe/London
+Updated: 13 September 2026, 08:00 Europe/London
 
 ## Current operating loop
 
-- Facebook: the 11 September reader prompt published once at 13:02 Europe/London as
-  `122112699579415831`. Seven direct Graph scheduled rows now remain for 12-18 September at 13:00
-  Europe/London; the added 18 September row is `122113388187415831`.
+- Facebook: the 12 September reader prompt published once at 13:00 Europe/London as
+  `122112699609415831`. Seven direct Graph scheduled rows now remain for 13-19 September at 13:00
+  Europe/London; the added 19 September row is `122113548387415831`.
 - Instagram: the connected `bookquotes.app` identity remains verified. The current read still
   exposes 19 media rows with the latest at 30 August (`18102461696608755`), conflicting with the
   earlier 21-row read whose latest was 1 September (`18125822551699434`). No deletion or write was
   observed; treat this as a read-surface discrepancy and do not claim a new Instagram publication.
-- TikTok: `@bookquotes.app` is active with analytics access, 22 public rows and 7 followers. The
-  10 September row `7683942886928436502` (`Freak!`) now reads 251 views / 0 likes / 0 comments,
-  but has no matching current brief or evidence record. A 12 September Creator Inbox request
-  `6aa4f018662ee2d345bceb39` failed at the five-pending-drafts cap and created no public content ID.
-  The token expires at `2026-09-12T08:50:53.157Z`; the scheduled reconnect opened the OAuth flow,
-  but completion is not yet verified. The metadata reconciliation hold remains active.
+- TikTok: `@bookquotes.app` is active with analytics access, 24 public rows and 7 followers. The
+  12 September rows `7684560503737437443` (`Some great business non fiction`) and
+  `7684689312486591766` (`Gladwell`) both read 0 views / 0 likes / 0 comments and only partially
+  resemble local Creator Inbox themes; native packaging and exact brief attribution remain
+  unreconciled. The 10 September row `7683942886928436502` (`Freak!`) reads 252 views / 0 likes /
+  0 comments and has no matching current brief or evidence record. Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and created no public
+  content ID. The token expires at `2026-09-13T09:52:20.228Z`; current health is expiring soon with
+  reconnect required and no verified completion. The metadata reconciliation hold remains active.
+
+### Audit: 13 September 2026, 08:00 Europe/London
+
+- Facebook: the 12 September reader prompt published once at
+  `https://www.facebook.com/122107379391415831/posts/122112699609415831`, with Page feed
+  `is_published=true`, created time `2026-09-12T12:00:00+0000` and the expected 13:00 BST slot.
+  The direct `scheduled_posts` read now contains seven future rows for 13-19 September at 13:00
+  Europe/London; the new 19 September row is `122113548387415831`, read back at
+  `https://www.facebook.com/122107379391415831/posts/122113548387415831`. Page post-level insight
+  metrics still return HTTP 400, so views, reach, clicks, comments and shares remain Not available.
+- Instagram: the connected `bookquotes.app` identity and publishing permissions remain verified.
+  The current read exposes 19 media rows, latest 30 August (`18102461696608755`), conflicting with
+  the earlier 21-row read whose latest was 1 September (`18125822551699434`). No deletion or write
+  was observed and no new Instagram publication is claimed.
+- TikTok: the latest detailed sync is `2026-09-13T08:01:35.328Z`; the account is active with 24
+  public rows, 7 followers and analytics access. The two new 12 September rows are public but both
+  read 0 views / 0 likes / 0 comments, while `Freak!` reads 252 / 0 / 0. The new rows have partial
+  local Creator Inbox theme matches but no native caption, cover, audio, audience, rights or exact
+  brief reconciliation, so they are excluded from creative comparison. The failed request
+  `6aa4f018662ee2d345bceb39` remains blocked by the five-pending-drafts cap. Token health is
+  `expiring_soon` with `reconnect_required=true` and expiry at `2026-09-13T09:52:20.228Z`; no
+  verified reconnect completion is recorded.
+- No TikTok upload, schedule, edit, delete or re-upload was made by this automation. No comments or
+  messages were exposed as readable text; no routine replies were made. Current Creative Centre and
+  UK BookTok research remains platform context only; no hypothesis confidence changed. Keep the
+  TikTok single-writer, duplicate, metadata, evidence and second-slot holds active.
 
 ### Audit: 12 September 2026, 08:00 Europe/London
 

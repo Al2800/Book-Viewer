@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 12 September 2026
+Updated: 13 September 2026
 
 ## Method
 
@@ -47,6 +47,21 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 13 September 2026, 08:00 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7684560503737437443` | Publishing-integrity audit | Initial audit | 0 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Caption is `Some great business non fiction`; partial resemblance to local Creator Inbox theme 11, but native caption, cover, audio, audience, rights and exact brief attribution are unreconciled. Exclude from creative comparison. |
+| `7684689312486591766` | Publishing-integrity audit | Initial audit | 0 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Caption is `Gladwell`; partial resemblance to local Creator Inbox theme 10, but native caption, cover, audio, audience, rights and exact brief attribution are unreconciled. Exclude from creative comparison. |
+| `7683942886928436502` | Publishing-integrity audit | Audit | 252 views, 0 likes, 0 comments | Reach, watch completion, saves, shares, profile visits and follows Not available | Caption is `Freak!`; no matching current brief, source or Evidence Ledger record. Exclude from creative comparison. |
+
+These are read-only integrity observations, not new experiment executions by the current automation.
+The two 12 September public rows have no attributable native packaging read-back, and the `Freak!`
+row remains unassigned. No confidence or result label changed. The token expires at
+`2026-09-13T09:52:20.228Z` with `reconnect_required=true`; the single-writer, duplicate, metadata,
+evidence and second-slot holds remain active. The failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains blocked by TikTok's five-pending-drafts cap.
 
 ### 12 September 2026, 08:00 Europe/London
 

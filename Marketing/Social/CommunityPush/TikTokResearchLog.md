@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 12 September 2026
+Updated: 13 September 2026
 
 ## Purpose
 
@@ -63,6 +63,77 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-13, 08:00 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 24
+  public rows and 7 followers. The latest detailed sync is `2026-09-13T08:01:35.328Z`; the token
+  expires at `2026-09-13T09:52:20.228Z`; current health is `expiring_soon` with
+  `reconnect_required=true`. No verified reconnect completion is recorded.
+- Two new public rows from 12 September are visible: `7684560503737437443`, caption `Some great
+  business non fiction`, 0 views / 0 likes / 0 comments, and `7684689312486591766`, caption
+  `Gladwell`, 0 / 0 / 0. They partially resemble local September Creator Inbox themes 11
+  (`10-collection-malcolm-gladwell`) and 10 (`11-collection-behind-the-business`), but the native
+  cover, audio, audience, rights basis and exact brief attribution were not read back. Treat them
+  as publishing-integrity observations, not clean creative executions or topic failures.
+- The public `Freak!` row `7683942886928436502` now reads 252 views / 0 likes / 0 comments and has
+  no matching current brief, source or Evidence Ledger record. Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and created no public
+  content ID. No upload, schedule, edit, delete or re-upload was made by this automation.
+- Keep the single-writer, duplicate, metadata, evidence and second-slot holds active.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Centre research surfaces | [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB) | Public guidance identifies Inspiration, Top Ads and Trends; live GB Top Ads returned no public results without signed-in access | Use as a research route, not as account performance evidence | Medium | Recheck after native access is healthy |
+| UK BookTok list context | [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | Platform article combines retail data with TikTok engagement | Supports studying reader-fit and list-context packaging, not a BookQuotes result | Medium | Keep as contextual signal; do not copy wording or claim lift |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: none added from the two public rows because their native packaging is not
+  attributable; thin captions alone are not a reusable style signal.
+- Elements explicitly excluded from imitation: unverified captions, unknown cover/audio choices,
+  unknown audience settings and any distinctive execution from an unattributed public row.
+
+**Audience language**
+
+- Comments, searches or questions: no readable TikTok comment, message or search text was exposed.
+- Potential reader-need hooks: none added from account evidence.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native caption, cover, audio, audience, rights basis and exact brief mapping are missing
+  for both new rows; token reconnect and pending-draft state remain unresolved.
+
+**Performance**
+
+- 24-hour checkpoints: the two 12 September rows visibly read 0 / 0 / 0; deeper measures are Not
+  available and they are excluded from clean comparison.
+- 72-hour checkpoints: Not due or not attributable.
+- Seven-day checkpoints: Not due or not attributable.
+- Missing measures: reach, watch time, completion, hold, saves, shares, profile visits, follows,
+  link taps, search terms and recurring reader language.
+
+**Learning**
+
+- Experiment updates: record both rows and the `Freak!` audit in `TikTokExperimentRegister.md`;
+  do not treat any as a new clean experiment.
+- Confidence changes: none.
+- Repeat: keep the verified preparation queue through `cr-03`, `cr-04` and Distribution Reset.
+- Modify: require native metadata and brief attribution read-back before any publication is scored.
+- Pause: automatic TikTok upload, scheduling, editing, deletion, re-upload and second-slot testing.
+
+**Queue**
+
+- Approved: no new TikTok item advanced.
+- In production: verified `cr-03`, `cr-04` and Distribution Reset briefs remain available.
+- Awaiting evidence or review: the two public 12 September rows and pending-draft reconciliation.
+- Requires user approval: native recovery or any mutation of public TikTok content.
 
 ### 2026-09-12, 08:00 Europe/London
 
