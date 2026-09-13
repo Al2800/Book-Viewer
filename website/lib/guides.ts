@@ -740,7 +740,7 @@ export const guides: Guide[] = [
         heading: 'Exporting from BookQuotes: clean Markdown and open formats',
         paragraphs: [
           'BookQuotes avoids proprietary silos. When you export your library, you can generate clean Markdown files structured for immediate compatibility with Obsidian, Logseq, and other plain-text systems, as well as JSON and Notion formats.',
-          'Each exported quote preserves essential academic context: the verbatim passage, book title, author, publication page, date captured, tags, and your personal margin notes. This ensures your citations remain robust without requiring secondary formatting passes.',
+          'Each exported quote preserves essential academic context: the verbatim passage, book title, author, publication page, date captured, tags, and your personal margin notes. This ensures your citations remain intact and usable without requiring secondary formatting passes.',
         ],
       },
       {
