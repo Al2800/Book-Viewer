@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 13 September 2026, 08:00 Europe/London
+Updated: 14 September 2026, 08:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,65 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 14 September 2026, 08:00 Europe/London
+
+**Platforms checked:** Meta identity, Facebook Page feed and direct scheduled-posts edge, Instagram
+media, TikTok account and Zernio inventory, token health, current TikTok Creative Centre/Top Ads and
+UK BookTok research, and the current publishing runbooks.
+
+**Observation**
+
+- Facebook's 13 September reader prompt published once at 13:00 Europe/London as
+  `122112699639415831`, with live URL
+  `https://www.facebook.com/122107379391415831/posts/122112699639415831`. The direct
+  `scheduled_posts` read now contains seven future rows for 14-20 September at 13:00 Europe/London;
+  the new 20 September row is `122113678365415831`. The Page insights request still returns HTTP
+  400, so post-level views, reach, clicks, comments and shares are Not available.
+- Instagram's connected `bookquotes.app` identity and permissions remain verified. The current read
+  exposes 19 media rows, latest timestamp 30 August (`18102461696608755`), conflicting with the
+  earlier 21-row read whose latest was the 1 September still `18125822551699434`. No deletion or
+  Instagram write was observed; this remains a read-surface discrepancy, not evidence of a new
+  publication.
+- TikTok read-back reports active `@bookquotes.app`, analytics access, 24 public rows and 7
+  followers. The `Gladwell` row `7684689312486591766` now reads 3 views / 0 likes / 0 comments / 1
+  save, while `Some great business non fiction` `7684560503737437443` remains 0 / 0 / 0 / 0. The
+  native cover, audio, audience, rights basis and exact brief attribution remain unreconciled, so
+  neither row is clean creative evidence. `Freak!` `7683942886928436502` remains 252 / 0 / 0.
+- Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and
+  created no public TikTok content ID. The latest detailed sync is `2026-09-14T07:44:40.122Z`; the
+  token is now healthy through `2026-09-15T05:50:00.520Z`, with reconnect no longer required.
+
+**Research update**
+
+- The current official [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  still identifies Inspiration, Top Ads and Trends as public research surfaces. The live GB Top Ads
+  view returned no public results without a signed-in session. The official [UK BookTok Bestsellers
+  update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains platform context only, not BookQuotes performance evidence. Direct creator-profile sampling
+  remains blocked by robots.
+
+**Community**
+
+- No readable Facebook, Instagram or TikTok comment or message text was exposed.
+- No routine replies were made and no reply requires approval from this audit.
+
+**Learning update**
+
+- No hypothesis confidence or result label changed. The one-save Gladwell signal is too small and
+  metadata-unresolved to classify; both 12 September rows remain excluded from clean creative
+  comparison. Reconnect recovery clears an access blocker but does not clear the publishing-integrity
+  holds.
+- Maintain the current TikTok preparation queue through verified `cr-03`, `cr-04` and the
+  Distribution Reset briefs, but keep them research/production-ready rather than scheduled while
+  the integrity holds remain active.
+
+**Next actions**
+
+- Automatic: keep the Facebook queue at seven future rows, record the next available metrics without
+  converting unavailable values to zero, and continue read-only TikTok reconciliation.
+- Requires native recovery: reconcile pending drafts and native metadata, then re-run the validation
+  gate before any TikTok upload or schedule.
 
 ### 13 September 2026, 08:00 Europe/London
 

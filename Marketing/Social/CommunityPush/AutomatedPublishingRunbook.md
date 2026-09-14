@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 13 September 2026
+Updated: 14 September 2026
 
 ## Purpose
 
@@ -173,26 +173,26 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 13 September 2026, the direct Graph Page feed confirms that the 12 September reader prompt
+As of 14 September 2026, the direct Graph Page feed confirms that the 13 September reader prompt
 published once at 13:00 Europe/London as
-`122112699609415831` (`https://www.facebook.com/122107379391415831/posts/122112699609415831`).
-The direct Graph `scheduled_posts` read now returns seven future rows for 13-19 September at 13:00
-Europe/London; the new 19 September row is `122113548387415831`. Facebook post-level insights still
+`122112699639415831` (`https://www.facebook.com/122107379391415831/posts/122112699639415831`).
+The direct Graph `scheduled_posts` read now returns seven future rows for 14-20 September at 13:00
+Europe/London; the new 20 September row is `122113678365415831`. Facebook post-level insights still
 reject the requested metric set with HTTP 400, so metrics stay Not available rather than zero.
 Instagram's current read exposes 19 media rows with the latest at 30 August (`18102461696608755`),
 conflicting with the earlier 21-row read whose latest was 1 September (`18125822551699434`); no
 Instagram deletion or write was observed, so this remains a read-surface discrepancy rather than a
 publication change.
-TikTok reports 24 public rows, 7 followers and analytics access. Two 12 September public rows now
-appear: `7684560503737437443` (`Some great business non fiction`) and `7684689312486591766`
-(`Gladwell`), both at 0 views / 0 likes / 0 comments. They partially resemble local September
-Creator Inbox themes, but their native captions, covers, audio, audience settings, rights basis and
-exact brief attribution are not reconciled, so they remain integrity observations rather than
-creative results. The public `Freak!` row `7683942886928436502` now reads 252 views / 0 likes / 0
-comments and still has no matching current brief or Evidence Ledger record. Creator Inbox request
+TikTok reports 24 public rows, 7 followers and analytics access. The 12 September `Gladwell` row
+`7684689312486591766` now reads 3 views / 0 likes / 0 comments / 1 save, while `Some great business
+non fiction` `7684560503737437443` remains at 0 / 0 / 0 / 0. Both partially resemble local
+September Creator Inbox themes, but their native captions, covers, audio, audience settings, rights
+basis and exact brief attribution are not reconciled, so they remain integrity observations rather
+than clean creative results. The public `Freak!` row `7683942886928436502` remains at 252 views / 0
+likes / 0 comments and has no matching current brief or Evidence Ledger record. Creator Inbox request
 `6aa4f018662ee2d345bceb39` for the Empire of Pain and Bad Blood Reel remains failed at the
-five-pending-drafts cap and created no public TikTok content ID. The token expires at
-`2026-09-13T09:52:20.228Z`; current health is expiring soon with reconnect required, and no verified
-completion is recorded. The single-writer, duplicate, metadata, evidence and second-slot holds
-remain active. No new TikTok upload, schedule, edit, delete or re-upload may occur until intended
-captions, covers, audio, audience, rights basis and attributable content IDs are reconciled.
+five-pending-drafts cap and created no public TikTok content ID. The token now reads healthy through
+`2026-09-15T05:50:00.520Z`; reconnect is no longer required. The single-writer, duplicate, metadata,
+evidence and second-slot holds remain active. No new TikTok upload, schedule, edit, delete or
+re-upload may occur until intended captions, covers, audio, audience, rights basis and attributable
+content IDs are reconciled.

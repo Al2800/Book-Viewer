@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 13 September 2026
+Updated: 14 September 2026
 
 ## Purpose
 
@@ -200,6 +200,30 @@ approval-only.
   [BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
   remains platform context only. No new account-level performance conclusion follows from either
   source, and direct creator-profile sampling remains blocked by robots.
+- Keep the single-writer, duplicate, metadata, evidence and second-slot holds active. No TikTok
+  upload, schedule, edit, delete or re-upload may occur automatically until intended caption, cover,
+  audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
+  label changed.
+
+### Metadata reconciliation audit: 14 September 2026, 08:00 Europe/London
+
+- The account remains active as `@bookquotes.app` with 24 public rows, 7 followers and analytics
+  access. The latest detailed sync is `2026-09-14T07:44:40.122Z`; the token now expires at
+  `2026-09-15T05:50:00.520Z`, and current token health is `ok` with `reconnect_required=false`.
+- The 12 September public `Gladwell` row `7684689312486591766` now reads 3 views / 0 likes / 0
+  comments / 1 save; `Some great business non fiction` `7684560503737437443` remains at 0 views / 0
+  likes / 0 comments / 0 saves. The small save signal is not a clean creative result because the
+  native cover, audio, audience, rights basis and exact brief attribution were not read back for
+  either row. They remain publishing-integrity observations.
+- The public `Freak!` row `7683942886928436502` remains at 252 views / 0 likes / 0 comments, with
+  reach 225 and no matching current brief, source or Evidence Ledger record. Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and created no public
+  content ID.
+- Current [Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  still identifies Inspiration, Top Ads and Trends as public research surfaces; the live GB Top Ads
+  view returned no public results without a signed-in session. The official UK [BookTok Bestsellers
+  update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains platform context only, and direct creator-profile sampling remains blocked by robots.
 - Keep the single-writer, duplicate, metadata, evidence and second-slot holds active. No TikTok
   upload, schedule, edit, delete or re-upload may occur automatically until intended caption, cover,
   audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
