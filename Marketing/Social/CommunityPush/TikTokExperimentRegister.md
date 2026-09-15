@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 14 September 2026
+Updated: 15 September 2026
 
 ## Method
 
@@ -47,6 +47,19 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 15 September 2026, 08:00 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7684689312486591766` | Publishing-integrity audit | 24h-plus | 3 views, 0 likes, 0 comments, 1 save, 3 reach | Watch completion, shares, profile visits and follows Not available | Caption is `Gladwell`; one save is too small to classify and native packaging remains unreconciled. Partial local theme match only. Exclude from creative comparison. |
+| `7684560503737437443` | Publishing-integrity audit | 24h-plus | 0 views, 0 likes, 0 comments, 0 saves, 0 reach | Watch completion, shares, profile visits and follows Not available | Caption is `Some great business non fiction`; partial local theme match only, with native packaging and exact brief attribution unreconciled. Exclude from creative comparison. |
+
+These are read-only integrity observations, not new experiment executions by the current automation.
+The token is healthy through `2026-09-16T06:54:02.127Z`, but the single-writer, duplicate, metadata,
+evidence and second-slot holds remain active. The failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains blocked by TikTok's five-pending-drafts cap. No confidence or
+result label changed.
 
 ### 14 September 2026, 08:00 Europe/London
 
