@@ -5,14 +5,37 @@ import { journalArticles } from '@/lib/journal'
 const baseUrl = 'https://bookquotes.uk'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages = ['', '/guides', '/journal', '/support', '/privacy', '/terms']
-  const guidePages = guides.map((guide) => `/guides/${guide.slug}`)
-  const journalPages = journalArticles.map((article) => `/journal/${article.slug}`)
+  const staticPages: { path: string; lastModified: Date; changeFrequency: 'weekly' | 'monthly'; priority: number }[] = [
+    { path: '', lastModified: new Date('2026-09-17T00:00:00.000Z'), changeFrequency: 'weekly', priority: 1.0 },
+    { path: '/guides', lastModified: new Date('2026-09-17T00:00:00.000Z'), changeFrequency: 'weekly', priority: 0.8 },
+    { path: '/journal', lastModified: new Date('2026-09-17T00:00:00.000Z'), changeFrequency: 'weekly', priority: 0.8 },
+    { path: '/support', lastModified: new Date('2026-08-03T00:00:00.000Z'), changeFrequency: 'monthly', priority: 0.5 },
+    { path: '/privacy', lastModified: new Date('2026-08-03T00:00:00.000Z'), changeFrequency: 'monthly', priority: 0.3 },
+    { path: '/terms', lastModified: new Date('2026-08-03T00:00:00.000Z'), changeFrequency: 'monthly', priority: 0.3 },
+  ]
 
-  return [...staticPages, ...guidePages, ...journalPages].map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date(),
-    changeFrequency: path === '' ? 'weekly' : 'monthly',
-    priority: path === '' ? 1 : path.startsWith('/guides/') ? 0.8 : 0.6,
+  const guidePages = guides.map((guide) => ({
+    url: `${baseUrl}/guides/${guide.slug}`,
+    lastModified: new Date(guide.updatedISO ? `${guide.updatedISO}T00:00:00.000Z` : '2026-08-03T00:00:00.000Z'),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
   }))
+
+  const journalPages = journalArticles.map((article) => ({
+    url: `${baseUrl}/journal/${article.slug}`,
+    lastModified: new Date(article.updatedISO ? `${article.updatedISO}T00:00:00.000Z` : `${article.publishedISO}T00:00:00.000Z`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
+  return [
+    ...staticPages.map((page) => ({
+      url: `${baseUrl}${page.path}`,
+      lastModified: page.lastModified,
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+    })),
+    ...guidePages,
+    ...journalPages,
+  ]
 }

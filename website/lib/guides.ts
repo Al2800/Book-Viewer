@@ -17,6 +17,7 @@ export type Guide = {
   category: string
   readingTime: string
   updated: string
+  updatedISO?: string
   intro: string
   relatedQueries: string[]
   sections: GuideSection[]
@@ -33,6 +34,7 @@ export const guides: Guide[] = [
     category: 'Book quote capture',
     readingTime: '6 min read',
     updated: '3 August 2026',
+    updatedISO: '2026-08-03',
     intro:
       'The easiest way to lose a good passage is to assume you will remember where it was. A photo in the camera roll helps, but it still leaves the wording, book, page, and reason for keeping the line scattered. A dependable capture ritual keeps those pieces together without asking you to stop reading and type everything out.',
     relatedQueries: [
@@ -105,6 +107,7 @@ export const guides: Guide[] = [
     category: 'Page scanning',
     readingTime: '5 min read',
     updated: '3 August 2026',
+    updatedISO: '2026-08-03',
     intro:
       'Scanning an underlined book page is less about taking a fast photograph and more about producing an image that can be checked. Good framing gives the text extractor a fair chance, while the review step protects the wording you actually meant to keep.',
     relatedQueries: ['scan book page to text', 'OCR underlined book page', 'book page scanner app', 'quote reader for physical books'],
@@ -162,6 +165,7 @@ export const guides: Guide[] = [
     category: 'Reading workflow',
     readingTime: '6 min read',
     updated: '3 August 2026',
+    updatedISO: '2026-08-03',
     intro:
       'Digitising book notes is not just a transcription task. A line without its book, page, and reason for keeping it quickly becomes another orphaned note. The better system preserves enough context for you to recognise the idea when you meet it again.',
     relatedQueries: ['digitise reading notes', 'turn paper notes into digital notes', 'book annotation app'],
@@ -219,6 +223,7 @@ export const guides: Guide[] = [
     category: 'Reading practice',
     readingTime: '6 min read',
     updated: '3 August 2026',
+    updatedISO: '2026-08-03',
     intro:
       'A commonplace book is a personal collection of passages, observations, questions, and ideas worth returning to. A digital version does not need to imitate a social feed or become a productivity dashboard. Its job is to make your chosen ideas easier to keep, connect, and revisit.',
     relatedQueries: ['commonplace book app', 'digital reading journal', 'personal quote library'],
@@ -275,6 +280,7 @@ export const guides: Guide[] = [
     category: 'iPhone reading tools',
     readingTime: '6 min read',
     updated: '3 August 2026',
+    updatedISO: '2026-08-03',
     intro:
       'The best book-quote system is the one you will use while reading and trust when you return later. For some readers, Apple Notes is enough. For others, a dedicated library removes the repeated work of naming books, transcribing passages, and searching through screenshots.',
     relatedQueries: [
@@ -345,6 +351,7 @@ export const guides: Guide[] = [
     category: 'Privacy and trust',
     readingTime: '5 min read',
     updated: '3 August 2026',
+    updatedISO: '2026-08-03',
     intro:
       'Your reading history can reveal your interests, questions, beliefs, and unfinished thinking. A book-notes app should explain what stays on the phone, what requires a network, and how you can delete or export your library before you depend on it.',
     relatedQueries: ['private reading notes app', 'offline book notes app', 'local book quote library'],
@@ -401,6 +408,7 @@ export const guides: Guide[] = [
     category: 'Book quote search',
     readingTime: '6 min read',
     updated: '13 September 2026',
+    updatedISO: '2026-09-13',
     intro:
       'Looking for a half-remembered sentence across five physical paperbacks on your shelf usually ends in frustration. A book quote finder on your iPhone solves this by turning physical underlines, margin marks, and dog-eared pages into an indexed, searchable personal library without manual typing.',
     relatedQueries: [
@@ -472,15 +480,16 @@ export const guides: Guide[] = [
   },
   {
     slug: 'quote-reader-app-for-physical-books',
-    title: 'Quote Reader App for Physical Books: From Paper Margin to iPhone',
+    title: 'Quote Reader App for Physical Books: Capture & Search Paper Underlines',
     query: 'quote reader app for physical books',
     description:
-      'How a dedicated quote reader app transforms paper underlines and margin notes into an accurate, searchable digital library on iOS.',
+      'A dedicated quote reader app for physical books. Photograph underlines, brackets, and margin notes to build an accurate, searchable digital quote library on iPhone and iPad.',
     category: 'Quote reader',
     readingTime: '6 min read',
-    updated: '13 September 2026',
+    updated: '17 September 2026',
+    updatedISO: '2026-09-17',
     intro:
-      'Underlining a physical book deepens attention, but finding those passages months later is notoriously tedious. A dedicated quote reader app bridges the physical-digital divide: it reads marked sentences off paper pages, extracts the text, and organises quotes alongside your own margin commentary.',
+      'A quote reader app for physical books lets you capture underlined sentences and handwritten margin notes directly from printed paper into a searchable digital library. Underlining a physical book sharpens attention, but finding those passages months later is notoriously difficult without a dedicated quote reader. BookQuotes bridges the physical-digital divide: photograph marked pages with your iPhone, extract the text cleanly, and keep your favourite passages organised alongside your personal commentary.',
     relatedQueries: [
       'quote reader',
       'quote reader app for physical books',
@@ -557,6 +566,7 @@ export const guides: Guide[] = [
     category: 'Search workflow',
     readingTime: '6 min read',
     updated: '13 September 2026',
+    updatedISO: '2026-09-13',
     intro:
       'Physical books offer an irreplaceable reading experience, but their greatest weakness is search. When you need that striking metaphor on memory or that crisp definition of incentives, paper indexes and memory rarely suffice. Here is a practical system to make your paper library fully searchable on your phone.',
     relatedQueries: [
@@ -635,6 +645,7 @@ export const guides: Guide[] = [
     category: 'Reading comparison',
     readingTime: '6 min read',
     updated: '13 September 2026',
+    updatedISO: '2026-09-13',
     intro:
       'Readers often feel forced to choose between the tactile pleasure of physical books and the convenience of Kindle highlights. E-readers make searching highlights effortless, yet paper offers superior spatial memory, comprehension, and freedom from screen fatigue. You do not have to compromise: you can read on paper and maintain a searchable digital quote library.',
     relatedQueries: [
@@ -719,6 +730,7 @@ export const guides: Guide[] = [
     category: 'Export workflows',
     readingTime: '6 min read',
     updated: '13 September 2026',
+    updatedISO: '2026-09-13',
     intro:
       'A personal quote library on your iPhone is invaluable for quick reference, but serious writing and synthesis happen in dedicated workspace tools like Obsidian and Notion. Here is how to move marked passages from your physical books into your desktop knowledge vault without manual retyping.',
     relatedQueries: [

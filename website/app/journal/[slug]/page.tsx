@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       url: `https://bookquotes.uk/journal/${article.slug}`,
       type: 'article',
       publishedTime: `${article.publishedISO}T00:00:00.000Z`,
-      modifiedTime: `${article.publishedISO}T00:00:00.000Z`,
+      modifiedTime: `${article.updatedISO || article.publishedISO}T00:00:00.000Z`,
       section: article.category,
       images: [seoShareImage],
     },
@@ -57,7 +57,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     headline: article.title,
     description: article.summary,
     datePublished: article.publishedISO,
-    dateModified: article.publishedISO,
+    dateModified: article.updatedISO || article.publishedISO,
     author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
     publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
     mainEntityOfPage: canonicalUrl,
@@ -71,6 +71,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       { '@type': 'ListItem', position: 3, name: article.title, item: canonicalUrl },
     ],
   }
+  const faqSchema = article.faqs && article.faqs.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: article.faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  } : null
 
   return (
     <>
@@ -131,8 +140,29 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                       {paragraph}
                     </p>
                   ))}
+                  {section.bullets && (
+                    <ul className="mt-5 space-y-3 list-disc pl-6 text-lg text-ink-dark">
+                      {section.bullets.map((bullet) => (
+                        <li key={bullet}>{bullet}</li>
+                      ))}
+                    </ul>
+                  )}
                 </section>
               ))}
+
+              {article.faqs && article.faqs.length > 0 && (
+                <section className="mt-14 pt-10 border-t border-subtle">
+                  <h2 className="mb-6">Questions readers ask</h2>
+                  <div className="space-y-7">
+                    {article.faqs.map((faq) => (
+                      <div key={faq.question}>
+                        <h3 className="text-xl mb-2">{faq.question}</h3>
+                        <p className="text-lg text-ink-dark">{faq.answer}</p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
           </div>
         </article>
@@ -156,6 +186,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {faqSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      )}
       <Footer />
     </>
   )
