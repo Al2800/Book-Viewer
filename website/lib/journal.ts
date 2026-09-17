@@ -1,6 +1,12 @@
 export type JournalSection = {
   heading: string
   paragraphs: string[]
+  bullets?: string[]
+}
+
+export type JournalFaq = {
+  question: string
+  answer: string
 }
 
 export type JournalArticle = {
@@ -11,7 +17,9 @@ export type JournalArticle = {
   readingTime: string
   published: string
   publishedISO: string
+  updatedISO?: string
   sections: JournalSection[]
+  faqs?: JournalFaq[]
 }
 
 export const journalArticles: JournalArticle[] = [
@@ -50,34 +58,84 @@ export const journalArticles: JournalArticle[] = [
   },
   {
     slug: 'what-to-do-with-book-highlights',
-    title: 'What to Do with Book Highlights After You Finish Reading',
+    title: 'What to Do with Book Highlights After Finishing a Book: A Practical Review System',
     summary:
-      'Turn a finished book into a small set of ideas you can actually remember and use.',
+      'What to do with book highlights once you close the back cover: how to filter your underlines, extract paper passages, and turn reading notes into a searchable personal library.',
     category: 'Annotation',
-    readingTime: '4 min read',
+    readingTime: '6 min read',
     published: '24 July 2026',
     publishedISO: '2026-07-24',
+    updatedISO: '2026-09-17',
     sections: [
       {
-        heading: 'Wait a day before reviewing',
+        heading: 'Why most book highlights get abandoned',
         paragraphs: [
-          'The moment you finish a book, everything still feels equally close. Give it a little space. When you return the next day, the passages that still feel alive are usually the ones worth carrying forward.',
-          'Leaf through your marks and choose a small number. A useful limit is five to ten passages for an ordinary nonfiction book, or the lines that best preserve the voice and feeling of a novel.',
+          'Underlining a book while reading gives an immediate feeling of accomplishment. A pencil glides under a striking sentence, a margin bracket captures a tight argument, and for a moment, it feels as though the insight has settled permanently into your memory.',
+          'Then you reach the final chapter, close the volume, and slot it back on the shelf. Months later, you remember that the author made a sharp point about attention or habit, but the exact phrasing, the page number, and the context are stranded in paper. Because transcribing quotes by hand is slow and typing them into a document feels like office administration, most book highlights remain locked inside closed covers.',
+          'Highlighting is only the first half of reading. The second half is deciding what to do with those book highlights once the reading is done.',
         ],
       },
       {
-        heading: 'Add context, not clutter',
+        heading: 'The 24-hour cooling-off rule',
         paragraphs: [
-          'Keep the exact wording, title, author, and page number. Add a short note only when it explains why the passage matters to you. A sentence such as “use this when planning difficult work” is more useful than a broad tag such as “productivity”.',
-          'Avoid turning every quote into a miniature essay. The goal is to preserve enough context for your future self to understand why the line survived the review.',
+          'The most common mistake is trying to process your book highlights the moment you reach the final page. When a book is fresh, every marked sentence still carries emotional momentum. Everything feels equally profound because the narrative tension is still vibrating in your head.',
+          'Give the book a day or two of quiet space. When you return with cool eyes, leaf back through your dog-ears, pencil marks, and slips of paper. The passages that still carry genuine weight will stand out clearly from clever turns of phrase that only felt urgent in the flow of the chapter.',
+          'A disciplined target is five to ten passages for an average non-fiction work, or the few sentences that best preserve the atmosphere and voice of a novel. Curation is what keeps a reading collection alive.',
         ],
       },
       {
-        heading: 'Make retrieval part of reading',
+        heading: 'Filter your highlights before saving them',
         paragraphs: [
-          'Searchable highlights are most useful when they reappear in real situations. Look through them before writing, planning, teaching, or joining a book-club discussion.',
-          'A physical book can stay on the shelf while its strongest lines remain within reach. That is the gap BookQuotes is designed to close.',
+          'A useful quote library is defined by what you choose to discard. If you preserve every sentence you underlined, you do not build a commonplace book—you create a second unmanageable reading backlog.',
+          'Treat your initial paper marks as candidates rather than permanent fixtures. Ask three simple questions during your review: Does this sentence articulate an idea better than I could? Does it challenge an assumption I currently hold? Will I genuinely want to cite or re-read this twelve months from now?',
+          'If a mark fails those tests, leave it on the paper page. It served its purpose by sharpening your focus while reading. Only the lines that pass deserve a place in your searchable archive.',
         ],
+      },
+      {
+        heading: 'Capture paper highlights without manual typing',
+        paragraphs: [
+          'Manual transcription is where good reading intentions go to die. Setting up a laptop, opening a blank document, and typing out long paragraphs from a paperback with one hand holding the binding open creates too much friction to sustain over a year of reading.',
+          'A dedicated quote reader cuts the capture ritual down to seconds. Photograph the marked page in natural light, allow optical recognition or AI extraction to isolate the underlined sentence, and compare the detected words directly against the printed page.',
+          'Scanning the book barcode ISBN attaches the catalogue title and author automatically, while you verify the page number and line breaks. You get a faithful digital record of the author words without interrupting your evening.',
+        ],
+      },
+      {
+        heading: 'Attach why the passage stopped you',
+        paragraphs: [
+          'An isolated quote easily loses its context. When you re-read a passage two years down the line, you may wonder what on earth compelled you to underline it.',
+          'Alongside the author text, record a single concise sentence answering one question: why did this stop me? A note such as “Use when revising the team onboarding doc” or “Contradicts Kahneman on intuitive judgment” connects the author thought to your own life.',
+          'Keep your personal reflection clearly separated from the author prose. Maintaining this boundary prevents accidental misattribution later when drafting articles, preparing presentations, or writing essays.',
+        ],
+      },
+      {
+        heading: 'Put your highlights to work with search and export',
+        paragraphs: [
+          'Book highlights should not sit in an intellectual museum. The point of digitising reading notes is to have them reappear at the moment you need them: while drafting an essay, preparing a talk, or thinking through a stubborn problem.',
+          'Store your notes in a private, local library where you can search across every book you own by keyword, author, or tag. When you want to work on a larger project, export your collection directly into Markdown, Obsidian, or Notion.',
+          'When your physical reading feeds your everyday thinking and writing tools, the physical book can rest on your shelf while its best ideas remain within arm reach.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'What should I do with my book highlights after finishing a book?',
+        answer:
+          'After finishing a book, wait twenty-four to forty-eight hours, review your underlines with fresh eyes, select the five to ten passages that truly matter, and save them into a searchable personal library. Giving yourself a short cooling-off period prevents highlight hoarding and ensures your collection holds only the ideas you will genuinely revisit and put to work.',
+      },
+      {
+        question: 'How do I digitise highlights from physical paper books?',
+        answer:
+          'You can digitise physical book highlights by photographing the marked page with a quote reader app like BookQuotes, which extracts the underlined text, transcribes the passage, and pairs it with the book ISBN and page number. This bypasses the friction of manual keyboard typing while ensuring exact page citations and author attribution.',
+      },
+      {
+        question: 'How many book highlights should you keep from an average book?',
+        answer:
+          'Keeping five to ten carefully curated book highlights is usually ideal for both retention and practical retrieval. Saving dozens of excerpts creates an unmanageable archive that you will rarely revisit. A concise selection of the most transformative thoughts preserves the book core argument without clutter.',
+      },
+      {
+        question: 'Is it better to keep book highlights in an app or a physical commonplace notebook?',
+        answer:
+          'A physical commonplace book offers tactile satisfaction, but an on-device digital quote reader gives you instant keyword search, tag filtering, and export across your entire physical library. Many readers find the best balance is reading quietly with pencil in hand, then digitising their chosen highlights into a private app for effortless retrieval.',
       },
     ],
   },

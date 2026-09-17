@@ -17,7 +17,7 @@ const testimonials = [
     rating: 5,
   },
   {
-    quote: "The batch capture mode is a game-changer. I processed an entire book's worth of highlights in one sitting.",
+    quote: "The batch capture mode saved hours of work. I processed an entire book's worth of highlights in one sitting.",
     author: "Emily R.",
     role: "Book Club Organizer",
     rating: 5,

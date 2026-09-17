@@ -7,12 +7,12 @@ export function Hero() {
       <div className="container-wide grid lg:grid-cols-[7fr_5fr] gap-12 lg:gap-16 items-start">
         <div>
           <h1 className="text-balance mb-6">
-            The book quote finder for physical books
+            Quote reader and book quote finder for physical books
           </h1>
           <p className="text-lg md:text-xl text-ink-dark max-w-prose mb-8">
-            A privacy-first quote reader and digital commonplace book. Photograph your
-            underlines, margin notes, and highlights, review extracted passages, and search
-            quotes from paper books whenever you need them.
+            Turn paper underlines, margin notes, and book highlights into a searchable personal
+            library. Not another generic book quotes website&mdash;a private quote reader built to
+            keep, find, and revisit the exact lines you marked on the page.
           </p>
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center">
             <div>
