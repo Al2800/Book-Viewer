@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-15T08:13:56+01:00",
+  "updated_at": "2026-09-16T08:08:41+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -112,6 +112,90 @@
     }
   ],
   "social_observations": [
+    {
+      "observation_id": "fb-2026-09-16-15-sep-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122112925131415831",
+      "title": "When you cannot decide what to read next",
+      "format": "text",
+      "published_at": "2026-09-15T13:00:21+01:00",
+      "observed_at": "2026-09-16T08:08:41+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication, but the requested Graph post-insights metric set returns HTTP 400: The value must be a valid insights metric.",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122112925131415831. Six future scheduled rows for 16-21 September were confirmed before the 22 September extension attempt."
+    },
+    {
+      "observation_id": "fb-2026-09-16-queue-extension-attempt",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": null,
+      "title": "A book can be useful before you agree with it",
+      "format": "text",
+      "published_at": "2026-09-22T13:00:00+01:00",
+      "observed_at": "2026-09-16T08:08:41+01:00",
+      "checkpoint": "initial",
+      "status": "failed",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The approved call returned executed:false and facebook_publish_failed after a read operation timeout; scheduled status is unconfirmed and must be read back before retry.",
+      "notes": "Dry-run passed. The follow-up scheduled-edge read was blocked by an external permission-review timeout; no duplicate was knowingly created."
+    },
+    {
+      "observation_id": "tk-2026-09-16-business-nonfiction-72h",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7684560503737437443",
+      "title": "Some great business non fiction public Reel",
+      "format": "reel",
+      "published_at": "2026-09-12T09:19:40+01:00",
+      "observed_at": "2026-09-16T08:08:41+01:00",
+      "checkpoint": "72h",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Partial local footage-theme match; native cover, audio, audience, rights basis and exact brief attribution unresolved.",
+      "metrics": {
+        "views": 0,
+        "reach": 0,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Deeper TikTok metrics are not exposed in the current inventory read.",
+      "notes": "72-hour integrity audit; exclude from creative comparison while metadata, brief attribution and rights basis remain unresolved."
+    },
     {
       "observation_id": "fb-2026-09-15-14-sep-audit",
       "platform": "facebook",

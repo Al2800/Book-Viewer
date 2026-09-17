@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 15 September 2026
+Updated: 16 September 2026
 
 ## Purpose
 
@@ -63,6 +63,56 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-16, 08:00 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 24
+  public rows and 7 followers. The latest detailed sync is `2026-09-16T08:03:51.924Z`; the token
+  expires at `2026-09-17T08:03:49.535Z`; current health is `ok` with
+  `reconnect_required=false`.
+- No new public TikTok row appeared. `Gladwell` `7684689312486591766` remains at 3 views / 0 likes /
+  0 comments / 1 save / 3 reach. `Some great business non fiction` `7684560503737437443` remains at
+  0 views / 0 likes / 0 comments / 0 saves / 0 reach. `Freak!` `7683942886928436502` remains at
+  252 views / 0 likes / 0 comments / 225 reach and has no matching current brief, source or Evidence
+  Ledger record.
+- Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and
+  created no public content ID. No upload, schedule, edit, delete or re-upload was made.
+- Keep the single-writer, duplicate, metadata, evidence and second-slot holds active.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Centre research surfaces | [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB) | Public guidance identifies Inspiration, Top Ads and Trends; live GB Top Ads returned no public results without signed-in access | Research route only, not account performance evidence | Medium | Recheck after native access is healthy |
+| UK BookTok list context | [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | Platform article combines retail data with TikTok engagement | Reader-fit/list-context signal only | Medium | Keep contextual; do not copy wording or claim lift |
+
+**Audience language**
+
+- No readable TikTok comments, messages, searches or audience-language signals were exposed.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native caption, cover, audio, audience, rights basis and exact brief mapping remain
+  missing for the attributable rows; the pending-draft failure remains unresolved.
+
+**Performance**
+
+- 24-hour checkpoints: `Gladwell` remains 3 views / 1 save / 3 reach; the business row remains zero;
+  deeper metrics are Not available.
+- 72-hour checkpoints: the business row `7684560503737437443` is due and has no visible signal;
+  `Gladwell` was published 12 September at 16:39Z and is approximately 63 hours old at this audit,
+  so its 72-hour checkpoint is not yet due.
+- Seven-day checkpoints: Not available or not attributable.
+- Missing measures: watch time, completion, hold, shares, profile visits, follows, link taps, search
+  terms and recurring reader language.
+
+**Learning**
+
+- No confidence change. Pause automatic TikTok publication while the holds remain active.
+- Keep `cr-03`, `cr-04` and the Distribution Reset queue in research/production-ready state.
 
 ### 2026-09-15, 08:00 Europe/London
 

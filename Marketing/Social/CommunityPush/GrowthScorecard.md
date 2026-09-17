@@ -1,12 +1,12 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-09-15T08:13:56+01:00</code>.
+Generated from structured evidence updated <code>2026-09-16T08:08:41+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-09-08T08:13:56+01:00</code> to <code>2026-09-15T08:13:56+01:00</code>
+- Reporting window: <code>2026-09-09T08:08:41+01:00</code> to <code>2026-09-16T08:08:41+01:00</code>
 - Published Facebook items represented: 7
-- Visible views: 2346
+- Visible views: 1412
 - Visible reach: 3
 - Meaningful interactions: 3
 - Link clicks: 0
@@ -16,18 +16,21 @@ Generated from structured evidence updated <code>2026-09-15T08:13:56+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-09-22 | failed | facebook | A book can be useful before you agree with it | text | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-21 | scheduled | facebook | A book becomes more useful when you can return to the mark you made in it | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-20 | scheduled | facebook | Which book have you recommended differently on the second telling | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-19 | scheduled | facebook | Tell someone about a book before you finish it | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-18 | scheduled | facebook | Sentence or question | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-17 | scheduled | facebook | What makes you stop halfway through a book and return later | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-16 | scheduled | facebook | Which part of a book makes you want to recommend it | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-09-15 | published | facebook | When you cannot decide what to read next | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-14 | published | facebook | Two readers can finish the same book and keep different books | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-13 | published | facebook | When you finish a book, what do you want to keep | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | 24h-plus | 3 | 3 | 333.3 | 0.0 | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | audit | 3 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | facebook | Reading time is not a moral score | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 72h | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
@@ -128,8 +131,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 15
-- Channel-only items: 15
+- Durable published items: 13
+- Channel-only items: 13
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

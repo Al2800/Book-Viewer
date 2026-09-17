@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 15 September 2026
+Updated: 16 September 2026
 
 ## Method
 
@@ -47,6 +47,18 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 16 September 2026, 08:00 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7684560503737437443` | Publishing-integrity audit | 72h | 0 views, 0 likes, 0 comments, 0 saves, 0 reach | Watch completion, shares, profile visits and follows Not available | 72-hour audit with no visible signal; native metadata, brief attribution and rights basis remain unresolved. Exclude from creative comparison. |
+| `7684689312486591766` | Publishing-integrity audit | 72h not due | 3 views, 0 likes, 0 comments, 1 save, 3 reach | Watch completion, shares, profile visits and follows Not available | Published 12 September at 16:39Z; approximately 63 hours old at this audit. Do not add a 72-hour result yet; one save remains too small and metadata-unresolved. |
+
+The token is healthy through `2026-09-17T08:03:49.535Z`, but the single-writer, duplicate,
+metadata, evidence and second-slot holds remain active. The failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains blocked by TikTok's five-pending-drafts cap. No confidence or
+result label changed.
 
 ### 15 September 2026, 08:00 Europe/London
 
