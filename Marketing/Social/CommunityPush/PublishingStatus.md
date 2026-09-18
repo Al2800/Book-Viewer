@@ -1,27 +1,57 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 16 September 2026, 08:00 Europe/London
+Updated: 18 September 2026, 10:55 Europe/London
 
 ## Current operating loop
 
-- Facebook: the 15 September reader prompt published once at 13:00 Europe/London as
-  `122112925131415831`. Six direct Graph scheduled rows remain for 16-21 September at 13:00
-  Europe/London. The approved 22 September extension passed preflight, but the publish call timed
-  out during read-back and returned `executed:false` / `facebook_publish_failed`; its status is
-  unconfirmed and must be read back before any retry.
-- Instagram: the connected `bookquotes.app` identity remains verified. The current read still
+- Facebook: the 16 September reader prompt published once at 13:00 Europe/London as
+  `122113080813415831`, and the 17 September prompt published once at 13:01 as
+  `122113224375415831`. Seven direct Graph scheduled rows are now confirmed for 18-24 September
+  at 13:00 Europe/London. The 22 September row `122114003505415831` was later confirmed by the
+  scheduled-edge read after the earlier timeout; the 23 September row
+  `122114343375415831` and 24 September row `122114343459415831` were scheduled and read back.
+  Do not create duplicate recovery posts.
+- Facebook post-level insights still return HTTP 400, so views, reach, clicks, comments and shares
+  remain Not available rather than zero. The latest Facebook comments request also returned HTTP 400
+  because `pages_read_user_content` or Page Public Content Access is not available; comments are not
+  readable. Instagram: the connected `bookquotes.app` identity remains verified. The current read
   exposes 19 media rows with the latest at 30 August (`18102461696608755`), conflicting with the
   earlier 21-row read whose latest was 1 September (`18125822551699434`). No deletion or write was
-  observed; treat this as a read-surface discrepancy and do not claim a new Instagram publication.
+  observed; the top five readable media comment edges returned zero comments and no messages were
+  exposed.
 - TikTok: `@bookquotes.app` is active with analytics access, 24 public rows and 7 followers. The
-  12 September `Gladwell` row `7684689312486591766` remains at 3 views / 0 likes / 0 comments / 1
-  save / 3 reach; `Some great business non fiction` `7684560503737437443` remains at 0 / 0 / 0 / 0.
-  Both only partially resemble local Creator Inbox themes; native packaging and exact brief
-  attribution remain unreconciled. The 10 September row `7683942886928436502` (`Freak!`) reads 252
-  views / 0 likes / 0 comments and has no matching current brief or evidence record. Creator Inbox
-  request `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and created no
-  public content ID. The token is now healthy through `2026-09-17T08:03:49.535Z`, with reconnect no
-  longer required. The metadata reconciliation hold remains active.
+  latest analytics sync is `2026-09-18T10:17:56.196Z`; token health is healthy through
+  `2026-09-19T08:16:39.290Z`. `Gladwell` `7684689312486591766` reads 3 views / 0 likes / 0 comments
+  / 1 save / 3 reach; `Some great business non fiction` `7684560503737437443` reads 0 / 0 / 0 / 0 /
+  0; `Freak!` `7683942886928436502` reads 252 views / 0 likes / 0 comments / 225 reach. Older
+  September rows have distribution but remain unattributed for clean creative comparison. Creator
+  Inbox request `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and created
+  no public content ID. The single-writer, duplicate, metadata, evidence and second-slot holds remain
+  active; no TikTok mutation was made.
+
+### Audit: 18 September 2026, 10:55 Europe/London
+
+- Facebook: identity `BookQuotes` and Page `1246405755221229` verified. The 16 September post
+  `122113080813415831` and 17 September post `122113224375415831` are published once with live
+  URLs. Seven future rows for 18-24 September are confirmed at 13:00 Europe/London, including the
+  22 September row resolved by later read-back after the prior timeout and the newly scheduled 23/24
+  September rows. Facebook post-level insights return HTTP 400 for the requested metric set; the
+  latest comments edge returns HTTP 400 for missing page-comment permission. Metrics and comments are
+  Not available, not zero.
+- Instagram: `BookQuotes.app` (`bookquotes.app`) remains the verified connected identity. The current
+  read exposes 19 rows/latest 30 August, in conflict with the earlier 21-row/latest 1 September read;
+  no write or deletion was made. The top five readable media comment edges each returned zero and no
+  messages were exposed.
+- TikTok: Zernio reports active `@bookquotes.app`, 24 public rows, 7 followers, analytics access and
+  latest sync `2026-09-18T10:17:56.196Z`. Token health is okay through `2026-09-19T08:16:39.290Z`.
+  Current visible rows are Gladwell 3 views / 3 reach / 1 save, business non-fiction 0 / 0, and
+  Freak! 252 views / 225 reach; deeper measures are unavailable. Older September distribution is
+  integrity context only. The failed draft remains capped and all mutation holds remain active.
+- No TikTok upload, schedule, edit, delete or re-upload was made. No automatic replies were made.
+
+**Next actions:** keep the Facebook queue at seven future rows, read back the next publication and
+continue the evidence-first log. Keep TikTok briefs research/production-ready only until the native
+single-writer, duplicate, metadata and evidence holds clear.
 
 ### Audit: 15 September 2026, 08:00 Europe/London
 

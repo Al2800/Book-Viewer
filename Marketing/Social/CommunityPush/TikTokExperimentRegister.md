@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 16 September 2026
+Updated: 18 September 2026
 
 ## Method
 
@@ -47,6 +47,21 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 18 September 2026, 10:55 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7684689312486591766` | Publishing-integrity audit | Audit | 3 views, 3 reach, 0 likes, 0 comments, 1 save | Watch completion, shares, profile visits and follows Not available | Current inventory read for `Gladwell`; metadata, native packaging and exact brief attribution remain unresolved. Exclude from clean comparison. |
+| `7684560503737437443` | Publishing-integrity audit | Audit | 0 views, 0 reach, 0 likes, 0 comments, 0 saves | Watch completion, shares, profile visits and follows Not available | Current inventory read for `Some great business non fiction`; exclude while native metadata, brief attribution and rights basis remain unresolved. |
+| `7683942886928436502` | Publishing-integrity audit | Audit | 252 views, 225 reach, 0 likes, 0 comments | Watch completion, saves, shares, profile visits and follows Not available | Current inventory read for `Freak!`; no matching brief, source or Evidence Ledger record. Exclude from clean comparison. |
+
+Older September rows (including Carlo Rovelli 698 views / 652 reach, Outliers 237 / 225, the empty-
+caption row 677 / 638, SPACE 234 / 225, Commonplace 861 / 793, and Team of Rivals 690 / 637) remain
+integrity context only. They are not new experiment executions and do not change confidence or result
+labels. The token is healthy through `2026-09-19T08:16:39.290Z`; the single-writer, duplicate,
+metadata, evidence and second-slot holds remain active. The failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains blocked by TikTok's five-pending-drafts cap. No mutation was made.
 
 ### 16 September 2026, 08:00 Europe/London
 

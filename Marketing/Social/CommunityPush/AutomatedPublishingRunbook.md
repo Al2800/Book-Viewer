@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 16 September 2026
+Updated: 18 September 2026
 
 ## Purpose
 
@@ -173,29 +173,32 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 16 September 2026, the direct Graph Page feed confirms that the 15 September reader prompt
-published once at 13:00 Europe/London as
-`122112925131415831` (`https://www.facebook.com/122107379391415831/posts/122112925131415831`).
-Before the next extension, the direct Graph `scheduled_posts` read confirmed six future rows for
-16-21 September at 13:00 Europe/London. The approved 22 September request passed preflight, but the
-Facebook call timed out during read-back and returned `executed:false` / `facebook_publish_failed`;
-the follow-up scheduled-edge read was blocked by an external permission-review timeout. The 22
-September row is therefore unconfirmed and must not be retried until its status is read back. Facebook
-post-level insights still reject the requested metric set with HTTP 400, so metrics stay Not available
-rather than zero. Instagram's current read exposes 19 media rows with the latest at 30 August
+As of 18 September 2026, the direct Graph Page feed confirms the 16 September reader prompt
+published once at 13:00 Europe/London as `122113080813415831` and the 17 September prompt published
+once at 13:01 Europe/London as `122113224375415831`. The direct Graph `scheduled_posts` read confirms
+seven future rows for 18-24 September at 13:00 Europe/London. The 22 September row
+`122114003505415831` was later confirmed by the scheduled-edge read after the earlier publish call
+timed out during read-back; do not create a duplicate. The 23 September row
+`122114343375415831` and 24 September row `122114343459415831` were approved, scheduled and read
+back with `is_published=false` and the expected Europe/London slot. Facebook post-level insights still
+reject the requested metric set with HTTP 400, so metrics stay Not available rather than zero.
+The latest Facebook comments request also returned HTTP 400 for missing `pages_read_user_content` or
+Page Public Content Access; comments are not readable, not zero.
+
+Instagram's current read exposes 19 media rows with the latest at 30 August
 (`18102461696608755`), conflicting with the earlier 21-row read whose latest was 1 September
-(`18125822551699434`); no Instagram deletion or write was observed, so this remains a read-surface
-discrepancy rather than a publication change.
-TikTok reports 24 public rows, 7 followers and analytics access. The 12 September `Gladwell` row
-`7684689312486591766` remains at 3 views / 0 likes / 0 comments / 1 save / 3 reach, while `Some
-great business non fiction` `7684560503737437443` remains at 0 / 0 / 0 / 0. Both partially resemble
-local September Creator Inbox themes, but their native captions, covers, audio, audience settings,
-rights basis and exact brief attribution are not reconciled, so they remain integrity observations
-rather than clean creative results. The public `Freak!` row `7683942886928436502` remains at 252
-views / 0 likes / 0 comments and has no matching current brief or Evidence Ledger record. Creator
-Inbox request `6aa4f018662ee2d345bceb39` for the Empire of Pain and Bad Blood Reel remains failed at
-the five-pending-drafts cap and created no public TikTok content ID. The token now reads healthy
-through `2026-09-17T08:03:49.535Z`; reconnect is no longer required. The single-writer, duplicate,
-metadata, evidence and second-slot holds remain active. No new TikTok upload, schedule, edit, delete
-or re-upload may occur until intended captions, covers, audio, audience, rights basis and attributable
+(`18125822551699434`); no Instagram deletion or write was observed. The top five currently readable
+media comment edges each returned zero comments, while messages were not exposed; this is not evidence
+that the account has no historical activity.
+
+TikTok reports 24 public rows, 7 followers and analytics access. The latest analytics sync is
+`2026-09-18T10:17:56.196Z`; token health is healthy through `2026-09-19T08:16:39.290Z`. The 12
+September `Gladwell` row `7684689312486591766` reads 3 views / 0 likes / 0 comments / 1 save / 3
+reach, `Some great business non fiction` `7684560503737437443` reads 0 / 0 / 0 / 0 / 0, and the
+10 September `Freak!` row `7683942886928436502` reads 252 views / 0 likes / 0 comments / 225 reach.
+Older September rows have distribution, but their attribution and native packaging are not clean
+enough for creative conclusions. Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed at
+the five-pending-drafts cap and created no public TikTok content ID. The single-writer, duplicate,
+metadata, evidence and second-slot holds remain active. No TikTok upload, schedule, edit, delete or
+re-upload may occur until intended captions, covers, audio, audience, rights basis and attributable
 content IDs are reconciled.

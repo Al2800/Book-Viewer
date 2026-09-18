@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 16 September 2026
+Updated: 18 September 2026
 
 ## Purpose
 
@@ -63,6 +63,72 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-18, 10:55 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio identifies active public `@bookquotes.app`, analytics access true, 24
+  public rows and 7 followers. Latest analytics sync is `2026-09-18T10:17:56.196Z`; token health is
+  `ok` through `2026-09-19T08:16:39.290Z`.
+- No new public row appeared. `Gladwell` `7684689312486591766` reads 3 views / 0 likes / 0 comments
+  / 1 save / 3 reach; `Some great business non fiction` `7684560503737437443` reads 0 / 0 / 0 / 0 /
+  0; and `Freak!` `7683942886928436502` reads 252 views / 0 likes / 0 comments / 225 reach.
+  Older September rows have distribution, but their attribution and native packaging remain
+  unresolved. Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed at the five-pending-
+  drafts cap and created no public content ID. No upload, schedule, edit, delete or re-upload was
+  made.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Centre research surfaces | [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB) | Official guidance identifies Inspiration, Top Ads and Trends; signed-out GB Top Ads returned no public results | Research route only, not account performance evidence | Medium | Recheck after native access is healthy |
+| UK BookTok list context | [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | Official platform article combines retail data with TikTok engagement | Reader-fit/list-context signal only | Medium | Keep contextual; do not copy wording or claim lift |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. No new transferable pattern was sufficiently evidenced.
+- Elements explicitly excluded from imitation: copying BookTok wording, artwork, creator identity or
+  distinctive execution; using the unattributed older rows as evidence; and manufacturing a trend from
+  a signed-out Top Ads surface with no results.
+
+**Audience language**
+
+- Comments, searches or questions: no readable TikTok comments, messages, searches or audience
+  language were exposed. Facebook comments were also blocked by missing page-comment permission;
+  Instagram top-five comment edges returned zero.
+- Potential reader-need hooks: none promoted to the queue from this audit.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native caption, cover, audio, audience, rights basis and exact brief mapping remain
+  missing for the attributable rows; the pending-draft failure remains unresolved.
+
+**Performance**
+
+- 24-hour checkpoints: current visible inventory reads Gladwell 3 views / 1 save / 3 reach, business
+  non-fiction 0, and Freak! 252 views / 225 reach; deeper measures are Not available.
+- 72-hour checkpoints: no new eligible comparable post; older rows remain integrity-only.
+- Seven-day checkpoints: unavailable or not attributable.
+- Missing measures: watch time, completion, shares, profile visits, follows, link taps, search terms
+  and recurring reader language.
+
+**Learning**
+
+- Experiment updates: integrity audit only; no creative execution was added.
+- Confidence changes: none.
+- Repeat: keep research/production-ready briefs only.
+- Modify: reconcile the single-writer path and native metadata before another publication.
+- Pause: TikTok mutation and any second-slot test while holds remain active.
+
+**Queue**
+
+- Approved: none for upload.
+- In production: `cr-03`, `cr-04` and Distribution Reset briefs may remain production-ready.
+- Awaiting evidence or review: native metadata, rights and attribution reconciliation.
+- Requires user approval: none newly raised.
 
 ### 2026-09-16, 08:00 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 16 September 2026
+Updated: 18 September 2026
 
 ## Purpose
 
@@ -228,6 +228,29 @@ approval-only.
   upload, schedule, edit, delete or re-upload may occur automatically until intended caption, cover,
   audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
   label changed.
+
+### Metadata reconciliation audit: 18 September 2026, 10:55 Europe/London
+
+- The account remains active as `@bookquotes.app` with 24 public rows, 7 followers and analytics
+  access. The latest analytics sync is `2026-09-18T10:17:56.196Z`; token health is `ok` through
+  `2026-09-19T08:16:39.290Z` with no reconnect required.
+- No new public TikTok row appeared. The 12 September `Gladwell` row `7684689312486591766` reads
+  3 views / 0 likes / 0 comments / 1 save / 3 reach; `Some great business non fiction`
+  `7684560503737437443` reads 0 views / 0 likes / 0 comments / 0 saves / 0 reach; and the 10
+  September `Freak!` row `7683942886928436502` reads 252 views / 0 likes / 0 comments / 225 reach.
+  Older September rows have distribution, but their native packaging and exact attribution are not
+  reconciled and must not be used as clean creative evidence.
+- Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and
+  created no public content ID. The single-writer, duplicate, metadata, evidence and second-slot
+  holds remain active. No TikTok upload, schedule, edit, delete or re-upload was made.
+- The official [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  still identifies Inspiration, Top Ads and Trends as public research surfaces; the signed-out GB Top
+  Ads view returned no public results. The official [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains contextual rather than BookQuotes performance evidence. Direct creator sampling remains
+  blocked by robots.
+- No confidence or result label changed. Keep `cr-03`, `cr-04` and Distribution Reset briefs
+  research/production-ready only until intended caption, cover, audio, audience, rights basis and
+  attributable content ID are reconciled.
 
 ### Metadata reconciliation audit: 16 September 2026, 08:00 Europe/London
 
