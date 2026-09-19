@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 18 September 2026, 10:55 Europe/London
+Updated: 19 September 2026, 08:07 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,48 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 19 September 2026, 08:07 Europe/London
+
+**Platforms checked:** Meta Graph identity, Facebook Page feed and scheduled-posts edge, Instagram
+media, TikTok account and Zernio inventory, token health, current TikTok Creative Centre/Top Ads and
+UK BookTok research.
+
+**Observation**
+
+- Meta Graph and Zernio account reads failed with DNS error `Errno 8` in the local environment. A
+  second escalated identity read was not completed before the external permission-review deadline.
+  The last verified state is the 18 September audit; the current Facebook queue and publication
+  state cannot be refreshed safely from this run.
+- No Facebook, Instagram or TikTok mutation was attempted. No automatic replies were made.
+- The last verified Facebook state remains seven scheduled rows for 18-24 September, with the 16 and
+  17 September prompts published once. The last verified Instagram state remains the 19-row/latest-
+  30-August read conflicting with the earlier 21-row/latest-1-September read. The last verified
+  TikTok state remains 24 public rows, 7 followers, Gladwell at 3 views / 3 reach / 1 save, business
+  non-fiction at zero and Freak! at 252 views / 225 reach.
+
+**Research update**
+
+- The official [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  continues to identify Inspiration, Top Ads and Trends as research surfaces. The signed-out GB Top
+  Ads view returned no public results, so no new account-specific style signal was added.
+- The official [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains platform context only, not BookQuotes performance evidence.
+
+**Community and learning**
+
+- No readable comment, message, search or audience-language data was available in this run. No
+  confidence or result label changed.
+- Do not schedule a Facebook 25 September extension or touch TikTok while account identity and queue
+  state are unreadable. Keep TikTok single-writer, duplicate, metadata, evidence and second-slot holds
+  active.
+
+**Next actions**
+
+- Automatic: retry the read path on the next run; if the scheduled edge is readable, confirm whether
+  18 September published and maintain the seven-day queue without duplicate recovery.
+- Automatic preparation: keep `cr-03`, `cr-04` and Distribution Reset briefs production-ready only;
+  no TikTok mutation until the holds clear.
 
 ### 18 September 2026, 10:55 Europe/London
 

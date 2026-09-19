@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 18 September 2026
+Updated: 19 September 2026
 
 ## Purpose
 
@@ -228,6 +228,20 @@ approval-only.
   upload, schedule, edit, delete or re-upload may occur automatically until intended caption, cover,
   audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
   label changed.
+
+### Metadata reconciliation audit: 19 September 2026, 08:07 Europe/London
+
+- The scheduled TikTok/Zernio account read failed locally with DNS error `Errno 8`, and the second
+  escalated identity read was not completed before the external permission-review deadline. Do not
+  infer a new post, a token refresh or a changed account state from this failed read.
+- The last verified state remains active `@bookquotes.app`, 24 public rows, 7 followers and analytics
+  access; latest sync `2026-09-18T10:17:56.196Z`; token health `ok` through
+  `2026-09-19T08:16:39.290Z`. Gladwell remained at 3 views / 3 reach / 1 save, business non-fiction
+  at zero, and Freak! at 252 views / 225 reach. The pending Creator Inbox request remained blocked
+  by the five-pending-drafts cap.
+- No upload, schedule, edit, delete or re-upload was made. Keep the single-writer, duplicate,
+  metadata, evidence and second-slot holds active until the native read path and attribution are
+  restored.
 
 ### Metadata reconciliation audit: 18 September 2026, 10:55 Europe/London
 

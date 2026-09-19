@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 18 September 2026
+Updated: 19 September 2026
 
 ## Purpose
 
@@ -63,6 +63,66 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-19, 08:07 Europe/London
+
+**Account and publishing**
+
+- Account access: the Meta/Zernio account read failed locally with DNS error `Errno 8`; the second
+  escalated identity read was not completed before the external permission-review deadline. The last
+  verified state remains active public `@bookquotes.app`, 24 public rows, 7 followers and analytics
+  access, with latest sync `2026-09-18T10:17:56.196Z` and token health `ok` through
+  `2026-09-19T08:16:39.290Z`.
+- No new public row can be safely claimed. No upload, schedule, edit, delete or re-upload was made.
+  The last verified rows remain Gladwell at 3 views / 1 save / 3 reach, business non-fiction at zero,
+  and Freak! at 252 views / 225 reach. The failed Creator Inbox request remains blocked at the
+  five-pending-drafts cap.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Centre research surfaces | [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB) | Official guidance identifies Inspiration, Top Ads and Trends; signed-out GB Top Ads returned no public results | Research route only, not account performance evidence | Medium | Recheck after native access is healthy |
+| UK BookTok list context | [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | Official platform article combines retail data with TikTok engagement | Reader-fit/list-context signal only | Medium | Keep contextual; do not copy wording or claim lift |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. Network failure prevented an account-level creator read.
+- Elements explicitly excluded from imitation: copying wording, artwork, creator identity or distinctive
+  execution, and treating the signed-out Top Ads empty state as a trend.
+
+**Audience language**
+
+- Comments, searches or questions: unavailable in this run. No audience-language signal was promoted.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native account metadata and content attribution remain unreadable; existing single-writer,
+  duplicate, metadata and evidence holds remain active.
+
+**Performance**
+
+- 24-hour checkpoints: no new eligible post read.
+- 72-hour checkpoints: no new eligible post read.
+- Seven-day checkpoints: unavailable or not attributable.
+- Missing measures: views for new rows, watch time, completion, shares, saves, profile visits, follows,
+  link taps, search terms and recurring reader language.
+
+**Learning**
+
+- Experiment updates: none; this was a read-path failure, not a creative execution.
+- Confidence changes: none.
+- Repeat: keep the research/production-ready queue.
+- Modify: restore account read-back before any upload or scheduling.
+- Pause: TikTok mutation and the second-slot test.
+
+**Queue**
+
+- Approved: none for upload.
+- In production: `cr-03`, `cr-04` and Distribution Reset briefs may remain production-ready.
+- Awaiting evidence or review: native metadata, rights and attribution reconciliation.
+- Requires user approval: none newly raised.
 
 ### 2026-09-18, 10:55 Europe/London
 

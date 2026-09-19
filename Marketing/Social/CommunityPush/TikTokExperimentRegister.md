@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 18 September 2026
+Updated: 19 September 2026
 
 ## Method
 
@@ -47,6 +47,16 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 19 September 2026, 08:07 Europe/London
+
+No new experiment checkpoint was recorded because the Meta/Zernio account read failed with DNS error
+`Errno 8`, and the escalated identity read was not completed before the external permission-review
+deadline. The last verified TikTok inventory remains 24 public rows with Gladwell at 3 views / 3
+reach / 1 save, business non-fiction at zero, and Freak! at 252 views / 225 reach. These and the
+older September rows remain integrity observations, not clean experiment results. No confidence or
+result label changed; no TikTok mutation was made. Keep the single-writer, duplicate, metadata,
+evidence and second-slot holds active.
 
 ### 18 September 2026, 10:55 Europe/London
 

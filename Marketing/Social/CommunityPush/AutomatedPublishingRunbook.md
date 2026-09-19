@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 18 September 2026
+Updated: 19 September 2026
 
 ## Purpose
 
@@ -173,32 +173,25 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 18 September 2026, the direct Graph Page feed confirms the 16 September reader prompt
-published once at 13:00 Europe/London as `122113080813415831` and the 17 September prompt published
-once at 13:01 Europe/London as `122113224375415831`. The direct Graph `scheduled_posts` read confirms
-seven future rows for 18-24 September at 13:00 Europe/London. The 22 September row
-`122114003505415831` was later confirmed by the scheduled-edge read after the earlier publish call
-timed out during read-back; do not create a duplicate. The 23 September row
-`122114343375415831` and 24 September row `122114343459415831` were approved, scheduled and read
-back with `is_published=false` and the expected Europe/London slot. Facebook post-level insights still
-reject the requested metric set with HTTP 400, so metrics stay Not available rather than zero.
-The latest Facebook comments request also returned HTTP 400 for missing `pages_read_user_content` or
-Page Public Content Access; comments are not readable, not zero.
+As of 19 September 2026, 08:07 Europe/London, the Meta Graph and Zernio reconciliation attempt was
+blocked by network DNS failure (`<urlopen error [Errno 8] nodename nor servname provided, or not
+known>`). A second escalated read was also not completed before the permission-review deadline. The
+last verified state remains the 18 September audit: Facebook had seven future rows for 18-24
+September, the 16 and 17 September prompts had published once, Instagram exposed 19 rows/latest 30
+August, and TikTok exposed 24 rows/latest sync 18 September. Do not infer that the 18-24 Facebook
+rows published or that the queue needs a 25 September extension until the scheduled edge is readable.
+No Facebook, Instagram or TikTok mutation was attempted while identity and queue state were
+unreadable.
 
-Instagram's current read exposes 19 media rows with the latest at 30 August
-(`18102461696608755`), conflicting with the earlier 21-row read whose latest was 1 September
-(`18125822551699434`); no Instagram deletion or write was observed. The top five currently readable
-media comment edges each returned zero comments, while messages were not exposed; this is not evidence
-that the account has no historical activity.
+The last verified Facebook post-level insights still returned HTTP 400, so metrics remain Not
+available rather than zero. The last Facebook comments request also returned HTTP 400 for missing
+`pages_read_user_content` or Page Public Content Access. The last Instagram read showed the current
+19-row/latest-30-August versus earlier 21-row/latest-1-September discrepancy; no deletion or write
+was observed, and the top five readable media comment edges returned zero comments with no messages
+exposed.
 
-TikTok reports 24 public rows, 7 followers and analytics access. The latest analytics sync is
-`2026-09-18T10:17:56.196Z`; token health is healthy through `2026-09-19T08:16:39.290Z`. The 12
-September `Gladwell` row `7684689312486591766` reads 3 views / 0 likes / 0 comments / 1 save / 3
-reach, `Some great business non fiction` `7684560503737437443` reads 0 / 0 / 0 / 0 / 0, and the
-10 September `Freak!` row `7683942886928436502` reads 252 views / 0 likes / 0 comments / 225 reach.
-Older September rows have distribution, but their attribution and native packaging are not clean
-enough for creative conclusions. Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed at
-the five-pending-drafts cap and created no public TikTok content ID. The single-writer, duplicate,
-metadata, evidence and second-slot holds remain active. No TikTok upload, schedule, edit, delete or
-re-upload may occur until intended captions, covers, audio, audience, rights basis and attributable
-content IDs are reconciled.
+The last verified TikTok read showed Gladwell at 3 views / 3 reach / 1 save, business non-fiction at
+0, and Freak! at 252 views / 225 reach. Older September rows remain integrity context only. The
+failed Creator Inbox request remains blocked at the five-pending-drafts cap, and the single-writer,
+duplicate, metadata, evidence and second-slot holds remain active. No TikTok upload, schedule, edit,
+delete or re-upload may occur until the native read path and attribution are restored.

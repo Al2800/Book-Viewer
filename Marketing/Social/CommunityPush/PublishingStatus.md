@@ -1,33 +1,38 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 18 September 2026, 10:55 Europe/London
+Updated: 19 September 2026, 08:07 Europe/London
 
 ## Current operating loop
 
-- Facebook: the 16 September reader prompt published once at 13:00 Europe/London as
-  `122113080813415831`, and the 17 September prompt published once at 13:01 as
-  `122113224375415831`. Seven direct Graph scheduled rows are now confirmed for 18-24 September
-  at 13:00 Europe/London. The 22 September row `122114003505415831` was later confirmed by the
-  scheduled-edge read after the earlier timeout; the 23 September row
-  `122114343375415831` and 24 September row `122114343459415831` were scheduled and read back.
-  Do not create duplicate recovery posts.
-- Facebook post-level insights still return HTTP 400, so views, reach, clicks, comments and shares
-  remain Not available rather than zero. The latest Facebook comments request also returned HTTP 400
-  because `pages_read_user_content` or Page Public Content Access is not available; comments are not
-  readable. Instagram: the connected `bookquotes.app` identity remains verified. The current read
-  exposes 19 media rows with the latest at 30 August (`18102461696608755`), conflicting with the
-  earlier 21-row read whose latest was 1 September (`18125822551699434`). No deletion or write was
-  observed; the top five readable media comment edges returned zero comments and no messages were
-  exposed.
-- TikTok: `@bookquotes.app` is active with analytics access, 24 public rows and 7 followers. The
-  latest analytics sync is `2026-09-18T10:17:56.196Z`; token health is healthy through
-  `2026-09-19T08:16:39.290Z`. `Gladwell` `7684689312486591766` reads 3 views / 0 likes / 0 comments
-  / 1 save / 3 reach; `Some great business non fiction` `7684560503737437443` reads 0 / 0 / 0 / 0 /
-  0; `Freak!` `7683942886928436502` reads 252 views / 0 likes / 0 comments / 225 reach. Older
-  September rows have distribution but remain unattributed for clean creative comparison. Creator
-  Inbox request `6aa4f018662ee2d345bceb39` remains failed at the five-pending-drafts cap and created
-  no public content ID. The single-writer, duplicate, metadata, evidence and second-slot holds remain
-  active; no TikTok mutation was made.
+- Reconciliation at 08:07 Europe/London could not read the connected Meta Graph or Zernio state because
+  network DNS failed. The last verified state is the 18 September audit: Facebook had seven direct
+  Graph scheduled rows for 18-24 September, Instagram exposed 19 rows/latest 30 August, and TikTok
+  exposed 24 rows/latest sync 18 September. Do not infer the current queue or schedule a 25 September
+  extension until the scheduled edge is readable.
+- Last verified Facebook state: the 16 September prompt `122113080813415831` and 17 September prompt
+  `122113224375415831` published once; the 22 September row was resolved after the earlier timeout;
+  and the 23/24 September rows were scheduled and read back. Post-level insights remain Not available
+  because Graph returns HTTP 400, and comments remain unreadable because page-comment permission is
+  unavailable.
+- Last verified Instagram state: connected `bookquotes.app` identity, 19-row/latest-30-August read
+  conflicting with the earlier 21-row/latest-1-September read; no write or deletion; five readable
+  media comment edges returned zero comments and no messages were exposed.
+- Last verified TikTok state: active `@bookquotes.app`, 24 public rows, 7 followers and analytics
+  access; Gladwell 3 views / 3 reach / 1 save, business non-fiction 0, Freak! 252 views / 225 reach.
+  The failed draft remains at the five-pending-drafts cap. Single-writer, duplicate, metadata,
+  evidence and second-slot holds remain active; no TikTok mutation was made.
+
+### Audit: 19 September 2026, 08:07 Europe/London
+
+- Meta Graph identity, Facebook posts, scheduled rows, Instagram media and TikTok/Zernio reads were
+  attempted. All account reads failed locally with DNS error `Errno 8`; the escalated identity read
+  was not completed before the external permission-review deadline.
+- No publish, schedule, edit, delete, re-upload or automatic reply was attempted. The 18 September
+  verified state remains the evidence baseline until connectivity is restored.
+- Research-only work completed: the official Creative Centre route remains [TikTok Creative Centre
+  guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB); the signed-out
+  GB Top Ads surface still showed no public results. The [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains contextual rather than BookQuotes account evidence.
 
 ### Audit: 18 September 2026, 10:55 Europe/London
 
