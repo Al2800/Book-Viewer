@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 19 September 2026
+Updated: 20 September 2026
 
 ## Method
 
@@ -47,6 +47,20 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 20 September 2026, 08:01 Europe/London
+
+| Content ID | Experiment | Checkpoint | Visible result | Deeper measures | Interpretation |
+| --- | --- | --- | --- | --- | --- |
+| `7684689312486591766` | Publishing-integrity audit | Audit | 3 views, 3 reach, 0 likes, 0 comments, 1 save | Watch completion, shares, profile visits and follows Not available | `Gladwell` unchanged; native packaging, rights basis and exact brief attribution remain unresolved. Exclude from clean comparison. |
+| `7684560503737437443` | Publishing-integrity audit | Audit | 1 view, 0 reach, 0 likes, 0 comments, 1 save | Watch completion, shares, profile visits and follows Not available | `Some great business non fiction` moved from 0 to 1 visible view and 1 save; too small and metadata-unresolved to classify. Exclude from clean comparison. |
+| `7683942886928436502` | Publishing-integrity audit | Audit | 252 views, 225 reach, 0 likes, 0 comments | Watch completion, saves, shares, profile visits and follows Not available | `Freak!` unchanged; no matching brief, source or Evidence Ledger record. Exclude from clean comparison. |
+
+The account has 24 public rows and 7 followers. Latest analytics sync is
+`2026-09-20T07:20:38.341Z`; token health reports `reconnect_required` with expiry
+`2026-09-20T08:39:56.697Z`. No confidence or result label changed. The failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains blocked by TikTok's five-pending-drafts cap. No mutation was made;
+the single-writer, duplicate, metadata, evidence and second-slot holds remain active.
 
 ### 19 September 2026, 08:07 Europe/London
 

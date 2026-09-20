@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-18T10:55:07+01:00",
+  "updated_at": "2026-09-20T08:01:14+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -112,6 +112,90 @@
     }
   ],
   "social_observations": [
+    {
+      "observation_id": "tk-2026-09-20-gladwell-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7684689312486591766",
+      "title": "Gladwell public Reel",
+      "format": "reel",
+      "published_at": "2026-09-12T17:39:25+01:00",
+      "observed_at": "2026-09-20T08:01:14+01:00",
+      "checkpoint": "7d-audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Partial local footage-theme match; native cover, audio, audience, rights basis and exact brief attribution unresolved.",
+      "metrics": {
+        "views": 3,
+        "reach": 3,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 1,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio exposed views, reach, likes, comments, shares and saves only in this read. Watch completion, link clicks and follows were not exposed.",
+      "notes": "Read at 2026-09-20T07:20:38.341Z. Integrity observation only; exclude from creative comparison while native metadata and brief attribution remain unresolved."
+    },
+    {
+      "observation_id": "tk-2026-09-20-business-nonfiction-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7684560503737437443",
+      "title": "Some great business non fiction public Reel",
+      "format": "reel",
+      "published_at": "2026-09-12T09:19:40+01:00",
+      "observed_at": "2026-09-20T08:01:14+01:00",
+      "checkpoint": "7d-audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Partial local footage-theme match; native cover, audio, audience, rights basis and exact brief attribution unresolved.",
+      "metrics": {
+        "views": 1,
+        "reach": 0,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 1,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio exposed views, reach, likes, comments, shares and saves only in this read. Watch completion, link clicks and follows were not exposed.",
+      "notes": "Visible inventory changed from 0 to 1 view / 1 save. Integrity observation only; exclude from creative comparison while native metadata and brief attribution remain unresolved."
+    },
+    {
+      "observation_id": "tk-2026-09-20-freak-audit",
+      "platform": "tiktok",
+      "identity": "BookQuotes",
+      "content_id": "7683942886928436502",
+      "title": "Freak! public Reel",
+      "format": "reel",
+      "published_at": "2026-09-10T17:22:55+01:00",
+      "observed_at": "2026-09-20T08:01:14+01:00",
+      "checkpoint": "7d-audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Public TikTok row read-back; source, brief and rights evidence are not present in the current BookQuotes ledger.",
+      "metrics": {
+        "views": 252,
+        "reach": 225,
+        "viewers": null,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Zernio exposed views, reach, likes, comments, shares and saves only in this read. Watch completion, link clicks and follows were not exposed.",
+      "notes": "Read at 2026-09-20T07:20:38.341Z. No matching brief, source or Evidence Ledger record; exclude from creative comparison."
+    },
     {
       "observation_id": "fb-2026-09-18-16-sep-audit",
       "platform": "facebook",

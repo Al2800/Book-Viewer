@@ -1,14 +1,14 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-09-18T10:55:07+01:00</code>.
+Generated from structured evidence updated <code>2026-09-20T08:01:14+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-09-11T10:55:07+01:00</code> to <code>2026-09-18T10:55:07+01:00</code>
-- Published Facebook items represented: 7
-- Visible views: 3
-- Visible reach: 3
-- Meaningful interactions: 1
+- Reporting window: <code>2026-09-13T08:01:14+01:00</code> to <code>2026-09-20T08:01:14+01:00</code>
+- Published Facebook items represented: 5
+- Visible views: 0
+- Visible reach: 0
+- Meaningful interactions: 0
 - Link clicks: 0
 - Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.
 
@@ -31,16 +31,19 @@ Generated from structured evidence updated <code>2026-09-18T10:55:07+01:00</code
 | 2026-09-15 | published | facebook | When you cannot decide what to read next | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-14 | published | facebook | Two readers can finish the same book and keep different books | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-13 | published | facebook | When you finish a book, what do you want to keep | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-12 | published | tiktok | Gladwell public Reel | reel | 7d-audit | 3 | 3 | 333.3 | 0.0 | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | 24h-plus | 3 | 3 | 333.3 | 0.0 | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | audit | 3 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | facebook | Reading time is not a moral score | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 7d-audit | 1 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 72h | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | audit | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | failed | tiktok | Empire of Pain and Bad Blood Creator Inbox draft | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-11 | published | facebook | Describe your current read as a weather report | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | 7d-audit | 252 | 225 | 0.0 | 0.0 | Review against declared experiment |
 | 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | audit | 252 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | initial | 250 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-10 | published | facebook | Some books are better borrowed than owned | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
@@ -136,8 +139,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 9
-- Channel-only items: 9
+- Durable published items: 5
+- Channel-only items: 5
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

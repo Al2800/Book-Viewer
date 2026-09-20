@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 19 September 2026
+Updated: 20 September 2026
 
 ## Purpose
 
@@ -173,25 +173,23 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 19 September 2026, 08:07 Europe/London, the Meta Graph and Zernio reconciliation attempt was
-blocked by network DNS failure (`<urlopen error [Errno 8] nodename nor servname provided, or not
-known>`). A second escalated read was also not completed before the permission-review deadline. The
-last verified state remains the 18 September audit: Facebook had seven future rows for 18-24
-September, the 16 and 17 September prompts had published once, Instagram exposed 19 rows/latest 30
-August, and TikTok exposed 24 rows/latest sync 18 September. Do not infer that the 18-24 Facebook
-rows published or that the queue needs a 25 September extension until the scheduled edge is readable.
-No Facebook, Instagram or TikTok mutation was attempted while identity and queue state were
-unreadable.
+As of 20 September 2026, 08:01 Europe/London, the Meta Page read timed out after operator identity
+and permissions were partially read. The Page and current Facebook queue are therefore unverified;
+the last verified state remains seven future rows for 18-24 September, with the 16 and 17 September
+prompts published once. Do not infer that those rows published or schedule a 25 September extension
+until the scheduled edge is readable. No Facebook or Instagram mutation was attempted.
 
 The last verified Facebook post-level insights still returned HTTP 400, so metrics remain Not
 available rather than zero. The last Facebook comments request also returned HTTP 400 for missing
-`pages_read_user_content` or Page Public Content Access. The last Instagram read showed the current
-19-row/latest-30-August versus earlier 21-row/latest-1-September discrepancy; no deletion or write
-was observed, and the top five readable media comment edges returned zero comments with no messages
+`pages_read_user_content` or Page Public Content Access. The last Instagram read showed the 19-row/
+latest-30-August versus earlier 21-row/latest-1-September discrepancy; no deletion or write was
+observed, and the top five readable media comment edges returned zero comments with no messages
 exposed.
 
-The last verified TikTok read showed Gladwell at 3 views / 3 reach / 1 save, business non-fiction at
-0, and Freak! at 252 views / 225 reach. Older September rows remain integrity context only. The
-failed Creator Inbox request remains blocked at the five-pending-drafts cap, and the single-writer,
-duplicate, metadata, evidence and second-slot holds remain active. No TikTok upload, schedule, edit,
-delete or re-upload may occur until the native read path and attribution are restored.
+The TikTok read succeeded: `@bookquotes.app` remains active with 24 public rows, 7 followers and
+analytics access; latest sync is `2026-09-20T07:20:38.341Z`. No new public row appeared. Gladwell
+reads 3 views / 3 reach / 1 save, business non-fiction reads 1 view / 0 reach / 1 save, and Freak!
+reads 252 views / 225 reach. Token health now reports `reconnect_required` with expiry
+`2026-09-20T08:39:56.697Z`; defer the planned 09:05 reconnect path and do not publish while the
+single-writer, duplicate, metadata, evidence and second-slot holds remain active. No TikTok upload,
+schedule, edit, delete or re-upload was made.

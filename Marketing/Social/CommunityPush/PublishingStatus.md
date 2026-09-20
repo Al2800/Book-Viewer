@@ -1,26 +1,44 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 19 September 2026, 08:07 Europe/London
+Updated: 20 September 2026, 08:01 Europe/London
 
 ## Current operating loop
 
-- Reconciliation at 08:07 Europe/London could not read the connected Meta Graph or Zernio state because
-  network DNS failed. The last verified state is the 18 September audit: Facebook had seven direct
-  Graph scheduled rows for 18-24 September, Instagram exposed 19 rows/latest 30 August, and TikTok
-  exposed 24 rows/latest sync 18 September. Do not infer the current queue or schedule a 25 September
-  extension until the scheduled edge is readable.
+- Meta Page reconciliation at 08:01 Europe/London timed out after operator identity and permissions
+  were partially read. The current Facebook Page and queue are unverified. The last verified state
+  remains seven Graph scheduled rows for 18-24 September; do not schedule a 25 September extension
+  until the scheduled edge is readable.
 - Last verified Facebook state: the 16 September prompt `122113080813415831` and 17 September prompt
   `122113224375415831` published once; the 22 September row was resolved after the earlier timeout;
   and the 23/24 September rows were scheduled and read back. Post-level insights remain Not available
   because Graph returns HTTP 400, and comments remain unreadable because page-comment permission is
-  unavailable.
+  unavailable. No Facebook or Instagram mutation was attempted.
 - Last verified Instagram state: connected `bookquotes.app` identity, 19-row/latest-30-August read
   conflicting with the earlier 21-row/latest-1-September read; no write or deletion; five readable
   media comment edges returned zero comments and no messages were exposed.
-- Last verified TikTok state: active `@bookquotes.app`, 24 public rows, 7 followers and analytics
-  access; Gladwell 3 views / 3 reach / 1 save, business non-fiction 0, Freak! 252 views / 225 reach.
-  The failed draft remains at the five-pending-drafts cap. Single-writer, duplicate, metadata,
-  evidence and second-slot holds remain active; no TikTok mutation was made.
+- TikTok read-back succeeded: active `@bookquotes.app`, 24 public rows, 7 followers, analytics
+  access and latest sync `2026-09-20T07:20:38.341Z`. Gladwell reads 3 views / 3 reach / 1 save,
+  business non-fiction reads 1 view / 0 reach / 1 save, and Freak! 252 views / 225 reach. Token
+  health reports `reconnect_required` with expiry `2026-09-20T08:39:56.697Z`; defer the planned
+  09:05 reconnect path. The failed draft remains capped and all TikTok mutation holds remain active.
+
+### Audit: 20 September 2026, 08:01 Europe/London
+
+- Facebook: operator permissions were readable, but the configured Page read timed out. Current
+  Page identity, scheduled rows, publication state and comments are not verified. No Facebook
+  recovery or queue-extension write was attempted.
+- Instagram: no fresh read was available after the Meta Page timeout; retain the last verified
+  19-row/latest-30-August state and do not claim a new publication.
+- TikTok: the account is active with 24 public rows, 7 followers and analytics access. Latest sync is
+  `2026-09-20T07:20:38.341Z`; token health requires reconnect. No new public row appeared. The
+  business non-fiction row moved to 1 view / 1 save / 0 reach; Gladwell and Freak! remain at the
+  previously recorded values. These remain integrity observations, not clean creative results.
+- No TikTok upload, schedule, edit, delete, re-upload or automatic reply was made. Keep the
+  single-writer, duplicate, metadata, evidence and second-slot holds active.
+- Research-only work: [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  remains the research route; the signed-out GB Top Ads surface returned no public results. The [UK
+  BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains contextual rather than BookQuotes account evidence.
 
 ### Audit: 19 September 2026, 08:07 Europe/London
 

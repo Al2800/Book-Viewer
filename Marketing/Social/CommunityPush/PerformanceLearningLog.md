@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 19 September 2026, 08:07 Europe/London
+Updated: 20 September 2026, 08:01 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,50 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 20 September 2026, 08:01 Europe/London
+
+**Platforms checked:** Meta Graph identity and Page read, TikTok account and Zernio inventory, token
+health, current TikTok Creative Centre/Top Ads and UK BookTok research. Instagram did not receive a
+fresh read after the Meta Page timeout.
+
+**Observation**
+
+- Meta operator identity and permissions were partially readable, but the configured Facebook Page
+  read timed out. Current Page identity, scheduled rows, publication state, comments and post-level
+  metrics are therefore unverified. No Facebook or Instagram write was attempted. The last verified
+  Facebook state remains seven scheduled rows for 18-24 September, with the 16 and 17 September
+  prompts published once.
+- TikTok/Zernio read succeeded with active `@bookquotes.app`, 24 public rows, 7 followers and
+  analytics access. Latest sync is `2026-09-20T07:20:38.341Z`. No new public row appeared. Gladwell
+  `7684689312486591766` remains at 3 views / 3 reach / 1 save; business non-fiction
+  `7684560503737437443` now reads 1 view / 0 reach / 1 save; Freak!
+  `7683942886928436502` remains at 252 views / 225 reach. Token health reports
+  `reconnect_required` with expiry `2026-09-20T08:39:56.697Z`; defer the planned 09:05 reconnect
+  path. The failed draft remains at the five-pending-drafts cap.
+- No TikTok upload, schedule, edit, delete, re-upload or automatic reply was made.
+
+**Research update**
+
+- The official [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  remains the route for Inspiration, Top Ads and Trends. The signed-out GB Top Ads view returned no
+  public results, so no new account-specific style signal was added.
+- The official [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains platform context only, not BookQuotes performance evidence.
+
+**Community and learning**
+
+- No readable Facebook or Instagram comment/message text was exposed in this run. TikTok inventory
+  exposed counts but not audience language or searches. No replies were made.
+- The business row's move from 0 to 1 view and 1 save is too small and remains metadata-unresolved;
+  no hypothesis confidence or result label changed. Keep all TikTok mutation holds active.
+
+**Next actions**
+
+- Automatic: retry the Meta Page scheduled-edge read; if it is readable, confirm the 18-24 queue and
+  schedule only a verified 25 September replacement if needed, with no duplicate recovery.
+- Automatic: let the planned TikTok reconnect path handle token recovery; keep `cr-03`, `cr-04` and
+  Distribution Reset briefs production-ready but unscheduled.
 
 ### 19 September 2026, 08:07 Europe/London
 
