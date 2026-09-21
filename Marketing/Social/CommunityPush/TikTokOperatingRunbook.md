@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 20 September 2026
+Updated: 21 September 2026
 
 ## Purpose
 
@@ -228,6 +228,22 @@ approval-only.
   upload, schedule, edit, delete or re-upload may occur automatically until intended caption, cover,
   audio, audience, rights basis and attributable content ID are reconciled. No confidence or result
   label changed.
+
+### Metadata reconciliation audit: 21 September 2026, 08:02 Europe/London
+
+- The account read succeeded as active `@bookquotes.app` with 24 public rows, 7 followers and
+  analytics access. Latest analytics sync is `2026-09-21T06:07:12.156Z`; no new public TikTok row
+  appeared.
+- `Gladwell` `7684689312486591766` reads 3 views / 0 likes / 0 comments / 1 save / 3 reach;
+  `Some great business non fiction` `7684560503737437443` reads 1 view / 0 likes / 0 comments /
+  1 save / 0 reach; and `Freak!` `7683942886928436502` reads 252 views / 0 likes / 0 comments /
+  225 reach. These remain publishing-integrity observations because native packaging, rights basis
+  and exact brief attribution are unresolved.
+- Token health is `expiring_soon` with `reconnect_required=true` and expiry
+  `2026-09-21T09:23:32.562Z`. Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed at
+  the five-pending-drafts cap. No upload, schedule, edit, delete or re-upload was made.
+- Keep the single-writer, duplicate, metadata, evidence and second-slot holds active. No confidence
+  or result label changed.
 
 ### Metadata reconciliation audit: 20 September 2026, 08:01 Europe/London
 

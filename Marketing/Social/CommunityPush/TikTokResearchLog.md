@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 20 September 2026
+Updated: 21 September 2026
 
 ## Purpose
 
@@ -63,6 +63,67 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-09-21, 08:02 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio read succeeded for active public `@bookquotes.app`, analytics access true,
+  24 public rows and 7 followers. Latest sync is `2026-09-21T06:07:12.156Z`; token health is
+  `expiring_soon` with `reconnect_required=true` and expiry `2026-09-21T09:23:32.562Z`.
+- No new public row appeared. `Gladwell` `7684689312486591766` reads 3 views / 0 likes / 0
+  comments / 1 save / 3 reach; `Some great business non fiction` `7684560503737437443` reads 1
+  view / 0 likes / 0 comments / 1 save / 0 reach; `Freak!` `7683942886928436502` reads 252 views /
+  0 likes / 0 comments / 225 reach. No upload, schedule, edit, delete or re-upload was made.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Creative Centre research surfaces | [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB) | Official guidance identifies Inspiration, Top Ads and Trends; the signed-out GB Top Ads view returned no public results | Research route only, not account performance evidence | Medium | Recheck after native access is healthy |
+| UK BookTok list context | [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | Official platform article combines retail data with TikTok engagement | Reader-fit/list-context signal only | Medium | Keep contextual; do not copy wording or claim lift |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none. No new transferable pattern was sufficiently evidenced.
+- Elements explicitly excluded from imitation: copying wording, artwork, creator identity or
+  distinctive execution; using the unattributed older rows as performance evidence; and treating
+  the 1-view / 1-save change as a creative conclusion.
+
+**Audience language**
+
+- Comments, searches or questions: no readable TikTok audience language was exposed. No potential
+  reader-need hook was promoted.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native caption, cover, audio, audience, rights basis and exact brief mapping remain
+  missing for the attributable rows; token reconnect is due.
+
+**Performance**
+
+- 24-hour checkpoints: no new eligible post.
+- 72-hour checkpoints: no new eligible post.
+- Seven-day checkpoints: unavailable or not attributable.
+- Missing measures: watch time, completion, shares, profile visits, follows, link taps, search terms
+  and recurring reader language.
+
+**Learning**
+
+- Experiment updates: integrity audit only; the visible rows are unchanged from the prior audit.
+- Confidence changes: none.
+- Repeat: keep research/production-ready briefs only and retain the 19:30 baseline as the intended
+  cadence once integrity clears.
+- Modify: reconcile token, single-writer path and native metadata before publication.
+- Pause: TikTok mutation and any second-slot test.
+
+**Queue**
+
+- Approved: none for upload.
+- In production: no TikTok mutation asset may advance.
+- Awaiting evidence or review: `cr-03`, `cr-04` and Distribution Reset briefs.
+- Requires user approval: manual recovery of public rows or any deletion/edit.
 
 ### 2026-09-20, 08:01 Europe/London
 

@@ -1,11 +1,11 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-09-20T08:01:14+01:00</code>.
+Generated from structured evidence updated <code>2026-09-21T08:02:00+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-09-13T08:01:14+01:00</code> to <code>2026-09-20T08:01:14+01:00</code>
-- Published Facebook items represented: 5
+- Reporting window: <code>2026-09-14T08:02:00+01:00</code> to <code>2026-09-21T08:02:00+01:00</code>
+- Published Facebook items represented: 4
 - Visible views: 0
 - Visible reach: 0
 - Meaningful interactions: 0
@@ -16,6 +16,9 @@ Generated from structured evidence updated <code>2026-09-20T08:01:14+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-09-27 | scheduled | facebook | Which kind of recommendation helps most | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-09-26 | scheduled | facebook | What helps you continue a difficult book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-09-25 | scheduled | facebook | Best sign a book deserves a reread | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-24 | scheduled | facebook | When a book changes your mind | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-23 | scheduled | facebook | What makes you trust a book recommendation | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-22 | scheduled | facebook | A book can be useful before you agree with it | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
@@ -139,8 +142,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 5
-- Channel-only items: 5
+- Durable published items: 4
+- Channel-only items: 4
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

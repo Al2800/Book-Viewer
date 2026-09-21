@@ -1,26 +1,41 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 20 September 2026, 08:01 Europe/London
+Updated: 21 September 2026, 08:02 Europe/London
 
 ## Current operating loop
 
-- Meta Page reconciliation at 08:01 Europe/London timed out after operator identity and permissions
-  were partially read. The current Facebook Page and queue are unverified. The last verified state
-  remains seven Graph scheduled rows for 18-24 September; do not schedule a 25 September extension
-  until the scheduled edge is readable.
-- Last verified Facebook state: the 16 September prompt `122113080813415831` and 17 September prompt
-  `122113224375415831` published once; the 22 September row was resolved after the earlier timeout;
-  and the 23/24 September rows were scheduled and read back. Post-level insights remain Not available
-  because Graph returns HTTP 400, and comments remain unreadable because page-comment permission is
-  unavailable. No Facebook or Instagram mutation was attempted.
-- Last verified Instagram state: connected `bookquotes.app` identity, 19-row/latest-30-August read
-  conflicting with the earlier 21-row/latest-1-September read; no write or deletion; five readable
-  media comment edges returned zero comments and no messages were exposed.
+- Meta identity and the Page scheduled edge are readable again. `BookQuotes` Page `1246405755221229`
+  is active, the 20 September prompt published once at 13:00 BST, and seven future Facebook rows
+  are confirmed for 21-27 September at 13:00 Europe/London. The 25-27 September extension rows
+  were preflighted, scheduled and read back once with no duplicate.
+- Facebook post-level insights remain Not available because Graph returns HTTP 400, and comments
+  remain unreadable because the required page-comment permission is unavailable. Instagram remains
+  connected as `bookquotes.app`; the current read exposes 19 rows with latest 30 August. No fresh
+  Instagram publication is claimed and no Instagram write was made.
 - TikTok read-back succeeded: active `@bookquotes.app`, 24 public rows, 7 followers, analytics
-  access and latest sync `2026-09-20T07:20:38.341Z`. Gladwell reads 3 views / 3 reach / 1 save,
+  access and latest sync `2026-09-21T06:07:12.156Z`. Gladwell reads 3 views / 3 reach / 1 save,
   business non-fiction reads 1 view / 0 reach / 1 save, and Freak! 252 views / 225 reach. Token
-  health reports `reconnect_required` with expiry `2026-09-20T08:39:56.697Z`; defer the planned
-  09:05 reconnect path. The failed draft remains capped and all TikTok mutation holds remain active.
+  health is `expiring_soon`, with `reconnect_required=true` and expiry
+  `2026-09-21T09:23:32.562Z`; keep the reconnect path active. The failed draft remains capped and
+  all TikTok mutation holds remain active.
+
+### Audit: 21 September 2026, 08:02 Europe/London
+
+- Facebook: the 20 September Page prompt `122113678365415831` is published once at 13:00 BST.
+  The direct `scheduled_posts` edge contains seven future rows for 21-27 September. New read-back
+  IDs are `122114955891415831` (25 September), `122114955939415831` (26 September) and
+  `122114956167415831` (27 September), all Public and scheduled at 13:00 Europe/London. The
+  Page identity and permissions are verified. Post-level insight metrics still return HTTP 400,
+  and the comments edge still lacks the required permission, so those measures remain Not available.
+- Instagram: the connected `bookquotes.app` identity remains verified. The current read exposes
+  19 media rows with latest 30 August; no new publication, deletion or write is claimed. No readable
+  comment or message text was exposed in this run.
+- TikTok: the account is active as `@bookquotes.app` with 24 public rows, 7 followers and analytics
+  access. The latest sync is `2026-09-21T06:07:12.156Z`; no new public row appeared. Visible rows
+  remain Gladwell 3 views / 3 reach / 1 save, business non-fiction 1 view / 0 reach / 1 save, and
+  Freak! 252 views / 225 reach. Token health is expiring soon; no TikTok mutation was made.
+- No sensitive replies were exposed, and no automatic replies were made. Keep the TikTok
+  single-writer, duplicate, metadata, evidence and second-slot holds active.
 
 ### Audit: 20 September 2026, 08:01 Europe/London
 

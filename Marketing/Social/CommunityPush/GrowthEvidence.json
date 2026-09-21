@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-20T08:01:14+01:00",
+  "updated_at": "2026-09-21T08:02:00+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -112,6 +112,90 @@
     }
   ],
   "social_observations": [
+    {
+      "observation_id": "fb-2026-09-21-queue-extension-25",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122114955891415831",
+      "title": "Best sign a book deserves a reread",
+      "format": "text",
+      "published_at": "2026-09-25T13:00:00+01:00",
+      "observed_at": "2026-09-21T08:02:00+01:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 25 September; live metrics are not available. This observation represents the verified seven-day queue extension.",
+      "notes": "Read-back ID 122114955891415831 at https://www.facebook.com/122107379391415831/posts/122114955891415831. Direct Graph scheduled_posts read confirms seven future rows for 21-27 September 2026 at 13:00 Europe/London."
+    },
+    {
+      "observation_id": "fb-2026-09-21-queue-extension-26",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122114955939415831",
+      "title": "What helps you continue a difficult book",
+      "format": "text",
+      "published_at": "2026-09-26T13:00:00+01:00",
+      "observed_at": "2026-09-21T08:02:00+01:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 26 September; live metrics are not available. This observation represents the verified seven-day queue extension.",
+      "notes": "Read-back ID 122114955939415831 at https://www.facebook.com/122107379391415831/posts/122114955939415831. Direct Graph scheduled_posts read confirms seven future rows for 21-27 September 2026 at 13:00 Europe/London."
+    },
+    {
+      "observation_id": "fb-2026-09-21-queue-extension-27",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122114956167415831",
+      "title": "Which kind of recommendation helps most",
+      "format": "text",
+      "published_at": "2026-09-27T13:00:00+01:00",
+      "observed_at": "2026-09-21T08:02:00+01:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 27 September; live metrics are not available. This observation represents the verified seven-day queue extension.",
+      "notes": "Read-back ID 122114956167415831 at https://www.facebook.com/122107379391415831/posts/122114956167415831. Direct Graph scheduled_posts read confirms seven future rows for 21-27 September 2026 at 13:00 Europe/London."
+    },
     {
       "observation_id": "tk-2026-09-20-gladwell-audit",
       "platform": "tiktok",

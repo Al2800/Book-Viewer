@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 20 September 2026, 08:01 Europe/London
+Updated: 21 September 2026, 08:02 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,49 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 21 September 2026, 08:02 Europe/London
+
+**Seven-day review: Facebook**
+
+- The 18-20 September Page prompts are confirmed published once in the expected 13:00 BST slot;
+  the 20 September item is `122113678365415831`.
+- The direct Page `scheduled_posts` edge now confirms seven future rows for 21-27 September at
+  13:00 Europe/London. Three original text-only reader prompts were added for 25-27 September,
+  read back once as `122114955891415831`, `122114955939415831` and `122114956167415831`.
+- Page post-level insights still return Graph HTTP 400 and the comments edge still lacks the
+  required page-comment permission. Views, reach, saves, shares, comments, profile visits, link
+  clicks and follows are therefore Not available, not zero. No confidence change is warranted.
+
+**Seven-day review: TikTok**
+
+- The active account is `@bookquotes.app` with 24 public rows, 7 followers and analytics access.
+  Latest sync is `2026-09-21T06:07:12.156Z`; no new public row appeared. Gladwell is 3 views / 3
+  reach / 1 save, business non-fiction is 1 view / 0 reach / 1 save, and Freak! is 252 views /
+  225 reach. The rows remain publishing-integrity observations rather than clean experiment results.
+- Token health is `expiring_soon` with `reconnect_required=true`; the single-writer, duplicate,
+  metadata, evidence and second-slot holds remain active. No TikTok mutation or automatic reply was
+  made. No confidence or result label changed.
+- Repeat: keep research and production-ready briefs alive, and keep the 19:30 baseline as the
+  intended cadence once integrity clears. Modify: reconcile the token, native metadata, exact brief
+  mapping and single-writer path. Pause: uploads, schedules, edits, deletes, re-uploads and any
+  second-slot test.
+
+**Research and community**
+
+- The official [TikTok Creative Centre guidance](https://ads.tiktok.com/resources/help/article/creative-center?lang=en-GB)
+  remains the research route for Inspiration, Top Ads and Trends. The signed-out GB Top Ads surface
+  returned no public results, so no new account-specific pattern was promoted.
+- The official [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains contextual list evidence, not BookQuotes performance evidence. No readable comments,
+  messages or audience language were exposed; no replies were made.
+
+**Next actions**
+
+- Automatic: read back the 21 September Facebook publication next run and keep extending the queue
+  from the verified scheduled edge.
+- Automatic: keep the TikTok reconnect path active, but do not mutate TikTok until the integrity
+  holds clear. Preserve unavailable metrics as `null` in `GrowthEvidence.json`.
 
 ### 20 September 2026, 08:01 Europe/London
 
