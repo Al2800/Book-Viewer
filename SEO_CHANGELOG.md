@@ -1,5 +1,18 @@
 # SEO Changelog
 
+## 2026-09-28: quotes about libraries
+- Date merged: 
+- PR: 
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/about-libraries
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "quotes about libraries"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a quote hub of 20 lines about libraries, on the same pattern as quotes about reading: grouped by theme, with the work and chapter under each line, an author filter, and a section for misattributions. Every line was checked against a named public-domain text, usually a Project Gutenberg ebook. The misattributions are the Cicero garden-and-library wording (checked against the Perseus Latin and Shuckburgh), the T. S. Eliot line Quote Investigator does not find in Eliot, and the “important” versus “impotent” unread-library wording from Quote Investigator. Linked from the quotes index, the homepage, and the sitemap.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: copy accuracy
 - Date merged: 
 - PR: #22 https://github.com/Al2800/Book-Viewer/pull/22

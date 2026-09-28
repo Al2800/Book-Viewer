@@ -2,6 +2,7 @@ import carol from '@/content/quotes/a-christmas-carol.json'
 import jekyll from '@/content/quotes/jekyll-and-hyde.json'
 import macbeth from '@/content/quotes/macbeth.json'
 import reading from '@/content/quotes/about-reading.json'
+import libraries from '@/content/quotes/about-libraries.json'
 
 export type QuoteEntry = {
   id: string
@@ -71,7 +72,7 @@ export type QuoteHub = {
   misattributionIntro?: string
 }
 
-export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, reading as QuoteHub]
+export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, reading as QuoteHub, libraries as QuoteHub]
 
 export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)
