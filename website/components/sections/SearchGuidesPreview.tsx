@@ -30,6 +30,10 @@ export function SearchGuidesPreview() {
           <Link href="/quotes/about-reading" className="underline underline-offset-4 text-ink-black">
             quotes about reading
           </Link>
+          . For lines about libraries, see{' '}
+          <Link href="/quotes/about-libraries" className="underline underline-offset-4 text-ink-black">
+            quotes about libraries
+          </Link>
           . For a revision list of the literature hubs, see the{' '}
           <Link href="/guides/gcse-english-quote-bank" className="underline underline-offset-4 text-ink-black">
             GCSE English literature quote bank

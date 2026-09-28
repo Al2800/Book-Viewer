@@ -246,7 +246,7 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
               )}
 
               <section className="mt-4 pt-10 border-t border-subtle">
-                {hub.slug === 'about-reading' ? (
+                {hub.groupBy === 'theme' ? (
                   <>
                     <h2 className="mb-5">Keep the lines you actually stopped for</h2>
                     <p className="text-lg text-ink-dark mb-4">
