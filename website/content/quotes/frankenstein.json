@@ -5,7 +5,7 @@
   "metaDescription": "Thirty-eight Frankenstein quotes for GCSE and A level, checked against the 1831 text. Each line has its letter or chapter, speaker, context and a note.",
   "lead": "These are key Frankenstein quotes for GCSE and A level, arranged by letter and chapter, and checked word for word against Mary Shelley's 1831 text.",
   "arrangement": "Each one gives the letter or chapter, who is speaking, a sentence of what is happening, and a short note on how you might use the line. The character and theme buttons are the index. Characters: Robert Walton, Victor Frankenstein, the creature, M. Waldman and Justine Moritz. Themes: ambition, science, creation, isolation, revenge, justice, nature and responsibility. Filters narrow the list. The quotations stay in book order underneath.",
-  "sourceNote": "The wording is the Project Gutenberg text of Frankenstein, eBook 84. That file is the 1831 revision: Walton's four letters, then twenty-four chapters. Elizabeth is introduced as the daughter of a Milanese nobleman, which is the 1831 account. Later in the same file Victor still calls her his cousin when the wedding date is fixed, so do not tidy that word if your copy has it. The lightning-struck oak is in this text. The file does not include Shelley's 1831 introduction. The 1818 first edition is a different book in the details that matter for essays: three volumes, different chapter numbers, and some different episodes. This page does not claim that any board sets one edition. Check the copy you will have in the exam. Gutenberg marks italics with underscores; those marks are not words, so they are not shown here. Sentences in the file that contain an em dash are left out, so every line below can be checked without that mark.",
+  "sourceNote": "The wording is the Project Gutenberg text of Frankenstein, eBook 84. That file follows the 1831 revision: Walton's four letters, then twenty-four chapters numbered straight through, with no volume divisions. Elizabeth is introduced as the daughter of a Milanese nobleman, found with a peasant family by Lake Como, which is the 1831 account. In the 1818 text she is the daughter of Victor's father's sister. Later in the same file Victor still calls her his cousin when the wedding date is fixed, so do not tidy that word if your copy has it. After the lightning strikes the oak, the 1831 text has a man of great research in natural philosophy explain electricity and galvanism; in 1818 it is Victor's father. The file includes neither Shelley's 1831 introduction nor the 1818 preface. The 1818 first edition was printed in three volumes, with the chapter count starting again in each one. AQA's GCSE specification (8702) lists the novel as Frankenstein (1831). Pearson Edexcel (1ET0) lists Frankenstein and prescribes no edition, because its exam is closed book. OCR's GCSE (J352) list does not include it. Gutenberg marks italics with underscores; those marks are not words, so they are not shown here. Sentences in the file that contain an em dash are left out, so every line below can be checked without that mark.",
   "publishedISO": "2026-09-28",
   "updatedISO": "2026-09-28",
   "sourceName": "Frankenstein, Project Gutenberg eBook 84 (1831 text)",
@@ -49,11 +49,11 @@
     },
     {
       "question": "How many quotes should I learn for GCSE or A level English?",
-      "answer": "The mark scheme does not publish a number. Learn fewer lines than you are tempted to, and know them well enough to place them in the right letter or chapter. A quotation you cannot find in the story will not help you. The lines on this page are a bank to choose from, not a list to memorise in full."
+      "answer": "The exam board specifications do not set a number. Learn fewer lines than you are tempted to, and know them well enough to place them in the right letter or chapter. A quotation you cannot find in the story will not help you. The lines on this page are a bank to choose from, not a list to memorise in full."
     },
     {
       "question": "Which edition of Frankenstein is this, 1818 or 1831?",
-      "answer": "This page follows Project Gutenberg eBook 84, the 1831 text: four letters and twenty-four chapters. Elizabeth enters as the daughter of a Milanese nobleman. The oak struck by lightning is here. The 1818 edition divides the novel into three volumes and changes chapter numbers and some episodes. GCSE and A level classes do not all use the same edition, and this page does not claim that a board requires one of them. If your copy is 1818, do not learn these chapter numbers. Check the wording against the book you are allowed in the exam."
+      "answer": "This page follows Project Gutenberg eBook 84, which is the 1831 text: four letters and twenty-four chapters, with no volume breaks. Elizabeth enters as the daughter of a Milanese nobleman, where the 1818 text makes her Victor's cousin by birth. The 1818 edition was printed in three volumes, with chapters numbered again in each, and some passages differ. For GCSE, AQA lists Frankenstein (1831). Edexcel prescribes no edition, and OCR does not set the novel. If your copy is 1818, do not learn these chapter numbers. The exams are closed book, so check the wording against the copy you revise from."
     },
     {
       "question": "Which famous Frankenstein lines are easy to misremember?",
@@ -116,9 +116,9 @@
       "text": "the oak had disappeared, and nothing remained but a blasted stump. When we visited it the next morning, we found the tree shattered in a singular manner. It was not splintered by the shock, but entirely reduced to thin ribbons of wood.",
       "speaker": "Victor Frankenstein",
       "themes": ["nature", "science"],
-      "context": "Victor is a boy, standing at the door during a thunderstorm. A stream of fire strikes an old oak about twenty yards from the house. The \"the\" has no capital because the sentence has already begun. The next day a natural philosopher who is staying with the family explains electricity and galvanism, and Agrippa loses his hold. This episode is in the 1831 text.",
+      "context": "Victor is a boy, standing at the door during a thunderstorm. A stream of fire strikes an old oak about twenty yards from the house. The \"the\" has no capital because the sentence has already begun. A man of great research in natural philosophy is with the family, and he explains electricity and galvanism, which throws Agrippa into the shade. The oak is in the 1818 text too, but there Victor's father explains electricity.",
       "citation": "Chapter 2",
-      "analysis": "The tree is not a metaphor Victor intends. It is a demonstration that natural force can unmake a solid thing in a moment. If your edition is 1818, do not treat the oak as if it must be there.",
+      "analysis": "The tree is not a metaphor Victor intends. It is a demonstration that natural force can unmake a solid thing in a moment. If your edition is 1818, the oak is there, but the person who explains it is different.",
       "chapter": 2
     },
     {
@@ -366,9 +366,9 @@
       "text": "Beware, for I am fearless and therefore powerful.",
       "speaker": "The creature",
       "themes": ["revenge"],
-      "context": "The same confrontation, a few sentences on. Victor has said the creature may torture him but the companion will not be made. The creature answers that revenge is dearer than light or food, and that Victor will curse the sun that watches his misery. Then this. In this text there is a comma after Beware, and no comma before \"and\".",
+      "context": "The same confrontation, in the speech that follows the question about a mate. Victor has refused, and the creature warns that the bolt will fall. He says revenge is now dearer than light or food, and that Victor will curse the sun that gazes on his misery. Then this. In this text there is a comma after Beware, and no comma before \"and\".",
       "citation": "Chapter 20",
-      "analysis": "Power, for him, comes from having nothing he is unwilling to lose. Many cards print a semicolon after Beware and a comma before and. Those marks are not in this sentence. Check your exam copy before you learn the punctuation.",
+      "analysis": "Power, for him, comes from having nothing he is unwilling to lose. Learn the punctuation from the text: a comma after Beware, and none before \"and\".",
       "chapter": 20
     },
     {
@@ -386,7 +386,7 @@
       "text": "“Shall each man,” cried he, “find a wife for his bosom, and each beast have his mate, and I be alone?",
       "speaker": "The creature",
       "themes": ["isolation", "justice"],
-      "context": "Immediately after Victor refuses again, in the same scene. Victor has called him a devil whose delight is in death, and told him to begone. The creature gnashes his teeth and cries this. The speech tag \"cried he\" is in the file, between the two halves of the question.",
+      "context": "Straight after Victor refuses again, in the same scene. Victor has asked whether he should set loose a dæmon whose delight is in death, and told him to begone. The creature gnashes his teeth and cries this. The speech tag \"cried he\" is in the file, between the two halves of the question.",
       "citation": "Chapter 20",
       "analysis": "The question puts men, beasts and himself in one scale. He is not asking for love inside human society. He is asking why every other creature is allowed a mate. The wedding-night threat is the next move when the answer is no.",
       "chapter": 20
@@ -418,7 +418,7 @@
       "themes": ["revenge", "justice"],
       "context": "The same speech to Walton, a moment later. He says it is true that he is a wretch, and then he lists what he has done. The lovely and the helpless are the victims. The throat is the person who never injured him. He also says he has devoted his creator to misery. Victor is already dead.",
       "citation": "Chapter 24",
-      "analysis": "This is the confession the glacier speech did not yet make. \"Grasped to death his throat\" is the word order in this text. Do not smooth it into \"grasped his throat to death\" unless your exam copy does.",
+      "analysis": "This is the confession the glacier speech did not yet make. \"Grasped to death his throat\" is the word order in this text. Do not smooth it into \"grasped his throat to death\" unless your own copy prints it that way.",
       "chapter": 24
     },
     {
