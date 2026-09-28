@@ -39,7 +39,7 @@
         "isolation"
       ],
       "context": "The narrator is listing how Scrooge holds on to money. The line sits in the middle of a longer sentence, which is why it starts without a capital.",
-      "analysis": "The pile of participles is the point. Each verb is a hand closing. For a greed paragraph, quote the list and then say what is missing: there is no verb of giving until much later in the book.",
+      "analysis": "The pile of participles is the point. Each verb is a hand closing. For a greed paragraph, quote the list and then say what is missing: not one of the verbs gives anything away.",
       "stave": 1
     },
     {
@@ -81,7 +81,7 @@
     },
     {
       "id": "s1-nephew-christmas",
-      "text": "I have always thought of Christmas time, when it has come round--apart from the veneration due to its sacred name and origin, if anything belonging to it can be apart from that--as a good time; a kind, forgiving, charitable, pleasant time; the only time I know of, in the long calendar of the year, when men and women seem by one consent to open their shut-up hearts freely, and to think of people below them as if they really were fellow-passengers to the grave, and not another race of creatures bound on other journeys. And therefore, uncle, though it has never put a scrap of gold or silver in my pocket, I believe that it has done me good, and will do me good; and I say, God bless it!\"",
+      "text": "I have always thought of Christmas time, when it has come round--apart from the veneration due to its sacred name and origin, if anything belonging to it can be apart from that--as a good time; a kind, forgiving, charitable, pleasant time; the only time I know of, in the long calendar of the year, when men and women seem by one consent to open their shut-up hearts freely, and to think of people below them as if they really were fellow-passengers to the grave, and not another race of creatures bound on other journeys. And therefore, uncle, though it has never put a scrap of gold or silver in my pocket, I believe that it has done me good, and will do me good; and I say, God bless it!",
       "speaker": "Fred",
       "themes": [
         "Christmas spirit",
@@ -112,7 +112,7 @@
         "poverty",
         "greed"
       ],
-      "context": "Scrooge is refusing the charitable collection. He has just been told that many of the poor would rather die than go to the Union workhouse.",
+      "context": "Scrooge is refusing the charitable collection. He has asked to be put down for nothing, and says the prisons and workhouses he already pays for are enough.",
       "analysis": "\"Idle\" does the moral work. It turns need into a fault, so that refusing help looks like good sense. Put it next to the Cratchit Christmas in Stave 3, where the family are plainly not idle and still have almost nothing.",
       "stave": 1
     },
@@ -200,7 +200,7 @@
         "the supernatural",
         "regret"
       ],
-      "context": "The first of the three spirits has woken Scrooge. Scrooge asks if it means the distant past. The ghost says no: \"Your past.\"",
+      "context": "The first of the three spirits has drawn back Scrooge's bed-curtains as the clock strikes one. Scrooge asks if it means the distant past. The ghost says no: \"Your past.\"",
       "analysis": "The correction matters more than the title. The stave is not a history lesson about old London. It is Scrooge's own childhood, apprenticeship and broken engagement, which is why the memories can still shame him.",
       "stave": 2
     },
@@ -214,7 +214,7 @@
         "regret"
       ],
       "context": "The ghost has taken Scrooge to the school he boarded at as a boy. The other children have gone home for Christmas.",
-      "analysis": "Use this when you want isolation to be something done to Scrooge, not only something he chooses. The later oyster simile is harsher because the reader has already seen the child. \"He sobbed\" is the next sentence, and it is the first crack in him.",
+      "analysis": "Use this when you want isolation to be something done to Scrooge, not only something he chooses. Looking back, the oyster simile in Stave 1 reads differently once you have seen the child. The text goes on: \"Scrooge said he knew it. And he sobbed.\" His lip has already trembled at the sight of his old home; now he weeps outright.",
       "stave": 2
     },
     {
@@ -240,7 +240,7 @@
         "family"
       ],
       "context": "Belle is ending her engagement to the young Scrooge. He asks what idol has replaced her. She answers, \"A golden one.\"",
-      "analysis": "Belle does not call him a villain. She calls gold an idol, which is a religious word, and she leaves him a way out if the money really will comfort him. It will not. The stave then shows him alone, so the conditional clause is already ironic.",
+      "analysis": "Belle does not call him a villain. She calls gold an idol, which is a religious word, and she leaves him a way out if the money really will comfort him. It will not. Later in the stave Belle's husband says he saw Scrooge sitting \"Quite alone in the world\", so the conditional clause is already ironic.",
       "stave": 2
     },
     {
@@ -257,7 +257,7 @@
     },
     {
       "id": "s2-gain",
-      "text": "You fear the world too much,\" she answered, gently. \"All your other hopes have merged into the hope of being beyond the chance of its sordid reproach. I have seen your nobler aspirations fall off one by one, until the master-passion, Gain, engrosses you.",
+      "text": "\"You fear the world too much,\" she answered, gently. \"All your other hopes have merged into the hope of being beyond the chance of its sordid reproach. I have seen your nobler aspirations fall off one by one, until the master-passion, Gain, engrosses you. Have I not?\"",
       "speaker": "Belle",
       "themes": [
         "greed",
@@ -350,8 +350,8 @@
         "poverty",
         "social responsibility"
       ],
-      "context": "At the end of the stave the ghost opens his robe and shows two ragged children. Scrooge asks if they have no refuge. The ghost answers with Scrooge's questions about prisons and workhouses.",
-      "analysis": "Ignorance is the one Dickens fears more, because Want can be fed and Ignorance is passed on. The capital letters make the children into conditions, not just two figures in a vision. Link them back to \"Are there no prisons?\" if the paragraph is about society rather than Scrooge alone.",
+      "context": "At the end of the stave the ghost shows two ragged children from the folds of his robe. Scrooge asks if they are his. \"They are Man's,\" the Spirit answers, and then names them.",
+      "analysis": "The Spirit warns against the boy most of all. One reading is that want can be fed, while ignorance is handed on. The capital letters make the children into conditions, not just two figures in a vision. Link them back to \"Are there no prisons?\" if the paragraph is about society rather than Scrooge alone.",
       "stave": 3
     },
     {
@@ -387,8 +387,8 @@
         "greed",
         "isolation"
       ],
-      "context": "In Scrooge's imagined future, two businessmen meet and speak briefly about a dead man. They do not say the name. The reader understands it is Scrooge.",
-      "analysis": "\"Old Scratch\" is a nickname for the devil, used here as a shrug. Nobody in the exchange will go to the funeral unless lunch is provided. Set it against Bob Cratchit's grief, or against Fred's affection, when you write about a life that money did not make mourned.",
+      "context": "In the future the last spirit shows him, two wealthy men of business Scrooge knows meet in the street and speak briefly about a dead man. They do not say the name. The reader understands it is Scrooge.",
+      "analysis": "\"Old Scratch\" is a nickname for the devil, used here as a shrug. The pair move straight on to the weather. A moment earlier, a group of merchants on 'Change joked that they would only go to the funeral if lunch were provided. Set these men against the Cratchits' grief for Tiny Tim later in the stave when you write about a life that money did not make mourned.",
       "stave": 4
     },
     {
@@ -423,8 +423,8 @@
         "redemption",
         "Christmas spirit"
       ],
-      "context": "Scrooge has woken on Christmas morning and found he is still alive, and that the spirits' visits occupied one night. He is laughing as he dresses.",
-      "analysis": "The similes are excessive on purpose. Dickens lets the joy sound undignified because the old Scrooge's dignity was the problem. \"Schoolboy\" also reaches back to the solitary child in Stave 2: the comparison is only joyful if you remember that boy.",
+      "context": "Scrooge has woken in his own bed, alive, with the bed-curtains still there. He does not yet know what day it is. He is laughing and crying as he dresses.",
+      "analysis": "The similes are excessive on purpose. Dickens lets the joy sound undignified because the old Scrooge's dignity was the problem. \"Schoolboy\" also reaches back to the solitary child in Stave 2: the comparison is sharper if you remember that boy.",
       "stave": 5
     },
     {

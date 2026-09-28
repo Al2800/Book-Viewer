@@ -731,7 +731,7 @@ export const guides: Guide[] = [
       { href: '/guides/quote-reader-app-for-physical-books', label: 'Capture and search paper book quotes' },
     ],
     intro:
-      'Readers often feel forced to choose between the tactile pleasure of physical books and the convenience of Kindle highlights. E-readers make searching highlights effortless, yet paper offers superior spatial memory, comprehension, and freedom from screen fatigue. You do not have to compromise: you can read on paper and maintain a searchable digital quote library.',
+      'Readers often feel forced to choose between the tactile pleasure of physical books and the convenience of Kindle highlights. An e-reader makes highlights easy to search. Many people prefer paper for long reading and like keeping the screen out of the hour. You can read on paper and still keep a searchable library of the lines you mark.',
     relatedQueries: [
       'kindle highlights physical books',
       'book quote finder',
