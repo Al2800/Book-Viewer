@@ -7,7 +7,7 @@ import { quoteHubs } from '@/lib/quotes'
 
 const title = 'Quotes checked against the original text | BookQuotes'
 const description =
-  'Public-domain lines for GCSE set texts, checked against a named text before they are published.'
+  'Public-domain lines checked against a named text before they are published: GCSE set texts, and quotes about reading with the book named.'
 
 export const metadata: Metadata = {
   title,
@@ -32,7 +32,7 @@ export default function QuotesPage() {
           <p className="font-ui text-sm text-ink-medium mb-4">Quotes</p>
           <h1 className="mb-5">Quotes checked against the original text</h1>
           <p className="text-xl text-ink-medium max-w-2xl">
-            Public-domain set texts, with the lines a student actually needs. Every quotation is checked against a named text. A line is left out if it only sounds familiar.
+            Public-domain books, with the lines a student or a reader actually needs. Every quotation is checked against a named text. A line is left out if it only sounds familiar.
           </p>
         </header>
 
@@ -41,7 +41,7 @@ export default function QuotesPage() {
             {quoteHubs.map((hub) => (
               <article key={hub.slug} className="grid md:grid-cols-[190px_1fr_auto] gap-4 md:gap-10 py-8">
                 <div className="font-ui text-sm text-ink-medium">
-                  <p>GCSE English</p>
+                  <p>{hub.indexLabel ?? 'GCSE English'}</p>
                   <p className="mt-1">{hub.quotes.length} quotes</p>
                 </div>
                 <div>

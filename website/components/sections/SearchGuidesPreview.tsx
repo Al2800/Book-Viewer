@@ -26,6 +26,10 @@ export function SearchGuidesPreview() {
           <Link href="/quotes/a-christmas-carol" className="underline underline-offset-4 text-ink-black">
             A Christmas Carol quotes
           </Link>
+          . For lines about the habit itself, see{' '}
+          <Link href="/quotes/about-reading" className="underline underline-offset-4 text-ink-black">
+            quotes about reading
+          </Link>
           .
         </p>
       </div>

@@ -1,6 +1,7 @@
 import carol from '@/content/quotes/a-christmas-carol.json'
 import jekyll from '@/content/quotes/jekyll-and-hyde.json'
 import macbeth from '@/content/quotes/macbeth.json'
+import reading from '@/content/quotes/about-reading.json'
 
 export type QuoteEntry = {
   id: string
@@ -15,11 +16,22 @@ export type QuoteEntry = {
   scene?: number
   lineStart?: number
   lineEnd?: number
+  citation?: string
+  sourceUrl?: string
+  sourceName?: string
 }
 
 export type QuoteFaq = {
   question: string
   answer: string
+}
+
+export type Misattribution = {
+  id: string
+  claim: string
+  detail: string
+  sourceName: string
+  sourceUrl: string
 }
 
 export type QuoteSection = {
@@ -47,9 +59,19 @@ export type QuoteHub = {
   sections?: QuoteSection[]
   appNote?: string
   faqs?: QuoteFaq[]
+  eyebrow?: string
+  indexLabel?: string
+  intro?: string[]
+  sourcesArePerQuote?: boolean
+  groupBy?: 'stave' | 'theme'
+  themeOrder?: string[]
+  themeHeadings?: Record<string, string>
+  faqHeading?: string
+  misattributions?: Misattribution[]
+  misattributionIntro?: string
 }
 
-export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth]
+export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, reading as QuoteHub]
 
 export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)

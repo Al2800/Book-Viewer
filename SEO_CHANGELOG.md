@@ -1,5 +1,18 @@
 # SEO Changelog
 
+## 2026-09-28: quotes about reading
+- Date merged: 
+- PR: #19 https://github.com/Al2800/Book-Viewer/pull/19
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/about-reading
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "quotes about reading"
+- GSC numbers at the time: new page, none
+- What changed: Published a quote hub of 36 lines about reading and books, each checked against a named public-domain text (work and chapter or essay), grouped by escape, empathy, childhood, libraries, rereading and choosing. Added an often-misattributed section for four circulating lines, with Quote Investigator or the screenwriter's own account. Linked the hub from the quotes index, the homepage, and the sitemap.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: Macbeth quotes
 - Date merged: 
 - PR: #21 https://github.com/Al2800/Book-Viewer/pull/21
