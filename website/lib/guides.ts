@@ -729,7 +729,7 @@ export const guides: Guide[] = [
         heading: 'Search inside the book on Google Books',
         paragraphs: [
           'Open the book on Google Books and use the box that searches inside that book, not the box that searches the whole catalogue. Type three or four words you are sure of. A whole sentence you might have misremembered will miss. A hit shows a snippet and, on many scans, a page number.',
-          'That number belongs to the edition Google photographed. If your paperback is a different year or a different publisher, treat it as a clue and check your own copy before you cite it. Plenty of books are snippet view, or have no preview. If there is no search inside the book, Google does not have a text you can search. A blank result does not mean the line is missing from the novel.',
+          'That number belongs to the edition Google photographed. If your paperback is a different year or a different publisher, treat it as a clue and check your own copy before you cite it. Many in-copyright books are snippet view, which shows up to three short snippets for each search, and some have no preview at all. If there is no search inside the book, Google does not have a text you can search. A blank result does not mean the line is missing from the novel.',
         ],
       },
       {
@@ -743,13 +743,13 @@ export const guides: Guide[] = [
         heading: 'Find in page, in an ebook or a PDF',
         paragraphs: [
           'In a browser, find in page is Ctrl+F on Windows and Linux, and Command+F on a Mac. In Apple Books, Kindle, Kobo or Google Play Books, use the search field in the app. Start with a short run of words. If nothing comes back, drop a word you are less sure of and try again. A name plus one unusual verb is often enough.',
-          'Reflowable ebooks often count locations rather than pages. A page number shows up when the publisher supplied one, and it matches one print edition, which may not be the paperback on your desk. A PDF of a scanned book is simpler: find jumps to the page, and the number on the scan is the number in that file.',
+          'Reflowable ebooks often count locations rather than pages. A page number shows up when the publisher supplied one, and it matches one print edition, which may not be the paperback on your desk. A PDF of a scanned book is simpler if the scan has a text layer: find jumps to the page, and the number printed on the scan is the number in that edition. A scan with no text layer is only pictures, and find will not see the words.',
         ],
       },
       {
         heading: 'A library catalogue finds the copy',
         paragraphs: [
-          'Use a catalogue when someone has handed you a page number. The number is useless until you know the edition. Your local library, a university library, the British Library or WorldCat will tell you which printing a library holds, and where it sits on the shelf. Write down the year and the publisher before you walk over.',
+          'Use a catalogue when someone has handed you a page number. The number is useless until you know the edition. WorldCat shows which libraries hold which editions. Your local library, a university library or the British Library catalogue shows the edition it holds and the shelfmark or call number to ask for. Write down the year and the publisher before you walk over.',
           'An ordinary catalogue does not search the sentences inside the book. It finds the copy. Once you have that copy, use the index, or one of the full-text searches above if a scan of the same edition exists. Matching the year matters more than matching the cover.',
         ],
       },
@@ -776,7 +776,7 @@ export const guides: Guide[] = [
       {
         question: 'Does Google Books show a page number for every book?',
         answer:
-          'No. Search inside the book shows a page number when that scan has one and the preview lets you see the hit. Snippet view, and books with no preview, will not. The number is for the edition Google scanned.',
+          'No. You can read the page number when the preview lets you open the page with the hit, as in full view or a limited preview. Snippet view shows up to three short snippets for a search, and a book with no preview shows none of the text. Any number you do get is for the edition Google scanned.',
       },
       {
         question: 'How do I find a quote I underlined in a paper book?',
