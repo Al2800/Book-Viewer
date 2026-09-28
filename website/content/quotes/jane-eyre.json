@@ -5,7 +5,7 @@
   "metaDescription": "Forty Jane Eyre quotes for GCSE and A level, checked against Brontë word for word. Each line has its chapter, speaker, context and a short note.",
   "lead": "These are key Jane Eyre quotes for GCSE and A level, arranged by chapter, and checked word for word against Charlotte Brontë's novel.",
   "arrangement": "Each one gives the chapter, who is speaking, a sentence of what is happening, and a short note on how you might use the line. The character and theme buttons are the index. Characters: Jane Eyre, Mrs Reed, Bessie, Miss Abbot, Mr Brocklehurst, Helen Burns, Edward Rochester, Mrs Fairfax and St John Rivers. Themes: childhood, cruelty, class, religion, gender, independence, love, morality and madness. Filters narrow the list. The quotations stay in book order underneath.",
-  "sourceNote": "The wording is the Project Gutenberg text of Jane Eyre, eBook 1260. That file is the 1897 Service and Paton printing, illustrated by F. H. Townsend. It includes the preface dated 13 April 1848 and signed Currer Bell, which calls itself the preface to the second edition. The story runs to thirty-eight chapters. The last heading in the file is Chapter XXXVIII, followed by the word Conclusion. This page numbers those chapters 1 to 38. Jane Eyre is taught in some GCSE and A level classrooms, and not in others. This page does not claim that any board sets it. Check the copy you will have in the exam. Gutenberg marks italics with underscores. Those marks are not words, so they are not shown here. Where the file prints a dash inside a sentence, the quotation stops before that mark.",
+  "sourceNote": "The wording is the Project Gutenberg text of Jane Eyre, eBook 1260. That file is the 1897 Service and Paton printing, illustrated by F. H. Townsend. It includes the preface dated 13 April 1848 and signed Currer Bell, which calls itself the preface to the second edition. The story runs to thirty-eight chapters. The last heading in the file is Chapter XXXVIII, followed by the word Conclusion. This page numbers those chapters 1 to 38. At GCSE, Jane Eyre is one of the 19th-century novel set texts in the AQA (8702), Pearson Edexcel (1ET0) and OCR (J352) English Literature specifications, and a school chooses one novel from that list. All three GCSE exams are closed book, so check each line against the copy you revise from. Gutenberg marks italics with underscores. Those marks are not words, so they are not shown here. Where the file prints a dash inside a sentence, the quotation stops before that mark.",
   "publishedISO": "2026-09-28",
   "updatedISO": "2026-09-28",
   "sourceName": "Jane Eyre, Project Gutenberg eBook 1260 (1897 Service and Paton text)",
@@ -123,11 +123,11 @@
     },
     {
       "question": "How many quotes should I learn for GCSE or A level English?",
-      "answer": "The mark scheme does not publish a number. Learn fewer lines than you are tempted to, and know them well enough to place them in the right chapter. A quotation you cannot find in the story will not help you. Jane Eyre is set in some GCSE and A level courses, and not in others. Nothing on this page is a claim that your board requires the novel. The lines here are a bank to choose from, not a list to memorise in full."
+      "answer": "The exam board specifications do not set a number. Learn fewer lines than you are tempted to, and know them well enough to place them in the right chapter. A quotation you cannot find in the story will not help you. At GCSE, AQA, Edexcel and OCR each list Jane Eyre as one of several 19th-century novels a school can choose, so check which one your class studies. The lines here are a bank to choose from, not a list to memorise in full."
     },
     {
       "question": "Which famous Jane Eyre lines are easy to misplace?",
-      "answer": "\"I would always rather be happy than dignified\" is Jane running after St John on the stairs at Moor House. It is not a line about marrying Rochester, and the file ends it with a semicolon. \"I can live alone\" is spoken by Rochester in his gipsy disguise, as a reading of Jane's face. She does not say it herself. \"Reader, I married him\" has a comma, and the wedding is at Ferndean, after the fire, with only the parson and the clerk besides the couple. \"Jane! Jane! Jane!\" in chapter 35 is what she hears. Chapter 37 is Rochester telling her he cried it. The file uses different quotation marks for the two moments."
+      "answer": "\"I would always rather be happy than dignified\" is Jane running after St John on the stairs at Moor House. It is not a line about marrying Rochester, and the file ends it with a semicolon. \"I can live alone\" is spoken by Rochester in his gipsy disguise, as a reading of Jane's face. She does not say it herself. \"Reader, I married him\" has a comma, and the wedding comes after the fire, while they are living at Ferndean, with only the parson and the clerk besides the couple. \"Jane! Jane! Jane!\" in chapter 35 is what she hears. Chapter 37 is Rochester telling her he cried it. The file uses different quotation marks for the two moments."
     }
   ],
   "quotes": [
@@ -138,8 +138,8 @@
       "themes": [
         "childhood"
       ],
-      "context": "The first sentence of the novel. Jane is narrating. It has been raining, and a walk is impossible. Mrs Reed, John, Eliza and Georgiana are indoors at Gateshead. Jane is not one of the party who would have gone out.",
-      "analysis": "The exclusion is already in the grammar. \"We\" had been wandering earlier, but the walk that cannot happen is the one the Reed children are kept from. Jane is about to be told she is not wanted in the drawing room either. Start an essay on childhood here, before the fight with John.",
+      "context": "The first sentence of the novel. Jane is narrating. They had walked in the shrubbery that morning, but since dinner the wind and rain have made going out impossible. Jane says she was glad: she never liked long walks. Mrs Reed, John, Eliza and Georgiana are now gathered round the fire in the drawing room at Gateshead.",
+      "analysis": "The walk is called off before anything else happens, and Jane welcomes it, because coming home meant Bessie's chidings and feeling smaller than the Reed children. In the next paragraph Mrs Reed keeps her out of the group by the fire. Start an essay on childhood here, before the fight with John.",
       "chapter": 1
     },
     {
@@ -185,7 +185,7 @@
         "childhood",
         "cruelty"
       ],
-      "context": "Bessie to Miss Abbot, in the red-room, chapter 2. Jane has struck John and is still fighting. The next speech, \"For shame!\", is tagged as the lady's-maid, who is Miss Abbot. This line speaks to Miss Abbot by name, so it is Bessie's. The two of them have Jane by the arms.",
+      "context": "Bessie to Miss Abbot, chapter 2, as they get Jane into the red-room. Jane has struck John and is still fighting. The next speech, \"For shame!\", is tagged as the lady's-maid, who is Miss Abbot. This line speaks to Miss Abbot by name, so it is Bessie's. The two of them have Jane by the arms.",
       "analysis": "The animal name is the servant's, not John's. It is how Jane is handled once Mrs Reed has given the order. \"Mad\" here is an insult about temper. Do not glue it to Bertha Mason, who has not been mentioned.",
       "chapter": 2
     },
@@ -197,7 +197,7 @@
         "class",
         "childhood"
       ],
-      "context": "Jane to Miss Abbot, in the red-room. Abbot has just called John \"your young master\" and scolded Jane for striking her benefactress's son. Jane asks the question while the two women are holding her. She is not asking Mrs Reed, who is no longer in the scene.",
+      "context": "Jane to Miss Abbot, as the two servants get her into the red-room. Abbot has just called John \"your young master\" and scolded Jane for striking her benefactress's son. Jane asks the question while the two women are holding her. She is not asking Mrs Reed, who is no longer in the scene.",
       "analysis": "The question is about a word, and the word is doing the work of the household. John is master because the adults say so. Jane has no wages and no kinship she will accept. The answer comes in the next speech.",
       "chapter": 2
     },
@@ -279,7 +279,7 @@
         "religion",
         "morality"
       ],
-      "context": "Helen to Jane, still that talk in chapter 6. She has just said that under her creed, revenge does not worry her heart, degradation does not disgust her too deeply, and injustice does not crush her too low. These six words close that sentence. She then lowers her head. Jane sees that Helen wants to stop and think, rather than keep arguing.",
+      "context": "Helen to Jane, still that talk in chapter 6. She has just said that under her creed, revenge does not worry her heart, degradation does not disgust her too deeply, and injustice does not crush her too low. These words close that sentence. She then lowers her head. Jane sees that Helen wants to stop and think, rather than keep arguing.",
       "analysis": "\"The end\" is death and what Helen believes follows it, not the end of the school term. The calm is something she claims, and the cough in the later chapters is why a reader should not hear it as comfort only. Jane admires it and does not copy it.",
       "chapter": 6
     },
@@ -291,7 +291,7 @@
         "religion",
         "cruelty"
       ],
-      "context": "Mr Brocklehurst to Miss Temple, chapter 7, in the Lowood schoolroom. The porridge was burnt. Miss Temple has just said she ordered lunch, because the girls could not eat breakfast and she would not leave them fasting until dinner. He calls her Madam and sets out his plan. Jane is among the pupils who hear him. The sentence goes on, after this stop, into spoiled meals and the primitive Christians.",
+      "context": "Mr Brocklehurst to Miss Temple, chapter 7, in the Lowood schoolroom. He has found that bread and cheese was served as lunch. Miss Temple has just said she is responsible, because one breakfast was so badly made the girls could not eat it and she would not leave them fasting until dinner. He calls her Madam and sets out his plan. Jane is among the pupils who hear him. The sentence goes on, after this stop, into spoiled meals and the primitive Christians.",
       "analysis": "\"Self-denying\" is the policy for other people's hunger. He is well fed enough to make the speech. Miss Temple's lunch is the act he is rebuking. Put the line next to the burnt porridge, not next to an abstract sermon.",
       "chapter": 7
     },
@@ -373,7 +373,7 @@
         "love",
         "identity"
       ],
-      "context": "Rochester to Jane, chapter 14, in the evening at Thornfield, after Adèle has gone to bed. He turns and finds her looking at his face. She has not said that she was studying him. Her answer, \"No, sir,\" comes in the next line. In the file that answer sits after a dash, so it is not copied onto this line.",
+      "context": "Rochester to Jane, chapter 14, in the evening at Thornfield, after dinner. Adèle is still in the room, talking quietly over her presents. He turns and finds her looking at his face. She has not said that she was studying him. Her answer, \"No, sir,\" comes in the next line. In the file that answer sits after a dash, so it is not copied onto this line.",
       "analysis": "He invites a verdict on his face and then has to live with an honest one. The question is a test of whether she will be charming. She fails the test on purpose, or by accident. Either reading is available. The words of the question are his.",
       "chapter": 14
     },
@@ -385,7 +385,7 @@
         "love",
         "morality"
       ],
-      "context": "Rochester to Jane, chapter 15, the night his bed is set on fire. She has put the fire out. He tells her to sit in the library until the servants are up. She says good-night and turns to go. He calls her back. His first cry, that she has saved his life, is a different sentence and it contains a dash, so it is not copied here. He asks to shake hands, takes her hand in one of his and then in both, and only then says this. She answers that there is no debt. This is not the fall in Hay Lane.",
+      "context": "Rochester to Jane, chapter 15, the night his bed is set on fire. She has put the fire out. He tells her to go back to her own room, and says he will sleep on the library sofa until the servants are up. She says good-night and turns to go. He calls her back. His first cry, that she has saved his life, is a different sentence and it contains a dash, so it is not copied here. He asks to shake hands, takes her hand in one of his and then in both, and only then says this. She answers that there is no debt. This is not the fall in Hay Lane.",
       "analysis": "The debt is the opposite of Miss Abbot's \"you do nothing for your keep.\" Jane has done something that cannot be paid as wages. He stops at \"I cannot say more,\" and the file puts a dash before he talks about the debt not being a burden. Keep the stop. The restraint is part of the line.",
       "chapter": 15
     },
@@ -563,7 +563,7 @@
       "themes": [
         "love"
       ],
-      "context": "The cry Jane hears at Moor House, chapter 35, while St John is in the room. She sees nothing. She asks, inwardly, what it is, and thinks of saying \"Where is it?\", because it does not seem to be in the room, the house, or the garden. The voice is not St John's. In chapter 37 Rochester tells her that he spoke these words aloud at Ferndean, near midnight, on that Monday. At the moment she hears them, she does not know that.",
+      "context": "The cry Jane hears at Moor House, chapter 35, while St John is in the room. She sees nothing. She gasps, asking what it is, and thinks of saying \"Where is it?\", because it does not seem to be in the room, the house, or the garden. The voice is not St John's. In chapter 37 Rochester tells her that he spoke these words aloud at Ferndean, near midnight, on that Monday. At the moment she hears them, she does not know that.",
       "analysis": "The double quotation marks are the ones in chapter 35. When Rochester reports the cry in chapter 37, the file uses single marks. Same three names, two printings. Learn the chapter you mean. The supernatural, or the coincidence, is left unexplained. Do not invent an explanation the book does not give.",
       "chapter": 35
     },
@@ -586,7 +586,7 @@
       "themes": [
         "love"
       ],
-      "context": "Jane narrating, chapter 38, at Ferndean. Thornfield has burned. She has found Rochester blind and maimed. They walk back from the wood, she guiding him because she is shorter. The wedding follows this sentence: only she, Rochester, the parson and the clerk are present. When they return, Mary is cooking and John is cleaning knives in the manor-house kitchen. It is not a Thornfield wedding, and Bertha is dead.",
+      "context": "Jane narrating, the opening of chapter 38. Thornfield has burned, and she has found Rochester blind and maimed at Ferndean. The next sentences describe the wedding: only she, Rochester, the parson and the clerk are present. When they get back from church, Mary is cooking and John is cleaning knives in the manor-house kitchen, and Jane tells them. It is not a Thornfield wedding, and Bertha is dead.",
       "analysis": "The comma is in the text. The direct address to the reader is Jane keeping the control of the story at the moment people expect a hush. The quietness of the wedding is the next sentence. Quote that too if you need to show what kind of marriage this is.",
       "chapter": 38
     },
