@@ -2,7 +2,7 @@
 
 ## 2026-09-28: Jekyll and Hyde quotes
 - Date merged: 
-- PR: 
+- PR: #18 https://github.com/Al2800/Book-Viewer/pull/18
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes/jekyll-and-hyde
   - https://bookquotes.uk/quotes
