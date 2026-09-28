@@ -2,7 +2,7 @@
 
 ## 2026-09-28: GCSE English quote bank
 - Date merged: 
-- PR: 
+- PR: #23 https://github.com/Al2800/Book-Viewer/pull/23
 - Page URL(s) changed:
   - https://bookquotes.uk/guides/gcse-english-quote-bank
   - https://bookquotes.uk/guides
