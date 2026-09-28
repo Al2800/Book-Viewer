@@ -1,5 +1,19 @@
 # SEO Changelog
 
+## 2026-09-28: GCSE English quote bank
+- Date merged: 
+- PR: 
+- Page URL(s) changed:
+  - https://bookquotes.uk/guides/gcse-english-quote-bank
+  - https://bookquotes.uk/guides
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "gcse english quote bank", "gcse english literature quotes", "how to learn quotes for gcse english"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Added a GCSE English literature quote-bank guide. The list of books is generated from published literature hubs in the quote data, so a new hub appears on its own and theme hubs such as quotes about reading stay off the list. The page explains short embedded lines, grouping by theme, and testing yourself with the book shut. Exam-board names are limited to what AQA 8702, Edexcel 1ET0 and OCR J352 print in their specifications, with links. Linked from /guides, /quotes and the homepage guides preview.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: copy accuracy
 - Date merged: 
 - PR: #22 https://github.com/Al2800/Book-Viewer/pull/22

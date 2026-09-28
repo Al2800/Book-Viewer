@@ -77,6 +77,16 @@ export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)
 }
 
+// Literature hubs keep the default index label. Theme hubs, such as reading or libraries, set their own.
+export function publishedGcseHubs() {
+  return quoteHubs.filter((hub) => (hub.indexLabel ?? 'GCSE English') === 'GCSE English')
+}
+
+export function gcseHubLinkLabel(title: string) {
+  const head = title.split(' quotes by ')[0]
+  return head === title ? title : `${head} quotes`
+}
+
 export const staveLabels: Record<number, string> = {
   1: "Stave 1: Marley's Ghost",
   2: 'Stave 2: The First of the Three Spirits',
