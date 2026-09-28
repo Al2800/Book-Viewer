@@ -1,5 +1,18 @@
 # SEO Changelog
 
+## 2026-09-28: Jekyll and Hyde quotes
+- Date merged: 
+- PR: 
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "jekyll and hyde quotes"
+- GSC numbers at the time: new page, none
+- What changed: Published a checked quote hub for Strange Case of Dr Jekyll and Mr Hyde (39 lines from Project Gutenberg eBook 43), with chapter, speaker, context, essay notes and filters. Cross-linked the GCSE hubs and added the page to /quotes and the sitemap.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: A Christmas Carol quotes
 - Date merged: 
 - PR: #17 https://github.com/Al2800/Book-Viewer/pull/17

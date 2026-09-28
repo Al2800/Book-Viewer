@@ -5,14 +5,14 @@ import { notFound } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { QuoteBank } from '@/components/quotes/QuoteBank'
-import { getQuoteHub, quoteHubs } from '@/lib/quotes'
+import { gcseQuoteLinks, getQuoteHub, quoteHubs, type QuoteHub } from '@/lib/quotes'
 import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
 
 type QuotePageProps = {
   params: Promise<{ slug: string }>
 }
 
-const faqs = [
+const carolFaqs = [
   {
     question: 'Which A Christmas Carol quotes are worth learning for a grade 9 answer?',
     answer:
@@ -45,6 +45,24 @@ const faqs = [
   },
 ]
 
+const carolDescription =
+  'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.'
+
+const carolLead =
+  "These are key A Christmas Carol quotes for GCSE English, arranged by stave, character and theme, and checked word for word against Dickens's text."
+
+const carolArrangement =
+  'Each one gives the stave, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list. The quotations stay in stave order underneath, so you can still read the book through.'
+
+const carolSourceNote = 'Double hyphens inside a quotation are printed that way in that text.'
+
+const carolAppNote =
+  'Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the stave with the sentence. Add a tag only when you would reach for it in a paragraph: poverty, family, redemption.'
+
+function hubDescription(hub: QuoteHub) {
+  return hub.metaDescription ?? carolDescription
+}
+
 export function generateStaticParams() {
   return quoteHubs.map((hub) => ({ slug: hub.slug }))
 }
@@ -54,8 +72,7 @@ export async function generateMetadata({ params }: QuotePageProps): Promise<Meta
   const hub = getQuoteHub(slug)
   if (!hub) return {}
 
-  const description =
-    'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.'
+  const description = hubDescription(hub)
 
   return {
     title: hub.title,
@@ -78,13 +95,14 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
   const hub = getQuoteHub(slug)
   if (!hub) notFound()
 
+  const faqs = hub.faqs ?? carolFaqs
+  const related = gcseQuoteLinks.filter((item) => item.slug !== hub.slug)
   const canonicalUrl = `https://bookquotes.uk/quotes/${hub.slug}`
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: hub.title,
-    description:
-      'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.',
+    description: hubDescription(hub),
     datePublished: hub.publishedISO,
     dateModified: hub.updatedISO,
     author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk/' },
@@ -130,33 +148,49 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
             </Link>
             <p className="font-ui text-sm text-ink-medium mb-4">GCSE English Literature</p>
             <h1 className="text-balance mb-6">{hub.title}</h1>
-            <p className="text-xl text-ink-dark max-w-2xl mb-4">
-              These are key A Christmas Carol quotes for GCSE English, arranged by stave, character and theme, and checked word for word against Dickens&apos;s text.
-            </p>
+            <p className="text-xl text-ink-dark max-w-2xl mb-4">{hub.lead ?? carolLead}</p>
             <p className="text-lg text-ink-medium max-w-2xl mb-4">
-              There are {hub.quotes.length}. Each one gives the stave, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list. The quotations stay in stave order underneath, so you can still read the book through.
+              There are {hub.quotes.length}. {hub.arrangement ?? carolArrangement}
             </p>
             <p className="font-ui text-sm text-ink-medium">
               Source:{' '}
               <a href={hub.sourceUrl} className="underline underline-offset-4" rel="noopener noreferrer">
                 {hub.sourceName}
               </a>
-              . Double hyphens inside a quotation are printed that way in that text.
+              . {hub.sourceNote ?? carolSourceNote}
             </p>
+            {related.length > 0 && (
+              <p className="text-lg text-ink-dark max-w-2xl mt-4">
+                Other GCSE hubs on this site:{' '}
+                {related.map((item, index) => (
+                  <span key={item.slug}>
+                    {index > 0 && (index === related.length - 1 ? ' and ' : ', ')}
+                    <Link href={`/quotes/${item.slug}`} className="underline underline-offset-4">
+                      {item.label}
+                    </Link>
+                  </span>
+                ))}
+                .
+              </p>
+            )}
           </header>
 
           <div className="bg-paper-warm border-y border-subtle">
             <div className="container-narrow py-12 md:py-16">
-              <QuoteBank quotes={hub.quotes} />
+              <QuoteBank
+                quotes={hub.quotes}
+                sections={hub.sections}
+                filterLabel={hub.filterLabel}
+                allFilterLabel={hub.allFilterLabel}
+                sectionKey={hub.sectionKey}
+              />
 
               <section className="mt-4 pt-10 border-t border-subtle">
                 <h2 className="mb-5">Build your own quote bank from the copy you have marked</h2>
                 <p className="text-lg text-ink-dark mb-4">
                   A printed list is a start. The bank that helps in an exam is the one you made from your own book: the line you underlined, and a note in your words about why it is there.
                 </p>
-                <p className="text-lg text-ink-dark mb-4">
-                  Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the stave with the sentence. Add a tag only when you would reach for it in a paragraph: poverty, family, redemption.
-                </p>
+                <p className="text-lg text-ink-dark mb-4">{hub.appNote ?? carolAppNote}</p>
                 <p className="text-lg text-ink-dark mb-6">
                   BookQuotes is an iPhone app for that job. On capture it can detect the page number. You name your own markings, and collections and tags keep one theme together. It does not import Kindle highlights. The steps are written out in{' '}
                   <Link href="/guides/how-to-save-quotes-from-physical-books" className="underline underline-offset-4">
