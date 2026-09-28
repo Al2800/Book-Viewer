@@ -28,7 +28,7 @@ export const journalArticles: JournalArticle[] = [
     slug: 'what-to-do-with-book-highlights',
     title: 'What to Do with Highlights After a Book',
     summary:
-      'What to do with book highlights once you close the back cover: how to filter your underlines, extract paper passages, and turn reading notes into a searchable personal library.',
+      'What to do with book highlights once you close the book: filter the underlines, save the paper passages, and keep a private library you can search later.',
     category: 'Annotation',
     readingTime: '6 min read',
     published: '24 July 2026',
@@ -68,7 +68,7 @@ export const journalArticles: JournalArticle[] = [
       {
         heading: 'Capture paper highlights without manual typing',
         paragraphs: [
-          'Manual transcription is where good reading intentions go to die. Setting up a laptop, opening a blank document, and typing out long paragraphs from a paperback with one hand holding the binding open creates too much friction to sustain over a year of reading.',
+          'Typing the lines out by hand is the step most people drop. You need a laptop, a blank document, and one hand on the book so the page stays flat. That is a lot of fuss for a sentence, and it rarely lasts a year of reading.',
           'Photograph the marked page in ordinary light, let OCR or AI extraction isolate the underlined sentence, and compare the detected words with the printed page. [How to save quotes from physical books](/guides/how-to-save-quotes-from-physical-books) is the same routine written out.',
           'Scanning the book barcode ISBN attaches the catalogue title and author automatically, while you verify the page number and line breaks. You get a faithful digital record of the author words without interrupting your evening.',
         ],
@@ -85,7 +85,7 @@ export const journalArticles: JournalArticle[] = [
         heading: 'Put your highlights to work with search and export',
         paragraphs: [
           'Book highlights should not sit in an intellectual museum. The point of digitising reading notes is to have them reappear at the moment you need them: while drafting an essay, preparing a talk, or thinking through a stubborn problem.',
-          'Store your notes in a private, local library where you can search across every book you own by keyword, author, or tag. When you want to work on a larger project, export your collection directly into Markdown, Obsidian, or Notion.',
+          'Keep the notes in a private library on the phone. Search looks through the passage, the margin note, the title and the author. It does not search tag names. When you want the notes on a computer, export one book or the whole library as Markdown, plain text, JSON, Notion or Obsidian.',
           'When your physical reading feeds your everyday thinking and writing tools, the physical book can rest on your shelf while its best ideas remain within arm reach.',
         ],
       },
@@ -99,12 +99,12 @@ export const journalArticles: JournalArticle[] = [
       {
         question: 'How do I digitise highlights from physical paper books?',
         answer:
-          'You can digitise physical book highlights by photographing the marked page with a quote reader app like BookQuotes, which extracts the underlined text, transcribes the passage, and pairs it with the book ISBN and page number. This bypasses the friction of manual keyboard typing while ensuring exact page citations and author attribution.',
+          'Photograph the marked page in BookQuotes. The app reads the line with on-device OCR, or with remote AI if you are signed in and you agree to send the page. You check the words before saving. An ISBN scan can fill in the title and author. The page number is the one printed on the photo, or the one you type. It is not guaranteed.',
       },
       {
         question: 'How many book highlights should you keep from an average book?',
         answer:
-          'Keeping five to ten carefully curated book highlights is usually ideal for both retention and practical retrieval. Saving dozens of excerpts creates an unmanageable archive that you will rarely revisit. A concise selection of the most transformative thoughts preserves the book core argument without clutter.',
+          'Five to ten lines from an ordinary non-fiction book is enough to find again later. A few dozen excerpts turn into a second book you will not reopen. Keep the sentences that still say what you wanted from the chapter, and leave the rest on the paper.',
       },
       {
         question: 'Is it better to keep book highlights in an app or a physical commonplace notebook?',

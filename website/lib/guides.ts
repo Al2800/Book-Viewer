@@ -107,7 +107,7 @@ export const guides: Guide[] = [
       },
       {
         question: 'Does BookQuotes provide a public quote database?',
-        answer: 'No. BookQuotes is for building your own personal library of passages from your reading. It is not a catalogue of full book quotations.',
+        answer: 'The app saves passages from your own reading. It is not a database of other people’s books. This website also has a quotes section, at /quotes, with lines checked against public-domain texts and the work named. Those pages are separate from the library on your phone.',
       },
     ],
   },
@@ -754,10 +754,10 @@ export const guides: Guide[] = [
         ],
       },
       {
-        heading: 'Step 4: Search your personal quote library instantly',
+        heading: 'Step 4: Search the lines you saved',
         paragraphs: [
-          'Once saved, your passages become searchable by keyword, author, title, tag, or collection. When you sit down to write an essay, prepare a talk, or recall an argument, searching for a single distinct word brings up the quote alongside its page number. [How to search quotes from paper books](/guides/how-to-search-quotes-from-paper-books) is the longer version of that habit.',
-          'Your collection lives locally on your device in the current release. You can search your library offline on a train or plane without needing an active data connection.',
+          'Search looks through the passage, the margin note, the book title and the author. It does not look through tag names or collection names. You can still filter the book list by a tag or a collection when you want that group on screen. A single remembered word is often enough, and the result shows the page number when the quote has one. [How to search quotes from paper books](/guides/how-to-search-quotes-from-paper-books) is the longer version of that habit.',
+          'The library stays on the device in the current release. Search works on a train with no connection.',
         ],
       },
     ],
@@ -801,7 +801,7 @@ export const guides: Guide[] = [
       { href: '/guides/book-quote-finder-iphone', label: 'Find quotes in your paper books' },
     ],
     intro:
-      'A quote reader app for physical books lets you capture underlined sentences and handwritten margin notes directly from printed paper into a searchable digital library. Underlining a physical book sharpens attention, but finding those passages months later is notoriously difficult without a dedicated quote reader. BookQuotes bridges the physical-digital divide: photograph marked pages with your iPhone, extract the text cleanly, and keep your favourite passages organised alongside your personal commentary.',
+      'A quote reader for paper books keeps the sentences you underline, and the notes in the margin, somewhere you can search later. The mark helps while the book is open. Months later the line is still on a shelf. Photograph the page, check the words the app read, and save the passage with the book and your own comment.',
     relatedQueries: [
       'quote reader',
       'quote reader app for physical books',
@@ -926,8 +926,8 @@ export const guides: Guide[] = [
       {
         heading: 'Phase 4: Putting your searchable library to work',
         paragraphs: [
-          'A searchable paper quote library becomes an indispensable asset for writers, researchers, students, and curious readers. When drafting an article or preparing notes for a meeting, open your search bar and enter any term.',
-          'BookQuotes brings up matching quotes across your library as you type, with the wording, author and page number. If you need to cite the passage or read the chapter again, you know which volume to pull from the shelf.',
+          'The useful day is the one when you need a line and can only remember a scrap of it. You are writing a paragraph, or notes for a meeting, and the book is in another room.',
+          'Type a word you do remember. Search checks the passages, margin notes, titles and authors you saved, and lists the matches as you type. The page number is there when the quote has one, so you know which volume to take off the shelf.',
         ],
       },
     ],
@@ -935,7 +935,7 @@ export const guides: Guide[] = [
       {
         question: 'Can I search my paper book quotes by concept rather than exact words?',
         answer:
-          'Yes. By adding personal notes and short tags when saving a quote in BookQuotes, you can search for concepts and themes even if the author used different terminology in the text.',
+          'A short note in your own words is included in search, so you can find a passage when the author used different terms. Tags are labels for grouping. The text search does not look at tag names. Open the tag in the library if you want that group.',
       },
       {
         question: 'How fast is full-text search in BookQuotes?',
@@ -1009,8 +1009,8 @@ export const guides: Guide[] = [
       {
         heading: 'Intentional capture creates better memory retention',
         paragraphs: [
-          'Friction in note-taking is not always a flaw; sometimes it is a filter. The effortless ease of Kindle highlighting often encourages passive swiping: readers highlight whole pages without pausing to assimilate the ideas.',
-          'Photographing a paper page and checking the extracted text takes a moment. That pause is the filter. You re-read the sentence, confirm why it earned the mark, and the wording is yours to keep only after you have looked at it.',
+          'A Kindle highlight is one drag of the thumb. It is easy to mark a whole page and keep going, then later find a clipping file full of lines you barely chose.',
+          'Photographing a paper page and checking the words takes longer. You read the sentence again before it is saved. That second look is the useful part.',
         ],
       },
       {
@@ -1048,7 +1048,7 @@ export const guides: Guide[] = [
     title: 'Export Book Quotes to Obsidian and Notion',
     query: 'export book quotes to obsidian',
     description:
-      'How to move paper book quotes, page citations and margin notes into an Obsidian vault or a Notion database.',
+      'What the Markdown, plain text, JSON, Notion and Obsidian exports actually contain, and how to move those files into a vault.',
     category: 'Export workflows',
     readingTime: '6 min read',
     updated: '28 September 2026',
@@ -1060,7 +1060,7 @@ export const guides: Guide[] = [
       { href: '/guides/how-to-digitise-book-notes', label: 'Digitise book notes without losing context' },
     ],
     intro:
-      'A personal quote library on your iPhone is invaluable for quick reference, but serious writing and synthesis happen in dedicated workspace tools like Obsidian and Notion. Here is how to move marked passages from your physical books into your desktop knowledge vault without manual retyping.',
+      'The phone is a good place to catch a line while the book is still in your hand. Longer writing usually happens at a desk. This page is how to move the passages you saved, with the book and the page, without typing them out again.',
     relatedQueries: [
       'export book quotes to obsidian',
       'book quotes to notion',
@@ -1072,41 +1072,48 @@ export const guides: Guide[] = [
       {
         heading: 'Why personal knowledge vaults need paper book quotes',
         paragraphs: [
-          'Tools like Obsidian and Notion excel at linking thoughts across different domains. Many knowledge workers maintain rich databases of web articles, newsletters, and PDF highlights, yet their physical reading remains stranded on paper shelves.',
-          'When physical book highlights remain trapped in paper bindings, your knowledge graph loses some of its richest source material. Integrating paper quotes into your daily vault turns isolated marginalia into interconnected notes that enrich your writing.',
+          'Obsidian and Notion are where a lot of people already keep articles, newsletters and notes from PDFs. The paper books often stay out of that pile.',
+          'If a line never leaves the book, it is not in the notes you write from. Export is the handoff: a file with the passage, the book and, when you saved one, the page.',
         ],
       },
       {
-        heading: 'Exporting from BookQuotes: clean Markdown and open formats',
+        heading: 'What each export file contains',
         paragraphs: [
-          'BookQuotes avoids proprietary silos. When you export your library, you can generate clean Markdown files structured for immediate compatibility with Obsidian, Logseq, and other plain-text systems, as well as JSON and Notion formats.',
-          'Each exported quote preserves essential academic context: the verbatim passage, book title, author, publication page, date captured, tags, and your personal margin notes. This ensures your citations remain intact and usable without requiring secondary formatting passes.',
+          'The export screen offers five formats: Markdown, plain text, JSON, Notion and Obsidian. There is no CSV file. Notion is a Markdown file you import yourself, not a connection to a Notion account. Obsidian is one Markdown note per book. Nothing is sent off the phone by the export, and cloud sync is off in this release.',
+          'Page numbers and margin notes are included when the quote has them and those options are left on. The four switches on the export screen can turn metadata, book grouping, page numbers or margin notes off. With the switches left on, the files differ like this:',
+        ],
+        bullets: [
+          'Markdown: one file. Quotes sit under the book title and author. Each passage is a blockquote, then the page number and the marking name, then your margin note. No capture date, and none of the tags you assigned.',
+          'Plain text: the same grouping, as ordinary lines. The line under a quote can include the page, the marking, and the book title and author, then the margin note. No capture date and no tags.',
+          'JSON: a backup. Each book can include its title, author and ISBN. Each quote can include the text, page number, margin note, marking name, extraction confidence, capture date, and the book title and author. Tags are not in the file.',
+          'Notion: one Markdown file. A heading for the book, a table with the author, reading status and quote count, then each passage with its page and marking, and your note. No capture date and no tags.',
+          'Obsidian: one Markdown note for each book that has quotes. The header has the title, author, ISBN if the book has one, the number of quotes, and the date you exported. It also adds two tags of its own, book-quotes and reading. Passages are ordered by page and can include the page, the marking and the margin note. Your own tags, and the date you captured the quote, are not written into this file.',
         ],
       },
       {
         heading: 'Setting up an Obsidian literature note workflow',
         paragraphs: [
-          'In Obsidian, best practice separates literature notes (what the author said) from permanent notes (what you think). When importing BookQuotes Markdown into your vault:',
-          'Create a dedicated folder such as “Literature Notes” or “Reading”. Use the book title as the note title, and let individual quotes appear as blockquotes accompanied by page numbers and your tags. You can then use Obsidian’s internal linking syntax ([[Note Name]]) to link book quotes directly into your active project notes.',
+          'Keep what the author wrote separate from what you think about it. The Obsidian export is already one note per book, named from the title. Drop that file into a folder such as Literature Notes.',
+          'Each passage is a blockquote. Under it you get the page, when the quote has one, and the marking name, then your margin note. The tags you set in the app are not in the file. Add them in Obsidian if you still want them, and link the passage into the note you are writing with [[Note Name]].',
         ],
         bullets: [
-          'Store quotes in clean blockquotes with explicit page citations.',
-          'Use tags to connect themes across different authors and genres.',
-          'Link key concepts directly to your ongoing project canvases or atomic notes.',
+          'The page number is included only when the quote has one.',
+          'Add your own tags in the vault. The export does not copy them from the app.',
+          'Link a passage into the note you are actually writing.',
         ],
       },
       {
         heading: 'Importing quotes into Notion databases',
         paragraphs: [
-          'If you use Notion as your central dashboard, a database layout provides flexible filtering and gallery views. Export your BookQuotes collection in structured Markdown or CSV/JSON format.',
-          'In Notion, set up properties for Title, Author, Page Number, and Category Tags. You can build filtered views for specific projects, group quotes by author, or create a randomised “Quote of the Day” widget on your personal homepage.',
+          'Export the Notion format and import that Markdown file yourself. It is not a CSV, and the app does not create a Notion database for you. If you would rather start from structured data, use the JSON export. The ordinary Markdown export is the other option.',
+          'Once the file is in Notion, you can add properties for title, author, page and tags, and filter them however you like. Those properties are yours to set up. They are not columns in the export.',
         ],
       },
       {
         heading: 'Closing the loop: from physical page to finished writing',
         paragraphs: [
           'The point of the notes is the work you do with them. Read on paper, capture the lines you want to keep, and export them when you are ready to write. A [digital commonplace book](/guides/digital-commonplace-book) is one way to decide which lines are worth that trip.',
-          'When you sit down to write an article, report, or book, your favourite passages and citations are already waiting in your workspace, fully searchable and ready to inform your thinking.',
+          'When you write, the passages are in that file, with the book named. You search them there, instead of hunting through the closed paperback.',
         ],
       },
     ],
@@ -1119,17 +1126,17 @@ export const guides: Guide[] = [
       {
         question: 'Are page numbers and book metadata preserved during export?',
         answer:
-          'Yes. Every exported quote includes the book title, author, exact page number, capture date, your personal notes, and any assigned tags.',
+          'It depends on the format. With the usual options left on, Markdown, plain text, Notion and Obsidian include the book title and author, the marking, and your margin note. They include the page number only when the quote has one. Only JSON includes the capture date. None of these exports include the tags you assigned in the app. The Obsidian note adds its own book-quotes and reading tags, plus the ISBN when the book has one, and the date of the export rather than the capture date.',
       },
       {
         question: 'Can I export a single book or do I have to export the entire library?',
         answer:
-          'You can export individual books, curated collections, or your complete library depending on your immediate workflow need.',
+          'From a book you can export that book’s passages. From Settings you can export every passage in the library. A collection is not its own export.',
       },
       {
         question: 'Does BookQuotes sync automatically to Notion via API?',
         answer:
-          'BookQuotes focuses on local privacy and exports structured formats (Markdown, plain text, JSON) that you can import directly into Notion or your desktop tools. Cloud sync is not enabled in the current release.',
+          'No. Export writes a file on the phone: Markdown, plain text, JSON, a Notion Markdown file, or an Obsidian note. You import that file yourself. Cloud sync is not enabled in the current release.',
       },
     ],
   },

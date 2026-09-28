@@ -10,7 +10,7 @@ const plans = [
       '7-day free trial included',
       'AI-assisted quote extraction',
       'Batch capture, search, tags, and collections',
-      'Full export to Obsidian, Notion, Markdown, and JSON',
+      'Export to Markdown, plain text, JSON, Notion and Obsidian',
       'Cancel anytime in Apple ID settings',
     ],
   },

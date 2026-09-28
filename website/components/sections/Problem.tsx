@@ -35,7 +35,7 @@ export function Problem() {
             <ul className="space-y-3 text-ink-dark">
               <li className="flex items-start gap-2">
                 <span className="text-ink-medium select-none" aria-hidden="true">·</span>
-                <span>Snap photos of any marked page in seconds</span>
+                <span>Photograph the marked page</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-ink-medium select-none" aria-hidden="true">·</span>
@@ -47,7 +47,7 @@ export function Problem() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-ink-medium select-none" aria-hidden="true">·</span>
-                <span>Export clean notes to Obsidian, Notion, or Markdown</span>
+                <span>Export to Markdown, plain text, JSON, Notion or Obsidian</span>
               </li>
             </ul>
           </div>
