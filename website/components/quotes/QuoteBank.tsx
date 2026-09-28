@@ -127,6 +127,7 @@ export function QuoteBank({
   const themeGroups = themeOrder ?? [...new Set(quotes.map((quote) => quote.themes[0]).filter(Boolean))]
 
   function sectionNumber(quote: QuoteEntry) {
+    if (typeof quote.section === 'number') return quote.section
     if (sectionKey === 'chapter') return quote.chapter
     if (sectionKey === 'act') return quote.act
     return quote.stave

@@ -1,4 +1,5 @@
 import carol from '@/content/quotes/a-christmas-carol.json'
+import frankenstein from '@/content/quotes/frankenstein.json'
 import jane from '@/content/quotes/jane-eyre.json'
 import jekyll from '@/content/quotes/jekyll-and-hyde.json'
 import macbeth from '@/content/quotes/macbeth.json'
@@ -20,6 +21,7 @@ export type QuoteEntry = {
   lineStart?: number
   lineEnd?: number
   citation?: string
+  section?: number
   sourceUrl?: string
   sourceName?: string
 }
@@ -74,7 +76,16 @@ export type QuoteHub = {
   misattributionIntro?: string
 }
 
-export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, pride, jane, reading as QuoteHub, libraries as QuoteHub]
+export const quoteHubs: QuoteHub[] = [
+  carol,
+  jekyll,
+  macbeth,
+  pride,
+  jane,
+  frankenstein,
+  reading as QuoteHub,
+  libraries as QuoteHub,
+]
 
 export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)
@@ -109,9 +120,11 @@ export const gcseQuoteLinks = [
   { slug: 'macbeth', label: 'Macbeth quotes' },
   { slug: 'pride-and-prejudice', label: 'Pride and Prejudice quotes' },
   { slug: 'jane-eyre', label: 'Jane Eyre quotes' },
+  { slug: 'frankenstein', label: 'Frankenstein quotes' },
 ]
 
 export function quoteReference(quote: QuoteEntry, sectionKey?: string) {
+  if (quote.citation) return quote.citation
   if (sectionKey === 'chapter') return `Chapter ${quote.chapter}`
   if (sectionKey === 'act') {
     const lines =

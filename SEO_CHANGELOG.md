@@ -1,5 +1,23 @@
 # SEO Changelog
 
+## 2026-09-28: Frankenstein quotes
+- Date merged: 
+- PR: #28 https://github.com/Al2800/Book-Viewer/pull/28
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/frankenstein
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/quotes/pride-and-prejudice
+  - https://bookquotes.uk/quotes/jane-eyre
+  - https://bookquotes.uk/guides/gcse-english-quote-bank
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "Frankenstein quotes"; "Frankenstein quotes about ambition"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a checked quote hub for Frankenstein (38 lines from Project Gutenberg eBook 84, the 1831 text: four letters and twenty-four chapters). The edition note is checked against the file: 1831 markers such as Elizabeth as a Milanese nobleman's daughter, no volume divisions, and neither the 1831 introduction nor the 1818 preface. It compares these with the 1818 text (Project Gutenberg eBook 41445). Board statements follow the specifications: AQA 8702 lists Frankenstein (1831), Edexcel 1ET0 prescribes no edition, and OCR J352 does not set it. Each line has its speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes, the sitemap and the GCSE quote bank list, and cross-linked it with the Christmas Carol, Jekyll and Hyde, Macbeth, Pride and Prejudice and Jane Eyre hubs.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: Jane Eyre quotes
 - Date merged: 
 - PR: #27 https://github.com/Al2800/Book-Viewer/pull/27
