@@ -2,7 +2,7 @@
 
 ## 2026-09-28: Frankenstein quotes
 - Date merged: 
-- PR: 
+- PR: #28 https://github.com/Al2800/Book-Viewer/pull/28
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes/frankenstein
   - https://bookquotes.uk/quotes
