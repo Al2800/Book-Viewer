@@ -2,7 +2,7 @@
 
 ## 2026-09-28: Macbeth quotes
 - Date merged: 
-- PR: 
+- PR: #21 https://github.com/Al2800/Book-Viewer/pull/21
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes/macbeth
   - https://bookquotes.uk/quotes
