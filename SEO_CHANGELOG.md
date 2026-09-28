@@ -1,5 +1,20 @@
 # SEO Changelog
 
+## 2026-09-28: Pride and Prejudice quotes
+- Date merged: 
+- PR: #25 https://github.com/Al2800/Book-Viewer/pull/25
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/pride-and-prejudice
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "Pride and Prejudice quotes"; "key quotes in Pride and Prejudice"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a checked quote hub for Pride and Prejudice (38 lines from Project Gutenberg eBook 1342, the 1894 George Allen text). Chapters are numbered straight through, with the 1813 volume numbers in each heading. Each line has its speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol, Jekyll and Hyde and Macbeth hubs.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: quotes about libraries
 - Date merged: 
 - PR: #26 https://github.com/Al2800/Book-Viewer/pull/26
