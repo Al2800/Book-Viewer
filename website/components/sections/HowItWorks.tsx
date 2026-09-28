@@ -7,12 +7,12 @@ const steps = [
   {
     stage: '2',
     title: 'Extract and review',
-    description: 'AI isolates the exact passages you marked and matches page context. Review, edit wording, or add custom notes before saving.',
+    description: 'The app suggests the marked passage from the photo. Check the wording against the page, correct the page number if it is wrong, and add a note before you save.',
   },
   {
     stage: '3',
     title: 'Search, organize, and export',
-    description: 'Build your personal quote library. Search across every book you own, filter by custom tags, and export directly to Obsidian, Notion, Markdown, or JSON.',
+    description: 'Search the passages, notes, titles and authors you saved. Filter the book list with tags and collections. Export one book or the whole library as Markdown, plain text, JSON, Notion or Obsidian.',
   },
 ]
 
@@ -22,7 +22,7 @@ export function HowItWorks() {
       <div className="container-standard">
         <h2 className="mb-3">How it works</h2>
         <p className="text-lg text-ink-medium max-w-prose mb-12">
-          Three steps from a marked paper book to a quote you can find in seconds.
+          Three steps from a marked paper book to a quote you can search for later.
         </p>
         <ol className="space-y-10">
           {steps.map((step) => (
