@@ -1,13 +1,43 @@
 import carol from '@/content/quotes/a-christmas-carol.json'
+import jekyll from '@/content/quotes/jekyll-and-hyde.json'
+import macbeth from '@/content/quotes/macbeth.json'
+import reading from '@/content/quotes/about-reading.json'
 
 export type QuoteEntry = {
   id: string
   text: string
-  stave: number
   speaker: string
   themes: string[]
   context: string
   analysis: string
+  stave?: number
+  chapter?: number
+  act?: number
+  scene?: number
+  lineStart?: number
+  lineEnd?: number
+  citation?: string
+  sourceUrl?: string
+  sourceName?: string
+}
+
+export type QuoteFaq = {
+  question: string
+  answer: string
+}
+
+export type Misattribution = {
+  id: string
+  claim: string
+  detail: string
+  sourceName: string
+  sourceUrl: string
+}
+
+export type QuoteSection = {
+  number: number
+  label: string
+  short: string
 }
 
 export type QuoteHub = {
@@ -19,9 +49,29 @@ export type QuoteHub = {
   sourceName: string
   sourceUrl: string
   quotes: QuoteEntry[]
+  metaDescription?: string
+  lead?: string
+  arrangement?: string
+  sourceNote?: string
+  filterLabel?: string
+  allFilterLabel?: string
+  sectionKey?: string
+  sections?: QuoteSection[]
+  appNote?: string
+  faqs?: QuoteFaq[]
+  eyebrow?: string
+  indexLabel?: string
+  intro?: string[]
+  sourcesArePerQuote?: boolean
+  groupBy?: 'stave' | 'theme'
+  themeOrder?: string[]
+  themeHeadings?: Record<string, string>
+  faqHeading?: string
+  misattributions?: Misattribution[]
+  misattributionIntro?: string
 }
 
-export const quoteHubs: QuoteHub[] = [carol]
+export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, reading as QuoteHub]
 
 export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)
@@ -33,4 +83,24 @@ export const staveLabels: Record<number, string> = {
   3: 'Stave 3: The Second of the Three Spirits',
   4: 'Stave 4: The Last of the Spirits',
   5: 'Stave 5: The End of It',
+}
+
+export const gcseQuoteLinks = [
+  { slug: 'a-christmas-carol', label: 'A Christmas Carol quotes' },
+  { slug: 'jekyll-and-hyde', label: 'Jekyll and Hyde quotes' },
+  { slug: 'macbeth', label: 'Macbeth quotes' },
+]
+
+export function quoteReference(quote: QuoteEntry, sectionKey?: string) {
+  if (sectionKey === 'chapter') return `Chapter ${quote.chapter}`
+  if (sectionKey === 'act') {
+    const lines =
+      quote.lineStart == null
+        ? ''
+        : quote.lineEnd != null && quote.lineEnd !== quote.lineStart
+          ? `, lines ${quote.lineStart}-${quote.lineEnd}`
+          : `, line ${quote.lineStart}`
+    return `Act ${quote.act}, Scene ${quote.scene}${lines}`
+  }
+  return `Stave ${quote.stave}`
 }
