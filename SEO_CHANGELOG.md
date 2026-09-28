@@ -17,6 +17,60 @@
 - What changed: Corrected export claims against the iOS exporters. The formats are Markdown, plain text, JSON, Notion and Obsidian, with no CSV, and each format now describes only the fields it writes. Removed the marketing lines a reviewer flagged, including the homepage "in seconds" claims. Reworded the guide FAQ so the app stays a personal library while /quotes can hold checked public-domain lines. Shortened the highlights journal meta description to 153 characters. The iOS premium feature list was left out of this PR (app changes are out of scope for website copy).
 - Result (check ~4 weeks after): 
 
+## 2026-09-28: annotation guides
+- Date merged: 
+- PR: #20 https://github.com/Al2800/Book-Viewer/pull/20
+- Page URL(s) changed:
+  - https://bookquotes.uk/guides/book-annotation-key
+  - https://bookquotes.uk/guides/how-to-annotate-a-book-without-writing-in-it
+  - https://bookquotes.uk/guides
+  - https://bookquotes.uk/guides/scan-underlined-book-pages
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "annotating books key"; "how to annotate a book without writing in it"
+- GSC numbers at the time: new page, none
+- What changed: Added two practical guides. One is a short annotation key (symbols, colours, tab colours) with example keys for fiction, study and non-fiction, tied to the app's custom marking vocabulary. The other covers annotating a book you must not write in: sticky notes, tabs, a bookmark, pencil only with permission, a separate notebook, and photographing the page. Both have FAQs and links to existing guides and the quotes hubs. The scan guide now links to the annotation key. Both URLs are in the guides index and the sitemap.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: quotes about reading
+- Date merged: 
+- PR: #19 https://github.com/Al2800/Book-Viewer/pull/19
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/about-reading
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "quotes about reading"
+- GSC numbers at the time: new page, none
+- What changed: Published a quote hub of 36 lines about reading and books, each checked against a named public-domain text (work and chapter or essay), grouped by escape, empathy, childhood, libraries, rereading and choosing. Added an often-misattributed section for four circulating lines, with Quote Investigator or the screenwriter's own account. Linked the hub from the quotes index, the homepage, and the sitemap.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: Macbeth quotes
+- Date merged: 
+- PR: #21 https://github.com/Al2800/Book-Viewer/pull/21
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "macbeth quotes"
+- GSC numbers at the time: new page, none
+- What changed: Published a checked quote hub for Macbeth (40 lines from Project Gutenberg eBook 1533), with act, scene and line numbers from that printing, speaker, context, essay notes and filters. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol and Jekyll and Hyde hubs.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: Jekyll and Hyde quotes
+- Date merged: 
+- PR: #18 https://github.com/Al2800/Book-Viewer/pull/18
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "jekyll and hyde quotes"
+- GSC numbers at the time: new page, none
+- What changed: Published a checked quote hub for Strange Case of Dr Jekyll and Mr Hyde (39 lines from Project Gutenberg eBook 43), with chapter, speaker, context, essay notes and filters. Cross-linked the GCSE hubs and added the page to /quotes and the sitemap.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: A Christmas Carol quotes
 - Date merged: 
 - PR: #17 https://github.com/Al2800/Book-Viewer/pull/17

@@ -123,6 +123,7 @@ export const guides: Guide[] = [
     publishedISO: '2026-08-03',
     updatedISO: '2026-09-28',
     related: [
+      { href: '/guides/book-annotation-key', label: 'How to make a book annotation key' },
       { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
       { href: '/guides/how-to-digitise-book-notes', label: 'Digitise book notes without losing context' },
       { href: '/journal/ai-extraction-and-reader-control', label: 'How AI extraction and reader review work' },
@@ -172,6 +173,245 @@ export const guides: Guide[] = [
       {
         question: 'Is on-device OCR the same as remote AI extraction?',
         answer: 'No. They are separate processing routes. On-device OCR keeps processing local, while remote AI requires the relevant app flow, sign-in and network availability. Both routes still require review.',
+      },
+    ],
+  },
+  {
+    slug: 'book-annotation-key',
+    title: 'How to Make a Book Annotation Key',
+    query: 'annotating books key',
+    description:
+      'A short legend of symbols, colours and tab colours for fiction, study and non-fiction, written down so the marks still mean something next month.',
+    category: 'Annotation',
+    readingTime: '8 min read',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-28',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/how-to-annotate-a-book-without-writing-in-it', label: 'How to annotate a book without writing in it' },
+      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
+      { href: '/quotes', label: 'Quotes checked against the original text' },
+      { href: '/quotes/a-christmas-carol', label: 'A Christmas Carol quotes' },
+    ],
+    intro:
+      'An annotation key is a legend. This mark means this. This colour means that. Without the legend, a blue underline from March is just a blue line. Write the key down before you invent a twelfth symbol you will not remember.',
+    relatedQueries: [
+      'annotating books key',
+      'how to annotate a book',
+      'annotation key ideas',
+      'how to annotate books with tabs',
+    ],
+    sections: [
+      {
+        heading: 'Keep the key shorter than you want',
+        paragraphs: [
+          'Six to eight marks is enough for a year of reading. A key of twenty symbols needs its own key, and you will not stop mid-chapter to consult it. If you cannot say the list aloud from memory, cut it.',
+          'Write it on a card and keep the card in the front of the book, or on the first page of the notebook that travels with that book. A legend that lives in a notes app you never open during reading is not a legend. The [page on annotating without writing in the book](/guides/how-to-annotate-a-book-without-writing-in-it) is the version for library copies and anything you must return clean.',
+        ],
+      },
+      {
+        heading: 'Symbols that earn a place',
+        paragraphs: [
+          'Start from jobs, not from stationery. A mark should answer a question you will actually ask later: where is the sentence I might quote, where did I get lost, where do I disagree.',
+          'A workable set looks like this. You do not have to adopt all of it.',
+        ],
+        bullets: [
+          'Single underline: a sentence you might want again.',
+          'Double underline: a sentence you would copy out.',
+          'Vertical line in the margin: the whole paragraph, not one clause inside it.',
+          'Circle: a word to look up, or a name you will otherwise forget.',
+          'Asterisk: come back. A question for later, or a thing to try.',
+          'Question mark: you do not understand it yet. Leave the muddle visible.',
+          'A wavy line or a square bracket: you disagree. Add two or three words on why, or the mark is only a mood.',
+        ],
+      },
+      {
+        heading: 'Give each colour a job',
+        paragraphs: [
+          'Colour is optional. If you use it, give each colour one job and write that job on the card. A single colour that means “I liked this” will cover half the page by chapter four.',
+          'One scheme that stays readable: yellow for the move of the plot or the step in the argument, pink for a line worth copying, blue for an image or a word that keeps returning, green for something to check before you repeat it. Swap the colours if you already own a different set of pens. The point is that yellow means the same thing on Tuesday and in November.',
+          'Highlighter soaks through thin paper. Draw one short line on a blank page at the back of the book before you mark a chapter. If the next leaf shows the colour, switch to a pencil underline or to a tab on the edge.',
+        ],
+      },
+      {
+        heading: 'Tab colours belong to the same legend',
+        paragraphs: [
+          'A sticky tab sits on the edge of the page. It does not replace the mark next to the sentence, and a blank tab is only a bookmark with a colour. Write two or three words on it: “mother lies”, “definition”, “the salary”.',
+          'Use the same colours as the pens, so yellow on the edge and yellow on the page are one idea. Place the tab so you can see it when the book is shut, and so it does not cover the line you meant to find. When the book is not yours, tabs and notes do the whole job. That method is written out in the [guide to annotating without writing in the book](/guides/how-to-annotate-a-book-without-writing-in-it).',
+        ],
+      },
+      {
+        heading: 'An example key for fiction',
+        paragraphs: [
+          'Fiction wants marks for pattern and for the moment your mind changes, not for “themes” you will invent at the end.',
+        ],
+        bullets: [
+          'Underline: a sentence whose shape you want to remember.',
+          'Margin line: a turn in the scene.',
+          'Circle: a repeated image. The window, the meal, the hands.',
+          'Asterisk: a line you might quote when you talk about the book.',
+          'Question mark: a motive you do not believe yet.',
+          'Pink tab on the edge: the page where you changed your mind about a character.',
+        ],
+      },
+      {
+        heading: 'An example key for study',
+        paragraphs: [
+          'A set text or a textbook chapter has a smaller list of jobs. Mark those, and leave the rest of the page clean. “Beautiful sentence” is a weak exam mark unless the question is about style.',
+        ],
+        bullets: [
+          'Underline: a definition you must be able to say in your own words.',
+          'Double underline: a line you might use in an essay.',
+          'Margin line: an example that makes the definition concrete.',
+          'Bracket: evidence, kept separate from the claim it supports.',
+          'Asterisk: a comparison with another chapter or another book.',
+          'Question mark: a point to ask someone who has read it more than once.',
+        ],
+      },
+      {
+        heading: 'An example key for non-fiction',
+        paragraphs: [
+          'Read for the claim, the support, and the thing you might do differently on Monday. A memoir and a practical book can share this key. A novel should not.',
+        ],
+        bullets: [
+          'Underline: the claim, in the author’s words.',
+          'Margin line: the evidence, or the story told in support of the claim.',
+          'Circle: a method you could copy.',
+          'Asterisk: a thing to try this week. If you will not try it, do not asterisk it.',
+          'Bracket: you disagree. Write the objection in the margin in a few words.',
+          'Green, pen or tab: a fact to check before you repeat it to anyone else.',
+        ],
+      },
+      {
+        heading: 'Use the same words in the app',
+        paragraphs: [
+          'BookQuotes keeps a custom marking vocabulary. It starts with a short list you can rename: underline, double underline, margin line, highlight, bracket, margin note, circle, asterisk, and question mark. Change the name, describe what the mark looks like on the page, and write what you mean by it. The card in the front of the book and the list in the app should use the same words. If the card says a wavy line means “I disagree”, the app should say that too.',
+          'On capture the app can detect the page number. You still check it. Collections and tags come after the key, when the same idea shows up in more than one book. They are not a second legend of forty labels. The [scan guide](/guides/scan-underlined-book-pages) covers how to photograph the page so the words can be checked. BookQuotes does not import Kindle highlights.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'How many symbols should an annotation key have?',
+        answer:
+          'Six to eight. If you cannot remember the list without looking, it is too long. A short key you use on every page beats a clever one you abandon in chapter two.',
+      },
+      {
+        question: 'Should I use the same key for every book?',
+        answer:
+          'Use one key for fiction and a different short key for study or for non-fiction. Do not invent a new legend for every title. The examples above are starting points you can copy onto a card and then amend.',
+      },
+      {
+        question: 'What if last year’s colours already mean nothing?',
+        answer:
+          'Stop adding new colours. Pick four jobs, assign the pens you actually own, and write the new card. Leave the old marks as they are. You will not re-colour a finished book, and you do not need to.',
+      },
+      {
+        question: 'Where should I keep the key?',
+        answer:
+          'On a card in the front of the book, or on the first page of the notebook that belongs with it. If you also keep the marks in BookQuotes, rename the markings so the names match the card.',
+      },
+      {
+        question: 'Can the app store what each mark means?',
+        answer:
+          'Yes. You name each marking and write what it means. That vocabulary is yours. On capture the app can detect the page number. Collections and tags group lines across books. It does not import Kindle highlights.',
+      },
+    ],
+  },
+  {
+    slug: 'how-to-annotate-a-book-without-writing-in-it',
+    title: 'How to Annotate a Book Without Writing in It',
+    query: 'how to annotate a book without writing in it',
+    description:
+      'Sticky notes, coloured tabs, a bookmark, pencil if you are allowed, a notebook, and a photo of the page before a borrowed book goes back.',
+    category: 'Annotation',
+    readingTime: '8 min read',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-28',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/book-annotation-key', label: 'How to make a book annotation key' },
+      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
+      { href: '/quotes', label: 'Quotes checked against the original text' },
+      { href: '/quotes/a-christmas-carol', label: 'A Christmas Carol quotes' },
+    ],
+    intro:
+      'Library books, loans, gifts, and any copy you might sell later still need marks. The marks just cannot live in the paper. Sticky notes, tabs, a bookmark, a pencil only if the owner agrees, a notebook, and a photograph of the page will cover it.',
+    relatedQueries: [
+      'how to annotate a book without writing in it',
+      'annotate a book with sticky notes',
+      'how to annotate books with tabs',
+      'annotate a book without ruining it',
+    ],
+    sections: [
+      {
+        heading: 'Decide what the owner will tolerate',
+        paragraphs: [
+          'If the book is not yours, assume that ink and highlighter are out. Pencil is a separate question. Ask. A light graphite line often lifts with a soft rubber, but some owners still refuse, and coated paper smears. If you have not asked, do not try it on page 12.',
+          'Sticky notes and tabs come off. They are the default for a book you will return. For a copy you do own and are happy to mark, a written legend is more useful than a forest of flags. That legend is the [annotation key](/guides/book-annotation-key).',
+        ],
+      },
+      {
+        heading: 'Sticky notes: one idea, and not on the words',
+        paragraphs: [
+          'Write the note before you stick it down. A biro pressed through a flag will dent the type underneath. One idea per note. A paragraph on a small flag falls off and becomes litter in the bag.',
+          'Park the note in the margin, or just below the line, with the sticky strip on blank paper when you can. Do not cover the sentence you will want to reread. When you finish, pull the notes out in order and deal with them the same day. A novel returned to the library still full of flags looks unfinished, and the notes get thrown away with the return.',
+        ],
+      },
+      {
+        heading: 'Tabs need a colour and two words',
+        paragraphs: [
+          'Colour is the category. The words on the tab are the reason. Use the same colours as your annotation key if you have one, so a yellow tab and a yellow pen are one idea. A tab that only says “good” will mean nothing in a month. Write “Ch3 claim”, “her hands”, or “for the essay”.',
+          'Stick the tab on the outer edge so a closed book shows the row of colours. A tab buried in the gutter will not be found. Take every tab out before you return the book. Adhesive left for months goes yellow, and a tab in a library copy becomes the next reader’s problem.',
+        ],
+      },
+      {
+        heading: 'A bookmark for place, a card for pages',
+        paragraphs: [
+          'A ribbon means “I am here”. Do not also make it mean “this page mattered”. Those are two jobs, and one ribbon will do the wrong one. If you must not stick anything at all, keep a card in the book and write a short list on it: 42 the house, 87 the argument, 110 come back. The page number goes down at the moment you notice the page, not at the end of the chapter.',
+          'Pencil, if you have permission: use a hard pencil, a light line, and a soft rubber afterwards. Do not press. On thin paper the groove shows on the next leaf even after the graphite has gone. When you are unsure, skip the pencil and use the notebook.',
+        ],
+      },
+      {
+        heading: 'Keep a notebook that is not the book',
+        paragraphs: [
+          'This is the method for a rare book, a loan, and any book you refuse to mark even when you could. Write the page number first, then a short run of the author’s words, then your own note underneath or on the facing page. If you copy the sentence and forget the page, you have made a search you will not enjoy.',
+          'Put the book’s title and the date at the top of the page once. Separate the quotation from your comment with a blank line, so that in six months you can tell the author’s sentence from yours. A published list of lines, such as the [quotes index](/quotes), is someone else’s choice of what mattered. The notebook is yours.',
+        ],
+      },
+      {
+        heading: 'Photograph the page before the book goes back',
+        paragraphs: [
+          'Notes and tabs leave with you, or they go in the bin. The page does not. Take the photo while the book is still in the house, in even light, with the phone parallel to the page. Include the line you care about and a little of the paragraph around it. Framing is covered in the [scan guide](/guides/scan-underlined-book-pages).',
+          'BookQuotes is for that photograph. On capture it can detect the page number, so you are not trusting a memory of “about 214”. You still check the number and the words against the print. On a library book the page is clean, so the note you typed on the tab goes in with the quotation. Custom markings are for a copy you do write in: you name each mark and what it means. Collections and tags are how you find the line later, next to lines from other books. The app does not import Kindle highlights.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Will sticky notes damage the page?',
+        answer:
+          'They can, if you leave them on for years, or if you rip them off coated paper in a hurry. For a loan of a few weeks they are the ordinary tool. Take them off before you return the book. If the paper is fragile, skip the adhesive and use the notebook.',
+      },
+      {
+        question: 'Is pencil always safe in a book?',
+        answer:
+          'No. Ask the owner first. Even with a yes, a soft pencil and a heavy hand will show. Use a hard pencil, a light line, and a soft rubber when you are finished. If the paper is thin, the dent remains after the mark has gone.',
+      },
+      {
+        question: 'How do I clear a library book without losing the notes?',
+        answer:
+          'Photograph the page, or copy the page number and the note into the notebook, before you pull anything off. Do not do it from memory in the library queue. Then remove every tab and every flag.',
+      },
+      {
+        question: 'What can I write on a tab that is too small for a sentence?',
+        answer:
+          'A label, not the quotation. “Ch3 claim” or “her hands” is enough. The author’s words go in the notebook or into the photograph, with the page number.',
+      },
+      {
+        question: 'Can I keep a searchable copy without writing in the book?',
+        answer:
+          'Yes. Photograph the page, check the words, and keep your note with the line. BookQuotes can detect the page number on capture. Collections and tags group it with other books. You name your own markings for copies you do write in. It does not import Kindle highlights.',
       },
     ],
   },
