@@ -1,4 +1,5 @@
 import carol from '@/content/quotes/a-christmas-carol.json'
+import jane from '@/content/quotes/jane-eyre.json'
 import jekyll from '@/content/quotes/jekyll-and-hyde.json'
 import macbeth from '@/content/quotes/macbeth.json'
 import pride from '@/content/quotes/pride-and-prejudice.json'
@@ -73,18 +74,19 @@ export type QuoteHub = {
   misattributionIntro?: string
 }
 
-export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, pride, reading as QuoteHub, libraries as QuoteHub]
+export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, pride, jane, reading as QuoteHub, libraries as QuoteHub]
 
 export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)
 }
 
-// Literature hubs keep the default index label and follow one named text. Theme hubs, such as reading or
-// libraries, set their own label, group by theme and cite a source per quote, so any of those keeps them off.
+// Literature hubs follow one named text and carry a GCSE index label: the default, or one such as
+// "GCSE and A level". Theme hubs, such as reading or libraries, set their own label, group by theme and cite a
+// source per quote, so any of those keeps them off.
 export function publishedGcseHubs() {
   return quoteHubs.filter(
     (hub) =>
-      (hub.indexLabel ?? 'GCSE English') === 'GCSE English' && !hub.sourcesArePerQuote && hub.groupBy !== 'theme',
+      (hub.indexLabel ?? 'GCSE English').startsWith('GCSE') && !hub.sourcesArePerQuote && hub.groupBy !== 'theme',
   )
 }
 
@@ -106,6 +108,7 @@ export const gcseQuoteLinks = [
   { slug: 'jekyll-and-hyde', label: 'Jekyll and Hyde quotes' },
   { slug: 'macbeth', label: 'Macbeth quotes' },
   { slug: 'pride-and-prejudice', label: 'Pride and Prejudice quotes' },
+  { slug: 'jane-eyre', label: 'Jane Eyre quotes' },
 ]
 
 export function quoteReference(quote: QuoteEntry, sectionKey?: string) {

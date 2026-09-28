@@ -1,5 +1,22 @@
 # SEO Changelog
 
+## 2026-09-28: Jane Eyre quotes
+- Date merged: 
+- PR: #27 https://github.com/Al2800/Book-Viewer/pull/27
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/jane-eyre
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/quotes/pride-and-prejudice
+  - https://bookquotes.uk/guides/gcse-english-quote-bank
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "Jane Eyre quotes"; "key quotes in Jane Eyre"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a checked quote hub for Jane Eyre (40 lines from Project Gutenberg eBook 1260, the 1897 Service and Paton text). The page says which printing the file is, and that the preface is the 1848 second-edition preface. Each line has its chapter, speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol, Jekyll and Hyde, Macbeth and Pride and Prejudice hubs. The page now names the GCSE specifications that set the novel (AQA 8702, Edexcel 1ET0, OCR J352), and the GCSE quote bank list accepts a "GCSE and A level" index label so Jane Eyre appears there.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: Pride and Prejudice quotes
 - Date merged: 
 - PR: #25 https://github.com/Al2800/Book-Viewer/pull/25
