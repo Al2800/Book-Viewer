@@ -29,9 +29,101 @@ export type Guide = {
   related: RelatedLink[]
   sections: GuideSection[]
   faqs: GuideFaq[]
+  quoteHubList?: 'gcse'
 }
 
 export const guides: Guide[] = [
+  {
+    slug: 'gcse-english-quote-bank',
+    title: 'GCSE English Literature Quote Bank',
+    query: 'gcse english quote bank',
+    description:
+      'A GCSE English literature quote bank: short lines from the set text you study, grouped by theme, so you can test yourself.',
+    category: 'GCSE English',
+    readingTime: '8 min read',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-28',
+    updatedISO: '2026-09-28',
+    quoteHubList: 'gcse',
+    related: [
+      { href: '/quotes', label: 'Quotes checked against the original text' },
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/guides/book-annotation-key', label: 'How to make a book annotation key' },
+    ],
+    intro:
+      'A GCSE English literature quote bank is a short list of lines from the books your school chose, learned well enough to use with the book shut. The list below is every literature hub published on this site. A theme page, such as quotes about reading, is not on it. When a new set-text hub is published, it joins the list.',
+    relatedQueries: [
+      'gcse english quote bank',
+      'gcse english literature quotes',
+      'how to learn quotes for gcse english',
+      'macbeth quotes',
+      'a christmas carol quotes',
+      'jekyll and hyde quotes',
+    ],
+    sections: [
+      {
+        heading: 'Keep the line short enough to embed',
+        paragraphs: [
+          'A card that holds a whole speech will not survive the exam. You want a clause you can drop inside a sentence of your own. If you cannot say it aloud without looking, it is not learned yet. Cut it down, or choose a different line and leave the rest in the book.',
+          'Check the small words, not only the idea. In A Christmas Carol, Scrooge answers Fred with "Bah!" and then "Humbug!" They are two exclamations in the Project Gutenberg text, not the single phrase printed on posters. The [A Christmas Carol hub](/quotes/a-christmas-carol) marks that kind of slip where we have checked the line. The same habit applies to whatever book is on your desk.',
+        ],
+      },
+      {
+        heading: 'Group the lines by the question you might be asked',
+        paragraphs: [
+          'The paper will name a theme, a character, or a relationship. It will not ask you to recite a chapter. Sort the bank the same way: a few lines for greed, a few for guilt, a few for whatever that book actually turns on. Two lines that answer one question are more useful than ten lines from a page you happened to like.',
+          'Where someone changes, keep an early line and a late line. You can then write the change, instead of repeating one adjective for a side of paper. The hubs already tag lines by theme. Use the filter, then copy the few you mean to learn into your own notes. Leave the rest where they are.',
+        ],
+      },
+      {
+        heading: 'Test yourself with the book shut',
+        paragraphs: [
+          'Cover the words. Say the line. Uncover it and check every word, including the punctuation. Then say who speaks, and where it sits: the stave, the chapter, or the act and scene. A line you only recognise on a list is not a line you can write.',
+          'Page numbers are a poor anchor. A school copy, a cheap paperback and the text on Project Gutenberg do not share them. The five staves of A Christmas Carol stay put. So do the ten chapters of Jekyll and Hyde. Macbeth’s acts and scenes stay put too, though the line numbers often do not. The [Macbeth hub](/quotes/macbeth) follows one printing and says so.',
+          'Do this away from the page. The bus is a better test than the desk, because the list is not in front of you. If you stumble, that line is not ready. Look it up, say it once more, and try again tomorrow.',
+        ],
+      },
+      {
+        heading: 'What the specifications actually say',
+        paragraphs: [
+          'Your school enters you for one board. That board does not set every famous novel. It publishes a list, and the school chooses. You need the books on your desk, not the whole list.',
+          '[AQA GCSE English Literature (8702)](https://filestore.aqa.org.uk/resources/english/specifications/AQA-8702-SP-2015.PDF) says students study one Shakespeare play from six, Macbeth among them, and one 19th-century novel from seven. That novel list includes The Strange Case of Dr Jekyll and Mr Hyde, A Christmas Carol, Jane Eyre, Frankenstein (the 1831 text) and Pride and Prejudice, and also Great Expectations and The Sign of Four. The same specification, in section 2, says: "All assessments are closed book." The [subject content page](https://www.aqa.org.uk/subjects/english/gcse/english-8702/specification/subject-content/shakespeare-and-the-19th-century-novel) prints the same choice of texts.',
+          '[Pearson Edexcel GCSE English Literature (1ET0)](https://qualifications.pearson.com/content/dam/pdf/GCSE/English%20Literature/2015/specification-and-sample-assesment/9781446914359_GCSE_2015_L12_Englit.pdf), Issue 2 (June 2019), lists one Shakespeare text, Macbeth among them, and one 19th-century novel. That novel list includes Jane Eyre, Dr Jekyll and Mr Hyde, A Christmas Carol, Pride and Prejudice and Frankenstein, and also Great Expectations and Silas Marner. Both examined components say "Closed book (texts are not allowed in the examination)."',
+          '[OCR GCSE English Literature (J352)](https://www.ocr.org.uk/images/168995-specification-accredited-gcse-english-literature-j352.pdf) lists one Shakespeare play from four, Macbeth among them, and one 19th-century prose text: Great Expectations, Pride and Prejudice, The War of the Worlds, The Strange Case of Dr Jekyll and Mr Hyde, Jane Eyre and A Christmas Carol. Frankenstein is not on that list. The specification says both components are closed text examinations. The [specification at a glance](https://www.ocr.org.uk/qualifications/gcse/english-literature-j352-from-2015/specification-at-a-glance/) shows the same titles.',
+          'None of the three tells you how many quotations to learn. Assessment objective AO1, in the same words on the AQA, Edexcel and OCR specifications, asks you to use textual references, including quotations, to support and illustrate interpretations. A line you cannot place, or cannot quote accurately, does not do that. Lists do get revised. If you are checking the year you will sit, open the specification for your board rather than trusting a revision site’s memory of it. The links above are the documents this page was checked against.',
+        ],
+      },
+      {
+        heading: 'Use the copy you were taught',
+        paragraphs: [
+          'These hubs follow a named public-domain text, usually a Project Gutenberg ebook. Your school edition may differ in a comma, a spelling, or a line number. Learn the line from the copy you were taught, and keep the chapter, stave, or act and scene beside it. If a hub and your book disagree, trust the book your teacher is using. Treat the hub as a check that the line is really there.',
+          'If you want the bank to be the lines you underlined yourself, photograph the page after you have finished reading. BookQuotes can detect the page number on capture. You name your own markings, and a tag can be the theme you would search for later. Collections keep one book, or one question, together. The library stays on the phone. It does not import Kindle highlights, and it will not learn the line for you. The steps are in [how to save quotes from physical books](/guides/how-to-save-quotes-from-physical-books).',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'What should a GCSE English quote bank include?',
+        answer:
+          'A GCSE English quote bank should include a few accurate lines from the set texts your school chose, each one short enough to embed in a sentence, with the speaker and the place in the book. It is not every famous line from every novel on a board’s list.',
+      },
+      {
+        question: 'How many quotes should I learn for GCSE English?',
+        answer:
+          'There is no number in the AQA 8702, Edexcel 1ET0 or OCR J352 specifications. Assessment objective AO1 asks you to use textual references, including quotations, to support an interpretation. Learn fewer lines than a long list suggests, and know those well enough to write them with the book shut.',
+      },
+      {
+        question: 'Are A Christmas Carol, Jekyll and Hyde and Macbeth on every exam board?',
+        answer:
+          'No. Each is an option, not a text every student studies, and the lists are not identical. Macbeth is one of the Shakespeare choices on AQA 8702, Edexcel 1ET0 and OCR J352. A Christmas Carol and Strange Case of Dr Jekyll and Mr Hyde are among the 19th-century options on all three. Frankenstein is on the AQA and Edexcel novel lists, and it is not on the OCR J352 list. Your school picks. You study that pick.',
+      },
+      {
+        question: 'Do I need page numbers in a GCSE English quote bank?',
+        answer:
+          'No. Page numbers change with the edition, and these three specifications examine you without the book: AQA and Edexcel say closed book, and OCR says closed text. Learn the stave, the chapter, or the act and scene.',
+      },
+    ],
+  },
   {
     slug: 'how-to-save-quotes-from-physical-books',
     title: 'How to Save Quotes from Physical Books',

@@ -34,6 +34,13 @@ export default function QuotesPage() {
           <p className="text-xl text-ink-medium max-w-2xl">
             Public-domain books, with the lines a student or a reader actually needs. Every quotation is checked against a named text. A line is left out if it only sounds familiar.
           </p>
+          <p className="text-lg text-ink-medium max-w-2xl mt-4">
+            For the set texts, the{' '}
+            <Link href="/guides/gcse-english-quote-bank" className="underline underline-offset-4 text-ink-black">
+              GCSE English literature quote bank
+            </Link>{' '}
+            lists every literature hub published here, and how to learn a short line from it.
+          </p>
         </header>
 
         <section className="bg-paper-warm border-y border-subtle">
