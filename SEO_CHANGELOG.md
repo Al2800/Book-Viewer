@@ -1,5 +1,20 @@
 # SEO Changelog
 
+## 2026-09-28: Frankenstein quotes
+- Date merged: 
+- PR: 
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/frankenstein
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "Frankenstein quotes"; "Frankenstein quotes about ambition"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a checked quote hub for Frankenstein (38 lines from Project Gutenberg eBook 84, the 1831 text: four letters and twenty-four chapters). The page says which edition the file is, and that the 1818 text differs. Each line has its speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol, Jekyll and Hyde and Macbeth hubs.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: copy accuracy
 - Date merged: 
 - PR: #22 https://github.com/Al2800/Book-Viewer/pull/22
