@@ -2,7 +2,7 @@
 
 ## 2026-09-28: copy accuracy
 - Date merged: 
-- PR: 
+- PR: #22 https://github.com/Al2800/Book-Viewer/pull/22
 - Page URL(s) changed:
   - https://bookquotes.uk/
   - https://bookquotes.uk/guides/how-to-save-quotes-from-physical-books
