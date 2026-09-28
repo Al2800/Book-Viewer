@@ -45,7 +45,7 @@
     {
       "id": "waters-unread",
       "claim": "“Nothing is more important than an unread library” is passed around as a reason to buy books you have not read. Another form says “impotent” instead of “important”.",
-      "detail": "Quote Investigator credits John Waters with “Nothing is more impotent than an unread library”, in Role Models (2010), in the chapter “Bookworm”. The “important” wording is Austin Kleon’s, in Steal Like an Artist (2012). QI describes it as a misremembering of Waters. The two words are not the same claim. Both books are still in copyright, so the sentences are not in the list above.",
+      "detail": "Quote Investigator credits John Waters with “Nothing is more impotent than an unread library”, in Role Models (2010), in the chapter “Bookworm”. The “important” wording comes from Austin Kleon’s Steal Like an Artist (2012), where it was credited to Waters. QI credits Kleon with it, as a misremembering of Waters, and Kleon later corrected the attribution. The two words are not the same claim. Both books are still in copyright, so the sentences are not in the list above.",
       "sourceName": "Quote Investigator, 18 August 2022",
       "sourceUrl": "https://quoteinvestigator.com/2022/08/18/unread-library/"
     }
@@ -92,7 +92,7 @@
       "citation": "Louisa May Alcott · Little Women, Chapter 4, “Burdens”",
       "sourceName": "Project Gutenberg eBook 514",
       "sourceUrl": "https://www.gutenberg.org/ebooks/514",
-      "context": "Jo is working for Aunt March. The sentence before this one says the real attraction was a large library of fine books, left to dust and spiders since Uncle March died.",
+      "context": "Jo is working for Aunt March. Just before this, the text says the real attraction was a large library of fine books, left to dust and spiders since Uncle March died.",
       "analysis": "The bliss is the wandering, not the furniture. Busts, globes and dust are the setting. The point is that nobody is telling her which book to take next. She reads until Aunt March wakes up."
     },
     {
@@ -125,7 +125,7 @@
       "citation": "Edward Gibbon · Memoirs of My Life and Writings, the account of Buriton",
       "sourceName": "Project Gutenberg eBook 6031",
       "sourceUrl": "https://www.gutenberg.org/ebooks/6031",
-      "context": "Gibbon is writing about stays at Buriton, his father’s house in Sussex. He has just said that farming and a horse did not take, and that a shady bench usually ended his walks. The clause has no capital because it follows “At home I occupied a pleasant and spacious apartment”.",
+      "context": "Gibbon is writing about stays at Buriton, his father’s house in Hampshire. He has just said that farming and a horse did not take, and that a shady bench usually ended his walks. The clause has no capital because it follows “At home I occupied a pleasant and spacious apartment”.",
       "analysis": "“Peculiar domain” is a claim of territory, made quietly. The second half is the feeling he wants from that room: company of a sort, and nobody else in it. He does not say the books spoke. He says he was not lonely."
     },
     {
@@ -199,11 +199,11 @@
       "text": "There are delightful libraries, more aromatic than stores of spicery; there are luxuriant parks of all manner of volumes;",
       "speaker": "Richard de Bury",
       "themes": ["What a library holds"],
-      "citation": "Richard de Bury · Philobiblon, Chapter 20, “An exhortation to scholars to requite us by pious prayers”, translated by E. C. Thomas",
+      "citation": "Richard de Bury · Philobiblon, Chapter 8, “Of the numerous opportunities we have had of collecting a store of books”, translated by E. C. Thomas",
       "sourceName": "Project Gutenberg eBook 626",
       "sourceUrl": "https://www.gutenberg.org/ebooks/626",
-      "context": "He is closing the treatise. The sentence before this one remembers visits to Paris, which he calls the Paradise of the world. The semicolon is his: the line goes on to academic meadows, walks, and porches. The English is E. C. Thomas’s translation.",
-      "analysis": "The libraries smell, in this figure, like a store of spice. That is pleasure, not a catalogue. He is old in the chapter and asking for prayers, and the picture he keeps is of rooms full of books in a city he loved. The clause stops here. The sentence does not."
+      "context": "Chapter 8 lists the chances he had to collect books, including embassies to the Holy See and the Court of France. The sentence before this one remembers visits to Paris, which he calls the Paradise of the world. The semicolon is his: the line goes on to Academic meads, walks of the Peripatetics, and porches of the Stoics. The English is E. C. Thomas’s translation.",
+      "analysis": "The libraries smell, in this figure, like a store of spice. That is pleasure, not a catalogue. He has been describing tiring embassies, and the picture he keeps from them is of rooms full of books in a city he loved. The clause stops here. The sentence does not."
     },
     {
       "id": "bacon-shrines",
@@ -257,7 +257,7 @@
       "citation": "Augustine Birrell · Obiter Dicta, Second Series, “Book-Buying”",
       "sourceName": "Project Gutenberg eBook 21793",
       "sourceUrl": "https://www.gutenberg.org/ebooks/21793",
-      "context": "“Book-Buying” has been complaining that catalogues have made prices the same everywhere, and that the old bargains in country shops are gone. The sentence before this one says there were never so many private libraries in the course of growth.",
+      "context": "“Book-Buying” has been complaining that the old bargains in country shops are gone, because booksellers read the London auction news and the catalogues. The sentence before this one says high prices show there were never so many private libraries in course of growth.",
       "analysis": "The first sentence is the one people lift out. The second ties it to buying, in his own time, and to a pace: two thousand volumes, without hurry. He is not pricing a library for you. He is telling a buyer that a library arrives by accumulation, and that the early part of that accumulation felt cheap to him."
     },
     {
