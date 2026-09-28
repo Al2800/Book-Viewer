@@ -2,7 +2,7 @@
 
 ## 2026-09-28: Jane Eyre quotes
 - Date merged: 
-- PR: 
+- PR: #27 https://github.com/Al2800/Book-Viewer/pull/27
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes/jane-eyre
   - https://bookquotes.uk/quotes
