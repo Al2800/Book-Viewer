@@ -5,21 +5,17 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { journalArticles } from '@/lib/journal'
 
+const journalTitle = 'Journal: notes on marking and commonplace books | BookQuotes'
+const journalDescription =
+  'Notes on marking paper books, reviewing highlights, and keeping a commonplace collection you will actually reopen.'
+
 export const metadata: Metadata = {
-  title: 'Journal: Reading, Marking & Commonplace Notes | BookQuotes',
-  description: 'Practical ideas for book annotation, quote readers, commonplace books, and remembering what you read from physical books.',
-  keywords: [
-    'book quotes',
-    'quote reader',
-    'commonplace book',
-    'book annotation',
-    'reading notes',
-    'physical books',
-  ],
+  title: journalTitle,
+  description: journalDescription,
   alternates: { canonical: '/journal' },
   openGraph: {
-    title: 'Journal: Reading, Marking & Commonplace Notes | BookQuotes',
-    description: 'Practical ideas for book annotation, quote readers, commonplace books, and remembering what you read from physical books.',
+    title: journalTitle,
+    description: journalDescription,
     url: 'https://bookquotes.uk/journal',
     siteName: 'BookQuotes',
     locale: 'en_GB',
@@ -34,9 +30,9 @@ export default function JournalPage() {
       <main className="pt-8 md:pt-12">
         <header className="container-standard pb-14 md:pb-20">
           <p className="font-ui text-sm text-ink-medium mb-4">Journal</p>
-          <h1 className="mb-5">Read, mark, remember</h1>
+          <h1 className="mb-5">Notes on marking books and keeping what you read</h1>
           <p className="text-xl text-ink-medium max-w-2xl">
-            Practical methods for keeping the ideas you find in paper books.
+            Longer notes on what to do with highlights, and how extraction stays under your control.
           </p>
         </header>
 

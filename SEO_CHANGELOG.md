@@ -1,5 +1,35 @@
 # SEO Changelog
 
+## 2026-09-28: site cleanup
+- Date merged: 
+- PR: #16 https://github.com/Al2800/Book-Viewer/pull/16
+- Page URL(s) changed:
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/guides
+  - https://bookquotes.uk/journal
+  - https://bookquotes.uk/guides/digital-commonplace-book
+  - https://bookquotes.uk/journal/build-a-digital-commonplace-book
+  - https://bookquotes.uk/guides/how-to-save-quotes-from-physical-books
+  - https://bookquotes.uk/guides/scan-underlined-book-pages
+  - https://bookquotes.uk/guides/how-to-digitise-book-notes
+  - https://bookquotes.uk/guides/organise-book-quotes-on-iphone
+  - https://bookquotes.uk/guides/private-book-notes-app-iphone
+  - https://bookquotes.uk/guides/book-quote-finder-iphone
+  - https://bookquotes.uk/guides/quote-reader-app-for-physical-books
+  - https://bookquotes.uk/guides/how-to-search-quotes-from-paper-books
+  - https://bookquotes.uk/guides/book-quotes-vs-kindle-highlights
+  - https://bookquotes.uk/guides/export-book-quotes-to-obsidian
+  - https://bookquotes.uk/journal/what-to-do-with-book-highlights
+  - https://bookquotes.uk/journal/ai-extraction-and-reader-control
+  - https://bookquotes.uk/sitemap.xml
+  - https://bookquotes.uk/support
+  - https://bookquotes.uk/privacy
+  - https://bookquotes.uk/terms
+- Search query or queries that prompted it: "quote reader" (2 impressions), "book quote finder" (1), "book highlights" (1)
+- GSC numbers at the time: 0 clicks, 15 impressions, average position 69.1 (28 days, whole site)
+- What changed: Removed the visible "Primary search" label and unused keywords metadata. Shortened titles to about 60 characters, rewrote the homepage title and meta description, and gave the guides and journal indexes descriptive H1s. Added related-reading links on guides and journal articles, and linked every guide from the homepage. Merged the commonplace-book journal article into the guide and 301-redirected the old URL. Removed em dashes from site copy. Aligned the sitemap homepage URL with the canonical, and replaced the shared publish date with each page's first commit date.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-17: PR #14
 - Date merged: 2026-09-17
 - PR: #14 https://github.com/Al2800/Book-Viewer/pull/14

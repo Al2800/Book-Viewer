@@ -7,12 +7,12 @@ export function Hero() {
       <div className="container-wide grid lg:grid-cols-[7fr_5fr] gap-12 lg:gap-16 items-start">
         <div>
           <h1 className="text-balance mb-6">
-            Quote reader and book quote finder for physical books
+            Save quotes from paper books on iPhone
           </h1>
           <p className="text-lg md:text-xl text-ink-dark max-w-prose mb-8">
-            Turn paper underlines, margin notes, and book highlights into a searchable personal
-            library. Not another generic book quotes website&mdash;a private quote reader built to
-            keep, find, and revisit the exact lines you marked on the page.
+            Turn paper underlines, margin notes and book highlights into a private library you can
+            search. Keep the book, the page and the line you marked, then find them again when you
+            need them.
           </p>
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center">
             <div>

@@ -18,54 +18,28 @@ export type JournalArticle = {
   published: string
   publishedISO: string
   updatedISO?: string
+  related: { href: string; label: string }[]
   sections: JournalSection[]
   faqs?: JournalFaq[]
 }
 
 export const journalArticles: JournalArticle[] = [
   {
-    slug: 'build-a-digital-commonplace-book',
-    title: 'How to Build a Digital Commonplace Book from Paper Books',
-    summary:
-      'A simple system for keeping the passages you underline without turning reading into administration.',
-    category: 'Reading practice',
-    readingTime: '5 min read',
-    published: '24 July 2026',
-    publishedISO: '2026-07-24',
-    sections: [
-      {
-        heading: 'Start with a reason to keep the line',
-        paragraphs: [
-          'A commonplace book is a personal collection of ideas, passages, observations, and questions. Its value does not come from collecting everything. It comes from keeping the things you expect to revisit.',
-          'When a sentence earns an underline, pause long enough to ask why. It may explain an idea clearly, challenge an assumption, or give language to something you already felt. That short reason is often more useful than a complicated tagging system.',
-        ],
-      },
-      {
-        heading: 'Use one dependable capture ritual',
-        paragraphs: [
-          'Finish the page before reaching for your phone. Then photograph the marked passage, review the extracted text, and correct anything that the camera or extraction missed. Keep the book title and page number with the quote whenever possible.',
-          'The review matters. A searchable transcription is useful only when it still says what the author wrote. Treat extraction as a first draft and let your own eyes make the final decision.',
-        ],
-      },
-      {
-        heading: 'Return to the collection',
-        paragraphs: [
-          'A commonplace book becomes valuable through reuse. Search it while writing, revisit a few saved passages at the end of each week, or choose one idea to discuss with somebody else.',
-          'BookQuotes supports this paper-to-library workflow: add the book by ISBN, capture marked pages, review the result, and keep the passage in a searchable local library.',
-        ],
-      },
-    ],
-  },
-  {
     slug: 'what-to-do-with-book-highlights',
-    title: 'What to Do with Book Highlights After Finishing a Book: A Practical Review System',
+    title: 'What to Do with Highlights After a Book',
     summary:
       'What to do with book highlights once you close the back cover: how to filter your underlines, extract paper passages, and turn reading notes into a searchable personal library.',
     category: 'Annotation',
     readingTime: '6 min read',
     published: '24 July 2026',
     publishedISO: '2026-07-24',
-    updatedISO: '2026-09-17',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/digital-commonplace-book', label: 'What is a digital commonplace book?' },
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+      { href: '/guides/book-quotes-vs-kindle-highlights', label: 'Book quotes vs Kindle highlights' },
+    ],
     sections: [
       {
         heading: 'Why most book highlights get abandoned',
@@ -86,7 +60,7 @@ export const journalArticles: JournalArticle[] = [
       {
         heading: 'Filter your highlights before saving them',
         paragraphs: [
-          'A useful quote library is defined by what you choose to discard. If you preserve every sentence you underlined, you do not build a commonplace book—you create a second unmanageable reading backlog.',
+          'A useful quote library is defined by what you leave out. If you keep every sentence you underlined, you build a second reading backlog. A [commonplace book](/guides/digital-commonplace-book) stays small on purpose.',
           'Treat your initial paper marks as candidates rather than permanent fixtures. Ask three simple questions during your review: Does this sentence articulate an idea better than I could? Does it challenge an assumption I currently hold? Will I genuinely want to cite or re-read this twelve months from now?',
           'If a mark fails those tests, leave it on the paper page. It served its purpose by sharpening your focus while reading. Only the lines that pass deserve a place in your searchable archive.',
         ],
@@ -95,7 +69,7 @@ export const journalArticles: JournalArticle[] = [
         heading: 'Capture paper highlights without manual typing',
         paragraphs: [
           'Manual transcription is where good reading intentions go to die. Setting up a laptop, opening a blank document, and typing out long paragraphs from a paperback with one hand holding the binding open creates too much friction to sustain over a year of reading.',
-          'A dedicated quote reader cuts the capture ritual down to seconds. Photograph the marked page in natural light, allow optical recognition or AI extraction to isolate the underlined sentence, and compare the detected words directly against the printed page.',
+          'Photograph the marked page in ordinary light, let OCR or AI extraction isolate the underlined sentence, and compare the detected words with the printed page. [How to save quotes from physical books](/guides/how-to-save-quotes-from-physical-books) is the same routine written out.',
           'Scanning the book barcode ISBN attaches the catalogue title and author automatically, while you verify the page number and line breaks. You get a faithful digital record of the author words without interrupting your evening.',
         ],
       },
@@ -135,19 +109,25 @@ export const journalArticles: JournalArticle[] = [
       {
         question: 'Is it better to keep book highlights in an app or a physical commonplace notebook?',
         answer:
-          'A physical commonplace book offers tactile satisfaction, but an on-device digital quote reader gives you instant keyword search, tag filtering, and export across your entire physical library. Many readers find the best balance is reading quietly with pencil in hand, then digitising their chosen highlights into a private app for effortless retrieval.',
+          'A physical commonplace book is pleasant to keep. An on-device library adds search, tags and export across the paper books you have already marked. Many readers do both: pencil in the book, then save the lines they still want into a private app.',
       },
     ],
   },
   {
     slug: 'ai-extraction-and-reader-control',
-    title: 'How BookQuotes Handles AI Extraction and Reader Control',
+    title: 'AI Extraction and Reader Control',
     summary:
       'What leaves the device, what stays local, and why every extracted passage is reviewed before saving.',
     category: 'Product and privacy',
     readingTime: '4 min read',
     published: '24 July 2026',
     publishedISO: '2026-07-24',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/private-book-notes-app-iphone', label: 'Privacy-first book notes on iPhone' },
+      { href: '/privacy', label: 'Privacy policy' },
+      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
+    ],
     sections: [
       {
         heading: 'Remote AI is optional',
@@ -167,7 +147,7 @@ export const journalArticles: JournalArticle[] = [
         heading: 'The library stays local',
         paragraphs: [
           'Books, quotes, tags, collections, and captured images remain on the device in the current release. When remote processing is unavailable, the app offers an on-device fallback and clear recovery choices.',
-          'BookQuotes does not use advertising or behavioural tracking. The privacy policy and in-app consent controls describe the remote processing flow in more detail.',
+          'BookQuotes does not use advertising or behavioural tracking. The [privacy policy](/privacy) and the in-app consent controls describe the remote processing flow in more detail. The [privacy guide](/guides/private-book-notes-app-iphone) is the shorter version for someone deciding whether to use the app.',
         ],
       },
     ],

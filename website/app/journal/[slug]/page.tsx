@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { ProductEvidence } from '@/components/sections/ProductEvidence'
 import { getJournalArticle, journalArticles } from '@/lib/journal'
 import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
+import { formatLongDate, splitInlineLinks } from '@/lib/utils'
 
 type ArticlePageProps = {
   params: Promise<{ slug: string }>
@@ -25,12 +26,14 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     return {}
   }
 
+  const title = `${article.title} | BookQuotes`
+
   return {
-    title: `${article.title} | BookQuotes`,
+    title,
     description: article.summary,
     alternates: { canonical: `/journal/${article.slug}` },
     openGraph: {
-      title: `${article.title} | BookQuotes`,
+      title,
       description: article.summary,
       url: `https://bookquotes.uk/journal/${article.slug}`,
       type: 'article',
@@ -66,7 +69,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bookquotes.uk' },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bookquotes.uk/' },
       { '@type': 'ListItem', position: 2, name: 'Journal', item: 'https://bookquotes.uk/journal' },
       { '@type': 'ListItem', position: 3, name: article.title, item: canonicalUrl },
     ],
@@ -100,7 +103,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <h1 className="text-balance mb-6">{article.title}</h1>
             <p className="text-xl text-ink-medium max-w-2xl mb-6">{article.summary}</p>
             <p className="font-ui text-sm text-ink-light mb-8">
-              {article.published} · {article.readingTime}
+              Published {formatLongDate(article.publishedISO)}
+              {article.updatedISO ? ` · Updated ${formatLongDate(article.updatedISO)}` : ''}
+              {' · '}
+              {article.readingTime}
             </p>
 
             <div className="p-5 md:p-6 bg-paper-warm border border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -137,18 +143,35 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   <h2 className="mb-5">{section.heading}</h2>
                   {section.paragraphs.map((paragraph) => (
                     <p key={paragraph} className="text-lg text-ink-dark mb-5 last:mb-0">
-                      {paragraph}
+                      <InlineText text={paragraph} />
                     </p>
                   ))}
                   {section.bullets && (
                     <ul className="mt-5 space-y-3 list-disc pl-6 text-lg text-ink-dark">
                       {section.bullets.map((bullet) => (
-                        <li key={bullet}>{bullet}</li>
+                        <li key={bullet}>
+                          <InlineText text={bullet} />
+                        </li>
                       ))}
                     </ul>
                   )}
                 </section>
               ))}
+
+              {article.related.length > 0 && (
+                <section className="mt-14 pt-10 border-t border-subtle">
+                  <h2 className="mb-5">Related reading</h2>
+                  <ul className="space-y-3 text-lg">
+                    {article.related.map((item) => (
+                      <li key={item.href}>
+                        <Link href={item.href} className="underline underline-offset-4 hover:text-gold-primary">
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
 
               {article.faqs && article.faqs.length > 0 && (
                 <section className="mt-14 pt-10 border-t border-subtle">
@@ -190,6 +213,26 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
       <Footer />
+    </>
+  )
+}
+
+function InlineText({ text }: { text: string }) {
+  return (
+    <>
+      {splitInlineLinks(text).map((part, index) =>
+        part.type === 'text' ? (
+          <span key={index}>{part.value}</span>
+        ) : (
+          <Link
+            key={index}
+            href={part.href}
+            className="underline underline-offset-4 hover:text-gold-primary"
+          >
+            {part.label}
+          </Link>
+        ),
+      )}
     </>
   )
 }
