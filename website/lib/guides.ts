@@ -29,9 +29,101 @@ export type Guide = {
   related: RelatedLink[]
   sections: GuideSection[]
   faqs: GuideFaq[]
+  quoteHubList?: 'gcse'
 }
 
 export const guides: Guide[] = [
+  {
+    slug: 'gcse-english-quote-bank',
+    title: 'GCSE English Literature Quote Bank',
+    query: 'gcse english quote bank',
+    description:
+      'A GCSE English literature quote bank: short lines from the set text you study, grouped by theme, so you can test yourself.',
+    category: 'GCSE English',
+    readingTime: '8 min read',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-28',
+    updatedISO: '2026-09-28',
+    quoteHubList: 'gcse',
+    related: [
+      { href: '/quotes', label: 'Quotes checked against the original text' },
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/guides/book-annotation-key', label: 'How to make a book annotation key' },
+    ],
+    intro:
+      'A GCSE English literature quote bank is a short list of lines from the books your school chose, learned well enough to use with the book shut. The list below is every literature hub published on this site. A theme page, such as quotes about reading, is not on it. When a new set-text hub is published, it joins the list.',
+    relatedQueries: [
+      'gcse english quote bank',
+      'gcse english literature quotes',
+      'how to learn quotes for gcse english',
+      'macbeth quotes',
+      'a christmas carol quotes',
+      'jekyll and hyde quotes',
+    ],
+    sections: [
+      {
+        heading: 'Keep the line short enough to embed',
+        paragraphs: [
+          'A card that holds a whole speech will not survive the exam. You want a clause you can drop inside a sentence of your own. If you cannot say it aloud without looking, it is not learned yet. Cut it down, or choose a different line and leave the rest in the book.',
+          'Check the small words, not only the idea. In A Christmas Carol, Scrooge answers Fred with "Bah!" and then "Humbug!" They are two exclamations in the Project Gutenberg text, not the single phrase printed on posters. The [A Christmas Carol hub](/quotes/a-christmas-carol) marks that kind of slip where we have checked the line. The same habit applies to whatever book is on your desk.',
+        ],
+      },
+      {
+        heading: 'Group the lines by the question you might be asked',
+        paragraphs: [
+          'The paper will name a theme, a character, or a relationship. It will not ask you to recite a chapter. Sort the bank the same way: a few lines for greed, a few for guilt, a few for whatever that book actually turns on. Two lines that answer one question are more useful than ten lines from a page you happened to like.',
+          'Where someone changes, keep an early line and a late line. You can then write the change, instead of repeating one adjective for a side of paper. The hubs already tag lines by theme. Use the filter, then copy the few you mean to learn into your own notes. Leave the rest where they are.',
+        ],
+      },
+      {
+        heading: 'Test yourself with the book shut',
+        paragraphs: [
+          'Cover the words. Say the line. Uncover it and check every word, including the punctuation. Then say who speaks, and where it sits: the stave, the chapter, or the act and scene. A line you only recognise on a list is not a line you can write.',
+          'Page numbers are a poor anchor. A school copy, a cheap paperback and the text on Project Gutenberg do not share them. The five staves of A Christmas Carol stay put. So do the ten chapters of Jekyll and Hyde. Macbeth’s acts and scenes stay put too, though the line numbers often do not. The [Macbeth hub](/quotes/macbeth) follows one printing and says so.',
+          'Do this away from the page. The bus is a better test than the desk, because the list is not in front of you. If you stumble, that line is not ready. Look it up, say it once more, and try again tomorrow.',
+        ],
+      },
+      {
+        heading: 'What the specifications actually say',
+        paragraphs: [
+          'Your school enters you for one board. That board does not set every famous novel. It publishes a list, and the school chooses. You need the books on your desk, not the whole list.',
+          '[AQA GCSE English Literature (8702)](https://filestore.aqa.org.uk/resources/english/specifications/AQA-8702-SP-2015.PDF) says students study one Shakespeare play from six, Macbeth among them, and one 19th-century novel from seven. That novel list includes The Strange Case of Dr Jekyll and Mr Hyde, A Christmas Carol, Jane Eyre, Frankenstein (the 1831 text) and Pride and Prejudice, and also Great Expectations and The Sign of Four. The same specification, in section 2, says: "All assessments are closed book." The [subject content page](https://www.aqa.org.uk/subjects/english/gcse/english-8702/specification/subject-content/shakespeare-and-the-19th-century-novel) prints the same choice of texts.',
+          '[Pearson Edexcel GCSE English Literature (1ET0)](https://qualifications.pearson.com/content/dam/pdf/GCSE/English%20Literature/2015/specification-and-sample-assesment/9781446914359_GCSE_2015_L12_Englit.pdf), Issue 2 (June 2019), lists one Shakespeare text, Macbeth among them, and one 19th-century novel. That novel list includes Jane Eyre, Dr Jekyll and Mr Hyde, A Christmas Carol, Pride and Prejudice and Frankenstein, and also Great Expectations and Silas Marner. Both examined components say "Closed book (texts are not allowed in the examination)."',
+          '[OCR GCSE English Literature (J352)](https://www.ocr.org.uk/images/168995-specification-accredited-gcse-english-literature-j352.pdf) lists one Shakespeare play from four, Macbeth among them, and one 19th-century prose text: Great Expectations, Pride and Prejudice, The War of the Worlds, The Strange Case of Dr Jekyll and Mr Hyde, Jane Eyre and A Christmas Carol. Frankenstein is not on that list. The specification says both components are closed text examinations. The [specification at a glance](https://www.ocr.org.uk/qualifications/gcse/english-literature-j352-from-2015/specification-at-a-glance/) shows the same titles.',
+          'None of the three tells you how many quotations to learn. Assessment objective AO1, in the same words on the AQA, Edexcel and OCR specifications, asks you to use textual references, including quotations, to support and illustrate interpretations. A line you cannot place, or cannot quote accurately, does not do that. Lists do get revised. If you are checking the year you will sit, open the specification for your board rather than trusting a revision site’s memory of it. The links above are the documents this page was checked against.',
+        ],
+      },
+      {
+        heading: 'Use the copy you were taught',
+        paragraphs: [
+          'These hubs follow a named public-domain text, usually a Project Gutenberg ebook. Your school edition may differ in a comma, a spelling, or a line number. Learn the line from the copy you were taught, and keep the chapter, stave, or act and scene beside it. If a hub and your book disagree, trust the book your teacher is using. Treat the hub as a check that the line is really there.',
+          'If you want the bank to be the lines you underlined yourself, photograph the page after you have finished reading. BookQuotes can detect the page number on capture. You name your own markings, and a tag can be the theme you would search for later. Collections keep one book, or one question, together. The library stays on the phone. It does not import Kindle highlights, and it will not learn the line for you. The steps are in [how to save quotes from physical books](/guides/how-to-save-quotes-from-physical-books).',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'What should a GCSE English quote bank include?',
+        answer:
+          'A GCSE English quote bank should include a few accurate lines from the set texts your school chose, each one short enough to embed in a sentence, with the speaker and the place in the book. It is not every famous line from every novel on a board’s list.',
+      },
+      {
+        question: 'How many quotes should I learn for GCSE English?',
+        answer:
+          'There is no number in the AQA 8702, Edexcel 1ET0 or OCR J352 specifications. Assessment objective AO1 asks you to use textual references, including quotations, to support an interpretation. Learn fewer lines than a long list suggests, and know those well enough to write them with the book shut.',
+      },
+      {
+        question: 'Are A Christmas Carol, Jekyll and Hyde and Macbeth on every exam board?',
+        answer:
+          'No. Each is an option, not a text every student studies, and the lists are not identical. Macbeth is one of the Shakespeare choices on AQA 8702, Edexcel 1ET0 and OCR J352. A Christmas Carol and Strange Case of Dr Jekyll and Mr Hyde are among the 19th-century options on all three. Frankenstein is on the AQA and Edexcel novel lists, and it is not on the OCR J352 list. Your school picks. You study that pick.',
+      },
+      {
+        question: 'Do I need page numbers in a GCSE English quote bank?',
+        answer:
+          'No. Page numbers change with the edition, and these three specifications examine you without the book: AQA and Edexcel say closed book, and OCR says closed text. Learn the stave, the chapter, or the act and scene.',
+      },
+    ],
+  },
   {
     slug: 'how-to-save-quotes-from-physical-books',
     title: 'How to Save Quotes from Physical Books',
@@ -701,86 +793,92 @@ export const guides: Guide[] = [
   },
   {
     slug: 'book-quote-finder-iphone',
-    title: 'Find Quotes in Your Paper Books',
-    query: 'book quote finder',
+    title: 'How to Find a Quote in a Book, and the Page Number',
+    query: 'how to find a quote in a book',
     description:
-      'Turn marked passages from your own paper books into a library you can search by wording, book and page.',
+      'How to find a quote in a book, and the page number of that quote: Google Books, Gutenberg, the Internet Archive, an ebook, or your copy.',
     category: 'Book quote search',
-    readingTime: '6 min read',
+    readingTime: '8 min read',
     updated: '28 September 2026',
     publishedISO: '2026-09-13',
     updatedISO: '2026-09-28',
     related: [
       { href: '/guides/how-to-search-quotes-from-paper-books', label: 'How to search quotes from paper books' },
-      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
-      { href: '/guides/quote-reader-app-for-physical-books', label: 'Capture and search paper book quotes' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+      { href: '/quotes', label: 'Quotes checked against the original text' },
     ],
     intro:
-      'Looking for a half-remembered sentence across five physical paperbacks on your shelf usually ends in frustration. A book quote finder on your iPhone solves this by turning physical underlines, margin marks, and dog-eared pages into an indexed, searchable personal library without manual typing.',
+      'You find a quote in a book by searching a short run of the words in a full text, and you find the page number by reading it off the edition that search opened. A different printing will not match. If the only copy is the paperback you marked yourself, the search has to be a library you made from those pages.',
     relatedQueries: [
+      'how to find a quote in a book',
+      'how to find the page number of a quote',
+      'find a quote in a book',
+      'search inside google books',
       'book quote finder',
-      'book quote search',
-      'quote finder app iPhone',
-      'search quotes from paper books',
-      'quote reader app for physical books',
     ],
     sections: [
       {
-        heading: 'Why camera roll search fails for paper book quotes',
+        heading: 'Search inside the book on Google Books',
         paragraphs: [
-          'Most readers start by snapping photos of marked pages. Within a month, those snapshots sit buried between grocery receipts, family photos, and screenshots. Even with iOS visual text lookup, a raw photo rarely preserves the book title, author, exact publication page, or the reason you stopped to mark the line.',
-          'A proper book quote finder needs three parts working together: clear page capture, structured book identity, and instant text search across your saved passages. Without the book metadata attached at the moment of capture, you still end up thumbing through physical shelves trying to verify which edition held the thought.',
+          'Open the book on Google Books and use the box that searches inside that book, not the box that searches the whole catalogue. Type three or four words you are sure of. A whole sentence you might have misremembered will miss. A hit shows a snippet and, on many scans, a page number.',
+          'That number belongs to the edition Google photographed. If your paperback is a different year or a different publisher, treat it as a clue and check your own copy before you cite it. Many in-copyright books are snippet view, which shows up to three short snippets for each search, and some have no preview at all. If there is no search inside the book, Google does not have a text you can search. A blank result does not mean the line is missing from the novel.',
         ],
       },
       {
-        heading: 'Step 1: Attach the book identity with ISBN scanning',
+        heading: 'Public-domain books: Gutenberg and the Internet Archive',
         paragraphs: [
-          'Before or immediately after photographing a marked passage, identify the volume. Book cover photography is notoriously brittle because distinct printings share similar artwork or typography.',
-          'BookQuotes uses barcode ISBN scanning to query catalogue metadata directly, bringing in verified title and author records. For older paperbacks or private editions lacking barcodes, manual entry provides an accurate fallback. Keeping book records clean prevents duplicate entries and ensures every passage anchors to the exact work on your shelf.',
+          'When the book is out of copyright, two free copies are worth opening. [Project Gutenberg](https://www.gutenberg.org/) has a plain text and, for most books, an HTML ebook. Open the HTML and use find in page. You get the wording, and usually the chapter. Do not expect the page number of a modern paperback. A few transcriptions keep an old pagination in brackets. Most do not. Use Gutenberg to confirm the sentence, then use a scan if you need a page.',
+          'The [Internet Archive](https://archive.org/) holds scanned books. Search for the title, open the item, and search the text of that scan. A hit opens the viewer on that page. If the printed page number is in the photograph, you can read it. It is the number for that edition, not for every edition. In-copyright scans are often borrow-only. Public-domain books are the ones you can usually read straight through. The checked lines on this site, such as the [quotes index](/quotes), were taken from named Gutenberg texts for that reason: the wording can be compared with a file anyone can open.',
         ],
       },
       {
-        heading: 'Step 2: Capture the marked page with clean framing',
+        heading: 'Find in page, in an ebook or a PDF',
         paragraphs: [
-          'Good text extraction starts with basic physics. Lay the book flat or gently hold down the margin away from the text block. Angle your iPhone parallel to the paper surface to avoid keystoning, and seek indirect daylight or soft room lighting that does not bounce off glossy paper stocks.',
-          'Leave a small border around your pencil line or highlighter mark. Cropping too close to the words can cut off ascenders or drop punctuation marks that define the sentence.',
+          'In a browser, find in page is Ctrl+F on Windows and Linux, and Command+F on a Mac. In Apple Books, Kindle, Kobo or Google Play Books, use the search field in the app. Start with a short run of words. If nothing comes back, drop a word you are less sure of and try again. A name plus one unusual verb is often enough.',
+          'Reflowable ebooks often count locations rather than pages. A page number shows up when the publisher supplied one, and it matches one print edition, which may not be the paperback on your desk. A PDF of a scanned book is simpler if the scan has a text layer: find jumps to the page, and the number printed on the scan is the number in that edition. A scan with no text layer is only pictures, and find will not see the words.',
         ],
       },
       {
-        heading: 'Step 3: Review and correct the extracted quote',
+        heading: 'A library catalogue finds the copy',
         paragraphs: [
-          'No OCR engine or remote model should be trusted blindly with literary prose or philosophical argument. Footnote markers, curved margins, and dialogue dashes can easily confuse automated parsing.',
-          'BookQuotes treats extraction as an editable draft. You compare the highlighted detection directly against your captured page photo, trim stray words, fix punctuation, and verify page numbers before saving. Once confirmed, the text enters your searchable local library.',
+          'Use a catalogue when someone has handed you a page number. The number is useless until you know the edition. WorldCat shows which libraries hold which editions. Your local library, a university library or the British Library catalogue shows the edition it holds and the shelfmark or call number to ask for. Write down the year and the publisher before you walk over.',
+          'An ordinary catalogue does not search the sentences inside the book. It finds the copy. Once you have that copy, use the index, or one of the full-text searches above if a scan of the same edition exists. Matching the year matters more than matching the cover.',
         ],
       },
       {
-        heading: 'Step 4: Search the lines you saved',
+        heading: 'The paper book you marked yourself',
         paragraphs: [
-          'Search looks through the passage, the margin note, the book title and the author. It does not look through tag names or collection names. You can still filter the book list by a tag or a collection when you want that group on screen. A single remembered word is often enough, and the result shows the page number when the quote has one. [How to search quotes from paper books](/guides/how-to-search-quotes-from-paper-books) is the longer version of that habit.',
-          'The library stays on the device in the current release. Search works on a train with no connection.',
+          'None of those searches can see the pencil in your own copy. If the line is one you underlined, you need a library made from those pages. BookQuotes is that library, on iPhone and iPad. You photograph the marked page. On capture it can detect the page number. You still check the number against the print, because a number read from a photo is not guaranteed. An ISBN scan fills in the title and author from the barcode. If there is no barcode, you type them.',
+          'You name your own markings, so the underline or the star means what you decided it means. Collections and tags group lines after that: one book, or one question, kept together. Search looks through the passage, the margin note, the title and the author. It does not look through tag names or collection names. You can still filter the book list by a tag or a collection when you want that group on screen. The longer version of the search habit is [how to search quotes from paper books](/guides/how-to-search-quotes-from-paper-books).',
+          'The app does not search a book you have not captured, and it does not import Kindle highlights. There is no CSV export. When you want the notes on a computer, export writes Markdown, plain text, JSON, a Notion file or an Obsidian note. Notion is a Markdown file you import yourself, not a login to a Notion account. What each file contains is set out in [exporting to Obsidian and Notion](/guides/export-book-quotes-to-obsidian). The library stays on the device in this release, so the search still works on a train.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'How does an iPhone book quote finder work with paper books?',
+        question: 'How do I find a quote in a book?',
         answer:
-          'You photograph the marked page with your iPhone camera. The app extracts the underlined or highlighted text using on-device OCR or optional remote AI, lets you review and correct the transcription against the image, and stores the quote linked to its book title, author, and page number for keyword search.',
+          'Search a short run of the words in a full text of that book: inside Google Books, on Project Gutenberg, in an Internet Archive scan, or with find in page in an ebook. If the line is one you marked on paper, search the passages you saved from that copy. A catalogue will find the book on a shelf. It will not find the sentence.',
       },
       {
-        question: 'Can I search quotes offline without an internet connection?',
+        question: 'How do I find the page number of a quote?',
         answer:
-          'Yes. In BookQuotes, your library is stored locally on your iPhone or iPad. Once quotes are saved, full-text search across titles, authors, passages, and personal notes works completely offline.',
+          'Open the edition the number belongs to, and read the number printed on that page. Google Books and an Internet Archive scan show the page of the copy they photographed. Gutenberg usually gives you the chapter, not a page. Your own paperback will only match if it is the same printing.',
       },
       {
-        question: 'Does BookQuotes search the full text of books I have not read?',
+        question: 'Does Google Books show a page number for every book?',
         answer:
-          'No. BookQuotes is a personal quote finder for the books you own, read, and annotate. It indexes your own captured passages rather than offering a commercial database of entire books.',
+          'No. You can read the page number when the preview lets you open the page with the hit, as in full view or a limited preview. Snippet view shows up to three short snippets for a search, and a book with no preview shows none of the text. Any number you do get is for the edition Google scanned.',
       },
       {
-        question: 'Can I export my searchable quotes to my computer?',
+        question: 'How do I find a quote I underlined in a paper book?',
         answer:
-          'Yes. You can export your saved library to Markdown, plain text, JSON, Obsidian, or Notion whenever you want a desktop copy.',
+          'Photograph the page in BookQuotes, on iPhone or iPad, and search the passage, the margin note, the title or the author. The page number is the one saved with the quote, when capture detected it or you typed it. The app cannot search a book you have not captured, and it does not import Kindle highlights.',
+      },
+      {
+        question: 'Can I take those page numbers off the phone?',
+        answer:
+          'Yes. Export writes Markdown, plain text, JSON, a Notion Markdown file you import yourself, or an Obsidian note. There is no CSV. The page number is included when the quote has one and you leave that option on.',
       },
     ],
   },
@@ -798,7 +896,7 @@ export const guides: Guide[] = [
     related: [
       { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
       { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
-      { href: '/guides/book-quote-finder-iphone', label: 'Find quotes in your paper books' },
+      { href: '/guides/book-quote-finder-iphone', label: 'How to find a quote in a book' },
     ],
     intro:
       'A quote reader for paper books keeps the sentences you underline, and the notes in the margin, somewhere you can search later. The mark helps while the book is open. Months later the line is still on a shelf. Photograph the page, check the words the app read, and save the passage with the book and your own comment.',
@@ -881,7 +979,7 @@ export const guides: Guide[] = [
     publishedISO: '2026-09-13',
     updatedISO: '2026-09-28',
     related: [
-      { href: '/guides/book-quote-finder-iphone', label: 'Find quotes in your paper books' },
+      { href: '/guides/book-quote-finder-iphone', label: 'How to find a quote in a book' },
       { href: '/guides/organise-book-quotes-on-iphone', label: 'Organise book quotes on iPhone' },
       { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
     ],

@@ -9,10 +9,85 @@
   - https://bookquotes.uk/quotes/a-christmas-carol
   - https://bookquotes.uk/quotes/jekyll-and-hyde
   - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/quotes/pride-and-prejudice
+  - https://bookquotes.uk/quotes/jane-eyre
+  - https://bookquotes.uk/guides/gcse-english-quote-bank
   - https://bookquotes.uk/sitemap.xml
 - Search query or queries that prompted it: "Frankenstein quotes"; "Frankenstein quotes about ambition"
 - GSC numbers at the time: new page, no GSC data
-- What changed: Published a checked quote hub for Frankenstein (38 lines from Project Gutenberg eBook 84, the 1831 text: four letters and twenty-four chapters). The page says which edition the file is, and that the 1818 text differs. Each line has its speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol, Jekyll and Hyde and Macbeth hubs.
+- What changed: Published a checked quote hub for Frankenstein (38 lines from Project Gutenberg eBook 84, the 1831 text: four letters and twenty-four chapters). The edition note is checked against the file: 1831 markers such as Elizabeth as a Milanese nobleman's daughter, no volume divisions, and neither the 1831 introduction nor the 1818 preface. It compares these with the 1818 text (Project Gutenberg eBook 41445). Board statements follow the specifications: AQA 8702 lists Frankenstein (1831), Edexcel 1ET0 prescribes no edition, and OCR J352 does not set it. Each line has its speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes, the sitemap and the GCSE quote bank list, and cross-linked it with the Christmas Carol, Jekyll and Hyde, Macbeth, Pride and Prejudice and Jane Eyre hubs.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: Jane Eyre quotes
+- Date merged: 
+- PR: #27 https://github.com/Al2800/Book-Viewer/pull/27
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/jane-eyre
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/quotes/pride-and-prejudice
+  - https://bookquotes.uk/guides/gcse-english-quote-bank
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "Jane Eyre quotes"; "key quotes in Jane Eyre"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a checked quote hub for Jane Eyre (40 lines from Project Gutenberg eBook 1260, the 1897 Service and Paton text). The page says which printing the file is, and that the preface is the 1848 second-edition preface. Each line has its chapter, speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol, Jekyll and Hyde, Macbeth and Pride and Prejudice hubs. The page now names the GCSE specifications that set the novel (AQA 8702, Edexcel 1ET0, OCR J352), and the GCSE quote bank list accepts a "GCSE and A level" index label so Jane Eyre appears there.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: Pride and Prejudice quotes
+- Date merged: 
+- PR: #25 https://github.com/Al2800/Book-Viewer/pull/25
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/pride-and-prejudice
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes/macbeth
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "Pride and Prejudice quotes"; "key quotes in Pride and Prejudice"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a checked quote hub for Pride and Prejudice (38 lines from Project Gutenberg eBook 1342, the 1894 George Allen text). Chapters are numbered straight through, with the 1813 volume numbers in each heading. Each line has its speaker, a context note and a short essay note. Character and theme filters index the bank. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol, Jekyll and Hyde and Macbeth hubs.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: quotes about libraries
+- Date merged: 
+- PR: #26 https://github.com/Al2800/Book-Viewer/pull/26
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/about-libraries
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "quotes about libraries"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Published a quote hub of 20 lines about libraries, on the same pattern as quotes about reading: grouped by theme, with the work and chapter under each line, an author filter, and a section for misattributions. Every line was checked against a named public-domain text, usually a Project Gutenberg ebook. The misattributions are the Cicero garden-and-library wording (checked against the Perseus Latin and Shuckburgh), the T. S. Eliot line Quote Investigator does not find in Eliot, and the “important” versus “impotent” unread-library wording from Quote Investigator. Linked from the quotes index, the homepage, and the sitemap.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: find a quote and its page number
+- Date merged: 
+- PR: #24 https://github.com/Al2800/Book-Viewer/pull/24
+- Page URL(s) changed:
+  - https://bookquotes.uk/guides/book-quote-finder-iphone
+  - https://bookquotes.uk/guides
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "how to find a quote in a book", "how to find the page number of a quote"
+- GSC numbers at the time: GSC: about 15 impressions site-wide in 28 days, page-level not pulled
+- What changed: Reworked the existing book-quote-finder guide, keeping the URL, so the title, meta description, H1 and first sentence answer how to find a quote and its page number. The page now covers Google Books search inside, Project Gutenberg and Internet Archive full-text search, find-in-page in ebooks, what a library catalogue can do, and BookQuotes for a paper copy you marked. App claims match the current exporters: Markdown, plain text, JSON, Notion as a Markdown file you import, and Obsidian. No CSV and no Kindle import. Search is described as passage, margin note, title and author.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: GCSE English quote bank
+- Date merged: 
+- PR: #23 https://github.com/Al2800/Book-Viewer/pull/23
+- Page URL(s) changed:
+  - https://bookquotes.uk/guides/gcse-english-quote-bank
+  - https://bookquotes.uk/guides
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "gcse english quote bank", "gcse english literature quotes", "how to learn quotes for gcse english"
+- GSC numbers at the time: new page, no GSC data
+- What changed: Added a GCSE English literature quote-bank guide. The list of books is generated from published literature hubs in the quote data, so a new hub appears on its own and theme hubs such as quotes about reading stay off the list. The page explains short embedded lines, grouping by theme, and testing yourself with the book shut. Exam-board names are limited to what AQA 8702, Edexcel 1ET0 and OCR J352 print in their specifications, with links. Linked from /guides, /quotes and the homepage guides preview.
 - Result (check ~4 weeks after): 
 
 ## 2026-09-28: copy accuracy
