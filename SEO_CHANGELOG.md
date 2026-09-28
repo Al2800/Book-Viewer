@@ -22,6 +22,18 @@
   - https://bookquotes.uk/journal
   - https://bookquotes.uk/guides/digital-commonplace-book
   - https://bookquotes.uk/journal/build-a-digital-commonplace-book
+  - https://bookquotes.uk/guides/how-to-save-quotes-from-physical-books
+  - https://bookquotes.uk/guides/scan-underlined-book-pages
+  - https://bookquotes.uk/guides/how-to-digitise-book-notes
+  - https://bookquotes.uk/guides/organise-book-quotes-on-iphone
+  - https://bookquotes.uk/guides/private-book-notes-app-iphone
+  - https://bookquotes.uk/guides/book-quote-finder-iphone
+  - https://bookquotes.uk/guides/quote-reader-app-for-physical-books
+  - https://bookquotes.uk/guides/how-to-search-quotes-from-paper-books
+  - https://bookquotes.uk/guides/book-quotes-vs-kindle-highlights
+  - https://bookquotes.uk/guides/export-book-quotes-to-obsidian
+  - https://bookquotes.uk/journal/what-to-do-with-book-highlights
+  - https://bookquotes.uk/journal/ai-extraction-and-reader-control
   - https://bookquotes.uk/sitemap.xml
   - https://bookquotes.uk/support
   - https://bookquotes.uk/privacy

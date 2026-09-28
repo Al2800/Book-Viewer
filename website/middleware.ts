@@ -2,6 +2,8 @@ import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
 
 const canonicalHost = 'bookquotes.uk'
+// Kept here rather than in next.config.js redirects(): vinext, which builds the Worker, ignores
+// statusCode there and answers 307, and config redirects run before this middleware.
 const commonplaceRedirect = '/journal/build-a-digital-commonplace-book'
 
 export function middleware(request: NextRequest) {
