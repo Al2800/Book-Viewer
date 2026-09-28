@@ -36,7 +36,7 @@ struct PremiumFeatureList: View {
             PremiumFeatureRow(
                 icon: "square.and.arrow.up",
                 title: "Export Options",
-                description: "Export quotes to Markdown, plain text, JSON, Notion or Obsidian"
+                description: "Export quotes to Markdown, CSV, or JSON"
             )
 
             PremiumFeatureRow(
@@ -96,7 +96,7 @@ struct CompactFeatureList: View {
             HStack(spacing: Spacing.sm) {
                 FeatureBadge(icon: "wand.and.stars", text: "AI Extraction")
                 FeatureBadge(icon: "infinity", text: "Unlimited")
-                FeatureBadge(icon: "square.and.arrow.up", text: "Export")
+                FeatureBadge(icon: "icloud", text: "Sync")
                 FeatureBadge(icon: "magnifyingglass", text: "Search")
             }
             .padding(.horizontal, Spacing.md)

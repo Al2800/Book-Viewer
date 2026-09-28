@@ -14,7 +14,7 @@
   - https://bookquotes.uk/journal/what-to-do-with-book-highlights
 - Search query or queries that prompted it: reviewer copy check on existing guides and the highlights journal (no new query)
 - GSC numbers at the time: whole site over 28 days: 0 clicks, 15 impressions, average position 69.1
-- What changed: Corrected export claims against the iOS exporters. The formats are Markdown, plain text, JSON, Notion and Obsidian, with no CSV, and each format now describes only the fields it writes. Removed the marketing lines a reviewer flagged, including the homepage "in seconds" claims. Reworded the guide FAQ so the app stays a personal library while /quotes can hold checked public-domain lines. Shortened the highlights journal meta description to 153 characters. The in-app premium list no longer says CSV.
+- What changed: Corrected export claims against the iOS exporters. The formats are Markdown, plain text, JSON, Notion and Obsidian, with no CSV, and each format now describes only the fields it writes. Removed the marketing lines a reviewer flagged, including the homepage "in seconds" claims. Reworded the guide FAQ so the app stays a personal library while /quotes can hold checked public-domain lines. Shortened the highlights journal meta description to 153 characters. The iOS premium feature list was left out of this PR (app changes are out of scope for website copy).
 - Result (check ~4 weeks after): 
 
 ## 2026-09-28: A Christmas Carol quotes
