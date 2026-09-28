@@ -701,86 +701,92 @@ export const guides: Guide[] = [
   },
   {
     slug: 'book-quote-finder-iphone',
-    title: 'Find Quotes in Your Paper Books',
-    query: 'book quote finder',
+    title: 'How to Find a Quote in a Book, and the Page Number',
+    query: 'how to find a quote in a book',
     description:
-      'Turn marked passages from your own paper books into a library you can search by wording, book and page.',
+      'How to find a quote in a book, and the page number of that quote: Google Books, Gutenberg, the Internet Archive, an ebook, or your copy.',
     category: 'Book quote search',
-    readingTime: '6 min read',
+    readingTime: '8 min read',
     updated: '28 September 2026',
     publishedISO: '2026-09-13',
     updatedISO: '2026-09-28',
     related: [
       { href: '/guides/how-to-search-quotes-from-paper-books', label: 'How to search quotes from paper books' },
-      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
-      { href: '/guides/quote-reader-app-for-physical-books', label: 'Capture and search paper book quotes' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+      { href: '/quotes', label: 'Quotes checked against the original text' },
     ],
     intro:
-      'Looking for a half-remembered sentence across five physical paperbacks on your shelf usually ends in frustration. A book quote finder on your iPhone solves this by turning physical underlines, margin marks, and dog-eared pages into an indexed, searchable personal library without manual typing.',
+      'You find a quote in a book by searching a short run of the words in a full text, and you find the page number by reading it off the edition that search opened. A different printing will not match. If the only copy is the paperback you marked yourself, the search has to be a library you made from those pages.',
     relatedQueries: [
+      'how to find a quote in a book',
+      'how to find the page number of a quote',
+      'find a quote in a book',
+      'search inside google books',
       'book quote finder',
-      'book quote search',
-      'quote finder app iPhone',
-      'search quotes from paper books',
-      'quote reader app for physical books',
     ],
     sections: [
       {
-        heading: 'Why camera roll search fails for paper book quotes',
+        heading: 'Search inside the book on Google Books',
         paragraphs: [
-          'Most readers start by snapping photos of marked pages. Within a month, those snapshots sit buried between grocery receipts, family photos, and screenshots. Even with iOS visual text lookup, a raw photo rarely preserves the book title, author, exact publication page, or the reason you stopped to mark the line.',
-          'A proper book quote finder needs three parts working together: clear page capture, structured book identity, and instant text search across your saved passages. Without the book metadata attached at the moment of capture, you still end up thumbing through physical shelves trying to verify which edition held the thought.',
+          'Open the book on Google Books and use the box that searches inside that book, not the box that searches the whole catalogue. Type three or four words you are sure of. A whole sentence you might have misremembered will miss. A hit shows a snippet and, on many scans, a page number.',
+          'That number belongs to the edition Google photographed. If your paperback is a different year or a different publisher, treat it as a clue and check your own copy before you cite it. Plenty of books are snippet view, or have no preview. If there is no search inside the book, Google does not have a text you can search. A blank result does not mean the line is missing from the novel.',
         ],
       },
       {
-        heading: 'Step 1: Attach the book identity with ISBN scanning',
+        heading: 'Public-domain books: Gutenberg and the Internet Archive',
         paragraphs: [
-          'Before or immediately after photographing a marked passage, identify the volume. Book cover photography is notoriously brittle because distinct printings share similar artwork or typography.',
-          'BookQuotes uses barcode ISBN scanning to query catalogue metadata directly, bringing in verified title and author records. For older paperbacks or private editions lacking barcodes, manual entry provides an accurate fallback. Keeping book records clean prevents duplicate entries and ensures every passage anchors to the exact work on your shelf.',
+          'When the book is out of copyright, two free copies are worth opening. [Project Gutenberg](https://www.gutenberg.org/) has a plain text and, for most books, an HTML ebook. Open the HTML and use find in page. You get the wording, and usually the chapter. Do not expect the page number of a modern paperback. A few transcriptions keep an old pagination in brackets. Most do not. Use Gutenberg to confirm the sentence, then use a scan if you need a page.',
+          'The [Internet Archive](https://archive.org/) holds scanned books. Search for the title, open the item, and search the text of that scan. A hit opens the viewer on that page. If the printed page number is in the photograph, you can read it. It is the number for that edition, not for every edition. In-copyright scans are often borrow-only. Public-domain books are the ones you can usually read straight through. The checked lines on this site, such as the [quotes index](/quotes), were taken from named Gutenberg texts for that reason: the wording can be compared with a file anyone can open.',
         ],
       },
       {
-        heading: 'Step 2: Capture the marked page with clean framing',
+        heading: 'Find in page, in an ebook or a PDF',
         paragraphs: [
-          'Good text extraction starts with basic physics. Lay the book flat or gently hold down the margin away from the text block. Angle your iPhone parallel to the paper surface to avoid keystoning, and seek indirect daylight or soft room lighting that does not bounce off glossy paper stocks.',
-          'Leave a small border around your pencil line or highlighter mark. Cropping too close to the words can cut off ascenders or drop punctuation marks that define the sentence.',
+          'In a browser, find in page is Ctrl+F on Windows and Linux, and Command+F on a Mac. In Apple Books, Kindle, Kobo or Google Play Books, use the search field in the app. Start with a short run of words. If nothing comes back, drop a word you are less sure of and try again. A name plus one unusual verb is often enough.',
+          'Reflowable ebooks often count locations rather than pages. A page number shows up when the publisher supplied one, and it matches one print edition, which may not be the paperback on your desk. A PDF of a scanned book is simpler: find jumps to the page, and the number on the scan is the number in that file.',
         ],
       },
       {
-        heading: 'Step 3: Review and correct the extracted quote',
+        heading: 'A library catalogue finds the copy',
         paragraphs: [
-          'No OCR engine or remote model should be trusted blindly with literary prose or philosophical argument. Footnote markers, curved margins, and dialogue dashes can easily confuse automated parsing.',
-          'BookQuotes treats extraction as an editable draft. You compare the highlighted detection directly against your captured page photo, trim stray words, fix punctuation, and verify page numbers before saving. Once confirmed, the text enters your searchable local library.',
+          'Use a catalogue when someone has handed you a page number. The number is useless until you know the edition. Your local library, a university library, the British Library or WorldCat will tell you which printing a library holds, and where it sits on the shelf. Write down the year and the publisher before you walk over.',
+          'An ordinary catalogue does not search the sentences inside the book. It finds the copy. Once you have that copy, use the index, or one of the full-text searches above if a scan of the same edition exists. Matching the year matters more than matching the cover.',
         ],
       },
       {
-        heading: 'Step 4: Search the lines you saved',
+        heading: 'The paper book you marked yourself',
         paragraphs: [
-          'Search looks through the passage, the margin note, the book title and the author. It does not look through tag names or collection names. You can still filter the book list by a tag or a collection when you want that group on screen. A single remembered word is often enough, and the result shows the page number when the quote has one. [How to search quotes from paper books](/guides/how-to-search-quotes-from-paper-books) is the longer version of that habit.',
-          'The library stays on the device in the current release. Search works on a train with no connection.',
+          'None of those searches can see the pencil in your own copy. If the line is one you underlined, you need a library made from those pages. BookQuotes is that library, on iPhone and iPad. You photograph the marked page. On capture it can detect the page number. You still check the number against the print, because a number read from a photo is not guaranteed. An ISBN scan fills in the title and author from the barcode. If there is no barcode, you type them.',
+          'You name your own markings, so the underline or the star means what you decided it means. Collections and tags group lines after that: one book, or one question, kept together. Search looks through the passage, the margin note, the title and the author. It does not look through tag names or collection names. You can still filter the book list by a tag or a collection when you want that group on screen. The longer version of the search habit is [how to search quotes from paper books](/guides/how-to-search-quotes-from-paper-books).',
+          'The app does not search a book you have not captured, and it does not import Kindle highlights. There is no CSV export. When you want the notes on a computer, export writes Markdown, plain text, JSON, a Notion file or an Obsidian note. Notion is a Markdown file you import yourself, not a login to a Notion account. What each file contains is set out in [exporting to Obsidian and Notion](/guides/export-book-quotes-to-obsidian). The library stays on the device in this release, so the search still works on a train.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'How does an iPhone book quote finder work with paper books?',
+        question: 'How do I find a quote in a book?',
         answer:
-          'You photograph the marked page with your iPhone camera. The app extracts the underlined or highlighted text using on-device OCR or optional remote AI, lets you review and correct the transcription against the image, and stores the quote linked to its book title, author, and page number for keyword search.',
+          'Search a short run of the words in a full text of that book: inside Google Books, on Project Gutenberg, in an Internet Archive scan, or with find in page in an ebook. If the line is one you marked on paper, search the passages you saved from that copy. A catalogue will find the book on a shelf. It will not find the sentence.',
       },
       {
-        question: 'Can I search quotes offline without an internet connection?',
+        question: 'How do I find the page number of a quote?',
         answer:
-          'Yes. In BookQuotes, your library is stored locally on your iPhone or iPad. Once quotes are saved, full-text search across titles, authors, passages, and personal notes works completely offline.',
+          'Open the edition the number belongs to, and read the number printed on that page. Google Books and an Internet Archive scan show the page of the copy they photographed. Gutenberg usually gives you the chapter, not a page. Your own paperback will only match if it is the same printing.',
       },
       {
-        question: 'Does BookQuotes search the full text of books I have not read?',
+        question: 'Does Google Books show a page number for every book?',
         answer:
-          'No. BookQuotes is a personal quote finder for the books you own, read, and annotate. It indexes your own captured passages rather than offering a commercial database of entire books.',
+          'No. Search inside the book shows a page number when that scan has one and the preview lets you see the hit. Snippet view, and books with no preview, will not. The number is for the edition Google scanned.',
       },
       {
-        question: 'Can I export my searchable quotes to my computer?',
+        question: 'How do I find a quote I underlined in a paper book?',
         answer:
-          'Yes. You can export your saved library to Markdown, plain text, JSON, Obsidian, or Notion whenever you want a desktop copy.',
+          'Photograph the page in BookQuotes, on iPhone or iPad, and search the passage, the margin note, the title or the author. The page number is the one saved with the quote, when capture detected it or you typed it. The app cannot search a book you have not captured, and it does not import Kindle highlights.',
+      },
+      {
+        question: 'Can I take those page numbers off the phone?',
+        answer:
+          'Yes. Export writes Markdown, plain text, JSON, a Notion Markdown file you import yourself, or an Obsidian note. There is no CSV. The page number is included when the quote has one and you leave that option on.',
       },
     ],
   },
@@ -798,7 +804,7 @@ export const guides: Guide[] = [
     related: [
       { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
       { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
-      { href: '/guides/book-quote-finder-iphone', label: 'Find quotes in your paper books' },
+      { href: '/guides/book-quote-finder-iphone', label: 'How to find a quote in a book' },
     ],
     intro:
       'A quote reader for paper books keeps the sentences you underline, and the notes in the margin, somewhere you can search later. The mark helps while the book is open. Months later the line is still on a shelf. Photograph the page, check the words the app read, and save the passage with the book and your own comment.',
@@ -881,7 +887,7 @@ export const guides: Guide[] = [
     publishedISO: '2026-09-13',
     updatedISO: '2026-09-28',
     related: [
-      { href: '/guides/book-quote-finder-iphone', label: 'Find quotes in your paper books' },
+      { href: '/guides/book-quote-finder-iphone', label: 'How to find a quote in a book' },
       { href: '/guides/organise-book-quotes-on-iphone', label: 'Organise book quotes on iPhone' },
       { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
     ],
