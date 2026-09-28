@@ -2,7 +2,7 @@
 
 ## 2026-09-28: A Christmas Carol quotes
 - Date merged: 
-- PR: 
+- PR: #17 https://github.com/Al2800/Book-Viewer/pull/17
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes
   - https://bookquotes.uk/quotes/a-christmas-carol
