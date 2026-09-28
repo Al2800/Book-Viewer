@@ -7,7 +7,7 @@ import { quoteHubs } from '@/lib/quotes'
 
 const title = 'Quotes checked against the original text | BookQuotes'
 const description =
-  'Public-domain lines, checked against a named text before they are published. The first set is A Christmas Carol, for GCSE.'
+  'Public-domain lines for GCSE set texts, checked against a named text before they are published.'
 
 export const metadata: Metadata = {
   title,
@@ -32,7 +32,7 @@ export default function QuotesPage() {
           <p className="font-ui text-sm text-ink-medium mb-4">Quotes</p>
           <h1 className="mb-5">Quotes checked against the original text</h1>
           <p className="text-xl text-ink-medium max-w-2xl">
-            Public-domain books, with the lines a student or a reader actually needs. Every quotation is checked against a named text. A line is left out if it only sounds familiar.
+            Public-domain set texts, with the lines a student actually needs. Every quotation is checked against a named text. A line is left out if it only sounds familiar.
           </p>
         </header>
 
