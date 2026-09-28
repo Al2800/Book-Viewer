@@ -2,7 +2,7 @@
 
 ## 2026-09-28: annotation guides
 - Date merged: 
-- PR: 
+- PR: #20 https://github.com/Al2800/Book-Viewer/pull/20
 - Page URL(s) changed:
   - https://bookquotes.uk/guides/book-annotation-key
   - https://bookquotes.uk/guides/how-to-annotate-a-book-without-writing-in-it
