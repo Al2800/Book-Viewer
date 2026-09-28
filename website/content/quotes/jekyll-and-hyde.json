@@ -1,0 +1,561 @@
+{
+  "slug": "jekyll-and-hyde",
+  "title": "Jekyll and Hyde quotes by chapter, character and theme",
+  "description": "Key Jekyll and Hyde quotes for GCSE, checked word for word against Stevenson's text, with the chapter, speaker, context and a short note for essays.",
+  "metaDescription": "Thirty-nine Jekyll and Hyde quotes for GCSE, checked against Stevenson word for word. Each line has its chapter, speaker, context and a short essay note.",
+  "lead": "These are key Jekyll and Hyde quotes for GCSE English, arranged by chapter, character and theme, and checked word for word against Stevenson's text.",
+  "arrangement": "Each one gives the chapter, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list. The quotations stay in chapter order underneath, so you can still read the novella through.",
+  "sourceNote": "The wording is the Project Gutenberg text of Strange Case of Dr Jekyll and Mr Hyde, eBook 43. Where a word is hyphenated, as in down-right, that hyphen is in the text. Page numbers are left out because they change with the edition. The ten chapters do not.",
+  "publishedISO": "2026-09-28",
+  "updatedISO": "2026-09-28",
+  "sourceName": "Strange Case of Dr Jekyll and Mr Hyde, Project Gutenberg eBook 43",
+  "sourceUrl": "https://www.gutenberg.org/ebooks/43",
+  "filterLabel": "Chapter",
+  "allFilterLabel": "All chapters",
+  "sectionKey": "chapter",
+  "sections": [
+    {
+      "number": 1,
+      "label": "Chapter 1: Story of the Door",
+      "short": "Chapter 1"
+    },
+    {
+      "number": 2,
+      "label": "Chapter 2: Search for Mr. Hyde",
+      "short": "Chapter 2"
+    },
+    {
+      "number": 3,
+      "label": "Chapter 3: Dr. Jekyll Was Quite at Ease",
+      "short": "Chapter 3"
+    },
+    {
+      "number": 4,
+      "label": "Chapter 4: The Carew Murder Case",
+      "short": "Chapter 4"
+    },
+    {
+      "number": 5,
+      "label": "Chapter 5: Incident of the Letter",
+      "short": "Chapter 5"
+    },
+    {
+      "number": 6,
+      "label": "Chapter 6: Incident of Dr. Lanyon",
+      "short": "Chapter 6"
+    },
+    {
+      "number": 7,
+      "label": "Chapter 7: Incident at the Window",
+      "short": "Chapter 7"
+    },
+    {
+      "number": 8,
+      "label": "Chapter 8: The Last Night",
+      "short": "Chapter 8"
+    },
+    {
+      "number": 9,
+      "label": "Chapter 9: Dr. Lanyon's Narrative",
+      "short": "Chapter 9"
+    },
+    {
+      "number": 10,
+      "label": "Chapter 10: Henry Jekyll's Full Statement of the Case",
+      "short": "Chapter 10"
+    }
+  ],
+  "appNote": "Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the chapter with the sentence. Add a tag only when you would reach for it in a paragraph: duality, secrecy, violence.",
+  "faqs": [
+    {
+      "question": "Which Jekyll and Hyde quotes are worth learning for a duality essay?",
+      "answer": "There is no official list. A useful set runs through the book rather than sitting in Chapter 10 alone. Start with Enfield unable to describe Hyde, and Utterson on \"Satan's signature\". Add Mr. Guest on the two hands, Poole saying the masked figure was never Dr. Jekyll, and then Jekyll himself: \"man is not truly one, but truly two\", the loss of his \"better self\", and the last sentence of the confession. Learn the chapter as well as the words."
+    },
+    {
+      "question": "How many quotes should I learn for GCSE English?",
+      "answer": "The mark scheme does not publish a number. Learn fewer lines than you are tempted to, and know them well enough to place them in the right chapter. A quotation you cannot find in the story will not help you. The lines on this page are a bank to choose from, not a list to memorise in full."
+    },
+    {
+      "question": "Which famous Jekyll and Hyde lines are easy to misremember?",
+      "answer": "In this text the men are \"downgoing\", one word, and Enfield says \"down-right detestable\", with a hyphen. Jekyll burns the envelope, not the letter, \"before I thought what I was about\". \"If he be Mr. Hyde, I shall be Mr. Seek\" is a thought, reported by the narrator, not a speech to Hyde. Check any line you learned from a revision card against the sentence around it."
+    },
+    {
+      "question": "Which quotes fit secrecy, violence and science?",
+      "answer": "Secrecy: the door with no bell, the burned letter, \"my own dark way\", and the sealed confession. Violence: the child trampled \"calmly\", the Carew murder, and \"My devil had been long caged, he came out roaring.\" Science: Lanyon on \"unscientific balderdash\", his death-warrant of a face, and \"The drug had no discriminating action\". The clearer paragraphs use one early line and one from the statement, so the essay shows how the idea changes."
+    },
+    {
+      "question": "Why not revise only from Henry Jekyll's statement?",
+      "answer": "Chapter 10 explains the double life, and it is Jekyll explaining himself. The earlier chapters show what other people can see: Enfield, Utterson, Guest, Lanyon, Poole. An answer that uses only the confession misses the point that the novella hides him for nine chapters. Take one outside view and one sentence from the statement."
+    },
+    {
+      "question": "What if my school edition looks slightly different?",
+      "answer": "Editions differ in punctuation, and some print \"downright\" as one word. Check the line against the copy you will have in the exam, and keep the chapter rather than a page number. This page follows the Project Gutenberg text, eBook 43. Page numbers move from edition to edition. The ten chapter titles do not."
+    }
+  ],
+  "quotes": [
+    {
+      "id": "c1-cain",
+      "text": "“I incline to Cain’s heresy,” he used to say quaintly: “I let my brother go to the devil in his own way.”",
+      "speaker": "Gabriel Utterson",
+      "themes": [
+        "secrecy",
+        "reputation"
+      ],
+      "context": "The narrator is introducing Utterson, before any of the Hyde story has been told. The two sentences are a habit of speech, not a line from one conversation.",
+      "analysis": "Cain refuses to be his brother's keeper, and Utterson turns that into a habit of not asking. A secrecy paragraph can start here, then show the cost when the man who will not pry is the last to understand his friend.",
+      "chapter": 1
+    },
+    {
+      "id": "c1-downgoing",
+      "text": "In this character, it was frequently his fortune to be the last reputable acquaintance and the last good influence in the lives of downgoing men.",
+      "speaker": "Narrator",
+      "themes": [
+        "reputation",
+        "friendship"
+      ],
+      "context": "This follows straight on from Utterson's remark about Cain. It is the narrator's summary of the lawyer's role among his friends.",
+      "analysis": "The word in this text is \"downgoing\", one word, not \"down-going\". Utterson is respectable company for men who are slipping, which is why Jekyll trusts him and why he is slow to accuse.",
+      "chapter": 1
+    },
+    {
+      "id": "c1-door",
+      "text": "The door, which was equipped with neither bell nor knocker, was blistered and distained.",
+      "speaker": "Narrator",
+      "themes": [
+        "secrecy",
+        "reputation"
+      ],
+      "context": "Enfield has walked Utterson to the entrance Hyde used, in a quiet by-street. The rest of the building is blank.",
+      "analysis": "A door with no bell does not expect visitors, and the respectable square sits just round the corner, so one man can keep a public face and a private entrance. The chapter title is the clue: the novella begins as a story about a door.",
+      "chapter": 1
+    },
+    {
+      "id": "c1-trampled",
+      "text": "the man trampled calmly over the child’s body and left her screaming on the ground.",
+      "speaker": "Richard Enfield",
+      "themes": [
+        "violence"
+      ],
+      "context": "Enfield is telling Utterson about a night walk. The line has no capital because it sits in the middle of his sentence.",
+      "analysis": "\"Calmly\" does more work than \"trampled\": Hyde is not in a rage, and he treats the child as something in the way. Set it beside the Carew murder and the violence looks like a habit, not one loss of control.",
+      "chapter": 1
+    },
+    {
+      "id": "c1-juggernaut",
+      "text": "It wasn’t like a man; it was like some damned Juggernaut.",
+      "speaker": "Richard Enfield",
+      "themes": [
+        "violence",
+        "good and evil"
+      ],
+      "context": "Enfield has just said that hearing the story sounds like nothing. Seeing it, he says, was hellish.",
+      "analysis": "Enfield reaches for a machine that rolls on and does not notice what it crushes, rather than a man with a motive. That helps if you are arguing that Hyde has no argument with himself.",
+      "chapter": 1
+    },
+    {
+      "id": "c1-describe",
+      "text": "He is not easy to describe. There is something wrong with his appearance; something displeasing, something down-right detestable.",
+      "speaker": "Richard Enfield",
+      "themes": [
+        "duality",
+        "good and evil"
+      ],
+      "context": "Utterson has asked what sort of man Hyde is to look at. Enfield cannot settle on a feature.",
+      "analysis": "In this text the word is \"down-right\", with a hyphen, so do not tidy it unless your exam copy does. The disgust arrives before any feature you could name, which is why the line suits evil that cannot be filed under a type.",
+      "chapter": 1
+    },
+    {
+      "id": "c2-seek",
+      "text": "“If he be Mr. Hyde,” he had thought, “I shall be Mr. Seek.”",
+      "speaker": "Gabriel Utterson",
+      "themes": [
+        "curiosity",
+        "secrecy"
+      ],
+      "context": "Utterson has decided to wait by the door until Hyde appears. The narrator is reporting the thought, not a speech made to anyone else.",
+      "analysis": "The pun is a little pleased with itself, and it breaks Utterson's own rule about not prying. Curiosity in this book pulls the bystander into the secret.",
+      "chapter": 2
+    },
+    {
+      "id": "c2-human",
+      "text": "God bless me, the man seems hardly human! Something troglodytic, shall we say?",
+      "speaker": "Gabriel Utterson",
+      "themes": [
+        "duality",
+        "good and evil"
+      ],
+      "context": "Hyde has just gone into the house and left Utterson at the door. The lawyer stands there, then walks slowly up the street, trying to explain his own disgust to himself.",
+      "analysis": "\"Troglodytic\" drags Hyde back towards a cave-dweller, and Utterson still cannot name a feature. Quote the hesitation in \"shall we say?\" as well as the insult.",
+      "chapter": 2
+    },
+    {
+      "id": "c2-satan",
+      "text": "if ever I read Satan’s signature upon a face, it is on that of your new friend.",
+      "speaker": "Gabriel Utterson",
+      "themes": [
+        "good and evil",
+        "reputation"
+      ],
+      "context": "This is the end of the same reflection, addressed to the absent Jekyll, and it has no capital because it continues his sentence.",
+      "analysis": "A signature suits a lawyer, and it is also the devil's name on a body. He already calls Hyde Jekyll's \"friend\", so the doctor and the hated face are tied together before anyone sees the laboratory.",
+      "chapter": 2
+    },
+    {
+      "id": "c2-dwarfish",
+      "text": "Mr. Hyde was pale and dwarfish, he gave an impression of deformity without any nameable malformation",
+      "speaker": "Narrator",
+      "themes": [
+        "duality",
+        "violence"
+      ],
+      "context": "The narrator gathers up Utterson's impression just after the meeting at the door. The clause has no full stop in the text because the sentence runs on into Hyde's voice.",
+      "analysis": "\"Without any nameable malformation\" is the phrase to press: Hyde looks unfinished rather than injured. Pair it with Enfield in Chapter 1, two careful men failing to describe him in the same way.",
+      "chapter": 2
+    },
+    {
+      "id": "c2-wrong",
+      "text": "He began to go wrong, wrong in mind; and though of course I continue to take an interest in him for old sake’s sake, as they say, I see and I have seen devilish little of the man.",
+      "speaker": "Hastie Lanyon",
+      "themes": [
+        "friendship",
+        "science"
+      ],
+      "context": "Utterson has gone to Lanyon to ask about Hyde, and Lanyon would rather talk about how Jekyll has changed.",
+      "analysis": "He repeats \"wrong\", retreats into the stock phrase \"old sake's sake\", and then lets \"devilish\" slip out. The friendship is already a form of words, with the novella's religious language leaking into a casual remark.",
+      "chapter": 2
+    },
+    {
+      "id": "c2-balderdash",
+      "text": "Such unscientific balderdash,” added the doctor, flushing suddenly purple, “would have estranged Damon and Pythias.”",
+      "speaker": "Hastie Lanyon",
+      "themes": [
+        "science",
+        "friendship"
+      ],
+      "context": "Lanyon has just said he sees little of Jekyll, and the temper flares when he remembers the research. A quotation mark closes after \"balderdash\" because the narrator steps in for the flush, then the speech opens again.",
+      "analysis": "Damon and Pythias are the old example of friends who would die for each other, and Lanyon means that Jekyll's ideas could end even that loyalty. \"Unscientific\" is his whole standard: what Jekyll calls discovery, Lanyon calls nonsense.",
+      "chapter": 2
+    },
+    {
+      "id": "c3-blackness",
+      "text": "The large handsome face of Dr. Jekyll grew pale to the very lips, and there came a blackness about his eyes.",
+      "speaker": "Narrator",
+      "themes": [
+        "repression",
+        "secrecy"
+      ],
+      "context": "Utterson has raised the subject of Hyde during a pleasant evening. Jekyll stops him, and the narrator records the change in his face.",
+      "analysis": "He is called handsome in the same sentence that turns him pale, so both faces are available at once. \"Blackness about his eyes\" is not a transformation yet: it is the body giving away a subject he has refused to discuss.",
+      "chapter": 3
+    },
+    {
+      "id": "c3-rid",
+      "text": "the moment I choose, I can be rid of Mr. Hyde.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "duality",
+        "secrecy"
+      ],
+      "context": "Jekyll is trying to calm Utterson after the quarrel about Hyde. Again the clause sits inside a longer sentence, which is why it has no capital.",
+      "analysis": "Jekyll speaks as if Hyde were someone he can dismiss. Set this beside \"I was slowly losing hold\" and the essay has a broken promise, not only a theme word.",
+      "chapter": 3
+    },
+    {
+      "id": "c4-clubbed",
+      "text": "Mr. Hyde broke out of all bounds and clubbed him to the earth.",
+      "speaker": "Narrator",
+      "themes": [
+        "violence"
+      ],
+      "context": "A maid watches from a window as Hyde meets Sir Danvers Carew, who has spoken to him politely. The attack is sudden.",
+      "analysis": "\"Out of all bounds\" matters as much as the blow, because Carew has not threatened him. The violence has no proportion, which is why the chapter can carry Hyde as aggression rather than as a man in a fight.",
+      "chapter": 4
+    },
+    {
+      "id": "c4-ape",
+      "text": "with ape-like fury, he was trampling his victim under foot and hailing down a storm of blows",
+      "speaker": "Narrator",
+      "themes": [
+        "violence",
+        "duality"
+      ],
+      "context": "This is the next moment of the Carew murder, still from the maid's window. The phrase begins without a capital because it continues the sentence.",
+      "analysis": "\"Ape-like\" picks up Utterson's \"troglodytic\", so the animal word is now attached to an action rather than a face. \"Trampling\" also echoes the child in Chapter 1, and the murder reads as a repetition.",
+      "chapter": 4
+    },
+    {
+      "id": "c4-fog",
+      "text": "A great chocolate-coloured pall lowered over heaven",
+      "speaker": "Narrator",
+      "themes": [
+        "secrecy",
+        "fear"
+      ],
+      "context": "It is the morning after the murder. Utterson is in a cab on the way to Hyde's rooms in Soho, through the first fog of the season.",
+      "analysis": "A pall is the cloth laid over a coffin, so the weather is already a funeral, and \"chocolate-coloured\" is oddly domestic for the morning after a murder. The fog does not explain Hyde, but it is the city hiding him.",
+      "chapter": 4
+    },
+    {
+      "id": "c5-burned",
+      "text": "“I burned it,” replied Jekyll, “before I thought what I was about.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "secrecy"
+      ],
+      "context": "Utterson has asked for the envelope that brought Hyde's letter. Jekyll answers at once.",
+      "analysis": "\"It\" is the envelope, not the letter. Jekyll says the note was handed in, and Poole later tells Utterson nothing came by hand that day, so the burned envelope hides where the letter came from.",
+      "chapter": 5
+    },
+    {
+      "id": "c5-swear",
+      "text": "I swear to God I will never set eyes on him again. I bind my honour to you that I am done with him in this world.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "secrecy",
+        "repression"
+      ],
+      "context": "Jekyll is telling Utterson that the break with Hyde is finished. The murder is recent, and Jekyll wants the subject closed.",
+      "analysis": "Two oaths in a row should make you suspicious, and \"honour\" is the public word one gentleman offers another. Jekyll still thinks he can end Hyde by promising a friend.",
+      "chapter": 5
+    },
+    {
+      "id": "c5-hands",
+      "text": "the two hands are in many points identical: only differently sloped.",
+      "speaker": "Mr. Guest",
+      "themes": [
+        "duality",
+        "secrecy"
+      ],
+      "context": "Utterson's head clerk compares Hyde's letter with a note from Jekyll, and the clause has no capital because it finishes the remark.",
+      "analysis": "This is the closest the middle of the book comes to the secret, and the clue is handwriting. \"Identical\" and \"differently sloped\" share a sentence, which is the duality in miniature, and he still does not say they are the same man.",
+      "chapter": 5
+    },
+    {
+      "id": "c6-warrant",
+      "text": "He had his death-warrant written legibly upon his face.",
+      "speaker": "Narrator",
+      "themes": [
+        "fear",
+        "science"
+      ],
+      "context": "Time has passed. Utterson calls on Lanyon and finds him suddenly aged.",
+      "analysis": "Unlike Hyde, this face can be read, and Stevenson makes it a legal document. Lanyon trusted evidence, and after the experiment the evidence is his own collapse.",
+      "chapter": 6
+    },
+    {
+      "id": "c6-dark",
+      "text": "You must suffer me to go my own dark way.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "secrecy",
+        "repression"
+      ],
+      "context": "This is from the letter Jekyll sends Utterson, refusing to explain himself. Lanyon's decline is the reason Utterson is frightened.",
+      "analysis": "\"Suffer\" means allow, and it also means endure, so the request for privacy admits the darkness in the same breath. Set it beside the Cain line: Utterson's old habit of letting men go their own way is now exactly what Jekyll asks for.",
+      "chapter": 6
+    },
+    {
+      "id": "c6-sinners",
+      "text": "If I am the chief of sinners, I am the chief of sufferers also.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "good and evil",
+        "repression"
+      ],
+      "context": "The same letter. Jekyll has just said he has brought a punishment on himself that he cannot name.",
+      "analysis": "He does not deny the sin. He asks to be pitied as the person who feels it most, which sounds like repentance and is also a way to end the conversation.",
+      "chapter": 6
+    },
+    {
+      "id": "c7-terror",
+      "text": "an expression of such abject terror and despair, as froze the very blood of the two gentlemen below.",
+      "speaker": "Narrator",
+      "themes": [
+        "fear",
+        "duality"
+      ],
+      "context": "Utterson and Enfield see Jekyll at the window, the smile breaks, and the clause has no capital because it belongs to the longer sentence.",
+      "analysis": "They see a look, not an explanation, and \"abject\" means there is no dignity left in it. Contrast it with the handsome face in Chapter 3: the friends get one glimpse, and then the window shuts.",
+      "chapter": 7
+    },
+    {
+      "id": "c7-forgive",
+      "text": "“God forgive us, God forgive us,”",
+      "speaker": "Gabriel Utterson",
+      "themes": [
+        "fear",
+        "friendship"
+      ],
+      "context": "The two men have turned away from the window, both pale, and Enfield does not answer in words.",
+      "analysis": "Utterson says \"us\", not \"him\", so the bystanders include themselves. Friendship here is horror, not help.",
+      "chapter": 7
+    },
+    {
+      "id": "c8-mask",
+      "text": "Sir, if that was my master, why had he a mask upon his face?",
+      "speaker": "Poole",
+      "themes": [
+        "secrecy",
+        "fear"
+      ],
+      "context": "Poole has fetched Utterson to the house. He surprised the figure in the theatre, digging among the crates, before it cried out and ran up into the cabinet, and he no longer believes it is Jekyll.",
+      "analysis": "The mask is literal, and it is also the book's habit of covering a face. Poole's question is practical: a servant notices the body while the gentlemen are still protecting a reputation.",
+      "chapter": 8
+    },
+    {
+      "id": "c8-never",
+      "text": "that thing in the mask was never Dr. Jekyll",
+      "speaker": "Poole",
+      "themes": [
+        "duality",
+        "fear"
+      ],
+      "context": "Poole is insisting that he knows his master's height from twenty years of service. The clause has no capital because it continues \"No, sir\".",
+      "analysis": "He says \"thing\", not \"man\", and he thinks Jekyll has been replaced rather than changed. The line is frightening because it is almost the truth, seen from outside the confession.",
+      "chapter": 8
+    },
+    {
+      "id": "c8-weeping",
+      "text": "Weeping like a woman or a lost soul",
+      "speaker": "Poole",
+      "themes": [
+        "fear",
+        "repression"
+      ],
+      "context": "Utterson asks if Poole has heard anything else from the cabinet. Poole describes the sound he walked away from.",
+      "analysis": "The simile is unsteady, a woman or a lost soul, as if neither comparison quite fits. This is not the noise of the murder: it is the sound of the man who can no longer get out.",
+      "chapter": 8
+    },
+    {
+      "id": "c9-shaken",
+      "text": "My life is shaken to its roots; sleep has left me; the deadliest terror sits by me at all hours of the day and night",
+      "speaker": "Hastie Lanyon",
+      "themes": [
+        "science",
+        "fear"
+      ],
+      "context": "This is Lanyon's written narrative, the account he leaves for Utterson. He is explaining why he cannot live with what he saw.",
+      "analysis": "Three clauses, and none of them is a theory. Lanyon mocked \"unscientific balderdash\", and the proof leaves him unable to sleep.",
+      "chapter": 9
+    },
+    {
+      "id": "c9-sickened",
+      "text": "I saw what I saw, I heard what I heard, and my soul sickened at it",
+      "speaker": "Hastie Lanyon",
+      "themes": [
+        "science",
+        "good and evil"
+      ],
+      "context": "Lanyon has watched Hyde drink the mixture and change. He refuses to write the details he cannot bear to set down.",
+      "analysis": "The repetition refuses a description: he will swear to the evidence and then stop. \"Soul\" takes the scene out of the laboratory, so he judges it as sin rather than as a failed experiment.",
+      "chapter": 9
+    },
+    {
+      "id": "c9-restored",
+      "text": "groping before him with his hands, like a man restored from death",
+      "speaker": "Hastie Lanyon",
+      "themes": [
+        "science",
+        "duality"
+      ],
+      "context": "Lanyon is remembering the moment Hyde's body gave way and Jekyll stood in the room. The phrase has no capital because it sits inside that sentence.",
+      "analysis": "\"Restored from death\" sounds like a miracle, and Lanyon is horrified by it. Stop at \"death\": the text places a dash after that word, and this quotation does not include it.",
+      "chapter": 9
+    },
+    {
+      "id": "c10-two",
+      "text": "man is not truly one, but truly two.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "duality"
+      ],
+      "context": "Jekyll's statement has turned from his life to the theory that wrecked it. The clause has no capital because it completes \"that\".",
+      "analysis": "Be exact with this sentence, and be ready to go past it, because he says \"two\" only as the limit of his own knowledge. Duality is his conclusion, not the book's last word.",
+      "chapter": 10
+    },
+    {
+      "id": "c10-duplicity",
+      "text": "I stood already committed to a profound duplicity of life.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "secrecy",
+        "reputation"
+      ],
+      "context": "Jekyll is describing his youth, before the drug. He has hidden pleasures that do not match the grave face he wears in public.",
+      "analysis": "\"Already\" changes the argument: the double life is not invented in the laboratory. The drug gives an older duplicity a second body.",
+      "chapter": 10
+    },
+    {
+      "id": "c10-pure",
+      "text": "all human beings, as we meet them, are commingled out of good and evil: and Edward Hyde, alone in the ranks of mankind, was pure evil.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "good and evil",
+        "duality"
+      ],
+      "context": "Jekyll is looking in the mirror after the first change, trying to explain why Hyde's face is so clear. The sentence begins without a capital in the text.",
+      "analysis": "Everyone else is mixed, and Hyde is the exception Jekyll is briefly proud of. Set \"pure evil\" beside the later pages, where the two selves swap against his will, so the purity does not stay under his control.",
+      "chapter": 10
+    },
+    {
+      "id": "c10-liberty",
+      "text": "I was the first that could plod in the public eye with a load of genial respectability, and in a moment, like a schoolboy, strip off these lendings and spring headlong into the sea of liberty.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "reputation",
+        "duality"
+      ],
+      "context": "Jekyll is boasting, early in the experiment, that he has found a way to keep his name and still indulge himself.",
+      "analysis": "\"Lendings\" are borrowed clothes, so respectability is a costume, and the schoolboy simile makes the crime sound like a holiday. Liberty here means freedom from being seen.",
+      "chapter": 10
+    },
+    {
+      "id": "c10-drug",
+      "text": "The drug had no discriminating action; it was neither diabolical nor divine",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "science",
+        "duality"
+      ],
+      "context": "Jekyll is correcting the idea that the potion itself was evil. He has just said it might have produced an angel rather than a fiend.",
+      "analysis": "Use this if a paragraph has blamed the chemical and forgotten the man. The drug shakes the doors, and what comes out is whatever he has already been hiding.",
+      "chapter": 10
+    },
+    {
+      "id": "c10-losing",
+      "text": "I was slowly losing hold of my original and better self, and becoming slowly incorporated with my second and worse.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "duality",
+        "repression"
+      ],
+      "context": "The changes have started to happen without the drug. Jekyll is explaining why he had to choose between the two lives.",
+      "analysis": "\"Slowly\", twice, answers the earlier boast that he could switch in a moment. Put it next to \"the moment I choose, I can be rid of Mr. Hyde\" and the essay shows a broken promise.",
+      "chapter": 10
+    },
+    {
+      "id": "c10-caged",
+      "text": "My devil had been long caged, he came out roaring.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "repression",
+        "violence"
+      ],
+      "context": "Jekyll is accounting for the murder of Carew. He had confined Hyde, and the confinement made the return worse.",
+      "analysis": "The comma is the argument: the cage, then the roar. \"My devil\" refuses the comfort of a separate person, because he owns the pronoun.",
+      "chapter": 10
+    },
+    {
+      "id": "c10-end",
+      "text": "Here then, as I lay down the pen and proceed to seal up my confession, I bring the life of that unhappy Henry Jekyll to an end.",
+      "speaker": "Henry Jekyll",
+      "themes": [
+        "duality",
+        "reputation"
+      ],
+      "context": "These are the last words of the statement, and of the book. He is still writing as Jekyll.",
+      "analysis": "He writes about Henry Jekyll as if the name were already closed, and sealing the confession is one last act of secrecy. The document survives, and the man arranges his own silence.",
+      "chapter": 10
+    }
+  ]
+}

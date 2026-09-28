@@ -7,10 +7,24 @@
   - https://bookquotes.uk/quotes/macbeth
   - https://bookquotes.uk/quotes
   - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
   - https://bookquotes.uk/sitemap.xml
 - Search query or queries that prompted it: "macbeth quotes"
 - GSC numbers at the time: new page, none
 - What changed: Published a checked quote hub for Macbeth (40 lines from Project Gutenberg eBook 1533), with act, scene and line numbers from that printing, speaker, context, essay notes and filters. Added the page to /quotes and the sitemap, and cross-linked it with the Christmas Carol and Jekyll and Hyde hubs.
+- Result (check ~4 weeks after): 
+
+## 2026-09-28: Jekyll and Hyde quotes
+- Date merged: 
+- PR: #18 https://github.com/Al2800/Book-Viewer/pull/18
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes/jekyll-and-hyde
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "jekyll and hyde quotes"
+- GSC numbers at the time: new page, none
+- What changed: Published a checked quote hub for Strange Case of Dr Jekyll and Mr Hyde (39 lines from Project Gutenberg eBook 43), with chapter, speaker, context, essay notes and filters. Cross-linked the GCSE hubs and added the page to /quotes and the sitemap.
 - Result (check ~4 weeks after): 
 
 ## 2026-09-28: A Christmas Carol quotes

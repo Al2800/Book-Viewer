@@ -1,4 +1,5 @@
 import carol from '@/content/quotes/a-christmas-carol.json'
+import jekyll from '@/content/quotes/jekyll-and-hyde.json'
 import macbeth from '@/content/quotes/macbeth.json'
 
 export type QuoteEntry = {
@@ -48,7 +49,7 @@ export type QuoteHub = {
   faqs?: QuoteFaq[]
 }
 
-export const quoteHubs: QuoteHub[] = [carol, macbeth]
+export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth]
 
 export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)
