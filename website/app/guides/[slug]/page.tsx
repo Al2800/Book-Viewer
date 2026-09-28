@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
 import { ProductEvidence } from '@/components/sections/ProductEvidence'
 import { getGuide, guides } from '@/lib/guides'
+import { gcseHubLinkLabel, publishedGcseHubs } from '@/lib/quotes'
 import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
 import { formatLongDate, splitInlineLinks } from '@/lib/utils'
 
@@ -93,6 +94,11 @@ export default async function GuidePage({ params }: GuidePageProps) {
             <p className="font-ui text-sm text-ink-medium mb-4">{guide.category}</p>
             <h1 className="text-balance mb-6">{guide.title}</h1>
             <p className="text-xl text-ink-medium max-w-2xl mb-6">{guide.intro}</p>
+            {guide.quoteHubList === 'gcse' && (
+              <div className="max-w-2xl mb-8">
+                <PublishedGcseHubs />
+              </div>
+            )}
             <div className="flex flex-wrap gap-x-4 gap-y-2 font-ui text-sm text-ink-light mb-8">
               <span>Published {formatLongDate(guide.publishedISO)}</span>
               <span>Updated {formatLongDate(guide.updatedISO)}</span>
@@ -194,6 +200,30 @@ export default async function GuidePage({ params }: GuidePageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Footer />
     </>
+  )
+}
+
+function PublishedGcseHubs() {
+  const hubs = publishedGcseHubs()
+
+  return (
+    <section className="mb-2">
+      <h2 className="mb-5 text-2xl">Quote hubs published on this site</h2>
+      {hubs.length === 0 ? (
+        <p className="text-lg text-ink-dark">No literature hubs are published yet.</p>
+      ) : (
+        <ul className="space-y-6">
+          {hubs.map((hub) => (
+            <li key={hub.slug}>
+              <Link href={`/quotes/${hub.slug}`} className="underline underline-offset-4 hover:text-gold-primary text-lg">
+                {gcseHubLinkLabel(hub.title)}
+              </Link>
+              <p className="text-lg text-ink-dark mt-2">{hub.description}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   )
 }
 
