@@ -2,7 +2,7 @@
 
 ## 2026-09-28: Pride and Prejudice quotes
 - Date merged: 
-- PR: 
+- PR: #25 https://github.com/Al2800/Book-Viewer/pull/25
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes/pride-and-prejudice
   - https://bookquotes.uk/quotes
