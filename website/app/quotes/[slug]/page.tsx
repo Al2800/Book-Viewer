@@ -5,14 +5,14 @@ import { notFound } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { QuoteBank } from '@/components/quotes/QuoteBank'
-import { getQuoteHub, quoteHubs, type QuoteHub } from '@/lib/quotes'
+import { gcseQuoteLinks, getQuoteHub, quoteHubs, type QuoteHub } from '@/lib/quotes'
 import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
 
 type QuotePageProps = {
   params: Promise<{ slug: string }>
 }
 
-const faqs = [
+const carolFaqs = [
   {
     question: 'Which A Christmas Carol quotes are worth learning for a grade 9 answer?',
     answer:
@@ -45,15 +45,26 @@ const faqs = [
   },
 ]
 
-export function generateStaticParams() {
-  return quoteHubs.map((hub) => ({ slug: hub.slug }))
-}
+const carolDescription =
+  'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.'
+
+const carolLead =
+  "These are key A Christmas Carol quotes for GCSE English, arranged by stave, character and theme, and checked word for word against Dickens's text."
+
+const carolArrangement =
+  'Each one gives the stave, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list. The quotations stay in stave order underneath, so you can still read the book through.'
+
+const carolSourceNote = 'Double hyphens inside a quotation are printed that way in that text.'
+
+const carolAppNote =
+  'Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the stave with the sentence. Add a tag only when you would reach for it in a paragraph: poverty, family, redemption.'
 
 function hubDescription(hub: QuoteHub) {
-  return (
-    hub.metaDescription ??
-    'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.'
-  )
+  return hub.metaDescription ?? carolDescription
+}
+
+export function generateStaticParams() {
+  return quoteHubs.map((hub) => ({ slug: hub.slug }))
 }
 
 export async function generateMetadata({ params }: QuotePageProps): Promise<Metadata> {
@@ -84,14 +95,19 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
   const hub = getQuoteHub(slug)
   if (!hub) notFound()
 
+  const faqs = hub.faqs ?? carolFaqs
+  const isGcseHub = gcseQuoteLinks.some((item) => item.slug === hub.slug)
+  const related = isGcseHub
+    ? gcseQuoteLinks.filter(
+        (item) => item.slug !== hub.slug && quoteHubs.some((entry) => entry.slug === item.slug),
+      )
+    : []
   const canonicalUrl = `https://bookquotes.uk/quotes/${hub.slug}`
-  const description = hubDescription(hub)
-  const pageFaqs = hub.faqs ?? faqs
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: hub.title,
-    description,
+    description: hubDescription(hub),
     datePublished: hub.publishedISO,
     dateModified: hub.updatedISO,
     author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk/' },
@@ -108,6 +124,24 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
       { '@type': 'ListItem', position: 3, name: hub.title, item: canonicalUrl },
     ],
   }
+  const quotationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: hub.title,
+    itemListElement: hub.quotes.map((quote, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Quotation',
+        text: quote.text,
+        ...(quote.citation
+          ? { creator: { '@type': 'Person', name: quote.speaker } }
+          : quote.speaker === 'Narrator'
+            ? {}
+            : { spokenByCharacter: { '@type': 'Person', name: quote.speaker } }),
+      },
+    })),
+  }
   const faqSchema = hub.faqs
     ? {
         '@context': 'https://schema.org',
@@ -119,25 +153,6 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
         })),
       }
     : null
-
-  const quotationSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: hub.title,
-    itemListElement: hub.quotes.map((quote, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-        item: {
-        '@type': 'Quotation',
-        text: quote.text,
-        ...(quote.citation
-          ? { creator: { '@type': 'Person', name: quote.speaker } }
-          : quote.speaker === 'Narrator'
-            ? {}
-            : { spokenByCharacter: { '@type': 'Person', name: quote.speaker } }),
-      },
-    })),
-  }
 
   return (
     <>
@@ -156,9 +171,7 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
                 <p
                   key={paragraph}
                   className={
-                    index === 0
-                      ? 'text-xl text-ink-dark max-w-2xl mb-4'
-                      : 'text-lg text-ink-medium max-w-2xl mb-4'
+                    index === 0 ? 'text-xl text-ink-dark max-w-2xl mb-4' : 'text-lg text-ink-medium max-w-2xl mb-4'
                   }
                 >
                   {paragraph}
@@ -166,11 +179,9 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
               ))
             ) : (
               <>
-                <p className="text-xl text-ink-dark max-w-2xl mb-4">
-                  These are key A Christmas Carol quotes for GCSE English, arranged by stave, character and theme, and checked word for word against Dickens&apos;s text.
-                </p>
+                <p className="text-xl text-ink-dark max-w-2xl mb-4">{hub.lead ?? carolLead}</p>
                 <p className="text-lg text-ink-medium max-w-2xl mb-4">
-                  There are {hub.quotes.length}. Each one gives the stave, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list. The quotations stay in stave order underneath, so you can still read the book through.
+                  There are {hub.quotes.length}. {hub.arrangement ?? carolArrangement}
                 </p>
               </>
             )}
@@ -182,7 +193,21 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
                 <a href={hub.sourceUrl} className="underline underline-offset-4" rel="noopener noreferrer">
                   {hub.sourceName}
                 </a>
-                . Double hyphens inside a quotation are printed that way in that text.
+                . {hub.sourceNote ?? carolSourceNote}
+              </p>
+            )}
+            {related.length > 0 && (
+              <p className="text-lg text-ink-dark max-w-2xl mt-4">
+                Other GCSE hubs on this site:{' '}
+                {related.map((item, index) => (
+                  <span key={item.slug}>
+                    {index > 0 && (index === related.length - 1 ? ' and ' : ', ')}
+                    <Link href={`/quotes/${item.slug}`} className="underline underline-offset-4">
+                      {item.label}
+                    </Link>
+                  </span>
+                ))}
+                .
               </p>
             )}
           </header>
@@ -191,7 +216,11 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
             <div className="container-narrow py-12 md:py-16">
               <QuoteBank
                 quotes={hub.quotes}
-                mode={hub.groupBy ?? 'stave'}
+                sections={hub.sections}
+                filterLabel={hub.filterLabel}
+                allFilterLabel={hub.allFilterLabel}
+                sectionKey={hub.sectionKey}
+                mode={hub.groupBy === 'theme' ? 'theme' : 'section'}
                 themeOrder={hub.themeOrder}
                 themeHeadings={hub.themeHeadings}
               />
@@ -199,9 +228,7 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
               {hub.misattributions && hub.misattributions.length > 0 && (
                 <section className="mt-4 pt-10 border-t border-subtle">
                   <h2 className="mb-5">Often misattributed</h2>
-                  {hub.misattributionIntro && (
-                    <p className="text-lg text-ink-dark mb-8">{hub.misattributionIntro}</p>
-                  )}
+                  {hub.misattributionIntro && <p className="text-lg text-ink-dark mb-8">{hub.misattributionIntro}</p>}
                   <div className="space-y-8">
                     {hub.misattributions.map((item) => (
                       <article key={item.id}>
@@ -219,13 +246,9 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
               )}
 
               <section className="mt-4 pt-10 border-t border-subtle">
-                <h2 className="mb-5">
-                  {hub.slug === 'about-reading'
-                    ? 'Keep the lines you actually stopped for'
-                    : 'Build your own quote bank from the copy you have marked'}
-                </h2>
                 {hub.slug === 'about-reading' ? (
                   <>
+                    <h2 className="mb-5">Keep the lines you actually stopped for</h2>
                     <p className="text-lg text-ink-dark mb-4">
                       A list like this is a start. The lines you will want again are the ones you stopped for, in a book that is yours.
                     </p>
@@ -242,12 +265,11 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
                   </>
                 ) : (
                   <>
+                    <h2 className="mb-5">Build your own quote bank from the copy you have marked</h2>
                     <p className="text-lg text-ink-dark mb-4">
                       A printed list is a start. The bank that helps in an exam is the one you made from your own book: the line you underlined, and a note in your words about why it is there.
                     </p>
-                    <p className="text-lg text-ink-dark mb-4">
-                      Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the stave with the sentence. Add a tag only when you would reach for it in a paragraph: poverty, family, redemption.
-                    </p>
+                    <p className="text-lg text-ink-dark mb-4">{hub.appNote ?? carolAppNote}</p>
                     <p className="text-lg text-ink-dark mb-6">
                       BookQuotes is an iPhone app for that job. On capture it can detect the page number. You name your own markings, and collections and tags keep one theme together. It does not import Kindle highlights. The steps are written out in{' '}
                       <Link href="/guides/how-to-save-quotes-from-physical-books" className="underline underline-offset-4">
@@ -271,7 +293,7 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
               <section className="mt-14 pt-10 border-t border-subtle">
                 <h2 className="mb-6">{hub.faqHeading ?? 'Questions students ask'}</h2>
                 <div className="space-y-7">
-                  {pageFaqs.map((faq) => (
+                  {faqs.map((faq) => (
                     <div key={faq.question}>
                       <h3 className="text-xl mb-2">{faq.question}</h3>
                       <p className="text-lg text-ink-dark">{faq.answer}</p>

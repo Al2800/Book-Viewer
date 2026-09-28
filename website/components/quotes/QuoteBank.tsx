@@ -1,11 +1,15 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { staveLabels, type QuoteEntry } from '@/lib/quotes'
+import { quoteReference, staveLabels, type QuoteEntry, type QuoteSection } from '@/lib/quotes'
 
 type QuoteBankProps = {
   quotes: QuoteEntry[]
-  mode?: 'stave' | 'theme'
+  sections?: QuoteSection[]
+  filterLabel?: string
+  allFilterLabel?: string
+  sectionKey?: string
+  mode?: 'section' | 'theme'
   themeOrder?: string[]
   themeHeadings?: Record<string, string>
 }
@@ -58,7 +62,7 @@ function QuoteArticle({
   meta: string
 }) {
   return (
-    <article key={quote.id} id={quote.id} className="border-t border-subtle pt-6">
+    <article id={quote.id} className="border-t border-subtle pt-6">
       <blockquote className="font-body text-xl md:text-2xl text-ink-black leading-snug mb-4 whitespace-pre-line">
         {quote.text}
       </blockquote>
@@ -89,7 +93,16 @@ function QuoteArticle({
   )
 }
 
-export function QuoteBank({ quotes, mode = 'stave', themeOrder, themeHeadings }: QuoteBankProps) {
+export function QuoteBank({
+  quotes,
+  sections,
+  filterLabel = 'Stave',
+  allFilterLabel = 'All staves',
+  sectionKey = 'stave',
+  mode = 'section',
+  themeOrder,
+  themeHeadings,
+}: QuoteBankProps) {
   const [stave, setStave] = useState('')
   const [speaker, setSpeaker] = useState('')
   const [theme, setTheme] = useState('')
@@ -103,32 +116,48 @@ export function QuoteBank({ quotes, mode = 'stave', themeOrder, themeHeadings }:
     [quotes],
   )
 
+  const sectionList: QuoteSection[] =
+    sections ??
+    [1, 2, 3, 4, 5].map((number) => ({
+      number,
+      label: staveLabels[number],
+      short: `Stave ${number}`,
+    }))
+
+  const themeGroups = themeOrder ?? [...new Set(quotes.map((quote) => quote.themes[0]).filter(Boolean))]
+
+  function sectionNumber(quote: QuoteEntry) {
+    if (sectionKey === 'chapter') return quote.chapter
+    if (sectionKey === 'act') return quote.act
+    return quote.stave
+  }
+
   const visible = quotes.filter((quote) => {
-    if (mode === 'stave' && stave && String(quote.stave) !== stave) return false
+    if (mode === 'section' && stave && String(sectionNumber(quote)) !== stave) return false
     if (speaker && quote.speaker !== speaker) return false
     if (theme && !quote.themes.includes(theme)) return false
     return true
   })
 
-  const staves = [1, 2, 3, 4, 5]
-  const themeGroups = themeOrder ?? [...new Set(quotes.map((quote) => quote.themes[0]).filter(Boolean))]
-
   return (
     <div>
-      {mode === 'stave' && (
+      {mode === 'section' && (
         <FilterRow
-          label="Stave"
+          label={filterLabel}
           value={stave}
           onChange={setStave}
-          options={[{ value: '', label: 'All staves' }, ...staves.map((number) => ({ value: String(number), label: `Stave ${number}` }))]}
+          options={[
+            { value: '', label: allFilterLabel },
+            ...sectionList.map((section) => ({ value: String(section.number), label: section.short })),
+          ]}
         />
       )}
       <FilterRow
-        label={mode === 'stave' ? 'Character' : 'Author'}
+        label={mode === 'section' ? 'Character' : 'Author'}
         value={speaker}
         onChange={setSpeaker}
         options={[
-          { value: '', label: mode === 'stave' ? 'All characters' : 'All authors' },
+          { value: '', label: mode === 'section' ? 'All characters' : 'All authors' },
           ...speakers.map((name) => ({ value: name, label: name })),
         ]}
       />
@@ -144,26 +173,26 @@ export function QuoteBank({ quotes, mode = 'stave', themeOrder, themeHeadings }:
 
       {visible.length === 0 && (
         <p className="text-lg text-ink-dark">
-          {mode === 'stave'
+          {mode === 'section'
             ? 'No quote matches those three filters. Clear one of them.'
             : 'No quote matches those filters. Clear one of them.'}
         </p>
       )}
 
-      {mode === 'stave' &&
-        staves.map((number) => {
-          const group = visible.filter((quote) => quote.stave === number)
+      {mode === 'section' &&
+        sectionList.map((section) => {
+          const group = visible.filter((quote) => sectionNumber(quote) === section.number)
           if (group.length === 0) return null
           return (
-            <section key={number} id={`stave-${number}`} className="mb-14">
-              <h2 className="mb-6">{staveLabels[number]}</h2>
+            <section key={section.number} id={`${sectionKey}-${section.number}`} className="mb-14">
+              <h2 className="mb-6">{section.label}</h2>
               <div className="space-y-10">
                 {group.map((quote) => (
                   <QuoteArticle
                     key={quote.id}
                     quote={quote}
                     onTheme={setTheme}
-                    meta={`Stave ${quote.stave} · ${quote.speaker}`}
+                    meta={`${quoteReference(quote, sectionKey)} · ${quote.speaker}`}
                   />
                 ))}
               </div>
@@ -180,12 +209,7 @@ export function QuoteBank({ quotes, mode = 'stave', themeOrder, themeHeadings }:
               <h2 className="mb-6">{themeHeadings?.[name] ?? name}</h2>
               <div className="space-y-10">
                 {group.map((quote) => (
-                  <QuoteArticle
-                    key={quote.id}
-                    quote={quote}
-                    onTheme={setTheme}
-                    meta={quote.citation ?? quote.speaker}
-                  />
+                  <QuoteArticle key={quote.id} quote={quote} onTheme={setTheme} meta={quote.citation ?? quote.speaker} />
                 ))}
               </div>
             </section>

@@ -7,7 +7,7 @@ import { quoteHubs } from '@/lib/quotes'
 
 const title = 'Quotes checked against the original text | BookQuotes'
 const description =
-  'Public-domain lines, checked against a named text before they are published. A Christmas Carol for GCSE, and quotes about reading with the book named.'
+  'Public-domain lines checked against a named text before they are published: GCSE set texts, and quotes about reading with the book named.'
 
 export const metadata: Metadata = {
   title,
