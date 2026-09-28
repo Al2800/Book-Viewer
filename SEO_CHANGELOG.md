@@ -2,7 +2,7 @@
 
 ## 2026-09-28: quotes about reading
 - Date merged: 
-- PR: 
+- PR: #19 https://github.com/Al2800/Book-Viewer/pull/19
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes/about-reading
   - https://bookquotes.uk/quotes
