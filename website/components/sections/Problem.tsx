@@ -13,19 +13,19 @@ export function Problem() {
             <h3 className="text-lg font-display mb-4">What gets lost</h3>
             <ul className="space-y-3 text-ink-dark">
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>Highlights stay trapped inside closed books</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>Margin notes get forgotten over time</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>You cannot search across your physical shelf</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>Manual typing takes too long to keep up</span>
               </li>
             </ul>
@@ -34,19 +34,19 @@ export function Problem() {
             <h3 className="text-lg font-display mb-4">What BookQuotes does</h3>
             <ul className="space-y-3 text-ink-dark">
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>Snap photos of any marked page in seconds</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>Isolate marked lines and review before saving</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>Search full text across your entire reading history</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-ink-medium select-none">&mdash;</span>
+                <span className="text-ink-medium select-none" aria-hidden="true">·</span>
                 <span>Export clean notes to Obsidian, Notion, or Markdown</span>
               </li>
             </ul>

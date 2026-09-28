@@ -1,33 +1,21 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+const homeTitle = 'Save quotes from paper books on iPhone | BookQuotes'
+const homeDescription =
+  'Save the passages you underline in paper books. BookQuotes keeps them in a private, searchable library on iPhone, with the page number and your own notes.'
+
 export const metadata: Metadata = {
-  title: 'Quote Reader & Book Quote Finder for Physical Books | BookQuotes',
-  description: 'A dedicated quote reader and book quote finder for physical books. Unlike a public book quotes website, BookQuotes turns your paper underlines and book highlights into a private, searchable digital library on iPhone and iPad.',
-  keywords: [
-    'quote reader',
-    'book quote finder',
-    'book quotes website',
-    'book highlights',
-    'book quote search',
-    'book quotes finder',
-    'searchable book quotes',
-    'physical book quotes',
-    'reading app',
-    'highlight capture',
-    'margin notes',
-    'book annotations',
-    'commonplace book',
-    'iOS app',
-  ],
+  title: homeTitle,
+  description: homeDescription,
   authors: [{ name: 'BookQuotes' }],
   creator: 'BookQuotes',
   metadataBase: new URL('https://bookquotes.uk'),
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'Quote Reader & Book Quote Finder for Physical Books | BookQuotes',
-    description: 'A dedicated quote reader and book quote finder for physical books. Unlike a public book quotes website, BookQuotes turns your paper underlines and book highlights into a private, searchable digital library.',
-    url: 'https://bookquotes.uk',
+    title: homeTitle,
+    description: homeDescription,
+    url: 'https://bookquotes.uk/',
     siteName: 'BookQuotes',
     locale: 'en_GB',
     type: 'website',
@@ -36,14 +24,14 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 1730,
         height: 909,
-        alt: 'BookQuotes — Quote Reader & Book Quote Finder for Physical Books',
+        alt: 'BookQuotes: save quotes from paper books on iPhone',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Quote Reader & Book Quote Finder for Physical Books | BookQuotes',
-    description: 'A dedicated quote reader and book quote finder for physical books. Unlike a public book quotes website, BookQuotes turns your paper underlines and book highlights into a private, searchable digital library.',
+    title: homeTitle,
+    description: homeDescription,
     images: ['/og.png'],
   },
   robots: {

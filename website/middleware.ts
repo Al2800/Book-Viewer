@@ -2,10 +2,23 @@ import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
 
 const canonicalHost = 'bookquotes.uk'
+const commonplaceRedirect = '/journal/build-a-digital-commonplace-book'
 
 export function middleware(request: NextRequest) {
   const forwardedProtocol = request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim()
   const requestHost = request.headers.get('host')?.split(':')[0]?.toLowerCase()
+  const path = request.nextUrl.pathname.replace(/\/+$/, '') || '/'
+
+  if (path === commonplaceRedirect) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = '/guides/digital-commonplace-book'
+    if (forwardedProtocol === 'http' || requestHost === `www.${canonicalHost}`) {
+      destination.protocol = 'https:'
+      destination.host = canonicalHost
+      destination.port = ''
+    }
+    return NextResponse.redirect(destination, 301)
+  }
 
   if (forwardedProtocol === 'http' || requestHost === `www.${canonicalHost}`) {
     const canonicalUrl = request.nextUrl.clone()

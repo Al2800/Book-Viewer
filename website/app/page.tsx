@@ -17,8 +17,8 @@ export default function Home() {
     applicationCategory: 'BooksApplication',
     operatingSystem: 'iOS, iPadOS',
     description:
-      'A privacy-first book quote finder and quote reader for physical books. Capture marked pages, review extracted passages, and build a searchable personal quote library.',
-    url: 'https://bookquotes.uk',
+      'Save the passages you underline in paper books. BookQuotes keeps them in a private, searchable library on iPhone, with the page number and your own notes.',
+    url: 'https://bookquotes.uk/',
     downloadUrl: 'https://apps.apple.com/app/id6758091579',
     publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
     featureList: [

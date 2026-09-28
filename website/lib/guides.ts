@@ -9,6 +9,11 @@ export type GuideFaq = {
   answer: string
 }
 
+export type RelatedLink = {
+  href: string
+  label: string
+}
+
 export type Guide = {
   slug: string
   title: string
@@ -17,9 +22,11 @@ export type Guide = {
   category: string
   readingTime: string
   updated: string
-  updatedISO?: string
+  publishedISO: string
+  updatedISO: string
   intro: string
   relatedQueries: string[]
+  related: RelatedLink[]
   sections: GuideSection[]
   faqs: GuideFaq[]
 }
@@ -33,8 +40,14 @@ export const guides: Guide[] = [
       'A practical workflow for moving a marked passage from a paper book into a corrected, searchable personal library.',
     category: 'Book quote capture',
     readingTime: '6 min read',
-    updated: '3 August 2026',
-    updatedISO: '2026-08-03',
+    updated: '28 September 2026',
+    publishedISO: '2026-08-03',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
+      { href: '/guides/how-to-digitise-book-notes', label: 'Digitise book notes without losing context' },
+      { href: '/guides/digital-commonplace-book', label: 'What is a digital commonplace book?' },
+    ],
     intro:
       'The easiest way to lose a good passage is to assume you will remember where it was. A photo in the camera roll helps, but it still leaves the wording, book, page, and reason for keeping the line scattered. A dependable capture ritual keeps those pieces together without asking you to stop reading and type everything out.',
     relatedQueries: [
@@ -57,7 +70,7 @@ export const guides: Guide[] = [
       {
         heading: '2. Photograph the marked page',
         paragraphs: [
-          'Use even light, keep the phone parallel to the page, and leave a little space around the marked area. Glare, curved pages, tight crops, and faint pencil marks make extraction harder. A clear photograph is still the most important part of the workflow.',
+          'Use even light, keep the phone parallel to the page, and leave a little space around the marked area. Glare, curved pages, tight crops, and faint pencil marks make extraction harder. A clear photograph is still the most important part of the workflow. The [scan guide](/guides/scan-underlined-book-pages) covers framing in more detail.',
           'BookQuotes is designed for this physical-book moment. Capture the page, keep the image with the reading session, and continue once the page is safely recorded.',
         ],
       },
@@ -79,7 +92,7 @@ export const guides: Guide[] = [
         heading: '5. Make the collection useful later',
         paragraphs: [
           'Search the saved text when you are writing, planning, teaching, or preparing for a book-club conversation. Add a small number of tags only when they improve retrieval. A collection becomes useful through return visits, not through perfect filing.',
-          'BookQuotes keeps the library searchable on the device in the current release and provides export options when you want a copy in another tool.',
+          'BookQuotes keeps the library searchable on the device in the current release and provides export options when you want a copy in another tool. If the notes are heading for a desktop vault, see [how to export book quotes to Obsidian and Notion](/guides/export-book-quotes-to-obsidian).',
         ],
       },
     ],
@@ -106,8 +119,14 @@ export const guides: Guide[] = [
       'How to frame, capture, review, and correct an underlined page when you want searchable reading notes.',
     category: 'Page scanning',
     readingTime: '5 min read',
-    updated: '3 August 2026',
-    updatedISO: '2026-08-03',
+    updated: '28 September 2026',
+    publishedISO: '2026-08-03',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/guides/how-to-digitise-book-notes', label: 'Digitise book notes without losing context' },
+      { href: '/journal/ai-extraction-and-reader-control', label: 'How AI extraction and reader review work' },
+    ],
     intro:
       'Scanning an underlined book page is less about taking a fast photograph and more about producing an image that can be checked. Good framing gives the text extractor a fair chance, while the review step protects the wording you actually meant to keep.',
     relatedQueries: ['scan book page to text', 'OCR underlined book page', 'book page scanner app', 'quote reader for physical books'],
@@ -130,7 +149,7 @@ export const guides: Guide[] = [
         heading: 'Choose the extraction route deliberately',
         paragraphs: [
           'BookQuotes supports an on-device OCR path for local processing and a separate remote AI route for eligible signed-in subscribers who choose it. The app should make the current route visible while a page is being processed.',
-          'Remote processing is not a guarantee of perfect selection. It can be useful for marked-page analysis, but the image and result still need a reader review. When a network request fails, use the recovery choice or continue with the on-device route when appropriate.',
+          'Remote processing is not a guarantee of perfect selection. It can be useful for marked-page analysis, but the image and result still need a reader review. When a network request fails, use the recovery choice or continue with the on-device route when appropriate. The [note on AI extraction](/journal/ai-extraction-and-reader-control) explains what leaves the device.',
         ],
       },
       {
@@ -158,14 +177,20 @@ export const guides: Guide[] = [
   },
   {
     slug: 'how-to-digitise-book-notes',
-    title: 'How to Digitise Book Notes Without Losing Context',
+    title: 'Digitise Book Notes Without Losing Context',
     query: 'how to digitise book notes',
     description:
       'A simple system for preserving the passage, book, page and personal note when moving from paper to a searchable library.',
     category: 'Reading workflow',
     readingTime: '6 min read',
-    updated: '3 August 2026',
-    updatedISO: '2026-08-03',
+    updated: '28 September 2026',
+    publishedISO: '2026-08-03',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+    ],
     intro:
       'Digitising book notes is not just a transcription task. A line without its book, page, and reason for keeping it quickly becomes another orphaned note. The better system preserves enough context for you to recognise the idea when you meet it again.',
     relatedQueries: ['digitise reading notes', 'turn paper notes into digital notes', 'book annotation app'],
@@ -187,7 +212,7 @@ export const guides: Guide[] = [
       {
         heading: 'Capture, then correct',
         paragraphs: [
-          'Photograph the marked page, wait for the available extraction route to finish, and read the result against the photograph. Correct the text before adding tags or moving on. A small correction now prevents a frustrating search later.',
+          'Photograph the marked page, wait for the available extraction route to finish, and read the result against the photograph. Correct the text before adding tags or moving on. A small correction now prevents a frustrating search later. The [save-quotes guide](/guides/how-to-save-quotes-from-physical-books) walks through that capture in order.',
           'If the page contains several markings, check each boundary. A selection that includes an adjacent paragraph may look plausible while still being the wrong note.',
         ],
       },
@@ -219,34 +244,57 @@ export const guides: Guide[] = [
     title: 'What Is a Digital Commonplace Book?',
     query: 'digital commonplace book',
     description:
-      'A plain-English introduction to commonplace books and a low-friction way to begin with passages from your paper reading.',
+      'What a commonplace book is, how it differs from a reading journal, and a simple way to keep passages from paper books.',
     category: 'Reading practice',
-    readingTime: '6 min read',
-    updated: '3 August 2026',
-    updatedISO: '2026-08-03',
+    readingTime: '8 min read',
+    updated: '28 September 2026',
+    publishedISO: '2026-08-03',
+    updatedISO: '2026-09-28',
     intro:
-      'A commonplace book is a personal collection of passages, observations, questions, and ideas worth returning to. A digital version does not need to imitate a social feed or become a productivity dashboard. Its job is to make your chosen ideas easier to keep, connect, and revisit.',
-    relatedQueries: ['commonplace book app', 'digital reading journal', 'personal quote library'],
+      'A commonplace book is a personal collection of passages, observations, questions and ideas you expect to return to. A digital version does not need to imitate a social feed or become a productivity dashboard. Its job is to keep the lines you chose, with enough context that they still make sense later.',
+    relatedQueries: ['commonplace book app', 'digital reading journal', 'personal quote library', 'commonplace book examples'],
+    related: [
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/journal/what-to-do-with-book-highlights', label: 'What to do with highlights after a book' },
+      { href: '/guides/organise-book-quotes-on-iphone', label: 'Organise book quotes on iPhone' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+    ],
     sections: [
       {
         heading: 'A commonplace book is selective',
         paragraphs: [
           'The practice works because it involves judgment. You do not need to save every interesting sentence. Keep the lines that clarify a question, change how you see something, or give you language you expect to use again.',
+          'When a sentence earns an underline, pause long enough to ask why. It may explain an idea clearly, challenge an assumption, or give language to something you already felt. That short reason is often more useful than a complicated tagging system.',
           'That selectiveness also protects the collection from becoming a second inbox. A smaller library that you revisit is more valuable than an archive you never open.',
+        ],
+      },
+      {
+        heading: 'A few kinds of entry that earn their place',
+        paragraphs: [
+          'A commonplace is not a reading journal. A journal records that you read: the date, the plot, how the book felt. A commonplace keeps the bit you want to use again. The two can sit side by side. They answer different questions.',
+          'Entries that tend to repay the effort include a definition you will want in your own words later, a sentence that names a feeling more cleanly than you can, a passage you disagree with and want to answer, and a line you expect to quote in something you are writing. A plot summary rarely belongs. You already have the book for that.',
+        ],
+      },
+      {
+        heading: 'Use one capture ritual',
+        paragraphs: [
+          'Finish the page before you reach for the phone. Then photograph the marked passage, review the extracted text, and correct anything the camera missed. Keep the book title and page number with the quote. [How to save quotes from physical books](/guides/how-to-save-quotes-from-physical-books) sets that order out, and the [scan guide](/guides/scan-underlined-book-pages) covers light and framing.',
+          'The review matters. A searchable transcription is useful only when it still says what the author wrote. Treat extraction as a first draft and let your own eyes make the final decision.',
         ],
       },
       {
         heading: 'Paper and digital can work together',
         paragraphs: [
           'The physical book remains the place where you read, mark, and make the first connection. The digital library handles retrieval. This division means you can keep the feel of paper while still searching the ideas when you are away from the shelf.',
-          'BookQuotes is built around that handoff: capture a marked page, review the text, connect it to the book, and return to the passage through search or a collection.',
+          'BookQuotes is built around that handoff: add the book by ISBN or by hand, capture a marked page, review the text, and return to the passage through search, a tag or a collection.',
         ],
       },
       {
-        heading: 'Start with one weekly question',
+        heading: 'Return to the collection',
         paragraphs: [
-          'Choose a question you are already carrying, such as “What am I learning about attention?” or “Which passages change how I approach this project?” Save only the passages that help answer it.',
-          'At the end of the week, search the collection and write one short connection in your own words. The act of connecting is what turns a stored passage into a useful commonplace.',
+          'A commonplace book becomes valuable through reuse. Search it while you are writing, look back at a few saved passages at the end of the week, or choose one idea to discuss with somebody else. [What to do with highlights after you finish a book](/journal/what-to-do-with-book-highlights) is a longer version of that review.',
+          'Choose a question you are already carrying, such as “What am I learning about attention?” or “Which passages change how I approach this project?” Save only the passages that help answer it. At the end of the week, write one short connection in your own words.',
+          'When a project needs the notes on a larger screen, [export the quotes to Obsidian or Notion](/guides/export-book-quotes-to-obsidian) and leave the books on the shelf.',
         ],
       },
       {
@@ -279,8 +327,14 @@ export const guides: Guide[] = [
       'A practical comparison of camera rolls, general notes, and a dedicated personal quote library for readers who want to find passages again.',
     category: 'iPhone reading tools',
     readingTime: '6 min read',
-    updated: '3 August 2026',
-    updatedISO: '2026-08-03',
+    updated: '28 September 2026',
+    publishedISO: '2026-08-03',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/digital-commonplace-book', label: 'What is a digital commonplace book?' },
+      { href: '/guides/how-to-search-quotes-from-paper-books', label: 'How to search quotes from paper books' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+    ],
     intro:
       'The best book-quote system is the one you will use while reading and trust when you return later. For some readers, Apple Notes is enough. For others, a dedicated library removes the repeated work of naming books, transcribing passages, and searching through screenshots.',
     relatedQueries: [
@@ -323,7 +377,7 @@ export const guides: Guide[] = [
         heading: 'Choose a small organisation system',
         paragraphs: [
           'Use collections for a broad reading project and tags for a recurring theme or question. Do not tag every possible category. If you can search the passage text and book title, a small amount of organisation is usually enough.',
-          'Export when you need to work in another tool. Keeping an independent copy is especially sensible for a local-first library.',
+          'Export when you need to work in another tool. Keeping an independent copy is especially sensible for a local-first library. [Searching quotes from paper books](/guides/how-to-search-quotes-from-paper-books) is the other half of the same habit.',
         ],
       },
     ],
@@ -350,8 +404,14 @@ export const guides: Guide[] = [
       'What to check when you want searchable reading notes without casually exposing your personal reading history.',
     category: 'Privacy and trust',
     readingTime: '5 min read',
-    updated: '3 August 2026',
-    updatedISO: '2026-08-03',
+    updated: '28 September 2026',
+    publishedISO: '2026-08-03',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/journal/ai-extraction-and-reader-control', label: 'How AI extraction and reader review work' },
+      { href: '/privacy', label: 'Privacy policy' },
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+    ],
     intro:
       'Your reading history can reveal your interests, questions, beliefs, and unfinished thinking. A book-notes app should explain what stays on the phone, what requires a network, and how you can delete or export your library before you depend on it.',
     relatedQueries: ['private reading notes app', 'offline book notes app', 'local book quote library'],
@@ -367,7 +427,7 @@ export const guides: Guide[] = [
         heading: 'Understand the processing boundary',
         paragraphs: [
           'BookQuotes can use on-device OCR for local processing. A separate remote AI route is available in the relevant signed-in subscriber flow and requires network processing of the marked-page image and extraction request. The app should not describe those routes as interchangeable.',
-          'Remote processing is optional in the product flow. Read the current privacy policy before enabling it, especially if the page contains material you do not want to send to a third-party provider.',
+          'Remote processing is optional in the product flow. Read the current [privacy policy](/privacy) before enabling it, especially if the page contains material you do not want to send to a third-party provider. The [note on AI extraction](/journal/ai-extraction-and-reader-control) says what is sent and what stays on the phone.',
         ],
       },
       {
@@ -401,14 +461,20 @@ export const guides: Guide[] = [
   },
   {
     slug: 'book-quote-finder-iphone',
-    title: 'How to Use an iPhone as a Book Quote Finder for Paper Books',
+    title: 'Find Quotes in Your Paper Books',
     query: 'book quote finder',
     description:
-      'Turn your iPhone into a reliable book quote finder: capture marked passages, link them to the right edition, and search your personal quote library.',
+      'Turn marked passages from your own paper books into a library you can search by wording, book and page.',
     category: 'Book quote search',
     readingTime: '6 min read',
-    updated: '13 September 2026',
-    updatedISO: '2026-09-13',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-13',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/how-to-search-quotes-from-paper-books', label: 'How to search quotes from paper books' },
+      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
+      { href: '/guides/quote-reader-app-for-physical-books', label: 'Capture and search paper book quotes' },
+    ],
     intro:
       'Looking for a half-remembered sentence across five physical paperbacks on your shelf usually ends in frustration. A book quote finder on your iPhone solves this by turning physical underlines, margin marks, and dog-eared pages into an indexed, searchable personal library without manual typing.',
     relatedQueries: [
@@ -450,7 +516,7 @@ export const guides: Guide[] = [
       {
         heading: 'Step 4: Search your personal quote library instantly',
         paragraphs: [
-          'Once saved, your passages become instantly searchable by keyword, author, title, tag, or collection. When you sit down to write an essay, prepare a talk, or recall an argument, searching for a single distinct word brings up the exact quote alongside its page number.',
+          'Once saved, your passages become searchable by keyword, author, title, tag, or collection. When you sit down to write an essay, prepare a talk, or recall an argument, searching for a single distinct word brings up the quote alongside its page number. [How to search quotes from paper books](/guides/how-to-search-quotes-from-paper-books) is the longer version of that habit.',
           'Your collection lives locally on your device in the current release. You can search your library offline on a train or plane without needing an active data connection.',
         ],
       },
@@ -480,14 +546,20 @@ export const guides: Guide[] = [
   },
   {
     slug: 'quote-reader-app-for-physical-books',
-    title: 'Quote Reader App for Physical Books: Capture & Search Paper Underlines',
+    title: 'Capture and Search Paper Book Quotes',
     query: 'quote reader app for physical books',
     description:
-      'A dedicated quote reader app for physical books. Photograph underlines, brackets, and margin notes to build an accurate, searchable digital quote library on iPhone and iPad.',
-    category: 'Quote reader',
+      'Photograph underlines, brackets and margin notes, then keep an accurate, searchable library of those passages on iPhone and iPad.',
+    category: 'Quote capture',
     readingTime: '6 min read',
-    updated: '17 September 2026',
-    updatedISO: '2026-09-17',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-13',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/guides/scan-underlined-book-pages', label: 'How to scan underlined book pages' },
+      { href: '/guides/book-quote-finder-iphone', label: 'Find quotes in your paper books' },
+    ],
     intro:
       'A quote reader app for physical books lets you capture underlined sentences and handwritten margin notes directly from printed paper into a searchable digital library. Underlining a physical book sharpens attention, but finding those passages months later is notoriously difficult without a dedicated quote reader. BookQuotes bridges the physical-digital divide: photograph marked pages with your iPhone, extract the text cleanly, and keep your favourite passages organised alongside your personal commentary.',
     relatedQueries: [
@@ -523,7 +595,7 @@ export const guides: Guide[] = [
         heading: 'Building a reading companion that respects your attention',
         paragraphs: [
           'The ideal quote reader app stays out of your way while you are in the flow of reading. Trying to digitise quotes line by line while reading breaks deep concentration.',
-          'We recommend marking freely with pen or pencil while reading. When you finish a chapter or close the book for the evening, spend two minutes photographing the marked pages in batch. Review the text, confirm the passages, and return to your evening.',
+          'Mark freely with pen or pencil while you read. When you finish a chapter or close the book for the evening, spend a couple of minutes photographing the marked pages. Review the text, confirm the passages, and stop. [How to save quotes from physical books](/guides/how-to-save-quotes-from-physical-books) is the same routine written as steps.',
         ],
       },
       {
@@ -559,14 +631,20 @@ export const guides: Guide[] = [
   },
   {
     slug: 'how-to-search-quotes-from-paper-books',
-    title: 'How to Search Quotes from Paper Books: A Step-by-Step System',
+    title: 'How to Search Quotes from Paper Books',
     query: 'how to search quotes from paper books',
     description:
-      'Learn how to index your physical book highlights and margin notes so you can search them by keyword, author, or theme in seconds.',
+      'A practical way to index physical book highlights and margin notes so you can search them by keyword, author or theme.',
     category: 'Search workflow',
     readingTime: '6 min read',
-    updated: '13 September 2026',
-    updatedISO: '2026-09-13',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-13',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/book-quote-finder-iphone', label: 'Find quotes in your paper books' },
+      { href: '/guides/organise-book-quotes-on-iphone', label: 'Organise book quotes on iPhone' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+    ],
     intro:
       'Physical books offer an irreplaceable reading experience, but their greatest weakness is search. When you need that striking metaphor on memory or that crisp definition of incentives, paper indexes and memory rarely suffice. Here is a practical system to make your paper library fully searchable on your phone.',
     relatedQueries: [
@@ -595,11 +673,11 @@ export const guides: Guide[] = [
         heading: 'Phase 2: Digital capture without transcription friction',
         paragraphs: [
           'Manually typing book passages on a keyboard creates too much resistance. Most readers abandon typing routines within three weeks.',
-          'Use BookQuotes to photograph the marked passage instead. The app isolates the underlined text, transcribes it through on-device OCR or optional remote AI, and pairs it with the book title, author, and page number in seconds. A swift verification on screen ensures typographical fidelity.',
+          'Use BookQuotes to photograph the marked passage instead. The app isolates the underlined text, transcribes it through on-device OCR or optional remote AI, and pairs it with the book title, author, and page number. Check the words on screen before you save them. [How to scan an underlined page](/guides/scan-underlined-book-pages) is worth reading if the photos keep coming back muddy.',
         ],
       },
       {
-        heading: 'Phase 3: Structuring metadata for effortless retrieval',
+        heading: 'Phase 3: Add a little structure',
         paragraphs: [
           'Full-text search handles distinct vocabulary well, but conceptual searches benefit from light curation. When saving a passage, consider adding one or two topical tags such as “stoicism”, “habit-formation”, or “character-study”.',
           'Avoid over-tagging. Creating dozens of intricate categories produces maintenance fatigue. Let keyword search do the heavy lifting for specific words, and use collections only for major reading projects or active writing endeavours.',
@@ -609,7 +687,7 @@ export const guides: Guide[] = [
         heading: 'Phase 4: Putting your searchable library to work',
         paragraphs: [
           'A searchable paper quote library becomes an indispensable asset for writers, researchers, students, and curious readers. When drafting an article or preparing notes for a meeting, open your search bar and enter any term.',
-          'BookQuotes brings up matching quotes across your entire library in milliseconds, showing the verbatim text, book cover, author, and page number. If you need to cite the passage or read the full chapter, you know exactly which physical volume and page to pull from your shelf.',
+          'BookQuotes brings up matching quotes across your library as you type, with the wording, author and page number. If you need to cite the passage or read the chapter again, you know which volume to pull from the shelf.',
         ],
       },
     ],
@@ -638,14 +716,20 @@ export const guides: Guide[] = [
   },
   {
     slug: 'book-quotes-vs-kindle-highlights',
-    title: 'Book Quotes vs Kindle Highlights: Bridging Paper and Digital Reading',
+    title: 'Book Quotes vs Kindle Highlights',
     query: 'book quotes vs kindle highlights',
     description:
-      'Compare Kindle highlights with paper book quote capture. Discover how to give physical books the search advantages of digital reading without giving up print.',
+      'How paper-book capture compares with Kindle highlights, and what BookQuotes does and does not take from an e-reader.',
     category: 'Reading comparison',
     readingTime: '6 min read',
-    updated: '13 September 2026',
-    updatedISO: '2026-09-13',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-13',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/how-to-save-quotes-from-physical-books', label: 'How to save quotes from physical books' },
+      { href: '/guides/export-book-quotes-to-obsidian', label: 'Export book quotes to Obsidian and Notion' },
+      { href: '/guides/quote-reader-app-for-physical-books', label: 'Capture and search paper book quotes' },
+    ],
     intro:
       'Readers often feel forced to choose between the tactile pleasure of physical books and the convenience of Kindle highlights. E-readers make searching highlights effortless, yet paper offers superior spatial memory, comprehension, and freedom from screen fatigue. You do not have to compromise: you can read on paper and maintain a searchable digital quote library.',
     relatedQueries: [
@@ -660,7 +744,7 @@ export const guides: Guide[] = [
         heading: 'The great reading trade-off: tactile joy vs digital retrieval',
         paragraphs: [
           'Kindle highlights changed how people capture reading notes. Dragging a thumb across an e-ink screen saves a passage instantly, syncing it to an online dashboard. For researchers and non-fiction readers, this immediate retrieval is hard to give up.',
-          'Yet many readers find digital reading flat. Studies and reader experience consistently show that physical books foster stronger spatial recall: you remember where an argument unfolded on the page and how thick the remaining pages felt in your hand. Paper also protects your reading hours from notification pings and digital eye strain.',
+          'Yet many readers find digital reading flat. A paper book makes it easier to remember where an argument sat on the page, and it keeps notifications out of the hour. That is a preference, not a measured law.',
         ],
       },
       {
@@ -679,22 +763,20 @@ export const guides: Guide[] = [
       {
         heading: 'Bringing Kindle-style search to your paper library',
         paragraphs: [
-          'BookQuotes bridges this gap by giving physical paperbacks and hardcovers the primary advantage of e-readers: instant, keyword-searchable highlights.',
-          'You read your paper book naturally, pencil in hand. When you finish a reading session, snap photos of your marked passages with your iPhone. BookQuotes extracts the text, lets you verify the wording, attaches the ISBN metadata, and files the quote into your personal library.',
+          'BookQuotes is for the paper copy. It does not import Kindle highlights. You read the printed book with a pencil, then photograph the pages you marked. The app extracts the text, you check the wording, and the passage is filed with the book. [How to save quotes from physical books](/guides/how-to-save-quotes-from-physical-books) is the capture routine.',
         ],
       },
       {
         heading: 'Intentional capture creates better memory retention',
         paragraphs: [
           'Friction in note-taking is not always a flaw; sometimes it is a filter. The effortless ease of Kindle highlighting often encourages passive swiping: readers highlight whole pages without pausing to assimilate the ideas.',
-          'Photographing a paper page and reviewing the extracted text takes roughly ten seconds, but that brief pause serves as an active retrieval checkpoint. You re-read the sentence, confirm why it earned your mark, and reinforce your memory of the author’s point.',
+          'Photographing a paper page and checking the extracted text takes a moment. That pause is the filter. You re-read the sentence, confirm why it earned the mark, and the wording is yours to keep only after you have looked at it.',
         ],
       },
       {
         heading: 'Unified export to open personal knowledge systems',
         paragraphs: [
-          'Unlike closed e-reader ecosystems, BookQuotes is designed to feed your broader note-taking workflow. Your paper quotes can be exported directly to Markdown, plain text, JSON, Notion, or Obsidian.',
-          'This means your physical reading notes can sit right alongside your Kindle imports, podcast notes, and web bookmarks in your preferred knowledge management vault.',
+          'BookQuotes can export paper quotes to Markdown, plain text, JSON, Notion or Obsidian. There is no Kindle import in the app. If you already keep Kindle clippings in a vault, you can place an export beside them yourself. [Exporting to Obsidian and Notion](/guides/export-book-quotes-to-obsidian) covers the file formats.',
         ],
       },
     ],
@@ -723,14 +805,20 @@ export const guides: Guide[] = [
   },
   {
     slug: 'export-book-quotes-to-obsidian',
-    title: 'How to Export Physical Book Quotes to Obsidian and Notion',
+    title: 'Export Book Quotes to Obsidian and Notion',
     query: 'export book quotes to obsidian',
     description:
-      'A practical guide to exporting paper book quotes, page citations, and margin notes into Obsidian markdown vaults and Notion databases.',
+      'How to move paper book quotes, page citations and margin notes into an Obsidian vault or a Notion database.',
     category: 'Export workflows',
     readingTime: '6 min read',
-    updated: '13 September 2026',
-    updatedISO: '2026-09-13',
+    updated: '28 September 2026',
+    publishedISO: '2026-09-13',
+    updatedISO: '2026-09-28',
+    related: [
+      { href: '/guides/digital-commonplace-book', label: 'What is a digital commonplace book?' },
+      { href: '/guides/organise-book-quotes-on-iphone', label: 'Organise book quotes on iPhone' },
+      { href: '/guides/how-to-digitise-book-notes', label: 'Digitise book notes without losing context' },
+    ],
     intro:
       'A personal quote library on your iPhone is invaluable for quick reference, but serious writing and synthesis happen in dedicated workspace tools like Obsidian and Notion. Here is how to move marked passages from your physical books into your desktop knowledge vault without manual retyping.',
     relatedQueries: [
@@ -777,7 +865,7 @@ export const guides: Guide[] = [
       {
         heading: 'Closing the loop: from physical page to finished writing',
         paragraphs: [
-          'The goal of any note system is not passive hoarding; it is creative output. By establishing a frictionless pipeline—reading on paper, capturing with BookQuotes, and exporting to Obsidian or Notion—you build an effortless intellectual archive.',
+          'The point of the notes is the work you do with them. Read on paper, capture the lines you want to keep, and export them when you are ready to write. A [digital commonplace book](/guides/digital-commonplace-book) is one way to decide which lines are worth that trip.',
           'When you sit down to write an article, report, or book, your favourite passages and citations are already waiting in your workspace, fully searchable and ready to inform your thinking.',
         ],
       },

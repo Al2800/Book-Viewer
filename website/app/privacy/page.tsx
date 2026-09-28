@@ -3,7 +3,7 @@ import { Footer } from '@/components/layout/Footer'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — BookQuotes',
+  title: 'Privacy Policy | BookQuotes',
   description: 'How BookQuotes handles your data with privacy-first principles.',
   alternates: { canonical: '/privacy' },
 }
@@ -94,34 +94,34 @@ export default function PrivacyPage() {
             </p>
             <ul>
               <li>
-                <strong>Hugging Face Inference</strong> &mdash; For model-assisted quote extraction
+                <strong>Hugging Face Inference</strong>: For model-assisted quote extraction
                 from marked quote pages when you enable Remote AI Processing. Provider handling
                 is governed by its applicable terms.
               </li>
               <li>
-                <strong>Featherless AI</strong> &mdash; The pinned inference provider that processes
+                <strong>Featherless AI</strong>: The pinned inference provider that processes
                 those consented requests.
               </li>
               <li>
-                <strong>Apple Vision</strong> &mdash; For on-device OCR when Remote AI Processing is
+                <strong>Apple Vision</strong>: For on-device OCR when Remote AI Processing is
                 off or you explicitly choose the on-device option.
               </li>
               <li>
-                <strong>Google Books</strong> &mdash; For requested ISBN metadata lookups and cover
+                <strong>Google Books</strong>: For requested ISBN metadata lookups and cover
                 images. BookQuotes does not include your account identifier or library in these
                 catalogue requests.
               </li>
               <li>
-                <strong>Open Library</strong> &mdash; As an ISBN metadata fallback when Google Books
+                <strong>Open Library</strong>: As an ISBN metadata fallback when Google Books
                 has no match. BookQuotes does not include your account identifier or library in
                 these catalogue requests.
               </li>
               <li>
-                <strong>Apple Sign-In</strong> &mdash; For secure authentication without
+                <strong>Apple Sign-In</strong>: For secure authentication without
                 passwords.
               </li>
               <li>
-                <strong>Apple StoreKit</strong> &mdash; For subscription billing, trial
+                <strong>Apple StoreKit</strong>: For subscription billing, trial
                 eligibility, renewal status, and purchase management.
               </li>
             </ul>
