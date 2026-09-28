@@ -1,4 +1,5 @@
 import carol from '@/content/quotes/a-christmas-carol.json'
+import jane from '@/content/quotes/jane-eyre.json'
 import jekyll from '@/content/quotes/jekyll-and-hyde.json'
 import macbeth from '@/content/quotes/macbeth.json'
 import reading from '@/content/quotes/about-reading.json'
@@ -71,7 +72,7 @@ export type QuoteHub = {
   misattributionIntro?: string
 }
 
-export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, reading as QuoteHub]
+export const quoteHubs: QuoteHub[] = [carol, jekyll, macbeth, jane, reading as QuoteHub]
 
 export function getQuoteHub(slug: string) {
   return quoteHubs.find((hub) => hub.slug === slug)
@@ -89,6 +90,7 @@ export const gcseQuoteLinks = [
   { slug: 'a-christmas-carol', label: 'A Christmas Carol quotes' },
   { slug: 'jekyll-and-hyde', label: 'Jekyll and Hyde quotes' },
   { slug: 'macbeth', label: 'Macbeth quotes' },
+  { slug: 'jane-eyre', label: 'Jane Eyre quotes' },
 ]
 
 export function quoteReference(quote: QuoteEntry, sectionKey?: string) {
