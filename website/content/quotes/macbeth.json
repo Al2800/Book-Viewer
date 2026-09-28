@@ -2,7 +2,7 @@
   "slug": "macbeth",
   "title": "Macbeth quotes by act, scene, character and theme",
   "description": "Key Macbeth quotes for GCSE, checked word for word against the play, with act, scene, line numbers, speaker, context and a short note for essays.",
-  "metaDescription": "Forty Macbeth quotes for GCSE, checked word for word against the play. Each line has its act, scene and line numbers, plus speaker, context and a short essay note.",
+  "metaDescription": "Forty Macbeth quotes for GCSE, checked word for word against the play. Each has its act, scene and line, the speaker, context and a short essay note.",
   "lead": "These are key Macbeth quotes for GCSE English, arranged by act, character and theme, and checked word for word against Shakespeare's text.",
   "arrangement": "Each one gives the act, scene and line, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list by act. The quotations stay in play order underneath.",
   "sourceNote": "Line numbers follow the Project Gutenberg text of Macbeth, eBook 1533, prepared by the PG Shakespeare Team. Each printed line of speech starts a new number, counted from the start of the scene. Speaker names and stage directions on their own lines are not counted. A school edition will use different numbers, so learn the act and scene first. This text also prints scorch'd where many editions print scotch'd, and sere where many print sear.",
@@ -152,7 +152,7 @@
         "the supernatural",
         "appearance and reality"
       ],
-      "context": "Banquo warns Macbeth once the witches have vanished. \"Betray's\" is \"betray us\" in this printing, and the sentence continues onto the next line.",
+      "context": "Ross and Angus have just told Macbeth he is Thane of Cawdor, and Banquo warns him not to trust the witches because of it. \"Betray's\" is \"betray us\" in this printing, and the sentence continues onto the next line.",
       "analysis": "Banquo does not say the witches lie. He says a small truth is the bait, and the honest trifle is Cawdor.",
       "act": 1,
       "scene": 3,
@@ -182,7 +182,7 @@
         "ambition",
         "gender"
       ],
-      "context": "She is reading his letter and judging the man, not yet speaking to him. This text prints \"o' th'\", not \"o' the\".",
+      "context": "She has just read his letter aloud and is judging the man, not yet speaking to him. This text prints \"o' th'\", not \"o' the\".",
       "analysis": "Kindness is made into milk, something soft and bodily, and \"the nearest way\" is murder. She loves the ambition and distrusts the part of him that would refuse a shortcut.",
       "act": 1,
       "scene": 5,
@@ -258,7 +258,7 @@
         "gender",
         "ambition"
       ],
-      "context": "Lady Macbeth has called his courage drunk and pale. This is his answer.",
+      "context": "Lady Macbeth has asked whether the hope he dressed himself in was drunk, and whether he will live a coward in his own esteem. This is his answer.",
       "analysis": "He tries to make murder unmanly: going further than what \"becomes a man\" would make him nothing. She will turn the same word round and tell him that doing it is what made him a man.",
       "act": 1,
       "scene": 7,
@@ -304,7 +304,7 @@
         "guilt",
         "ambition"
       ],
-      "context": "He is on his way to Duncan's room and has asked the servant to have the bell struck. The line after \"hand?\" runs on into a dash, which is not part of this quotation.",
+      "context": "Banquo and Fleance have gone to bed, and Macbeth has sent the servant off to tell Lady Macbeth to strike the bell when his drink is ready. He is alone. The line after \"hand?\" runs on into a dash, which is not part of this quotation.",
       "analysis": "The dagger leads him the way he was already going, so the vision looks like a push and also like an excuse. Ask whether the supernatural here creates the crime or decorates a decision he has made.",
       "act": 2,
       "scene": 1,
@@ -408,7 +408,7 @@
         "guilt",
         "fear"
       ],
-      "context": "He has just been thinking about Banquo and Fleance. She has tried to tell him to be jovial with the guests.",
+      "context": "She has told him to be bright and jovial among the guests and to leave his dark talk. In the next line he reminds her that Banquo and Fleance are still alive.",
       "analysis": "The tenderness of \"dear wife\" sits next to a mind full of stinging creatures. Guilt here is not remorse for Duncan so much as fear of the next threat.",
       "act": 3,
       "scene": 2,
@@ -600,7 +600,7 @@
         "kingship",
         "tyranny"
       ],
-      "context": "He is in Dunsinane, arming, after the servant has brought news of the English force. This text prints \"sere\", where many editions print \"sear\".",
+      "context": "He is in Dunsinane. A frightened servant has just brought news of the English force, and Macbeth is shouting for Seyton. This text prints \"sere\", where many editions print \"sear\".",
       "analysis": "The leaf is yellow and dry, so the king's life is already autumn. Nothing that should come with old age, honour, love or friends, is left to him.",
       "act": 5,
       "scene": 3,
