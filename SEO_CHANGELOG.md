@@ -1,5 +1,19 @@
 # SEO Changelog
 
+## 2026-09-28: annotation guides
+- Date merged: 
+- PR: 
+- Page URL(s) changed:
+  - https://bookquotes.uk/guides/book-annotation-key
+  - https://bookquotes.uk/guides/how-to-annotate-a-book-without-writing-in-it
+  - https://bookquotes.uk/guides
+  - https://bookquotes.uk/guides/scan-underlined-book-pages
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "annotating books key"; "how to annotate a book without writing in it"
+- GSC numbers at the time: new page, none
+- What changed: Added two practical guides. One is a short annotation key (symbols, colours, tab colours) with example keys for fiction, study and non-fiction, tied to the app's custom marking vocabulary. The other covers annotating a book you must not write in: sticky notes, tabs, a bookmark, pencil only with permission, a separate notebook, and photographing the page. Both have FAQs and links to existing guides and the quotes hubs. The scan guide now links to the annotation key. Both URLs are in the guides index and the sitemap.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: A Christmas Carol quotes
 - Date merged: 
 - PR: #17 https://github.com/Al2800/Book-Viewer/pull/17
