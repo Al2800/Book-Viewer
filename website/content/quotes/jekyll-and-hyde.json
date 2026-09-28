@@ -77,7 +77,7 @@
     },
     {
       "question": "Which famous Jekyll and Hyde lines are easy to misremember?",
-      "answer": "In this text the men are \"downgoing\", one word, and Enfield says \"down-right detestable\", with a hyphen. Jekyll burns the letter \"before I thought what I was about\", not before he remembered a promise. \"If he be Mr. Hyde, I shall be Mr. Seek\" is a thought, reported by the narrator, not a speech to Hyde. Check any line you learned from a revision card against the sentence around it."
+      "answer": "In this text the men are \"downgoing\", one word, and Enfield says \"down-right detestable\", with a hyphen. Jekyll burns the envelope, not the letter, \"before I thought what I was about\". \"If he be Mr. Hyde, I shall be Mr. Seek\" is a thought, reported by the narrator, not a speech to Hyde. Check any line you learned from a revision card against the sentence around it."
     },
     {
       "question": "Which quotes fit secrecy, violence and science?",
@@ -184,7 +184,7 @@
         "duality",
         "good and evil"
       ],
-      "context": "Utterson has met Hyde and is walking home, trying to explain his own disgust to himself.",
+      "context": "Hyde has just gone into the house and left Utterson at the door. The lawyer stands there, then walks slowly up the street, trying to explain his own disgust to himself.",
       "analysis": "\"Troglodytic\" drags Hyde back towards a cave-dweller, and Utterson still cannot name a feature. Quote the hesitation in \"shall we say?\" as well as the insult.",
       "chapter": 2
     },
@@ -303,7 +303,7 @@
         "secrecy"
       ],
       "context": "Utterson has asked for the envelope that brought Hyde's letter. Jekyll answers at once.",
-      "analysis": "Learn this wording: he does not say he burned it before he remembered a promise. He burned it before he thought what he was doing, and the missing envelope is very convenient.",
+      "analysis": "\"It\" is the envelope, not the letter. Jekyll says the note was handed in, and Poole later tells Utterson nothing came by hand that day, so the burned envelope hides where the letter came from.",
       "chapter": 5
     },
     {
@@ -398,7 +398,7 @@
         "secrecy",
         "fear"
       ],
-      "context": "Poole has fetched Utterson to the house. He has been watching the figure in the cabinet and no longer believes it is Jekyll.",
+      "context": "Poole has fetched Utterson to the house. He surprised the figure in the theatre, digging among the crates, before it cried out and ran up into the cabinet, and he no longer believes it is Jekyll.",
       "analysis": "The mask is literal, and it is also the book's habit of covering a face. Poole's question is practical: a servant notices the body while the gentlemen are still protecting a reputation.",
       "chapter": 8
     },

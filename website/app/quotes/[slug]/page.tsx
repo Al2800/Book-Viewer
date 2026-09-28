@@ -96,7 +96,9 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
   if (!hub) notFound()
 
   const faqs = hub.faqs ?? carolFaqs
-  const related = gcseQuoteLinks.filter((item) => item.slug !== hub.slug)
+  const related = gcseQuoteLinks.filter(
+    (item) => item.slug !== hub.slug && quoteHubs.some((entry) => entry.slug === item.slug),
+  )
   const canonicalUrl = `https://bookquotes.uk/quotes/${hub.slug}`
   const articleSchema = {
     '@context': 'https://schema.org',
