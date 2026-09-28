@@ -2,7 +2,7 @@
 
 ## 2026-09-28: find a quote and its page number
 - Date merged: 
-- PR: 
+- PR: #24 https://github.com/Al2800/Book-Viewer/pull/24
 - Page URL(s) changed:
   - https://bookquotes.uk/guides/book-quote-finder-iphone
   - https://bookquotes.uk/guides
