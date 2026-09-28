@@ -21,6 +21,13 @@ export function SearchGuidesPreview() {
             </li>
           ))}
         </ul>
+        <p className="mt-8 text-lg text-ink-medium max-w-2xl">
+          For lines from a public-domain book, checked against the text, see{' '}
+          <Link href="/quotes/a-christmas-carol" className="underline underline-offset-4 text-ink-black">
+            A Christmas Carol quotes
+          </Link>
+          .
+        </p>
       </div>
     </section>
   )

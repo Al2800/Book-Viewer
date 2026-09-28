@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { guides } from '@/lib/guides'
 import { journalArticles } from '@/lib/journal'
+import { quoteHubs } from '@/lib/quotes'
 
 const baseUrl = 'https://bookquotes.uk'
 const revisedOn = new Date('2026-09-28T00:00:00.000Z')
@@ -8,12 +9,20 @@ const revisedOn = new Date('2026-09-28T00:00:00.000Z')
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: { path: string; lastModified: Date; changeFrequency: 'weekly' | 'monthly'; priority: number }[] = [
     { path: '/', lastModified: revisedOn, changeFrequency: 'weekly', priority: 1.0 },
+    { path: '/quotes', lastModified: revisedOn, changeFrequency: 'weekly', priority: 0.9 },
     { path: '/guides', lastModified: revisedOn, changeFrequency: 'weekly', priority: 0.8 },
     { path: '/journal', lastModified: revisedOn, changeFrequency: 'weekly', priority: 0.8 },
     { path: '/support', lastModified: revisedOn, changeFrequency: 'monthly', priority: 0.5 },
     { path: '/privacy', lastModified: revisedOn, changeFrequency: 'monthly', priority: 0.3 },
     { path: '/terms', lastModified: revisedOn, changeFrequency: 'monthly', priority: 0.3 },
   ]
+
+  const quotePages = quoteHubs.map((hub) => ({
+    url: `${baseUrl}/quotes/${hub.slug}`,
+    lastModified: new Date(`${hub.updatedISO}T00:00:00.000Z`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
+  }))
 
   const guidePages = guides.map((guide) => ({
     url: `${baseUrl}/guides/${guide.slug}`,
@@ -36,6 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: page.changeFrequency,
       priority: page.priority,
     })),
+    ...quotePages,
     ...guidePages,
     ...journalPages,
   ]

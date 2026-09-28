@@ -1,6 +1,7 @@
 const navLinks = [
-  { href: '/journal', label: 'Journal' },
+  { href: '/quotes', label: 'Quotes' },
   { href: '/guides', label: 'Guides' },
+  { href: '/journal', label: 'Journal' },
 ]
 
 export function Header() {

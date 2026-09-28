@@ -1,5 +1,18 @@
 # SEO Changelog
 
+## 2026-09-28: A Christmas Carol quotes
+- Date merged: 
+- PR: 
+- Page URL(s) changed:
+  - https://bookquotes.uk/quotes
+  - https://bookquotes.uk/quotes/a-christmas-carol
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "a christmas carol quotes" (new page, no impressions of its own yet). Site queries at the time: "quote reader" (2 impressions), "book quote finder" (1), "book highlights" (1)
+- GSC numbers at the time: whole site over 28 days: 0 clicks, 15 impressions, average position 69.1. The Christmas Carol page is new, so it has no GSC numbers yet.
+- What changed: Published a checked quote hub for A Christmas Carol (37 lines from Project Gutenberg eBook 46), with stave, speaker, context, essay notes and filters. Added /quotes to the navigation and sitemap. Rewrote the SEO policy so public-domain texts may be quoted in full when the wording is verified, and modern books stay short.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: site cleanup
 - Date merged: 
 - PR: #16 https://github.com/Al2800/Book-Viewer/pull/16

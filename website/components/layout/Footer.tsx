@@ -1,4 +1,5 @@
 const afterword = [
+  { label: 'Quotes', href: '/quotes' },
   { label: 'Journal', href: '/journal' },
   { label: 'Guides', href: '/guides' },
   { label: 'Support', href: '/support' },
