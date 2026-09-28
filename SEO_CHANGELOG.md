@@ -2,7 +2,7 @@
 
 ## 2026-09-28: quotes about libraries
 - Date merged: 
-- PR: 
+- PR: #26 https://github.com/Al2800/Book-Viewer/pull/26
 - Page URL(s) changed:
   - https://bookquotes.uk/quotes/about-libraries
   - https://bookquotes.uk/quotes
