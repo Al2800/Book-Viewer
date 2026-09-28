@@ -1,10 +1,14 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { staveLabels, type QuoteEntry } from '@/lib/quotes'
+import { quoteReference, staveLabels, type QuoteEntry, type QuoteSection } from '@/lib/quotes'
 
 type QuoteBankProps = {
   quotes: QuoteEntry[]
+  sections?: QuoteSection[]
+  filterLabel?: string
+  allFilterLabel?: string
+  sectionKey?: string
 }
 
 function FilterRow({
@@ -45,7 +49,13 @@ function FilterRow({
   )
 }
 
-export function QuoteBank({ quotes }: QuoteBankProps) {
+export function QuoteBank({
+  quotes,
+  sections,
+  filterLabel = 'Stave',
+  allFilterLabel = 'All staves',
+  sectionKey = 'stave',
+}: QuoteBankProps) {
   const [stave, setStave] = useState('')
   const [speaker, setSpeaker] = useState('')
   const [theme, setTheme] = useState('')
@@ -59,22 +69,37 @@ export function QuoteBank({ quotes }: QuoteBankProps) {
     [quotes],
   )
 
+  const sectionList: QuoteSection[] =
+    sections ??
+    [1, 2, 3, 4, 5].map((number) => ({
+      number,
+      label: staveLabels[number],
+      short: `Stave ${number}`,
+    }))
+
+  function sectionNumber(quote: QuoteEntry) {
+    if (sectionKey === 'chapter') return quote.chapter
+    if (sectionKey === 'act') return quote.act
+    return quote.stave
+  }
+
   const visible = quotes.filter((quote) => {
-    if (stave && String(quote.stave) !== stave) return false
+    if (stave && String(sectionNumber(quote)) !== stave) return false
     if (speaker && quote.speaker !== speaker) return false
     if (theme && !quote.themes.includes(theme)) return false
     return true
   })
 
-  const staves = [1, 2, 3, 4, 5]
-
   return (
     <div>
       <FilterRow
-        label="Stave"
+        label={filterLabel}
         value={stave}
         onChange={setStave}
-        options={[{ value: '', label: 'All staves' }, ...staves.map((number) => ({ value: String(number), label: `Stave ${number}` }))]}
+        options={[
+          { value: '', label: allFilterLabel },
+          ...sectionList.map((section) => ({ value: String(section.number), label: section.short })),
+        ]}
       />
       <FilterRow
         label="Character"
@@ -96,12 +121,12 @@ export function QuoteBank({ quotes }: QuoteBankProps) {
         <p className="text-lg text-ink-dark">No quote matches those three filters. Clear one of them.</p>
       )}
 
-      {staves.map((number) => {
-        const group = visible.filter((quote) => quote.stave === number)
+      {sectionList.map((section) => {
+        const group = visible.filter((quote) => sectionNumber(quote) === section.number)
         if (group.length === 0) return null
         return (
-          <section key={number} id={`stave-${number}`} className="mb-14">
-            <h2 className="mb-6">{staveLabels[number]}</h2>
+          <section key={section.number} id={`${sectionKey}-${section.number}`} className="mb-14">
+            <h2 className="mb-6">{section.label}</h2>
             <div className="space-y-10">
               {group.map((quote) => (
                 <article key={quote.id} id={quote.id} className="border-t border-subtle pt-6">
@@ -109,7 +134,7 @@ export function QuoteBank({ quotes }: QuoteBankProps) {
                     {quote.text}
                   </blockquote>
                   <p className="font-ui text-sm text-ink-medium mb-4">
-                    Stave {quote.stave} · {quote.speaker}
+                    {quoteReference(quote, sectionKey)} · {quote.speaker}
                   </p>
                   <p className="text-lg text-ink-dark mb-3">{quote.context}</p>
                   <p className="text-lg text-ink-dark mb-4">{quote.analysis}</p>

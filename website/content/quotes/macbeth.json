@@ -1,0 +1,672 @@
+{
+  "slug": "macbeth",
+  "title": "Macbeth quotes by act, scene, character and theme",
+  "description": "Key Macbeth quotes for GCSE, checked word for word against the play, with act, scene, line numbers, speaker, context and a short note for essays.",
+  "metaDescription": "Forty Macbeth quotes for GCSE, checked word for word against the play. Each line has its act, scene and line numbers, plus speaker, context and a short essay note.",
+  "lead": "These are key Macbeth quotes for GCSE English, arranged by act, character and theme, and checked word for word against Shakespeare's text.",
+  "arrangement": "Each one gives the act, scene and line, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list by act. The quotations stay in play order underneath.",
+  "sourceNote": "Line numbers follow the Project Gutenberg text of Macbeth, eBook 1533, prepared by the PG Shakespeare Team. Each printed line of speech starts a new number, counted from the start of the scene. Speaker names and stage directions on their own lines are not counted. A school edition will use different numbers, so learn the act and scene first. This text also prints scorch'd where many editions print scotch'd, and sere where many print sear.",
+  "publishedISO": "2026-09-28",
+  "updatedISO": "2026-09-28",
+  "sourceName": "Macbeth, Project Gutenberg eBook 1533",
+  "sourceUrl": "https://www.gutenberg.org/ebooks/1533",
+  "filterLabel": "Act",
+  "allFilterLabel": "All acts",
+  "sectionKey": "act",
+  "sections": [
+    {
+      "number": 1,
+      "label": "Act 1",
+      "short": "Act 1"
+    },
+    {
+      "number": 2,
+      "label": "Act 2",
+      "short": "Act 2"
+    },
+    {
+      "number": 3,
+      "label": "Act 3",
+      "short": "Act 3"
+    },
+    {
+      "number": 4,
+      "label": "Act 4",
+      "short": "Act 4"
+    },
+    {
+      "number": 5,
+      "label": "Act 5",
+      "short": "Act 5"
+    }
+  ],
+  "appNote": "Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the act and scene with the sentence. Add a tag only when you would reach for it in a paragraph: ambition, guilt, the supernatural.",
+  "faqs": [
+    {
+      "question": "Which Macbeth quotes should I learn for ambition, guilt and the supernatural?",
+      "answer": "Ambition: \"Vaulting ambition\", the hails on the heath, and \"Stars, hide your fires\". Guilt: the blood on the hands, \"Macbeth does murder sleep\", the scorpions, and the sleepwalking. The supernatural: \"Fair is foul\", the dagger, Banquo's ghost, and the apparitions. A strong paragraph uses an early line and a later one, so the essay shows what the idea does to him."
+    },
+    {
+      "question": "Which edition do these line numbers follow?",
+      "answer": "They follow Project Gutenberg eBook 1533, the PG Shakespeare Team text. Each printed line of speech is numbered from the start of the scene. Speaker names and indented stage directions are not counted. Arden, Cambridge and other school editions number the lines differently, and they sometimes print a different word. On this page, \"scorch'd\" and \"sere\" are the Gutenberg spellings. Many classrooms print \"scotch'd\" and \"sear\". Quote the act and scene in the exam, and take the wording from the copy you are allowed."
+    },
+    {
+      "question": "Which famous Macbeth lines are easy to get wrong?",
+      "answer": "It is \"lay on, Macduff\", not \"lead on\", and in this text \"lay\" has no capital because the sentence has already started. The witches say \"Double, double, toil and trouble;\" with a comma after the second double, then \"Fire, burn; and cauldron, bubble.\" Lady Macbeth says \"Out, damned spot! out, I say!\" The \"Out, out\" belongs to Macbeth's \"brief candle\". \"We have scorch'd the snake\" is the wording here, not the \"scotch'd\" you may have on a card."
+    },
+    {
+      "question": "How many quotes should I learn for GCSE English?",
+      "answer": "The mark scheme does not publish a number. Learn fewer lines than you are tempted to, and know the act and scene well enough to place them. A quotation you cannot find in the story will not help you. The lines on this page are a bank to choose from, not a list to memorise in full."
+    },
+    {
+      "question": "What is the difference between \"what's done is done\" and \"What's done cannot be undone\"?",
+      "answer": "Both are Lady Macbeth. The first is in Act 3 Scene 2, when she still thinks the past can be left alone. The second is in Act 5 Scene 1, while she is sleepwalking. The added words \"cannot be undone\" are the change. If you quote only one, say which scene you are in."
+    },
+    {
+      "question": "What if my school edition looks slightly different?",
+      "answer": "It will. Punctuation, a few verbs, and the line numbers move between editions. Keep the act and scene, check the spelling of any odd word, and do not invent a line number from this page if your copy counts differently. This page follows Gutenberg eBook 1533 so the wording can be checked. Your exam copy is the one to memorise."
+    }
+  ],
+  "quotes": [
+    {
+      "id": "a1s1-fair-foul",
+      "text": "Fair is foul, and foul is fair: Hover through the fog and filthy air.",
+      "speaker": "The Witches",
+      "themes": [
+        "the supernatural",
+        "appearance and reality"
+      ],
+      "context": "The witches close the first scene, after they have agreed to meet Macbeth on the heath.",
+      "analysis": "The line makes bad weather and bad morals sound like the same fact. Macbeth will echo it in the next scene he appears in, so the play starts by tying his voice to theirs.",
+      "act": 1,
+      "scene": 1,
+      "lineStart": 12,
+      "lineEnd": 13
+    },
+    {
+      "id": "a1s3-foul-fair",
+      "text": "So foul and fair a day I have not seen.",
+      "speaker": "Macbeth",
+      "themes": [
+        "the supernatural",
+        "appearance and reality"
+      ],
+      "context": "Macbeth and Banquo enter after the battle. This is Macbeth's first line.",
+      "analysis": "He has not heard the witches yet, and he already speaks their paradox. Use it with their \"Fair is foul\" and you can argue the temptation meets a mind that is ready for it.",
+      "act": 1,
+      "scene": 3,
+      "lineStart": 38,
+      "lineEnd": 38
+    },
+    {
+      "id": "a1s3-glamis",
+      "text": "All hail, Macbeth! hail to thee, Thane of Glamis!",
+      "speaker": "First Witch",
+      "themes": [
+        "fate",
+        "ambition"
+      ],
+      "context": "The witches greet Macbeth on the heath. The second \"hail\" has no capital in this text.",
+      "analysis": "Glamis is the title he already holds, so the first greeting is not a prediction. It earns his trust, which is what makes the next two titles dangerous.",
+      "act": 1,
+      "scene": 3,
+      "lineStart": 49,
+      "lineEnd": 49
+    },
+    {
+      "id": "a1s3-cawdor",
+      "text": "All hail, Macbeth! hail to thee, Thane of Cawdor!",
+      "speaker": "Second Witch",
+      "themes": [
+        "fate",
+        "ambition"
+      ],
+      "context": "The second witch speaks immediately after the greeting to Glamis. Macbeth still believes Cawdor is alive.",
+      "analysis": "If Cawdor's title arrives, the third greeting starts to look like a promise. Quote it beside Ross bringing the news.",
+      "act": 1,
+      "scene": 3,
+      "lineStart": 50,
+      "lineEnd": 50
+    },
+    {
+      "id": "a1s3-king",
+      "text": "All hail, Macbeth! that shalt be king hereafter!",
+      "speaker": "Third Witch",
+      "themes": [
+        "fate",
+        "ambition",
+        "kingship"
+      ],
+      "context": "The third witch completes the greeting. The pronoun is \"that\", not \"thou\", in this text.",
+      "analysis": "\"Hereafter\" gives him a future and no method. The ambition is planted as a title he does not have to take, which is why the guilt later belongs to the way he reaches for it.",
+      "act": 1,
+      "scene": 3,
+      "lineStart": 51,
+      "lineEnd": 51
+    },
+    {
+      "id": "a1s3-instruments",
+      "text": "The instruments of darkness tell us truths; Win us with honest trifles, to betray’s",
+      "speaker": "Banquo",
+      "themes": [
+        "the supernatural",
+        "appearance and reality"
+      ],
+      "context": "Banquo warns Macbeth once the witches have vanished. \"Betray's\" is \"betray us\" in this printing, and the sentence continues onto the next line.",
+      "analysis": "Banquo does not say the witches lie. He says a small truth is the bait, and the honest trifle is Cawdor.",
+      "act": 1,
+      "scene": 3,
+      "lineStart": 132,
+      "lineEnd": 133
+    },
+    {
+      "id": "a1s4-stars",
+      "text": "Stars, hide your fires! Let not light see my black and deep desires.",
+      "speaker": "Macbeth",
+      "themes": [
+        "ambition",
+        "appearance and reality"
+      ],
+      "context": "Duncan has just named Malcolm Prince of Cumberland. Macbeth speaks this aside, after the words \"For in my way it lies.\"",
+      "analysis": "He already wants the light not to see him, before any plan with his wife. The stars are asked to help him hide, so nature is being recruited into the crime.",
+      "act": 1,
+      "scene": 4,
+      "lineStart": 57,
+      "lineEnd": 58
+    },
+    {
+      "id": "a1s5-milk",
+      "text": "It is too full o’ th’ milk of human kindness To catch the nearest way.",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "ambition",
+        "gender"
+      ],
+      "context": "She is reading his letter and judging the man, not yet speaking to him. This text prints \"o' th'\", not \"o' the\".",
+      "analysis": "Kindness is made into milk, something soft and bodily, and \"the nearest way\" is murder. She loves the ambition and distrusts the part of him that would refuse a shortcut.",
+      "act": 1,
+      "scene": 5,
+      "lineStart": 13,
+      "lineEnd": 14
+    },
+    {
+      "id": "a1s5-unsex",
+      "text": "Come, you spirits That tend on mortal thoughts, unsex me here,",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "gender",
+        "the supernatural",
+        "ambition"
+      ],
+      "context": "A messenger has told her Duncan is coming tonight. She calls on spirits before Macbeth arrives.",
+      "analysis": "\"Unsex me\" treats cruelty as something her womanhood would block. The spirits are invited in so that pity cannot get in the way of the crown.",
+      "act": 1,
+      "scene": 5,
+      "lineStart": 40,
+      "lineEnd": 41
+    },
+    {
+      "id": "a1s5-flower",
+      "text": "look like the innocent flower, But be the serpent under’t.",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "appearance and reality",
+        "ambition"
+      ],
+      "context": "Macbeth has come home, and she is telling him how to greet Duncan. The first word has no capital because it continues her sentence.",
+      "analysis": "The flower is the face Duncan will trust, and the serpent is the plan underneath it. This is the practical version of \"fair is foul\": deception as good manners.",
+      "act": 1,
+      "scene": 5,
+      "lineStart": 69,
+      "lineEnd": 70
+    },
+    {
+      "id": "a1s7-done",
+      "text": "If it were done when ’tis done, then ’twere well It were done quickly.",
+      "speaker": "Macbeth",
+      "themes": [
+        "ambition",
+        "guilt",
+        "kingship"
+      ],
+      "context": "Macbeth is alone, turning the murder over before Lady Macbeth comes to find him.",
+      "analysis": "He wants the killing to be a finished act, with no aftermath. The rest of the speech, and the rest of the play, show that it will not be finished when the blow is struck.",
+      "act": 1,
+      "scene": 7,
+      "lineStart": 1,
+      "lineEnd": 2
+    },
+    {
+      "id": "a1s7-vaulting",
+      "text": "I have no spur To prick the sides of my intent, but only Vaulting ambition, which o’erleaps itself",
+      "speaker": "Macbeth",
+      "themes": [
+        "ambition"
+      ],
+      "context": "He has listed the reasons not to kill Duncan. The sentence begins after a dash in the text, and this quotation stops before the next one.",
+      "analysis": "A spur is what a rider uses, so his only motive is ambition, pictured as a horse that jumps too far and falls. He knows the motive is not enough, and he says so before she persuades him.",
+      "act": 1,
+      "scene": 7,
+      "lineStart": 25,
+      "lineEnd": 27
+    },
+    {
+      "id": "a1s7-dare",
+      "text": "I dare do all that may become a man; Who dares do more is none.",
+      "speaker": "Macbeth",
+      "themes": [
+        "gender",
+        "ambition"
+      ],
+      "context": "Lady Macbeth has called his courage drunk and pale. This is his answer.",
+      "analysis": "He tries to make murder unmanly: going further than what \"becomes a man\" would make him nothing. She will turn the same word round and tell him that doing it is what made him a man.",
+      "act": 1,
+      "scene": 7,
+      "lineStart": 50,
+      "lineEnd": 51
+    },
+    {
+      "id": "a1s7-sticking",
+      "text": "We fail? But screw your courage to the sticking-place, And we’ll not fail.",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "ambition",
+        "gender"
+      ],
+      "context": "Macbeth has asked what happens if they fail. She repeats his question and then refuses it.",
+      "analysis": "\"We fail?\" throws the fear back as if it were hardly worth a sentence. The sticking-place is the notch that holds a string tight, so courage here is a mechanism, not a feeling.",
+      "act": 1,
+      "scene": 7,
+      "lineStart": 66,
+      "lineEnd": 68
+    },
+    {
+      "id": "a1s7-false-face",
+      "text": "False face must hide what the false heart doth know.",
+      "speaker": "Macbeth",
+      "themes": [
+        "appearance and reality",
+        "ambition"
+      ],
+      "context": "He has agreed to the murder. These are the last words of the scene, spoken to Lady Macbeth.",
+      "analysis": "The heart is already \"false\" before the face is arranged. Deception is no longer only her instruction, because he has accepted it as the method.",
+      "act": 1,
+      "scene": 7,
+      "lineStart": 92,
+      "lineEnd": 92
+    },
+    {
+      "id": "a2s1-dagger",
+      "text": "Is this a dagger which I see before me, The handle toward my hand?",
+      "speaker": "Macbeth",
+      "themes": [
+        "the supernatural",
+        "guilt",
+        "ambition"
+      ],
+      "context": "He is on his way to Duncan's room and has asked the servant to have the bell struck. The line after \"hand?\" runs on into a dash, which is not part of this quotation.",
+      "analysis": "The dagger leads him the way he was already going, so the vision looks like a push and also like an excuse. Ask whether the supernatural here creates the crime or decorates a decision he has made.",
+      "act": 2,
+      "scene": 1,
+      "lineStart": 40,
+      "lineEnd": 41
+    },
+    {
+      "id": "a2s2-sleep",
+      "text": "Macbeth does murder sleep",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt"
+      ],
+      "context": "He has returned from the chamber and says he heard a voice cry \"Sleep no more.\" In the text a dash follows this phrase.",
+      "analysis": "He names himself as the murderer of sleep, not only of Duncan. The line is useful because the punishment starts at once, in the voice he thinks he heard.",
+      "act": 2,
+      "scene": 2,
+      "lineStart": 42,
+      "lineEnd": 42
+    },
+    {
+      "id": "a2s2-neptune",
+      "text": "Will all great Neptune’s ocean wash this blood Clean from my hand? No, this my hand will rather The multitudinous seas incarnadine, Making the green one red.",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt"
+      ],
+      "context": "He is looking at his hands after the murder, while knocking continues outside.",
+      "analysis": "The ocean is not enough, and the blood would stain the sea instead of being lost in it. Set this beside his wife's \"little water\" and the two of them are already in different plays.",
+      "act": 2,
+      "scene": 2,
+      "lineStart": 70,
+      "lineEnd": 73
+    },
+    {
+      "id": "a2s2-water",
+      "text": "A little water clears us of this deed: How easy is it then!",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "guilt",
+        "appearance and reality"
+      ],
+      "context": "She is answering his horror at the blood on his hands and telling him to wash.",
+      "analysis": "\"A little water\" makes the murder sound like dirt. The exclamation \"How easy is it then!\" is the line the sleepwalking scene will ruin, so quote them as a pair.",
+      "act": 2,
+      "scene": 2,
+      "lineStart": 77,
+      "lineEnd": 78
+    },
+    {
+      "id": "a3s2-naught",
+      "text": "Naught’s had, all’s spent, Where our desire is got without content:",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "guilt",
+        "ambition",
+        "kingship"
+      ],
+      "context": "She is alone, before Macbeth enters. They are king and queen, and she is not celebrating.",
+      "analysis": "The crown was the desire, and having it has brought no content. This is the ambition plot turning into the guilt plot, in her voice rather than his.",
+      "act": 3,
+      "scene": 2,
+      "lineStart": 6,
+      "lineEnd": 7
+    },
+    {
+      "id": "a3s2-done-is-done",
+      "text": "what’s done is done.",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "guilt"
+      ],
+      "context": "She is telling Macbeth not to keep thinking about what cannot be repaired. The word \"what's\" has no capital because it follows a colon.",
+      "analysis": "She wants the past shut. In Act 5 the extra words \"cannot be undone\" show that shutting it has failed, so quote both and name the scene.",
+      "act": 3,
+      "scene": 2,
+      "lineStart": 14,
+      "lineEnd": 14
+    },
+    {
+      "id": "a3s2-scorch",
+      "text": "We have scorch’d the snake, not kill’d it.",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt",
+        "kingship",
+        "violence"
+      ],
+      "context": "Macbeth is answering her attempt to soothe him. This printing has \"scorch'd\", which many school editions emend to \"scotch'd\".",
+      "analysis": "The image is a snake that will close again and still has its tooth, so the murder has not made him safe. Check the verb against the edition you will have in the exam.",
+      "act": 3,
+      "scene": 2,
+      "lineStart": 15,
+      "lineEnd": 15
+    },
+    {
+      "id": "a3s2-scorpions",
+      "text": "O, full of scorpions is my mind, dear wife!",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt",
+        "fear"
+      ],
+      "context": "He has just been thinking about Banquo and Fleance. She has tried to tell him to be jovial with the guests.",
+      "analysis": "The tenderness of \"dear wife\" sits next to a mind full of stinging creatures. Guilt here is not remorse for Duncan so much as fear of the next threat.",
+      "act": 3,
+      "scene": 2,
+      "lineStart": 41,
+      "lineEnd": 41
+    },
+    {
+      "id": "a3s4-gory",
+      "text": "Thou canst not say I did it. Never shake Thy gory locks at me.",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt",
+        "the supernatural"
+      ],
+      "context": "Banquo's ghost has sat in Macbeth's place at the banquet, and the lords cannot see what he sees. This text puts a full stop after \"it\", not a colon.",
+      "analysis": "He denies the murder to the victim. The ghost does not need to speak, because Macbeth's denial is the confession the court hears.",
+      "act": 3,
+      "scene": 4,
+      "lineStart": 59,
+      "lineEnd": 60
+    },
+    {
+      "id": "a3s4-blood",
+      "text": "It will have blood, they say, blood will have blood.",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt",
+        "violence"
+      ],
+      "context": "The guests have gone. He is left with Lady Macbeth, working out what the ghost means.",
+      "analysis": "The proverb is a chain, and one killing demands another. He is already talking himself into the next murder.",
+      "act": 3,
+      "scene": 4,
+      "lineStart": 145,
+      "lineEnd": 145
+    },
+    {
+      "id": "a3s4-blood-far",
+      "text": "I am in blood Stepp’d in so far that, should I wade no more, Returning were as tedious as go o’er.",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt",
+        "violence",
+        "tyranny"
+      ],
+      "context": "Still after the banquet. He has decided to go back to the witches.",
+      "analysis": "Wading in blood makes the murders a river he is already in, so continuing feels easier than returning. There is no moral argument left, only the trouble of turning round.",
+      "act": 3,
+      "scene": 4,
+      "lineStart": 160,
+      "lineEnd": 162
+    },
+    {
+      "id": "a4s1-double",
+      "text": "Double, double, toil and trouble; Fire, burn; and cauldron, bubble.",
+      "speaker": "The Witches",
+      "themes": [
+        "the supernatural"
+      ],
+      "context": "The witches are around the cauldron. In this text a comma follows the second \"double\", and the next line is \"Fire, burn; and cauldron, bubble.\"",
+      "analysis": "A card that drops the second comma, or the punctuation in \"Fire, burn\", is not this line. The chant is a recipe, and Macbeth is about to walk in and drink the result.",
+      "act": 4,
+      "scene": 1,
+      "lineStart": 10,
+      "lineEnd": 11
+    },
+    {
+      "id": "a4s1-pricking",
+      "text": "By the pricking of my thumbs, Something wicked this way comes.",
+      "speaker": "Second Witch",
+      "themes": [
+        "the supernatural",
+        "tyranny"
+      ],
+      "context": "The charm is finished. Macbeth is about to enter, and the witch feels him before she sees him.",
+      "analysis": "Macbeth is now \"something wicked\", named the way the witches were named at the start. The line is a good turn in an essay about how far he has come since he called them imperfect speakers.",
+      "act": 4,
+      "scene": 1,
+      "lineStart": 44,
+      "lineEnd": 45
+    },
+    {
+      "id": "a4s1-beware",
+      "text": "Macbeth! Macbeth! Macbeth! Beware Macduff;",
+      "speaker": "First Apparition",
+      "themes": [
+        "fate",
+        "fear"
+      ],
+      "context": "The first apparition, an armed head, speaks and then is dismissed. The next line of the text contains dashes, so this quotation stops at the semicolon.",
+      "analysis": "The warning is also a nudge, and Macbeth will hear \"beware\" as \"kill\". A fate essay can show him trying to outrun a sentence by making it come true.",
+      "act": 4,
+      "scene": 1,
+      "lineStart": 78,
+      "lineEnd": 78
+    },
+    {
+      "id": "a4s1-woman-born",
+      "text": "Be bloody, bold, and resolute. Laugh to scorn The power of man, for none of woman born Shall harm Macbeth.",
+      "speaker": "Second Apparition",
+      "themes": [
+        "fate",
+        "violence"
+      ],
+      "context": "The second apparition speaks. This text puts a full stop after \"resolute\", then \"Laugh to scorn\".",
+      "analysis": "The safety is worded like a riddle he is too eager to take literally. \"Bloody, bold, and resolute\" gives him permission, and the exception is hidden in \"woman born\", which Macduff will reopen.",
+      "act": 4,
+      "scene": 1,
+      "lineStart": 86,
+      "lineEnd": 88
+    },
+    {
+      "id": "a4s1-birnam",
+      "text": "Macbeth shall never vanquish’d be, until Great Birnam wood to high Dunsinane hill Shall come against him.",
+      "speaker": "Third Apparition",
+      "themes": [
+        "fate",
+        "kingship"
+      ],
+      "context": "The third apparition gives him the promise about the wood. He answers that it will never happen.",
+      "analysis": "He hears an impossibility and treats it as safety. The audience can already imagine soldiers carrying branches, so the dramatic irony belongs to you in the essay: say what he fails to imagine.",
+      "act": 4,
+      "scene": 1,
+      "lineStart": 101,
+      "lineEnd": 103
+    },
+    {
+      "id": "a4s3-chickens",
+      "text": "What, all my pretty chickens and their dam At one fell swoop?",
+      "speaker": "Macduff",
+      "themes": [
+        "violence",
+        "loyalty"
+      ],
+      "context": "Ross has told him that Macbeth has had his wife and children killed. The line before, about the hell-kite, contains dashes and is not included here.",
+      "analysis": "\"Chickens\" and \"dam\" make the family a nest, and Macbeth the bird of prey. Macduff's grief is domestic and particular, which is a useful contrast with Macbeth's grand claims about fate.",
+      "act": 4,
+      "scene": 3,
+      "lineStart": 254,
+      "lineEnd": 255
+    },
+    {
+      "id": "a5s1-spot",
+      "text": "Out, damned spot! out, I say!",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "guilt"
+      ],
+      "context": "She is sleepwalking, rubbing her hands, while the Doctor and the Gentlewoman watch. The sentence goes on to \"One; two.\"",
+      "analysis": "It is not \"Out, out, damned spot.\" The second \"out\" belongs to Macbeth's candle in Act 5 Scene 5. Here one \"out\" is enough, and it fails: she is still washing.",
+      "act": 5,
+      "scene": 1,
+      "lineStart": 27,
+      "lineEnd": 27
+    },
+    {
+      "id": "a5s1-arabia",
+      "text": "Here’s the smell of the blood still: all the perfumes of Arabia will not sweeten this little hand.",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "guilt"
+      ],
+      "context": "Still sleepwalking. She can smell what the others cannot see.",
+      "analysis": "This answers her own \"A little water clears us of this deed.\" Perfume replaces water, and even Arabia is not enough. The hand she called easy to clean has become the thing she cannot stop smelling.",
+      "act": 5,
+      "scene": 1,
+      "lineStart": 38,
+      "lineEnd": 39
+    },
+    {
+      "id": "a5s1-undone",
+      "text": "What’s done cannot be undone.",
+      "speaker": "Lady Macbeth",
+      "themes": [
+        "guilt"
+      ],
+      "context": "Near the end of the sleepwalking, she tells an unseen person to give her his hand and come to bed.",
+      "analysis": "In Act 3 she said \"what's done is done\", as if the story could be closed. \"Cannot be undone\" admits there is no closing it, and that change of phrase is the essay.",
+      "act": 5,
+      "scene": 1,
+      "lineStart": 51,
+      "lineEnd": 51
+    },
+    {
+      "id": "a5s3-sere",
+      "text": "I have liv’d long enough: my way of life Is fall’n into the sere, the yellow leaf;",
+      "speaker": "Macbeth",
+      "themes": [
+        "kingship",
+        "tyranny"
+      ],
+      "context": "He is in Dunsinane, arming, after the servant has brought news of the English force. This text prints \"sere\", where many editions print \"sear\".",
+      "analysis": "The leaf is yellow and dry, so the king's life is already autumn. Nothing that should come with old age, honour, love or friends, is left to him.",
+      "act": 5,
+      "scene": 3,
+      "lineStart": 25,
+      "lineEnd": 26
+    },
+    {
+      "id": "a5s5-hereafter",
+      "text": "She should have died hereafter.",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt",
+        "kingship"
+      ],
+      "context": "Seyton has told him the queen is dead. The next line says there would have been a time for such a word.",
+      "analysis": "\"Hereafter\" can mean \"later\" or \"in any case\", and either way he cannot find a feeling that fits the news. The flatness is the character point, before the tomorrow speech begins.",
+      "act": 5,
+      "scene": 5,
+      "lineStart": 19,
+      "lineEnd": 19
+    },
+    {
+      "id": "a5s5-tomorrow",
+      "text": "Tomorrow, and tomorrow, and tomorrow, Creeps in this petty pace from day to day, To the last syllable of recorded time; And all our yesterdays have lighted fools The way to dusty death. Out, out, brief candle! Life’s but a walking shadow; a poor player, That struts and frets his hour upon the stage, And then is heard no more: it is a tale Told by an idiot, full of sound and fury, Signifying nothing.",
+      "speaker": "Macbeth",
+      "themes": [
+        "guilt",
+        "kingship",
+        "fate"
+      ],
+      "context": "He goes on from the news of her death. These lines are continuous in the speech, and none of them contains a dash in this text.",
+      "analysis": "Time is a crawl, the candle is life, and the actor is heard no more. \"Out, out, brief candle\" is his line, and the speech moves from her death to \"nothing\" because the murders have emptied the world.",
+      "act": 5,
+      "scene": 5,
+      "lineStart": 21,
+      "lineEnd": 30
+    },
+    {
+      "id": "a5s8-lay-on",
+      "text": "lay on, Macduff; And damn’d be him that first cries, “Hold, enough!”",
+      "speaker": "Macbeth",
+      "themes": [
+        "violence",
+        "fate"
+      ],
+      "context": "Macduff has told him he was from his mother's womb untimely ripped, and Macbeth chooses to fight anyway. \"Lay\" has no capital because it continues the sentence.",
+      "analysis": "The words are \"lay on\", not \"lead on\". He is telling Macduff to strike, and cursing the man who surrenders first, after the prophecies have collapsed.",
+      "act": 5,
+      "scene": 8,
+      "lineStart": 38,
+      "lineEnd": 39
+    },
+    {
+      "id": "a5s8-butcher",
+      "text": "Of this dead butcher, and his fiend-like queen,",
+      "speaker": "Malcolm",
+      "themes": [
+        "tyranny",
+        "kingship"
+      ],
+      "context": "Malcolm's last speech. Macduff has brought in Macbeth's head, and Malcolm is settling the new reign.",
+      "analysis": "\"Butcher\" and \"fiend-like\" are the winners' names for the couple, and they are deliberately smaller than the voices we have been listening to. End a tyranny paragraph here, and notice that Malcolm also needs the story to be simple.",
+      "act": 5,
+      "scene": 8,
+      "lineStart": 80,
+      "lineEnd": 80
+    }
+  ]
+}
