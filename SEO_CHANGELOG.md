@@ -2,7 +2,7 @@
 
 ## 2026-09-28: site cleanup
 - Date merged: 
-- PR: 
+- PR: #16 https://github.com/Al2800/Book-Viewer/pull/16
 - Page URL(s) changed:
   - https://bookquotes.uk/
   - https://bookquotes.uk/guides
