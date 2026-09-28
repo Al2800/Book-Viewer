@@ -1,5 +1,18 @@
 # SEO Changelog
 
+## 2026-09-28: find a quote and its page number
+- Date merged: 
+- PR: #24 https://github.com/Al2800/Book-Viewer/pull/24
+- Page URL(s) changed:
+  - https://bookquotes.uk/guides/book-quote-finder-iphone
+  - https://bookquotes.uk/guides
+  - https://bookquotes.uk/
+  - https://bookquotes.uk/sitemap.xml
+- Search query or queries that prompted it: "how to find a quote in a book", "how to find the page number of a quote"
+- GSC numbers at the time: GSC: about 15 impressions site-wide in 28 days, page-level not pulled
+- What changed: Reworked the existing book-quote-finder guide, keeping the URL, so the title, meta description, H1 and first sentence answer how to find a quote and its page number. The page now covers Google Books search inside, Project Gutenberg and Internet Archive full-text search, find-in-page in ebooks, what a library catalogue can do, and BookQuotes for a paper copy you marked. App claims match the current exporters: Markdown, plain text, JSON, Notion as a Markdown file you import, and Obsidian. No CSV and no Kindle import. Search is described as passage, margin note, title and author.
+- Result (check ~4 weeks after): 
+
 ## 2026-09-28: GCSE English quote bank
 - Date merged: 
 - PR: #23 https://github.com/Al2800/Book-Viewer/pull/23
