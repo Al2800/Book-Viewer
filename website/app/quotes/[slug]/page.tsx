@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { QuoteBank } from '@/components/quotes/QuoteBank'
-import { getQuoteHub, quoteHubs } from '@/lib/quotes'
+import { getQuoteHub, quoteHubs, type QuoteHub } from '@/lib/quotes'
 import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
 
 type QuotePageProps = {
@@ -49,13 +49,19 @@ export function generateStaticParams() {
   return quoteHubs.map((hub) => ({ slug: hub.slug }))
 }
 
+function hubDescription(hub: QuoteHub) {
+  return (
+    hub.metaDescription ??
+    'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.'
+  )
+}
+
 export async function generateMetadata({ params }: QuotePageProps): Promise<Metadata> {
   const { slug } = await params
   const hub = getQuoteHub(slug)
   if (!hub) return {}
 
-  const description =
-    'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.'
+  const description = hubDescription(hub)
 
   return {
     title: hub.title,
@@ -79,18 +85,19 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
   if (!hub) notFound()
 
   const canonicalUrl = `https://bookquotes.uk/quotes/${hub.slug}`
+  const description = hubDescription(hub)
+  const pageFaqs = hub.faqs ?? faqs
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: hub.title,
-    description:
-      'Thirty-seven A Christmas Carol quotes for GCSE, checked against Dickens word for word. Each line has its stave, speaker, context and a short essay note.',
+    description,
     datePublished: hub.publishedISO,
     dateModified: hub.updatedISO,
     author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk/' },
     publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk/' },
     mainEntityOfPage: canonicalUrl,
-    citation: hub.sourceUrl,
+    ...(hub.sourceUrl ? { citation: hub.sourceUrl } : {}),
   }
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -101,6 +108,18 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
       { '@type': 'ListItem', position: 3, name: hub.title, item: canonicalUrl },
     ],
   }
+  const faqSchema = hub.faqs
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: hub.faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+        })),
+      }
+    : null
+
   const quotationSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -108,12 +127,14 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
     itemListElement: hub.quotes.map((quote, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      item: {
+        item: {
         '@type': 'Quotation',
         text: quote.text,
-        ...(quote.speaker === 'Narrator'
-          ? {}
-          : { spokenByCharacter: { '@type': 'Person', name: quote.speaker } }),
+        ...(quote.citation
+          ? { creator: { '@type': 'Person', name: quote.speaker } }
+          : quote.speaker === 'Narrator'
+            ? {}
+            : { spokenByCharacter: { '@type': 'Person', name: quote.speaker } }),
       },
     })),
   }
@@ -128,42 +149,114 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
               <ArrowLeft className="w-4 h-4" />
               All quotes
             </Link>
-            <p className="font-ui text-sm text-ink-medium mb-4">GCSE English Literature</p>
+            <p className="font-ui text-sm text-ink-medium mb-4">{hub.eyebrow ?? 'GCSE English Literature'}</p>
             <h1 className="text-balance mb-6">{hub.title}</h1>
-            <p className="text-xl text-ink-dark max-w-2xl mb-4">
-              These are key A Christmas Carol quotes for GCSE English, arranged by stave, character and theme, and checked word for word against Dickens&apos;s text.
-            </p>
-            <p className="text-lg text-ink-medium max-w-2xl mb-4">
-              There are {hub.quotes.length}. Each one gives the stave, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list. The quotations stay in stave order underneath, so you can still read the book through.
-            </p>
-            <p className="font-ui text-sm text-ink-medium">
-              Source:{' '}
-              <a href={hub.sourceUrl} className="underline underline-offset-4" rel="noopener noreferrer">
-                {hub.sourceName}
-              </a>
-              . Double hyphens inside a quotation are printed that way in that text.
-            </p>
+            {hub.intro ? (
+              hub.intro.map((paragraph, index) => (
+                <p
+                  key={paragraph}
+                  className={
+                    index === 0
+                      ? 'text-xl text-ink-dark max-w-2xl mb-4'
+                      : 'text-lg text-ink-medium max-w-2xl mb-4'
+                  }
+                >
+                  {paragraph}
+                </p>
+              ))
+            ) : (
+              <>
+                <p className="text-xl text-ink-dark max-w-2xl mb-4">
+                  These are key A Christmas Carol quotes for GCSE English, arranged by stave, character and theme, and checked word for word against Dickens&apos;s text.
+                </p>
+                <p className="text-lg text-ink-medium max-w-2xl mb-4">
+                  There are {hub.quotes.length}. Each one gives the stave, who speaks, a sentence of what is happening, and a short note on how you might use the line in an essay. Filters narrow the list. The quotations stay in stave order underneath, so you can still read the book through.
+                </p>
+              </>
+            )}
+            {hub.sourcesArePerQuote ? (
+              <p className="font-ui text-sm text-ink-medium">{hub.sourceNote}</p>
+            ) : (
+              <p className="font-ui text-sm text-ink-medium">
+                Source:{' '}
+                <a href={hub.sourceUrl} className="underline underline-offset-4" rel="noopener noreferrer">
+                  {hub.sourceName}
+                </a>
+                . Double hyphens inside a quotation are printed that way in that text.
+              </p>
+            )}
           </header>
 
           <div className="bg-paper-warm border-y border-subtle">
             <div className="container-narrow py-12 md:py-16">
-              <QuoteBank quotes={hub.quotes} />
+              <QuoteBank
+                quotes={hub.quotes}
+                mode={hub.groupBy ?? 'stave'}
+                themeOrder={hub.themeOrder}
+                themeHeadings={hub.themeHeadings}
+              />
+
+              {hub.misattributions && hub.misattributions.length > 0 && (
+                <section className="mt-4 pt-10 border-t border-subtle">
+                  <h2 className="mb-5">Often misattributed</h2>
+                  {hub.misattributionIntro && (
+                    <p className="text-lg text-ink-dark mb-8">{hub.misattributionIntro}</p>
+                  )}
+                  <div className="space-y-8">
+                    {hub.misattributions.map((item) => (
+                      <article key={item.id}>
+                        <h3 className="text-xl mb-2">{item.claim}</h3>
+                        <p className="text-lg text-ink-dark mb-3">{item.detail}</p>
+                        <p className="font-ui text-sm text-ink-medium">
+                          <a href={item.sourceUrl} className="underline underline-offset-4" rel="noopener noreferrer">
+                            {item.sourceName}
+                          </a>
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <section className="mt-4 pt-10 border-t border-subtle">
-                <h2 className="mb-5">Build your own quote bank from the copy you have marked</h2>
-                <p className="text-lg text-ink-dark mb-4">
-                  A printed list is a start. The bank that helps in an exam is the one you made from your own book: the line you underlined, and a note in your words about why it is there.
-                </p>
-                <p className="text-lg text-ink-dark mb-4">
-                  Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the stave with the sentence. Add a tag only when you would reach for it in a paragraph: poverty, family, redemption.
-                </p>
-                <p className="text-lg text-ink-dark mb-6">
-                  BookQuotes is an iPhone app for that job. On capture it can detect the page number. You name your own markings, and collections and tags keep one theme together. It does not import Kindle highlights. The steps are written out in{' '}
-                  <Link href="/guides/how-to-save-quotes-from-physical-books" className="underline underline-offset-4">
-                    how to save quotes from physical books
-                  </Link>
-                  .
-                </p>
+                <h2 className="mb-5">
+                  {hub.slug === 'about-reading'
+                    ? 'Keep the lines you actually stopped for'
+                    : 'Build your own quote bank from the copy you have marked'}
+                </h2>
+                {hub.slug === 'about-reading' ? (
+                  <>
+                    <p className="text-lg text-ink-dark mb-4">
+                      A list like this is a start. The lines you will want again are the ones you stopped for, in a book that is yours.
+                    </p>
+                    <p className="text-lg text-ink-dark mb-4">
+                      Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the page number with the sentence. Add a tag only when you would look for it later: a character, a mood, a book you mean to reread.
+                    </p>
+                    <p className="text-lg text-ink-dark mb-6">
+                      BookQuotes is an iPhone app for that job. On capture it can detect the page number. You name your own markings, so the underline or the star means what you decided it means. Collections and tags keep one theme together. It does not import Kindle highlights. The steps are written out in{' '}
+                      <Link href="/guides/how-to-save-quotes-from-physical-books" className="underline underline-offset-4">
+                        how to save quotes from physical books
+                      </Link>
+                      .
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-lg text-ink-dark mb-4">
+                      A printed list is a start. The bank that helps in an exam is the one you made from your own book: the line you underlined, and a note in your words about why it is there.
+                    </p>
+                    <p className="text-lg text-ink-dark mb-4">
+                      Finish the page before you pick up the phone. Photograph the marked lines, check every word against the print, and keep the stave with the sentence. Add a tag only when you would reach for it in a paragraph: poverty, family, redemption.
+                    </p>
+                    <p className="text-lg text-ink-dark mb-6">
+                      BookQuotes is an iPhone app for that job. On capture it can detect the page number. You name your own markings, and collections and tags keep one theme together. It does not import Kindle highlights. The steps are written out in{' '}
+                      <Link href="/guides/how-to-save-quotes-from-physical-books" className="underline underline-offset-4">
+                        how to save quotes from physical books
+                      </Link>
+                      .
+                    </p>
+                  </>
+                )}
                 <a
                   href={seoAppStoreUrl}
                   target="_blank"
@@ -176,9 +269,9 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
               </section>
 
               <section className="mt-14 pt-10 border-t border-subtle">
-                <h2 className="mb-6">Questions students ask</h2>
+                <h2 className="mb-6">{hub.faqHeading ?? 'Questions students ask'}</h2>
                 <div className="space-y-7">
-                  {faqs.map((faq) => (
+                  {pageFaqs.map((faq) => (
                     <div key={faq.question}>
                       <h3 className="text-xl mb-2">{faq.question}</h3>
                       <p className="text-lg text-ink-dark">{faq.answer}</p>
@@ -193,6 +286,9 @@ export default async function QuoteHubPage({ params }: QuotePageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(quotationSchema) }} />
+      {faqSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      )}
       <Footer />
     </>
   )

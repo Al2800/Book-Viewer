@@ -1,0 +1,476 @@
+{
+  "slug": "about-reading",
+  "title": "Quotes about reading, with the book named",
+  "description": "Quotes about reading and books, checked against the work they come from, with the chapter or essay and a note on lines often given to the wrong author.",
+  "metaDescription": "Thirty-six quotes about reading and books, each with the work and the chapter. Checked against a named text, plus four lines that are often misattributed.",
+  "eyebrow": "Reading",
+  "indexLabel": "Reading",
+  "publishedISO": "2026-09-28",
+  "updatedISO": "2026-09-28",
+  "sourceName": "Listed under each quotation",
+  "sourceUrl": "",
+  "sourcesArePerQuote": true,
+  "sourceNote": "Each quotation links to the text it was checked against. Where Project Gutenberg prints the work, that is the link.",
+  "groupBy": "theme",
+  "themeOrder": ["Escape", "Empathy", "Childhood", "Libraries", "Rereading", "Choosing"],
+  "themeHeadings": {
+    "Choosing": "Choosing what to read"
+  },
+  "intro": [
+    "These are quotes about reading and about books, taken from the works themselves rather than from a list that forgot to name the book.",
+    "There are 36. Each one gives the work and the chapter or essay, a sentence of what is going on, and a short note. Filters narrow the list by author and by theme. Underneath, the lines stay in theme order: escape, empathy, childhood, libraries, rereading, and choosing what to read.",
+    "Public-domain authors are quoted as the text has them, including a lowercase opening where the sentence starts earlier. A line still in copyright is not here. If it could not be checked against a primary text, it was left out."
+  ],
+  "faqHeading": "Questions readers ask",
+  "misattributionIntro": "These four lines are everywhere, usually with a famous name attached. The name does not survive a look at the source.",
+  "misattributions": [
+    {
+      "id": "cicero-soul",
+      "claim": "“A room without books is like a body without a soul” is given to Cicero. Sometimes the room is a house.",
+      "detail": "Quote Investigator found no evidence that Cicero wrote the adage. He did write to Atticus, in the letter numbered 4.8, that once Tyrannio had arranged his books the house seemed to have acquired a soul: mens addita videtur meis aedibus. The neat comparison of a room with a body shows up much later. The earliest version QI has found with Cicero’s name on it is in an 1844 book by Mrs Ashton Yates.",
+      "sourceName": "Quote Investigator, 24 February 2023",
+      "sourceUrl": "https://quoteinvestigator.com/2023/02/24/books-soul/"
+    },
+    {
+      "id": "twain-cannot-read",
+      "claim": "“The man who does not read has no advantage over the man who cannot read” is given to Mark Twain. A common variant says “a person who won’t read”.",
+      "detail": "Quote Investigator found no substantive evidence that Twain wrote it. He died in 1910. The earliest close wording QI located is an unattributed line in 1914, in a piece reprinted from The Dodge Idea, about people throwing advertising away unread. The first link to Twain that QI found is from 1945. Twain did publish a different line about books, in Following the Equator, and that one is in the list above.",
+      "sourceName": "Quote Investigator, 11 December 2012",
+      "sourceUrl": "https://quoteinvestigator.com/2012/12/11/cannot-read/"
+    },
+    {
+      "id": "lewis-alone",
+      "claim": "“We read to know we are not alone” is given to C. S. Lewis.",
+      "detail": "William Nicholson wrote the screenplay of Shadowlands. He told The Arts Desk that the line is in the film, not in the play, and that Lewis never said it. Nicholson put the sentence in the mouth of the character.",
+      "sourceName": "The Arts Desk, interview with William Nicholson",
+      "sourceUrl": "https://theartsdesk.com/theatre/theartsdesk-qa-playwright-william-nicholson"
+    },
+    {
+      "id": "emerson-meals",
+      "claim": "“I cannot remember the books I’ve read any more than the meals I have eaten; even so, they have made me” is given to Ralph Waldo Emerson.",
+      "detail": "Quote Investigator has not found that sentence in Emerson’s writing. He died in 1882. The earliest strong match QI found is in the Harvard Graduates’ Magazine for June 1896, where Charles Gordon Ames reports that “Emerson” spoke a different wording, about forgotten books and dinners. The form that circulates now is later still. Emerson’s address The American Scholar does talk about reading, and those sentences are in the list above.",
+      "sourceName": "Quote Investigator, 20 June 2016",
+      "sourceUrl": "https://quoteinvestigator.com/2016/06/20/books/"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Where do these quotes about reading come from?",
+      "answer": "Each line was checked against a named edition, usually a Project Gutenberg ebook of a public-domain text. The link under the quotation goes to that ebook. If a line could not be found in a primary text, it is not on this page."
+    },
+    {
+      "question": "Why is “there is no enjoyment like reading” here, if Austen is making fun of it?",
+      "answer": "Caroline Bingley says it in Pride and Prejudice, Chapter 11, then yawns and throws the book aside. It is in the novel. It is not Jane Austen’s advice. The sentence is here so you can see the scene, rather than a card that cuts the yawn."
+    },
+    {
+      "question": "Can I put these lines on a bookmark or a classroom wall?",
+      "answer": "The public-domain lines can be copied in full. Keep the author and the work with the sentence. This page does not carry lines that are still in copyright. Page numbers are not given, because they change with the edition. The chapter does not."
+    },
+    {
+      "question": "What about the lines everyone shares that are not in the list?",
+      "answer": "Four of the common ones are in the section called Often misattributed, with a source for the correction. A line is left out when it cannot be tied to a book, an essay, or a recorded interview. Familiar is not the same as sourced."
+    },
+    {
+      "question": "How do I keep the lines I mark in my own books?",
+      "answer": "A list on a website is someone else’s choice. The set you will use is the one you underlined. Photograph the page, check the words against the print, and keep the page number with the sentence. BookQuotes can detect the page number on capture. You name your own markings, and collections and tags keep one theme together. It does not import Kindle highlights."
+    }
+  ],
+  "quotes": [
+    {
+      "id": "dickinson-frigate",
+      "text": "There is no frigate like a book\nTo take us lands away,\nNor any coursers like a page\nOf prancing poetry.\nThis traverse may the poorest take\nWithout oppress of toll;\nHow frugal is the chariot\nThat bears a human soul!",
+      "speaker": "Emily Dickinson",
+      "themes": ["Escape", "Childhood"],
+      "citation": "Emily Dickinson · Poems, Third Series (1896), XVI, “A Book”",
+      "sourceName": "Project Gutenberg eBook 12242",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/12242",
+      "context": "The 1896 volume edited by Mabel Loomis Todd and T. W. Higginson prints this as poem XVI in the third series, under the title “A Book”. The even lines are indented in that printing.",
+      "analysis": "The poem is a fare, not a lecture. A ship, a horse, a chariot: three ways of leaving, and the last line says the ride is cheap. It is already the length of a bookmark, which is why it gets printed on them. The book it comes from is a book of poems, not a book of advice."
+    },
+    {
+      "id": "keller-utopia",
+      "text": "In a word, literature is my Utopia. Here I am not disfranchised. No barrier of the senses shuts me out from the sweet, gracious discourse of my book-friends.",
+      "speaker": "Helen Keller",
+      "themes": ["Escape"],
+      "citation": "Helen Keller · The Story of My Life, Chapter 21",
+      "sourceName": "Project Gutenberg eBook 2397",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/2397",
+      "context": "Chapter 21 is Keller’s account of the books she loves. The sentence closes that chapter. The next chapter turns to other pleasures.",
+      "analysis": "Utopia here is not a country inside a novel. It is the conversation she can hold when a room of people is shut to her. “Disfranchised” is doing the work: reading is the place where the usual exclusions do not apply."
+    },
+    {
+      "id": "montaigne-travel",
+      "text": "I never travel without books, either in peace or war; and yet sometimes I pass over several days, and sometimes months, without looking on them.",
+      "speaker": "Michel de Montaigne",
+      "themes": ["Escape"],
+      "citation": "Michel de Montaigne · Essays, Book 3, Chapter 3, “Of Three Commerces”, translated by Charles Cotton",
+      "sourceName": "Project Gutenberg eBook 3600",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/3600",
+      "context": "In “Of Three Commerces” Montaigne is talking about the company he keeps: people, women, and books. This sentence is about the third. The wording is Charles Cotton’s translation, in the 1877 edition edited by William Carew Hazlitt.",
+      "analysis": "The joke is that the books do their job unopened. He likes knowing they are in the luggage. A few lines later he says the pleasure is the right to read them when he feels like it, not the duty to get through them."
+    },
+    {
+      "id": "copperfield-for-life",
+      "text": "When I think of it, the picture always rises in my mind, of a summer evening, the boys at play in the churchyard, and I sitting on my bed, reading as if for life.",
+      "speaker": "Charles Dickens",
+      "themes": ["Escape", "Childhood"],
+      "citation": "Charles Dickens · David Copperfield, Chapter 4, “I Fall into Disgrace”",
+      "sourceName": "Project Gutenberg eBook 766",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/766",
+      "context": "David is remembering the books in the little room next to his bedroom, before he is sent away to school. The boys outside are playing. He is not.",
+      "analysis": "“As if for life” is not a slogan about literacy. It is a child reading because the house is a bad place to be in. The next sentences turn the churchyard into the settings of the novels. The books do not decorate the childhood. They are the way out of the evening."
+    },
+    {
+      "id": "douglass-more",
+      "text": "The more I read, the more I was led to abhor and detest my enslavers.",
+      "speaker": "Frederick Douglass",
+      "themes": ["Empathy"],
+      "citation": "Frederick Douglass · Narrative of the Life of Frederick Douglass, an American Slave, Chapter 7",
+      "sourceName": "Project Gutenberg eBook 23",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/23",
+      "context": "In Chapter 7 Douglass describes reading Sheridan’s speeches and other books after he had learned to read in Baltimore. The sentence follows his account of how those arguments answered the case for slavery, and then made his own position harder to bear.",
+      "analysis": "This is not reading as comfort. The books give him a clearer view of the people who hold power over him, and the clearer view hurts. If you are writing about empathy, notice that the feeling runs towards anger and judgement, not towards a warm sense of mankind."
+    },
+    {
+      "id": "douglass-pathway",
+      "text": "From that moment, I understood the pathway from slavery to freedom.",
+      "speaker": "Frederick Douglass",
+      "themes": ["Empathy"],
+      "citation": "Frederick Douglass · Narrative of the Life of Frederick Douglass, an American Slave, Chapter 6",
+      "sourceName": "Project Gutenberg eBook 23",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/23",
+      "context": "Hugh Auld has just told his wife to stop teaching Douglass to read, because literacy would unfit him for slavery. Douglass hears the prohibition as a map.",
+      "analysis": "The pathway is not a metaphor he found in a poem. It is the lesson inside the ban. Auld says what reading will do, and Douglass decides to do that. The sentence belongs with the Chapter 7 line: first the discovery that reading is the way out, then the discovery of what the books make him feel."
+    },
+    {
+      "id": "frankenstein-books",
+      "text": "I can hardly describe to you the effect of these books. They produced in me an infinity of new images and feelings, that sometimes raised me to ecstasy, but more frequently sunk me into the lowest dejection.",
+      "speaker": "Mary Shelley",
+      "themes": ["Empathy"],
+      "citation": "Mary Shelley · Frankenstein, Chapter 15 (the 24-chapter text)",
+      "sourceName": "Project Gutenberg eBook 84",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/84",
+      "context": "The creature is telling Victor what he found in the satchel: Paradise Lost, Plutarch’s Lives, and The Sorrows of Werter. Gutenberg eBook 84 prints the novel in 24 chapters, which is the shape of the 1831 text. “Sunk” is the verb in that text.",
+      "analysis": "He is not praising literature in the abstract. Three particular books arrive, and they give him other people’s lives before he has a place in any life of his own. The dejection matters as much as the ecstasy. Reading shows him a world that has no room for him yet."
+    },
+    {
+      "id": "whitman-camerado",
+      "text": "Camerado, this is no book,\nWho touches this touches a man,\n(Is it night? are we here together alone?)",
+      "speaker": "Walt Whitman",
+      "themes": ["Empathy"],
+      "citation": "Walt Whitman · Leaves of Grass, “So Long!”",
+      "sourceName": "Project Gutenberg eBook 1322",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/1322",
+      "context": "“So Long!” is the closing poem of the “Songs of Parting” group in this text of Leaves of Grass. The three lines are the moment he stops pretending the book is an object.",
+      "analysis": "The claim is physical: a hand on the page is a hand on a person. It is a useful corrective to the idea that a quotation is a detachable sentence. Whitman wants the book to remain somebody. The parenthesis is a check, not a decoration. He asks whether the reader is actually there."
+    },
+    {
+      "id": "thoreau-era",
+      "text": "How many a man has dated a new era in his life from the reading of a book.",
+      "speaker": "Henry David Thoreau",
+      "themes": ["Empathy"],
+      "citation": "Henry David Thoreau · Walden, the chapter “Reading”",
+      "sourceName": "Project Gutenberg eBook 205",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/205",
+      "context": "The sentence sits in the “Reading” chapter, after Thoreau has been arguing that the right book can do more for a life than the morning or the spring. The next sentence says the book may exist which will explain our miracles.",
+      "analysis": "He does not name the book. That is the point. The era starts when a particular reader meets a particular volume, not when a list declares a book important. The full stop in this text is a full stop, not an exclamation mark."
+    },
+    {
+      "id": "wilde-shame",
+      "text": "The books that the world calls immoral are books that show the world its own shame.",
+      "speaker": "Oscar Wilde",
+      "themes": ["Empathy"],
+      "citation": "Oscar Wilde · The Picture of Dorian Gray, Chapter 19",
+      "sourceName": "Project Gutenberg eBook 174",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/174",
+      "context": "Lord Henry says this to Dorian late in the novel, then refuses to go on discussing literature and changes the subject to lunch. The preface makes a related claim in Wilde’s own voice. This sentence is Henry’s.",
+      "analysis": "Do not file it as Wilde’s motto without saying who speaks. Henry is performing. Even so, the line is a precise account of why some readers call a book dangerous: it has noticed them. The shame belongs to the world, not to the book."
+    },
+    {
+      "id": "eyre-window",
+      "text": "I mounted into the window-seat: gathering up my feet, I sat cross-legged, like a Turk; and, having drawn the red moreen curtain nearly close, I was shrined in double retirement.",
+      "speaker": "Charlotte Brontë",
+      "themes": ["Childhood", "Escape"],
+      "citation": "Charlotte Brontë · Jane Eyre, Chapter 1",
+      "sourceName": "Project Gutenberg eBook 1260",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/1260",
+      "context": "Jane has taken a book from the breakfast-room bookcase, chosen because it has pictures, and hidden in the window. The curtain and the glass make two walls. Outside is a wet November.",
+      "analysis": "The reading has not started yet. Brontë spends the sentence on the hiding place, because the hiding place is the point. A child who is not wanted in the room builds a smaller room. The book is the excuse and the furniture."
+    },
+    {
+      "id": "eyre-pictures",
+      "text": "Each picture told a story; mysterious often to my undeveloped understanding and imperfect feelings, yet ever profoundly interesting:",
+      "speaker": "Charlotte Brontë",
+      "themes": ["Childhood"],
+      "citation": "Charlotte Brontë · Jane Eyre, Chapter 1",
+      "sourceName": "Project Gutenberg eBook 1260",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/1260",
+      "context": "Jane is looking at the illustrations in Bewick’s History of British Birds. The colon is in the text: the sentence goes on to compare the pictures with the tales Bessie tells on winter evenings. The line starts at “Each” because that is where this sentence starts.",
+      "analysis": "She does not understand every picture, and she does not pretend to. Interest comes before comprehension. That is a better account of childhood reading than the idea that a child only likes what she can already explain."
+    },
+    {
+      "id": "copperfield-room",
+      "text": "From that blessed little room, Roderick Random, Peregrine Pickle, Humphrey Clinker, Tom Jones, the Vicar of Wakefield, Don Quixote, Gil Blas, and Robinson Crusoe, came out, a glorious host, to keep me company.",
+      "speaker": "Charles Dickens",
+      "themes": ["Childhood", "Escape"],
+      "citation": "Charles Dickens · David Copperfield, Chapter 4, “I Fall into Disgrace”",
+      "sourceName": "Project Gutenberg eBook 766",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/766",
+      "context": "The room is a leftover of David’s dead father. Nobody else in the house uses it. The sentence before this one says David had access because the room adjoined his own. The sentence after adds the Arabian Nights, with a double hyphen that this quotation stops before.",
+      "analysis": "Dickens names the books, which is more useful than calling them “the classics”. They are eighteenth-century novels, a mock-epic, and Crusoe: adventure, satire, and one man on an island. The company is fictional on purpose. The house is not offering him any other kind."
+    },
+    {
+      "id": "alcott-garret",
+      "text": "This was Jo’s favorite refuge, and here she loved to retire with half a dozen russets and a nice book, to enjoy the quiet and the society of a pet rat who lived near by and didn’t mind her a particle.",
+      "speaker": "Louisa May Alcott",
+      "themes": ["Childhood", "Escape"],
+      "citation": "Louisa May Alcott · Little Women, Chapter 3, “The Laurence Boy”",
+      "sourceName": "Project Gutenberg eBook 514",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/514",
+      "context": "Meg has come up the garret stairs and found Jo crying over The Heir of Redclyffe, eating apples on an old sofa. “Favorite” is the spelling in this text.",
+      "analysis": "The refuge is specific: apples, a rat, a bad sofa, one novel. Alcott does not generalise about girls and books. She shows the corner Jo actually uses. If you are looking for a picture of childhood reading, the rat is the detail that keeps it from becoming a poster."
+    },
+    {
+      "id": "tempest-library",
+      "text": "Me, poor man, my library\nWas dukedom large enough",
+      "speaker": "William Shakespeare",
+      "themes": ["Libraries"],
+      "citation": "William Shakespeare · The Tempest, Act 1, Scene 2",
+      "sourceName": "Project Gutenberg eBook 23042",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/23042",
+      "context": "Prospero is telling Miranda how he lost Milan. He says he neglected worldly ends, rapt in secret studies, and that his library was enough of a state. The sentence continues, in the next line, into the politics his brother wanted.",
+      "analysis": "It is not a cosy claim that books are better than power. Prospero is explaining a failure of government. The library was large enough for him, and that was the problem. He was not watching the dukedom. The line is still the clearest short statement in English of a library as a whole territory."
+    },
+    {
+      "id": "carlyle-university",
+      "text": "The true University of these days is a Collection of Books.",
+      "speaker": "Thomas Carlyle",
+      "themes": ["Libraries"],
+      "citation": "Thomas Carlyle · On Heroes, Hero-Worship, and The Heroic in History, Lecture V, “The Hero as Man of Letters”",
+      "sourceName": "Project Gutenberg eBook 1091",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/1091",
+      "context": "Carlyle has just said that the best a university can do is teach us to read. The capital letters on University and Collection of Books are in the text.",
+      "analysis": "He is arguing with the lecture hall, not decorating a library doorway. The collection comes after the teaching, and in his view it replaces a good deal of it. If you put the sentence on a wall, it is worth knowing he meant a challenge to professors, not a compliment to furniture."
+    },
+    {
+      "id": "thoreau-wealth",
+      "text": "Books are the treasured wealth of the world and the fit inheritance of generations and nations.",
+      "speaker": "Henry David Thoreau",
+      "themes": ["Libraries"],
+      "citation": "Henry David Thoreau · Walden, the chapter “Reading”",
+      "sourceName": "Project Gutenberg eBook 205",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/205",
+      "context": "Still in “Reading”. The next sentence says the oldest and best books stand naturally on the shelves of every cottage.",
+      "analysis": "“Inheritance” is the word to press. A library is not a personal hobby in this sentence. It is what one generation owes the next, and what a nation owes the people in the cottages, not only the people in the colleges. Pair it with Carlyle if you want two ways of saying that the books are the institution."
+    },
+    {
+      "id": "milton-lifeblood",
+      "text": "a good book is the precious life-blood of a master spirit, embalmed and treasured up on purpose to a life beyond life.",
+      "speaker": "John Milton",
+      "themes": ["Libraries"],
+      "citation": "John Milton · Areopagitica",
+      "sourceName": "Project Gutenberg eBook 608",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/608",
+      "context": "Areopagitica is Milton’s 1644 argument against licensing the press. The sentence begins in lowercase because it follows “Who kills a man kills a reasonable creature, God’s image; but he who destroys a good book, kills reason itself”.",
+      "analysis": "“Embalmed” is deliberate. A book is a preserved life, not a lively chat. Milton is telling Parliament what is destroyed when a book is suppressed. The library, in this light, is a place that keeps those lives from being spilled."
+    },
+    {
+      "id": "milton-kill",
+      "text": "as good almost kill a man as kill a good book.",
+      "speaker": "John Milton",
+      "themes": ["Libraries"],
+      "citation": "John Milton · Areopagitica",
+      "sourceName": "Project Gutenberg eBook 608",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/608",
+      "context": "The clause sits in a longer sentence about wariness. Milton has been discussing books that spring up like dragon’s teeth. Then he turns: unless you are careful, destroying a book is nearly as bad as killing a man.",
+      "analysis": "It is easy to quote this as a compliment to books. In context it is a warning about censorship. “Almost” matters. He does not say the two killings are identical. He says they are close enough that a government should be frightened of the second."
+    },
+    {
+      "id": "hazlitt-old",
+      "text": "I hate to read new books. There are twenty or thirty volumes that I have read over and over again, and these are the only ones that I have any desire ever to read at all.",
+      "speaker": "William Hazlitt",
+      "themes": ["Rereading"],
+      "citation": "William Hazlitt · “On Reading Old Books”, in The Plain Speaker (1826)",
+      "sourceName": "Project Gutenberg eBook 58408",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/58408",
+      "context": "These are the opening sentences of the essay. The Plain Speaker was published in 1826. Gutenberg eBook 58408 is volume 7 of the collected works, which prints The Plain Speaker.",
+      "analysis": "He is not advising you to avoid new books for moral reasons. He is describing a small shelf he trusts. Twenty or thirty is a real number, not “the canon”. The rest of the essay admits he did eventually sit down to Scott. The hatred is a pose he then complicates."
+    },
+    {
+      "id": "hazlitt-again",
+      "text": "When I take up a work that I have read before (the oftener the better) I know what I have to expect.",
+      "speaker": "William Hazlitt",
+      "themes": ["Rereading"],
+      "citation": "William Hazlitt · “On Reading Old Books”, in The Plain Speaker (1826)",
+      "sourceName": "Project Gutenberg eBook 58408",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/58408",
+      "context": "Later in the same essay. There is no comma in this text between the parenthesis and “I”. The next sentence compares a brand-new book to a strange dish.",
+      "analysis": "Rereading, for Hazlitt, is appetite with the anxiety taken out. He knows the book will not ambush him. That will not suit a reader who wants surprise. It suits a reader who wants a place to return to. The parenthesis is the method: repetition is the point, not a failure to move on."
+    },
+    {
+      "id": "eliot-hand",
+      "text": "Maggie turned from leaf to leaf, and read where the quiet hand pointed:",
+      "speaker": "George Eliot",
+      "themes": ["Rereading"],
+      "citation": "George Eliot · The Mill on the Floss, Book 4, Chapter 3, “A Voice from the Past”",
+      "sourceName": "Project Gutenberg eBook 6688",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/6688",
+      "context": "Maggie has picked up an old copy of Thomas à Kempis. The corners are turned down, and an earlier reader has marked passages in ink that has browned. The colon is in the text: it opens onto the marked sentences she then reads. The hand is “quiet” because that earlier reader is dead.",
+      "analysis": "This is rereading done by somebody else. Maggie’s first pass through the book is guided by a previous pen. It is the closest thing in these quotations to an annotation key: the marks are the reading. She does not begin at page one and hope for the best."
+    },
+    {
+      "id": "twain-classic",
+      "text": "“Classic.” A book which people praise and don't read.",
+      "speaker": "Mark Twain",
+      "themes": ["Rereading"],
+      "citation": "Mark Twain · Following the Equator, Chapter 25, Pudd’nhead Wilson’s New Calendar",
+      "sourceName": "Project Gutenberg eBook 2895",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/2895",
+      "context": "Chapter 25 opens with this entry, set under the heading of Pudd’nhead Wilson’s New Calendar. It is one of the mock maxims Twain uses as chapter epigraphs in the travel book. It is not the line about a man who cannot read. That one is dealt with below.",
+      "analysis": "The joke depends on the full stop after “Classic.” He defines the word as a social habit: praise without the hours. Put next to Hazlitt, it is the same subject from the other side. Hazlitt rereads a small shelf. Twain names the books that never get even one honest reading."
+    },
+    {
+      "id": "bacon-taste",
+      "text": "Some books are to be tasted, others to be swallowed, and some few to be chewed and digested; that is, some books are to be read only in parts; others to be read, but not curiously; and some few to be read wholly, and with diligence and attention.",
+      "speaker": "Francis Bacon",
+      "themes": ["Choosing"],
+      "citation": "Francis Bacon · Essays, “Of Studies”",
+      "sourceName": "Project Gutenberg eBook 575",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/575",
+      "context": "“Of Studies” in the Essays. “Not curiously” uses the older sense of curious: carefully, with close attention. It does not mean “without interest”.",
+      "analysis": "Bacon is giving permission to read badly, on purpose, most of the time. Only a few books deserve the whole of your attention. The tasting and swallowing are not insults. They are a way to get through the large number of books that are not the few. The gloss after the semicolon is his own, so you do not have to guess what the food metaphor means."
+    },
+    {
+      "id": "bacon-full",
+      "text": "Reading maketh a full man; conference a ready man; and writing an exact man.",
+      "speaker": "Francis Bacon",
+      "themes": ["Choosing"],
+      "citation": "Francis Bacon · Essays, “Of Studies”",
+      "sourceName": "Project Gutenberg eBook 575",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/575",
+      "context": "The same essay, a few sentences after the tasting and chewing. “Maketh” is the verb in this text.",
+      "analysis": "Reading is only the first of three. Bacon does not think a person stuffed with books is finished. Talk makes you quick, and writing makes you precise. If you only collect lines and never say them aloud or write them down, you have done the first third of the sentence."
+    },
+    {
+      "id": "bacon-weigh",
+      "text": "Read not to contradict and confute; nor to believe and take for granted; nor to find talk and discourse; but to weigh and consider.",
+      "speaker": "Francis Bacon",
+      "themes": ["Choosing"],
+      "citation": "Francis Bacon · Essays, “Of Studies”",
+      "sourceName": "Project Gutenberg eBook 575",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/575",
+      "context": "Still “Of Studies”, immediately before the sentence about tasting books. Three bad reasons to read, then one he will accept.",
+      "analysis": "The third bad reason is the one readers skip: reading in order to have something to say. Bacon has already praised conference, so he is not against talk. He is against using the book as a supply of remarks. Weighing is slower, and it does not perform well at dinner."
+    },
+    {
+      "id": "austen-stupid",
+      "text": "The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.",
+      "speaker": "Jane Austen",
+      "themes": ["Choosing"],
+      "citation": "Jane Austen · Northanger Abbey, Chapter 14. Henry Tilney to Catherine Morland.",
+      "sourceName": "Project Gutenberg eBook 121",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/121",
+      "context": "Catherine has suggested that gentlemen do not read novels. Henry disagrees, on Beechen Cliff, and then talks about finishing The Mysteries of Udolpho in two days. Eleanor remembers him reading it aloud and then walking off with the book.",
+      "analysis": "It is Henry’s line, in a flirtation, not a narrator’s decree. He is also showing off. The word “good” is doing quiet work: he has not said that every novel deserves the pleasure. Catherine is delighted, which is part of the scene. Quote him, and say he is talking to her."
+    },
+    {
+      "id": "austen-novel",
+      "text": "only some work in which the greatest powers of the mind are displayed, in which the most thorough knowledge of human nature, the happiest delineation of its varieties, the liveliest effusions of wit and humour, are conveyed to the world in the best-chosen language.",
+      "speaker": "Jane Austen",
+      "themes": ["Choosing"],
+      "citation": "Jane Austen · Northanger Abbey, Chapter 5. The narrator.",
+      "sourceName": "Project Gutenberg eBook 121",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/121",
+      "context": "The narrator is mocking the young lady who calls her book “only a novel”, and who would have been proud of a volume of the Spectator. The quotation starts at “only” because that is the pivot of the sentence. “Humour” is the spelling in this text.",
+      "analysis": "Austen stacks the praise until it becomes a rebuke. The novel, she says, is exactly the kind of book people apologise for. If you want a defence of fiction, this is the one she wrote in her own voice, unlike Henry’s line in Chapter 14 and unlike Caroline Bingley’s performance in Pride and Prejudice."
+    },
+    {
+      "id": "austen-bingley",
+      "text": "I declare, after all, there is no enjoyment like reading! How much sooner one tires of anything than of a book!",
+      "speaker": "Jane Austen",
+      "themes": ["Choosing"],
+      "citation": "Jane Austen · Pride and Prejudice, Chapter 11. Caroline Bingley.",
+      "sourceName": "Project Gutenberg eBook 1342",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/1342",
+      "context": "Caroline has been walking about the drawing-room at Netherfield, failing to get Mr Darcy’s attention. She picks up a book, yawns, and says this. Nobody answers. She yawns again and throws the book aside.",
+      "analysis": "The sentence is famous because it is easy to cut. Left whole, with the yawn, it is a picture of reading used as a pose. Austen’s own defence of novels is in Northanger Abbey, Chapter 5, and it does not sound like this. If you print Caroline’s line, print the throw as well."
+    },
+    {
+      "id": "johnson-inclination",
+      "text": "what we read with inclination makes a much stronger impression. If we read without inclination, half the mind is employed in fixing the attention; so there is but one half to be employed on what we read.",
+      "speaker": "Samuel Johnson",
+      "themes": ["Choosing"],
+      "citation": "Samuel Johnson, recorded by James Boswell · Life of Johnson, Friday 12 April 1776",
+      "sourceName": "Project Gutenberg eBook 1564",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/1564",
+      "context": "Boswell’s entry for Friday 12 April 1776, in the year marked 1776, aetat 67. Johnson has just said, in indirect speech, that for general improvement a man should read whatever his immediate inclination prompts him to, unless he has a science to learn. These two sentences are the direct speech that follows. The lowercase opening is Boswell’s quotation mark, not a new sentence of Johnson’s.",
+      "analysis": "The advice is not “read whatever you like and call it work”. Johnson sets the science aside and tells you to study that on purpose. For everything else, forcing the attention wastes half of it. A few lines later he says he read Amelia straight through, and that if a book catches you in the middle you should not go back to the beginning out of duty."
+    },
+    {
+      "id": "emerson-used",
+      "text": "Books are the best of things, well used; abused, among the worst.",
+      "speaker": "Ralph Waldo Emerson",
+      "themes": ["Choosing"],
+      "citation": "Ralph Waldo Emerson · “The American Scholar”, an address at Cambridge, 1837",
+      "sourceName": "Project Gutenberg eBook 16643",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/16643",
+      "context": "In the section of the address on books as the mind of the past. The next sentence asks what the right use is, and answers that books are for nothing but to inspire. A school edition on Gutenberg prints a footnote number after that later sentence. It is not part of this one.",
+      "analysis": "The semicolon is the whole argument. Emerson will not let the praise stand without the abuse. Using a book well, in the sentences around this one, means not becoming its satellite. He wants the reader to stay a system, not a moon."
+    },
+    {
+      "id": "emerson-inventor",
+      "text": "One must be an inventor to read well.",
+      "speaker": "Ralph Waldo Emerson",
+      "themes": ["Choosing"],
+      "citation": "Ralph Waldo Emerson · “The American Scholar”, an address at Cambridge, 1837",
+      "sourceName": "Project Gutenberg eBook 16643",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/16643",
+      "context": "Later in the same address. He has been saying there is creative reading as well as creative writing. The proverb that follows is about carrying wealth to the Indies if you want to bring wealth home.",
+      "analysis": "Reading well, here, is not a technique of underlining. It is an act that adds something. The sentence is short enough to be misused as a motto. Next to “Books are the best of things, well used”, it says the use has to be active or the book is among the worst things instead."
+    },
+    {
+      "id": "lamb-book",
+      "text": "I can read any thing which I call a book.",
+      "speaker": "Charles Lamb",
+      "themes": ["Choosing"],
+      "citation": "Charles Lamb · Last Essays of Elia (1833), “Detached Thoughts on Books and Reading”",
+      "sourceName": "Project Gutenberg eBook 10343",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/10343",
+      "context": "Lamb has just said he can read almost anything, from Shakespeare down and up. In the essay, “book” is italicised. He then lists the things in the shape of books that he will not count: court calendars, directories, almanacs, statutes, and a few historians.",
+      "analysis": "The freedom and the snobbery arrive together. He grants himself a wide range, then spends the next paragraph policing the word. It is a useful pair of sentences if you are deciding what belongs in a personal library. Lamb’s answer is not “everything printed”."
+    },
+    {
+      "id": "wilde-preface",
+      "text": "There is no such thing as a moral or an immoral book. Books are well written, or badly written. That is all.",
+      "speaker": "Oscar Wilde",
+      "themes": ["Choosing"],
+      "citation": "Oscar Wilde · The Picture of Dorian Gray, the preface",
+      "sourceName": "Project Gutenberg eBook 174",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/174",
+      "context": "The preface is a run of short statements in Wilde’s own voice, before the story begins. This one sits near the start. Later, in Chapter 19, Lord Henry says something harsher about books the world calls immoral. That line is separate, and it is Henry’s.",
+      "analysis": "Wilde is refusing the question “is this a good book for you?” and replacing it with a question about the writing. You do not have to accept the refusal. You do have to notice that the preface is not a character speaking in a scene. It is the author posting terms before you enter."
+    },
+    {
+      "id": "thoreau-read-well",
+      "text": "To read well, that is, to read true books in a true spirit, is a noble exercise, and one that will task the reader more than any exercise which the customs of the day esteem.",
+      "speaker": "Henry David Thoreau",
+      "themes": ["Choosing"],
+      "citation": "Henry David Thoreau · Walden, the chapter “Reading”",
+      "sourceName": "Project Gutenberg eBook 205",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/205",
+      "context": "In “Reading”, after Thoreau has compared old books to oracles. He goes on to say the training is like an athlete’s, and that books must be read as deliberately as they were written.",
+      "analysis": "“True books” is doing a lot of quiet excluding. He does not think every printed thing deserves this effort. The comparison with exercise is not motivational. He means the reading will cost more attention than the sports and errands the day already respects. Pair it with Bacon’s “not curiously” if you want the opposite permission."
+    },
+    {
+      "id": "augustine-read",
+      "text": "Take up and read; Take up and read.",
+      "speaker": "Augustine of Hippo",
+      "themes": ["Choosing"],
+      "citation": "Augustine · Confessions, Book 8, translated by E. B. Pusey",
+      "sourceName": "Project Gutenberg eBook 3296",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/3296",
+      "context": "Augustine is in a garden in Milan, in tears, and hears a child from a nearby house chanting these words. He cannot think of a game that uses them. He decides the voice is telling him to open the book and read the first passage he finds. Pusey’s translation prints both imperatives with a capital T. This edition of the Confessions marks Book 8 and does not number a chapter at the scene.",
+      "analysis": "The famous Latin is tolle lege. Pusey’s English is what is quoted here, because that is the text that was checked. The scene is not advice to read widely. It is one man opening one book at the place the page falls. The choosing is almost violent in its narrowness: the first sentence his eye hits."
+    }
+  ]
+}
