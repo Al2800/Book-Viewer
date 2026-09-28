@@ -52,7 +52,7 @@
     },
     {
       "question": "How many quotes should I learn for GCSE English?",
-      "answer": "The mark scheme does not publish a number. Learn fewer lines than you are tempted to, and know them well enough to place them in the right chapter. A quotation you cannot find in the story will not help you. The lines on this page are a bank to choose from, not a list to memorise in full."
+      "answer": "The exam board specifications do not set a number. Learn fewer lines than you are tempted to, and know them well enough to place them in the right chapter. A quotation you cannot find in the story will not help you. The lines on this page are a bank to choose from, not a list to memorise in full."
     },
     {
       "question": "Which famous Pride and Prejudice lines are easy to misremember?",
@@ -60,7 +60,7 @@
     },
     {
       "question": "What if my edition numbers the chapters by volume?",
-      "answer": "Many school copies number the chapters straight through, as this page does. Some still show the 1813 volume breaks, and a few restart the count in each volume. Volume II, Chapter 11 is Chapter 34 here. Volume III, Chapter 1 is Chapter 43. The headings give both. Check the line against the copy you will have in the exam, and keep the chapter rather than a page number. This page follows Project Gutenberg eBook 1342."
+      "answer": "Some editions number the chapters straight through, as this page does. Others keep the 1813 volume breaks and restart the count in each volume. Volume II, Chapter 11 is Chapter 34 here. Volume III, Chapter 1 is Chapter 43. The headings give both. The GCSE exam is closed book, so check the line against the copy you revise from, and keep the chapter rather than a page number. This page follows Project Gutenberg eBook 1342."
     }
   ],
   "quotes": [
@@ -105,7 +105,7 @@
       "text": "I could easily forgive his pride, if he had not mortified mine.",
       "speaker": "Elizabeth Bennet",
       "themes": ["pride"],
-      "context": "The morning after the assembly, at Lucas Lodge. Charlotte has said a man with family and fortune has a right to be proud. Elizabeth answers Charlotte. Mary is about to turn the same subject into a little lecture.",
+      "context": "The morning after the assembly, when the Lucases have come to Longbourn to talk over the ball. Charlotte has said a man with family and fortune has a right to be proud. Elizabeth answers Charlotte. Mary is about to turn the same subject into a little lecture.",
       "analysis": "She grants Darcy's pride and then makes her own the real objection. The line is useful because it admits the feeling is personal. She is not yet pretending to be a fair judge.",
       "chapter": 5
     },
@@ -114,7 +114,7 @@
       "text": "Vanity and pride are different things, though the words are often used synonymously. A person may be proud without being vain. Pride relates more to our opinion of ourselves; vanity to what we would have others think of us.",
       "speaker": "Mary Bennet",
       "themes": ["pride"],
-      "context": "Mary joins the same conversation at Lucas Lodge, straight after Elizabeth's remark. She is showing off a general idea from her reading. She is not describing Darcy from anything she has seen.",
+      "context": "Mary joins the same conversation at Longbourn, straight after Elizabeth's remark. She is showing off a general idea from her reading. She is not describing Darcy from anything she has seen.",
       "analysis": "The distinction is neater than the scene. Mary splits the words; Elizabeth has just shown how the two feelings tangle when you have been snubbed. Quote Mary if you want the definition, then show a character who fails to keep them apart.",
       "chapter": 5
     },
@@ -159,7 +159,7 @@
       "text": "My good opinion once lost is lost for ever.",
       "speaker": "Fitzwilliam Darcy",
       "themes": ["pride", "prejudice"],
-      "context": "The same Netherfield evening, a few speeches on. Elizabeth has been teasing him. He is listing his own faults and calls his temper resentful. He says this to her, not to a crowd.",
+      "context": "The same Netherfield evening, a few speeches on. Elizabeth has been teasing him. He is listing his own faults and calls his temper resentful. He says this to Elizabeth, with Miss Bingley listening.",
       "analysis": "Elizabeth calls it implacable resentment and says she cannot laugh at it. Remember the line when she tests him at the ball, because she is quoting this habit back at him.",
       "chapter": 11
     },
@@ -277,7 +277,7 @@
       "speaker": "Elizabeth Bennet",
       "themes": ["class", "pride"],
       "context": "Elizabeth to Darcy, still at Hunsford, immediately after the remark about her connections. She is trying to keep her voice level. He starts at the word, and at first says nothing. This text has \"gentlemanlike\" as one word, and no comma before \"than\".",
-      "analysis": "The manner is not what decided her. It only made the refusal easier. If a revision card prints \"gentleman-like\" or adds a comma, check it against the copy you will use in the exam.",
+      "analysis": "The manner is not what decided her. It only made the refusal easier. If a revision card prints \"gentleman-like\" or adds a comma, check it against your own copy of the novel.",
       "chapter": 34
     },
     {
@@ -294,7 +294,7 @@
       "text": "“How despicably have I acted!”",
       "speaker": "Elizabeth Bennet",
       "themes": ["prejudice"],
-      "context": "The morning after the proposal, at Hunsford. Elizabeth is alone with Darcy's letter. She has gone from defending Wickham to feeling ashamed. The narrator says she cried this. Nobody else is in the room.",
+      "context": "The morning after the proposal, at Hunsford. Elizabeth is alone with Darcy's letter. She has gone from defending Wickham to feeling ashamed. The narrator says she cried this. She is on her own, walking in the lane by the park with the letter.",
       "analysis": "It is a speech, but it is not said to Darcy or to Jane. Quote it as the moment her pride in her own discernment cracks. The next sentences name that pride: she had valued herself on her abilities and disdained Jane's candour.",
       "chapter": 36
     },
