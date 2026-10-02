@@ -1,6 +1,6 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 21 September 2026
+Updated: 2 October 2026
 
 ## Purpose
 
@@ -173,11 +173,11 @@ changing cadence or editorial mix.
 
 ## Current Operational Note
 
-As of 21 September 2026, 08:02 Europe/London, Meta identity and the Page scheduled edge are
-readable again. The `BookQuotes` Page (`1246405755221229`) is the active identity and the 20
-September reader prompt is published once at 13:00 BST. Seven future Facebook rows are now
-confirmed for 21-27 September at 13:00 Europe/London; the 25-27 September extensions were
-preflighted, approved, scheduled and read back once. No duplicate was created.
+As of 2 October 2026, 08:32 Europe/London, Meta identity and the Page scheduled edge are readable.
+The `BookQuotes` Page (`1246405755221229`) is the active identity and the 27 September reader
+prompt is published once at 13:00 BST. The previously empty queue was rebuilt with seven future
+Facebook rows for 2-8 October at 13:00 Europe/London; each new row was preflighted, approved,
+scheduled and read back once. No duplicate was created.
 
 The last verified Facebook post-level insights still return HTTP 400, so metrics remain Not
 available rather than zero. The Facebook comments request still lacks the required page-comment
@@ -185,9 +185,9 @@ permission. Instagram remains connected as `bookquotes.app`; the current read ex
 latest 30 August, so no fresh Instagram publication is claimed and no Instagram write was made.
 
 The TikTok read succeeded: `@bookquotes.app` remains active with 24 public rows, 7 followers and
-analytics access; latest sync is `2026-09-21T06:07:12.156Z`. Gladwell reads 3 views / 3 reach /
-1 save, business non-fiction reads 1 view / 0 reach / 1 save, and Freak! reads 252 views / 225
-reach. Token health is `expiring_soon` with `reconnect_required=true` and expiry
-`2026-09-21T09:23:32.562Z`; keep the reconnect path active. The single-writer, duplicate, metadata,
-evidence and second-slot holds still block TikTok mutations. No TikTok upload, schedule, edit,
-delete or re-upload was made.
+analytics access; the current inventory has no analytics sync timestamp. Gladwell reads 3 views /
+3 reach / 1 save, business non-fiction reads 3 views / 2 reach / 1 save, and Freak! reads 252 views
+/ 225 reach. Token health is `expiring_soon` with `reconnect_required=true` and expiry
+`2026-10-02T13:24:12.214Z`; keep the reconnect path active. The single-writer, duplicate,
+metadata, evidence and second-slot holds still block TikTok mutations. No TikTok upload, schedule,
+edit, delete or re-upload was made.

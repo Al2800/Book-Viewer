@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 21 September 2026, 08:02 Europe/London
+Updated: 2 October 2026, 08:32 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,60 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 2 October 2026, 08:32 Europe/London
+
+**Facebook queue reconciliation**
+
+- The 27 September Page prompt `122114956167415831` is confirmed published once at 13:00 BST.
+  The authoritative scheduled edge was empty, so the rolling queue was rebuilt for 2-8 October at
+  13:00 Europe/London with seven original text-only reader prompts. Each row passed the dry-run
+  preflight, was scheduled once under the standing routine authority and read back once.
+- New read-back IDs: `122117039883415831`, `122117039979415831`, `122117039967415831`,
+  `122117039889415831`, `122117039907415831`, `122117039895415831` and `122117039901415831`.
+- Facebook post-level insights still return Graph HTTP 400 and the comments request still lacks
+  `pages_read_user_content` or Page Public Content Access. Views, reach, saves, shares, comments,
+  profile visits, link clicks and follows are Not available, not zero. No confidence change is
+  warranted.
+
+**TikTok account and learning check**
+
+- The active account is `@bookquotes.app`, with 24 public rows, 6 followers and analytics access.
+  The current inventory exposes no analytics sync timestamp and no new public row. Gladwell reads
+  3 views / 3 reach / 1 save; business non-fiction reads 3 views / 2 reach / 1 save; and Freak!
+  reads 252 views / 225 reach. The visible business-row increase is too small and remains an
+  integrity observation, not a clean creative result.
+- Token health is `expiring_soon` with `reconnect_required=true` and expiry
+  `2026-10-02T13:24:12.214Z`. The failed Creator Inbox request remains capped. No TikTok upload,
+  schedule, edit, delete, re-upload or automatic reply was made; no confidence or result label
+  changed.
+- Repeat: keep the 19:30 reader-first baseline and research/production-ready briefs. Modify:
+  reconcile token, native metadata, exact brief mapping and the single-writer path. Pause all TikTok
+  mutations and the second-slot test until the holds clear.
+
+**Research and community**
+
+- The current [TikTok Creative Centre Trends surface](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB)
+  is available for the United Kingdom, but individual BookTok post inspection through public web
+  search remains blocked by TikTok robots. No 15-20 post sample was treated as verified account
+  evidence in this run.
+- The official [TikTok Next 2026 trend report](https://ads.tiktok.com/business/en-GB/next) points
+  to grounded, useful stories, search-led curiosity and comments as a creative surface. This is
+  platform guidance, not a BookQuotes performance result; it supports the existing EXT-012 pattern
+  and does not change confidence.
+- The official [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB)
+  remains list context rather than an account benchmark. The [UK Books and Literature creator
+  ranking](https://infludata.com/pl/rankings/top-20-influencer-united-kingdom-books-tiktok) provides
+  a current varied-size sampling frame, but its aggregator methodology is not used as a performance
+  benchmark. No readable audience comments, messages or searches were exposed; no replies were made.
+
+**Next actions**
+
+- Automatic: read back the 2 October Facebook publication next run and keep the seven-day queue
+  current from the native scheduled edge.
+- Automatic: allow the TikTok reconnect path to handle the expiring token, but do not mutate TikTok
+  until the single-writer, duplicate, metadata and evidence holds clear. Preserve unavailable
+  metrics as `null` in `GrowthEvidence.json`.
 
 ### 21 September 2026, 08:02 Europe/London
 

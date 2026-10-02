@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 21 September 2026
+Updated: 2 October 2026
 
 ## Purpose
 
@@ -63,6 +63,73 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-10-02, 08:32 Europe/London
+
+**Account and publishing**
+
+- Account access: Zernio read succeeded for active public `@bookquotes.app`, analytics access true,
+  24 public rows and 6 followers. The current inventory exposes no analytics sync timestamp. Token
+  health is `expiring_soon` with `reconnect_required=true` and expiry
+  `2026-10-02T13:24:12.214Z`.
+- No new public row appeared. `Gladwell` `7684689312486591766` reads 3 views / 0 likes / 0
+  comments / 1 save / 3 reach; `Some great business non fiction` `7684560503737437443` reads 3
+  views / 0 likes / 0 comments / 1 save / 2 reach; `Freak!` `7683942886928436502` reads 252 views /
+  0 likes / 0 comments / 225 reach. No upload, schedule, edit, delete or re-upload was made.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK Creative Centre Trends | [TikTok Creative Centre Trends](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB) | Current GB trends surface is available; public web post inspection remains blocked by TikTok robots | Research route only, not account performance evidence | Short | Recheck from the signed-in native surface when available |
+| Grounded, search-led participation | [TikTok Next 2026 trend report](https://ads.tiktok.com/business/en-GB/next) | Official forecast emphasises unfiltered process, curiosity detours and comments as a creative surface | Supports the existing EXT-012 pattern; useful for future reader-fit briefs | Medium | Test only after metadata holds clear; keep posts useful when muted |
+| UK creator-size sampling frame | [UK Books and Literature creator ranking](https://infludata.com/pl/rankings/top-20-influencer-united-kingdom-books-tiktok) | Current roster spans small and large UK books/literature creators; aggregator methodology is not a performance benchmark | Helps structure varied-size manual research | Short | Sample small, mid-size and large accounts manually; do not copy execution |
+| UK BookTok list context | [UK BookTok Bestsellers update](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | Official list combines retail data with TikTok engagement | Reader-fit/list-context signal only | Medium | Use as topic context, never as BookQuotes lift evidence |
+
+**Creator-pattern observations**
+
+- Style catalogue reference added: EXT-014 records the varied-size UK creator sampling frame. No
+  individual post was added because public post inspection was not reliably accessible.
+- Transferable pattern: keep grounded reader situations, search-shaped questions and substantive
+  comment follow-ups in the research queue once the integrity hold clears.
+- Elements explicitly excluded from imitation: copying wording, artwork, creator identity or
+  distinctive execution; using an aggregator engagement rate as a benchmark; and treating the
+  official trend forecast as BookQuotes performance evidence.
+
+**Audience language**
+
+- Comments, searches or questions: no readable TikTok audience language was exposed. No potential
+  reader-need hook was promoted.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: native caption, cover, audio, audience, rights basis and exact brief mapping remain
+  unresolved for the attributable rows; token reconnect is due.
+
+**Performance**
+
+- 24-hour checkpoints: no new eligible post.
+- 72-hour checkpoints: no new eligible post.
+- Seven-day checkpoints: unavailable or not attributable.
+- Missing measures: watch time, completion, shares, profile visits, follows, link taps, search terms
+  and recurring reader language.
+
+**Learning**
+
+- Experiment updates: integrity audit only; business non-fiction moved from 1 to 3 visible views
+  and from 0 to 2 reach, still too small and unresolved to classify.
+- Confidence changes: none.
+- Repeat: retain the 19:30 reader-first baseline and research/production-ready briefs.
+- Modify: reconcile token, single-writer path and native metadata before publication.
+- Pause: TikTok mutation and any second-slot test.
+
+**Queue**
+
+- Approved: none for upload.
+- In production: no TikTok mutation asset may advance.
+- Awaiting evidence or review: `cr-03`, `cr-04` and Distribution Reset briefs.
+- Requires user approval: manual recovery of public rows or any deletion/edit.
 
 ### 2026-09-21, 08:02 Europe/London
 

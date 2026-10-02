@@ -1,11 +1,11 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-09-21T08:02:00+01:00</code>.
+Generated from structured evidence updated <code>2026-10-02T08:32:00+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-09-14T08:02:00+01:00</code> to <code>2026-09-21T08:02:00+01:00</code>
-- Published Facebook items represented: 4
+- Reporting window: <code>2026-09-25T08:32:00+01:00</code> to <code>2026-10-02T08:32:00+01:00</code>
+- Published Facebook items represented: 1
 - Visible views: 0
 - Visible reach: 0
 - Meaningful interactions: 0
@@ -16,6 +16,14 @@ Generated from structured evidence updated <code>2026-09-21T08:02:00+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-10-08 | scheduled | facebook | The hardest reading decision | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-07 | scheduled | facebook | What makes a reading note worth keeping | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-06 | scheduled | facebook | How to return to a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-05 | scheduled | facebook | What keeps a book alive after finishing | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-04 | scheduled | facebook | What to do with an idea worth keeping | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-03 | scheduled | facebook | What a recommendation should say first | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-02 | scheduled | facebook | What a book gives besides an answer | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-09-27 | published | facebook | Which kind of recommendation helps most | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-27 | scheduled | facebook | Which kind of recommendation helps most | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-26 | scheduled | facebook | What helps you continue a difficult book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-09-25 | scheduled | facebook | Best sign a book deserves a reread | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
@@ -34,11 +42,13 @@ Generated from structured evidence updated <code>2026-09-21T08:02:00+01:00</code
 | 2026-09-15 | published | facebook | When you cannot decide what to read next | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-14 | published | facebook | Two readers can finish the same book and keep different books | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-13 | published | facebook | When you finish a book, what do you want to keep | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-12 | published | tiktok | Gladwell public Reel | reel | 7d | 3 | 3 | 333.3 | 0.0 | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | 7d-audit | 3 | 3 | 333.3 | 0.0 | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | 24h-plus | 3 | 3 | 333.3 | 0.0 | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | audit | 3 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Gladwell public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | facebook | Reading time is not a moral score | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 7d | 3 | 2 | 500.0 | 0.0 | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 7d-audit | 1 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 72h | 0 | 0 | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | 24h-plus | 0 | 0 | Not available | Not available | Insufficient distribution |
@@ -46,6 +56,7 @@ Generated from structured evidence updated <code>2026-09-21T08:02:00+01:00</code
 | 2026-09-12 | published | tiktok | Some great business non fiction public Reel | reel | initial | 0 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-12 | failed | tiktok | Empire of Pain and Bad Blood Creator Inbox draft | reel | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-11 | published | facebook | Describe your current read as a weather report | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | 7d | 252 | 225 | 0.0 | 0.0 | Review against declared experiment |
 | 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | 7d-audit | 252 | 225 | 0.0 | 0.0 | Review against declared experiment |
 | 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | audit | 252 | Not available | Not available | Not available | Insufficient distribution |
 | 2026-09-10 | published | tiktok | Freak&#33; public Reel | reel | initial | 250 | Not available | Not available | Not available | Insufficient distribution |
@@ -142,8 +153,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 4
-- Channel-only items: 4
+- Durable published items: 1
+- Channel-only items: 1
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

@@ -1,23 +1,43 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 21 September 2026, 08:02 Europe/London
+Updated: 2 October 2026, 08:32 Europe/London
 
 ## Current operating loop
 
-- Meta identity and the Page scheduled edge are readable again. `BookQuotes` Page `1246405755221229`
-  is active, the 20 September prompt published once at 13:00 BST, and seven future Facebook rows
-  are confirmed for 21-27 September at 13:00 Europe/London. The 25-27 September extension rows
-  were preflighted, scheduled and read back once with no duplicate.
+- Meta identity and the Page scheduled edge are readable. `BookQuotes` Page `1246405755221229` is
+  active, the 27 September prompt published once at 13:00 BST, and seven future Facebook rows are
+  confirmed for 2-8 October at 13:00 Europe/London. The queue was rebuilt after the previous rows
+  expired; every new row was preflighted, scheduled and read back once with no duplicate.
 - Facebook post-level insights remain Not available because Graph returns HTTP 400, and comments
   remain unreadable because the required page-comment permission is unavailable. Instagram remains
   connected as `bookquotes.app`; the current read exposes 19 rows with latest 30 August. No fresh
   Instagram publication is claimed and no Instagram write was made.
-- TikTok read-back succeeded: active `@bookquotes.app`, 24 public rows, 7 followers, analytics
-  access and latest sync `2026-09-21T06:07:12.156Z`. Gladwell reads 3 views / 3 reach / 1 save,
-  business non-fiction reads 1 view / 0 reach / 1 save, and Freak! 252 views / 225 reach. Token
-  health is `expiring_soon`, with `reconnect_required=true` and expiry
-  `2026-09-21T09:23:32.562Z`; keep the reconnect path active. The failed draft remains capped and
+- TikTok read-back succeeded: active `@bookquotes.app`, 24 public rows, 6 followers and analytics
+  access. The current inventory exposes no analytics sync timestamp. Gladwell reads 3 views / 3
+  reach / 1 save, business non-fiction reads 3 views / 2 reach / 1 save, and Freak! 252 views /
+  225 reach. Token health is `expiring_soon`, with `reconnect_required=true` and expiry
+  `2026-10-02T13:24:12.214Z`; keep the reconnect path active. The failed draft remains capped and
   all TikTok mutation holds remain active.
+
+### Audit: 2 October 2026, 08:32 Europe/London
+
+- Facebook: the 27 September prompt `122114956167415831` is published once at 13:00 BST. The
+  direct `scheduled_posts` edge was initially empty, so the queue was rebuilt with seven new rows
+  for 2-8 October at 13:00 Europe/London. Read-back IDs are `122117039883415831` (2 October),
+  `122117039979415831` (3 October), `122117039967415831` (4 October), `122117039889415831`
+  (5 October), `122117039907415831` (6 October), `122117039895415831` (7 October) and
+  `122117039901415831` (8 October). All are Public, original text-only reader prompts and were
+  scheduled once. Page post-level insight metrics still return HTTP 400, and the comments edge
+  still requires `pages_read_user_content` or Page Public Content Access.
+- Instagram: the connected `bookquotes.app` identity remains verified. The current read exposes
+  19 media rows with latest 30 August, so no new publication, deletion or write is claimed. No
+  readable comment or message text was exposed.
+- TikTok: the account is active as `@bookquotes.app` with 24 public rows, 6 followers and analytics
+  access. No new public row appeared; the current inventory has no analytics sync timestamp. Visible
+  rows remain Gladwell 3 views / 3 reach / 1 save, business non-fiction 3 views / 2 reach / 1 save,
+  and Freak! 252 views / 225 reach. Token health is expiring soon; no TikTok mutation was made.
+- No sensitive replies were exposed, and no automatic replies were made. Keep the TikTok
+  single-writer, duplicate, metadata, evidence and second-slot holds active.
 
 ### Audit: 21 September 2026, 08:02 Europe/London
 
