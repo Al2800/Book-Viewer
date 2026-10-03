@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 2 October 2026
+Updated: 3 October 2026
 
 ## Purpose
 
@@ -16,6 +16,17 @@ Read this file together with:
 - `TikTokExperimentRegister.md`
 - `TikTokResearchLog.md`
 - `TikTokLaunchPack.md`
+
+### Metadata reconciliation audit: 3 October 2026, 09:13 Europe/London
+
+- The Meta and TikTok account reads were attempted twice and both failed locally with DNS error
+  `Errno 8`; no current TikTok account, analytics, comments or drafts state is available.
+- Retain the last verified state: active `@bookquotes.app`, 24 public rows, 6 followers, Gladwell at
+  3 views / 3 reach / 1 save, business non-fiction at 3 views / 2 reach / 1 save, and Freak! at
+  252 views / 225 reach. These are historical integrity observations, not current metrics.
+- The last known token expiry was `2026-10-02T13:24:12.214Z` with `reconnect_required=true`. No
+  upload, schedule, edit, delete or re-upload was made. Keep the single-writer, duplicate,
+  metadata, evidence and second-slot holds active; no confidence or result label changed.
 
 ## Current Authority
 

@@ -1,23 +1,37 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 2 October 2026, 08:32 Europe/London
+Updated: 3 October 2026, 09:13 Europe/London
 
 ## Current operating loop
 
-- Meta identity and the Page scheduled edge are readable. `BookQuotes` Page `1246405755221229` is
-  active, the 27 September prompt published once at 13:00 BST, and seven future Facebook rows are
-  confirmed for 2-8 October at 13:00 Europe/London. The queue was rebuilt after the previous rows
-  expired; every new row was preflighted, scheduled and read back once with no duplicate.
-- Facebook post-level insights remain Not available because Graph returns HTTP 400, and comments
-  remain unreadable because the required page-comment permission is unavailable. Instagram remains
-  connected as `bookquotes.app`; the current read exposes 19 rows with latest 30 August. No fresh
-  Instagram publication is claimed and no Instagram write was made.
-- TikTok read-back succeeded: active `@bookquotes.app`, 24 public rows, 6 followers and analytics
-  access. The current inventory exposes no analytics sync timestamp. Gladwell reads 3 views / 3
-  reach / 1 save, business non-fiction reads 3 views / 2 reach / 1 save, and Freak! 252 views /
-  225 reach. Token health is `expiring_soon`, with `reconnect_required=true` and expiry
-  `2026-10-02T13:24:12.214Z`; keep the reconnect path active. The failed draft remains capped and
-  all TikTok mutation holds remain active.
+- The 3 October live read is unavailable: both Meta Graph and TikTok account reads failed twice with
+  DNS error `Errno 8` (`nodename nor servname provided, or not known`). No publish, schedule, edit,
+  delete, re-upload or automatic reply was attempted. The last verified Meta state remains the
+  `BookQuotes` Page `1246405755221229` with seven Facebook rows for 2-8 October at 13:00
+  Europe/London; the current scheduled edge and whether the 2 October row moved to Published still
+  require read-back. Do not retry or duplicate while status is unconfirmed.
+- Facebook post-level insights remain Not available because the last successful Graph read returned
+  HTTP 400, and comments remain unreadable because the required page-comment permission is
+  unavailable. The last verified Instagram state is `bookquotes.app` with 19 rows, latest 30 August;
+  no fresh Instagram publication is claimed and no Instagram write was made.
+- The last verified TikTok state is active `@bookquotes.app`, 24 public rows, 6 followers and
+  analytics access. Its last known token expiry was `2026-10-02T13:24:12.214Z` with
+  `reconnect_required=true`; current token health, row count and metrics cannot be refreshed until
+  connectivity and reconnect are restored. Keep all TikTok mutation holds active.
+
+### Audit: 3 October 2026, 09:13 Europe/London
+
+- Meta identity, Facebook posts, scheduled rows, Instagram media and TikTok account reads were
+  attempted twice. All returned local DNS error `Errno 8`; the credentials were present but no
+  platform state was readable.
+- The last verified Facebook queue remains the seven-row 2-8 October set. Because the 2 October
+  publication and current scheduled edge cannot be checked, no replacement, reschedule or duplicate
+  was attempted.
+- The last verified Instagram state remains 19 rows/latest 30 August. The last verified TikTok state
+  remains 24 public rows/6 followers with the token expired and reconnect required. No social write,
+  comment reply or confidence change was made.
+- This is a publishing-verification failure requiring connectivity and TikTok token reconnection;
+  preserve the single-writer, duplicate, metadata, evidence and second-slot holds.
 
 ### Audit: 2 October 2026, 08:32 Europe/London
 
