@@ -1,15 +1,15 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 3 October 2026, 09:13 Europe/London
+Updated: 4 October 2026, 09:13 Europe/London
 
 ## Current operating loop
 
-- The 3 October live read is unavailable: both Meta Graph and TikTok account reads failed twice with
+- The 4 October live read is unavailable: Meta Graph and TikTok account reads again failed twice with
   DNS error `Errno 8` (`nodename nor servname provided, or not known`). No publish, schedule, edit,
   delete, re-upload or automatic reply was attempted. The last verified Meta state remains the
   `BookQuotes` Page `1246405755221229` with seven Facebook rows for 2-8 October at 13:00
-  Europe/London; the current scheduled edge and whether the 2 October row moved to Published still
-  require read-back. Do not retry or duplicate while status is unconfirmed.
+  Europe/London; the current scheduled edge, today's row and whether earlier rows moved to Published
+  still require read-back. Do not retry or duplicate while status is unconfirmed.
 - Facebook post-level insights remain Not available because the last successful Graph read returned
   HTTP 400, and comments remain unreadable because the required page-comment permission is
   unavailable. The last verified Instagram state is `bookquotes.app` with 19 rows, latest 30 August;
@@ -19,19 +19,21 @@ Updated: 3 October 2026, 09:13 Europe/London
   `reconnect_required=true`; current token health, row count and metrics cannot be refreshed until
   connectivity and reconnect are restored. Keep all TikTok mutation holds active.
 
-### Audit: 3 October 2026, 09:13 Europe/London
+### Audit: 4 October 2026, 09:13 Europe/London
 
 - Meta identity, Facebook posts, scheduled rows, Instagram media and TikTok account reads were
-  attempted twice. All returned local DNS error `Errno 8`; the credentials were present but no
-  platform state was readable.
+  attempted twice. All returned local DNS error `Errno 8`; credentials were present but no platform
+  state was readable.
 - The last verified Facebook queue remains the seven-row 2-8 October set. Because the 2 October
-  publication and current scheduled edge cannot be checked, no replacement, reschedule or duplicate
-  was attempted.
+  publication, today's row and current scheduled edge cannot be checked, no replacement, reschedule
+  or duplicate was attempted.
 - The last verified Instagram state remains 19 rows/latest 30 August. The last verified TikTok state
   remains 24 public rows/6 followers with the token expired and reconnect required. No social write,
   comment reply or confidence change was made.
-- This is a publishing-verification failure requiring connectivity and TikTok token reconnection;
-  preserve the single-writer, duplicate, metadata, evidence and second-slot holds.
+- This is a continuing publishing-verification failure requiring connectivity and TikTok token
+  reconnection; preserve the single-writer, duplicate, metadata, evidence and second-slot holds.
+
+### Audit: 3 October 2026, 09:13 Europe/London
 
 ### Audit: 2 October 2026, 08:32 Europe/London
 
