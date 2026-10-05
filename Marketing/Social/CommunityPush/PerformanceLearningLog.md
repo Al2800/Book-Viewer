@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 4 October 2026, 09:13 Europe/London
+Updated: 5 October 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -64,7 +64,7 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
-### 4 October 2026, 09:13 Europe/London
+### 5 October 2026, 09:00 Europe/London
 
 **Account read and publishing verification**
 
@@ -84,6 +84,33 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 - Repeat: preserve the last verified Facebook queue and existing research/production briefs.
 - Modify: restore connectivity, reconnect TikTok and read back Meta before any publishing action.
 - Pause: all TikTok mutations, Facebook rescheduling and automatic replies while status is uncertain.
+
+**Monday review: 29 September–5 October**
+
+- Facebook: no new live read or metrics were available after the 2 October queue rebuild. The last
+  verified queue contains seven original text prompts for 2-8 October at 13:00 Europe/London, but
+  the 2 October publication and current scheduled edge remain unconfirmed. This is a delivery and
+  verification gap, not evidence of creative failure.
+- Instagram: retain the last verified 19-row inventory/latest 30 August. No new media or current
+  insights were readable, so there is no basis for a format or cadence conclusion.
+- TikTok: retain the last verified 24-row/6-follower inventory and the integrity observations for
+  Gladwell, business non-fiction and Freak!; the token expired and current reads remain unavailable.
+  No valid comparable post set exists, so no result label or hypothesis confidence changed.
+
+**Monday decisions**
+
+- Repeat: keep reader-fit recommendations, practical reading rituals and the verified Facebook
+  13:00 baseline as the intended editorial direction once the queue can be read back.
+- Modify: restore connectivity, reconnect TikTok and require one atomic native check for caption,
+  cover, audio, audience, rights basis and final public content ID before any TikTok publication is
+  scored.
+- Pause: TikTok uploads, the second daily slot, Facebook rescheduling and automatic replies while
+  account state is uncertain.
+- Proposed post-hold TikTok portfolio remains 70% reader-fit recommendations, 20% reading culture
+  and practical rituals, and 10% product proof. This does not override the active 60/20/15/5
+  establishment baseline or the current mutation holds.
+
+### 4 October 2026, 09:13 Europe/London
 
 ### 3 October 2026, 09:13 Europe/London
 

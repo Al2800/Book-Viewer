@@ -1,10 +1,10 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 4 October 2026, 09:13 Europe/London
+Updated: 5 October 2026, 09:00 Europe/London
 
 ## Current operating loop
 
-- The 4 October live read is unavailable: Meta Graph and TikTok account reads again failed twice with
+- The 5 October live read is unavailable: Meta Graph and TikTok account reads failed twice again with
   DNS error `Errno 8` (`nodename nor servname provided, or not known`). No publish, schedule, edit,
   delete, re-upload or automatic reply was attempted. The last verified Meta state remains the
   `BookQuotes` Page `1246405755221229` with seven Facebook rows for 2-8 October at 13:00
@@ -19,7 +19,7 @@ Updated: 4 October 2026, 09:13 Europe/London
   `reconnect_required=true`; current token health, row count and metrics cannot be refreshed until
   connectivity and reconnect are restored. Keep all TikTok mutation holds active.
 
-### Audit: 4 October 2026, 09:13 Europe/London
+### Audit: 5 October 2026, 09:00 Europe/London
 
 - Meta identity, Facebook posts, scheduled rows, Instagram media and TikTok account reads were
   attempted twice. All returned local DNS error `Errno 8`; credentials were present but no platform
@@ -32,6 +32,8 @@ Updated: 4 October 2026, 09:13 Europe/London
   comment reply or confidence change was made.
 - This is a continuing publishing-verification failure requiring connectivity and TikTok token
   reconnection; preserve the single-writer, duplicate, metadata, evidence and second-slot holds.
+
+### Audit: 4 October 2026, 09:13 Europe/London
 
 ### Audit: 3 October 2026, 09:13 Europe/London
 
