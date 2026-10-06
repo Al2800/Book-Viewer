@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 5 October 2026, 09:00 Europe/London
+Updated: 6 October 2026, 09:16 Europe/London
 
 ## Purpose
 
@@ -64,6 +64,28 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
+### 6 October 2026, 09:16 Europe/London
+
+**Account read and publishing verification**
+
+- Meta identity, Facebook posts/scheduled rows, Instagram media and TikTok account reads were
+  attempted twice again and failed locally with DNS error `Errno 8`. Credentials were present, but
+  no platform state was readable and no write or automatic reply was attempted.
+- The last verified Facebook state remains the seven-row 2-8 October queue at 13:00 Europe/London.
+  The current queue and publication state are unconfirmed, so no retry, replacement or duplicate was
+  made. Instagram remains at its last verified 19 rows/latest 30 August.
+- TikTok remains at its last verified 24 public rows/6 followers with an expired token requiring
+  reconnect. No current views, reach, comments, saves, followers or row count are inferred. No
+  confidence or result label changed after Monday's review.
+
+**Decision**
+
+- Repeat: preserve the last verified Facebook queue and the post-hold reader-fit/practical-ritual
+  portfolio.
+- Modify: restore connectivity, reconnect TikTok and read back Meta before any publishing action.
+- Pause: TikTok mutations, the second slot, Facebook rescheduling and automatic replies while status
+  is uncertain.
+
 ### 5 October 2026, 09:00 Europe/London
 
 **Account read and publishing verification**
@@ -111,6 +133,13 @@ Use `Not available` rather than zero when a platform does not expose a metric.
   establishment baseline or the current mutation holds.
 
 ### 4 October 2026, 09:13 Europe/London
+
+**Account read and publishing verification**
+
+- Meta and TikTok reads failed twice with local DNS error `Errno 8`; no current platform state,
+  metrics, comments or messages were available. No write or automatic reply was attempted.
+- Preserve the last verified Facebook queue, Instagram inventory and TikTok integrity observations.
+  No confidence, cadence or result-label change was warranted.
 
 ### 3 October 2026, 09:13 Europe/London
 

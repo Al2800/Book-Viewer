@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 5 October 2026
+Updated: 6 October 2026
 
 ## Purpose
 
@@ -17,7 +17,7 @@ Read this file together with:
 - `TikTokResearchLog.md`
 - `TikTokLaunchPack.md`
 
-### Metadata reconciliation audit: 5 October 2026, 09:00 Europe/London
+### Metadata reconciliation audit: 6 October 2026, 09:16 Europe/London
 
 - The Meta and TikTok account reads were attempted twice again and both failed locally with DNS error
   `Errno 8`; no current TikTok account, analytics, comments or drafts state is available.
@@ -28,9 +28,22 @@ Read this file together with:
   upload, schedule, edit, delete or re-upload was made. Keep the single-writer, duplicate,
   metadata, evidence and second-slot holds active; no confidence or result label changed.
 
+### Metadata reconciliation audit: 5 October 2026, 09:00 Europe/London
+
+- The Meta and TikTok account reads were attempted twice and both failed locally with DNS error
+  `Errno 8`; no current TikTok account, analytics, comments or drafts state was available.
+- Retain the last verified state of 24 public rows and 6 followers, with the same integrity-only
+  Gladwell, business non-fiction and Freak! observations. No mutation or confidence change was made.
+
 ### Metadata reconciliation audit: 4 October 2026, 09:13 Europe/London
 
+- Meta and TikTok reads failed twice with DNS error `Errno 8`; retain the 2 October verified state
+  and do not infer current metrics. No mutation or confidence change was made.
+
 ### Metadata reconciliation audit: 3 October 2026, 09:13 Europe/London
+
+- Meta and TikTok reads failed twice with DNS error `Errno 8`; retain the 2 October verified state
+  and do not infer current metrics. No mutation or confidence change was made.
 
 ## Current Authority
 
