@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 5 October 2026
+Updated: 7 October 2026
 
 ## Purpose
 
@@ -63,6 +63,27 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-10-07, 12:26 Europe/London
+
+**Account and publishing**
+
+- Account access: unavailable. Meta and TikTok reads failed twice again with local DNS error `Errno 8`;
+  no current account, comments, searches or audience language were exposed.
+- Published, scheduled or failed: unavailable. Retain the last verified TikTok inventory of 24 public
+  rows and 6 followers only as historical context. No mutation was made.
+
+**Research and learning**
+
+- No new platform sample was recorded. The 2 October Creative Centre, TikTok Next, UK BookTok and
+  varied-size creator-roster observations remain the latest research context, not refreshed account
+  evidence. No style catalogue change was made.
+
+**Queue and holds**
+
+- Approved: none newly advanced.
+- Awaiting evidence or review: current account read, TikTok reconnect, Meta queue read-back and all
+  TikTok mutation holds.
 
 ### 2026-10-06, 09:16 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 6 October 2026
+Updated: 7 October 2026
 
 ## Method
 
@@ -47,6 +47,14 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 7 October 2026, 12:26 Europe/London
+
+No experiment checkpoint was added. Meta and TikTok reads failed twice again with DNS error `Errno 8`,
+so there is no current attributable post, analytics value or publishing status to record. Retain the
+last verified TikTok inventory and integrity observations as historical context only. The last known
+token expired at `2026-10-02T13:24:12.214Z` with reconnect required. No confidence or result label
+changed; no TikTok mutation or second-slot test was made.
 
 ### 6 October 2026, 09:16 Europe/London
 

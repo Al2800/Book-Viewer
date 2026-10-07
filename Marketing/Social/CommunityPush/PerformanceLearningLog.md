@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 6 October 2026, 09:16 Europe/London
+Updated: 7 October 2026, 12:26 Europe/London
 
 ## Purpose
 
@@ -64,7 +64,7 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
 
-### 6 October 2026, 09:16 Europe/London
+### 7 October 2026, 12:26 Europe/London
 
 **Account read and publishing verification**
 
@@ -72,8 +72,8 @@ Use `Not available` rather than zero when a platform does not expose a metric.
   attempted twice again and failed locally with DNS error `Errno 8`. Credentials were present, but
   no platform state was readable and no write or automatic reply was attempted.
 - The last verified Facebook state remains the seven-row 2-8 October queue at 13:00 Europe/London.
-  The current queue and publication state are unconfirmed, so no retry, replacement or duplicate was
-  made. Instagram remains at its last verified 19 rows/latest 30 August.
+  Today's 13:00 row and the current queue/publication state are unconfirmed, so no retry,
+  replacement or duplicate was made. Instagram remains at its last verified 19 rows/latest 30 August.
 - TikTok remains at its last verified 24 public rows/6 followers with an expired token requiring
   reconnect. No current views, reach, comments, saves, followers or row count are inferred. No
   confidence or result label changed after Monday's review.
@@ -85,6 +85,8 @@ Use `Not available` rather than zero when a platform does not expose a metric.
 - Modify: restore connectivity, reconnect TikTok and read back Meta before any publishing action.
 - Pause: TikTok mutations, the second slot, Facebook rescheduling and automatic replies while status
   is uncertain.
+
+### 6 October 2026, 09:16 Europe/London
 
 ### 5 October 2026, 09:00 Europe/London
 

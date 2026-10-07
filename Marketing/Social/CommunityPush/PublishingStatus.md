@@ -1,10 +1,10 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 6 October 2026, 09:16 Europe/London
+Updated: 7 October 2026, 12:26 Europe/London
 
 ## Current operating loop
 
-- The 6 October live read is unavailable: Meta Graph and TikTok account reads failed twice again with
+- The 7 October live read is unavailable: Meta Graph and TikTok account reads failed twice again with
   DNS error `Errno 8` (`nodename nor servname provided, or not known`). No publish, schedule, edit,
   delete, re-upload or automatic reply was attempted. The last verified Meta state remains the
   `BookQuotes` Page `1246405755221229` with seven Facebook rows for 2-8 October at 13:00
@@ -19,19 +19,21 @@ Updated: 6 October 2026, 09:16 Europe/London
   `reconnect_required=true`; current token health, row count and metrics cannot be refreshed until
   connectivity and reconnect are restored. Keep all TikTok mutation holds active.
 
-### Audit: 6 October 2026, 09:16 Europe/London
+### Audit: 7 October 2026, 12:26 Europe/London
 
 - Meta identity, Facebook posts, scheduled rows, Instagram media and TikTok account reads were
   attempted twice. All returned local DNS error `Errno 8`; credentials were present but no platform
   state was readable.
 - The last verified Facebook queue remains the seven-row 2-8 October set. Because the 2 October
   publication, today's row and current scheduled edge cannot be checked, no replacement, reschedule
-  or duplicate was attempted.
+  or duplicate was attempted. Today's 13:00 slot is therefore unverified and no action is safe.
 - The last verified Instagram state remains 19 rows/latest 30 August. The last verified TikTok state
   remains 24 public rows/6 followers with the token expired and reconnect required. No social write,
   comment reply or confidence change was made.
 - This is a continuing publishing-verification failure requiring connectivity and TikTok token
   reconnection; preserve the single-writer, duplicate, metadata, evidence and second-slot holds.
+
+### Audit: 6 October 2026, 09:16 Europe/London
 
 ### Audit: 5 October 2026, 09:00 Europe/London
 
