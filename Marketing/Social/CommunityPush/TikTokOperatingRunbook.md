@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 7 October 2026
+Updated: 8 October 2026
 
 ## Purpose
 
@@ -17,7 +17,7 @@ Read this file together with:
 - `TikTokResearchLog.md`
 - `TikTokLaunchPack.md`
 
-### Metadata reconciliation audit: 7 October 2026, 12:26 Europe/London
+### Metadata reconciliation audit: 8 October 2026, 09:01 Europe/London
 
 - The Meta and TikTok account reads were attempted twice again and both failed locally with DNS error
   `Errno 8`; no current TikTok account, analytics, comments or drafts state is available.
@@ -27,6 +27,11 @@ Read this file together with:
 - The last known token expiry was `2026-10-02T13:24:12.214Z` with `reconnect_required=true`. No
   upload, schedule, edit, delete or re-upload was made. Keep the single-writer, duplicate,
   metadata, evidence and second-slot holds active; no confidence or result label changed.
+
+### Metadata reconciliation audit: 7 October 2026, 12:26 Europe/London
+
+- Meta and TikTok reads failed twice with local DNS error `Errno 8`; retain the last verified state,
+  do not infer current metrics and keep all mutation holds active.
 
 ### Metadata reconciliation audit: 6 October 2026, 09:16 Europe/London
 

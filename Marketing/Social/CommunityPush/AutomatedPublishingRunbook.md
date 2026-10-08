@@ -1,8 +1,8 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 7 October 2026
+Updated: 8 October 2026
 
-## Current Operational Note — 7 October 2026, 12:26 Europe/London
+## Current Operational Note — 8 October 2026, 09:01 Europe/London
 
 The scheduled Meta and TikTok reads remain unavailable after another two DNS failures (`Errno 8`).
 The last verified Facebook queue contains seven rows for 2-8 October at 13:00 Europe/London, but the
@@ -10,9 +10,9 @@ The last verified Facebook queue contains seven rows for 2-8 October at 13:00 Eu
 not retry, reschedule or duplicate while status is uncertain. The last verified Instagram state is
 19 rows, latest 30 August. The last verified TikTok state is 24 public rows and 6 followers with a
 token that expired on 2 October and requires reconnection. No social write or automatic reply was
-attempted. Today's 13:00 Facebook row is within the publishing window, but its existence and prior
-publication state cannot be verified; do not reschedule or duplicate. No creative or cadence change
-is made in this run.
+attempted. Today's 13:00 Facebook row is the last row in the previously verified set, but its
+existence and prior publication state cannot be verified; do not reschedule or duplicate. No creative
+or cadence change is made in this run.
 
 ## Purpose
 
