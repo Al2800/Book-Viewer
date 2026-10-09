@@ -1,18 +1,21 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 8 October 2026
+Updated: 9 October 2026
 
-## Current Operational Note — 8 October 2026, 09:01 Europe/London
+## Current Operational Note — 9 October 2026, 09:01 Europe/London
 
-The scheduled Meta and TikTok reads remain unavailable after another two DNS failures (`Errno 8`).
-The last verified Facebook queue contains seven rows for 2-8 October at 13:00 Europe/London, but the
-2 October publication, today's row and current scheduled edge cannot be confirmed in this run. Do
-not retry, reschedule or duplicate while status is uncertain. The last verified Instagram state is
-19 rows, latest 30 August. The last verified TikTok state is 24 public rows and 6 followers with a
-token that expired on 2 October and requires reconnection. No social write or automatic reply was
-attempted. Today's 13:00 Facebook row is the last row in the previously verified set, but its
-existence and prior publication state cannot be verified; do not reschedule or duplicate. No creative
-or cadence change is made in this run.
+The escalated live reads succeeded after the earlier local DNS outage. Meta identity and permissions
+are verified for the BookQuotes Page `1246405755221229` and connected Instagram `bookquotes.app`
+(`17841434821362428`). The 8 October Facebook prompt is published once at 13:00 Europe/London;
+the seven-day Facebook queue has been rebuilt and read back for 9-15 October at 13:00 Europe/London.
+The current scheduled edge contains exactly seven Public, text-only rows, with no duplicate copy.
+Instagram remains at 19 media rows with latest publication 30 August. TikTok is active as
+`@bookquotes.app` with 24 public rows and 6 followers; its token is healthy through
+`2026-10-09T19:42:51.043Z` and no reconnect is currently required, but no new public row appeared.
+TikTok mutation holds remain active because publishing-integrity, duplicate, native metadata and
+evidence controls are still unresolved. Facebook insights still return HTTP 400 and the Page comments
+edge still lacks the required permission, so those measures remain unavailable. No TikTok mutation or
+automatic reply was attempted; no creative or cadence change is made in this run.
 
 ## Purpose
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 8 October 2026
+Updated: 9 October 2026
 
 ## Purpose
 
@@ -16,6 +16,22 @@ Read this file together with:
 - `TikTokExperimentRegister.md`
 - `TikTokResearchLog.md`
 - `TikTokLaunchPack.md`
+
+### Metadata reconciliation audit: 9 October 2026, 09:01 Europe/London
+
+- The escalated account read succeeded after the earlier local DNS outage. The bound account is
+  active `@bookquotes.app` / `6a7e30f977555aae0187cea3`, with 24 public rows, 6 followers and
+  analytics access. The token is healthy through `2026-10-09T19:42:51.043Z` with
+  `reconnect_required=false`; the reconnect requirement is therefore cleared for the moment.
+- No new public row appeared and no new attributable analytics entry was exposed. Current visible
+  integrity observations are Gladwell 3 views / 3 reach / 1 save, business non-fiction 3 views /
+  2 reach / 1 save, Freak! 252 views / 225 reach, SPACE 234 views / 225 reach / 2 likes,
+  uncaptioned 677 views / 638 reach / 4 likes / 2 comments, Bad Blood 246 views / 226 reach /
+  1 like and Carlo Rovelli 701 views / 652 reach / 6 likes. These are not clean creative results.
+- The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. Do not infer a new
+  research or audience signal from it. No upload, schedule, edit, delete, re-upload or automatic
+  reply was made. The single-writer, duplicate, native metadata, evidence and second-slot holds
+  remain active despite the token recovery.
 
 ### Metadata reconciliation audit: 8 October 2026, 09:01 Europe/London
 

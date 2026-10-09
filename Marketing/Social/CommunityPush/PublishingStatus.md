@@ -1,23 +1,46 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 8 October 2026, 09:01 Europe/London
+Updated: 9 October 2026, 09:01 Europe/London
 
 ## Current operating loop
 
-- The 8 October live read is unavailable: Meta Graph and TikTok account reads failed twice again with
-  DNS error `Errno 8` (`nodename nor servname provided, or not known`). No publish, schedule, edit,
-  delete, re-upload or automatic reply was attempted. The last verified Meta state remains the
-  `BookQuotes` Page `1246405755221229` with seven Facebook rows for 2-8 October at 13:00
-  Europe/London; the current scheduled edge, today's row and whether earlier rows moved to Published
-  still require read-back. Do not retry or duplicate while status is unconfirmed.
-- Facebook post-level insights remain Not available because the last successful Graph read returned
+- The 9 October escalated live read succeeded after the earlier local DNS outage. Meta identity and
+  permissions are verified for the `BookQuotes` Page `1246405755221229` and connected Instagram
+  `bookquotes.app` (`17841434821362428`). The 8 October Facebook prompt is published once at
+  13:00 Europe/London. The seven-day queue is now rebuilt and read back with exactly these seven
+  Public, text-only rows at 13:00 Europe/London: `122118285669415831` (9 October),
+  `122118285693415831` (10 October), `122118285717415831` (11 October), `122118285741415831`
+  (12 October), `122118285789415831` (13 October), `122118285813415831` (14 October) and
+  `122118285837415831` (15 October). No duplicate copy was found.
+- Facebook post-level insights remain Not available because the Graph post-insights read returns
   HTTP 400, and comments remain unreadable because the required page-comment permission is
-  unavailable. The last verified Instagram state is `bookquotes.app` with 19 rows, latest 30 August;
-  no fresh Instagram publication is claimed and no Instagram write was made.
-- The last verified TikTok state is active `@bookquotes.app`, 24 public rows, 6 followers and
-  analytics access. Its last known token expiry was `2026-10-02T13:24:12.214Z` with
-  `reconnect_required=true`; current token health, row count and metrics cannot be refreshed until
-  connectivity and reconnect are restored. Keep all TikTok mutation holds active.
+  unavailable. Instagram remains at 19 rows, latest 30 August; no Instagram write was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 6 followers and analytics access. The
+  token is healthy through `2026-10-09T19:42:51.043Z` with `reconnect_required=false`, but no new
+  public row appeared. Keep the publishing-integrity, duplicate, native metadata, evidence and
+  second-slot mutation holds active; no TikTok mutation or automatic reply was made.
+
+### Audit: 9 October 2026, 09:01 Europe/London
+
+- Meta identity read-back verified Page `BookQuotes`, Page ID `1246405755221229`, Instagram business
+  account `bookquotes.app`, operator John McNeil and the granted publishing permissions. Facebook
+  posts read-back confirms the 8 October prompt was published once at 13:00 Europe/London:
+  `122117039901415831`, [permalink](https://www.facebook.com/122107379391415831/posts/122117039901415831).
+- The direct Graph `scheduled_posts` read was initially empty, so the missing rolling queue was rebuilt
+  once after dry-run preflight. Each approval returned an immediate read-back and the final scheduled
+  edge contains seven rows for 9-15 October at 13:00 Europe/London. No item was retried after an
+  uncertain response.
+- Instagram read-back remains 19 media rows/latest 30 August. No fresh Instagram publication was
+  claimed and no Instagram write was made. Facebook insights and comments remain unavailable as above.
+- TikTok read-back is healthy at active `@bookquotes.app`, 24 public rows and 6 followers. The token
+  is healthy until `2026-10-09T19:42:51.043Z`; no new public row appeared. Current integrity values
+  include Gladwell 3 views / 3 reach / 1 save, business non-fiction 3 views / 2 reach / 1 save,
+  Freak! 252 views / 225 reach, SPACE 234 views / 225 reach / 2 likes, uncaptioned 677 views /
+  638 reach / 4 likes / 2 comments, Bad Blood 246 views / 226 reach / 1 like, and Carlo Rovelli
+  701 views / 652 reach / 6 likes. These remain integrity observations, not clean creative results.
+- The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. No sensitive replies or
+  searchable audience language were exposed, no automatic replies were made, and no confidence or
+  cadence change was warranted. TikTok mutation holds remain active.
 
 ### Audit: 8 October 2026, 09:01 Europe/London
 

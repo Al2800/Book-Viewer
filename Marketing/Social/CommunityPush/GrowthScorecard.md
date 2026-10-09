@@ -1,10 +1,10 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-10-02T08:32:00+01:00</code>.
+Generated from structured evidence updated <code>2026-10-09T09:01:00+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-09-25T08:32:00+01:00</code> to <code>2026-10-02T08:32:00+01:00</code>
+- Reporting window: <code>2026-10-02T09:01:00+01:00</code> to <code>2026-10-09T09:01:00+01:00</code>
 - Published Facebook items represented: 1
 - Visible views: 0
 - Visible reach: 0
@@ -16,6 +16,14 @@ Generated from structured evidence updated <code>2026-10-02T08:32:00+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-10-15 | scheduled | facebook | Why read a book twice | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-14 | scheduled | facebook | The reading company you trust | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-13 | scheduled | facebook | What helps a book stay with you | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-12 | scheduled | facebook | What matters when choosing a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-11 | scheduled | facebook | When it is right to stop reading | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-10 | scheduled | facebook | Where a useful book idea lives next | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-09 | scheduled | facebook | What makes you trust a book recommendation | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-08 | published | facebook | The hardest reading decision | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-08 | scheduled | facebook | The hardest reading decision | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-07 | scheduled | facebook | What makes a reading note worth keeping | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-06 | scheduled | facebook | How to return to a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |

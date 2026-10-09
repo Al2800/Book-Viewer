@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 8 October 2026
+Updated: 9 October 2026
 
 ## Purpose
 
@@ -63,6 +63,65 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-10-09, 09:01 Europe/London
+
+**Account and publishing**
+
+- Account access: successful after the earlier local DNS outage. `@bookquotes.app` is active with 24
+  public rows, 6 followers and analytics access; the token is healthy through
+  `2026-10-09T19:42:51.043Z` and does not currently require reconnect.
+- Expected posts: no TikTok mutation was eligible while the publishing-integrity holds remained active.
+- Published, scheduled or failed: no new public row appeared. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed.
+- Content IDs: no new attributable ID.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current account inventory | Bound BookQuotes TikTok/Zernio read | 24 public rows; no new row; token healthy | Confirms an operational read, not a creative result | Short | Keep mutation holds until native package and duplicate path are reconciled |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: none newly sampled in this run; the latest external research remains the
+  2 October Creative Centre/TikTok Next/UK BookTok context.
+- Elements explicitly excluded from imitation: do not copy creator wording, artwork, identity,
+  distinctive execution or native audio choices without evidence and rights clearance.
+
+**Audience language**
+
+- Comments, searches or questions: not exposed in the current account read. No automatic reply made.
+- Potential reader-need hooks: none newly evidenced.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: single-writer, duplicate, native metadata, evidence and second-slot holds remain active.
+
+**Performance**
+
+- 24-hour checkpoints: no new eligible post.
+- 72-hour checkpoints: no new eligible post.
+- Seven-day checkpoints: no new eligible post.
+- Missing measures: no new attributable row; watch completion, profile visits, follows and deeper
+  analytics remain unavailable.
+
+**Learning**
+
+- Experiment updates: integrity observations retained only; no clean comparison added.
+- Confidence changes: none.
+- Repeat: continue research and evidence-led preparation without mutation.
+- Modify: treat token recovery as restored access only, not clearance of content-integrity holds.
+- Pause: TikTok mutation and second-slot testing.
+
+**Queue**
+
+- Approved: none newly advanced.
+- In production: no item advanced to mutation.
+- Awaiting evidence or review: native metadata, duplicate-path and evidence reconciliation.
+- Requires user approval: rights-uncertain or sensitive material only.
 
 ### 2026-10-08, 09:01 Europe/London
 

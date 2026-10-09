@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 8 October 2026, 09:01 Europe/London
+Updated: 9 October 2026, 09:01 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,43 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 9 October 2026, 09:01 Europe/London
+
+**Account read and publishing verification**
+
+- Meta identity and permissions are verified for the BookQuotes Page `1246405755221229` and
+  connected Instagram `bookquotes.app` (`17841434821362428`). The 8 October Facebook prompt
+  `122117039901415831` is published once at 13:00 Europe/London. The direct `scheduled_posts` edge
+  was empty, so the rolling Facebook queue was rebuilt once after dry-run preflight and each approval
+  was read back immediately.
+- The final Facebook scheduled edge contains exactly seven Public, original text-only prompts for
+  9-15 October at 13:00 Europe/London: `122118285669415831`, `122118285693415831`,
+  `122118285717415831`, `122118285741415831`, `122118285789415831`, `122118285813415831` and
+  `122118285837415831`. No duplicate copy was found and no approval was retried after an uncertain
+  response.
+- Facebook post-level insight metrics remain Not available because the Graph post-insights read
+  returns HTTP 400. The comments edge still lacks the required Page permission. Instagram remains
+  at 19 media rows/latest 30 August; no Instagram write was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 6 followers and analytics access. The
+  token is healthy through `2026-10-09T19:42:51.043Z` with `reconnect_required=false`, but no new
+  public row appeared. Visible integrity values are Gladwell 3 views / 3 reach / 1 save, business
+  non-fiction 3 views / 2 reach / 1 save, Freak! 252 views / 225 reach, SPACE 234 views / 225 reach /
+  2 likes, uncaptioned 677 views / 638 reach / 4 likes / 2 comments, Bad Blood 246 views / 226 reach /
+  1 like, and Carlo Rovelli 701 views / 652 reach / 6 likes. These are not clean creative results.
+- The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. No sensitive replies or
+  searchable audience language were exposed, no automatic replies were made, and no confidence or
+  cadence change was warranted.
+
+**Decision**
+
+- Repeat: keep the verified Facebook 13:00 baseline and reader-first question format while the queue
+  is healthy; continue research and evidence-led TikTok preparation.
+- Modify: maintain direct scheduled-edge read-back after each Facebook queue repair and treat the
+  newly healthy TikTok token as a prerequisite restored, not as permission to bypass the active
+  publishing-integrity holds.
+- Pause: all TikTok upload, schedule, edit, delete and re-upload actions; the TikTok second slot;
+  automatic replies; and any interpretation of the integrity rows as creative performance evidence.
 
 ### 8 October 2026, 09:01 Europe/London
 
