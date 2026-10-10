@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 9 October 2026, 09:01 Europe/London
+Updated: 10 October 2026, 09:16 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,34 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 10 October 2026, 09:16 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms the 9 October prompt `122118285669415831` published once at 13:00
+  Europe/London. The scheduled edge contained six remaining rows for 10-15 October, so one new
+  reader prompt was taken through dry-run preflight and scheduled once for 16 October at 13:00:
+  `122118468735415831`. The final edge contains exactly seven future Public text-only rows for
+  10-16 October, with no duplicate copy and no uncertain-response retry.
+- Facebook post-level insight metrics remain Not available because the Graph post-insights read returns
+  HTTP 400; the comments edge still lacks the required Page permission. Instagram remains at 19 media
+  rows/latest 30 August, with no Instagram write.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token is healthy through `2026-10-10T21:29:25.226Z` with `reconnect_required=false`, but no new
+  public row or attributable analytics entry appeared. The follower change from 6 to 5 is an account
+  observation only. Existing visible rows remain integrity observations, not clean creative results.
+- The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. No sensitive replies or
+  audience language were exposed, no automatic replies were made, and no confidence change was warranted.
+
+**Decision**
+
+- Repeat: keep the verified Facebook 13:00 reader-first question baseline and direct scheduled-edge
+  read-back; continue TikTok research and evidence-led preparation.
+- Modify: record follower movement separately from post performance and refresh token health before any
+  future TikTok decision.
+- Pause: all TikTok upload, schedule, edit, delete and re-upload actions; the second slot; automatic
+  replies; and interpretation of integrity rows as creative performance evidence.
 
 ### 9 October 2026, 09:01 Europe/London
 

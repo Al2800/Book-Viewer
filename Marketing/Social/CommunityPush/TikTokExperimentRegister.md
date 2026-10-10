@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 9 October 2026
+Updated: 10 October 2026
 
 ## Method
 
@@ -47,6 +47,18 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 10 October 2026, 09:16 Europe/London
+
+No clean experiment checkpoint was added. The account read succeeded and the token is healthy through
+`2026-10-10T21:29:25.226Z` with `reconnect_required=false`, but no new attributable TikTok row or
+analytics entry appeared. The account remains at 24 public rows; followers moved from 6 to 5 and are
+recorded as an account observation only. Current visible integrity values remain Gladwell 3 views /
+3 reach / 1 save, business non-fiction 3 views / 2 reach / 1 save, Freak! 252 views / 225 reach,
+SPACE 234 views / 225 reach / 2 likes, uncaptioned 677 views / 638 reach / 4 likes / 2 comments,
+Bad Blood 246 views / 226 reach / 1 like and Carlo Rovelli 701 views / 652 reach / 6 likes. These
+are not scored as clean creative results. No confidence or result label changed; the single-writer,
+duplicate, metadata, evidence and second-slot holds remain active and no TikTok mutation was made.
 
 ### 9 October 2026, 09:01 Europe/London
 

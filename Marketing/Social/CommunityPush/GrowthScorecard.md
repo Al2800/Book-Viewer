@@ -1,11 +1,11 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-10-09T09:01:00+01:00</code>.
+Generated from structured evidence updated <code>2026-10-10T09:16:00+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-02T09:01:00+01:00</code> to <code>2026-10-09T09:01:00+01:00</code>
-- Published Facebook items represented: 1
+- Reporting window: <code>2026-10-03T09:16:00+01:00</code> to <code>2026-10-10T09:16:00+01:00</code>
+- Published Facebook items represented: 2
 - Visible views: 0
 - Visible reach: 0
 - Meaningful interactions: 0
@@ -16,12 +16,14 @@ Generated from structured evidence updated <code>2026-10-09T09:01:00+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-10-16 | scheduled | facebook | What to give someone when passing on a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-15 | scheduled | facebook | Why read a book twice | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-14 | scheduled | facebook | The reading company you trust | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-13 | scheduled | facebook | What helps a book stay with you | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-12 | scheduled | facebook | What matters when choosing a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-11 | scheduled | facebook | When it is right to stop reading | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-10 | scheduled | facebook | Where a useful book idea lives next | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-09 | published | facebook | What makes you trust a book recommendation | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-09 | scheduled | facebook | What makes you trust a book recommendation | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-08 | published | facebook | The hardest reading decision | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-08 | scheduled | facebook | The hardest reading decision | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
@@ -161,8 +163,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 1
-- Channel-only items: 1
+- Durable published items: 2
+- Channel-only items: 2
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

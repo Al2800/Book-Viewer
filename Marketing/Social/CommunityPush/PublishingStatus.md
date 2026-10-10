@@ -1,24 +1,38 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 9 October 2026, 09:01 Europe/London
+Updated: 10 October 2026, 09:16 Europe/London
 
 ## Current operating loop
 
-- The 9 October escalated live read succeeded after the earlier local DNS outage. Meta identity and
-  permissions are verified for the `BookQuotes` Page `1246405755221229` and connected Instagram
-  `bookquotes.app` (`17841434821362428`). The 8 October Facebook prompt is published once at
-  13:00 Europe/London. The seven-day queue is now rebuilt and read back with exactly these seven
-  Public, text-only rows at 13:00 Europe/London: `122118285669415831` (9 October),
-  `122118285693415831` (10 October), `122118285717415831` (11 October), `122118285741415831`
-  (12 October), `122118285789415831` (13 October), `122118285813415831` (14 October) and
-  `122118285837415831` (15 October). No duplicate copy was found.
+- The 10 October live read confirms the 9 October Facebook prompt `122118285669415831` is published
+  once at 13:00 Europe/London. The seven-day queue is extended and read back with exactly these seven
+  Public, text-only rows at 13:00 Europe/London: `122118285693415831` (10 October),
+  `122118285717415831` (11 October), `122118285741415831` (12 October), `122118285789415831`
+  (13 October), `122118285813415831` (14 October), `122118285837415831` (15 October) and
+  `122118468735415831` (16 October). No duplicate copy was found.
 - Facebook post-level insights remain Not available because the Graph post-insights read returns
   HTTP 400, and comments remain unreadable because the required page-comment permission is
   unavailable. Instagram remains at 19 rows, latest 30 August; no Instagram write was made.
-- TikTok is active as `@bookquotes.app` with 24 public rows, 6 followers and analytics access. The
-  token is healthy through `2026-10-09T19:42:51.043Z` with `reconnect_required=false`, but no new
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token is healthy through `2026-10-10T21:29:25.226Z` with `reconnect_required=false`, but no new
   public row appeared. Keep the publishing-integrity, duplicate, native metadata, evidence and
   second-slot mutation holds active; no TikTok mutation or automatic reply was made.
+
+### Audit: 10 October 2026, 09:16 Europe/London
+
+- Facebook read-back confirms `122118285669415831` published once at 13:00 Europe/London:
+  [permalink](https://www.facebook.com/122107379391415831/posts/122118285669415831). The direct
+  Graph `scheduled_posts` edge now contains seven future rows for 10-16 October, after one dry-run
+  preflight and one approved scheduling action for 16 October (`122118468735415831`). No item was
+  retried after an uncertain response.
+- Meta identity and permissions remain verified. Instagram remains at 19 media rows/latest 30 August;
+  no fresh Instagram publication was claimed and no Instagram write was made. Facebook insights and
+  comments remain unavailable as above.
+- TikTok read-back shows active `@bookquotes.app`, 24 public rows, 5 followers and analytics access.
+  Token health is `ok` through `2026-10-10T21:29:25.226Z`; no new public row appeared. The change
+  from 6 to 5 followers is recorded as an account observation only, not a content result. No sensitive
+  replies or searchable audience language were exposed, no automatic replies were made, and all TikTok
+  mutation holds remain active.
 
 ### Audit: 9 October 2026, 09:01 Europe/London
 

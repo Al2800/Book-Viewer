@@ -1,19 +1,18 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 9 October 2026
+Updated: 10 October 2026
 
-## Current Operational Note — 9 October 2026, 09:01 Europe/London
+## Current Operational Note — 10 October 2026, 09:16 Europe/London
 
-The escalated live reads succeeded after the earlier local DNS outage. Meta identity and permissions
-are verified for the BookQuotes Page `1246405755221229` and connected Instagram `bookquotes.app`
-(`17841434821362428`). The 8 October Facebook prompt is published once at 13:00 Europe/London;
-the seven-day Facebook queue has been rebuilt and read back for 9-15 October at 13:00 Europe/London.
-The current scheduled edge contains exactly seven Public, text-only rows, with no duplicate copy.
-Instagram remains at 19 media rows with latest publication 30 August. TikTok is active as
-`@bookquotes.app` with 24 public rows and 6 followers; its token is healthy through
-`2026-10-09T19:42:51.043Z` and no reconnect is currently required, but no new public row appeared.
-TikTok mutation holds remain active because publishing-integrity, duplicate, native metadata and
-evidence controls are still unresolved. Facebook insights still return HTTP 400 and the Page comments
+The 9 October Facebook prompt is confirmed published once at 13:00 Europe/London. The rolling
+Facebook queue has been extended and read back for 10-16 October at 13:00 Europe/London; the current
+scheduled edge contains exactly seven Public, text-only rows with no duplicate copy. Meta identity
+and permissions remain verified for Page `1246405755221229` and connected Instagram `bookquotes.app`
+(`17841434821362428`). Instagram remains at 19 media rows with latest publication 30 August.
+TikTok is active as `@bookquotes.app` with 24 public rows and 5 followers; its token is healthy
+through `2026-10-10T21:29:25.226Z` and no reconnect is currently required, but no new public row
+appeared. TikTok mutation holds remain active because publishing-integrity, duplicate, native metadata
+and evidence controls are unresolved. Facebook insights still return HTTP 400 and the Page comments
 edge still lacks the required permission, so those measures remain unavailable. No TikTok mutation or
 automatic reply was attempted; no creative or cadence change is made in this run.
 

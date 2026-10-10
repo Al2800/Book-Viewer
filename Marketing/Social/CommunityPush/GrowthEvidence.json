@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-09T09:01:00+01:00",
+  "updated_at": "2026-10-10T09:16:00+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -112,6 +112,62 @@
     }
   ],
   "social_observations": [
+    {
+      "observation_id": "fb-2026-10-10-09-oct-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122118285669415831",
+      "title": "What makes you trust a book recommendation",
+      "format": "text",
+      "published_at": "2026-10-09T13:00:00+01:00",
+      "observed_at": "2026-10-10T09:16:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication once, but the requested Graph post-insights metric set returns HTTP 400. The comments edge also requires pages_read_user_content or Page Public Content Access.",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122118285669415831. The direct scheduled_posts read after publication contains seven future rows for 10-16 October 2026 at 13:00 Europe/London."
+    },
+    {
+      "observation_id": "fb-2026-10-10-queue-extension-16",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122118468735415831",
+      "title": "What to give someone when passing on a book",
+      "format": "text",
+      "published_at": "2026-10-16T13:00:00+01:00",
+      "observed_at": "2026-10-10T09:16:00+01:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 16 October; live metrics are not available. This observation represents the verified rolling queue extension.",
+      "notes": "Read-back ID 122118468735415831 at https://www.facebook.com/122107379391415831/posts/122118468735415831. Direct Graph scheduled_posts read confirms seven future rows for 10-16 October 2026 at 13:00 Europe/London."
+    },
     {
       "observation_id": "fb-2026-10-09-08-oct-audit",
       "platform": "facebook",
