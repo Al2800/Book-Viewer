@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 10 October 2026, 09:16 Europe/London
+Updated: 11 October 2026, 09:04 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,35 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 11 October 2026, 09:04 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms the 10 October prompt `122118285693415831` published once at 13:00
+  Europe/London. The scheduled edge contained six remaining rows for 11-16 October, so one new
+  reader prompt was taken through dry-run preflight and scheduled for 17 October at 13:00:
+  `122118635049415831`. The scheduling command's immediate read-back timed out after the mutation;
+  a follow-up direct edge read confirmed the row exists once, so no retry was made.
+- The final Facebook edge contains exactly seven future Public text-only rows for 11-17 October,
+  with no duplicate copy. Facebook post-level insight metrics remain Not available because the Graph
+  post-insights read returns HTTP 400; the comments edge still lacks the required Page permission.
+  Instagram remains at 19 media rows/latest 30 August, with no Instagram write.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token is healthy through `2026-10-11T23:37:34.014Z` with `reconnect_required=false`, but no new
+  public row or attributable analytics entry appeared. Existing visible rows remain integrity
+  observations, not clean creative results.
+- The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. No sensitive replies or
+  audience language were exposed, no automatic replies were made, and no confidence change was warranted.
+
+**Decision**
+
+- Repeat: keep the verified Facebook 13:00 reader-first question baseline and direct scheduled-edge
+  read-back; continue TikTok research and evidence-led preparation.
+- Modify: treat a publish-command timeout as uncertain until the direct scheduled edge is checked;
+  never retry before that check.
+- Pause: all TikTok upload, schedule, edit, delete and re-upload actions; the second slot; automatic
+  replies; and interpretation of integrity rows as creative performance evidence.
 
 ### 10 October 2026, 09:16 Europe/London
 
