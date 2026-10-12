@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 11 October 2026
+Updated: 12 October 2026
 
 ## Method
 
@@ -47,6 +47,17 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 12 October 2026, 09:01 Europe/London
+
+No clean experiment checkpoint was added. The account read succeeded and the token is healthy through
+`2026-10-12T23:33:49.532Z` with `reconnect_required=false`, but no new attributable TikTok row or
+analytics entry appeared. The account remains at 24 public rows and 5 followers. The Monday review
+keeps H1-H5 and all result labels unchanged: repeat research and preparation; modify only after
+single-writer, duplicate, native metadata and evidence reconciliation; pause mutation, the second
+slot and interpretation of integrity-only rows as creative performance. The next preparation portfolio
+is 70% reader-fit recommendations, 20% reader identity/culture/rituals and 10% reader-value-first
+product proof. No TikTok mutation was made.
 
 ### 11 October 2026, 09:04 Europe/London
 

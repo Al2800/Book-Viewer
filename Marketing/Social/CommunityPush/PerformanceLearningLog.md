@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 11 October 2026, 09:04 Europe/London
+Updated: 12 October 2026, 09:01 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,53 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 12 October 2026, 09:01 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms `122118285717415831` published once at 13:00 Europe/London. The
+  seven-day edge now contains exactly seven future Public text-only rows for 12-18 October; the
+  queue extension created `122118824007415831` for 18 October at 13:00 and the direct read-back
+  confirmed it once. No duplicate copy or uncertain-response retry was found.
+- Facebook post-level insights remain Not available because the Graph post-insights read returns
+  HTTP 400; Page comments remain unreadable because the required permission is unavailable. Instagram
+  remains at 19 media rows with latest publication 30 August; no Instagram write was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token is healthy through `2026-10-12T23:33:49.532Z` with `reconnect_required=false`, but no new
+  public row or attributable analytics entry appeared. Existing visible rows remain integrity
+  observations, not clean creative results. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed.
+
+**Monday review: 6-12 October**
+
+- Facebook: seven consecutive verified 13:00 reader prompts were delivered across 5-11 October.
+  Distribution, comments and post-level insights are unavailable, so there is no defensible winner
+  or evidence for increasing volume. The delivery baseline is reliable enough to repeat.
+- TikTok: no new eligible public row or 24-hour, 72-hour or seven-day checkpoint was available for
+  the review window. Keep the 24-row inventory and visible integrity values out of creative ranking;
+  the publishing-integrity, duplicate, native metadata, evidence and second-slot holds remain active.
+- Representation and production burden: Facebook currently over-represents low-production text prompts;
+  TikTok has a prepared editorial mix but mutation is blocked by unresolved metadata and duplicate-path
+  reconciliation. Do not manufacture more output to compensate for missing evidence.
+
+**Decision**
+
+- Repeat: the verified Facebook 13:00 reader-first baseline, direct scheduled-edge read-back, and
+  TikTok research, briefing and quality-control work.
+- Modify: keep consecutive topics and formats distinct; revisit one visual or early-evening test only
+  after comparable metrics are available and keep account-level follower movement separate from post
+  results.
+- Pause: all TikTok upload, schedule, edit, delete and re-upload actions; the second slot; automatic
+  replies; and interpretation of integrity-only TikTok rows as creative performance evidence.
+
+**Portfolio and confidence**
+
+- Next TikTok planning portfolio: 70% reader-fit recommendations (`BQ-01`/`BQ-04`), 20% reader
+  identity, culture and practical rituals (`BQ-05`/`BQ-02`), and 10% reader-value-first product proof
+  (`BQ-06`). This is a preparation target, not permission to mutate the channel while holds are active.
+- H1-H5 remain unchanged. No confidence or result label moved because the current account evidence
+  does not contain a clean comparable TikTok result or usable Facebook distribution metrics.
 
 ### 11 October 2026, 09:04 Europe/London
 

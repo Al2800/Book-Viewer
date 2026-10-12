@@ -1,22 +1,40 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 11 October 2026, 09:04 Europe/London
+Updated: 12 October 2026, 09:01 Europe/London
 
 ## Current operating loop
 
-- The 11 October live read confirms the 10 October Facebook prompt `122118285693415831` is published
+- The 12 October live read confirms the 11 October Facebook prompt `122118285717415831` is published
   once at 13:00 Europe/London. The seven-day queue is extended and read back with exactly these seven
-  Public, text-only rows at 13:00 Europe/London: `122118285717415831` (11 October),
-  `122118285741415831` (12 October), `122118285789415831` (13 October), `122118285813415831`
-  (14 October), `122118285837415831` (15 October), `122118468735415831` (16 October) and
-  `122118635049415831` (17 October). No duplicate copy was found.
+  Public, text-only rows at 13:00 Europe/London: `122118285741415831` (12 October),
+  `122118285789415831` (13 October), `122118285813415831` (14 October), `122118285837415831`
+  (15 October), `122118468735415831` (16 October), `122118635049415831` (17 October) and
+  `122118824007415831` (18 October). No duplicate copy was found.
 - Facebook post-level insights remain Not available because the Graph post-insights read returns
   HTTP 400, and comments remain unreadable because the required page-comment permission is
   unavailable. Instagram remains at 19 rows, latest 30 August; no Instagram write was made.
 - TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
-  token is healthy through `2026-10-11T23:37:34.014Z` with `reconnect_required=false`, but no new
+  token is healthy through `2026-10-12T23:33:49.532Z` with `reconnect_required=false`, but no new
   public row appeared. Keep the publishing-integrity, duplicate, native metadata, evidence and
   second-slot mutation holds active; no TikTok mutation or automatic reply was made.
+
+### Audit: 12 October 2026, 09:01 Europe/London
+
+- Facebook read-back confirms `122118285717415831` published once at 13:00 Europe/London:
+  [permalink](https://www.facebook.com/122107379391415831/posts/122118285717415831). A dry-run
+  preflight and one approved scheduling action created `122118824007415831` for 18 October at
+  13:00 Europe/London. The direct scheduled edge confirms exactly seven future rows for 12-18 October
+  at 13:00, with no duplicate copy and no uncertain-response retry.
+- Meta identity and permissions remain verified. Instagram remains at 19 media rows/latest 30 August;
+  no fresh Instagram publication was claimed and no Instagram write was made. Facebook insights and
+  comments remain unavailable as above.
+- TikTok read-back shows active `@bookquotes.app`, 24 public rows, 5 followers and analytics access.
+  Token health is `ok` through `2026-10-12T23:33:49.532Z`; no new public row appeared. No sensitive
+  replies or searchable audience language were exposed, no automatic replies were made, and all
+  TikTok mutation holds remain active.
+- Monday review for 6-12 October: repeat the steady Facebook 13:00 reader-first baseline; modify only
+  by preserving topic/format spacing and later testing a visual slot when comparable metrics exist;
+  pause extra volume, TikTok mutation and the second daily slot. No hypothesis confidence changed.
 
 ### Audit: 11 October 2026, 09:04 Europe/London
 
