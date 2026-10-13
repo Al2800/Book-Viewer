@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-12T09:01:00+01:00",
+  "updated_at": "2026-10-13T09:00:00+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -3794,6 +3794,62 @@
       },
       "metrics_unavailable_reason": "Scheduled for 18 October; live metrics are not available. This observation represents the seven-day queue extension.",
       "notes": "Read-back ID 122118824007415831 at https://www.facebook.com/122107379391415831/posts/122118824007415831. The direct scheduled_posts read after creation contains seven future rows for 12-18 October 2026 at 13:00 Europe/London."
+    },
+    {
+      "observation_id": "fb-2026-10-13-12-oct-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122118285741415831",
+      "title": "What matters when choosing a book",
+      "format": "text",
+      "published_at": "2026-10-12T13:00:00+01:00",
+      "observed_at": "2026-10-13T09:00:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication, but the requested Graph post-insights metric set returns HTTP 400: The value must be a valid insights metric.",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122118285741415831. The direct scheduled_posts read before extension contained six future rows for 13-18 October; no duplicate was found."
+    },
+    {
+      "observation_id": "fb-2026-10-13-queue-extension",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122118994731415831",
+      "title": "Where a good recommendation begins",
+      "format": "text",
+      "published_at": "2026-10-19T13:00:00+01:00",
+      "observed_at": "2026-10-13T09:00:00+01:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 19 October; live metrics are not available. This observation represents the seven-day queue extension.",
+      "notes": "Read-back ID 122118994731415831 at https://www.facebook.com/122107379391415831/posts/122118994731415831. The direct scheduled_posts read after creation contains seven future rows for 13-19 October 2026 at 13:00 Europe/London."
     }
   ],
   "search_snapshots": [

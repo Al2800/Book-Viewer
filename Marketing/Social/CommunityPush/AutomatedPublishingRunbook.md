@@ -1,24 +1,23 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 12 October 2026
+Updated: 13 October 2026
 
-## Current Operational Note — 12 October 2026, 09:01 Europe/London
+## Current Operational Note — 13 October 2026, 09:00 Europe/London
 
-The 11 October Facebook prompt `122118285717415831` is confirmed published once at 13:00 Europe/London:
-`https://www.facebook.com/122107379391415831/posts/122118285717415831`. The rolling Facebook queue
-has been extended and read back for 12-18 October at 13:00 Europe/London; the scheduled edge contains
-exactly seven Public, text-only rows with no duplicate copy. The new 18 October row is
-`122118824007415831`. Meta identity and permissions remain verified for Page `1246405755221229` and
+
+The 12 October Facebook prompt `122118285741415831` is confirmed published once at 13:00 Europe/London:
+`https://www.facebook.com/122107379391415831/posts/122118285741415831`. The rolling Facebook queue
+has been extended and read back for 13-19 October at 13:00 Europe/London; the scheduled edge contains
+exactly seven Public, text-only rows with no duplicate copy. The new 19 October row is
+`122118994731415831`. Meta identity and permissions remain verified for Page `1246405755221229` and
 connected Instagram `bookquotes.app` (`17841434821362428`). Instagram remains at 19 media rows with
 latest publication 30 August. TikTok is active as `@bookquotes.app` with 24 public rows and 5
-followers; its token is healthy through `2026-10-12T23:33:49.532Z` and no reconnect is currently
+followers; its token is healthy through `2026-10-13T23:40:01.381Z` and no reconnect is currently
 required, but no new public row appeared. TikTok mutation holds remain active because publishing-
 integrity, duplicate, native metadata and evidence controls are unresolved. Facebook insights still
 return HTTP 400 and the Page comments edge still lacks the required permission, so those measures
-remain unavailable. The Monday review found no evidence to change the existing hypotheses or cadence:
-repeat the Facebook reader-prompt baseline, keep TikTok read-only research and preparation, and pause
-TikTok mutations, the second slot and performance interpretation of integrity-only rows. No TikTok
-mutation or automatic reply was attempted.
+remain unavailable. No TikTok mutation or automatic reply was attempted; no creative or cadence
+change is made in this run.
 
 ## Purpose
 
