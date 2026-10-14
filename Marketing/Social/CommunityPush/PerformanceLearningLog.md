@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 13 October 2026, 09:00 Europe/London
+Updated: 14 October 2026, 09:04 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,34 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 14 October 2026, 09:04 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms `122118285789415831` published once at 13:00 Europe/London. The
+  seven-day edge now contains exactly seven future Public text-only rows for 14-20 October; the
+  queue extension created `122119132413415831` for 20 October at 13:00 and the direct scheduled-edge
+  read confirmed it once. No duplicate copy or uncertain-response retry was found.
+- Facebook post-level insights remain Not available because the Graph post-insights read returns
+  HTTP 400; Page comments remain unreadable because the required permission is unavailable. Instagram
+  remains at 19 media rows with latest publication 30 August; no Instagram write was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token is healthy through `2026-10-15T00:06:28.132Z` with `reconnect_required=false`, but no new
+  public row or attributable analytics entry appeared. Existing visible rows remain integrity
+  observations, not clean creative results. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed.
+
+**Decision**
+
+- Repeat: the verified Facebook 13:00 reader-first baseline and direct scheduled-edge read-back;
+  continue TikTok research, briefing and quality-control work.
+- Modify: keep consecutive topics and formats distinct, maintain the seven-day queue, and refresh
+  token health before any future TikTok decision.
+- Pause: all TikTok upload, schedule, edit, delete and re-upload actions; the second slot; automatic
+  replies; and interpretation of integrity-only TikTok rows as creative performance evidence.
+- Confidence: no hypothesis or result label changed; the current data still lacks usable Facebook
+  distribution metrics and a new clean TikTok comparison.
 
 ### 13 October 2026, 09:00 Europe/London
 
