@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-15T09:00:00+01:00",
+  "updated_at": "2026-10-16T09:02:00+01:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -3962,6 +3962,62 @@
       },
       "metrics_unavailable_reason": "Scheduled for 21 October; live metrics are not available. This observation represents the seven-day queue extension.",
       "notes": "Read-back ID 122119270005415831 at https://www.facebook.com/122107379391415831/posts/122119270005415831. The direct scheduled_posts read after creation contains exactly seven future rows for 15-21 October 2026 at 13:00 Europe/London; no duplicate copy or uncertain-response retry was found."
+    },
+    {
+      "observation_id": "fb-2026-10-16-15-oct-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122118285837415831",
+      "title": "Why read a book twice",
+      "format": "text",
+      "published_at": "2026-10-15T13:00:00+01:00",
+      "observed_at": "2026-10-16T09:02:00+01:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication, but the Graph post-insights and latest-post comments reads return HTTP 400 (#12: singular statuses API deprecated).",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122118285837415831. The direct scheduled_posts read before extension contained six future rows for 16-21 October; no duplicate was found."
+    },
+    {
+      "observation_id": "fb-2026-10-16-queue-extension",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122119419057415831",
+      "title": "When a book becomes part of your life",
+      "format": "text",
+      "published_at": "2026-10-22T13:00:00+01:00",
+      "observed_at": "2026-10-16T09:02:00+01:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 22 October; live metrics are not available. This observation represents the seven-day queue extension.",
+      "notes": "Read-back ID 122119419057415831 at https://www.facebook.com/122107379391415831/posts/122119419057415831. The direct scheduled_posts read after creation contains exactly seven future rows for 16-22 October 2026 at 13:00 Europe/London; no duplicate copy or uncertain-response retry was found."
     }
   ],
   "search_snapshots": [
