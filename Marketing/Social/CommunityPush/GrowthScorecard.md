@@ -1,10 +1,10 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-10-16T09:02:00+01:00</code>.
+Generated from structured evidence updated <code>2026-10-17T09:09:00+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-09T09:02:00+01:00</code> to <code>2026-10-16T09:02:00+01:00</code>
+- Reporting window: <code>2026-10-10T09:09:00+01:00</code> to <code>2026-10-17T09:09:00+01:00</code>
 - Published Facebook items represented: 7
 - Visible views: 0
 - Visible reach: 0
@@ -16,6 +16,7 @@ Generated from structured evidence updated <code>2026-10-16T09:02:00+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-10-23 | scheduled | facebook | What makes a book worth lending | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-22 | scheduled | facebook | When a book becomes part of your life | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-21 | scheduled | facebook | What do you keep from a good reading session | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-20 | scheduled | facebook | When a reading year feels well spent | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
@@ -23,6 +24,7 @@ Generated from structured evidence updated <code>2026-10-16T09:02:00+01:00</code
 | 2026-10-18 | scheduled | facebook | Which part of reading do you most want to protect | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-17 | scheduled | facebook | What is easiest to share after finishing a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-16 | scheduled | facebook | What to give someone when passing on a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-16 | published | facebook | What to give someone when passing on a book | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-15 | scheduled | facebook | Why read a book twice | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-15 | published | facebook | Why read a book twice | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-14 | scheduled | facebook | The reading company you trust | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
