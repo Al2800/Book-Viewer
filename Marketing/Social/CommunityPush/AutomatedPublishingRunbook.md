@@ -1,21 +1,21 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 17 October 2026
+Updated: 18 October 2026
 
-## Current Operational Note — 17 October 2026, 09:09 Europe/London
+## Current Operational Note — 18 October 2026, 09:15 Europe/London
 
 
-The 16 October Facebook prompt `122118468735415831` is confirmed published once at 13:00
+The 17 October Facebook prompt `122118635049415831` is confirmed published once at 13:00
 Europe/London:
-`https://www.facebook.com/122107379391415831/posts/122118468735415831`. The rolling Facebook queue
-has been extended and read back for 17-23 October at 13:00 Europe/London; the scheduled edge contains
-exactly seven Public, text-only rows with no duplicate copy. The new 23 October row is
-`122119550679415831`, read back at
-`https://www.facebook.com/122107379391415831/posts/122119550679415831`. Meta identity and
+`https://www.facebook.com/122107379391415831/posts/122118635049415831`. The rolling Facebook queue
+has been extended and read back for 18-24 October at 13:00 Europe/London; the scheduled edge contains
+exactly seven Public, text-only rows with no duplicate copy. The new 24 October row is
+`122119674267415831`, read back at
+`https://www.facebook.com/122107379391415831/posts/122119674267415831`. Meta identity and
 permissions remain verified for Page `1246405755221229` and connected Instagram `bookquotes.app`
 (`17841434821362428`). Instagram remains at 19 media rows with latest publication 30 August. TikTok
 is active as `@bookquotes.app` with 24 public rows and 5 followers; its token is healthy through
-`2026-10-18T04:31:59.206Z` and no reconnect is currently required, but no new public row or
+`2026-10-19T04:37:28.149Z` and no reconnect is currently required, but no new public row or
 attributable analytics entry appeared. TikTok mutation holds remain active because
 publishing-integrity, duplicate, native metadata and evidence controls are unresolved. Facebook
 post-insights and latest-post comments reads return HTTP 400 (`#12`, singular statuses API

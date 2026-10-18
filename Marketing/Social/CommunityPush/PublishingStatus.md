@@ -1,26 +1,46 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 17 October 2026, 09:09 Europe/London
+Updated: 18 October 2026, 09:15 Europe/London
 
 ## Current operating loop
 
-- The 17 October live read confirms the 16 October Facebook prompt `122118468735415831` is published
+- The 18 October live read confirms the 17 October Facebook prompt `122118635049415831` is published
   once at 13:00 Europe/London:
-  [permalink](https://www.facebook.com/122107379391415831/posts/122118468735415831). The seven-day
+  [permalink](https://www.facebook.com/122107379391415831/posts/122118635049415831). The seven-day
   queue is extended and read back with exactly these seven Public, text-only rows at 13:00
-  Europe/London: `122118635049415831` (17 October), `122118824007415831` (18 October),
-  `122118994731415831` (19 October), `122119132413415831` (20 October), `122119270005415831`
-  (21 October), `122119419057415831` (22 October) and `122119550679415831` (23 October). No
+  Europe/London: `122118824007415831` (18 October), `122118994731415831` (19 October),
+  `122119132413415831` (20 October), `122119270005415831` (21 October), `122119419057415831`
+  (22 October), `122119550679415831` (23 October) and `122119674267415831` (24 October). No
   duplicate copy was found.
 - Facebook post-level insights and the latest-post comments read remain Not available because both
   Graph reads return HTTP 400 (`#12`, singular statuses API deprecated). Instagram remains at 19 rows,
   latest 30 August; no Instagram write was made.
 - TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
-  token is healthy through `2026-10-18T04:31:59.206Z` with `reconnect_required=false`, but no new
+  token is healthy through `2026-10-19T04:37:28.149Z` with `reconnect_required=false`, but no new
   public row or attributable analytics entry appeared. Keep the publishing-integrity, duplicate,
   native metadata, evidence and second-slot mutation holds active; no TikTok mutation or automatic
   reply was made. The current Creative Centre trends route redirected to a logged-in page, so no new
   external creative sample was added.
+
+### Audit: 18 October 2026, 09:15 Europe/London
+
+- Facebook read-back confirms `122118635049415831` published once at 13:00 Europe/London:
+  [permalink](https://www.facebook.com/122107379391415831/posts/122118635049415831). A dry-run
+  preflight and one approved scheduling action created `122119674267415831` for 24 October at
+  13:00. The direct scheduled edge confirms exactly seven future rows for 18-24 October, with no
+  duplicate copy and no uncertain-response retry.
+- Meta identity and permissions remain verified. Instagram remains at 19 media rows/latest 30 August;
+  no fresh Instagram publication was claimed and no Instagram write was made. Facebook insights and
+  comments remain unavailable because both current Graph reads return HTTP 400 (`#12`, singular
+  statuses API deprecated).
+- TikTok read-back shows active `@bookquotes.app`, 24 public rows, 5 followers and analytics access.
+  Token health is `ok` through `2026-10-19T04:37:28.149Z`; no new public row or attributable
+  analytics entry appeared. The latest public row is the 12 September Gladwell item (3 views, 3
+  reach, 1 save), retained as an integrity observation only. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed. No sensitive replies or searchable audience language
+  were exposed, no automatic replies were made, and all TikTok mutation holds remain active.
+  Creative Centre was accessible only as a login-gated trends route; no new style or evidence change
+  was recorded.
 
 ### Audit: 17 October 2026, 09:09 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 17 October 2026
+Updated: 18 October 2026
 
 ## Method
 
@@ -47,6 +47,17 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 18 October 2026, 09:15 Europe/London
+
+No clean experiment checkpoint was added. The account read succeeded and the token is healthy through
+`2026-10-19T04:37:28.149Z` with `reconnect_required=false`, but no new attributable TikTok row or
+analytics entry appeared. The account remains at 24 public rows and 5 followers; the latest public
+row is the 12 September Gladwell item with 3 views, 3 reach and 1 save, retained as an integrity
+observation only. No confidence or result label changed; repeat research, briefing and quality
+control, modify only after single-writer, duplicate, native metadata and evidence reconciliation,
+and pause mutation and the second slot. The official Creative Centre trends route was login-gated,
+so no new external pattern was added. No TikTok mutation was made.
 
 ### 17 October 2026, 09:09 Europe/London
 
