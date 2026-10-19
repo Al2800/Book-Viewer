@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 18 October 2026, 09:15 Europe/London
+Updated: 19 October 2026, 09:01 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,39 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 19 October 2026, 09:01 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms `122118824007415831` published once at 13:00 Europe/London. The
+  seven-day scheduled edge contains exactly seven future Public text-only rows for 19-25 October;
+  the queue extension created `122119828977415831` for 25 October at 13:00 and the direct edge
+  read confirmed it once. No duplicate copy or uncertain-response retry was found.
+- Facebook post-level insights and the latest-post comments read remain Not available because both
+  Graph reads return HTTP 400 (`#12`, singular statuses API deprecated). Instagram remains at 19
+  media rows with latest publication 30 August; no Instagram write was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token is healthy through `2026-10-20T04:50:21.753Z` with `reconnect_required=false`, but no new
+  public row or attributable analytics entry appeared. The latest public row is the 12 September
+  Gladwell item with 3 views, 3 reach and 1 save; this remains an integrity observation, not a clean
+  creative result. The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed.
+
+**Monday review and decision**
+
+- Facebook repeat: the verified 13:00 reader-first baseline and direct scheduled-edge read-back.
+  Modify: keep consecutive topics, hooks and formats distinct, maintain the seven-day queue, and
+  consider one visual/Reel only after rights, phone-sized visual and preflight gates pass. Pause extra
+  primary volume while distribution metrics remain unavailable.
+- TikTok repeat: research, briefing and quality-control work. Modify only after single-writer,
+  duplicate, native metadata and evidence reconciliation. Pause upload, schedule, edit, delete,
+  re-upload, second-slot testing and automatic replies. The next preparation portfolio remains 70%
+  reader-fit recommendations, 20% reader identity/culture/rituals and 10% reader-value-first product
+  proof; no consecutive product-led or sci-fi items. The preparation queue is below the required three
+  viable items: no release-ready future brief is available; `cr-03` and `cr-04` need illustrated cuts,
+  and the other current rows must not be re-uploaded. Do not manufacture weak content.
+- Confidence: no hypothesis or result label changed. There is still no clean TikTok comparison and no
+  usable Facebook distribution metric; integrity-only observations are not treated as creative wins.
 
 ### 18 October 2026, 09:15 Europe/London
 

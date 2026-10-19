@@ -1,26 +1,56 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 18 October 2026, 09:15 Europe/London
+Updated: 19 October 2026, 09:01 Europe/London
 
 ## Current operating loop
 
-- The 18 October live read confirms the 17 October Facebook prompt `122118635049415831` is published
+- The 19 October live read confirms the 18 October Facebook prompt `122118824007415831` is published
   once at 13:00 Europe/London:
-  [permalink](https://www.facebook.com/122107379391415831/posts/122118635049415831). The seven-day
+  [permalink](https://www.facebook.com/122107379391415831/posts/122118824007415831). The seven-day
   queue is extended and read back with exactly these seven Public, text-only rows at 13:00
-  Europe/London: `122118824007415831` (18 October), `122118994731415831` (19 October),
-  `122119132413415831` (20 October), `122119270005415831` (21 October), `122119419057415831`
-  (22 October), `122119550679415831` (23 October) and `122119674267415831` (24 October). No
+  Europe/London: `122118994731415831` (19 October), `122119132413415831` (20 October),
+  `122119270005415831` (21 October), `122119419057415831` (22 October), `122119550679415831`
+  (23 October), `122119674267415831` (24 October) and `122119828977415831` (25 October). No
   duplicate copy was found.
 - Facebook post-level insights and the latest-post comments read remain Not available because both
   Graph reads return HTTP 400 (`#12`, singular statuses API deprecated). Instagram remains at 19 rows,
   latest 30 August; no Instagram write was made.
 - TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
-  token is healthy through `2026-10-19T04:37:28.149Z` with `reconnect_required=false`, but no new
+  token is healthy through `2026-10-20T04:50:21.753Z` with `reconnect_required=false`, but no new
   public row or attributable analytics entry appeared. Keep the publishing-integrity, duplicate,
   native metadata, evidence and second-slot mutation holds active; no TikTok mutation or automatic
   reply was made. The current Creative Centre trends route redirected to a logged-in page, so no new
   external creative sample was added.
+- TikTok preparation queue is below the required three viable items: the current pipeline has no
+  release-ready future brief; `cr-03` and `cr-04` still need an illustrated cut, while `cr-01`, `cr-02`
+  and `cr-05`-`cr-07` are already live or held and must not be re-uploaded. No weak replacement was
+  manufactured.
+
+### Audit: 19 October 2026, 09:01 Europe/London
+
+- Facebook read-back confirms `122118824007415831` published once at 13:00 Europe/London. One dry-run
+  preflight and one approved scheduling action created `122119828977415831` for 25 October at 13:00;
+  the direct scheduled edge then confirmed exactly seven future rows for 19-25 October, with no
+  duplicate copy and no uncertain-response retry.
+- Meta identity and permissions remain verified for Page `1246405755221229` and Instagram
+  `bookquotes.app` (`17841434821362428`). Instagram remains at 19 media rows/latest 30 August; no
+  fresh Instagram publication was claimed and no Instagram write was made. Facebook insights and
+  comments remain unavailable because both current Graph reads return HTTP 400 (`#12`, singular
+  statuses API deprecated).
+- TikTok read-back shows active `@bookquotes.app`, 24 public rows, 5 followers and analytics access.
+  Token health is `ok` through `2026-10-20T04:50:21.753Z`; no new public row or attributable
+  analytics entry appeared. The latest public row is the 12 September Gladwell item (3 views, 3
+  reach, 1 save), retained as an integrity observation only. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed. No sensitive replies or searchable audience language
+  were exposed, no automatic replies were made, and all TikTok mutation holds remain active.
+- Monday review: repeat the Facebook 13:00 reader-first baseline and exact queue read-back; modify by
+  keeping topics and hooks distinct and consider one visual/Reel only after its rights and phone-sized
+  gates pass; pause extra volume. For TikTok, repeat research, briefing and quality control; modify
+  only after single-writer, duplicate, native metadata and evidence reconciliation; pause mutation,
+  second-slot testing and automatic replies. The next preparation portfolio remains 70% reader-fit
+  recommendations, 20% reader identity/culture/rituals and 10% reader-value-first product proof.
+  No hypothesis, cadence or creative-confidence change is warranted. The TikTok preparation queue is
+  below three viable items; prepare and clear distinct briefs before any future mutation.
 
 ### Audit: 18 October 2026, 09:15 Europe/London
 
