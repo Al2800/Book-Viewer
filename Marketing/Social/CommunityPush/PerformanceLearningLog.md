@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 19 October 2026, 09:01 Europe/London
+Updated: 20 October 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,34 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 20 October 2026, 09:00 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms `122118994731415831` published once at 13:00 Europe/London. The
+  seven-day scheduled edge contains exactly seven future Public text-only rows for 20-26 October;
+  the queue extension created `122119976613415831` for 26 October at 13:00 and the direct edge read
+  confirmed it once. No duplicate copy or uncertain-response retry was found.
+- Facebook post-level insights and the latest-post comments read remain Not available because both
+  Graph reads return HTTP 400 (`#12`, singular statuses API deprecated). Instagram remains at 19
+  media rows with latest publication 30 August; no Instagram write was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token is healthy through `2026-10-21T06:57:02.421Z` with `reconnect_required=false`, but no new
+  public row or attributable analytics entry appeared. The latest public row is the 12 September
+  Gladwell item with 3 views, 3 reach and 1 save; this remains an integrity observation, not a clean
+  creative result. The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed.
+
+**Decision**
+
+- Repeat: the verified Facebook 13:00 reader-first baseline, direct scheduled-edge read-back, and
+  distinct reader-practice prompts; continue TikTok research, briefing and quality-control work.
+- Modify: keep consecutive topics and openings distinct and use the additional time to prepare three
+  evidence-cleared future TikTok briefs; do not re-upload already-live or held category rows.
+- Pause: TikTok upload, schedule, edit, delete and re-upload actions; the second slot; automatic
+  replies; and interpretation of integrity-only TikTok rows as creative performance evidence.
+- Confidence: no hypothesis or result label changed. Facebook distribution metrics and comments remain
+  unavailable, and there is still no clean TikTok comparison.
 
 ### 19 October 2026, 09:01 Europe/London
 

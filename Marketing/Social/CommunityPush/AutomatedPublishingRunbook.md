@@ -1,28 +1,27 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 19 October 2026
+Updated: 20 October 2026
 
-## Current Operational Note — 19 October 2026, 09:01 Europe/London
+## Current Operational Note — 20 October 2026, 09:00 Europe/London
 
 
-The 18 October Facebook prompt `122118824007415831` is confirmed published once at 13:00
+The 19 October Facebook prompt `122118994731415831` is confirmed published once at 13:00
 Europe/London:
-`https://www.facebook.com/122107379391415831/posts/122118824007415831`. The rolling Facebook queue
-has been extended and read back for 19-25 October at 13:00 Europe/London; the scheduled edge contains
-exactly seven Public, text-only rows with no duplicate copy. The new 25 October row is
-`122119828977415831`, read back at
-`https://www.facebook.com/122107379391415831/posts/122119828977415831`. Meta identity and
+`https://www.facebook.com/122107379391415831/posts/122118994731415831`. The rolling Facebook queue
+has been extended and read back for 20-26 October at 13:00 Europe/London; the scheduled edge contains
+exactly seven Public, text-only rows with no duplicate copy. The new 26 October row is
+`122119976613415831`, read back at
+`https://www.facebook.com/122107379391415831/posts/122119976613415831`. Meta identity and
 permissions remain verified for Page `1246405755221229` and connected Instagram `bookquotes.app`
 (`17841434821362428`). Instagram remains at 19 media rows with latest publication 30 August. TikTok
 is active as `@bookquotes.app` with 24 public rows and 5 followers; its token is healthy through
-`2026-10-20T04:50:21.753Z` and no reconnect is currently required, but no new public row or
+`2026-10-21T06:57:02.421Z` and no reconnect is currently required, but no new public row or
 attributable analytics entry appeared. TikTok mutation holds remain active because
 publishing-integrity, duplicate, native metadata and evidence controls are unresolved. Facebook
 post-insights and latest-post comments reads return HTTP 400 (`#12`, singular statuses API
 deprecated), so those measures remain unavailable. The current Creative Centre trends route redirects
-to a logged-in Creative Centre page, so no new external creative sample was added. Monday's separate
-Facebook and TikTok reviews made no hypothesis, cadence or creative-confidence change. No TikTok
-mutation or automatic reply was attempted. The TikTok preparation queue is below the required three
+to a logged-in Creative Centre page, so no new external creative sample was added. No TikTok mutation
+or automatic reply was attempted. The TikTok preparation queue remains below the required three
 viable items: there is no release-ready future brief; `cr-03` and `cr-04` need illustrated cuts, and
 already-live or held rows must not be re-uploaded. No weak replacement was manufactured.
 
