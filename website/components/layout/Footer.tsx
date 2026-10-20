@@ -1,4 +1,5 @@
 const afterword = [
+  { label: 'Quotes', href: '/quotes' },
   { label: 'Journal', href: '/journal' },
   { label: 'Guides', href: '/guides' },
   { label: 'Support', href: '/support' },
@@ -14,7 +15,7 @@ export function Footer() {
           Keep the lines.
         </p>
         <p className="font-body text-ink-dark mb-8">
-          — BookQuotes, {new Date().getFullYear()}
+          BookQuotes, {new Date().getFullYear()}
         </p>
         <p className="font-ui text-sm text-ink-medium">
           P.S.{' '}

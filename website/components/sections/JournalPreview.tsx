@@ -6,9 +6,9 @@ export function JournalPreview() {
     <section className="bg-paper-warm">
       <div className="container-wide section-padding">
         <div className="max-w-2xl mb-12">
-          <h2 className="mb-3">Read, mark, remember</h2>
+          <h2 className="mb-3">Journal</h2>
           <p className="text-lg text-ink-medium">
-            Practical ideas for getting more value from paper-book annotations.
+            Notes on what to do with highlights, and how extraction stays under your control.
           </p>
         </div>
         <div className="border-y border-subtle">

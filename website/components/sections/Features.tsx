@@ -9,7 +9,7 @@ const features = [
   },
   {
     title: 'Custom annotation vocabulary',
-    description: 'Define your own marking system. Single underlines, margin brackets, asterisks, and highlights—set custom definitions for how you read.',
+    description: 'Define your own marking system. Single underlines, margin brackets, asterisks and highlights each get a definition that matches how you read.',
   },
   {
     title: 'Review before saving',

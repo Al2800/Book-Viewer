@@ -1,0 +1,297 @@
+{
+  "slug": "about-libraries",
+  "title": "Quotes about libraries, with the book named",
+  "description": "Quotes about libraries, checked against the work they come from, with the chapter or essay and a note on lines often given to the wrong author.",
+  "metaDescription": "Twenty quotes about libraries, with the book and chapter named. Checked against a text you can open, plus lines often misattributed.",
+  "eyebrow": "Libraries",
+  "indexLabel": "Libraries",
+  "publishedISO": "2026-09-28",
+  "updatedISO": "2026-09-28",
+  "sourceName": "Listed under each quotation",
+  "sourceUrl": "",
+  "sourcesArePerQuote": true,
+  "sourceNote": "Each quotation links to the text it was checked against. Where Project Gutenberg prints the work, that is the link.",
+  "groupBy": "theme",
+  "themeOrder": ["The room", "A public library", "What a library holds", "Making one", "A small shelf"],
+  "themeHeadings": {
+    "The room": "The room",
+    "A public library": "A public library",
+    "What a library holds": "What a library holds",
+    "Making one": "Making one",
+    "A small shelf": "A small shelf"
+  },
+  "intro": [
+    "These are quotes about libraries, taken from the books themselves, with the work named beside the line.",
+    "There are 20. Each one gives the work and the chapter or essay, a sentence of what is going on, and a short note. Filters narrow the list by author and by theme. Underneath, the lines stay in theme order: the room, a public library, what a library holds, making one, and a small shelf.",
+    "Public-domain authors are quoted as the text has them, including a lowercase opening where the sentence starts earlier. A line still in copyright is not here. If it could not be checked against a primary text, it was left out."
+  ],
+  "faqHeading": "Questions readers ask",
+  "misattributionIntro": "These lines travel with a famous name attached. The name, or the wording, does not survive a look at the source.",
+  "misattributions": [
+    {
+      "id": "cicero-garden",
+      "claim": "“If you have a garden and a library, you have everything you need” is given as Cicero’s sentence, in English.",
+      "detail": "Cicero did write to Varro, in Ad Familiares 9.4, “si hortum in bybliotheca habes, deerit nihil.” That is the spelling in the Latin text on Perseus. E. S. Shuckburgh’s translation of the same letter, also on Perseus, is “If you have a garden in your library, everything will be complete.” The popular line changes “in” to “and”, and it changes a remark about a visit into a rule for a whole life.",
+      "sourceName": "Perseus: Cicero, Letters to Friends 9.4, Latin text and Shuckburgh’s translation",
+      "sourceUrl": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.02.0022%3Atext%3DF%3Abook%3D9%3Aletter%3D4"
+    },
+    {
+      "id": "eliot-hope",
+      "claim": "“The very existence of libraries affords the best evidence that we may yet have hope for the future of man” is given to T. S. Eliot.",
+      "detail": "Quote Investigator has not found that sentence in Eliot. The earliest match QI has found is in Jayne Ann Krentz’s novel Perfect Partners (1992), in different wording. The attribution to Eliot that QI found is from 1999, in Shelf Life by George and Karen Grant, which is decades after Eliot’s death. QI calls that ascription weak.",
+      "sourceName": "Quote Investigator, 22 June 2019",
+      "sourceUrl": "https://quoteinvestigator.com/2019/06/22/libraries/"
+    },
+    {
+      "id": "waters-unread",
+      "claim": "“Nothing is more important than an unread library” is passed around as a reason to buy books you have not read. Another form says “impotent” instead of “important”.",
+      "detail": "Quote Investigator credits John Waters with “Nothing is more impotent than an unread library”, in Role Models (2010), in the chapter “Bookworm”. The “important” wording comes from Austin Kleon’s Steal Like an Artist (2012), where it was credited to Waters. QI credits Kleon with it, as a misremembering of Waters, and Kleon later corrected the attribution. The two words are not the same claim. Both books are still in copyright, so the sentences are not in the list above.",
+      "sourceName": "Quote Investigator, 18 August 2022",
+      "sourceUrl": "https://quoteinvestigator.com/2022/08/18/unread-library/"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Where do these quotes about libraries come from?",
+      "answer": "Each line was checked against a named edition, usually a Project Gutenberg ebook of a public-domain text. The link under the quotation goes to that ebook. If a line could not be found in a primary text, it is not on this page."
+    },
+    {
+      "question": "Why do some of the quotes about libraries start without a capital?",
+      "answer": "They start in the middle of a sentence in the book. The words are as that text has them. A capital was not added to turn a clause into a motto."
+    },
+    {
+      "question": "Is “if you have a garden and a library” one of the quotes about libraries?",
+      "answer": "No. The popular English sentence is not what Cicero wrote, and it is not Shuckburgh’s translation of the letter. Both are set out under Often misattributed, with the Perseus texts linked."
+    },
+    {
+      "question": "Can I put these lines on a bookmark or a classroom wall?",
+      "answer": "The public-domain lines can be copied in full. Keep the author and the work with the sentence. This page does not carry lines that are still in copyright. Page numbers are not given, because they change with the edition. The chapter does not."
+    },
+    {
+      "question": "How do I keep the lines I mark in my own books?",
+      "answer": "A list on a website is someone else’s choice. The set you will use is the one you underlined. Photograph the page, check the words against the print, and keep the page number with the sentence. BookQuotes can detect the page number on capture. You name your own markings, and collections and tags keep one theme together. It does not import Kindle highlights."
+    }
+  ],
+  "quotes": [
+    {
+      "id": "austen-tranquillity",
+      "text": "In his library he had been always sure of leisure and tranquillity; and though prepared, as he told Elizabeth, to meet with folly and conceit in every other room in the house, he was used to be free from them there: his civility, therefore, was most prompt in inviting Mr. Collins to join his daughters in their walk; and Mr. Collins, being in fact much better fitted for a walker than a reader, was extremely well pleased to close his large book, and go.",
+      "speaker": "Jane Austen",
+      "themes": ["The room"],
+      "citation": "Jane Austen · Pride and Prejudice, Chapter 15",
+      "sourceName": "Project Gutenberg eBook 1342",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/1342",
+      "context": "Mr Collins is staying at Longbourn and talking, without much pause, about his house and garden at Hunsford. Mr Bennet finds a way to get him out of the room.",
+      "analysis": "The library is the one room Mr Bennet trusts. Everywhere else he expects folly. Collins is sent into the garden because he is “better fitted for a walker than a reader”, which is a verdict on the guest and a small defence of the room."
+    },
+    {
+      "id": "alcott-bliss",
+      "text": "The dim, dusty room, with the busts staring down from the tall bookcases, the cozy chairs, the globes, and best of all, the wilderness of books in which she could wander where she liked, made the library a region of bliss to her.",
+      "speaker": "Louisa May Alcott",
+      "themes": ["The room"],
+      "citation": "Louisa May Alcott · Little Women, Chapter 4, “Burdens”",
+      "sourceName": "Project Gutenberg eBook 514",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/514",
+      "context": "Jo is working for Aunt March. Just before this, the text says the real attraction was a large library of fine books, left to dust and spiders since Uncle March died.",
+      "analysis": "The bliss is the wandering, not the furniture. Busts, globes and dust are the setting. The point is that nobody is telling her which book to take next. She reads until Aunt March wakes up."
+    },
+    {
+      "id": "montaigne-overlook",
+      "text": "When at home, I a little more frequent my library, whence I overlook at once all the concerns of my family.",
+      "speaker": "Michel de Montaigne",
+      "themes": ["The room"],
+      "citation": "Michel de Montaigne · Essays, Book 3, Chapter 3, “Of Three Commerces”, translated by Charles Cotton",
+      "sourceName": "Project Gutenberg eBook 3600",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/3600",
+      "context": "In “Of Three Commerces” he is talking about the company he keeps. This sentence is about books, the third of those companies. The next sentence puts the room at the entrance of the house, with the garden and the court under it. The wording is Charles Cotton’s translation.",
+      "analysis": "He does not hide the library at the top of a silence. He wants the household in sight and the books in reach. “A little more frequent” is a modest verb for a room he is clearly fond of."
+    },
+    {
+      "id": "montaigne-corner",
+      "text": "My library, which is a fine one among those of the village type, is situated in a corner of my house; if anything comes into my head that I have a mind to search or to write, lest I should forget it in but going across the court, I am fain to commit it to the memory of some other.",
+      "speaker": "Michel de Montaigne",
+      "themes": ["The room"],
+      "citation": "Michel de Montaigne · Essays, Book 2, Chapter 17, “Of Presumption”, translated by Charles Cotton",
+      "sourceName": "Project Gutenberg eBook 3600",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/3600",
+      "context": "“Of Presumption” is about the opinion he has of himself, including his memory, which he does not rate highly. The wording is Charles Cotton’s translation.",
+      "analysis": "The boast comes first, and it is a small one: a fine library of the village sort. The reason for the corner is the next clause. A walk across the court is long enough for the thought to disappear, so the books have to be close."
+    },
+    {
+      "id": "gibbon-domain",
+      "text": "the library on the same floor was soon considered as my peculiar domain; and I might say with truth, that I was never less alone than when by myself.",
+      "speaker": "Edward Gibbon",
+      "themes": ["The room"],
+      "citation": "Edward Gibbon · Memoirs of My Life and Writings, the account of Buriton",
+      "sourceName": "Project Gutenberg eBook 6031",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/6031",
+      "context": "Gibbon is writing about stays at Buriton, his father’s house in Hampshire. He has just said that farming and a horse did not take, and that a shady bench usually ended his walks. The clause has no capital because it follows “At home I occupied a pleasant and spacious apartment”.",
+      "analysis": "“Peculiar domain” is a claim of territory, made quietly. The second half is the feeling he wants from that room: company of a sort, and nobody else in it. He does not say the books spoke. He says he was not lonely."
+    },
+    {
+      "id": "emerson-cambridge",
+      "text": "I visit occasionally the Cambridge Library, and I can seldom go there without renewing the conviction that the best of it all is already within the four walls of my study at home.",
+      "speaker": "Ralph Waldo Emerson",
+      "themes": ["The room"],
+      "citation": "Ralph Waldo Emerson · Society and Solitude, “Books”",
+      "sourceName": "Project Gutenberg eBook 69258",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/69258",
+      "context": "This is in the essay “Books”, in Society and Solitude. A few sentences earlier he has been looking at the size of the Imperial Library at Paris.",
+      "analysis": "He is not refusing the Cambridge Library. He goes. The visit keeps telling him the same thing: the books he will actually live with are the ones already in the study. A large building does not, for him, improve on a chosen shelf."
+    },
+    {
+      "id": "franklin-subscription",
+      "text": "And now I set on foot my first project of a public nature, that for a subscription library.",
+      "speaker": "Benjamin Franklin",
+      "themes": ["A public library"],
+      "citation": "Benjamin Franklin · Autobiography of Benjamin Franklin",
+      "sourceName": "Project Gutenberg eBook 20203",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/20203",
+      "context": "The Junto’s first shared books have just been divided up again, because nobody was looking after them. Franklin moves on to a library people would pay to join. He names Brockden, the scrivener who put the proposals into form, and the friends in the Junto who found the first subscribers.",
+      "analysis": "He calls it a project of a public nature, not a hobby. The sentence is proud and plain. The detail that makes it a library, rather than a pile of donated books, is the subscription: someone has to be responsible for the copies."
+    },
+    {
+      "id": "franklin-mother",
+      "text": "this was the mother of all the North American subscription libraries, now so numerous. It is become a great thing itself, and continually increasing.",
+      "speaker": "Benjamin Franklin",
+      "themes": ["A public library"],
+      "citation": "Benjamin Franklin · Autobiography of Benjamin Franklin",
+      "sourceName": "Project Gutenberg eBook 20203",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/20203",
+      "context": "The company has a charter by this point, and Franklin says it has grown to one hundred. “This” is that library. The clause has no capital because it follows the charter in the same sentence. “It is become” is his grammar, left as printed.",
+      "analysis": "He is looking back, and he lets the boast stand: one subscription library as the parent of many. The next sentences say those libraries improved the general conversation of Americans, and he includes tradesmen and farmers in that. The claim starts with a membership list, not with a building."
+    },
+    {
+      "id": "keller-tuscumbia",
+      "text": "My mother and several of my lady friends said they would help me, and they formed a club, the object of which is to work for the establishment of a free public library in Tuscumbia.",
+      "speaker": "Helen Keller",
+      "themes": ["A public library"],
+      "citation": "Helen Keller · The Story of My Life, letter to Mrs Charles E. Inches, Hulton, Pennsylvania, 21 October 1893",
+      "sourceName": "Project Gutenberg eBook 2397",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/2397",
+      "context": "Keller is answering questions about what the letter calls the “Helen Keller” Public Library. Two sentences earlier she says the town has no library of any sort, which is why she thought of starting one. The same letter says a room has been rented and the books already collected are free to use.",
+      "analysis": "This is a library that does not exist yet, described by someone who wants it. The club, the mother, the friends: the public part is a group of people, not a stack of books on its own. She is writing to be asked about it, and she answers in a list."
+    },
+    {
+      "id": "thoreau-circulating",
+      "text": "My residence was more favorable, not only to thought, but to serious reading, than a university; and though I was beyond the range of the ordinary circulating library, I had more than ever come within the influence of those books which circulate round the world, whose sentences were first written on bark, and are now merely copied from time to time on to linen paper.",
+      "speaker": "Henry David Thoreau",
+      "themes": ["A public library"],
+      "citation": "Henry David Thoreau · Walden, the chapter “Reading”",
+      "sourceName": "Project Gutenberg eBook 205",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/205",
+      "context": "This is in the chapter “Reading”. He is at the pond, outside the ordinary round of the town library. “Favorable” is the spelling in this text.",
+      "analysis": "He does not pretend the circulating library reached him. He uses that distance. The books he wants have already been copied from bark to paper, which is a different kind of circulation from a local lending shelf. The comparison with a university is the boast. The library is the thing he is outside."
+    },
+    {
+      "id": "debury-wisdom",
+      "text": "A library of wisdom, then, is more precious than all wealth, and all things that are desirable cannot be compared to it.",
+      "speaker": "Richard de Bury",
+      "themes": ["What a library holds"],
+      "citation": "Richard de Bury · Philobiblon, Chapter 2, “The degree of affection that is properly due to books”, translated by E. C. Thomas",
+      "sourceName": "Project Gutenberg eBook 626",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/626",
+      "context": "Chapter 2 argues that affection should follow value. Just before this sentence he says a wise man will not stop gathering pearls because swine trample them. The English is E. C. Thomas’s translation of the Latin treatise.",
+      "analysis": "“Then” means he thinks he has earned the conclusion. Wisdom, not the number of volumes, is what makes the library precious. The next sentence says anyone who wants truth, happiness, wisdom or faith must become a lover of books. The wealth comparison is the step before that."
+    },
+    {
+      "id": "debury-paris",
+      "text": "There are delightful libraries, more aromatic than stores of spicery; there are luxuriant parks of all manner of volumes;",
+      "speaker": "Richard de Bury",
+      "themes": ["What a library holds"],
+      "citation": "Richard de Bury · Philobiblon, Chapter 8, “Of the numerous opportunities we have had of collecting a store of books”, translated by E. C. Thomas",
+      "sourceName": "Project Gutenberg eBook 626",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/626",
+      "context": "Chapter 8 lists the chances he had to collect books, including embassies to the Holy See and the Court of France. The sentence before this one remembers visits to Paris, which he calls the Paradise of the world. The semicolon is his: the line goes on to Academic meads, walks of the Peripatetics, and porches of the Stoics. The English is E. C. Thomas’s translation.",
+      "analysis": "The libraries smell, in this figure, like a store of spice. That is pleasure, not a catalogue. He has been describing tiring embassies, and the picture he keeps from them is of rooms full of books in a city he loved. The clause stops here. The sentence does not."
+    },
+    {
+      "id": "bacon-shrines",
+      "text": "libraries, which are as the shrines where all the relics of the ancient saints, full of true virtue, and that without delusion or imposture, are preserved and reposed;",
+      "speaker": "Francis Bacon",
+      "themes": ["What a library holds"],
+      "citation": "Francis Bacon · The Advancement of Learning, the second book",
+      "sourceName": "Project Gutenberg eBook 5500",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/5500",
+      "context": "Bacon is listing the works that have to do with books. He has just said there are two, and the first is libraries. The clause has no capital because it sits inside that sentence. The second work, which is not quoted here, is new editions of authors.",
+      "analysis": "The shrine is a metaphor, and he spends the clause keeping it honest: true virtue, no delusion, no imposture. He wants the library to be a place where the real remains of learned people are kept, not a cupboard of odds and ends. Editions and notes are the next job, separate from the building."
+    },
+    {
+      "id": "emerson-smallest",
+      "text": "Consider what you have in the smallest chosen library. A company of the wisest and wittiest men that could be picked out of all civil countries, in a thousand years, have set in best order the results of their learning and wisdom.",
+      "speaker": "Ralph Waldo Emerson",
+      "themes": ["What a library holds"],
+      "citation": "Ralph Waldo Emerson · Society and Solitude, “Books”",
+      "sourceName": "Project Gutenberg eBook 69258",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/69258",
+      "context": "Still in the essay “Books”. He has been saying that some books are almost equal to the world they describe, and that shutting them makes ordinary life feel thinner.",
+      "analysis": "“Chosen” is doing as much work as “smallest”. He is not praising any shelf. He is praising a shelf someone has picked. The second sentence is the company he thinks is in it: not the authors in the room, but the thinking they put in order. “Men” is the word in this text."
+    },
+    {
+      "id": "emerson-enchanter",
+      "text": "In a library we are surrounded by many hundreds of dear friends, but they are imprisoned by an enchanter in these paper and leathern boxes;",
+      "speaker": "Ralph Waldo Emerson",
+      "themes": ["What a library holds"],
+      "citation": "Ralph Waldo Emerson · Society and Solitude, “Books”",
+      "sourceName": "Project Gutenberg eBook 69258",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/69258",
+      "context": "The same essay, a little later. He has just said the colleges provide libraries and no professor of books. The semicolon is in the text. The sentence goes on: the books, as he has it, must not speak until they are spoken to.",
+      "analysis": "The friends are the books, and they are stuck. “Leathern boxes” is a binding, seen as a spell. A library full of unread volumes is, in this figure, a room of people waiting. You have to speak first, which is his way of saying you have to open one."
+    },
+    {
+      "id": "stephen-echoes",
+      "text": "Of the vast piles of books which load our libraries, ninety-nine hundredths and more are but printed echoes: and it is the rarest of pleasures to say, Here is a distinct record of impressions at first hand.",
+      "speaker": "Leslie Stephen",
+      "themes": ["What a library holds"],
+      "citation": "Leslie Stephen · Hours in a Library, Volume 2, “Dr. Johnson’s Writings”",
+      "sourceName": "Project Gutenberg eBook 30336",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/30336",
+      "context": "This is Stephen’s own sentence in the essay on Johnson’s writings, not a quotation from Johnson. He has just been talking about opinions borrowed and stitched together.",
+      "analysis": "The fraction is his, and it is a grumble, not a count a librarian would sign. Most of the pile, he says, repeats someone else. The pleasure he wants is the opposite: a book that is a record of what one person actually saw. A library can hold both, and he thinks it mostly holds the first."
+    },
+    {
+      "id": "birrell-grow",
+      "text": "Libraries are not made; they grow. Your first two thousand volumes present no difficulty, and cost astonishingly little money.",
+      "speaker": "Augustine Birrell",
+      "themes": ["Making one"],
+      "citation": "Augustine Birrell · Obiter Dicta, Second Series, “Book-Buying”",
+      "sourceName": "Project Gutenberg eBook 21793",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/21793",
+      "context": "“Book-Buying” has been complaining that the old bargains in country shops are gone, because booksellers read the London auction news and the catalogues. The sentence before this one says high prices show there were never so many private libraries in course of growth.",
+      "analysis": "The first sentence is the one people lift out. The second ties it to buying, in his own time, and to a pace: two thousand volumes, without hurry. He is not pricing a library for you. He is telling a buyer that a library arrives by accumulation, and that the early part of that accumulation felt cheap to him."
+    },
+    {
+      "id": "lang-age",
+      "text": "The age of great libraries has gone by, and where a collector of the old school survives, he is usually a man of enormous wealth, who might, if he pleased, be distinguished in parliament, in society, on the turf itself, or in any of the pursuits where unlimited supplies of money are strictly necessary.",
+      "speaker": "Andrew Lang",
+      "themes": ["Making one"],
+      "citation": "Andrew Lang · The Library, Chapter 2, “The Library”",
+      "sourceName": "Project Gutenberg eBook 2018",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/2018",
+      "context": "Chapter 2 is about an ordinary library in an English house: cases, damp, borrowers, bindings. The sentence before this one says the library he means is unlike the halls a Spencer or a Huth fills with treasure.",
+      "analysis": "“Great” here means the huge private collections, not a town library. Lang thinks that kind of collecting now takes a fortune that could have been spent on parliament or the turf. This chapter is about an ordinary library in a house. He uses the sentence to set the treasure-halls aside."
+    },
+    {
+      "id": "franklin-separated",
+      "text": "the collection, after about a year, was separated, and each took his books home again.",
+      "speaker": "Benjamin Franklin",
+      "themes": ["A small shelf"],
+      "citation": "Benjamin Franklin · Autobiography of Benjamin Franklin",
+      "sourceName": "Project Gutenberg eBook 20203",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/20203",
+      "context": "Members of the Junto have pooled the books they could spare, in one end of a room. The clause has no capital because it follows his account of the inconveniences. There were fewer books than they had expected, and nobody took due care of them.",
+      "analysis": "This is a library failing in a year. No one was in charge, so the books went home. It sits in the autobiography just before the subscription library, and it explains why a shared shelf needs a rule. Good will and a corner of a room were not enough."
+    },
+    {
+      "id": "micawber-chiffonier",
+      "text": "Mr. Micawber had a few books on a little chiffonier, which he called the library; and those went first.",
+      "speaker": "Charles Dickens",
+      "themes": ["A small shelf"],
+      "citation": "Charles Dickens · David Copperfield, Chapter 11, “I Begin Life on My Own Account, and Don’t Like It”",
+      "sourceName": "Project Gutenberg eBook 766",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/766",
+      "context": "The Micawbers are selling what they can. David carries the books, one after another, to a stall in the City Road. This is the first thing to go.",
+      "analysis": "The joke is the name. A few books on a chiffonier are “the library”, and then they are stock. Dickens lets both things be true in one sentence: the tenderness of the word, and the fact that the books are sold before anything else. A small shelf is still a library until it isn’t."
+    }
+  ]
+}

@@ -1,18 +1,52 @@
 import type { MetadataRoute } from 'next'
 import { guides } from '@/lib/guides'
 import { journalArticles } from '@/lib/journal'
+import { quoteHubs } from '@/lib/quotes'
 
 const baseUrl = 'https://bookquotes.uk'
+const revisedOn = new Date('2026-09-28T00:00:00.000Z')
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages = ['', '/guides', '/journal', '/support', '/privacy', '/terms']
-  const guidePages = guides.map((guide) => `/guides/${guide.slug}`)
-  const journalPages = journalArticles.map((article) => `/journal/${article.slug}`)
+  const staticPages: { path: string; lastModified: Date; changeFrequency: 'weekly' | 'monthly'; priority: number }[] = [
+    { path: '/', lastModified: revisedOn, changeFrequency: 'weekly', priority: 1.0 },
+    { path: '/quotes', lastModified: revisedOn, changeFrequency: 'weekly', priority: 0.9 },
+    { path: '/guides', lastModified: revisedOn, changeFrequency: 'weekly', priority: 0.8 },
+    { path: '/journal', lastModified: revisedOn, changeFrequency: 'weekly', priority: 0.8 },
+    { path: '/support', lastModified: revisedOn, changeFrequency: 'monthly', priority: 0.5 },
+    { path: '/privacy', lastModified: revisedOn, changeFrequency: 'monthly', priority: 0.3 },
+    { path: '/terms', lastModified: revisedOn, changeFrequency: 'monthly', priority: 0.3 },
+  ]
 
-  return [...staticPages, ...guidePages, ...journalPages].map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date('2026-08-03'),
-    changeFrequency: path === '' ? 'weekly' : 'monthly',
-    priority: path === '' ? 1 : path.startsWith('/guides/') ? 0.8 : 0.6,
+  const quotePages = quoteHubs.map((hub) => ({
+    url: `${baseUrl}/quotes/${hub.slug}`,
+    lastModified: new Date(`${hub.updatedISO}T00:00:00.000Z`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
   }))
+
+  const guidePages = guides.map((guide) => ({
+    url: `${baseUrl}/guides/${guide.slug}`,
+    lastModified: new Date(`${guide.updatedISO}T00:00:00.000Z`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
+  const journalPages = journalArticles.map((article) => ({
+    url: `${baseUrl}/journal/${article.slug}`,
+    lastModified: new Date(article.updatedISO ? `${article.updatedISO}T00:00:00.000Z` : `${article.publishedISO}T00:00:00.000Z`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
+  return [
+    ...staticPages.map((page) => ({
+      url: `${baseUrl}${page.path}`,
+      lastModified: page.lastModified,
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+    })),
+    ...quotePages,
+    ...guidePages,
+    ...journalPages,
+  ]
 }

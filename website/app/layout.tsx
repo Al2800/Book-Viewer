@@ -1,18 +1,21 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+const homeTitle = 'Save quotes from paper books on iPhone | BookQuotes'
+const homeDescription =
+  'Save the passages you underline in paper books. BookQuotes keeps them in a private, searchable library on iPhone, with the page number and your own notes.'
+
 export const metadata: Metadata = {
-  title: 'BookQuotes — Turn Paper Highlights into a Digital Library',
-  description: 'Photograph marked book pages, review extracted passages, and build a searchable personal quote library on iPhone and iPad.',
-  keywords: ['book quotes', 'reading app', 'highlight capture', 'margin notes', 'book annotations', 'digital library', 'iOS app'],
+  title: homeTitle,
+  description: homeDescription,
   authors: [{ name: 'BookQuotes' }],
   creator: 'BookQuotes',
   metadataBase: new URL('https://bookquotes.uk'),
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'BookQuotes — Your Paper Highlights, Digitized',
-    description: 'Transform underlined passages and margin notes from physical books into a searchable digital library.',
-    url: 'https://bookquotes.uk',
+    title: homeTitle,
+    description: homeDescription,
+    url: 'https://bookquotes.uk/',
     siteName: 'BookQuotes',
     locale: 'en_GB',
     type: 'website',
@@ -21,14 +24,14 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 1730,
         height: 909,
-        alt: 'BookQuotes — Keep the lines you underlined',
+        alt: 'BookQuotes: save quotes from paper books on iPhone',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BookQuotes — Your Paper Highlights, Digitized',
-    description: 'Transform underlined passages and margin notes from physical books into a searchable digital library.',
+    title: homeTitle,
+    description: homeDescription,
     images: ['/og.png'],
   },
   robots: {

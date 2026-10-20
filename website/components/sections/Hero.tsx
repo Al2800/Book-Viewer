@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { seoAppStoreUrl } from '@/lib/seo'
 
 export function Hero() {
   return (
@@ -6,17 +7,17 @@ export function Hero() {
       <div className="container-wide grid lg:grid-cols-[7fr_5fr] gap-12 lg:gap-16 items-start">
         <div>
           <h1 className="text-balance mb-6">
-            Save the lines you underlined
+            Save quotes from paper books on iPhone
           </h1>
           <p className="text-lg md:text-xl text-ink-dark max-w-prose mb-8">
-            Transform marked pages from physical books into a private, searchable
-            digital commonplace book. Capture your underlines, margin notes, and
-            highlights, review extracted passages, and keep the lines you want to find again.
+            Turn paper underlines, margin notes and book highlights into a private library you can
+            search. Keep the book, the page and the line you marked, then find them again when you
+            need them.
           </p>
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center">
             <div>
               <a
-                href="https://apps.apple.com/app/id6758091579"
+                href={seoAppStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
@@ -24,7 +25,7 @@ export function Hero() {
                 Get the app
               </a>
               <p className="font-ui text-xs text-ink-medium mt-1.5">
-                7-day free trial · Designed for iPhone
+                7-day free trial · Designed for iPhone &amp; iPad
               </p>
             </div>
             <a

@@ -5,11 +5,22 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { guides } from '@/lib/guides'
 
+const guidesTitle = 'Guides for saving quotes from paper books | BookQuotes'
+const guidesDescription =
+  'Practical guides for saving marked passages from paper books, scanning underlined pages, and searching your own quote library.'
+
 export const metadata: Metadata = {
-  title: 'Book Reading and Quote Guides | BookQuotes',
-  description:
-    'Practical guides for saving quotes from physical books, scanning marked pages, digitising notes, and building a searchable reading library.',
+  title: guidesTitle,
+  description: guidesDescription,
   alternates: { canonical: '/guides' },
+  openGraph: {
+    title: guidesTitle,
+    description: guidesDescription,
+    url: 'https://bookquotes.uk/guides',
+    siteName: 'BookQuotes',
+    locale: 'en_GB',
+    type: 'website',
+  },
 }
 
 export default function GuidesPage() {
@@ -19,9 +30,9 @@ export default function GuidesPage() {
       <main className="pt-8 md:pt-12">
         <header className="container-standard pb-14 md:pb-20">
           <p className="font-ui text-sm text-ink-medium mb-4">Guides</p>
-          <h1 className="mb-5">Save the ideas you want to find again</h1>
+          <h1 className="mb-5">Guides for saving quotes from paper books</h1>
           <p className="text-xl text-ink-medium max-w-2xl">
-            Clear, practical answers for readers who underline paper books, keep margin notes, and want a better way to revisit them.
+            Practical notes for readers who underline paper books, keep margin notes, and want to find those lines again.
           </p>
         </header>
 

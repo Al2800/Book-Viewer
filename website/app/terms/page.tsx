@@ -3,7 +3,7 @@ import { Footer } from '@/components/layout/Footer'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — BookQuotes',
+  title: 'Terms of Service | BookQuotes',
   description: 'Terms and conditions for using BookQuotes.',
   alternates: { canonical: '/terms' },
 }

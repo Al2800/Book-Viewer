@@ -1,6 +1,6 @@
 # BookQuotes Organic SEO Plan
 
-Updated: 11 August 2026
+Updated: 28 September 2026
 
 ## Purpose
 
@@ -16,8 +16,8 @@ Console evidence as separate states.
 ## Positioning
 
 BookQuotes is a privacy-conscious iPhone app for turning marked pages from physical books into a
-searchable personal quote library. The strongest search proposition is the workflow, not a promise
-to provide a database of copyrighted quotations.
+searchable personal quote library. The product pages explain that capture workflow. Separate quote
+hubs may quote a public-domain text. They are not a database of copyrighted books.
 
 Use the following language consistently:
 
@@ -28,8 +28,11 @@ Use the following language consistently:
 - work locally where the product supports it, with remote AI described only where demonstrated;
 - export or revisit a commonplace-book style collection.
 
-Avoid building pages around full quote collections, scraped book text, unsupported AI accuracy
-claims, or invented reviews. Those would create rights, trust and thin-content problems.
+Public-domain texts may be quoted in full. Name the stave, chapter or act, and check every line
+against a named original text (for Dickens, the Project Gutenberg text). Modern in-copyright books
+get short quotes with original commentary only, and only as much as the point needs. Never publish
+an unverified quote or an attribution that has not been checked. Do not copy notes from a modern
+edition. Do not invent accuracy claims, reviews or statistics.
 
 ## First Search Clusters
 

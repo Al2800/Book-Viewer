@@ -7,7 +7,9 @@ import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
 import { ProductEvidence } from '@/components/sections/ProductEvidence'
 import { getGuide, guides } from '@/lib/guides'
+import { gcseHubLinkLabel, publishedGcseHubs } from '@/lib/quotes'
 import { seoAppStoreUrl, seoShareImage } from '@/lib/seo'
+import { formatLongDate, splitInlineLinks } from '@/lib/utils'
 
 type GuidePageProps = {
   params: Promise<{ slug: string }>
@@ -23,17 +25,18 @@ export async function generateMetadata({ params }: GuidePageProps): Promise<Meta
 
   if (!guide) return {}
 
+  const title = `${guide.title} | BookQuotes`
+
   return {
-    title: `${guide.title} | BookQuotes`,
+    title,
     description: guide.description,
-    keywords: [guide.query, ...guide.relatedQueries],
     alternates: { canonical: `/guides/${guide.slug}` },
     openGraph: {
-      title: `${guide.title} | BookQuotes`,
+      title,
       description: guide.description,
       type: 'article',
-      publishedTime: '2026-08-03T00:00:00:00.000Z',
-      modifiedTime: '2026-08-03T00:00:00:00.000Z',
+      publishedTime: `${guide.publishedISO}T00:00:00.000Z`,
+      modifiedTime: `${guide.updatedISO}T00:00:00.000Z`,
       section: guide.category,
       images: [seoShareImage],
     },
@@ -51,8 +54,8 @@ export default async function GuidePage({ params }: GuidePageProps) {
     '@type': 'Article',
     headline: guide.title,
     description: guide.description,
-    dateModified: '2026-08-03',
-    datePublished: '2026-08-03',
+    dateModified: guide.updatedISO,
+    datePublished: guide.publishedISO,
     author: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
     publisher: { '@type': 'Organization', name: 'BookQuotes', url: 'https://bookquotes.uk' },
     mainEntityOfPage: `https://bookquotes.uk/guides/${guide.slug}`,
@@ -62,7 +65,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bookquotes.uk' },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bookquotes.uk/' },
       { '@type': 'ListItem', position: 2, name: 'Guides', item: 'https://bookquotes.uk/guides' },
       { '@type': 'ListItem', position: 3, name: guide.title, item: `https://bookquotes.uk/guides/${guide.slug}` },
     ],
@@ -91,10 +94,37 @@ export default async function GuidePage({ params }: GuidePageProps) {
             <p className="font-ui text-sm text-ink-medium mb-4">{guide.category}</p>
             <h1 className="text-balance mb-6">{guide.title}</h1>
             <p className="text-xl text-ink-medium max-w-2xl mb-6">{guide.intro}</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2 font-ui text-sm text-ink-light">
-              <span>Updated {guide.updated}</span>
+            {guide.quoteHubList === 'gcse' && (
+              <div className="max-w-2xl mb-8">
+                <PublishedGcseHubs />
+              </div>
+            )}
+            <div className="flex flex-wrap gap-x-4 gap-y-2 font-ui text-sm text-ink-light mb-8">
+              <span>Published {formatLongDate(guide.publishedISO)}</span>
+              <span>Updated {formatLongDate(guide.updatedISO)}</span>
               <span>{guide.readingTime}</span>
-              <span>Primary search: {guide.query}</span>
+            </div>
+
+            <div className="p-5 md:p-6 bg-paper-warm border border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <p className="font-display text-lg text-ink-black font-semibold mb-1">
+                  A quote reader for physical books
+                </p>
+                <p className="font-ui text-sm text-ink-medium">
+                  Photograph marked pages, extract your underlines, and build a searchable quote library on iPhone and iPad.
+                </p>
+              </div>
+              <a
+                href={seoAppStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0"
+              >
+                <Button size="default" className="w-full sm:w-auto">
+                  Get the app
+                  <ExternalLink className="w-4 h-4 ml-2" />
+                </Button>
+              </a>
             </div>
           </header>
 
@@ -108,15 +138,36 @@ export default async function GuidePage({ params }: GuidePageProps) {
                 <section key={section.heading} className="mb-12 last:mb-0">
                   <h2 className="mb-5">{section.heading}</h2>
                   {section.paragraphs.map((paragraph) => (
-                    <p key={paragraph} className="text-lg text-ink-dark mb-5 last:mb-0">{paragraph}</p>
+                    <p key={paragraph} className="text-lg text-ink-dark mb-5 last:mb-0">
+                      <InlineText text={paragraph} />
+                    </p>
                   ))}
                   {section.bullets && (
                     <ul className="mt-5 space-y-3 list-disc pl-6 text-lg text-ink-dark">
-                      {section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+                      {section.bullets.map((bullet) => (
+                        <li key={bullet}>
+                          <InlineText text={bullet} />
+                        </li>
+                      ))}
                     </ul>
                   )}
                 </section>
               ))}
+
+              {guide.related.length > 0 && (
+                <section className="mt-14 pt-10 border-t border-subtle">
+                  <h2 className="mb-5">Related reading</h2>
+                  <ul className="space-y-3 text-lg">
+                    {guide.related.map((item) => (
+                      <li key={item.href}>
+                        <Link href={item.href} className="underline underline-offset-4 hover:text-gold-primary">
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
 
               <section className="mt-14 pt-10 border-t border-subtle">
                 <h2 className="mb-6">Questions readers ask</h2>
@@ -148,6 +199,50 @@ export default async function GuidePage({ params }: GuidePageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Footer />
+    </>
+  )
+}
+
+function PublishedGcseHubs() {
+  const hubs = publishedGcseHubs()
+
+  return (
+    <section className="mb-2">
+      <h2 className="mb-5 text-2xl">Quote hubs published on this site</h2>
+      {hubs.length === 0 ? (
+        <p className="text-lg text-ink-dark">No literature hubs are published yet.</p>
+      ) : (
+        <ul className="space-y-6">
+          {hubs.map((hub) => (
+            <li key={hub.slug}>
+              <Link href={`/quotes/${hub.slug}`} className="underline underline-offset-4 hover:text-gold-primary text-lg">
+                {gcseHubLinkLabel(hub.title)}
+              </Link>
+              <p className="text-lg text-ink-dark mt-2">{hub.description}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+function InlineText({ text }: { text: string }) {
+  return (
+    <>
+      {splitInlineLinks(text).map((part, index) =>
+        part.type === 'text' ? (
+          <span key={index}>{part.value}</span>
+        ) : (
+          <Link
+            key={index}
+            href={part.href}
+            className="underline underline-offset-4 hover:text-gold-primary"
+          >
+            {part.label}
+          </Link>
+        ),
+      )}
     </>
   )
 }

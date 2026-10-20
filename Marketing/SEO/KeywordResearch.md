@@ -1,6 +1,6 @@
 # BookQuotes Keyword Research
 
-Updated: 11 August 2026
+Updated: 28 September 2026
 
 ## Status
 
@@ -44,8 +44,13 @@ review, correct, connect to the book, and revisit.
 
 The broad phrase is crowded by public quote collections, older unrelated apps, and products with
 different purposes. Use it on the product page and in supporting copy, but lead headlines with the
-reader problem and the physical-page workflow. Do not create pages consisting of famous quotations
-or scraped book text.
+reader problem and the physical-page workflow.
+
+Public-domain texts may be quoted in full. Name the stave, chapter or act, and check every line
+against a named original text (for Dickens, the Project Gutenberg text). Modern in-copyright books
+get short quotes with original commentary only, and only as much as the point needs. Never publish
+an unverified quote or an attribution that has not been checked. Do not copy notes from a modern
+edition.
 
 ### 3. Privacy can differentiate, but only with precise language
 
@@ -79,7 +84,7 @@ retrieval habit.
 - Use screenshots from the shipped app and describe limitations honestly.
 - Keep the reader's own judgement central; extraction is not a guarantee.
 - Do not imply firsthand reading of books used in social or research content.
-- Do not publish substantial copyrighted passages or build a public quote database.
+- Public-domain texts may be quoted in full, with stave, chapter or act references checked against the original text. Modern in-copyright books get short quotes with original commentary only. Never publish an unverified quote or attribution.
 - Link to the App Store with a distinct `utm_source=organic&utm_medium=website` campaign.
 - Link guides to the privacy policy, support page, and related workflow pages.
 

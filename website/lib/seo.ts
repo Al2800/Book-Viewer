@@ -5,5 +5,5 @@ export const seoShareImage = {
   url: '/og.png',
   width: 1730,
   height: 909,
-  alt: 'BookQuotes — Keep the lines you underlined',
+  alt: 'BookQuotes: keep the lines you underlined',
 } as const

@@ -1,0 +1,471 @@
+{
+  "slug": "a-christmas-carol",
+  "title": "A Christmas Carol quotes by stave, character and theme",
+  "description": "Key A Christmas Carol quotes for GCSE, checked word for word against Dickens's text, with the stave, speaker, context and a short note for essays.",
+  "publishedISO": "2026-09-28",
+  "updatedISO": "2026-09-28",
+  "sourceName": "A Christmas Carol, Project Gutenberg eBook 46",
+  "sourceUrl": "https://www.gutenberg.org/ebooks/46",
+  "quotes": [
+    {
+      "id": "s1-marley-dead",
+      "text": "MARLEY was dead: to begin with. There is no doubt whatever about that.",
+      "speaker": "Narrator",
+      "themes": [
+        "the supernatural",
+        "isolation"
+      ],
+      "context": "These are the opening sentences of Stave 1, before Scrooge has said a word.",
+      "analysis": "Start an essay here if you are writing about certainty. Dickens repeats the fact of the death so that Marley's walk later cannot be shrugged off as a dream. The bluntness also matches Scrooge: he deals in what can be signed and counted.",
+      "stave": 1
+    },
+    {
+      "id": "s1-door-nail",
+      "text": "Old Marley was as dead as a door-nail.",
+      "speaker": "Narrator",
+      "themes": [
+        "the supernatural"
+      ],
+      "context": "The narrator insists on the simile, then admits he does not really know why a door-nail is the deadest thing.",
+      "analysis": "The joke matters. Dickens lets the narrator sound chatty so the ghost story does not begin in a gothic fog. When Marley does appear, the reader has already been told, twice, that dead means dead.",
+      "stave": 1
+    },
+    {
+      "id": "s1-sinner",
+      "text": "a squeezing, wrenching, grasping, scraping, clutching, covetous, old sinner!",
+      "speaker": "Narrator",
+      "themes": [
+        "greed",
+        "isolation"
+      ],
+      "context": "The narrator is listing how Scrooge holds on to money. The line sits in the middle of a longer sentence, which is why it starts without a capital.",
+      "analysis": "The pile of participles is the point. Each verb is a hand closing. For a greed paragraph, quote the list and then say what is missing: not one of the verbs gives anything away.",
+      "stave": 1
+    },
+    {
+      "id": "s1-oyster",
+      "text": "secret, and self-contained, and solitary as an oyster.",
+      "speaker": "Narrator",
+      "themes": [
+        "isolation",
+        "greed"
+      ],
+      "context": "This follows straight on from the description of Scrooge as a covetous old sinner.",
+      "analysis": "An oyster is shut, and it is also a thing people open for what is inside. Dickens uses the simile for character, not for Christmas decoration. Pair it with Fred's visit: the nephew is the person the shell will not open for.",
+      "stave": 1
+    },
+    {
+      "id": "s1-bah-humbug",
+      "text": "\"Bah!\" said Scrooge, \"Humbug!\"",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "Christmas spirit",
+        "isolation"
+      ],
+      "context": "Fred has burst in with a Christmas greeting. Scrooge answers in two separate exclamations.",
+      "analysis": "Do not write \"Bah, humbug!\" as one phrase. It is not in this text. \"Bah!\" throws the greeting back. \"Humbug!\" then names Christmas as a fraud. The gap between the two words is useful: a reflex, then a judgment.",
+      "stave": 1
+    },
+    {
+      "id": "s1-rich-enough",
+      "text": "What right have you to be dismal? What reason have you to be morose? You're rich enough.",
+      "speaker": "Fred",
+      "themes": [
+        "family",
+        "Christmas spirit",
+        "greed"
+      ],
+      "context": "Scrooge has just asked his nephew what reason he has to be merry, since he is poor. Fred turns the question round.",
+      "analysis": "Fred accepts the money logic and then refuses it. The parallel questions make a neat comparison paragraph with Scrooge's line about the surplus population: one man counts wealth as a reason for joy, the other as a reason to keep people out.",
+      "stave": 1
+    },
+    {
+      "id": "s1-nephew-christmas",
+      "text": "I have always thought of Christmas time, when it has come round--apart from the veneration due to its sacred name and origin, if anything belonging to it can be apart from that--as a good time; a kind, forgiving, charitable, pleasant time; the only time I know of, in the long calendar of the year, when men and women seem by one consent to open their shut-up hearts freely, and to think of people below them as if they really were fellow-passengers to the grave, and not another race of creatures bound on other journeys. And therefore, uncle, though it has never put a scrap of gold or silver in my pocket, I believe that it has done me good, and will do me good; and I say, God bless it!",
+      "speaker": "Fred",
+      "themes": [
+        "Christmas spirit",
+        "social responsibility",
+        "family"
+      ],
+      "context": "Fred is still in the counting-house, answering Scrooge's claim that Christmas has never done anyone any good. The double hyphens are Dickens's punctuation in this text.",
+      "analysis": "This is the stave's definition of Christmas, and it is social as well as festive. \"Fellow-passengers to the grave\" refuses Scrooge's idea that the poor are a separate species. The admission that Christmas puts no gold in Fred's pocket answers the uncle on his own terms.",
+      "stave": 1
+    },
+    {
+      "id": "s1-prisons",
+      "text": "\"Are there no prisons?\"",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "poverty",
+        "social responsibility"
+      ],
+      "context": "Two gentlemen have called at the office asking for a Christmas donation for the poor. Scrooge's first reply is this question.",
+      "analysis": "The question treats prison as a sufficient answer to hunger. Keep it short in an essay and then show where it returns: the Ghost of Christmas Present throws the same words back at him in Stave 3, once Scrooge has seen Tiny Tim.",
+      "stave": 1
+    },
+    {
+      "id": "s1-idle-people",
+      "text": "I can't afford to make idle people merry.",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "poverty",
+        "greed"
+      ],
+      "context": "Scrooge is refusing the charitable collection. He has asked to be put down for nothing, and says the prisons and workhouses he already pays for are enough.",
+      "analysis": "\"Idle\" does the moral work. It turns need into a fault, so that refusing help looks like good sense. Put it next to the Cratchit Christmas in Stave 3, where the family are plainly not idle and still have almost nothing.",
+      "stave": 1
+    },
+    {
+      "id": "s1-surplus",
+      "text": "\"If they would rather die,\" said Scrooge, \"they had better do it, and decrease the surplus population. Besides--excuse me--I don't know that.\"",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "poverty",
+        "social responsibility",
+        "greed"
+      ],
+      "context": "One of the gentlemen has said that many poor people would rather die than enter the workhouse. The double hyphens are in the Project Gutenberg text.",
+      "analysis": "This is the quotation examiners expect on poverty, and it is uglier than a slogan. Scrooge borrows the language of political economy (\"surplus population\") and applies it to actual deaths. The later echo, when the Ghost uses the same phrase about Tiny Tim, is the essay's second half.",
+      "stave": 1
+    },
+    {
+      "id": "s1-own-business",
+      "text": "It's enough for a man to understand his own business, and not to interfere with other people's.",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "social responsibility",
+        "isolation",
+        "greed"
+      ],
+      "context": "Scrooge is ending the conversation with the two gentlemen. He says other people's business is not his.",
+      "analysis": "Marley's speech exists to answer this sentence. \"Mankind was my business\" is the same noun turned inside out. If you quote one, quote the other, and say which stave has moved the meaning.",
+      "stave": 1
+    },
+    {
+      "id": "s1-gravy",
+      "text": "There's more of gravy than of grave about you, whatever you are!",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "the supernatural",
+        "isolation"
+      ],
+      "context": "Marley's ghost has appeared in Scrooge's rooms. Scrooge tries to explain him as indigestion.",
+      "analysis": "The pun is a defence. Scrooge would rather be ill than haunted, because illness stays inside one person and a ghost implies a debt to other people. It also shows how long he spends trying not to take the visit seriously.",
+      "stave": 1
+    },
+    {
+      "id": "s1-chain",
+      "text": "\"I wear the chain I forged in life,\" replied the Ghost. \"I made it link by link, and yard by yard; I girded it on of my own free will, and of my own free will I wore it. Is its pattern strange to you?\"",
+      "speaker": "Jacob Marley",
+      "themes": [
+        "greed",
+        "regret",
+        "social responsibility"
+      ],
+      "context": "Scrooge has asked why Marley is fettered. The ghost answers with the chain Scrooge can see around him.",
+      "analysis": "The repetition of \"my own free will\" blocks the excuse that business made Marley do it. The chain is chosen, link by link, which is why it fits a paragraph on responsibility better than a paragraph that only says \"greed is bad\".",
+      "stave": 1
+    },
+    {
+      "id": "s1-mankind",
+      "text": "Mankind was my business. The common welfare was my business; charity, mercy, forbearance, and benevolence, were, all, my business.",
+      "speaker": "Jacob Marley",
+      "themes": [
+        "social responsibility",
+        "redemption",
+        "regret"
+      ],
+      "context": "Scrooge has tried to soothe Marley by calling him a good man of business. The ghost will not take the compliment.",
+      "analysis": "Dickens redefines a word Scrooge thinks he owns. A grade 9 use of this line does not stop at \"Marley regrets his life\". It shows the list (charity, mercy, forbearance, benevolence) as the business Scrooge has refused in the office that same afternoon.",
+      "stave": 1
+    },
+    {
+      "id": "s1-chance",
+      "text": "I am here to-night to warn you, that you have yet a chance and hope of escaping my fate. A chance and hope of my procuring, Ebenezer.",
+      "speaker": "Jacob Marley",
+      "themes": [
+        "redemption",
+        "the supernatural"
+      ],
+      "context": "Near the end of the visit, Marley tells Scrooge why he has come, and that three spirits will follow.",
+      "analysis": "Redemption in this book is offered, not earned in advance. Marley procures the chance. That is worth saying if you are arguing that Scrooge does not save himself by his own cleverness.",
+      "stave": 1
+    },
+    {
+      "id": "s2-past",
+      "text": "I am the Ghost of Christmas Past.",
+      "speaker": "Ghost of Christmas Past",
+      "themes": [
+        "the supernatural",
+        "regret"
+      ],
+      "context": "The first of the three spirits has drawn back Scrooge's bed-curtains as the clock strikes one. Scrooge asks if it means the distant past. The ghost says no: \"Your past.\"",
+      "analysis": "The correction matters more than the title. The stave is not a history lesson about old London. It is Scrooge's own childhood, apprenticeship and broken engagement, which is why the memories can still shame him.",
+      "stave": 2
+    },
+    {
+      "id": "s2-solitary-child",
+      "text": "A solitary child, neglected by his friends, is left there still.",
+      "speaker": "Ghost of Christmas Past",
+      "themes": [
+        "isolation",
+        "family",
+        "regret"
+      ],
+      "context": "The ghost has taken Scrooge to the school he boarded at as a boy. The other children have gone home for Christmas.",
+      "analysis": "Use this when you want isolation to be something done to Scrooge, not only something he chooses. Looking back, the oyster simile in Stave 1 reads differently once you have seen the child. The text goes on: \"Scrooge said he knew it. And he sobbed.\" His lip has already trembled at the sight of his old home; now he weeps outright.",
+      "stave": 2
+    },
+    {
+      "id": "s2-fezziwig",
+      "text": "No more work to-night. Christmas Eve, Dick. Christmas, Ebenezer!",
+      "speaker": "Fezziwig",
+      "themes": [
+        "Christmas spirit",
+        "generosity",
+        "family"
+      ],
+      "context": "Scrooge is watching his younger self as an apprentice. Fezziwig stops the work and starts the party.",
+      "analysis": "Fezziwig is the master Scrooge did not become. The line is useful beside Bob Cratchit's coal and his fifteen shillings: one employer spends money to make a room glad, the other counts the coal. The names Dick and Ebenezer also make the memory personal, not a general sermon.",
+      "stave": 2
+    },
+    {
+      "id": "s2-idol",
+      "text": "Another idol has displaced me; and if it can cheer and comfort you in time to come, as I would have tried to do, I have no just cause to grieve.",
+      "speaker": "Belle",
+      "themes": [
+        "greed",
+        "regret",
+        "family"
+      ],
+      "context": "Belle is ending her engagement to the young Scrooge. He asks what idol has replaced her. She answers, \"A golden one.\"",
+      "analysis": "Belle does not call him a villain. She calls gold an idol, which is a religious word, and she leaves him a way out if the money really will comfort him. It will not. Later in the stave Belle's husband says he saw Scrooge sitting \"Quite alone in the world\", so the conditional clause is already ironic.",
+      "stave": 2
+    },
+    {
+      "id": "s2-poverty",
+      "text": "There is nothing on which it is so hard as poverty; and there is nothing it professes to condemn with such severity as the pursuit of wealth!",
+      "speaker": "Young Scrooge",
+      "themes": [
+        "poverty",
+        "greed"
+      ],
+      "context": "The younger Scrooge is answering Belle during the break-up. He is defending the fact that he has changed.",
+      "analysis": "This is Scrooge's own account of why he hardened, and it is not stupid. He names a real hypocrisy: the world hates poverty and then hates the pursuit of money. Belle's reply, that he fears the world too much, is the judgment the essay still has to make.",
+      "stave": 2
+    },
+    {
+      "id": "s2-gain",
+      "text": "\"You fear the world too much,\" she answered, gently. \"All your other hopes have merged into the hope of being beyond the chance of its sordid reproach. I have seen your nobler aspirations fall off one by one, until the master-passion, Gain, engrosses you. Have I not?\"",
+      "speaker": "Belle",
+      "themes": [
+        "greed",
+        "regret"
+      ],
+      "context": "Belle is still speaking in the same scene, after Scrooge's defence of making money.",
+      "analysis": "\"Gain\" is capitalised in this text, like a name. That lets you write about money as a rival person, which is what \"another idol\" has already suggested. \"Fall off one by one\" also gives you a structure: the loss is gradual, not one wicked decision.",
+      "stave": 2
+    },
+    {
+      "id": "s2-may-you-be-happy",
+      "text": "May you be happy in the life you have chosen!",
+      "speaker": "Belle",
+      "themes": [
+        "regret",
+        "family"
+      ],
+      "context": "Belle's last words to Scrooge before she leaves him. The ghost then forces him to watch her later, married to someone else.",
+      "analysis": "The blessing is kind and final. It hands him responsibility for the choice (\"the life you have chosen\") without cursing him. If you are writing about regret, the pain is that he only feels the sentence years afterwards.",
+      "stave": 2
+    },
+    {
+      "id": "s3-come-in",
+      "text": "Come in! and know me better, man!",
+      "speaker": "Ghost of Christmas Present",
+      "themes": [
+        "Christmas spirit",
+        "redemption"
+      ],
+      "context": "Scrooge is peeping round the door of the next room. The second spirit calls him in. The room is heaped with food and greenery.",
+      "analysis": "The verb is social. The ghost does not say \"look\" first. He says \"know me better\", which is the opposite of Scrooge's closed oyster life. It is a small line, but it sets up a stave about other people's houses.",
+      "stave": 3
+    },
+    {
+      "id": "s3-present",
+      "text": "\"I am the Ghost of Christmas Present,\" said the Spirit. \"Look upon me!\"",
+      "speaker": "Ghost of Christmas Present",
+      "themes": [
+        "Christmas spirit",
+        "the supernatural"
+      ],
+      "context": "Scrooge has entered the room. The spirit is huge, dressed in a green robe trimmed with white fur, and barefoot.",
+      "analysis": "Present is abundance where Past was memory. If you describe the robe, keep it tied to a point: Christmas in this stave is physical (food, fire, a torch) and it visits people who own very little of it, above all the Cratchits.",
+      "stave": 3
+    },
+    {
+      "id": "s3-tiny-tim",
+      "text": "\"God bless us every one!\" said Tiny Tim, the last of all.",
+      "speaker": "Tiny Tim",
+      "themes": [
+        "family",
+        "Christmas spirit",
+        "poverty"
+      ],
+      "context": "At the Cratchits' Christmas dinner Bob has proposed a blessing, the family has echoed it, and Tim speaks last. He is sitting on a stool beside his father.",
+      "analysis": "Copy this one carefully. In this text Tim says \"God bless us every one!\" with no comma and no capitals on \"us\". The famous printed form, \"God bless Us, Every One!\", is the narrator's closing line in Stave 5, not this speech. Quote the speech you mean.",
+      "stave": 3
+    },
+    {
+      "id": "s3-vacant-seat",
+      "text": "\"I see a vacant seat,\" replied the Ghost, \"in the poor chimney-corner, and a crutch without an owner, carefully preserved. If these shadows remain unaltered by the Future, the child will die.\"",
+      "speaker": "Ghost of Christmas Present",
+      "themes": [
+        "poverty",
+        "family",
+        "redemption"
+      ],
+      "context": "Scrooge has asked, with real worry, whether Tiny Tim will live. The ghost answers by showing him an empty place.",
+      "analysis": "The crutch \"carefully preserved\" is harder than a simple prediction of death. The family will keep the object because they cannot keep the child. \"If these shadows remain unaltered\" also makes Scrooge part of the cause, which is why he begs for a different answer.",
+      "stave": 3
+    },
+    {
+      "id": "s3-surplus-echo",
+      "text": "If he be like to die, he had better do it, and decrease the surplus population.",
+      "speaker": "Ghost of Christmas Present",
+      "themes": [
+        "poverty",
+        "social responsibility",
+        "redemption"
+      ],
+      "context": "The ghost has said Tiny Tim will die if the future does not change. He then quotes Scrooge's own words from the office.",
+      "analysis": "This is the same sentence as Stave 1, moved from a class of people (\"they\") to one child (\"he\"). That shift is the analysis. Scrooge hangs his head because he recognises the wording. In an essay, show the pronoun change.",
+      "stave": 3
+    },
+    {
+      "id": "s3-ignorance-want",
+      "text": "This boy is Ignorance. This girl is Want. Beware them both, and all of their degree, but most of all beware this boy, for on his brow I see that written which is Doom, unless the writing be erased.",
+      "speaker": "Ghost of Christmas Present",
+      "themes": [
+        "poverty",
+        "social responsibility"
+      ],
+      "context": "At the end of the stave the ghost shows two ragged children from the folds of his robe. Scrooge asks if they are his. \"They are Man's,\" the Spirit answers, and then names them.",
+      "analysis": "The Spirit warns against the boy most of all. One reading is that want can be fed, while ignorance is handed on. The capital letters make the children into conditions, not just two figures in a vision. Link them back to \"Are there no prisons?\" if the paragraph is about society rather than Scrooge alone.",
+      "stave": 3
+    },
+    {
+      "id": "s3-workhouses",
+      "text": "\"Are there no prisons?\" said the Spirit, turning on him for the last time with his own words. \"Are there no workhouses?\"",
+      "speaker": "Ghost of Christmas Present",
+      "themes": [
+        "poverty",
+        "social responsibility"
+      ],
+      "context": "Scrooge has asked whether Ignorance and Want have any refuge. This is the ghost's last reply in the stave.",
+      "analysis": "Dickens even adds a clause of narration (\"turning on him for the last time with his own words\") so a reader cannot miss the repetition. You may quote that clause. It is in the text, and it tells you the function of the line: the earlier excuse has become an accusation.",
+      "stave": 3
+    },
+    {
+      "id": "s4-fear",
+      "text": "I fear you more than any spectre I have seen.",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "the supernatural",
+        "regret",
+        "redemption"
+      ],
+      "context": "The Ghost of Christmas Yet to Come has appeared as a hooded phantom and will not speak. Scrooge says he is afraid, and that he will follow anyway.",
+      "analysis": "Fear here is not only gothic. Scrooge already hopes \"to live to be another man\", so the dread is of a future he might still refuse. The silence of the ghost makes him supply the meaning himself, which is part of the change.",
+      "stave": 4
+    },
+    {
+      "id": "s4-old-scratch",
+      "text": "Old Scratch has got his own at last, hey?",
+      "speaker": "Businessman",
+      "themes": [
+        "greed",
+        "isolation"
+      ],
+      "context": "In the future the last spirit shows him, two wealthy men of business Scrooge knows meet in the street and speak briefly about a dead man. They do not say the name. The reader understands it is Scrooge.",
+      "analysis": "\"Old Scratch\" is a nickname for the devil, used here as a shrug. The pair move straight on to the weather. A moment earlier, a group of merchants on 'Change joked that they would only go to the funeral if lunch were provided. Set these men against the Cratchits' grief for Tiny Tim later in the stave when you write about a life that money did not make mourned.",
+      "stave": 4
+    },
+    {
+      "id": "s4-not-the-man",
+      "text": "I am not the man I was. I will not be the man I must have been but for this intercourse.",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "redemption",
+        "regret"
+      ],
+      "context": "Scrooge is on his knees by the gravestone the ghost has shown him. He is holding the phantom's robe.",
+      "analysis": "The grammar is careful: \"I am not\" is the present, \"I will not be\" is a promise, and \"must have been\" admits the future he has just been shown. A redemption paragraph can be built on those three tenses without adding any claim Dickens does not make.",
+      "stave": 4
+    },
+    {
+      "id": "s4-honour-christmas",
+      "text": "I will honour Christmas in my heart, and try to keep it all the year. I will live in the Past, the Present, and the Future. The Spirits of all Three shall strive within me. I will not shut out the lessons that they teach.",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "redemption",
+        "Christmas spirit"
+      ],
+      "context": "Still at the gravestone, Scrooge begs to be allowed to change the future the spirit has shown. \"Honour\" is spelled with a u in this text.",
+      "analysis": "This is the promise, not yet the proof. Stave 5 has to show the salary, the turkey and Tiny Tim before the promise counts. \"Try\" is also honest: he does not claim he will be perfect. He claims he will not shut the lessons out.",
+      "stave": 4
+    },
+    {
+      "id": "s5-feather",
+      "text": "I am as light as a feather, I am as happy as an angel, I am as merry as a schoolboy. I am as giddy as a drunken man.",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "redemption",
+        "Christmas spirit"
+      ],
+      "context": "Scrooge has woken in his own bed, alive, with the bed-curtains still there. He does not yet know what day it is. He is laughing and crying as he dresses.",
+      "analysis": "The similes are excessive on purpose. Dickens lets the joy sound undignified because the old Scrooge's dignity was the problem. \"Schoolboy\" also reaches back to the solitary child in Stave 2: the comparison is sharper if you remember that boy.",
+      "stave": 5
+    },
+    {
+      "id": "s5-merry-bob",
+      "text": "\"A merry Christmas, Bob!\" said Scrooge, with an earnestness that could not be mistaken, as he clapped him on the back. \"A merrier Christmas, Bob, my good fellow, than I have given you, for many a year! I'll raise your salary, and endeavour to assist your struggling family, and we will discuss your affairs this very afternoon, over a Christmas bowl of smoking bishop, Bob! Make up the fires, and buy another coal-scuttle before you dot another i, Bob Cratchit!\"",
+      "speaker": "Ebenezer Scrooge",
+      "themes": [
+        "redemption",
+        "generosity",
+        "family",
+        "poverty"
+      ],
+      "context": "Bob arrives late on the morning after Christmas, expecting to be told off. Scrooge drops the pretence and, in the same breath, raises his pay.",
+      "analysis": "\"For many a year\" admits the old office. The next sentence makes the change practical: a higher salary, help for the family, and coal. Redemption here is a wage, not only a feeling. If a paragraph on poverty never mentions pay, it has missed the ending Dickens wrote.",
+      "stave": 5
+    },
+    {
+      "id": "s5-second-father",
+      "text": "and to Tiny Tim, who did NOT die, he was a second father.",
+      "speaker": "Narrator",
+      "themes": [
+        "family",
+        "redemption",
+        "poverty"
+      ],
+      "context": "The narrator is summing up Scrooge's later life. The capitals on \"NOT\" are in the text.",
+      "analysis": "\"Did NOT die\" answers the ghost's condition in Stave 3: the shadows did not remain unaltered. \"Second father\" also shifts Scrooge from employer to family, which is as far from \"surplus population\" as the book goes. Quote the capitals as they stand.",
+      "stave": 5
+    },
+    {
+      "id": "s5-closing",
+      "text": "he knew how to keep Christmas well, if any man alive possessed the knowledge. May that be truly said of us, and all of us! And so, as Tiny Tim observed, God bless Us, Every One!",
+      "speaker": "Narrator",
+      "themes": [
+        "Christmas spirit",
+        "redemption",
+        "family"
+      ],
+      "context": "The last sentences of the book. The narrator says Scrooge kept Christmas well, then turns to the reader, and only then quotes Tiny Tim.",
+      "analysis": "This is the capitalised line people remember, and it belongs to the narrator. He says Tim \"observed\" it, which points back to \"God bless us every one!\" in Stave 3, but the comma and the capitals are the closing, not that dinner-table speech. Do not merge the two into one misremembered sentence.",
+      "stave": 5
+    }
+  ]
+}
