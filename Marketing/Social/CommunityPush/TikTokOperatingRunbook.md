@@ -1,6 +1,6 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 20 October 2026
+Updated: 21 October 2026
 
 ## Purpose
 
@@ -16,6 +16,21 @@ Read this file together with:
 - `TikTokExperimentRegister.md`
 - `TikTokResearchLog.md`
 - `TikTokLaunchPack.md`
+
+### Metadata reconciliation audit: 21 October 2026, 09:01 Europe/London
+
+- The account read remains available. The bound account is active `@bookquotes.app` /
+  `6a7e30f977555aae0187cea3`, with 24 public rows, 5 followers and analytics access. The token is
+  healthy through `2026-10-22T06:55:53.007Z` with `reconnect_required=false`.
+- No new public row or attributable analytics entry appeared. The latest public row remains the
+  12 September Gladwell item (3 views, 3 reach, 1 save); visible integrity values remain operational
+  observations rather than clean creative results. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed.
+- Continue research, briefing and quality control. Pause all TikTok mutation, the second slot and
+  automatic replies. The preparation queue remains below three viable items; prepare distinct,
+  evidence-cleared briefs without re-uploading already-live or held rows. The official Creative
+  Centre trends route remains login-gated, so no new style or evidence change is warranted. No
+  confidence or cadence change is warranted.
 
 ### Metadata reconciliation audit: 20 October 2026, 09:00 Europe/London
 
