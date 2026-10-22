@@ -1,22 +1,22 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 21 October 2026, 09:01 Europe/London
+Updated: 22 October 2026, 09:03 Europe/London
 
 ## Current operating loop
 
-- The 21 October live read confirms the 20 October Facebook prompt `122119132413415831` is published
+- The 22 October live read confirms the 21 October Facebook prompt `122119270005415831` is published
   once at 13:00 Europe/London:
-  [permalink](https://www.facebook.com/122107379391415831/posts/122119132413415831). The seven-day
+  [permalink](https://www.facebook.com/122107379391415831/posts/122119270005415831). The seven-day
   queue is extended and read back with exactly these seven Public, text-only rows at 13:00
-  Europe/London: `122119270005415831` (21 October), `122119419057415831` (22 October),
-  `122119550679415831` (23 October), `122119674267415831` (24 October), `122119828977415831`
-  (25 October), `122119976613415831` (26 October) and `122120146329415831` (27 October). No
+  Europe/London: `122119419057415831` (22 October), `122119550679415831` (23 October),
+  `122119674267415831` (24 October), `122119828977415831` (25 October), `122119976613415831`
+  (26 October), `122120146329415831` (27 October) and `122120300115415831` (28 October). No
   duplicate copy was found.
 - Facebook post-level insights and the latest-post comments read remain Not available because both
   Graph reads return HTTP 400 (`#12`, singular statuses API deprecated). Instagram remains at 19 rows,
   latest 30 August; no Instagram write was made.
 - TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
-  token is healthy through `2026-10-22T06:55:53.007Z` with `reconnect_required=false`, but no new
+  token is healthy through `2026-10-23T08:18:07.294Z` with `reconnect_required=false`, but no new
   public row or attributable analytics entry appeared. Keep the publishing-integrity, duplicate,
   native metadata, evidence and second-slot mutation holds active; no TikTok mutation or automatic
   reply was made. The current Creative Centre trends route redirected to a logged-in page, so no new
@@ -25,6 +25,30 @@ Updated: 21 October 2026, 09:01 Europe/London
   release-ready future brief; `cr-03` and `cr-04` still need an illustrated cut, while `cr-01`, `cr-02`
   and `cr-05`-`cr-07` are already live or held and must not be re-uploaded. No weak replacement was
   manufactured.
+
+### Audit: 22 October 2026, 09:03 Europe/London
+
+- Facebook read-back confirms `122119270005415831` published once at 13:00 Europe/London. One dry-run
+  preflight and one approved scheduling action created `122120300115415831` for 28 October at 13:00;
+  the direct scheduled edge then confirmed exactly seven future rows for 22-28 October, with no
+  duplicate copy and no uncertain-response retry. Facebook post insights and latest-post comments
+  remain unavailable because both Graph reads return HTTP 400 (`#12`, singular statuses API
+  deprecated).
+- Meta identity and permissions remain verified for Page `1246405755221229` and Instagram
+  `bookquotes.app` (`17841434821362428`). Instagram remains at 19 media rows/latest 30 August; the
+  latest media comments read returned an empty list, and no Instagram write was made. No automatic
+  reply was sent.
+- TikTok read-back shows active `@bookquotes.app`, 24 public rows, 5 followers and analytics access.
+  Token health is `ok` through `2026-10-23T08:18:07.294Z`; no new public row or attributable
+  analytics entry appeared. The latest public row is the 12 September Gladwell item (3 views, 3
+  reach, 1 save), retained as an integrity observation only. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed. No sensitive replies or searchable audience language
+  were exposed; TikTok comment counts are available but comment text is not exposed by the account
+  read.
+- Continue the established low-risk cadence: no TikTok mutation, second-slot test or automatic reply;
+  keep research, briefing and QC moving. The preparation queue remains below three viable items, so
+  prepare and clear distinct briefs before any future mutation. The official Creative Centre trends
+  route remains login-gated, so no new style or evidence change is warranted.
 
 ### Audit: 21 October 2026, 09:01 Europe/London
 

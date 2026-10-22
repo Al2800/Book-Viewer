@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 21 October 2026
+Updated: 22 October 2026
 
 ## Purpose
 
@@ -63,6 +63,70 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-10-22, 09:03 Europe/London
+
+**Account and publishing**
+
+- Account access: successful. `@bookquotes.app` is active with 24 public rows, 5 followers and
+  analytics access; the token is healthy through `2026-10-23T08:18:07.294Z` and does not currently
+  require reconnect.
+- Expected posts: no TikTok mutation was eligible while the publishing-integrity, duplicate, native
+  metadata, evidence and second-slot holds remained active.
+- Published, scheduled or failed: no new public row or attributable analytics entry appeared. The
+  latest public row is the 12 September Gladwell item (3 views, 3 reach, 1 save), retained as an
+  integrity observation. The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current Creative Centre trends route | [TikTok One Creative Suite](https://ads.tiktok.com/creative/creativeCenter/trends) | The official route redirected to a login-gated trends page; no UK BookTok trend sample was exposed in this read. | Operational access limitation, not a creative result | Short | Keep the existing research context; do not promote a new pattern without a usable sample. |
+| Current account inventory | Bound BookQuotes TikTok/Zernio read | 24 public rows; 5 followers; no new row; token healthy | Confirms operational access, not a creative result | Short | Keep mutation holds and prepare distinct future briefs without re-uploading existing rows. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: no new external sample was usable today; retain the latest evidence-backed
+  reader-fit, exact-question opening and honest-reservation patterns from the existing research log.
+- Elements explicitly excluded from imitation: do not copy creator wording, artwork, identity,
+  distinctive execution or native audio choices without evidence and rights clearance.
+
+**Audience language**
+
+- Comments, searches or questions: no searchable audience language was exposed. TikTok comment counts
+  are available in the account read, but comment text is not exposed. Instagram latest media comments
+  returned an empty list; no reply was sent.
+- Potential reader-need hooks: no new hook added.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: active single-writer/publishing-integrity, duplicate, native metadata, evidence and
+  second-slot holds; preparation queue below three viable items because `cr-03` and `cr-04` need
+  illustrated cuts and the other current rows are live or held.
+
+**Performance**
+
+- 24-hour checkpoints: none.
+- 72-hour checkpoints: none.
+- Seven-day checkpoints: none.
+- Missing measures: no new attributable TikTok analytics; no new external Creative Centre sample.
+
+**Learning**
+
+- Experiment updates: no clean checkpoint; no confidence change.
+- Confidence changes: none.
+- Repeat: research, briefing, QC and the Facebook baseline as a separate channel.
+- Modify: prepare distinct evidence-cleared briefs; keep hooks and topics non-duplicative.
+- Pause: TikTok mutation, second-slot testing, automatic replies and re-uploading held/live rows.
+
+**Queue**
+
+- Approved: none newly approved.
+- In production: `cr-03` and `cr-04` require illustrated cuts.
+- Awaiting evidence or review: no release-ready future brief; existing live/held rows remain excluded.
+- Requires user approval: none for routine research; any TikTok mutation remains blocked by the holds.
 
 ### 2026-10-21, 09:01 Europe/London
 
