@@ -1,21 +1,23 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 24 October 2026
+Updated: 25 October 2026
 
-## Current Operational Note — 24 October 2026, 09:06 Europe/London
+## Current Operational Note — 25 October 2026, 09:02 Europe/London
 
 
-The 23 October Facebook prompt `122119550679415831` is confirmed published once at 13:00
+The 24 October Facebook prompt `122119674267415831` is confirmed published once at 13:00
 Europe/London:
-`https://www.facebook.com/122107379391415831/posts/122119550679415831`. The rolling Facebook queue
-has been extended and read back for 24-30 October at 13:00 Europe/London; the scheduled edge contains
-exactly seven Public, text-only rows with no duplicate copy. The new 30 October row is
-`122120616441415831`, read back at
-`https://www.facebook.com/122107379391415831/posts/122120616441415831`. Meta identity and
+`https://www.facebook.com/122107379391415831/posts/122119674267415831`. The rolling Facebook queue
+has been extended and read back for 25-31 October at 13:00 Europe/London; the scheduled edge contains
+exactly seven Public, text-only rows with no duplicate copy. The new 31 October row is
+`122120791377415831`, read back at
+`https://www.facebook.com/122107379391415831/posts/122120791377415831`. The approved scheduling
+call timed out with a network read error, but the direct scheduled edge confirmed the row; no retry
+was issued because the response was reconciled and duplicate creation was unsafe. Meta identity and
 permissions remain verified for Page `1246405755221229` and connected Instagram `bookquotes.app`
 (`17841434821362428`). Instagram remains at 19 media rows with latest publication 30 August; its
 latest media comments read returned an empty list. TikTok is active as `@bookquotes.app` with 24
-public rows and 5 followers; its token expires at `2026-10-24T09:14:20.038Z`, the account read
+public rows and 5 followers; its token expires at `2026-10-25T10:11:23.478Z`, the account read
 reports `reconnect_required=true` and `status=expiring_soon`, and no new public row or attributable
 analytics entry appeared. TikTok mutation holds remain active because publishing-integrity, duplicate,
 native metadata, evidence and reconnect controls are unresolved. Facebook post-insights and

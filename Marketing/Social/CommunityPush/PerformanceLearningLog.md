@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 24 October 2026, 09:06 Europe/London
+Updated: 25 October 2026, 09:02 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,35 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 25 October 2026, 09:02 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms `122119674267415831` published once at 13:00 Europe/London. The
+  seven-day scheduled edge contains exactly seven future Public text-only rows for 25-31 October;
+  the queue extension created `122120791377415831` for 31 October at 13:00. The approved scheduling
+  call timed out with a network read error, but the direct edge confirmed the row and no retry was
+  issued because duplicate creation was unsafe. No duplicate copy was found. Facebook post insights
+  and latest-post comments remain Not available because both Graph reads return HTTP 400 (`#12`,
+  singular statuses API deprecated).
+- Instagram remains at 19 media rows with latest publication 30 August. The latest media comments
+  read returned an empty list; no Instagram write or automatic reply was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  token expires at `2026-10-25T10:11:23.478Z` and the account read reports `reconnect_required=true`
+  with `status=expiring_soon`. No new public row or attributable analytics entry appeared. The latest
+  public row is the 12 September Gladwell item with 3 views, 3 reach and 1 save; this remains an
+  integrity observation, not a clean creative result. The failed Creator Inbox request
+  `6aa4f018662ee2d345bceb39` remains failed.
+
+**Decision**
+
+- Repeat the verified Facebook baseline and keep the queue at seven days. Modify only through distinct
+  reader prompts and the existing preflight gates. Pause TikTok mutation, the second slot and
+  automatic replies until reconnect and the remaining integrity, duplicate, native metadata and
+  evidence holds clear. The official Creative Centre trends route remains login-gated; the preparation
+  queue is below three viable items because `cr-03` and `cr-04` need illustrated cuts. No hypothesis
+  confidence or result label changed.
 
 ### 24 October 2026, 09:06 Europe/London
 

@@ -1,10 +1,10 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-10-24T09:06:00+01:00</code>.
+Generated from structured evidence updated <code>2026-10-25T09:02:00+01:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-17T09:06:00+01:00</code> to <code>2026-10-24T09:06:00+01:00</code>
+- Reporting window: <code>2026-10-18T09:02:00+01:00</code> to <code>2026-10-25T09:02:00+01:00</code>
 - Published Facebook items represented: 7
 - Visible views: 0
 - Visible reach: 0
@@ -16,6 +16,7 @@ Generated from structured evidence updated <code>2026-10-24T09:06:00+01:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-10-31 | scheduled | facebook | Which sign tells you a book has earned your attention | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-30 | scheduled | facebook | What makes a reading space work | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-29 | scheduled | facebook | What makes a shelf feel like yours | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-28 | scheduled | facebook | When a reading list feels useful | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
@@ -23,6 +24,7 @@ Generated from structured evidence updated <code>2026-10-24T09:06:00+01:00</code
 | 2026-10-26 | scheduled | facebook | What makes a reading habit last | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-25 | scheduled | facebook | Which part of a reading life is easiest to neglect | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-24 | scheduled | facebook | What makes a book unusual | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-24 | published | facebook | What makes a book unusual | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-23 | scheduled | facebook | What makes a book worth lending | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-23 | published | facebook | What makes a book worth lending | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-22 | scheduled | facebook | When a book becomes part of your life | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
