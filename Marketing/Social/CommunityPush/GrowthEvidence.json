@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25T09:02:00+01:00",
+  "updated_at": "2026-10-26T09:03:00+00:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -4522,6 +4522,62 @@
       },
       "metrics_unavailable_reason": "Scheduled for 31 October; live metrics are not available. This observation represents the seven-day queue extension.",
       "notes": "Read-back ID 122120791377415831 at https://www.facebook.com/122107379391415831/posts/122120791377415831. The approved scheduling call timed out with a network read error, but the direct scheduled_posts read confirmed exactly seven future rows for 25-31 October 2026 at 13:00 Europe/London; no retry was issued after reconciliation because duplicate creation was unsafe."
+    },
+    {
+      "observation_id": "fb-2026-10-26-live-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122119828977415831",
+      "title": "Which part of a reading life is easiest to neglect",
+      "format": "text",
+      "published_at": "2026-10-25T13:00:00+01:00",
+      "observed_at": "2026-10-26T09:03:00+00:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication, but the Graph post-insights and latest-post comments reads return HTTP 400 (#12: singular statuses API deprecated).",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122119828977415831 with Graph created_time 2026-10-25T12:00:18+0000. The direct scheduled_posts read after the next extension contains exactly seven future rows for 26 October-1 November; the pre-existing 26-31 rows are returned at 12:00 UTC after the UK clock change."
+    },
+    {
+      "observation_id": "fb-2026-10-26-queue-extension",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122120952153415831",
+      "title": "What makes a reading group worth returning to",
+      "format": "text",
+      "published_at": "2026-11-01T13:00:00+00:00",
+      "observed_at": "2026-10-26T09:03:00+00:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 1 November; live metrics are not available. This observation represents the seven-day queue extension.",
+      "notes": "Read-back ID 122120952153415831 at https://www.facebook.com/122107379391415831/posts/122120952153415831. The direct scheduled_posts read after creation contains exactly seven future rows for 26 October-1 November; no duplicate copy or uncertain-response retry was found."
     }
   ],
   "search_snapshots": [

@@ -1,23 +1,23 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 25 October 2026, 09:02 Europe/London
+Updated: 26 October 2026, 09:03 Europe/London
 
 ## Current operating loop
 
-- The 25 October live read confirms the 24 October Facebook prompt `122119674267415831` is published
-  once at 13:00 Europe/London:
-  [permalink](https://www.facebook.com/122107379391415831/posts/122119674267415831). The seven-day
-  queue is extended and read back with exactly these seven Public, text-only rows at 13:00
-  Europe/London: `122119828977415831` (25 October), `122119976613415831` (26 October),
-  `122120146329415831` (27 October), `122120300115415831` (28 October), `122120437803415831`
-  (29 October), `122120616441415831` (30 October) and `122120791377415831` (31 October). No
-  duplicate copy was found.
+- The 26 October live read confirms the 25 October Facebook prompt `122119828977415831` is published
+  once:
+  [permalink](https://www.facebook.com/122107379391415831/posts/122119828977415831). Graph read-back
+  shows `created_time=2026-10-25T12:00:18+0000`. The seven-day queue is extended and read back with
+  exactly these seven Public, text-only rows for 26 October-1 November: `122119976613415831` (26
+  October), `122120146329415831` (27 October), `122120300115415831` (28 October),
+  `122120437803415831` (29 October), `122120616441415831` (30 October), `122120791377415831`
+  (31 October) and `122120952153415831` (1 November). No duplicate copy was found.
 - Facebook post-level insights and the latest-post comments read remain Not available because both
   Graph reads return HTTP 400 (`#12`, singular statuses API deprecated). Instagram remains at 19 rows,
   latest 30 August; no Instagram write was made.
 - TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
-  token expires at `2026-10-25T10:11:23.478Z`; the account read reports `reconnect_required=true`
-  and `status=expiring_soon`, but no new public row or attributable analytics entry appeared. Keep
+  account read reports token `expires_at=2026-10-25T10:11:23.478Z`, `reconnect_required=true` and
+  `status=expiring_soon`, but no new public row or attributable analytics entry appeared. Keep
   the publishing-integrity, duplicate, native metadata, evidence, reconnect and second-slot mutation
   holds active; no TikTok mutation or automatic reply was made. The current Creative Centre trends
   route redirected to a logged-in page, so no new external creative sample was added.
@@ -25,6 +25,34 @@ Updated: 25 October 2026, 09:02 Europe/London
   release-ready future brief; `cr-03` and `cr-04` still need an illustrated cut, while `cr-01`, `cr-02`
   and `cr-05`-`cr-07` are already live or held and must not be re-uploaded. No weak replacement was
   manufactured.
+
+### Audit: 26 October 2026, 09:03 Europe/London
+
+- Facebook read-back confirms `122119828977415831` published once. The Page posts edge shows
+  `created_time=2026-10-25T12:00:18+0000`; its permalink is
+  [here](https://www.facebook.com/122107379391415831/posts/122119828977415831). One dry-run preflight
+  and one approved scheduling action created `122120952153415831` for 1 November at 13:00 Europe/London;
+  the direct scheduled edge then confirmed exactly seven future rows for 26 October-1 November, with
+  no duplicate copy and no uncertain-response retry. Graph returns the pre-existing 26-31 rows at
+  12:00 UTC after the UK clock change; no reschedule mutation was attempted because the CLI has no
+  safe edit/delete path. Facebook post insights and latest-post comments remain unavailable because
+  both Graph reads return HTTP 400 (`#12`, singular statuses API deprecated).
+- Meta identity and permissions remain verified for Page `1246405755221229` and Instagram
+  `bookquotes.app` (`17841434821362428`). Instagram remains at 19 media rows/latest 30 August; the
+  latest media comments read returned an empty list, and no Instagram write was made. No automatic
+  reply was sent.
+- TikTok read-back shows active `@bookquotes.app`, 24 public rows, 5 followers and analytics access.
+  The account read reports token `expires_at=2026-10-25T10:11:23.478Z`, `reconnect_required=true`
+  with `status=expiring_soon`. No new public row or attributable analytics entry appeared. The latest
+  public row is the 12 September Gladwell item (3 views, 3 reach, 1 save), retained as an integrity
+  observation only. The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. No
+  sensitive replies or searchable audience language were exposed; TikTok comment text is not exposed
+  by the account read.
+- Continue research, briefing and QC, but do not attempt TikTok mutation until reconnect and all
+  publishing-integrity, duplicate, native metadata and evidence holds are cleared. The second slot
+  and automatic replies remain paused. The preparation queue remains below three viable items, and
+  the official Creative Centre trends route remains login-gated, so no new style or evidence change
+  is warranted.
 
 ### Audit: 25 October 2026, 09:02 Europe/London
 

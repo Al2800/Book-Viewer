@@ -1,32 +1,33 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 25 October 2026
+Updated: 26 October 2026
 
-## Current Operational Note — 25 October 2026, 09:02 Europe/London
+## Current Operational Note — 26 October 2026, 09:03 Europe/London
 
 
-The 24 October Facebook prompt `122119674267415831` is confirmed published once at 13:00
-Europe/London:
-`https://www.facebook.com/122107379391415831/posts/122119674267415831`. The rolling Facebook queue
-has been extended and read back for 25-31 October at 13:00 Europe/London; the scheduled edge contains
-exactly seven Public, text-only rows with no duplicate copy. The new 31 October row is
-`122120791377415831`, read back at
-`https://www.facebook.com/122107379391415831/posts/122120791377415831`. The approved scheduling
-call timed out with a network read error, but the direct scheduled edge confirmed the row; no retry
-was issued because the response was reconciled and duplicate creation was unsafe. Meta identity and
-permissions remain verified for Page `1246405755221229` and connected Instagram `bookquotes.app`
-(`17841434821362428`). Instagram remains at 19 media rows with latest publication 30 August; its
-latest media comments read returned an empty list. TikTok is active as `@bookquotes.app` with 24
-public rows and 5 followers; its token expires at `2026-10-25T10:11:23.478Z`, the account read
-reports `reconnect_required=true` and `status=expiring_soon`, and no new public row or attributable
-analytics entry appeared. TikTok mutation holds remain active because publishing-integrity, duplicate,
-native metadata, evidence and reconnect controls are unresolved. Facebook post-insights and
-latest-post comments reads return HTTP 400 (`#12`, singular statuses API deprecated), so those
-measures remain unavailable. The current Creative Centre trends route redirects to a logged-in
-Creative Centre page, so no new external creative sample was added. No TikTok mutation or automatic
-reply was attempted. The TikTok preparation queue remains below the required three viable items:
-there is no release-ready future brief; `cr-03` and `cr-04` need illustrated cuts, and already-live
-or held rows must not be re-uploaded. No weak replacement was manufactured.
+The 25 October Facebook prompt `122119828977415831` is confirmed published once; Graph read-back
+shows `created_time=2026-10-25T12:00:18+0000` at
+`https://www.facebook.com/122107379391415831/posts/122119828977415831`. The rolling Facebook queue
+has been extended and read back for 26 October-1 November; the scheduled edge contains exactly seven
+Public, text-only rows with no duplicate copy. The new 1 November row is
+`122120952153415831`, read back at
+`https://www.facebook.com/122107379391415831/posts/122120952153415831`, scheduled for 13:00
+Europe/London. The pre-existing 26-31 October rows are returned by Graph at 12:00 UTC after the UK
+clock change; no reschedule mutation was attempted because the CLI has no safe edit/delete path and
+duplicate creation would be unsafe. Meta identity and permissions remain verified for Page
+`1246405755221229` and connected Instagram `bookquotes.app` (`17841434821362428`). Instagram remains
+at 19 media rows with latest publication 30 August; its latest media comments read returned an empty
+list. TikTok is active as `@bookquotes.app` with 24 public rows and 5 followers; the account read
+reports token `expires_at=2026-10-25T10:11:23.478Z`, `reconnect_required=true` and
+`status=expiring_soon`, with no new public row or attributable analytics entry. TikTok mutation holds
+remain active because publishing-integrity, duplicate, native metadata, evidence and reconnect
+controls are unresolved. Facebook post-insights and latest-post comments reads return HTTP 400 (`#12`,
+singular statuses API deprecated), so those measures remain unavailable. The current Creative Centre
+trends route redirects to a logged-in Creative Centre page, so no new external creative sample was
+added. No TikTok mutation or automatic reply was attempted. The TikTok preparation queue remains
+below the required three viable items: there is no release-ready future brief; `cr-03` and `cr-04`
+need illustrated cuts, and already-live or held rows must not be re-uploaded. No weak replacement was
+manufactured.
 
 ## Purpose
 
