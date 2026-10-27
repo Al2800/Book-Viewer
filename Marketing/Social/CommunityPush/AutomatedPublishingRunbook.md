@@ -1,6 +1,33 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 26 October 2026
+Updated: 27 October 2026
+
+## Current Operational Note — 27 October 2026, 09:15 Europe/London
+
+The 26 October Facebook prompt `122119976613415831` is confirmed published once; Graph read-back
+shows `created_time=2026-10-26T12:00:06+0000` at
+`https://www.facebook.com/122107379391415831/posts/122119976613415831`. The rolling Facebook queue
+has been extended and read back for 27 October-2 November; the scheduled edge contains exactly seven
+Public, text-only rows with no duplicate copy. The new 2 November row is
+`122121072519415831`, read back at
+`https://www.facebook.com/122107379391415831/posts/122121072519415831`, scheduled for 13:00
+Europe/London. The pre-existing 27-31 October rows are returned by Graph at 12:00 UTC after the UK
+clock change; no reschedule mutation was attempted because the CLI has no safe edit/delete path and
+duplicate creation would be unsafe. Meta identity and permissions remain verified for Page
+`1246405755221229` and connected Instagram `bookquotes.app` (`17841434821362428`). Instagram remains
+at 19 media rows with latest publication 30 August; its latest media comments read returned an empty
+list. TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access; the
+account read reports token `expires_at=2026-10-27T11:14:06.569Z`, `reconnect_required=true`,
+`needs_reconnection=false`, `status=expiring_soon` and approximately 1.46 hours remaining. No new
+public row or attributable analytics entry appeared. TikTok mutation holds remain active because
+publishing-integrity, duplicate, native metadata, evidence and reconnect controls are unresolved.
+Facebook post-insights and latest-post comments reads return HTTP 400 (`#12`, singular statuses API
+deprecated), so those measures remain unavailable. The current Creative Centre trends route is
+login-gated and exposed no usable current UK sample, so no new external creative sample was added.
+No TikTok mutation or automatic reply was attempted. The TikTok preparation queue remains below the
+required three viable items: there is no release-ready future brief; `cr-03` and `cr-04` need
+illustrated cuts, and already-live or held rows must not be re-uploaded. No weak replacement was
+manufactured.
 
 ## Current Operational Note — 26 October 2026, 09:03 Europe/London
 

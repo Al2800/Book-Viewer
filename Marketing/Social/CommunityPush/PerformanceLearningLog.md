@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 26 October 2026, 09:03 Europe/London
+Updated: 27 October 2026, 09:15 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,38 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 27 October 2026, 09:15 Europe/London
+
+**Account read and publishing verification**
+
+- Facebook read-back confirms the 26 October prompt `122119976613415831` published once. Graph
+  `created_time` is `2026-10-26T12:00:06+0000` and the Page permalink is
+  `https://www.facebook.com/122107379391415831/posts/122119976613415831`. The direct
+  `scheduled_posts` edge contains exactly seven future Public text-only rows for 27 October-2
+  November; the queue extension created `122121072519415831` for 2 November at 13:00 Europe/London.
+  The pre-existing 27-31 rows are returned at 12:00 UTC after the UK clock change; no reschedule
+  mutation was attempted because the CLI has no safe edit/delete path. Facebook post insights and
+  latest-post comments remain Not available because both Graph reads return HTTP 400 (`#12`, singular
+  statuses API deprecated).
+- Instagram remains at 19 media rows with latest publication 30 August. The latest media comments
+  read returned an empty list; no Instagram write or automatic reply was made.
+- TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+  account read reports token `expires_at=2026-10-27T11:14:06.569Z`, `reconnect_required=true`,
+  `needs_reconnection=false`, `status=expiring_soon` and approximately 1.46 hours remaining. No
+  new public row or attributable analytics entry appeared. The latest public row is the 12 September
+  Gladwell item with 3 views, 3 reach and 1 save; this remains an integrity observation, not a clean
+  creative result. The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed.
+
+**Decision**
+
+- Repeat the verified Facebook baseline and keep the queue at seven days. Modify only through the
+  distinct reader prompt scheduled for 2 November and the existing preflight gates. Pause TikTok
+  mutation, the second slot and automatic replies until reconnect and the remaining integrity,
+  duplicate, native metadata and evidence holds clear. The official Creative Centre route is
+  login-gated and exposed no usable current UK sample; the preparation queue is below three viable
+  items because `cr-03` and `cr-04` need illustrated cuts. No hypothesis confidence or result label
+  changed.
 
 ### 26 October 2026, 09:03 Europe/London
 
