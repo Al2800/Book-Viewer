@@ -1,6 +1,38 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 27 October 2026
+Updated: 29 October 2026
+
+## Current Operational Note — 29 October 2026, 09:01 Europe/London
+
+The 28 October Facebook prompt `122120300115415831` is confirmed published once; Graph
+read-back shows `created_time=2026-10-28T12:00:02+0000` at
+`https://www.facebook.com/122107379391415831/posts/122120300115415831`. The rolling Facebook queue
+has been extended and read back with exactly seven Public, text-only rows for 29 October-4 November:
+`122120437803415831` (29 October), `122120616441415831` (30 October), `122120791377415831`
+(31 October), `122120952153415831` (1 November), `122121072519415831` (2 November),
+`122121333891415831` (3 November) and `122121333921415831` (4 November). The two new rows were
+approved, scheduled and read back at 13:00 Europe/London. A post-schedule audit found that the 3
+November hook overlaps the 7 October reading-note prompt; the configured update path is disabled, so
+that row requires manual correction or cancellation before publication. The pre-existing 29-31 October
+rows are returned by Graph at 12:00 UTC after the UK clock change; no reschedule mutation was attempted
+because the CLI has no safe edit/delete path and duplicate creation would be unsafe. Meta
+identity and permissions remain verified for Page `1246405755221229` and connected Instagram
+`bookquotes.app` (`17841434821362428`). Instagram remains at 19 media rows with latest publication
+30 August; its latest media comments read returned an empty list and no Instagram write was made.
+Facebook post insights and latest-post comments reads remain unavailable because both Graph reads return
+HTTP 400 (`#12`, singular statuses API deprecated).
+
+TikTok is active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access. The
+account read reports token `expires_at=2026-10-29T14:33:41.900Z`, `reconnect_required=true`,
+`needs_reconnection=false`, `status=expiring_soon` and approximately 5.5 hours remaining. An OAuth
+reconnect flow was opened in Brave, but authorization is not complete and requires the user to finish
+the TikTok authorization in that browser tab. No new public row or attributable analytics entry
+appeared. Keep publishing-integrity, duplicate, native metadata, evidence, reconnect and second-slot
+mutation holds active; no TikTok mutation or automatic reply was made. The TikTok preparation queue
+remains below the required three viable items: `cr-03` and `cr-04` still need illustrated cuts, while
+`cr-01`, `cr-02` and `cr-05`-`cr-07` are already live or held and must not be re-uploaded. The
+official Creative Centre trends route is login-gated and exposed no usable current UK sample, so no
+new style or evidence change was warranted. No weak replacement was manufactured.
 
 ## Current Operational Note — 27 October 2026, 09:15 Europe/London
 

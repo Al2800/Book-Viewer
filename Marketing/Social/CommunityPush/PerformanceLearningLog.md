@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 27 October 2026, 09:15 Europe/London
+Updated: 29 October 2026, 09:01 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,42 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 29 October 2026, 09:01 Europe/London
+
+**Observation**
+
+- Facebook read-back confirms the 28 October prompt `122120300115415831` published once. Graph
+  `created_time` is `2026-10-28T12:00:02+0000` and the Page permalink is
+  `https://www.facebook.com/122107379391415831/posts/122120300115415831`. Two distinct original text
+  prompts were approved, scheduled and read back for 3 and 4 November:
+  `122121333891415831` and `122121333921415831`. The direct scheduled edge contains exactly seven
+  future Public text-only rows for 29 October-4 November. A post-schedule preflight audit identified
+  that the 3 November hook overlaps the 7 October reading-note prompt; the row requires manual
+  correction or cancellation before publication because the configured update path is disabled. The
+  pre-existing 29-31 rows are returned at 12:00 UTC after the UK clock change; no reschedule mutation
+  was attempted because the CLI has no safe edit/delete path. Facebook post-level insights and
+  latest-post comments remain Not available because both Graph reads return HTTP 400 (`#12`, singular
+  statuses API deprecated).
+- Instagram remains at 19 media rows with latest publication 30 August; the latest media comments read
+  returned an empty list and no Instagram write or reply was made.
+- TikTok remains active as `@bookquotes.app` with 24 public rows, 5 followers and analytics access.
+  The token expires at `2026-10-29T14:33:41.900Z` and reports `reconnect_required=true`,
+  `needs_reconnection=false`, `status=expiring_soon` and approximately 5.5 hours remaining. An OAuth
+  flow was opened in Brave but still needs the user to complete authorization. No new public row or
+  attributable analytics entry appeared. The latest public row remains the 12 September Gladwell item
+  (3 views, 3 reach, 1 save), an integrity observation rather than a clean creative result. The
+  preparation queue is below three viable items because `cr-03` and `cr-04` need illustrated cuts.
+
+**Decision**
+
+- Repeat the verified Facebook baseline and keep the queue at seven future days. Retain the 4 November
+  reader prompt and ask for manual correction or cancellation of the 3 November duplicate-topic row
+  before publication; the existing preflight gates remain mandatory. Pause TikTok mutation, the second
+  slot and automatic replies until the user completes reconnect and
+  the remaining publishing-integrity, duplicate, native metadata and evidence holds clear. The
+  official Creative Centre route is login-gated and exposed no usable current UK sample. No hypothesis
+  confidence or result label changed.
 
 ### 27 October 2026, 09:15 Europe/London
 

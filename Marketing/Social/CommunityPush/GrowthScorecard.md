@@ -1,11 +1,11 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-10-27T09:15:00+00:00</code>.
+Generated from structured evidence updated <code>2026-10-29T09:01:00+00:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-20T09:15:00+00:00</code> to <code>2026-10-27T09:15:00+00:00</code>
-- Published Facebook items represented: 7
+- Reporting window: <code>2026-10-22T09:01:00+00:00</code> to <code>2026-10-29T09:01:00+00:00</code>
+- Published Facebook items represented: 6
 - Visible views: 0
 - Visible reach: 0
 - Meaningful interactions: 0
@@ -16,12 +16,15 @@ Generated from structured evidence updated <code>2026-10-27T09:15:00+00:00</code
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-11-04 | scheduled | facebook | Beginning a book on a busy day | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-11-03 | scheduled | facebook | What makes a reading note worth keeping | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-02 | scheduled | facebook | What you want a book to challenge | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-01 | scheduled | facebook | What makes a reading group worth returning to | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-31 | scheduled | facebook | Which sign tells you a book has earned your attention | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-30 | scheduled | facebook | What makes a reading space work | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-29 | scheduled | facebook | What makes a shelf feel like yours | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-28 | scheduled | facebook | When a reading list feels useful | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-10-28 | published | facebook | When a reading list feels useful | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-27 | scheduled | facebook | How to make room for a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-26 | scheduled | facebook | What makes a reading habit last | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-26 | published | facebook | What makes a reading habit last | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
@@ -197,8 +200,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 7
-- Channel-only items: 7
+- Durable published items: 6
+- Channel-only items: 6
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.
