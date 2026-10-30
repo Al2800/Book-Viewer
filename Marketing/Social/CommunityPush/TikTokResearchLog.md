@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 29 October 2026
+Updated: 30 October 2026
 
 ## Purpose
 
@@ -63,6 +63,65 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-10-30, 08:58 Europe/London
+
+**Account and publishing**
+
+- Account access: successful. `@bookquotes.app` is active with 20 post records returned, 5 followers
+  and analytics access. Token health is `ok`; both reconnect flags are false and expiry is
+  `2026-10-30T17:26:12.583Z`.
+- Expected posts: no TikTok mutation was eligible while publishing-integrity, duplicate, native
+  metadata, evidence and second-slot holds remained active.
+- Published, scheduled or failed: no new public row or attributable analytics entry appeared. The
+  latest public row is the 12 September Gladwell item (3 views, 3 reach, 1 save), retained as an
+  integrity observation. The failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Current Creative Centre trends route | [TikTok Creative Centre trends](https://ads.tiktok.com/creative/creativeCenter/trends) | The official route redirected to a login-gated trends page; no current UK hashtag, related-video or audience sample was exposed. | Access limitation, not a creative result | Short | Recheck after authenticated access; make no trend-led change from this read. |
+| Creative Centre access guidance | [How to Use Trends](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) | TikTok's help article, last updated July 2026, requires login before searching or filtering Trends; hashtag analytics can include regional popularity and related videos after access. | Confirms the missing account sample is an access limitation | Short | Recheck when the signed-in Creative Centre route is available. |
+| Public creator profile reads | [Sam Falling Books](https://www.tiktok.com/@samfallingbooks), [What Brit Reads](https://www.tiktok.com/@whatbritreads), [Books on the Bedside](https://www.tiktok.com/@booksonthebedside) | Each TikTok profile route returned no readable lines; search-indexed profile snapshots were 1.5 years or older. No video-level observations were treated as current evidence. | No valid sample for current UK creative grammar | Short | Do not update the style catalogue or claim recent performance from stale profile snapshots. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: no current post sample was accessible today; retain already evidenced reader-fit and honest-framing practices only.
+- Elements explicitly excluded from imitation: creator wording, artwork, identity, distinctive execution, and native audio choices without rights clearance.
+
+**Audience language**
+
+- Comments, searches or questions: no searchable audience language was exposed from TikTok; public TikTok comment text is not available through the connected read. The latest Instagram media comments returned an empty list; no reply was sent.
+- Potential reader-need hooks: no new hook added.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none.
+- Blockers: publishing-integrity, duplicate, native metadata and evidence holds remain active; preparation queue below three viable items because `cr-03` and `cr-04` need illustrated cuts.
+
+**Performance**
+
+- 24-hour checkpoints: none.
+- 72-hour checkpoints: none.
+- Seven-day checkpoints: none.
+- Missing measures: no new attributable TikTok analytics; Creative Centre data and fresh creator posts were inaccessible.
+
+**Learning**
+
+- Experiment updates: no clean checkpoint or result label changed.
+- Confidence changes: none.
+- Repeat: research, briefing and quality control.
+- Modify: keep cadence decisions gated on reliable account publishing and native metadata evidence.
+- Pause: TikTok mutation, second-slot testing and automatic replies.
+
+**Queue**
+
+- Approved: none for mutation.
+- In production: `cr-03` and `cr-04` awaiting illustrated cuts.
+- Awaiting evidence or review: publishing-integrity, duplicate and native metadata reconciliation.
+- Requires user approval: none for TikTok today; reconnect status is currently healthy.
 
 ### 2026-10-29, 09:01 Europe/London
 

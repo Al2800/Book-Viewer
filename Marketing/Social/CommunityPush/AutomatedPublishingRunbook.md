@@ -1,6 +1,39 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 29 October 2026
+Updated: 30 October 2026
+
+## Current Operational Note — 30 October 2026, 08:58 Europe/London
+
+The 29 October Facebook prompt `122120437803415831` is confirmed published once; Graph read-back
+shows `created_time=2026-10-29T12:00:30+0000` at
+`https://www.facebook.com/122107379391415831/posts/122120437803415831`. The rolling Facebook queue
+has been extended and read back with exactly seven Public, text-only rows for 30 October-5 November:
+`122120616441415831` (30 October), `122120791377415831` (31 October), `122120952153415831`
+(1 November), `122121072519415831` (2 November), `122121333891415831` (3 November),
+`122121333921415831` (4 November) and `122121462009415831` (5 November). The new 5 November row
+was preflighted, approved, scheduled and read back for 13:00 Europe/London. The pre-existing 30-31
+October rows are scheduled at 12:00 UTC, which is 12:00 GMT and 30 minutes earlier than the normal
+12:30 text slot; no reschedule mutation was attempted because the CLI has no safe edit/delete path.
+The 3 November hook overlaps the 7 October reading-note prompt and requires manual correction or
+cancellation before publication; the configured update path remains disabled. Meta identity and
+permissions remain verified for Page `1246405755221229` and connected Instagram `bookquotes.app`
+(`17841434821362428`). Instagram remains at 19 media rows with latest publication 30 August; the
+latest media comments read returned an empty list and no Instagram write was made. Facebook post
+insights and latest-post comments reads remain unavailable because both Graph reads return HTTP 400
+(`#12`, singular statuses API deprecated).
+
+TikTok is active as `@bookquotes.app` with 20 post records returned, 5 followers and analytics
+access. Token health now reports `status=ok`, `reconnect_required=false`, `needs_reconnection=false`,
+and expiry `2026-10-30T17:26:12.583Z` (about 8.4 hours remaining). No new public row or attributable
+analytics entry appeared; the latest public row remains the 12 September Gladwell item (3 views, 3
+reach, 1 save), retained as an integrity observation. The failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains failed. Publishing-integrity, duplicate, native metadata, evidence
+and second-slot mutation holds remain active; no TikTok mutation or automatic reply was made. The
+TikTok preparation queue remains below the required three viable items: `cr-03` and `cr-04` still
+need illustrated cuts, while `cr-01`, `cr-02` and `cr-05`-`cr-07` are already live or held. The
+official Creative Centre trends route is login-gated, and public creator-profile pages yielded no
+readable posts; no representative 15-20-post sample or new UK style evidence was available. No weak
+replacement was manufactured.
 
 ## Current Operational Note — 29 October 2026, 09:01 Europe/London
 

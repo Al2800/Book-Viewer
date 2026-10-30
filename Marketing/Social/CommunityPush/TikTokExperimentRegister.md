@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 29 October 2026
+Updated: 30 October 2026
 
 ## Method
 
@@ -47,6 +47,19 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 30 October 2026, 08:58 Europe/London
+
+No clean experiment checkpoint was added. The account read succeeded, with 20 returned post records,
+5 followers and analytics access. Token health is `ok`; both reconnect flags are false and expiry is
+`2026-10-30T17:26:12.583Z`. No new attributable TikTok row or analytics entry appeared. The latest
+public row is the 12 September Gladwell item with 3 views, 3 reach and 1 save, retained as an
+integrity observation only. No confidence or result label changed. Continue research, briefing and
+quality control; pause mutation, the second slot and automatic replies until the remaining publishing-
+integrity, duplicate, native metadata and evidence holds clear. The preparation queue remains below
+three viable items, and `cr-03` and `cr-04` need illustrated cuts. The official Creative Centre route
+was login-gated; public creator profiles yielded no readable current posts, so no representative UK
+sample or new style pattern was recorded. No TikTok mutation was made.
 
 ### 29 October 2026, 09:01 Europe/London
 
