@@ -1,35 +1,57 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 30 October 2026, 08:58 Europe/London
+Updated: 31 October 2026, 09:07 Europe/London
 
 ## Current operating loop
 
-- The 29 October live read confirms Facebook prompt `122120437803415831` is published once:
-  [permalink](https://www.facebook.com/122107379391415831/posts/122120437803415831). Graph read-back
-  shows `created_time=2026-10-29T12:00:30+0000`. The seven-day queue is extended and read back with
-  exactly these seven Public, text-only rows for 30 October-5 November: `122120616441415831` (30
-  October), `122120791377415831` (31 October), `122120952153415831` (1 November),
-  `122121072519415831` (2 November), `122121333891415831` (3 November), `122121333921415831` (4
-  November) and `122121462009415831` (5 November). The new 5 November row is scheduled for 13:00
-  Europe/London. The pre-existing 30-31 October rows are at 12:00 UTC, which is 12:00 GMT and 30
-  minutes earlier than the normal 12:30 text slot; no reschedule mutation was attempted because the
-  CLI has no safe edit/delete path. The 3 November hook overlaps the 7 October reading-note prompt
-  and needs manual correction or cancellation before publication because the configured update path
-  is disabled.
+- The 30 October and 31 October Facebook prompts are confirmed published once. Today's item is
+  `122120791377415831`, with Graph `created_time=2026-10-31T12:00:01+0000` and [permalink](https://www.facebook.com/122107379391415831/posts/122120791377415831).
+  The seven-day queue is extended and read back with exactly these seven future Public, text-only rows
+  for 1-7 November: `122120952153415831` (1 November), `122121072519415831` (2 November),
+  `122121333891415831` (3 November), `122121333921415831` (4 November), `122121462009415831` (5
+  November), `122121633429415831` (6 November) and `122121633693415831` (7 November). The 6 and 7
+  November rows are scheduled for 13:00 Europe/London. The 3 November hook overlaps the 7 October
+  reading-note prompt and needs manual correction or cancellation before publication because the
+  configured update path is disabled.
 - Facebook post-level insights and latest-post comments remain Not available because both Graph
   reads return HTTP 400 (`#12`, singular statuses API deprecated). Instagram remains at 19 rows,
   latest 30 August; the latest media comments read returned an empty list and no Instagram write was
   made. Meta identity remains verified for Page `1246405755221229` and connected Instagram
   `bookquotes.app` (`17841434821362428`).
 - TikTok is active as `@bookquotes.app` with 20 post records returned, 5 followers and analytics
-  access. Token health now reports `status=ok`, `reconnect_required=false`, `needs_reconnection=false`
-  and expiry `2026-10-30T17:26:12.583Z` (about 8.4 hours remaining). No new public row or attributable
+  access. Token health reports `status=ok`, `reconnect_required=false`, `needs_reconnection=false`
+  and expiry `2026-10-31T17:25:17.352Z` (about 8.3 hours remaining). No new public row or attributable
   analytics entry appeared. Keep publishing-integrity, duplicate, native metadata, evidence and
   second-slot holds active; no TikTok mutation or automatic reply was made. The Creative Centre route
-  is login-gated, and public creator profiles yielded no readable post sample.
+  is login-gated and no representative current UK sample was available.
 - TikTok preparation queue remains below the required three viable items: `cr-03` and `cr-04` still
   need illustrated cuts, while `cr-01`, `cr-02` and `cr-05`-`cr-07` are already live or held. No weak
   replacement was manufactured.
+
+### Audit: 31 October 2026, 09:07 Europe/London
+
+- Facebook read-back confirms `122120791377415831` published once. The Page posts edge shows
+  `created_time=2026-10-31T12:00:01+0000`; its permalink is [here](https://www.facebook.com/122107379391415831/posts/122120791377415831).
+  The approved scheduling actions created `122121633429415831` for 6 November and `122121633693415831`
+  for 7 November at 13:00 Europe/London. The direct scheduled edge then confirmed exactly seven future
+  rows for 1-7 November. The 3 November hook in `122121333891415831` still overlaps the 7 October
+  reading-note prompt; the safe update path is disabled, so the post needs manual correction or
+  cancellation before publication. Facebook post insights and latest-post comments remain unavailable
+  because both Graph reads return HTTP 400 (`#12`, singular statuses API deprecated).
+- Meta identity and permissions remain verified for Page `1246405755221229` and Instagram
+  `bookquotes.app` (`17841434821362428`). Instagram remains at 19 media rows/latest 30 August; no
+  Instagram write or reply was made.
+- TikTok read-back shows active `@bookquotes.app`, 20 returned post records, 5 followers and analytics
+  access. Token health is `status=ok`, with both reconnect flags false and expiry
+  `2026-10-31T17:25:17.352Z`. No new public row or attributable analytics entry appeared. The latest
+  public row remains the 12 September Gladwell item with 3 views, 3 reach and 1 save, retained as an
+  integrity observation only. The failed Creator Inbox request remains failed. No sensitive replies or
+  searchable audience language were exposed.
+- Continue research, briefing and quality control, but do not attempt TikTok mutation until publishing-
+  integrity, duplicate, native metadata and evidence holds clear. The second slot and automatic replies
+  remain paused. The preparation queue remains below three viable items because `cr-03` and `cr-04` need
+  illustrated cuts. Creative Centre remains login-gated and no representative current UK sample was
+  available. No confidence or cadence change is warranted.
 
 ### Audit: 30 October 2026, 08:58 Europe/London
 

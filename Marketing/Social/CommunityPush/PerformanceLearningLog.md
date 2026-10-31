@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 30 October 2026, 08:58 Europe/London
+Updated: 31 October 2026, 09:07 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,35 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### 31 October 2026, 09:07 Europe/London
+
+**Observation**
+
+- Facebook confirms the 31 October prompt `122120791377415831` published once at Graph
+  `created_time=2026-10-31T12:00:01+0000`; its permalink is
+  `https://www.facebook.com/122107379391415831/posts/122120791377415831`. The direct scheduled edge
+  contains exactly seven future Public text-only rows for 1-7 November. Two distinct prompts were
+  preflighted, approved, scheduled and read back for 6 November (`122121633429415831`) and 7 November
+  (`122121633693415831`), both at 13:00 Europe/London. The 3 November row still overlaps the 7 October
+  reading-note topic and requires manual correction or cancellation before publication because the
+  configured update path is disabled. Facebook post-level insights and latest-post comments remain Not
+  available because both Graph reads return HTTP 400 (`#12`, singular statuses API deprecated).
+- Instagram remains at 19 media rows with latest publication 30 August; no Instagram write or reply was
+  made. No new sensitive or ambiguous audience response was exposed.
+- TikTok is active as `@bookquotes.app` with 20 post records returned, 5 followers and analytics access.
+  Token health is `ok`, with reconnect flags false and expiry at `2026-10-31T17:25:17.352Z`. No new
+  public row or attributable analytics entry appeared. The latest public row remains the 12 September
+  Gladwell item (3 views, 3 reach, 1 save), an integrity observation rather than a clean creative result.
+  The preparation queue remains below three viable items because `cr-03` and `cr-04` need illustrated cuts.
+
+**Decision**
+
+- Repeat the verified Facebook baseline and keep seven future days queued. Retain the 6 and 7 November
+  prompts. Request manual correction or cancellation of the 3 November duplicate-topic row before
+  publication; do not use an unverified workaround. Continue treating Facebook metrics as unavailable,
+  not zero. Keep TikTok mutation, the second slot and automatic replies paused until the remaining holds
+  clear. No hypothesis confidence or result label changed.
 
 ### 30 October 2026, 08:58 Europe/London
 
