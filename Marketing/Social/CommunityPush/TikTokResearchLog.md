@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 31 October 2026
+Updated: 2 November 2026, 05:39 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,55 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-02, 05:39 Europe/London
+
+**Account and publishing**
+
+- Account access: successful. `@bookquotes.app` is active with 20 API post records, 5 followers and
+  analytics access. Token health is `ok`; reconnect flags are false and expiry is
+  `2026-11-02T18:32:49.325Z`.
+- Published, scheduled or failed: no new public row appeared in the 26 October-1 November window.
+  The latest public row remains 12 September (3 views, 3 reach, 1 save); it is not a current
+  experiment result. Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. This API read
+  exposes neither native Account Check nor comment/message text. No reply or publishing action was
+  made.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK Creative Center Trends | [Official GB Trends surface](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB) | The route identified the UK, but the hashtag-list request returned HTTP 501; no current rankings, related videos or audience analytics loaded. | No current trend signal can be responsibly applied. | Current check only | Recheck the signed-in UK surface; do not infer from partial results. |
+| Trends workflow | [TikTok Help: How to use Trends](https://ads.tiktok.com/resources/help/article/how-to-use-trends?redirected=2) | TikTok's July 2026 guidance says to log in, filter industry/time frame and inspect hashtag analytics. | Confirms that a failed list is not usable trend evidence. | Process guidance | Use the native UK filters once accessible. |
+
+**Creator-pattern observations**
+
+- Public TikTok video pages were blocked by the web retrieval robots policy. No reliable 15-20-post
+  sample across varied creator sizes could be completed. TikTok Shop search results and broad annual
+  forecasts are not substitutes for that sample.
+- TikTok Next 2026's grounded-discovery/community forecast is already captured as EXT-012. It is not
+  BookQuotes account-performance evidence; no new style-catalogue claim or brief was added.
+- Elements explicitly excluded from imitation: creator wording, identity, art, audio and distinctive
+  execution. No new response pattern was observed.
+
+**Performance and learning**
+
+- No 24-hour, 72-hour or seven-day checkpoint was due for a new TikTok item. No new post means no
+  per-1,000-view comparison or confidence change.
+- The publication and native-metadata holds remain active. The prep queue remains below three viable
+  items: `cr-03` and `cr-04` are marked `needs_illustrated_cut` although their local MP4/cover files
+  exist; only covers were reviewed here, not the complete frame-level/sound-on/off phone preflight.
+  No third fully validated brief is ready. No weak replacement was manufactured.
+
+**Queue and next action**
+
+- Approved: none newly cleared.
+- In production: `cr-03` and `cr-04` pending full quality preflight.
+- Requires user action: complete native Account Check and resolve the outstanding TikTok publishing-
+  integrity/metadata and duplicate holds before any upload, schedule, edit or deletion.
+- No style catalogue or evidence-ledger changes were warranted.
+
+### 2026-10-31, 09:07 Europe/London
 
 ### 2026-10-31, 09:07 Europe/London
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31T13:07:00+00:00",
+  "updated_at": "2026-11-02T05:39:03+00:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -4858,6 +4858,90 @@
       },
       "metrics_unavailable_reason": "Scheduled for 7 November; live metrics are not available. This observation represents the seven-day queue extension.",
       "notes": "Read-back ID 122121633693415831 at https://www.facebook.com/122107379391415831/posts/122121633693415831. The direct scheduled_posts read after creation confirms exactly seven future rows for 1-7 November; the 3 November duplicate-topic row still requires manual correction or cancellation before publication."
+    },
+    {
+      "observation_id": "fb-2026-11-01-live-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122120952153415831",
+      "title": "What makes a reading group worth returning to",
+      "format": "text",
+      "published_at": "2026-11-01T13:00:00+00:00",
+      "observed_at": "2026-11-02T05:39:03+00:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication. Insights return HTTP 400 (#100, invalid metric); post get returns #12 and comments return #10 because pages_read_user_content or Page Public Content Access is unavailable. Metrics remain null.",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122120952153415831 with Graph created_time 2026-11-01T13:00:10+0000."
+    },
+    {
+      "observation_id": "fb-2026-11-02-queue-extension-08",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122121855219415831",
+      "title": "Which book feature has helped you understand a text",
+      "format": "text",
+      "published_at": "2026-11-08T12:30:00+00:00",
+      "observed_at": "2026-11-02T05:39:03+00:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 8 November; live metrics are not available.",
+      "notes": "Read-back ID 122121855219415831 at https://www.facebook.com/122107379391415831/posts/122121855219415831. Direct scheduled_posts read confirms one Page-authored row with is_published=false."
+    },
+    {
+      "observation_id": "fb-2026-11-02-queue-extension-09",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122121867855415831",
+      "title": "One idea can belong to more than one shelf",
+      "format": "photo",
+      "published_at": "2026-11-09T12:30:00+00:00",
+      "observed_at": "2026-11-02T05:39:03+00:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Previously approved original BookQuotes typography card bq14-13; its collections/tags claim is sourced to S1; no third-party cover, quotation or audio.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 9 November; live metrics are not available.",
+      "notes": "The publish CLI returned no read-back, so no retry was made. Direct scheduled_posts read confirmed exactly one matching BookQuotes Page row, is_published=false; https://www.facebook.com/122107379391415831/posts/122121867855415831."
     }
   ],
   "search_snapshots": [

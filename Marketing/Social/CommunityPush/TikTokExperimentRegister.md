@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 31 October 2026
+Updated: 2 November 2026, 05:39 Europe/London
 
 ## Method
 
@@ -47,6 +47,19 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 2 November 2026, 05:39 Europe/London
+
+No clean experiment checkpoint was added. The account read succeeded: 20 post records, 5 followers,
+analytics access and token health `ok` through `2026-11-02T18:32:49.325Z`. No new attributable post
+or analytics entry appeared in the 26 October-1 November window. The latest public row remains the 12
+September item (3 views, 3 reach, 1 save); it is outside the window and retained as an integrity
+observation. No per-1,000-view comparison or confidence change is warranted. Native Account Check and
+comment/message text are not exposed by this read. Keep publishing, duplicate, metadata and evidence
+holds active; pause the second slot and replies. The queue remains below three viable items pending
+full phone-size/frame QC of `cr-03` and `cr-04` and one more fully validated brief. The UK Creative
+Center hashtag request returned 501 and public TikTok pages were blocked, so no 15-20-post creator
+sample or style update was possible. No TikTok mutation was made.
 
 ### 31 October 2026, 09:07 Europe/London
 

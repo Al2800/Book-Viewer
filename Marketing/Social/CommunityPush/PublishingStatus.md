@@ -1,8 +1,40 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 31 October 2026, 09:07 Europe/London
+Updated: 2 November 2026, 05:39 Europe/London
 
 ## Current operating loop
+
+- The 1 November Facebook prompt `122120952153415831` is confirmed published once at Graph
+  `created_time=2026-11-01T13:00:10+0000`; its [permalink](https://www.facebook.com/122107379391415831/posts/122120952153415831) is recorded.
+  Today's 2 November item `122121072519415831` remains scheduled for 13:00 GMT and is not yet due at
+  this 05:39 audit. The direct scheduled edge contains eight one-per-day rows for 2-9 November:
+  `122121072519415831`, `122121333891415831`, `122121333921415831`, `122121462009415831`,
+  `122121633429415831`, `122121633693415831`, `122121855219415831` and `122121867855415831`. The
+  8 November text prompt was read back for 12:30 GMT. The 9 November approved `bq14-13` original
+  typography card uses the verified collections/tags claim and brings the scheduled app-led share to
+  1/8 (12.5%); the publish command returned no read-back, but a direct read-only scheduled-edge check
+  found exactly one matching row, so it was not retried. Meta confirms the BookQuotes Page identity;
+  the API response does not expose a per-post audience field. The 3 November reading-note prompt still
+  overlaps the 7 October topic and requires manual correction or cancellation because the safe
+  edit/delete path is disabled.
+- Facebook insights remain unavailable (`#100`, invalid insights metric; the post `get` edge returns
+  `#12`). Facebook comments are unavailable (`#10`, missing `pages_read_user_content`/Page Public
+  Content Access). Instagram remains at 19 media rows, latest 30 August; latest media comments are
+  empty. No Instagram write or reply was made.
+- TikTok is active as `@bookquotes.app` with 20 API post records, 5 followers and analytics access.
+  Token health is `ok`, reconnect flags are false, and expiry is `2026-11-02T18:32:49.325Z` (about
+  12.9 hours remaining). There were no new public posts in 26 October-1 November; the latest public
+  row remains 12 September (3 views, 3 reach, 1 save), an integrity observation only. Native Account
+  Check and comment/message text are unavailable; failed Creator Inbox request `6aa4f018662ee2d345bceb39`
+  remains unresolved. Publishing-integrity, duplicate, native metadata, evidence and second-slot
+  holds remain active; no TikTok mutation or automatic reply was made.
+- TikTok preparation remains below three viable items. `cr-03` and `cr-04` are still marked
+  `needs_illustrated_cut` despite existing MP4/cover files; full frame-level/phone-size preflight is
+  outstanding, and there is no third validated item. The UK Creative Center hashtag-list request
+  returned 501 and TikTok creator pages were blocked, so no representative 15-20-post sample or new
+  style claim was recorded. No weak item or new style was manufactured.
+
+### Previous operating loop — 31 October 2026
 
 - The 30 October and 31 October Facebook prompts are confirmed published once. Today's item is
   `122120791377415831`, with Graph `created_time=2026-10-31T12:00:01+0000` and [permalink](https://www.facebook.com/122107379391415831/posts/122120791377415831).

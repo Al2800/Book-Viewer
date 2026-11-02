@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 31 October 2026, 09:07 Europe/London
+Updated: 2 November 2026, 05:39 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,64 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Monday review — 2 November 2026, 05:39 Europe/London
+
+**Observation**
+
+- Facebook's 26 October-1 November window contains seven confirmed daily text prompts. No post-level
+  insight values are available: the current insights request returns `#100` invalid metric and the
+  legacy post read returns `#12`. The comments edge returns `#10` because the connected app lacks
+  `pages_read_user_content` or Page Public Content Access. Do not interpret unavailable comments,
+  reach, views, shares, saves, link clicks or follows as zero.
+- The upcoming Facebook queue contains one primary item per day for 2-9 November. The eight-day bridge
+  includes one previously approved app-led `bq14-13` typography card on 9 November (1/8, 12.5%),
+  within the intended ~15% mix; all other scheduled items are reader prompts. The 3 November note
+  prompt still duplicates the 7 October reading-note topic and requires manual correction or
+  cancellation; the safe edit/delete path is disabled.
+- TikTok account read is healthy and analytics-accessible (5 followers; 20 API post records; token
+  expiry `2026-11-02T18:32:49.325Z`). No new public TikTok post appeared in the review window. The
+  latest public post is dated 12 September (3 views, 3 reach, 1 save), outside this review window and
+  retained only as an integrity observation. Native Account Check and comment/message text are not
+  available through the connected surface.
+- UK Creative Center returned a 501 when loading its hashtag list; direct TikTok creator pages were
+  blocked. No representative 15-20-post sample was available. The existing annual TikTok Next signal
+  is already captured in the style catalogue; no new creative pattern was established.
+
+**Decision**
+
+- Repeat the reader-first, specific-question Facebook baseline, while retaining varied topics and
+  avoiding the flagged 3 November duplicate. The approved product card is placed on 9 November to
+  restore the planned app-led share without adding a second item to any day.
+- No Facebook or TikTok performance hypothesis changed; current metric access cannot support a
+  like-for-like result. TikTok's next post portfolio remains a proposal of 70% reader-fit
+  recommendations, 20% reader identity/culture/rituals and 10% reader-value-first product proof,
+  applied only after all active account, metadata, duplicate and evidence holds clear.
+- TikTok remains paused for upload, scheduling, editing, deletion, second-slot tests and automated
+  replies. The prep queue is below three viable items: `cr-03`/`cr-04` need full phone-size/frame
+  quality preflight despite existing renders; there is no third validated item. Do not fill the gap
+  with weak replacements.
+
+**Next actions**
+
+- User: correct or cancel the 3 November Facebook duplicate in Meta Planner; this connection exposes
+  no safe edit/delete path.
+- Automation: recheck Facebook publication and metrics after the daily slot; keep unavailable fields
+  null. Continue TikTok research and only promote a Reel after full production QC and native gates.
+
+### Daily audit — 2 November 2026, 05:39 Europe/London
+
+- Facebook: 1 November prompt confirmed live once at 13:00:10 GMT. Today's 2 November prompt is
+  scheduled for 13:00 GMT. The direct schedule edge confirms rows for 2-9 November; the 8 November
+  prompt is the original text-only reading-feature question, and the 9 November card is the previously
+  approved product-led graphic. The latter's CLI response lacked a read-back, but the direct edge
+  confirmed it exactly once, so no retry was made.
+- Facebook: no current comment text was available; permissions error `#10`. Insights remain null;
+  latest Instagram comments were empty. No message or reply action was available or made.
+- TikTok: account active with 20 records and analytics access; token healthy through 18:32:49Z.
+  No new post or comments/message text surfaced. No TikTok mutation or reply was made.
+- UK Creative Center's current GB trends surface returned a 501 and direct TikTok creator profiles
+  were blocked from this read. No 15-20 post sample or new evidence/style change was recorded.
 
 ### 31 October 2026, 09:07 Europe/London
 

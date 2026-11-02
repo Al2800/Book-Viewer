@@ -1,6 +1,38 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 31 October 2026
+Updated: 2 November 2026, 05:39 Europe/London
+
+## Current Operational Note — 2 November 2026, 05:39 Europe/London
+
+The 1 November Facebook prompt `122120952153415831` is confirmed published once at Graph
+`created_time=2026-11-01T13:00:10+0000`; its permalink is
+`https://www.facebook.com/122107379391415831/posts/122120952153415831`. Today's 2 November prompt
+`122121072519415831` remains scheduled for 13:00 GMT and is not yet due at this audit time. The direct
+scheduled edge now contains eight one-per-day rows for 2-9 November. The new 8 November text prompt
+`122121855219415831` was scheduled for 12:30 GMT and read back. The approved `bq14-13` reader-practice
+card was scheduled once for 9 November at 12:30 GMT as a low-risk product-led item to bring the
+upcoming mix near 15%; the publish CLI returned no read-back, but the read-only scheduled edge confirms
+exactly one Page-authored row `122121867855415831`, `is_published=false`. No duplicate retry was made.
+The 3 November reading-note prompt `122121333891415831` still duplicates the 7 October topic and
+requires manual correction or cancellation because the safe edit/delete path is unavailable. The
+scheduled edge confirms the BookQuotes Page identity but does not return an explicit audience field.
+Facebook post insights are unavailable (`#100`, invalid metric); the post `get` edge returns `#12`,
+and the comments edge returns `#10` because `pages_read_user_content` or Page Public Content Access
+is not granted. Instagram remains at 19 media rows, latest 30 August; latest media comments are empty.
+
+TikTok remains active as `@bookquotes.app` / `6a7e30f977555aae0187cea3`, with 20 API post records,
+5 followers and analytics access. Token health is `ok`, both reconnect flags are false, and expiry is
+`2026-11-02T18:32:49.325Z` (about 12.9 hours remaining). No new public post appeared in 26 October-1
+November. The latest public row remains the 12 September item with 3 views, 3 reach and 1 save; it is
+retained as a publishing-integrity observation, not a current creative result. TikTok comments/messages
+and native Account Check are not readable through the available API. The failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains unresolved. Publishing-integrity, duplicate, native metadata,
+evidence and second-slot holds remain active; no TikTok mutation or automatic reply was made. The
+preparation queue is below three viable items: `cr-03` and `cr-04` are still marked
+`needs_illustrated_cut` despite MP4/cover files existing, and require full frame-level and phone-size
+preflight; no third validated item is ready. The UK Creative Center route returned a 501 for its
+hashtag-list request; direct TikTok creator pages were blocked, so no representative 15-20-post sample
+or new style claim was available. No hypothesis confidence changed.
 
 ## Current Operational Note — 31 October 2026, 09:07 Europe/London
 
