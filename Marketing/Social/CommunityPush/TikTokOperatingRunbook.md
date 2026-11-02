@@ -1,6 +1,23 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 2 November 2026, 05:39 Europe/London
+Updated: 2 November 2026, 09:49 Europe/London
+
+### Metadata reconciliation audit: 2 November 2026, 09:49 Europe/London
+
+- The bound account remains active `@bookquotes.app` / `6a7e30f977555aae0187cea3`; the API returned
+  20 post records, 5 followers and analytics access. Token health is `status=ok`, both reconnect
+  flags are false, and expiry is `2026-11-02T18:32:49.325Z` (about 8.7 hours remaining at the read).
+  No new public row appeared; the latest public row remains the 12 September item with 3 views,
+  3 reach and 1 save, retained as an integrity observation rather than a current result.
+- Native Account Check and TikTok comment/message text remain unavailable through the connected read.
+  Creator Inbox request `6aa4f018662ee2d345bceb39` remains failed. Keep publishing-integrity,
+  duplicate, native metadata, evidence and second-slot holds active; no TikTok mutation or automatic
+  reply was made.
+- The preparation queue remains below three viable items. `cr-03` and `cr-04` still have
+  `needs_illustrated_cut` status despite existing MP4/cover files; full frame-level and phone-size
+  quality preflight is outstanding and no third validated brief is ready. The official UK Creative
+  Center page remains login-gated in the available read, so no representative 15-20-post sample or
+  new style evidence was added. No weak replacement or confidence change was made.
 
 ### Metadata reconciliation audit: 2 November 2026, 05:39 Europe/London
 

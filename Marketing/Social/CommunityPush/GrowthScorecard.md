@@ -1,10 +1,10 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-11-02T05:39:03+00:00</code>.
+Generated from structured evidence updated <code>2026-11-02T09:49:31+00:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-26T05:39:03+00:00</code> to <code>2026-11-02T05:39:03+00:00</code>
+- Reporting window: <code>2026-10-26T09:49:31+00:00</code> to <code>2026-11-02T09:49:31+00:00</code>
 - Published Facebook items represented: 5
 - Visible views: Not available (0 reported values)
 - Visible reach: Not available (0 reported values)

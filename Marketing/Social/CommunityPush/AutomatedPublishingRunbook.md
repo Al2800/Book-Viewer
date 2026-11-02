@@ -1,6 +1,31 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 2 November 2026, 05:39 Europe/London
+Updated: 2 November 2026, 09:49 Europe/London
+
+## Current Operational Note — 2 November 2026, 09:49 Europe/London
+
+The 1 November Facebook prompt `122120952153415831` remains confirmed published once at Graph
+`created_time=2026-11-01T13:00:10+0000`. Today's `122121072519415831` is still scheduled for
+13:00 GMT and is not yet due at this audit. A direct read-only `scheduled_posts` reconciliation
+returns exactly eight one-per-day Page-authored rows for 2-9 November, with the BookQuotes identity
+confirmed; the API still does not expose an explicit per-post audience field. The 8 November text
+prompt and the approved `bq14-13` card on 9 November remain read back once. `bq14-13`'s approved
+1080x1920 asset hash still matches `d6d9368f8587894fa875f3ebb1f6258f34178baa011fe1d6faa5e7aae267b99c`.
+The 3 November reading-note prompt still overlaps the 7 October topic and requires manual correction
+or cancellation because the safe edit/delete path is unavailable. No Facebook mutation was made.
+Facebook comments still return `#10` and insights return an invalid-query error; metrics remain null.
+The latest Instagram media comments read returns an empty list.
+
+TikTok remains active as `@bookquotes.app` with 20 API post records, 5 followers and analytics access.
+Token health is `ok`, reconnect flags are false, and expiry is `2026-11-02T18:32:49.325Z` (about
+8.7 hours remaining at the read). No new public row appeared; the latest public row remains the
+12 September item with 3 views, 3 reach and 1 save, retained as an integrity observation only. Native
+Account Check and comment/message text remain unavailable, the failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` remains unresolved, and all publishing-integrity, duplicate, native
+metadata, evidence and second-slot holds remain active. The preparation queue remains below three
+viable items: `cr-03` and `cr-04` still need full frame-level and phone-size preflight, with no third
+validated item. The UK Creative Center page remains login-gated in the available read, so no current
+15-20-post sample or new style evidence was added. No TikTok mutation or automatic reply was made.
 
 ## Current Operational Note — 2 November 2026, 05:39 Europe/London
 

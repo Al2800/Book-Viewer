@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 2 November 2026, 05:39 Europe/London
+Updated: 2 November 2026, 09:49 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,47 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-02, 09:49 Europe/London
+
+**Account and publishing**
+
+- Account access: successful. `@bookquotes.app` remains active with 20 API post records, 5 followers
+  and analytics access. Token health is `ok`, reconnect flags are false, and expiry is
+  `2026-11-02T18:32:49.325Z`.
+- Published, scheduled or failed: no new public row appeared since the previous audit. The latest
+  public row remains the 12 September item (3 views, 3 reach, 1 save), outside the current review
+  window and retained only as an integrity observation. No publishing action or reply was made.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK Creative Center Trends | [Official GB Trends surface](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB) | The current public read exposes the Trends shell and a login control but no usable UK ranking, related-video or audience data; the available hashtag-list route remains unusable. | No current trend signal can be responsibly applied. | Current check only | Recheck the signed-in UK surface; do not infer from partial results. |
+
+**Creator-pattern observations**
+
+- No representative 15-20-post sample across varied creator sizes was available. Public creator pages
+  remain blocked by the retrieval policy, and the current Creative Center read is not data-bearing.
+- TikTok Next 2026's grounded-discovery/community forecast remains captured as EXT-012. No new
+  style-catalogue claim or brief was added, and creator wording, identity, art, audio and distinctive
+  execution remain explicitly excluded from imitation.
+
+**Performance and learning**
+
+- No 24-hour, 72-hour or seven-day checkpoint was due for a new TikTok item. No per-1,000-view
+  comparison or confidence change is warranted.
+- The publication-integrity, duplicate, native-metadata, evidence and second-slot holds remain active.
+  The prep queue is still below three viable items: `cr-03` and `cr-04` require full phone-size/frame
+  QC, and no third validated brief is ready. No weak replacement was manufactured.
+
+**Queue and next action**
+
+- Approved: none newly cleared.
+- In production: `cr-03` and `cr-04` pending full quality preflight.
+- Requires user action: complete native Account Check and resolve the outstanding TikTok holds before
+  any upload, schedule, edit or deletion.
+- No style catalogue or evidence-ledger changes were warranted.
 
 ### 2026-11-02, 05:39 Europe/London
 

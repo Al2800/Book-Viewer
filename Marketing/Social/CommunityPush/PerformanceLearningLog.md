@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 2 November 2026, 05:39 Europe/London
+Updated: 2 November 2026, 09:49 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,39 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 2 November 2026, 09:49 Europe/London
+
+**Observation**
+
+- The direct Facebook scheduled edge still contains exactly eight one-per-day Page-authored rows for
+  2-9 November. The 1 November item remains confirmed published once; today's 2 November item is
+  scheduled for 13:00 GMT and is not yet due. The approved `bq14-13` card remains the only app-led
+  item in the bridge queue (1/8, 12.5%); its approved asset hash was rechecked. The 3 November
+  reading-note prompt remains a duplicate topic and requires manual correction or cancellation.
+- Facebook comments remain unavailable (`#10`) and insights remain unavailable (invalid query); do
+  not interpret unavailable reach, views, comments, shares, saves, clicks or follows as zero.
+  Instagram's latest media comments read returned an empty list. No reply or platform mutation was
+  made.
+- TikTok account and analytics access remain available with 20 records, 5 followers and a healthy
+  token expiring at `2026-11-02T18:32:49.325Z`. No new public row or attributable analytics entry
+  appeared. Native Account Check and comment/message text remain unavailable; all mutation holds stay
+  active. The preparation queue remains below three viable items and no weak replacement was made.
+- The official UK Creative Center read remains login-gated, and no current 15-20-post sample or new
+  style evidence was available. No hypothesis confidence changed.
+
+**Decision**
+
+- Keep the Facebook cadence and the read-back queue unchanged; user action is still required for the
+  3 November duplicate because the safe edit/delete path is unavailable.
+- Keep TikTok paused for upload, scheduling, editing, deletion, second-slot tests and automatic
+  replies until publishing-integrity, duplicate, metadata, evidence and preparation gates clear.
+
+**Next actions**
+
+- User: correct or cancel the 3 November Facebook duplicate in Meta Planner.
+- Automation: verify the 2 November Facebook publication after the 13:00 slot and continue recording
+  unavailable metrics as null; continue TikTok research and quality control without mutation.
 
 ### Monday review — 2 November 2026, 05:39 Europe/London
 
