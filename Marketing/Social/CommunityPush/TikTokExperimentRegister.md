@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 2 November 2026, 09:49 Europe/London
+Updated: 3 November 2026, 09:00 Europe/London
 
 ## Method
 
@@ -47,6 +47,23 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 3 November 2026, 09:00 Europe/London
+
+No clean experiment checkpoint was added. The connected account read remains healthy for
+`@bookquotes.app`, with 20 API records, 5 followers, analytics access and token health `ok` through
+`2026-11-03T19:47:26.637Z`. The controlled 28 July ID `7667570006032387350` is not present in this
+inventory; earlier native Studio evidence recorded it once as Public, but attributable analytics are
+still unavailable. The latest connected public item remains the 12 September `Gladwell` row (3 views,
+reach 3, 1 save), outside the current review window. No new post has a 24-hour, 72-hour or seven-day
+checkpoint. Do not normalize the old integrity row or alter confidence/result labels.
+
+The single-writer, duplicate, native metadata, evidence and second-slot holds remain active. No TikTok
+mutation or reply was made. The preparation queue remains below three viable items because the
+`cr-03` and `cr-04` illustrated MP4s fail sampled-frame decoding; complete phone-size/muted checks
+cannot be performed, and no third validated item is ready. Creative Center remains login-gated/501,
+creator pages were inaccessible, and only two contextual reporting signals were available. No creator
+sample, style change, brief promotion or confidence update was made.
 
 ### 2 November 2026, 09:49 Europe/London
 

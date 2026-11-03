@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 2 November 2026, 09:49 Europe/London
+Updated: 3 November 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,55 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 3 November 2026, 09:00 Europe/London
+
+**Observation**
+
+- Facebook's 2 November text prompt `122121072519415831` is confirmed published once at
+  `2026-11-02T13:00:03+0000`:
+  [live post](https://www.facebook.com/122107379391415831/posts/122121072519415831). Its views, reach,
+  non-follower reach, comments, shares, saves, clicks, profile visits, follows and App Store signals
+  are Not available: post `get` returns `#12` and insights return `#100` invalid metric. Comment text
+  remains unavailable (`#10`), so no reply was sent and no sentiment inference is possible.
+- The live Facebook queue has seven daily Page-authored items for 3-9 November. Today's
+  `122121333891415831` remains due at 13:00 GMT but repeats the 7 October reading-note topic. The
+  local Meta edit path is blocked by `writes_enabled=false`; no correction, cancellation or duplicate
+  replacement was made. In addition, 3-8 November are six consecutive text-only prompts; the approved
+  `bq14-13` app-led photo on 9 November is the only visual/app-led slot (1/7, 14.3%). The queue count
+  is full, but topic/format variety is not. The read API does not expose explicit per-post audience
+  visibility.
+- TikTok account access is healthy for `@bookquotes.app` (20 returned records, 5 followers, analytics
+  access; token valid through `2026-11-03T19:47:26.637Z`). The controlled 28 July ID
+  `7667570006032387350` is not present in the connected inventory. Prior native Studio evidence says
+  it appeared once as Public, but attributable analytics remain unavailable, so no new activation or
+  clearance follows. The latest API row is the 12 September `Gladwell` post (3 views, reach 3, 1 save,
+  0 shares/comments), retained as an old integrity observation rather than current creative evidence.
+- TikTok native Account Check and comment/message text are not available; the failed Creator Inbox
+  request remains unresolved. No new 24-hour, 72-hour or seven-day checkpoint is due, and no
+  per-1,000-view comparison or hypothesis confidence change is warranted.
+- The UK Creative Center still exposes no usable trend ranking (login shell/501), and a representative
+  15-20-post creator sample could not be read. Existing `cr-03` and `cr-04` videos fail frame decoding
+  at sampled points, so their full phone-size/muted preflight remains blocked and the preparation
+  queue is below three viable items. Two contextual external signals were recorded without changing
+  the slate or style catalogue.
+
+**Decision**
+
+- Facebook cadence and queue remain; the 3 November duplicate needs manual correction or cancellation
+  in Meta Planner before the scheduled time. The 3-8 November text-format run also needs manual
+  attention to restore format variety. No automatic edit is permitted by the current local policy.
+- Keep TikTok upload, scheduling, editing, deletion, second-slot testing and replies paused until the
+  integrity, native metadata, evidence and preparation gates clear.
+- Do not revise H1-H5 or TikTok experiment confidence; current audience metrics are either unavailable
+  or not comparable clean executions.
+
+**Next actions**
+
+- User: correct or cancel the 3 November duplicate before 13:00 GMT and consider varying the
+  consecutive text-only formats in the 4-8 November queue.
+- Automation: verify today's Facebook status after the due slot, preserve unavailable metrics as null,
+  extend the queue on the next daily run and continue TikTok research/quality control without mutation.
 
 ### Daily audit — 2 November 2026, 09:49 Europe/London
 

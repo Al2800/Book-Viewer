@@ -1,8 +1,44 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 2 November 2026, 09:49 Europe/London
+Updated: 3 November 2026, 09:00 Europe/London
 
-## Current Operational Note — 2 November 2026, 09:49 Europe/London
+## Current Operational Note — 3 November 2026, 09:00 Europe/London
+
+The 2 November Facebook item `122121072519415831` is confirmed published once by the BookQuotes
+Page at Graph `created_time=2026-11-02T13:00:03+0000`; its permalink is
+`https://www.facebook.com/122107379391415831/posts/122121072519415831`. The read-only
+`scheduled_posts` reconciliation at approximately 08:55 confirms seven one-per-day Page-authored
+items for 3-9 November. Today's `122121333891415831` remains scheduled for 13:00 GMT, but its
+reading-note topic overlaps 7 October. The local edit policy still has `writes_enabled=false`; do
+not bypass it or create a competing replacement. The row requires manual correction or cancellation
+in Meta Planner before publication. The scheduled edge does not expose per-post audience visibility,
+so Public status cannot be independently confirmed from this API read. Facebook insights fail with
+HTTP 400 (`#100`, invalid metric), post `get` fails with `#12` (deprecated singular statuses API),
+and the comments permission/read remains unavailable (`#10`); metrics remain null. The count is seven,
+but the 3-8 November rows are six consecutive text-only prompts, with only the approved `bq14-13`
+photo card on 9 November (one app-led item in seven, 14.3%). The current queue therefore fails the
+consecutive-format variety guard as well as today's duplicate-topic gate; no automated correction
+can run while the local write policy is disabled.
+
+TikTok account `@bookquotes.app` is active with 20 returned API records, 5 followers and analytics
+access; the token is healthy through `2026-11-03T19:47:26.637Z` and does not require reconnection.
+The controlled ID `7667570006032387350` is absent from the current connected inventory. Earlier
+native Studio evidence recorded it once as Public, but no attributable analytics entry is available,
+so that read does not clear later publishing-integrity holds. The latest connected public row is the
+12 September `Gladwell` post (3 views, reach 3, 1 save, 0 shares/comments). Native Account Check and
+comment/message text remain unavailable; failed request `6aa4f018662ee2d345bceb39` remains unresolved.
+No TikTok publishing, editing, deletion or automatic reply was made.
+
+The TikTok preparation queue remains below three viable items. Frame sampling of the existing
+`cr-03` and `cr-04` MP4s failed at every sampled point with AVFoundation `Cannot Decode`; their cover
+PNGs can be viewed, but the required muted, frame-level and phone-size checks cannot be completed.
+The separate rejected Remotion placeholder cuts remain ineligible. The official UK Creative Center
+shows a login shell and its hashtag-list route returns 501; direct creator pages remain inaccessible.
+No representative 15-20-post creator sample, style change, new brief or confidence change is
+justified. One contextual UK BookTok signal and one seasonal-media signal are logged in
+`TikTokResearchLog.md`; neither clears a production or publishing gate.
+
+### Previous operational note — 2 November 2026, 09:49 Europe/London
 
 The 1 November Facebook prompt `122120952153415831` remains confirmed published once at Graph
 `created_time=2026-11-01T13:00:10+0000`. Today's `122121072519415831` is still scheduled for

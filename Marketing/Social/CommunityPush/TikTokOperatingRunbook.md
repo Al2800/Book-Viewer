@@ -1,6 +1,28 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 2 November 2026, 09:49 Europe/London
+Updated: 3 November 2026, 09:00 Europe/London
+
+### Metadata reconciliation audit: 3 November 2026, 09:00 Europe/London
+
+- Read-only connected-account access succeeds for active `@bookquotes.app` /
+  `6a7e30f977555aae0187cea3`: 20 API post records, 5 followers and analytics access. Token status is
+  `ok`, with no reconnect flags and expiry `2026-11-03T19:47:26.637Z` (about 10.8 hours remaining).
+- The controlled ID `7667570006032387350` is absent from the current connected post inventory. The
+  earlier native Studio check recorded it once as Public, but the connected inventory still provides
+  no attributable analytics row for it. The later single-writer, duplicate, native metadata, evidence
+  and second-slot holds remain active; no new upload, schedule, edit, deletion or reply was made.
+- Latest connected public item remains the 12 September `Gladwell` post (3 views, reach 3, 1 save,
+  0 shares/comments), which is outside the review window and is retained only as an integrity
+  observation. The native Account Check and comment/message text are unavailable; failed request
+  `6aa4f018662ee2d345bceb39` remains unresolved. Do not infer comment sentiment from counts.
+- The preparation queue remains below three viable items. Frame sampling of both `cr-03` and `cr-04`
+  illustrated MP4s fails with AVFoundation `Cannot Decode`; their covers are readable but the video
+  frames cannot pass muted and phone-size review. The separate rejected Remotion placeholder exports
+  remain ineligible. No new brief or style entry was added.
+- The official UK Creative Center is login-gated and its trend-list request returns 501; direct
+  creator pages remain inaccessible, so no representative 15-20-post sample was available. A July
+  UK BookTok list and an October seasonal-romance report were recorded as context only; neither is a
+  current creator-format signal. No hypothesis confidence changed.
 
 ### Metadata reconciliation audit: 2 November 2026, 09:49 Europe/London
 

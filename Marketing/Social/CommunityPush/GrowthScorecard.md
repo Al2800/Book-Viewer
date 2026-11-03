@@ -1,16 +1,16 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-11-02T09:49:31+00:00</code>.
+Generated from structured evidence updated <code>2026-11-03T09:00:00+00:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-26T09:49:31+00:00</code> to <code>2026-11-02T09:49:31+00:00</code>
+- Reporting window: <code>2026-10-27T09:00:00+00:00</code> to <code>2026-11-03T09:00:00+00:00</code>
 - Published Facebook items represented: 5
-- Visible views: Not available (0 reported values)
-- Visible reach: Not available (0 reported values)
-- Meaningful interactions: Not available (comments, shares and saves are unreported)
-- Link clicks: Not available (0 reported values)
-- Interpretation: Facebook outcome metrics are unavailable, not zero. No creative or timing winner can be inferred; continue controlled instrumentation and do not increase volume.
+- Visible views: Not available
+- Visible reach: Not available
+- Meaningful interactions: Not available
+- Link clicks: Not available
+- Interpretation: Meta post and insights reads failed, so distribution cannot be assessed. Continue controlled instrumentation; do not infer zero or a creative/timing result.
 
 ## Latest social observations
 
@@ -24,18 +24,19 @@ Generated from structured evidence updated <code>2026-11-02T09:49:31+00:00</code
 | 2026-11-04 | scheduled | facebook | Beginning a book on a busy day | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-03 | scheduled | facebook | What makes a reading note worth keeping | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-02 | scheduled | facebook | What you want a book to challenge | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-11-02 | published | facebook | What you want a book to challenge | text | initial | Not available | Not available | Not available | Not available | Metrics unavailable |
 | 2026-11-01 | scheduled | facebook | What makes a reading group worth returning to | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
-| 2026-11-01 | published | facebook | What makes a reading group worth returning to | text | initial | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-11-01 | published | facebook | What makes a reading group worth returning to | text | initial | Not available | Not available | Not available | Not available | Metrics unavailable |
 | 2026-10-31 | scheduled | facebook | Which sign tells you a book has earned your attention | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
-| 2026-10-31 | published | facebook | Which sign tells you a book has earned your attention | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-10-31 | published | facebook | Which sign tells you a book has earned your attention | text | audit | Not available | Not available | Not available | Not available | Metrics unavailable |
 | 2026-10-30 | scheduled | facebook | What makes a reading space work | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-29 | scheduled | facebook | What makes a shelf feel like yours | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
-| 2026-10-29 | published | facebook | What makes a shelf feel like yours | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-10-29 | published | facebook | What makes a shelf feel like yours | text | audit | Not available | Not available | Not available | Not available | Metrics unavailable |
 | 2026-10-28 | scheduled | facebook | When a reading list feels useful | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
-| 2026-10-28 | published | facebook | When a reading list feels useful | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-10-28 | published | facebook | When a reading list feels useful | text | audit | Not available | Not available | Not available | Not available | Metrics unavailable |
 | 2026-10-27 | scheduled | facebook | How to make room for a book | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-26 | scheduled | facebook | What makes a reading habit last | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
-| 2026-10-26 | published | facebook | What makes a reading habit last | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
+| 2026-10-26 | published | facebook | What makes a reading habit last | text | audit | Not available | Not available | Not available | Not available | Metrics unavailable |
 | 2026-10-25 | scheduled | facebook | Which part of a reading life is easiest to neglect | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-10-25 | published | facebook | Which part of a reading life is easiest to neglect | text | audit | Not available | Not available | Not available | Not available | Insufficient distribution |
 | 2026-10-24 | scheduled | facebook | What makes a book unusual | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |

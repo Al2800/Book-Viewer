@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 2 November 2026, 09:49 Europe/London
+Updated: 3 November 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,56 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-03, 09:00 Europe/London
+
+**Account and publishing**
+
+- Account access: connected TikTok read succeeds. `@bookquotes.app` is active with 20 returned API
+  records, 5 followers and analytics access. Token health is `ok`, reconnect flags are false, and the
+  token expires at `2026-11-03T19:47:26.637Z`.
+- The controlled 28 July post `7667570006032387350` does not appear in the current connected
+  inventory. The earlier native Studio record showed one Public copy, but no attributable analytics
+  row is available now. Keep later integrity holds active; no publishing mutation was made.
+- The latest connected public row is 12 September's `Gladwell` item (3 views, reach 3, 1 save,
+  0 shares/comments), outside the current seven-day window. No new post or checkpoint is attributable.
+  Native Account Check and comment/message text remain unavailable. One item has a nonzero comment
+  count in the API, but text is not exposed, so no sentiment or reply is inferred. Failed Creator
+  Inbox request `6aa4f018662ee2d345bceb39` remains unresolved.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Official UK BookTok Bestsellers | [TikTok Newsroom, July list](https://newsroom.tiktok.com/tiktok-reveals-july-2026s-booktok-bestsellers-uk?lang=en-GB) | TikTok's 21 September report says the list combines retail data with TikTok engagement and includes new entries across romance, thriller, graphic novel and other categories; it also links BookTok to the National Year of Reading 2026. This is a lagged July chart, not a live trend read. | Supports broad reader discovery/community context, not a claim about today's preferred creative format. | Seasonal/dated; recheck next monthly list | Keep reader-first framing; do not copy creator posts or chase chart titles without a specific BookQuotes reader need. |
+| Autumn romance and seasonal BookTok aesthetics | [The Atlantic, 29 October](https://www.theatlantic.com/culture/2026/10/halloween-romance-books/689209/) | The article describes autumn-coded romance as a growing publishing season and notes that recognizable palettes and seasonal aesthetics travel in recommendation roundups. It is secondary reporting focused largely on the US market, not UK platform trend data. | A timely reminder that visual seasonal cues can overpower reader-fit; current BQ slate is not autumn-romance-led. | Short-lived | No slate or palette change; avoid aesthetic-only recommendations. |
+| UK Creative Center | [Official GB Trends surface](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB) | Page renders the Trends shell and a login control; the hashtag-list route still returns 501, with no usable ranking or related-video sample. | No trend can be applied responsibly. | Current check only | Recheck the signed-in surface; do not infer current trend prevalence. |
+
+**Creator-pattern observations**
+
+- A representative sample of 15-20 relevant posts across varied account sizes was not accessible:
+  public creator pages remain blocked, and Creative Center yielded no data-bearing UK list. No new
+  creator style or audience-language claim was added. Do not copy any creators' scripts, visuals,
+  identity, distinctive edit or audio.
+- The two external items above are contextual reporting, not direct creator examples. No catalogue
+  update or new brief is warranted.
+
+**Evidence, rights and performance**
+
+- No new title claim or asset use was introduced; no evidence-ledger change is needed.
+- No 24-hour, 72-hour or seven-day checkpoint is due for a new post; no normalized comparison or
+  confidence change is warranted.
+- `cr-03` and `cr-04` remain below release status. AVFoundation could not decode any sampled frame
+  from either illustrated MP4; their separate cover images do not satisfy full muted/frame/phone-size
+  review. The preparation queue is below three viable items, with no validated third brief.
+
+**Queue and next action**
+
+- Approved: none newly cleared.
+- In production: `cr-03` and `cr-04`, blocked on decodable finished cuts and complete quality preflight.
+- Requires user action: clear the native Account Check/metadata and publishing-integrity holds before
+  any TikTok upload, schedule, edit or deletion.
+- Continue evidence-led research without manufacturing content to fill the queue.
 
 ### 2026-11-02, 09:49 Europe/London
 

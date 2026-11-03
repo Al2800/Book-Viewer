@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-02T09:49:31+00:00",
+  "updated_at": "2026-11-03T09:00:00+00:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -4942,6 +4942,34 @@
       },
       "metrics_unavailable_reason": "Scheduled for 9 November; live metrics are not available.",
       "notes": "The publish CLI returned no read-back, so no retry was made. Direct scheduled_posts read confirmed exactly one matching BookQuotes Page row, is_published=false; https://www.facebook.com/122107379391415831/posts/122121867855415831."
+    },
+    {
+      "observation_id": "fb-2026-11-03-live-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122121072519415831",
+      "title": "What you want a book to challenge",
+      "format": "text",
+      "published_at": "2026-11-02T13:00:00+00:00",
+      "observed_at": "2026-11-03T09:00:00+00:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication once at Graph created_time 2026-11-02T13:00:03+0000. Post get returns HTTP 400 (#12: deprecated singular statuses API) and insights return HTTP 400 (#100: invalid metric); comments remain unavailable through the current permission/read path. Metrics remain null, not zero.",
+      "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122121072519415831."
     }
   ],
   "search_snapshots": [
