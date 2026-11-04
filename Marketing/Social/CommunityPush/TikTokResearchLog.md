@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 3 November 2026, 09:00 Europe/London
+Updated: 4 November 2026, 09:05 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,65 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-04, 09:05 Europe/London
+
+**Account and publishing**
+
+- Connected read succeeds for active `@bookquotes.app` / `6a7e30f977555aae0187cea3`: 20 returned
+  API records, 5 followers and analytics access. Token health is `ok`, with no reconnect flags,
+  expiring at `2026-11-04T21:10:06.573Z`.
+- Controlled ID `7667570006032387350` remains absent from the connected inventory and has no
+  attributable analytics row. Earlier native Studio evidence recorded a Public copy, but the
+  account-level read does not resolve the later integrity hold. No TikTok upload, schedule, edit,
+  delete or reply was made.
+- Latest connected public row remains the 12 September `Gladwell` item (3 views, reach 3, 1 save,
+  0 shares/comments), outside the current review window. Native Account Check and comment/message
+  text are unavailable; failed Creator Inbox request `6aa4f018662ee2d345bceb39` remains unresolved.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Official UK September BookTok Bestsellers | [TikTok Newsroom, published 26 October](https://newsroom.tiktok.com/tiktok-reveals-septembers-booktok-bestsellers-uk?lang=en-GB) | TikTok says the monthly list combines retail data with platform engagement; its report describes romance as a continuing favourite, more thrillers appearing, and over half of listed titles in series. This is a reported chart, not a live Creative Center ranking or creator-format sample. | Useful only as broad UK discovery context. The chart is not evidence that BQ should follow its titles or imply firsthand reading. | Recheck next monthly list | Do not chase chart titles without verified reader-fit evidence. |
+| Seasonal BookTok coverage | [The Bookseller, 23 October](https://www.thebookseller.com/books/books-on-booktok-creators-celebrate-all-things-gothic-gory-and-ghoulish) | Secondary reporting describes creators across account sizes discussing spooky-season lists, Gothic and horror, reading challenges and book-inspired costumes. Three linked creator-profile fetches failed, so no direct post was examined. Seasonal context is already past its peak. | No transferable execution pattern verified. | Expired/seasonal | No slate or style change; do not copy named creators, costumes, visuals or wording. |
+| UK Creative Center | [Official GB Trends surface](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB) | The route exposes navigation and a login control only; no data-bearing trend rank or related videos were available today. | Cannot validate a live UK trend. | Current check only | Recheck signed-in access; do not infer prevalence. |
+
+**Creator-pattern observations**
+
+- A representative 15-20-post sample remains unavailable. The three creator links in the seasonal
+  report (approximately 2.3k, 12.6k and 18.2k followers) did not load readable TikTok posts. The
+  official Creative Center exposed no related-video list. No style catalogue entry was added; do not
+  imitate any reported creator's script, art, identity, edit or audio.
+
+**Audience language**
+
+- No accessible TikTok comment text or search-query text was returned. The API exposes counts only;
+  no sentiment or reader-language claim is inferred.
+
+**Evidence and rights**
+
+- No book recommendation brief was developed, so `TikTokEvidenceLedger.md` is unchanged. No new
+  asset rights were cleared.
+
+**Performance**
+
+- 24-hour, 72-hour and seven-day checkpoints: none due for an attributable post. Available old
+  September figures are outside the review window and retained as integrity observations only.
+- Missing measures: controlled-post analytics, comment text, native Account Check and Creator
+  Search Insights remain unavailable.
+
+**Learning**
+
+- No experiment status or confidence change. Repeat: preserve reader-first evidence gates. Modify:
+  restore readable frames for the held clips before any quality review. Pause: TikTok mutation,
+  second slot and automatic replies until integrity/native gates clear.
+
+**Queue**
+
+- Approved: none release-ready. In production: `cr-03` and `cr-04`, blocked by video frame decode.
+  Awaiting evidence/review: no third validated brief. The viable queue remains below three; no weak
+  replacement was manufactured.
 
 ### 2026-11-03, 09:00 Europe/London
 

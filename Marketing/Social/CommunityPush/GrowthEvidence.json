@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-03T09:00:00+00:00",
+  "updated_at": "2026-11-04T09:05:00+00:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -4970,6 +4970,62 @@
       },
       "metrics_unavailable_reason": "The Page feed confirms publication once at Graph created_time 2026-11-02T13:00:03+0000. Post get returns HTTP 400 (#12: deprecated singular statuses API) and insights return HTTP 400 (#100: invalid metric); comments remain unavailable through the current permission/read path. Metrics remain null, not zero.",
       "notes": "Published once at https://www.facebook.com/122107379391415831/posts/122121072519415831."
+    },
+    {
+      "observation_id": "fb-2026-11-04-live-audit",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122121333891415831",
+      "title": "What makes a reading note worth keeping",
+      "format": "text",
+      "published_at": "2026-11-03T13:00:00+00:00",
+      "observed_at": "2026-11-04T09:05:00+00:00",
+      "checkpoint": "initial",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "The Page feed confirms publication once at Graph created_time 2026-11-03T13:00:31+0000. Post get/comments return HTTP 400 (#12: deprecated singular statuses API); insights return HTTP 400 (#100: invalid metric). Metrics remain null, not zero.",
+      "notes": "Published once at Graph created_time 2026-11-03T13:00:31+0000 at https://www.facebook.com/122107379391415831/posts/122121333891415831. This was the previously flagged repeat of the 7 October reading-note topic; writes_enabled=false blocked correction or cancellation before it went live."
+    },
+    {
+      "observation_id": "fb-2026-11-04-queue-extension-10",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122122166019415831",
+      "title": "Print, audio and digital reading formats",
+      "format": "text",
+      "published_at": "2026-11-10T12:30:00+00:00",
+      "observed_at": "2026-11-04T09:05:00+00:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual, quotation, external link or product claim.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 10 November; live metrics are not yet available.",
+      "notes": "Scheduled once at 12:30 Europe/London and read back as Public (privacy.value=EVERYONE), Page-authored by BookQuotes. ID 122122166019415831; https://www.facebook.com/122107379391415831/posts/122122166019415831. Distinct text prompt after the 9 November photo card; app-led share for 4-10 November remains 1/7 (14.3%)."
     }
   ],
   "search_snapshots": [

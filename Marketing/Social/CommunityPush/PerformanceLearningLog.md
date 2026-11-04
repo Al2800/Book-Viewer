@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 3 November 2026, 09:00 Europe/London
+Updated: 4 November 2026, 09:05 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,50 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 4 November 2026, 09:05 Europe/London
+
+**Observation**
+
+- Facebook's 3 November text post `122121333891415831` is confirmed published once at
+  `2026-11-03T13:00:31+0000`:
+  [live post](https://www.facebook.com/122107379391415831/posts/122121333891415831). This is an
+  editorial miss: its reading-note topic repeated the 7 October topic flagged the previous day.
+  The local `writes_enabled=false` lock prevented correction or cancellation before it went live.
+  Views, reach, non-follower reach, comments, shares, saves, clicks, profile visits, follows and
+  App Store signals are Not available: post/comments reads return `#12`; insights return `#100`.
+  Metrics remain null, not zero. `growth_scorecard.py` validated the ledger but converted the
+  all-null aggregate to zero and labeled unavailable rows as insufficient distribution; its
+  generated output was corrected to Not available and should remain corrected until the generator's
+  null handling is repaired.
+- Meta's live scheduled edge confirms seven Page-authored items for 4-10 November, all
+  `privacy.value=EVERYONE` (Public). Today's 4 November item remains scheduled for 13:00 GMT. The
+  new text-only prompt `122122166019415831` is scheduled once for 10 November at 12:30 GMT and
+  read back as Public. The approved `bq14-13` photo remains on 9 November, giving 1/7 app-led
+  output (14.3%). The 4-8 November sequence is still five consecutive text posts; no existing
+  items were changed under the local edit lock.
+- TikTok account access is healthy for `@bookquotes.app` (20 API records, 5 followers, analytics
+  access; token valid through `2026-11-04T21:10:06.573Z`). Controlled ID `7667570006032387350`
+  remains absent from the connected inventory and has no attributable analytics, so activation
+  remains unproven and no TikTok mutation occurred. The latest public post remains the 12 September
+  `Gladwell` item (3 views, reach 3, 1 save, 0 shares/comments), outside the seven-day review
+  window. Native Account Check and comment/message text are unavailable; no replies were sent.
+- The TikTok preparation queue remains below three viable items because `cr-03` and `cr-04` video
+  frames still fail decoding and there is no third validated brief. UK Creative Center data remains
+  login-gated. Three creator profile links across small/medium account sizes failed to return
+  readable posts; the 15-20-post sample was not accessible. Current official/industry reporting
+  was logged as context only. No 24-hour, 72-hour or seven-day TikTok checkpoint is due.
+
+**Decision**
+
+- Keep Facebook at one primary post per day and approximately 15% app-led. The seven-day queue is
+  restored for 4-10 November, but the consecutive-text run and published duplicate remain visible
+  operational issues; arrange safe update/cancel capability before attempting to correct future
+  rows. Do not alter hypothesis confidence without available performance data.
+- Keep TikTok publishing, second-slot expansion and automatic replies on hold until the controlled
+  post has attributable analytics and all integrity, native metadata and evidence gates clear.
+  Continue media recovery and research; do not promote the unverified videos or fabricate a third
+  queue item.
 
 ### Daily audit — 3 November 2026, 09:00 Europe/London
 

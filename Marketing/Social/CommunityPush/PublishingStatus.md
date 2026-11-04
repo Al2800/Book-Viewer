@@ -1,8 +1,37 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 3 November 2026, 09:00 Europe/London
+Updated: 4 November 2026, 09:05 Europe/London
 
 ## Current operating loop
+
+- Facebook Page identity is verified as BookQuotes (`1246405755221229`). The 3 November text
+  post `122121333891415831` published once at Graph `created_time=2026-11-03T13:00:31+0000`;
+  [permalink](https://www.facebook.com/122107379391415831/posts/122121333891415831). It repeated
+  the 7 October reading-note topic flagged in the prior audit; `writes_enabled=false` prevented a
+  safe pre-publication correction or cancellation. The 4 November item `122121333921415831` is
+  still scheduled for 13:00 GMT. The read-only scheduled edge confirms seven Page-authored daily
+  items for 4-10 November, each with `privacy.value=EVERYONE` (Public). A new text-only prompt,
+  `122122166019415831`, is scheduled for 10 November at 12:30 GMT and was read back once. The
+  approved `bq14-13` photo card remains on 9 November, so app-led content is 1/7 (14.3%). The
+  4-8 November run is five consecutive text prompts; the safe update path remains disabled, so no
+  existing item was moved. Facebook post insights return `#100` and the post/comments read returns
+  `#12`; metrics remain null, not zero. The Graph schedule response does not expose boost, tag,
+  location or AI-label controls; the new text-only API post has no media or link.
+- TikTok account access succeeds for active `@bookquotes.app` / `6a7e30f977555aae0187cea3`:
+  20 API post records, 5 followers, analytics access and token expiry
+  `2026-11-04T21:10:06.573Z` (about 12.1 hours after this audit). Controlled ID
+  `7667570006032387350` remains absent from the connected inventory, with no attributable analytics;
+  no activation or TikTok mutation is authorized. The latest connected public row remains the
+  12 September `Gladwell` item (3 views, reach 3, 1 save, 0 shares/comments), outside the review
+  window. Native Account Check and TikTok comment/message text are unavailable; failed Creator Inbox
+  request `6aa4f018662ee2d345bceb39` remains unresolved. No replies were sent.
+- TikTok's preparation queue remains below three viable items: `cr-03` and `cr-04` MP4 frame sampling
+  still fails with AVFoundation `Cannot Decode`, and no third validated brief is ready. The official
+  GB Creative Center is login-gated; three creator-profile links across approximately 2.3k, 12.6k
+  and 18.2k followers failed to yield readable posts. TikTok's 26 October September-bestsellers
+  report and an October seasonal BookTok article were recorded as context only; no representative
+  15-20-post sample, style change or new brief was available. Instagram's newest recorded public
+  content/comments state is unchanged; no Instagram action was taken.
 
 - Facebook Page identity is verified as BookQuotes (`1246405755221229`). The 2 November item
   `122121072519415831` is confirmed published once at Graph `created_time=2026-11-02T13:00:03+0000`;

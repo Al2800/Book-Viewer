@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 3 November 2026, 09:00 Europe/London
+Updated: 4 November 2026, 09:05 Europe/London
 
 ## Method
 
@@ -47,6 +47,20 @@ Result labels:
 | `7668631665064938774` | TK-008 | `scifi/01-player-of-games.mp4` | 31 Jul 2026, now | Review clearance, 24h, 72h, 7d | Public; published; visible metrics 0; deeper analytics unavailable |
 | `7670655931193068823` | TK-008 | `scifi/06-three-body-fit.mp4` | 5 Aug 2026, 22:02 Europe/London | Publication, 24h, 72h, 7d | Public; published once; visible metrics 0; deeper analytics unavailable |
 | `7674952452055076118` | Unassigned establishment baseline | `commonplace-ritual.mp4` | 17 Aug 2026, 11:55 Europe/London | Publication, 24h, 72h, 7d | Public; published once; 855 views, 2 likes, 0 comments; deeper analytics unavailable |
+
+### 4 November 2026, 09:05 Europe/London
+
+No clean experiment checkpoint was added. The connected account read succeeds for active
+`@bookquotes.app` with 20 post records, 5 followers and analytics access; token health is `ok`
+through `2026-11-04T21:10:06.573Z`. The controlled ID `7667570006032387350` remains absent from the
+connected inventory and has no attributable analytics entry. The latest public row remains the
+12 September `Gladwell` item (3 views, reach 3, 1 save), outside the current review window. No
+24-hour, 72-hour or seven-day checkpoint is due, and no per-1,000-view comparison or confidence
+change is warranted. Keep the publishing-integrity, duplicate, native metadata, evidence and
+second-slot holds active. The preparation queue is still below three viable items because `cr-03`
+and `cr-04` fail frame decoding and no third validated brief exists. UK Creative Center is
+login-gated; three creator-profile reads failed, and no representative 15-20-post sample was
+available. No TikTok mutation was made.
 
 ### 3 November 2026, 09:00 Europe/London
 

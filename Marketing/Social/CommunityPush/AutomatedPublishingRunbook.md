@@ -1,8 +1,45 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 3 November 2026, 09:00 Europe/London
+Updated: 4 November 2026, 09:05 Europe/London
 
-## Current Operational Note — 3 November 2026, 09:00 Europe/London
+## Current Operational Note — 4 November 2026, 09:05 Europe/London
+
+The 3 November Facebook post `122121333891415831` published once at Graph
+`created_time=2026-11-03T13:00:31+0000`, at
+`https://www.facebook.com/122107379391415831/posts/122121333891415831`. It repeated the
+7 October reading-note topic identified in the previous audit. The local edit policy remains
+`writes_enabled=false`; no safe correction or cancellation was possible before publication. Today's
+4 November post `122121333921415831` remains scheduled for 13:00 GMT. The read-only
+`scheduled_posts` edge now confirms seven Page-authored daily rows for 4-10 November, all with
+`privacy.value=EVERYONE` (Public). A new original text-only prompt, `122122166019415831`, was
+scheduled once for 10 November at 12:30 Europe/London and read back as Public. The 9 November
+approved `bq14-13` photo card remains the only app-led/visual item in the seven-day window (14.3%);
+the 4-8 November sequence is five consecutive text prompts and still fails the format-variety guard.
+The write lock prevents rearranging existing scheduled rows. The new text post has no media or link;
+no boost, tag, location or cross-post field was supplied. The schedule API does not expose native
+AI-label controls. Facebook metrics remain null: post/comments reads return HTTP 400 (`#12`) and
+insights return `#100` invalid metric. The scorecard generator validated the evidence file but
+rendered all-null aggregate metrics as zero and labeled unavailable post rows as insufficient
+distribution; the generated view was corrected to Not available. The underlying observations remain
+null. Preserve this correction until the generator's null handling is fixed.
+
+TikTok account `@bookquotes.app` is active, with 20 returned API records, 5 followers and analytics
+access. Token expiry is `2026-11-04T21:10:06.573Z`; reconnect flags are false. Controlled ID
+`7667570006032387350` remains absent from the connected inventory and has no attributable analytics,
+so the later publishing-integrity, duplicate, native-metadata, evidence and second-slot holds remain
+active. No TikTok mutation or reply was made. The newest connected public row remains the 12
+September `Gladwell` post (3 views, reach 3, 1 save, 0 shares/comments), outside the review window.
+Native Account Check and comment/message text remain unavailable; failed Creator Inbox request
+`6aa4f018662ee2d345bceb39` is unresolved.
+
+The TikTok preparation queue remains below three viable items: `cr-03` and `cr-04` frame sampling
+still fails with AVFoundation `Cannot Decode`, and no third validated brief is ready. The official GB
+Creative Center is login-gated. Three linked creator profiles (approximately 2.3k, 12.6k and 18.2k
+followers) failed to return readable posts, so a representative 15-20-post sample remains
+unavailable. TikTok's 26 October September-bestsellers report and an October seasonal BookTok report
+were logged as context only; no style, evidence-led content brief or confidence change is justified.
+
+### Previous operational note — 3 November 2026, 09:00 Europe/London
 
 The 2 November Facebook item `122121072519415831` is confirmed published once by the BookQuotes
 Page at Graph `created_time=2026-11-02T13:00:03+0000`; its permalink is
