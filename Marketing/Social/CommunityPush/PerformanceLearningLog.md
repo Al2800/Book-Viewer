@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 4 November 2026, 09:05 Europe/London
+Updated: 5 November 2026, 09:11 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,50 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 5 November 2026, 09:11 Europe/London
+
+**Observation**
+
+- Facebook's 4 November post `122121333921415831` is confirmed published once at
+  `2026-11-04T13:00:08+0000` ([live post](https://www.facebook.com/122107379391415831/posts/122121333921415831)).
+  The native Content Library showed true zeros for views, viewers, follows, interactions, likes,
+  comments, shares and saves. Reach is unavailable from 31 October onward (Meta labels Viewers the
+  primary metric); link clicks and watch-time fields were also unavailable. Do not treat missing
+  fields as zero. The Graph post/comment/insights reads failed (`#12`, `#10`, `#100`), so the native
+  table is the only available metric source for this item. No App Store outcome is attributable to
+  this no-link prompt; the latest recorded App Store snapshot (17 August) still marks downloads and
+  first-time downloads Not available.
+- The rolling 5-11 November Facebook queue has seven rows in the read-only Graph edge, all Page-authored
+  and Public. The approved original `bq14-08` typography prompt was scheduled once for 11 November
+  12:30 and read back as a Public photo (`122122305279415831`). Yet Planner shows a blank 11 November
+  slot and Content Library lists only five text rows; the earlier 9 November photo is missing there
+  too. This is a native reconciliation failure, not proof of failed publishing. No retry, cancellation
+  or duplicate was attempted because the API and native views disagree. Four consecutive text posts
+  remain in the 5-8 November run; app-led output remains 1/7 (14.3%).
+- Meta Inbox and Facebook-comments views exposed no readable thread text. No reply was made, and no
+  sentiment is inferred. TikTok is accessible as `@bookquotes.app` with 20 records, 5 followers and
+  analytics; token status is healthy through `2026-11-05T22:10:02.264Z`. Controlled ID
+  `7667570006032387350` remains absent and has no attributable analytics. Latest connected public row
+  remains 12 September `Gladwell` (3 views/reach, 1 save, 0 shares/comments), outside the review
+  window. Account Check and comment/message text remain unavailable; no TikTok mutation/reply was
+  made.
+- TikTok queue remains below three viable items: `cr-03` and `cr-04` fail frame decode, with no third
+  validated brief. The current UK Creative Center is login/dynamic-shell only; four varied-size
+  creator profile attempts yielded no readable posts, so a 15-20-post sample and new style evidence
+  are unavailable. Platform-level reading-discovery reporting is contextual only.
+
+**Decision**
+
+- Keep Facebook at one primary post a day and app-led output near 15%. Treat the seven Graph rows as
+  scheduled but not fully reconciled; do not retry or alter the two photo IDs until Meta's native
+  Planner/Content Library state is manually reconciled. Record the publishing-control discrepancy as
+  an operational failure. No hypothesis confidence changes: this one native measurement row and the
+  missing native schedule rows are not a like-for-like performance result.
+- Keep TikTok publishing and all other mutation on hold until the controlled ID is evidenced once
+  with attributable analytics and the remaining native metadata/integrity gates pass. Keep the second
+  slot and automatic replies paused. Continue media recovery and research; do not manufacture a third
+  queue item. No TikTok checkpoint or confidence change is due.
 
 ### Daily audit — 4 November 2026, 09:05 Europe/London
 

@@ -1,8 +1,41 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 4 November 2026, 09:05 Europe/London
+Updated: 5 November 2026, 09:11 Europe/London
 
 ## Current operating loop
+
+- Facebook Page identity is confirmed as BookQuotes (`1246405755221229`) in Graph and Meta Business
+  Suite. The 4 November text post `122121333921415831` published once at
+  `2026-11-04T13:00:08+0000`; [permalink](https://www.facebook.com/122107379391415831/posts/122121333921415831).
+  Content Library showed 0 views, 0 viewers, 0 follows, 0 interactions, 0 likes, 0 comments,
+  0 shares and 0 saves. Reach is unavailable (Meta's banner says reach is no longer available from
+  31 October and Viewers is primary); link clicks and watch time are unavailable. Graph singular post,
+  comments and insights reads still fail (`#12`, `#10`, `#100`).
+- Graph `scheduled_posts` contains exactly seven Page-authored rows for 5-11 November, all
+  `privacy.value=EVERYONE` (Public). Today's `122121462009415831` is scheduled for 13:00 GMT and is
+  not yet due. The new approved `bq14-08` typography card `122122305279415831` is read back once for
+  11 November 12:30 GMT as a Public photo attachment. But native Planner shows a blank 11 November
+  slot and Content Library Scheduled lists only five text posts (5-8, 10 November); its search for
+  the new ID returns no row. The 9 November photo `122121867855415831` is also absent from both views.
+  No retry/cancel/duplicate was attempted; Graph and native scheduling state are unreconciled and
+  require manual reconciliation. The graph queue is full by count, but only five of seven are visible
+  in Meta's native views; four consecutive text prompts remain a variety weakness. App-led content is
+  1/7 (14.3%); `bq14-08` is non-product-led. Graph does not expose the native AI-label control, and
+  its absence from Planner prevents checking boost/location/tag/cross-post controls. The Facebook-only
+  scheduling request supplied none of those options; do not claim the hidden native controls passed.
+- Meta Inbox and Facebook-comments views did not expose readable thread text; no reply or sentiment
+  inference was made. TikTok connected access succeeds for `@bookquotes.app` /
+  `6a7e30f977555aae0187cea3` with 20 API records, 5 followers and analytics access. Token health is
+  `ok`, reconnect flags false, expiry `2026-11-05T22:10:02.264Z`. Controlled ID `7667570006032387350`
+  remains absent, with no attributable analytics; no TikTok mutation or reply was made. The latest
+  public row is still the 12 September `Gladwell` item (3 views/reach, 1 save, 0 shares/comments),
+  outside the review window. Native Account Check and comment/message text are unavailable; failed
+  Creator Inbox request `6aa4f018662ee2d345bceb39` remains unresolved.
+- TikTok preparation remains below three viable items: `cr-03` and `cr-04` fail frame decoding and
+  no third validated brief exists. The official UK Creative Center was login/dynamic-shell only;
+  four creator-profile attempts at varied follower sizes yielded no readable posts. No representative
+  15-20-post sample, style change or confidence update was possible. Broader platform reporting is
+  context, not a basis to manufacture a brief.
 
 - Facebook Page identity is verified as BookQuotes (`1246405755221229`). The 3 November text
   post `122121333891415831` published once at Graph `created_time=2026-11-03T13:00:31+0000`;

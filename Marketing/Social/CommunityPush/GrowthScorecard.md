@@ -1,28 +1,31 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-11-04T09:05:00+00:00</code>.
+Generated from structured evidence updated <code>2026-11-05T09:11:00+00:00</code>; partial-metric interpretation manually corrected.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-28T09:05:00+00:00</code> to <code>2026-11-04T09:05:00+00:00</code>
+- Reporting window: <code>2026-10-29T09:11:00+00:00</code> to <code>2026-11-05T09:11:00+00:00</code>
 - Published Facebook items represented: 6
-- Visible views: Not available
+- Visible views: 0 on the one post with native Content Library counts; other post-level views are unavailable
 - Visible reach: Not available
-- Meaningful interactions: Not available
+- Meaningful interactions: 0 on the one post with native Content Library counts; other post-level interactions are unavailable
 - Link clicks: Not available
-- Interpretation: Meta post and insights reads failed, so distribution cannot be assessed. Continue controlled instrumentation; do not infer zero or a creative/timing result.
+- Interpretation: Reach is unavailable and most post-level measures remain unavailable. The one observed zero-view row is not enough to score distribution or a creative/timing result. Continue controlled instrumentation; do not increase volume.
+- Note: The scorecard generator still treats null reach as zero when labelling distribution. Preserve this manual correction until null handling is fixed.
 
 ## Latest social observations
 
 | Date | Status | Platform | Content | Format | Checkpoint | Views | Reach | Saves/1k reach | Comments/1k reach | Decision |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2026-11-11 | scheduled | facebook | Pair two books that disagree—not two that merely look alike | photo | preflight | Not available | Not available | Not available | Not available | Graph read-back; missing in native Planner/Content Library; do not retry |
 | 2026-11-10 | scheduled | facebook | Print, audio and digital reading formats | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
-| 2026-11-09 | scheduled | facebook | One idea can belong to more than one shelf | photo | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-11-09 | scheduled | facebook | One idea can belong to more than one shelf | photo | preflight | Not available | Not available | Not available | Not available | Graph row; missing in native Planner/Content Library |
 | 2026-11-08 | scheduled | facebook | Which book feature has helped you understand a text | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-07 | scheduled | facebook | What makes a book’s ending feel earned | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-06 | scheduled | facebook | What makes a book feel generous | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-05 | scheduled | facebook | Trying an unfamiliar genre | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-04 | scheduled | facebook | Beginning a book on a busy day | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-11-04 | published | facebook | Beginning a book on a busy day | text | audit | 0 | Not available | Not available | Not available | Reach unavailable; no distribution inference |
 | 2026-11-03 | scheduled | facebook | What makes a reading note worth keeping | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-03 | published | facebook | What makes a reading note worth keeping | text | initial | Not available | Not available | Not available | Not available | Metrics unavailable |
 | 2026-11-02 | scheduled | facebook | What you want a book to challenge | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 4 November 2026, 09:05 Europe/London
+Updated: 5 November 2026, 09:11 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,64 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-05, 09:11 Europe/London
+
+**Account and publishing**
+
+- Account access succeeds for active `@bookquotes.app` / `6a7e30f977555aae0187cea3`: 20 returned API
+  records, 5 followers and analytics access. Token status is `ok`, reconnect flags are false, and it
+  expires at `2026-11-05T22:10:02.264Z`.
+- Controlled ID `7667570006032387350` remains absent from the connected inventory and no attributable
+  analytics entry exists. Earlier Studio evidence of one Public copy does not resolve the later
+  integrity hold. No upload, schedule, edit, delete, re-upload or reply was made.
+- Latest connected public row remains 12 September `Gladwell` (3 views/reach, 1 save, 0
+  shares/comments), outside the review window. Native Account Check and comment/message text remain
+  unavailable; failed Creator Inbox request `6aa4f018662ee2d345bceb39` is unresolved.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| GB Creative Center | [Official UK trends surface](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB) | Dynamic/login shell only; no hashtag ranking or related video list was readable. | No current UK trend can be verified from this surface. | Recheck signed-in access | No trend-led change. |
+| European BookTok bestseller announcement | [TikTok Newsroom, 8 October](https://newsroom.tiktok.com/booktok-reveals-first-ever-european-bestseller-of-the-year-as-the-community-helps-drive-reading-discovery-and-book-sales-across-europe?lang=en-150) | Platform/retail context for reading discovery, not an account-level creator sample or format analysis. | Broad context only; does not justify title claims or a style imitation. | Recheck when a newer report appears | No slate change or firsthand-reading implication. |
+| Seasonal gothic coverage | [The Bookseller, 23 October](https://www.thebookseller.com/books/books-on-booktok-creators-celebrate-all-things-gothic-gory-and-ghoulish) | Secondary seasonal reporting about gothic and spooky-season reading; it supplies no direct post-level execution evidence. | No current creator-format evidence; seasonal moment is passing. | Expired/seasonal | Do not copy creators, scripts, artwork or execution. |
+
+**Creator-pattern observations**
+
+- No posts could be read across the attempted account-size range, and the Creative Center exposed no
+  video list. The requested representative 15-20-post review is therefore incomplete. No style
+  catalogue item was added; no distinctive execution was copied.
+
+**Audience language**
+
+- TikTok comment, search-query and Creator Inbox text are unavailable. Meta Inbox/Facebook comments
+  likewise exposed no readable thread text during this check. No audience-language or sentiment claim
+  is inferred; no response was sent.
+
+**Evidence and rights**
+
+- No book recommendation brief was created; `TikTokEvidenceLedger.md` is unchanged. No new asset
+  rights were cleared.
+
+**Performance**
+
+- 24-hour, 72-hour and seven-day checkpoints: none due for an attributable post. The old September
+  row is outside the review window and remains an integrity observation only.
+- Missing measures: controlled-post attribution, comment/search text, native Account Check and
+  readable creator execution.
+
+**Learning**
+
+- No experiment result or confidence change. Repeat the evidence and rights gates. Modify by restoring
+  readable frames for held clips before quality review. Pause TikTok mutation, second-slot testing and
+  automatic replies until integrity and native gates clear.
+
+**Queue**
+
+- Approved: none release-ready. In production: `cr-03` and `cr-04`, both blocked by frame decode.
+  Awaiting evidence/review: no third validated brief. The viable preparation queue is below three;
+  no weak replacement was manufactured.
 
 ### 2026-11-04, 09:05 Europe/London
 

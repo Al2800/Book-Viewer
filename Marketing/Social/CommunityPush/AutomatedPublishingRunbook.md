@@ -1,8 +1,56 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 4 November 2026, 09:05 Europe/London
+Updated: 5 November 2026, 09:11 Europe/London
 
-## Current Operational Note — 4 November 2026, 09:05 Europe/London
+## Current Operational Note — 5 November 2026, 09:11 Europe/London
+
+Facebook Page identity is confirmed as BookQuotes (`1246405755221229`) in Graph and Meta Business
+Suite. Yesterday's text post `122121333921415831` published once at
+`2026-11-04T13:00:08+0000`:
+`https://www.facebook.com/122107379391415831/posts/122121333921415831`. Meta Content Library
+showed 0 views, 0 viewers, 0 follows, 0 interactions, 0 likes, 0 comments, 0 shares and 0 saves for
+that row. Reach is unavailable (Meta's notice says it is no longer available from 31 October and
+Viewers is the primary metric); link-click and watch-time fields are also unavailable. Do not
+convert unavailable fields to zero. The Graph post/comments reads still fail (`#12`/`#10`) and the
+Insights query returns `#100`; use the native Content Library values only where explicitly shown.
+
+At 09:11, read-only Graph `scheduled_posts` showed exactly seven Page-authored Public rows for
+5-11 November (`privacy.value=EVERYONE`). Today's `122121462009415831` remains scheduled for 13:00
+GMT, not yet due. A prior approved original typography card `bq14-08` was scheduled once for
+11 November at 12:30 GMT as `122122305279415831`; Graph read-back shows `is_published=false`, a
+photo attachment and Public visibility. The identity and caption match the approved bank item; its
+source is the approved original 1080x1920 BookQuotes typography asset and Graph delivered a 720x1280
+attachment. Visual review found no watermark, third-party extract or product claim, and no matching
+topic/hook in the previous 30 days. However,
+Meta Planner's 8-14 November view shows a blank 11 November slot and Content Library Scheduled
+lists only five text rows (5-8 and 10 November); searching the new ID returns no row. The 9 November
+photo `122121867855415831` is also absent from both native views. Thus Graph's seven-row queue is
+not reconciled with Planner/Content Library. Do not retry, cancel or create a duplicate while status
+is uncertain. The upcoming window contains one app-led post in seven (14.3%); the new 11 November
+card is non-product-led. Four consecutive text prompts (5-8 November) still make the queue's format
+mix weak. The previously configured edit path remains disabled; escalate the native discrepancy for
+manual reconciliation. Graph does not expose the native AI-label control, and the missing Planner
+entry prevents verification of native boost/location/tag/cross-post settings; do not claim those
+controls passed. No such options were supplied by the Facebook-only scheduling request.
+
+Meta Inbox opened for the active BookQuotes Page, but the Inbox and Facebook-comments views exposed
+no readable thread text. Graph comments access is also unavailable; no response or sentiment
+inference was made. TikTok account `@bookquotes.app` / `6a7e30f977555aae0187cea3` returns 20 records,
+5 followers and analytics access; token status is `ok`, reconnect flags false, expiry
+`2026-11-05T22:10:02.264Z`. Controlled ID `7667570006032387350` remains absent and has no attributable
+analytics entry. The latest connected public row remains the 12 September `Gladwell` item (3 views,
+reach 3, 1 save, 0 shares/comments), outside the review window. Native Account Check and TikTok
+comment/message text remain unavailable; failed Creator Inbox request `6aa4f018662ee2d345bceb39`
+is unresolved. No TikTok mutation or reply was made.
+
+TikTok preparation remains below three viable items: `cr-03` and `cr-04` frame sampling still fails
+with AVFoundation `Cannot Decode`, and no third validated brief is ready. The official GB Creative
+Center exposed only its login/dynamic shell. Four linked creator-profile attempts across roughly
+2.3k-19.3k followers yielded no readable posts; a representative 15-20-post sample could not be
+completed. Current platform reporting provides broad discovery context only, not creator-execution
+evidence. No style, evidence-led content brief or confidence change is justified.
+
+### Previous operational note — 4 November 2026, 09:05 Europe/London
 
 The 3 November Facebook post `122121333891415831` published once at Graph
 `created_time=2026-11-03T13:00:31+0000`, at

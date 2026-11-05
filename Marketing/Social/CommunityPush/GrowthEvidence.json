@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-04T09:05:00+00:00",
+  "updated_at": "2026-11-05T09:11:00+00:00",
   "attribution": {
     "canonical_website_origin": "https://bookquotes.uk",
     "canonical_app_store_url": "https://apps.apple.com/app/id6758091579",
@@ -5026,6 +5026,62 @@
       },
       "metrics_unavailable_reason": "Scheduled for 10 November; live metrics are not yet available.",
       "notes": "Scheduled once at 12:30 Europe/London and read back as Public (privacy.value=EVERYONE), Page-authored by BookQuotes. ID 122122166019415831; https://www.facebook.com/122107379391415831/posts/122122166019415831. Distinct text prompt after the 9 November photo card; app-led share for 4-10 November remains 1/7 (14.3%)."
+    },
+    {
+      "observation_id": "fb-2026-11-05-live-audit-11-04",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122121333921415831",
+      "title": "Beginning a book on a busy day",
+      "format": "text",
+      "published_at": "2026-11-04T13:00:00+00:00",
+      "observed_at": "2026-11-05T09:11:00+00:00",
+      "checkpoint": "audit",
+      "status": "published",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Original BookQuotes text-only reader prompt; no third-party visual or quotation.",
+      "metrics": {
+        "views": 0,
+        "reach": null,
+        "viewers": 0,
+        "interactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "link_clicks": null,
+        "follows": 0
+      },
+      "metrics_unavailable_reason": "Meta Content Library displayed zero for views, viewers, follows, interactions, likes, comments, shares and saves. Reach is unavailable after Meta's 31 October metric change; link-click and watch-time cells were unavailable. Graph post/comments/insights reads fail (#12/#10/#100).",
+      "notes": "Confirmed published once at Graph created_time 2026-11-04T13:00:08+0000 at https://www.facebook.com/122107379391415831/posts/122121333921415831. Meta's Content Library labels Viewers the primary metric after 31 October; no replies or sentiment were inferred."
+    },
+    {
+      "observation_id": "fb-2026-11-05-queue-extension-11",
+      "platform": "facebook",
+      "identity": "BookQuotes",
+      "content_id": "122122305279415831",
+      "title": "Pair two books that disagree—not two that merely look alike",
+      "format": "photo",
+      "published_at": "2026-11-11T12:30:00+00:00",
+      "observed_at": "2026-11-05T09:11:00+00:00",
+      "checkpoint": "preflight",
+      "status": "scheduled",
+      "experiment_id": null,
+      "treatment": null,
+      "rights_basis": "Previously approved original BookQuotes typography card bq14-08; no third-party quotation, image or product claim.",
+      "metrics": {
+        "views": null,
+        "reach": null,
+        "viewers": null,
+        "interactions": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "link_clicks": null,
+        "follows": null
+      },
+      "metrics_unavailable_reason": "Scheduled for 11 November; live metrics are not yet available.",
+      "notes": "Scheduled once; Graph read-back confirms Page-authored, is_published=false, Public (privacy.value=EVERYONE) with a 720x1280 photo attachment from the approved 1080x1920 original. Visual review found no watermark; approved asset/caption hashes match ContentBank.json. Graph ID 122122305279415831; https://www.facebook.com/photo.php?fbid=122122305279415831&set=p.122122305279415831&type=3. Meta Planner shows a blank 11 November slot and Content Library Scheduled cannot find this ID; the 9 November photo is missing from those views too. Graph does not expose the native AI-label setting; missing native rows prevent checking boost/location/tag/cross-post controls. No retry/cancel/duplicate was attempted while the native queue conflicts with Graph."
     }
   ],
   "search_snapshots": [

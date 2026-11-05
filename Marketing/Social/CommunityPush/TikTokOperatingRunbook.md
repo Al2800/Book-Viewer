@@ -1,6 +1,23 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 4 November 2026, 09:05 Europe/London
+Updated: 5 November 2026, 09:11 Europe/London
+
+### Metadata reconciliation audit: 5 November 2026, 09:11 Europe/London
+
+- Connected-account access succeeds for active `@bookquotes.app` / `6a7e30f977555aae0187cea3`:
+  20 API post records, 5 followers and analytics access. Token is `ok`, reconnect flags are false,
+  and expiry is `2026-11-05T22:10:02.264Z` (about 12.9 hours after this check).
+- Controlled ID `7667570006032387350` remains absent from the connected inventory and has no
+  attributable analytics row. Earlier native Studio evidence recorded one Public copy, but does not
+  clear the later integrity hold. No upload, schedule, edit, deletion, re-upload or reply was made.
+- Latest connected public item remains the 12 September `Gladwell` post (3 views, reach 3, 1 save,
+  0 shares/comments), outside the review window. Native Account Check and comment/message text remain
+  unavailable; failed request `6aa4f018662ee2d345bceb39` remains unresolved.
+- Preparation remains below three viable items: `cr-03` and `cr-04` MP4 frame sampling fails with
+  AVFoundation `Cannot Decode`; no third validated brief is ready. The official GB Creative Center
+  exposed only a login/dynamic shell. Four varied-size creator-profile attempts yielded no readable
+  posts, so no representative 15-20-post sample is available. Broad platform reporting is context
+  only. No style or confidence change is justified.
 
 ### Metadata reconciliation audit: 4 November 2026, 09:05 Europe/London
 
