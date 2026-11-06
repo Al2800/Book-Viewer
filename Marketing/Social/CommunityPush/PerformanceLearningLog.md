@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 5 November 2026, 09:11 Europe/London
+Updated: 6 November 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,45 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 6 November 2026, 09:00 Europe/London
+
+**Observation**
+
+- Facebook's 5 November post `122121462009415831` is confirmed published once at
+  `2026-11-05T13:00:03+0000` ([live post](https://www.facebook.com/122107379391415831/posts/122121462009415831)).
+  Native Content Library showed true zeros for views, viewers, follows, interactions, likes,
+  comments, shares and saves. Reach is unavailable from 31 October onward; link clicks and watch
+  time are unavailable. Today's post is still scheduled Public for 13:00 Europe/London. Graph
+  exposes six Public rows for 6-11 November, but native Planner/Library expose four dates (6, 7, 8,
+  10); the 9 and 11 November photo rows do not reconcile, and 12 November is missing from Graph.
+  Do not treat the native gap as proof of a failed post. No duplicate or schedule mutation was made.
+  App-led share among the six existing Graph rows is 1/6 (16.7%); the seventh daily slot is missing.
+  6-8 November are three consecutive text prompts. Queue is below the seven-day target and variety
+  is weak.
+- Meta Inbox/comment surfaces have no readable thread text. TikTok account-level Studio metrics for
+  the last seven days are 4 video views, 0 profile views, 0 likes, 0 shares, comments `--` (not
+  reported), and $0 rewards. These are account-level observations and are not attributable to the
+  controlled ID. The connected inventory still has 20 records, latest 12 September; the controlled
+  ID is absent from API and Studio search, and no analytics sync timestamp or attributable row is
+  available. Studio's latest-comments panel says “No comments yet.”
+- Current UK trend indicators are unrelated broad hashtags; Studio Inspiration is mostly outside
+  BookQuotes' niche. A HistoryExtra history clip is only adjacent context and lacks sufficient
+  linked detail. The intended 15-20-post sample could not be assembled. Two preparation assets fail
+  frame decoding and no third validated brief exists. No rights/evidence-ready TikTok brief or new
+  style signal was identified.
+
+**Decision**
+
+- Keep the existing Facebook item scheduled; do not retry, cancel, or duplicate while Graph and
+  native Meta surfaces disagree. Escalate the missing 9/11 November rows for native reconciliation;
+  rebuild the incomplete seven-day queue only after the discrepancy is understood. Record the
+  publishing-control gap, not a confirmed publication failure. No Facebook performance hypothesis
+  changes are warranted.
+- Keep TikTok upload, scheduling, edits, deletion, replies, and second-slot tests on hold until the
+  controlled ID is evidenced once with attributable analytics and remaining integrity gates pass.
+  Continue media recovery and research; do not manufacture a third queue item. No TikTok experiment
+  checkpoint or hypothesis confidence change is warranted. No community reply was sent.
 
 ### Daily audit — 5 November 2026, 09:11 Europe/London
 

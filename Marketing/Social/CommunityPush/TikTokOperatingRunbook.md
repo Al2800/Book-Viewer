@@ -1,6 +1,25 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 5 November 2026, 09:11 Europe/London
+Updated: 6 November 2026, 09:00 Europe/London
+
+### Metadata reconciliation audit: 6 November 2026, 09:00 Europe/London
+
+- Connected-account access succeeds for active `@bookquotes.app` /
+  `6a7e30f977555aae0187cea3`: 20 API records, 5 followers and analytics access. Token is `ok`,
+  reconnect is false, expiry is `2026-11-06T23:54:44.745Z` (about 14.9 hours after this check).
+- Controlled ID `7667570006032387350` is absent from connected inventory and native TikTok Studio
+  search, with no attributable analytics entry and `analytics_last_synced_at=null`. No upload,
+  schedule, edit, deletion, re-upload or reply was made; keep the publishing-integrity, duplicate,
+  native-metadata and evidence holds active.
+- Studio shows 19 posts, 0 drafts and a newest public post from 12 September; its last-seven-day
+  account metrics are 4 video views, 0 profile views, 0 likes, 0 shares, comments `--` (not reported),
+  and $0 rewards. These figures do not belong to an attributable controlled-post row. The latest
+  comments panel states “No comments yet.”
+- Preparation remains below three viable items: `cr-03` and `cr-04` fail frame decoding and no third
+  validated brief is ready. The UK Creative Center currently exposes unrelated broad hashtags; the
+  Studio Inspiration feed is mostly outside the niche. A HistoryExtra clip is adjacent but lacks
+  linked creator/execution detail, and no representative 15-20-post sample is available. No style or
+  confidence change is justified; do not promote weak material.
 
 ### Metadata reconciliation audit: 5 November 2026, 09:11 Europe/London
 

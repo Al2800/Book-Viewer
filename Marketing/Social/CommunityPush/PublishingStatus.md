@@ -1,8 +1,37 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 5 November 2026, 09:11 Europe/London
+Updated: 6 November 2026, 09:00 Europe/London
 
 ## Current operating loop
+
+- **6 November audit:** Facebook Page `BookQuotes` (`1246405755221229`) is confirmed in Meta and
+  Graph. Yesterday's post `122121462009415831` is Published at `2026-11-05T13:00:03+0000`
+  ([permalink](https://www.facebook.com/122107379391415831/posts/122121462009415831)); native
+  Content Library showed 0 views, viewers, follows, interactions, likes, comments, shares and saves.
+  Reach, link clicks and watch time are unavailable. Today's post `122121633429415831` is scheduled
+  for 13:00 Europe/London, Public, and is present in both native and Graph views. Graph lists six Public
+  daily posts for 6-11 November; native Scheduled lists four (6, 7, 8 and 10), while Planner has
+  blanks for 9 and 11. The Graph photo rows for 9 (`122121867855415831`, `bq14-13`) and 11 November
+  (`122122305279415831`, `bq14-08`) remain absent from native surfaces, and Graph has no 12 November
+  row. The seven-day queue is therefore incomplete and the two sources unreconciled. No retry,
+  cancellation, replacement or duplicate was attempted. App-led share among the six existing Graph
+  rows is 1/6 (16.7%); the seventh daily slot is missing. Three
+  consecutive text prompts on 6-8 November are a format-variety weakness. Planner-native AI label,
+  boost, location, tag and cross-post states cannot be verified for the missing rows.
+- Meta Inbox and Facebook-comments views still expose no readable thread text; no reply or sentiment
+  inference was made. TikTok account access succeeds for `@bookquotes.app` /
+  `6a7e30f977555aae0187cea3` (20 connected records, 5 followers, analytics access); token is healthy
+  through `2026-11-06T23:54:44.745Z`. But the controlled ID `7667570006032387350` is absent from
+  connected inventory and native Studio search, with no attributable analytics entry. Studio shows
+  19 posts, 0 drafts, newest post 12 September; last-seven-day account metrics are 4 video views,
+  0 profile views, 0 likes, 0 shares, comments `--` (not reported), and $0 rewards. Its latest
+  comments panel says “No comments yet.” No TikTok mutation or reply was made. Two preparation items
+  (`cr-03`, `cr-04`) still fail frame decoding; no third validated brief exists, so preparation is
+  below the three-item minimum.
+- Current UK Creative Center trends are broad and unrelated (`#saturween`, `#november`,
+  `#halloweekend`). Studio Inspiration is mostly unrelated; one HistoryExtra Roman-recipe clip is
+  adjacent but exposes insufficient creator/execution detail to support a style claim. No
+  representative 15-20-post sample, style change, brief promotion or hypothesis update is warranted.
 
 - Facebook Page identity is confirmed as BookQuotes (`1246405755221229`) in Graph and Meta Business
   Suite. The 4 November text post `122121333921415831` published once at

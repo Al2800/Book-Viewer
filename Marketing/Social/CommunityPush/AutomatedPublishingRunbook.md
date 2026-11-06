@@ -1,6 +1,48 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 5 November 2026, 09:11 Europe/London
+Updated: 6 November 2026, 09:00 Europe/London
+
+## Current Operational Note — 6 November 2026, 09:00 Europe/London
+
+Facebook Page `BookQuotes` (`1246405755221229`) is confirmed in Graph and Meta Business Suite.
+Yesterday's post `122121462009415831` published once at `2026-11-05T13:00:03+0000`:
+https://www.facebook.com/122107379391415831/posts/122121462009415831. Native Content Library
+showed 0 views, 0 viewers, 0 follows, 0 interactions, 0 likes, 0 comments, 0 shares and 0 saves.
+Reach is unavailable (Meta says it is no longer available from 31 October and Viewers is primary);
+link clicks and watch time are unavailable. Do not convert unavailable metrics to zero.
+
+At 09:00, read-only Graph `scheduled_posts` returned six Page-authored Public rows for 6-11 November.
+Today's `122121633429415831` is scheduled for 13:00 Europe/London (13:00 GMT) and is also visible
+in native Planner/Content Library. Native Scheduled shows four dates: 6, 7, 8 and 10 November.
+Planner's 8-14 November view has blank 9 and 11 November slots; Graph's Public photo rows
+`122121867855415831` (`bq14-13`, 9 November) and `122122305279415831` (`bq14-08`, 11 November)
+are not present in the native surfaces. Graph has no 12 November row, so the seven-day window is
+incomplete. No retry, cancellation, replacement or duplicate was attempted: the native/API state
+must be reconciled first. App-led share among the six existing Graph rows is 1/6 (16.7%); the
+seventh daily slot is missing. The three text prompts on 6-8 November create a format-variety
+weakness. Native AI-label, boost, location, tag and
+cross-post controls cannot be verified for the absent rows. No such options were supplied by the
+Facebook-only scheduling request.
+
+Meta Inbox and Facebook-comments views did not expose readable thread text; no response or sentiment
+inference was made. No Facebook action was taken in this run.
+
+TikTok connected-account access succeeds for active `@bookquotes.app` /
+`6a7e30f977555aae0187cea3`: 20 API post records, 5 followers and analytics access. Token status is
+`ok`, reconnect is false, expiry `2026-11-06T23:54:44.745Z`. The controlled ID
+`7667570006032387350` is absent from connected inventory and native Studio search; no attributable
+analytics entry or sync timestamp exists. Native Studio shows 19 posts, 0 drafts, newest post 12
+September. Last-seven-day account metrics: 4 video views, 0 profile views, 0 likes, 0 shares,
+comments `--` (not reported), and $0 rewards. The latest-comments panel states “No comments yet.”
+These account-level figures are not evidence for the controlled ID. No TikTok mutation or reply was
+made; preserve all existing publishing and integrity holds.
+
+Preparation remains below three viable items: `cr-03` and `cr-04` MP4 frame sampling fails with
+AVFoundation `Cannot Decode`, and no third validated brief is ready. The official UK Creative Center
+lists broad unrelated trends (`#saturween`, `#november`, `#halloweekend`). Native Studio Inspiration
+is mostly unrelated; a HistoryExtra Roman-recipe clip is adjacent but the feed exposed insufficient
+creator/execution detail for a defensible pattern. No representative 15-20-post sample, style change,
+brief promotion or confidence change is warranted. Do not manufacture queue items.
 
 ## Current Operational Note — 5 November 2026, 09:11 Europe/London
 

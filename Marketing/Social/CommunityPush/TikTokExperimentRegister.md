@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 5 November 2026, 09:11 Europe/London
+Updated: 6 November 2026, 09:00 Europe/London
 
 ## Method
 
@@ -38,6 +38,15 @@ Result labels:
 | TK-009 | A genuine reading-order question will attract more meaningful comments than a broad genre prompt. | Reader culture | BQ-05 | Specific reader decision | Meaningful comments/1,000 views | Shares/1,000 views | Low prior | Pending | Use SF-04, then compare SF-09 after comparable reach becomes available. |
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
+
+### 6 November 2026 audit
+
+No 24-hour, 72-hour or seven-day checkpoint is attributable to controlled ID
+`7667570006032387350`: it is absent from both connected post inventory and native Studio search, and
+`analytics_last_synced_at` is null. The Studio account-level last-seven-day view count (4) is not a
+post-level result. No per-1,000-view comparison, result label or confidence change is warranted.
+Retain all publishing-integrity and evidence holds; no TikTok mutation was made. Preparation remains
+below three viable items (`cr-03`/`cr-04` frame decode blocked; no third validated brief).
 
 ## Scheduled Executions
 

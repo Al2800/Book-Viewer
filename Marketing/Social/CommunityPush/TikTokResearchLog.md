@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 5 November 2026, 09:11 Europe/London
+Updated: 6 November 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,77 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-06, 09:00 Europe/London
+
+**Account and publishing**
+
+- Account access: connected API succeeds for active `@bookquotes.app`
+  (`6a7e30f977555aae0187cea3`), 20 records, 5 followers, analytics access; token `ok` through
+  `2026-11-06T23:54:44.745Z`.
+- Expected posts: no new post while controlled-ID evidence and integrity gates remain unresolved.
+- Published, scheduled or failed: Studio shows 19 posts, 0 drafts, newest 12 September; no recent
+  publication is attributable from current surfaces.
+- Content IDs: controlled ID `7667570006032387350` absent in API inventory and native Studio search;
+  no analytics row or sync timestamp.
+- No upload/schedule/edit/delete/re-upload/reply was made. Studio latest-comments panel says “No
+  comments yet”; the seven-day comments metric itself is `--` and must not be recoded as zero.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Broad GB Creative Center trends | [TikTok Creative Center, GB](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB) | Visible trending tags include `#saturween` (13K posts/19.6M views), `#november` (20.3K/60.7M), `#halloweekend` (33.7K/100M). | Seasonal/general tags; no demonstrated BookTok relevance. | Short | Reject for this channel; no trend-chasing. |
+| European BookTok market context | [TikTok Newsroom, 8 Oct 2026](https://newsroom.tiktok.com/booktok-reveals-first-ever-european-bestseller-of-the-year-as-the-community-helps-drive-reading-discovery-and-book-sales-across-europe?lang=en-150) | Broad market reporting, not post-level creative evidence. | Context only; cannot justify a specific format or book claim. | Medium | No execution change. |
+| UK Inspiration feed | Native TikTok Studio, UK region | Feed is mostly unrelated high-view career, legal, repair, building and cost-of-living clips; one HistoryExtra Roman-recipe answer clip is adjacent. Creator names/links and enough execution detail were not available in the sampled feed state. | Adjacent history context only; not a representative reading sample. | Short | Do not infer a style rule or copy any execution. |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- Transferable patterns: none established; available feed sample was mostly unrelated and lacked
+  sufficient linked detail. The requested representative 15-20-post BookTok/reading sample was not
+  accessible today.
+- Elements explicitly excluded from imitation: creator wording, artwork, identity and distinctive
+  execution; no individual clip was selected as a template.
+
+**Audience language**
+
+- Comments, searches or questions: Studio latest-comments panel says “No comments yet.” No usable
+  search insights or audience-language sample was available.
+- Potential reader-need hooks: none promoted without direct audience evidence.
+
+**Evidence and rights**
+
+- Ledger entries added or changed: none; no book/edition/claim was selected for a new brief.
+- Blockers: controlled-post evidence remains unresolved; `cr-03` and `cr-04` frame sampling fails
+  (AVFoundation `Cannot Decode`); no third validated production item. Preparation queue remains below
+  three viable items. No rights-cleared, quality-gated brief can advance.
+
+**Performance**
+
+- 24-hour checkpoints: none attributable/due.
+- 72-hour checkpoints: none attributable/due.
+- Seven-day checkpoints: account-level Studio shows 4 video views, 0 profile views, 0 likes,
+  0 shares, comments `--` (not reported), $0 rewards. These are not attributable to the controlled
+  ID and are not a post-level experiment result.
+- Missing measures: no controlled-ID analytics row, no analytics sync timestamp, no per-post
+  completion/saves/follows or normalized comparison.
+
+**Learning**
+
+- Experiment updates: none; no post-level checkpoint is attributable.
+- Confidence changes: none.
+- Repeat: none yet supported by comparable account evidence.
+- Modify: restore readable frames for held assets before quality review.
+- Pause: TikTok mutation, second-slot testing and automated replies until integrity and native gates
+  clear.
+
+**Queue**
+
+- Approved: none confirmed for production.
+- In production: none advanced past validation.
+- Awaiting evidence or review: `cr-03`, `cr-04` blocked on frame decoding.
+- Requires user approval: none generated; do not manufacture a third item.
 
 ### 2026-11-05, 09:11 Europe/London
 
