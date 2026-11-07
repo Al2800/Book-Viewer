@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 6 November 2026, 09:00 Europe/London
+Updated: 7 November 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,54 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 7 November 2026, 09:00 Europe/London
+
+**Observation**
+
+- Facebook Page BookQuotes (`1246405755221229`) confirms the 6 November item
+  `122121633429415831` published once at 13:00 GMT
+  ([live post](https://www.facebook.com/122107379391415831/posts/122121633429415831)). Native
+  values were 0 views, follows, likes/reactions, comments, shares and saves. Viewers, interactions,
+  reach, link clicks and watch time were unavailable. Today's item `122121633693415831` is present
+  in Graph and native Library, scheduled Public for 13:00, text-only and not boosted.
+- The Graph queue has five Public rows (7-11 November), but native Scheduled shows 7, 8 and 10
+  only, and Planner shows 8 and 10 in the 8-14 November week. The 9 and 11 November photo rows
+  disagree across surfaces; Graph has no 12/13 November items. Confirmed consecutive native daily
+  coverage is only two days, so the queue is below the three-day alert and seven-day target. App-led
+  share among Graph rows is 1/5 (20%), and two consecutive text prompts remain a variety weakness.
+  No retry/replacement/duplicate was made because today's item exists and the discrepancy is not a
+  verified publication failure. Comments inbox is empty; Messenger has no messages.
+- TikTok account access is healthy for `@bookquotes.app` (20 connected records, 5 followers,
+  analytics access; token valid through `2026-11-08T01:46:04.270Z`). The controlled ID is absent
+  from current connected/native inventory, its public route is unavailable, and there is no
+  attributable analytics row or sync timestamp. Studio's account-level totals (4 views, 0 profile
+  views, 0 likes, 0 shares, comments unreported, $0 rewards) are not controlled-post results. The
+  latest comments panel is empty. No TikTok action was taken.
+- TikTok preparation remains below three viable items (`cr-03`/`cr-04` frame decoding blocked; no
+  third validated brief). UK Creative Center signals are broad and unrelated. Ten UK Studio
+  Inspiration posts were mostly outside the niche; no representative 15-20-post sample or new
+  style evidence was available.
+
+**Learning update**
+
+- No Facebook or TikTok hypothesis confidence changed. Facebook's queue length/surface mismatch is
+  an operational control issue, not a reason to publish through an unreconciled state. No new TikTok
+  24-hour, 72-hour or seven-day post-level checkpoint or per-1,000-view rate is attributable; do not
+  use account totals or infer zero for unavailable metrics.
+- The scorecard generator was corrected and regenerated on 7 November. Its Facebook totals now mark
+  all-null metrics unavailable, label mixed coverage partial rather than presenting it as a total,
+  and distinguish missing reach from a true zero. The focused regression test covers both null and
+  explicitly zero reach; historical source observations remain unchanged.
+
+**Actions**
+
+- Keep today's Facebook item unchanged; manually reconcile the 9/11 November native-vs-Graph rows
+  before adding any posts. Do not create an extra post to fill a slot until that duplicate risk is
+  resolved.
+- Keep TikTok mutations and automatic replies on hold pending current controlled-ID publication and
+  attributable analytics evidence plus resolution of integrity gates. Continue media recovery and
+  research without manufacturing content.
 
 ### Daily audit — 6 November 2026, 09:00 Europe/London
 

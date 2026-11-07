@@ -979,6 +979,18 @@ def rate(count: float | int | None, denominator: float | int | None) -> str:
     return f"{(float(count) / float(denominator)) * 1000:.1f}"
 
 
+def aggregate_metric(values: list[float | int | None]) -> str:
+    reported = [value for value in values if value is not None]
+    if len(reported) == len(values) and values:
+        return str(sum(reported))
+    if not reported:
+        return f"Not available (0/{len(values)} rows reported)"
+    return (
+        f"Partial: {sum(reported)} across {len(reported)}/{len(values)} rows; "
+        "total unavailable"
+    )
+
+
 def experiment_metric_value(observation: dict[str, Any], metric_name: str) -> float | None:
     numerator_name, denominator_name, _ = RATE_METRICS[metric_name]
     metrics = observation["metrics"]
@@ -1069,14 +1081,22 @@ def render(data: dict[str, Any]) -> str:
         if parse_timestamp(observation["published_at"], "published_at") >= report_start
     }
 
-    totals = Counter()
-    for observation in weekly_latest.values():
-        if observation["status"] != "published":
-            continue
-        for metric, value in observation["metrics"].items():
-            if value is not None:
-                totals[metric] += value
-
+    published_facebook = [
+        observation
+        for observation in weekly_latest.values()
+        if observation["platform"] == "facebook" and observation["status"] == "published"
+    ]
+    metric_totals = {
+        metric: aggregate_metric([item["metrics"].get(metric) for item in published_facebook])
+        for metric in ("views", "reach", "link_clicks")
+    }
+    interaction_values = [
+        sum(item["metrics"][metric] for metric in ("comments", "shares", "saves"))
+        if all(item["metrics"].get(metric) is not None for metric in ("comments", "shares", "saves"))
+        else None
+        for item in published_facebook
+    ]
+    metric_totals["interactions"] = aggregate_metric(interaction_values)
 
     lines = [
         "# BookQuotes Growth Scorecard",
@@ -1087,12 +1107,12 @@ def render(data: dict[str, Any]) -> str:
         "",
         f"- Reporting window: {markdown_code(report_start.isoformat())} to "
         f"{markdown_code(report_end.isoformat())}",
-        f"- Published Facebook items represented: {sum(1 for item in weekly_latest.values() if item['platform'] == 'facebook' and item['status'] == 'published')}",
-        f"- Visible views: {totals['views']}",
-        f"- Visible reach: {totals['reach']}",
-        f"- Meaningful interactions: {totals['comments'] + totals['shares'] + totals['saves']}",
-        f"- Link clicks: {totals['link_clicks']}",
-        "- Interpretation: distribution is too small for a creative or timing winner. Continue controlled instrumentation; do not increase volume.",
+        f"- Published Facebook items represented: {len(published_facebook)}",
+        f"- Visible views: {metric_totals['views']}",
+        f"- Visible reach: {metric_totals['reach']}",
+        f"- Meaningful interactions: {metric_totals['interactions']}",
+        f"- Link clicks: {metric_totals['link_clicks']}",
+        "- Interpretation: no creative or timing winner is established. Missing metrics remain unavailable, not zero; continue controlled instrumentation.",
         "",
         "## Latest social observations",
         "",
@@ -1103,10 +1123,12 @@ def render(data: dict[str, Any]) -> str:
         metrics = observation["metrics"]
         if observation["status"] in {"draft", "scheduled"}:
             decision = "Awaiting publication/read-back"
+        elif metrics.get("reach") is None:
+            decision = "Analytics unavailable"
         else:
             decision = (
                 "Insufficient distribution"
-                if (metrics.get("reach") or 0) < 20
+                if metrics["reach"] < 20
                 else "Review against declared experiment"
             )
         lines.append(

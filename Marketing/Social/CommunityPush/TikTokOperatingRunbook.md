@@ -1,6 +1,30 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 6 November 2026, 09:00 Europe/London
+Updated: 7 November 2026, 09:00 Europe/London
+
+### Metadata reconciliation audit: 7 November 2026, 09:00 Europe/London
+
+- Connected-account access succeeds for active `@bookquotes.app` /
+  `6a7e30f977555aae0187cea3`: 20 records, 5 followers and analytics access. Token status is `ok`,
+  reconnect is false, and expiry is `2026-11-08T01:46:04.270Z`. One existing failed-post record
+  remains from 12 September; no new failed upload occurred.
+- Controlled ID `7667570006032387350` is absent from the current connected inventory and native
+  Studio content rows. Its direct public URL returns “Page not available”; `analytics_last_synced_at`
+  is null and no attributable post-level analytics entry is available. Prior dated evidence of one
+  Public native copy is not enough to clear the current integrity/evidence hold. No upload, schedule,
+  edit, deletion, re-upload or reply was made.
+- Studio shows 19 posts, 0 drafts, and newest public posts from 12 September. Last-seven-day account
+  totals are 4 video views, 0 profile views, 0 likes, 0 shares, comments `--` (not reported), and
+  $0 rewards. The two recent Studio rows each show 3 views, 0 likes and 0 comments; neither is the
+  controlled ID. The latest-comments panel states “No comments yet.” These aggregate values are not
+  a controlled-post checkpoint.
+- Current UK Creative Center trending tags include `#saturween` (13K posts / 20.1M views),
+  `#bonfirenight` (16.5K / 26.2M) and `#november` (23.5K / 68.4M). Ten UK Studio Inspiration posts
+  were surfaced, but most were unrelated to books/reading/history/annotation. No representative
+  15-20-post niche sample was accessible, and no new style/brief or confidence change is justified.
+- Preparation remains below three viable items: `cr-03` and `cr-04` fail frame decoding and no third
+  validated brief is ready. Preserve the publishing-integrity, duplicate, native-metadata and
+  evidence holds; do not manufacture a queue item.
 
 ### Metadata reconciliation audit: 6 November 2026, 09:00 Europe/London
 

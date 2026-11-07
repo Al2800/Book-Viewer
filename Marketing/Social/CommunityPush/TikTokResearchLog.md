@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 6 November 2026, 09:00 Europe/London
+Updated: 7 November 2026, 09:00 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,56 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-07, 09:00 Europe/London
+
+**Account and publishing**
+
+- Connected account `@bookquotes.app` is active with analytics access; 20 records, 5 followers,
+  token `ok` through `2026-11-08T01:46:04.270Z`. Native Studio has 19 posts, 0 drafts, latest
+  12 September. Last-seven-day totals: 4 views, 0 profile views, 0 likes, 0 shares, comments `--`
+  (not reported), $0 rewards. Latest comments panel: “No comments yet.”
+- Controlled ID `7667570006032387350` is absent from current connected/native inventory; direct URL
+  returns “Page not available,” `analytics_last_synced_at` is null, and no attributable analytics
+  entry can be read. No TikTok content mutation or reply was made.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK trending tags remain broad: `#saturween` 13K posts/20.1M views, `#bonfirenight` 16.5K/26.2M, `#november` 23.5K/68.4M | [TikTok Creative Center UK](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB) | Official UK region selected; current top tags shown on 7 Nov | No clear reader/book connection; do not force a seasonal tie-in | Short | Reject for this queue |
+| UK Studio Inspiration exposed 10 trending posts under Posts/Culture, Education & Technology | TikTok Studio Inspiration, United Kingdom | Most visible posts concerned legal commentary, bushcraft, careers, repair, travel/airport explainers and general finance; not a relevant 15-20-post BookTok sample | Too little niche overlap to infer a BookQuotes creative pattern | Short | No style change or brief promotion |
+
+**Creator-pattern observations**
+
+- Style catalogue references added: none.
+- No transferable niche pattern was supported. The current recommendation surface did not provide
+  accessible book/annotation/history examples at the required scale; broad high-view posts are not
+  a basis for copying their hooks or production.
+- Elements excluded from imitation: legal controversy, generic curiosity bait, unrelated viral
+  execution, creator wording and visual identity.
+
+**Audience language**
+
+- Comments: no comments shown in TikTok Studio.
+- Searches: account-level search terms unavailable; no reader-language sample.
+
+**Evidence and rights**
+
+- Evidence Ledger changes: none. No new book or factual brief proposed.
+- `cr-03` and `cr-04` remain blocked on MP4 frame decoding; no third rights/evidence/quality-cleared
+  brief exists. Preparation queue remains below three viable items.
+
+**Performance**
+
+- 24-hour, 72-hour and seven-day controlled-post checkpoints: not attributable; the target ID is
+  absent from current inventory. The account-level 4-view total is not a post result.
+- Per-1,000-view measures and rolling-median comparison: unavailable.
+
+**Learning**
+
+- No experiment result or confidence changed. Continue holding all TikTok publishing mutations;
+  recover readable media and wait for native ID/analytics reconciliation before any activation.
 
 ### 2026-11-06, 09:00 Europe/London
 

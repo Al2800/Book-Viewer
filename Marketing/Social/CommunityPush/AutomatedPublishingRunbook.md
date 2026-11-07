@@ -1,6 +1,46 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 6 November 2026, 09:00 Europe/London
+Updated: 7 November 2026, 09:00 Europe/London
+
+## Current Operational Note — 7 November 2026, 09:00 Europe/London
+
+The BookQuotes Facebook Page (`1246405755221229`) is active. The 6 November text post
+`122121633429415831` published once at `2026-11-06T13:00:00+0000`:
+https://www.facebook.com/122107379391415831/posts/122121633429415831. Native Content Library
+showed zero views, follows, likes/reactions, comments, shares and saves; viewers, interactions,
+reach, link clicks and watch time were unavailable. Do not convert unavailable fields to zero.
+
+Today's text-only post `122121633693415831` is scheduled for 13:00 Europe/London, Public and not
+boosted, and appears in both Graph and native Content Library. The five-row Graph queue covers
+7-11 November; native Scheduled shows only 7, 8 and 10, while Planner's 8-14 November week shows
+only 8 and 10. Graph's 9 November `bq14-13` and 11 November `bq14-08` photo rows are absent from
+native Planner/Library; Graph has no 12 or 13 November row. Confirmed native daily coverage ends
+after 8 November, so the Facebook queue is below three consecutive days and below the seven-day
+target. App-led share among Graph rows is 1/5 (20%); 7-8 November are consecutive text prompts.
+Today's item is present and no technical failure is verified. Do not retry, replace, cancel or
+duplicate anything while native and Graph state disagree. Reconcile existing rows before extending
+the queue. Native AI-label/location/tag/cross-post controls were not exposed for the missing rows.
+
+Facebook Inbox shows no comments and no Messenger messages. TikTok account `@bookquotes.app` /
+`6a7e30f977555aae0187cea3` remains active with 20 connected records, 5 followers, analytics access,
+and token `ok` through `2026-11-08T01:46:04.270Z`. The controlled ID `7667570006032387350` is absent
+from the current connected inventory and native Studio rows; its direct public URL returned “Page
+not available,” with no current attributable analytics entry or sync timestamp. Native Studio
+shows 19 posts, 0 drafts, newest 12 September; last-seven-day account metrics are 4 views, 0 profile
+views, 0 likes, 0 shares, comments `--` (not reported), and $0 rewards. These are not controlled-
+post metrics. No TikTok upload, schedule, edit, deletion, re-upload or reply was made. Existing
+publishing-integrity, duplicate, metadata and evidence holds remain active. Preparation is below
+three viable items: `cr-03` and `cr-04` fail frame decoding and no third validated brief exists.
+
+Current UK Creative Center results are broad unrelated tags (`#saturween`, `#bonfirenight`,
+`#november`). Ten UK Studio Inspiration posts were surfaced, mostly outside BookQuotes' niche; no
+representative 15-20-post niche sample was accessible. No style, new brief or confidence change is
+justified.
+
+The scorecard generator's null handling was repaired on 7 November: published Facebook totals now
+distinguish complete totals, partial reported values and fully unavailable metrics, and missing
+reach is no longer classified as insufficient distribution. The generated scorecard was re-run;
+regression coverage confirms an explicitly reported zero reach remains a true zero.
 
 ## Current Operational Note — 6 November 2026, 09:00 Europe/London
 

@@ -437,6 +437,34 @@ class GrowthEvidenceValidationTests(unittest.TestCase):
         self.assertIn("| downloads | Not available | Not available | False |", report)
         self.assertIn("HTTP 403 or missing access is `Not available`, never zero", report)
 
+    def test_social_summary_preserves_unavailable_metrics_and_true_zero_reach(self):
+        data = evidence()
+        for metric in data["social_observations"][0]["metrics"]:
+            data["social_observations"][0]["metrics"][metric] = None
+        data["social_observations"][0]["metrics_unavailable_reason"] = (
+            "Native platform analytics were not exposed."
+        )
+        module.validate(data)
+        report = module.render(data)
+
+        self.assertIn("Visible views: Not available (0/1 rows reported)", report)
+        self.assertIn("Visible reach: Not available (0/1 rows reported)", report)
+        self.assertIn("Meaningful interactions: Not available (0/1 rows reported)", report)
+        self.assertIn("Link clicks: Not available (0/1 rows reported)", report)
+        self.assertIn(
+            "| initial | Not available | Not available | Not available | Not available | Analytics unavailable |",
+            report,
+        )
+
+        data["social_observations"][0]["metrics"]["reach"] = 0
+        module.validate(data)
+        report = module.render(data)
+        self.assertIn("Visible reach: 0", report)
+        self.assertIn(
+            "| initial | Not available | 0 | Not available | Not available | Insufficient distribution |",
+            report,
+        )
+
     def test_rejects_invalid_updated_at_checkpoint_and_boolean_metric(self):
         data = evidence()
         data["updated_at"] = "not-a-time"
