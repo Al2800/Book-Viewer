@@ -11,6 +11,9 @@ Updated: 9 November 2026, 09:38 Europe/London
   Graph requests fail on DNS, so earlier Graph-only rows cannot be reconciled. External policy still
   disables writes, blocks `social_publish`, and sets the routine Facebook write budget to zero; no
   replacement, retry or duplicate was created. Facebook comments and Messenger are empty.
+- The 2-8 November published mix is 0/7 app-led, below the approximately 15% target. After policy
+  and native queue reconciliation clear, use one future eligible slot for a low-risk app demo; do
+  not create or schedule it under the current lock.
 - TikTok Studio search for controlled ID `7667570006032387350` returns “No results found.” Its
   account-level 1-7 November dashboard shows 3 views, 0 profile views/likes/shares, comments
   unreported, and 50% each for search labels `lincoln` and `outloer`; none is attributable to the

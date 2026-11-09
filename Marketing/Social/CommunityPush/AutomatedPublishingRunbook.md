@@ -9,6 +9,8 @@ post `122121855219415831` is present once in Published at 12:30 Europe/London; i
 reported metrics are unchanged from the 05:43 audit (true zeroes for views/viewers/follows and
 reported interaction fields; reach, link clicks and watch time unavailable). Published covers
 2-8 November, with all seven daily text items still showing zero for reported Library metrics.
+App-led content is 0/7 in this published window, below the roughly 15% mix target; when policy and
+native reconciliation permit, rebalance one future eligible slot with a low-risk app demonstration.
 
 Native Planner for 8-14 November has no item on 9 November, one text item on 10 November at 12:30,
 and no scheduled content for 11-14 November. Native Scheduled likewise contains only the 10 November

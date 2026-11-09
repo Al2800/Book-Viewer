@@ -87,6 +87,9 @@ Use `Not available` rather than zero when a platform does not expose a metric.
   unavailable reach and downstream measures cannot be treated as zero. This reinforces a
   distribution/reporting concern but does not isolate creative quality. Keep H1-H5 confidence
   unchanged. The one-item Facebook queue is below the three-day warning and the seven-day target.
+  All seven published items are text prompts (0/7 app-led), below the approximately 15% content-mix
+  target; after policy and native reconciliation clear, use one future eligible slot for a low-risk
+  app demonstration.
 - TikTok: account totals and search labels are not attributable to the controlled post. Keep all
   experiment results/confidence unchanged and retain the 70/20/10 planning portfolio (core reader
   discovery / reader culture / product-proof experiments) separately from the 60/20/15/5 TikTok
