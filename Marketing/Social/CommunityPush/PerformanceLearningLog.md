@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 9 November 2026, 05:43 Europe/London
+Updated: 9 November 2026, 09:38 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,43 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Operational follow-up and Monday review — 9 November 2026, 09:38 Europe/London
+
+**Observation**
+
+- Facebook native Published still has the 8 November post `122121855219415831` once. For 2-8
+  November, seven text posts show zero in the Library's reported view/viewer/follow/interaction
+  fields. Reach is unavailable after 31 October; link clicks and watch time are unavailable.
+  Planner and Scheduled Library show only one future item (10 November, 12:30, Public, not boosted),
+  with today and 11-14 November blank. Graph reads fail on DNS, leaving earlier Graph-only rows
+  unresolved. The local social-write policy is disabled and has a zero Facebook routine budget, so
+  no replacement or retry was made. Inbox shows no comments or Messenger messages.
+- TikTok Studio's 1-7 November aggregate is 3 views, 0 profile views/likes/shares, comments
+  unreported and $0 rewards. Search labels `lincoln` and `outloer` each show 50% in the dashboard;
+  no counts or controlled-post attribution are exposed. Controlled ID `7667570006032387350` returns
+  “No results found” in Studio; the API is unavailable on DNS with no sync timestamp. Comments are
+  empty. No content-level 24h/72h/7d checkpoint or per-1,000 comparison is valid.
+
+**Seven-day learning review**
+
+- Facebook: the seven-post window supplies repeated zeroes only for the Library's reported fields;
+  unavailable reach and downstream measures cannot be treated as zero. This reinforces a
+  distribution/reporting concern but does not isolate creative quality. Keep H1-H5 confidence
+  unchanged. The one-item Facebook queue is below the three-day warning and the seven-day target.
+- TikTok: account totals and search labels are not attributable to the controlled post. Keep all
+  experiment results/confidence unchanged and retain the 70/20/10 planning portfolio (core reader
+  discovery / reader culture / product-proof experiments) separately from the 60/20/15/5 TikTok
+  editorial mix. Repeat none; modify by resolving Meta queue reconciliation, API access and media
+  decoding; pause all TikTok publication and second-slot tests.
+
+**Actions**
+
+- Do not create Facebook content while the external policy disables writes; do not duplicate or
+  retry Graph-only rows whose status is uncertain.
+- Keep TikTok frozen until the controlled post is attributable exactly once with analytics and all
+  native validation is complete. Preparation remains below three viable items (`cr-03`/`cr-04`
+  frame decoding blocked, no third quality-cleared brief).
 
 ### Daily audit and Monday review — 9 November 2026, 05:43 Europe/London
 

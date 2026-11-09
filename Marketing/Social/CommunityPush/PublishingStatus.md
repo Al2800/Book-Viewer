@@ -1,8 +1,25 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 9 November 2026, 05:43 Europe/London
+Updated: 9 November 2026, 09:38 Europe/London
 
 ## Current operating loop
+
+- **9 November follow-up, 09:38:** Native Planner and Scheduled Library still agree that 10 November
+  at 12:30 (Public, not boosted) is the only queued Facebook item. Planner has no item today or for
+  11-14 November; the queue is shorter than three days. The 8 November post remains Published once;
+  reported metrics remain zero and reach/link-click/watch-time fields remain unavailable. Read-only
+  Graph requests fail on DNS, so earlier Graph-only rows cannot be reconciled. External policy still
+  disables writes, blocks `social_publish`, and sets the routine Facebook write budget to zero; no
+  replacement, retry or duplicate was created. Facebook comments and Messenger are empty.
+- TikTok Studio search for controlled ID `7667570006032387350` returns “No results found.” Its
+  account-level 1-7 November dashboard shows 3 views, 0 profile views/likes/shares, comments
+  unreported, and 50% each for search labels `lincoln` and `outloer`; none is attributable to the
+  controlled post. Studio Comments says “No comments yet.” TikTok API access fails on DNS and the
+  earlier reconnect-required/unsynced state remains unresolved. No TikTok mutation or reply was made.
+- UK Studio Inspiration is led by unrelated AO3/fanfiction and general trends; Creative Center's
+  direct Trends page is login-gated. A representative 15-20-post creator sample is unavailable.
+  No learning/confidence change is warranted, and TikTok preparation remains below three viable
+  items.
 
 - **9 November audit:** The BookQuotes Page (`1246405755221229`) is active. The 8 November post
   `122121855219415831` is Published once at 12:30 Europe/London

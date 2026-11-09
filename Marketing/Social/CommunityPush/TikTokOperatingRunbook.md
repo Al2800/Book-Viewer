@@ -1,6 +1,24 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 9 November 2026, 05:43 Europe/London
+Updated: 9 November 2026, 09:38 Europe/London
+
+### Metadata reconciliation audit: 9 November 2026, 09:38 Europe/London
+
+- Studio remains readable for `@bookquotes.app`; native post search for controlled ID
+  `7667570006032387350` returns “No results found.” No attributable analytics row or sync timestamp
+  exists. The read-only API call fails on DNS, so the earlier expired-token/reconnect-required state
+  remains unresolved. No upload, schedule, edit, delete, re-upload or reply was made.
+- Studio still reports 19 posts and 0 drafts; the newest rows remain dated 12 September. The 1-7
+  November account-level overview shows 3 video views, 0 profile views, 0 likes, 0 shares, comments
+  `--` (not reported), and $0 rewards. Search-query labels are `lincoln` and `outloer`, each 50%; no
+  volumes or target-post attribution are shown. These figures do not create a valid post checkpoint.
+- Studio Comments says “No comments yet.” The UK Inspiration feed is led by an AO3/fanfiction
+  outage cluster and unrelated general topics; the visible cluster is not a varied 15-20-post
+  creator sample. Official Creative Center search results are broad seasonal tags, and the direct
+  Trends page is login-gated. No style or brief change is warranted.
+- Preparation remains below three viable items: `cr-03` and `cr-04` remain frame-decode blocked and
+  no third validated brief is ready. Keep integrity, duplicate, metadata, evidence and second-slot
+  holds active.
 
 ### Metadata reconciliation audit: 9 November 2026, 05:43 Europe/London
 

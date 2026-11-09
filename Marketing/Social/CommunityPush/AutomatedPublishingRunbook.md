@@ -1,6 +1,41 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 9 November 2026, 05:43 Europe/London
+Updated: 9 November 2026, 09:38 Europe/London
+
+## Current Operational Note — 9 November 2026, 09:38 Europe/London
+
+Meta Business Suite remains on the BookQuotes Page (`1246405755221229`). The 8 November text
+post `122121855219415831` is present once in Published at 12:30 Europe/London; its permalink and
+reported metrics are unchanged from the 05:43 audit (true zeroes for views/viewers/follows and
+reported interaction fields; reach, link clicks and watch time unavailable). Published covers
+2-8 November, with all seven daily text items still showing zero for reported Library metrics.
+
+Native Planner for 8-14 November has no item on 9 November, one text item on 10 November at 12:30,
+and no scheduled content for 11-14 November. Native Scheduled likewise contains only the 10 November
+item, Public and not boosted. The native rolling queue is one item and shorter than three days; the
+7-day queue is incomplete. The 9 and 11 November rows described by the 05:43 Graph response remain
+unreconciled; the read-only Graph CLI now fails on DNS, so their present status cannot be confirmed.
+External policy still has `writes_enabled=false`, `blocked_automation` includes `social_publish`,
+and the Facebook routine write budget is zero. No replacement or schedule was created, and no
+retry was made while status and policy remain blocked. Native AI-label/location/tag/cross-post
+settings were not verified for missing Planner rows. Facebook comments and Messenger still show
+none.
+
+TikTok Studio still loads `@bookquotes.app`. Searching the post list for controlled ID
+`7667570006032387350` returns “No results found”; no attributable analytics row is exposed. The
+dashboard remains the 1-7 November range with 3 account-level video views, 0 profile views, 0 likes,
+0 shares, comments `--` (not reported), and $0 rewards. Its search-query card displays `lincoln`
+and `outloer` at 50% each; these account-level terms cannot be attributed to the controlled post.
+Studio Comments says “No comments yet.” API reads for Meta and TikTok fail on DNS; the TikTok
+credential's prior `reconnect_required` state and absent analytics sync remain unresolved. No
+TikTok mutation or reply was made.
+
+Current UK Studio Inspiration is led by an AO3/fanfiction outage cluster and unrelated trends; a
+single cluster's visible examples are not a representative 15-20-post sample across account sizes.
+Official Creative Center search surfaces broad seasonal tags, while the direct page is login-gated.
+No BookQuotes style, evidence-led brief, experiment confidence or quality-gate result changed.
+TikTok preparation remains below three viable items (`cr-03`/`cr-04` frame-decode blocked; no third
+validated brief). Preserve the publishing and evidence holds.
 
 ## Current Operational Note — 9 November 2026, 05:43 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 9 November 2026, 05:43 Europe/London
+Updated: 9 November 2026, 09:38 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,53 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-09, 09:38 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio remains readable for `@bookquotes.app`; native search for controlled ID
+  `7667570006032387350` returns “No results found.” API access fails on DNS, and no analytics sync
+  timestamp or attributable row is available. Studio still lists 19 posts and 0 drafts; newest
+  entries are dated 12 September. No TikTok mutation or reply was made.
+- The 1-7 November account-level dashboard shows 3 video views, 0 profile views, 0 likes, 0 shares,
+  comments `--` (not reported), and $0 rewards. Its search card displays `lincoln` / `outloer` at
+  50% each; query volumes are not exposed and these terms are not target-post evidence.
+- Studio Comments says “No comments yet.” No controlled-post 24h, 72h or seven-day checkpoint is
+  attributable; deeper retention and valuable-action metrics remain unavailable.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| Broad UK seasonal hashtags; no reader-specific signal surfaced | [Official TikTok Creative Center, UK](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB) | Search snapshot includes broad seasonal tags; direct Trends page is login-gated. TikTok's [Trends help](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) says to filter/search by industry and timeframe. | No verified BookQuotes reader need. | Short | Reject; do not force a seasonal hook. |
+| AO3/fanfiction outage cluster leads the UK Studio Inspiration feed | TikTok Studio Inspiration, region United Kingdom | Several high-view related clips are visible in one trend cluster; account-size diversity and the broader 15-20-post sample are not accessible. | Reading-adjacent, but tied to a current platform/service outage rather than a durable BookQuotes need. | Short | Do not copy the controversy, wording, visuals or execution; no brief/style change. |
+
+**Creator-pattern observations**
+
+- No transferable creator grammar was sufficiently evidenced. The visible cluster is not a
+  representative 15-20-post sample across varied account sizes; public `#booktok` remains
+  inaccessible. Style catalogue and evidence ledger unchanged.
+
+**Audience language**
+
+- Dashboard search labels: `lincoln`, `outloer` (50% each; counts unavailable). Treat as
+  low-volume account-level discovery hints only; do not infer a post-level result or normalize.
+
+**Evidence and rights**
+
+- No ledger additions or changes. No new factual book claims or excerpts introduced.
+- Preparation queue remains below three viable items: `cr-03` / `cr-04` frame decoding blocked; no
+  third quality-cleared brief.
+
+**Performance and learning**
+
+- No attributable 24-hour, 72-hour or seven-day post checkpoint; no per-1,000 comparison, label or
+  confidence change. Keep TikTok publishing and second-slot tests paused.
+
+**Queue**
+
+- Approved viable items: fewer than three. Do not manufacture a weak replacement.
 
 ### 2026-11-09, 05:43 Europe/London
 
