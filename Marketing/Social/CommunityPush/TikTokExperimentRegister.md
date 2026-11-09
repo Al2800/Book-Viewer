@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 7 November 2026, 09:00 Europe/London
+Updated: 9 November 2026, 05:43 Europe/London
 
 ## Method
 
@@ -38,6 +38,25 @@ Result labels:
 | TK-009 | A genuine reading-order question will attract more meaningful comments than a broad genre prompt. | Reader culture | BQ-05 | Specific reader decision | Meaningful comments/1,000 views | Shares/1,000 views | Low prior | Pending | Use SF-04, then compare SF-09 after comparable reach becomes available. |
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
+
+### 9 November 2026 Monday review
+
+The connected account inventory still omits controlled ID `7667570006032387350`; no attributable
+analytics row or sync timestamp exists. The API token expired at `2026-11-09T04:19:28.615Z` and
+reports `reconnect_required`, although native Studio remains readable. Studio's seven-day account
+summary is 3 views, 0 profile views, 0 likes, 0 shares, comments `--` (not reported), and $0
+rewards. These aggregate measures cannot be used as the target post's checkpoint. No 24-hour,
+72-hour or seven-day post result, per-1,000-view comparison, experiment label or confidence change
+is valid. Preserve all integrity and publishing holds.
+
+The seven-day preparation review remains below three viable items: `cr-03` and `cr-04` fail frame
+decoding; no third evidence-, rights- and quality-cleared brief exists. The UK Creative Center is
+login-gated, the Studio feed is mostly unrelated, and public `#booktok` search is unavailable, so
+no representative 15-20-post creator sample or style change is supported. For planning only, use a
+70/20/10 portfolio of core reader discovery / reader culture / product-proof or format experiments
+while preserving TikTok's 60/20/15/5 editorial mix when publishing authority resumes. Repeat none,
+modify media recovery and account reconciliation, and pause all TikTok mutations and second-slot
+tests.
 
 ### 7 November 2026 audit
 

@@ -1,8 +1,41 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 7 November 2026, 09:00 Europe/London
+Updated: 9 November 2026, 05:43 Europe/London
 
 ## Current operating loop
+
+- **9 November audit:** The BookQuotes Page (`1246405755221229`) is active. The 8 November post
+  `122121855219415831` is Published once at 12:30 Europe/London
+  ([permalink](https://www.facebook.com/122107379391415831/posts/122121855219415831)). The native
+  Content Library shows zero views, viewers, follows, interactions, likes, comments, shares and
+  saves; reach is unavailable after 31 October and link clicks/watch time are unavailable. The
+  seven published posts for 2-8 November each show zero for reported Library metrics; no App Store
+  attribution is available.
+- At 05:43, Graph contains three Public rows for 9-11 November. Today's `122121867855415831`
+  (`bq14-13`) and the 11 November photo `122122305279415831` are absent from Planner and native
+  Scheduled. The 10 November text item `122122166019415831` is the only native-visible scheduled
+  row, Public and not boosted; Planner also shows only 10 November. The native queue is therefore
+  below three days and the seven-day target; Graph/native disagreement remains unresolved. Do not
+  retry, cancel, replace or duplicate while status is uncertain. The external Meta policy has
+  `writes_enabled=false` and a zero Facebook routine write budget; do not bypass it. Native
+  AI-label/location/tag/cross-post settings are not exposed for the missing rows.
+- Facebook Inbox shows no comments and Messenger shows no messages. TikTok Studio loads the active
+  `@bookquotes.app` account, while the connected API token expired at `2026-11-09T04:19:28.615Z`
+  (`reconnect_required`). The 20-record connected inventory does not contain controlled ID
+  `7667570006032387350`; no attributable analytics row or sync timestamp exists. Studio shows 19
+  posts, 0 drafts, newest 12 September, and last-seven-day account metrics of 3 views, 0 profile
+  views, 0 likes, 0 shares, comments `--` (unreported), and $0 rewards. Latest comments says “No
+  comments yet.” No TikTok mutation or reply was made. Preparation is below three viable items
+  (`cr-03`/`cr-04` frame decoding blocked; no third validated brief).
+- Current UK Creative Center tags are broad (`#saturween`, `#bonfirenight`, `#november`); its direct
+  trends page is login-gated. UK Studio Inspiration is mostly unrelated, with only a three-post
+  fanfiction/reading-adjacent cluster, and public `#booktok` search is unavailable. No representative
+  15-20-post sample across account sizes was accessible; no style, evidence or confidence change.
+- **Monday review:** Facebook's last seven published posts are text-only with zero reported Library
+  metrics; unavailable metrics remain null. TikTok's 3 account-level views cannot be attributed to
+  a post, so no checkpoint or per-1,000-view comparison is valid. No hypothesis confidence changed.
+  Provisional 70/20/10 planning mix: core reader discovery / reader culture / product-proof
+  experiments. TikTok retains the 60/20/15/5 editorial mix once publishing holds clear.
 
 - **7 November audit:** The active Facebook identity is BookQuotes (`1246405755221229`). The
   6 November post `122121633429415831` moved to Published once at `2026-11-06T13:00:00+0000`

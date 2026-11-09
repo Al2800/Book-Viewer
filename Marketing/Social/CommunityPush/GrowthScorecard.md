@@ -1,15 +1,15 @@
 # BookQuotes Growth Scorecard
 
-Generated from structured evidence updated <code>2026-11-07T09:00:00+00:00</code>.
+Generated from structured evidence updated <code>2026-11-09T05:43:04+00:00</code>.
 
 ## Current signal
 
-- Reporting window: <code>2026-10-31T09:00:00+00:00</code> to <code>2026-11-07T09:00:00+00:00</code>
-- Published Facebook items represented: 6
-- Visible views: Partial: 0 across 2/6 rows; total unavailable
-- Visible reach: Not available (0/6 rows reported)
-- Meaningful interactions: Partial: 0 across 2/6 rows; total unavailable
-- Link clicks: Not available (0/6 rows reported)
+- Reporting window: <code>2026-11-02T05:43:04+00:00</code> to <code>2026-11-09T05:43:04+00:00</code>
+- Published Facebook items represented: 7
+- Visible views: 0
+- Visible reach: Not available (0/7 rows reported)
+- Meaningful interactions: 0
+- Link clicks: Not available (0/7 rows reported)
 - Interpretation: no creative or timing winner is established. Missing metrics remain unavailable, not zero; continue controlled instrumentation.
 
 ## Latest social observations
@@ -20,16 +20,22 @@ Generated from structured evidence updated <code>2026-11-07T09:00:00+00:00</code
 | 2026-11-10 | scheduled | facebook | Print, audio and digital reading formats | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-09 | scheduled | facebook | One idea can belong to more than one shelf | photo | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-08 | scheduled | facebook | Which book feature has helped you understand a text | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-11-08 | published | facebook | Which book feature has helped you understand a text | text | audit | 0 | Not available | Not available | Not available | Analytics unavailable |
 | 2026-11-07 | scheduled | facebook | What makes a book’s ending feel earned | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-11-07 | published | facebook | What makes a book’s ending feel earned | text | audit | 0 | Not available | Not available | Not available | Analytics unavailable |
 | 2026-11-06 | scheduled | facebook | What makes a book feel generous | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-06 | published | facebook | What makes a book feel generous | text | initial | 0 | Not available | Not available | Not available | Analytics unavailable |
+| 2026-11-06 | published | facebook | What makes a book feel generous | text | audit | 0 | Not available | Not available | Not available | Analytics unavailable |
 | 2026-11-05 | scheduled | facebook | Trying an unfamiliar genre | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
+| 2026-11-05 | published | facebook | Trying an unfamiliar genre | text | audit | 0 | Not available | Not available | Not available | Analytics unavailable |
 | 2026-11-04 | scheduled | facebook | Beginning a book on a busy day | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-04 | published | facebook | Beginning a book on a busy day | text | audit | 0 | Not available | Not available | Not available | Analytics unavailable |
 | 2026-11-03 | scheduled | facebook | What makes a reading note worth keeping | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-03 | published | facebook | What makes a reading note worth keeping | text | initial | Not available | Not available | Not available | Not available | Analytics unavailable |
+| 2026-11-03 | published | facebook | What makes a reading note worth keeping | text | audit | 0 | Not available | Not available | Not available | Analytics unavailable |
 | 2026-11-02 | scheduled | facebook | What you want a book to challenge | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-02 | published | facebook | What you want a book to challenge | text | initial | Not available | Not available | Not available | Not available | Analytics unavailable |
+| 2026-11-02 | published | facebook | What you want a book to challenge | text | audit | 0 | Not available | Not available | Not available | Analytics unavailable |
 | 2026-11-01 | scheduled | facebook | What makes a reading group worth returning to | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
 | 2026-11-01 | published | facebook | What makes a reading group worth returning to | text | initial | Not available | Not available | Not available | Not available | Analytics unavailable |
 | 2026-10-31 | scheduled | facebook | Which sign tells you a book has earned your attention | text | preflight | Not available | Not available | Not available | Not available | Awaiting publication/read-back |
@@ -214,8 +220,8 @@ A practical next-day highlight review ritual will produce more saves and meaning
 - Primary weekly metric: <code>first&#95;time&#95;downloads</code>
 - Secondary weekly metrics: <code>qualified&#95;website&#95;sessions, app&#95;store&#95;product&#95;page&#95;views, downloads, activations, sales, proceeds</code>
 - Activation: The reader adds a first book and saves or confirms a first extracted quote in the live BookQuotes app.
-- Durable published items: 6
-- Channel-only items: 6
+- Durable published items: 7
+- Channel-only items: 7
 - Website campaign-linked items: 0
 - App Store campaign-linked items: 0
 - Attribution quality: `none` for downstream App Store outcomes until an Apple campaign link or another authoritative install attribution path is read-tested.

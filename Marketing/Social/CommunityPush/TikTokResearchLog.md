@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 7 November 2026, 09:00 Europe/London
+Updated: 9 November 2026, 05:43 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,57 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-09, 05:43 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio loads `@bookquotes.app`; the connected API inventory reports 20 records and 5
+  followers, but the token expired at `2026-11-09T04:19:28.615Z` and now requires reconnection.
+- Studio shows 19 posts, 0 drafts, latest 12 September. The controlled ID
+  `7667570006032387350` is absent from API and native inventory; analytics sync is null and there
+  is no attributable row. No post mutation or reply was made.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| GB Creative Center snapshot lists `#saturween` (13K posts/20.1M views), `#bonfirenight` (16.5K/26.2M) and `#november` (23.5K/68.4M) | [Official TikTok Creative Center, GB](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB) | Search-indexed UK snapshot checked 9 Nov; direct page is login/dynamic shell | Broad seasonal tags, no reader-specific evidence | Short | Reject as unrelated; do not force a seasonal hook |
+| UK Studio Inspiration Culture/Education feed | TikTok Studio, region set to United Kingdom | Mostly unrelated topics; nearest AO3/fanfiction cluster showed three related posts, not a varied creator sample | Small reading-adjacent community signal, insufficient to infer a reusable BookQuotes style | Short | No brief or style update |
+| Public `#booktok` search | [TikTok search](https://www.tiktok.com/search?q=%23booktok) | Page displayed “Page not available” | No accessible current post sample | Recheck only if access changes | Do not infer from inaccessible content |
+
+**Creator-pattern observations**
+
+- No style catalogue references added. The requested 15-20 relevant posts across varied account
+  sizes were not accessible: the UK Inspiration feed was mostly off-topic and did not expose a
+  representative creator-size sample; public hashtag search was unavailable.
+- Excluded unrelated trends, fanfiction outage execution, creator wording, artwork, identity and
+  distinctive execution from imitation.
+
+**Audience language**
+
+- Latest comments panel says “No comments yet.” Search insights were not available. Studio Inbox
+  navigation returned the dashboard rather than readable messages; no audience-language claim or
+  reply is made.
+
+**Evidence and rights**
+
+- Evidence Ledger changes: none. No new title, author, edition, claim or visual rights basis was
+  introduced. `cr-03`/`cr-04` still fail frame decoding; queue remains below three viable items.
+
+**Performance**
+
+- Studio seven-day account totals: 3 views, 0 profile views, 0 likes, 0 shares, comments `--`
+  (not reported), and $0 rewards. These are aggregate account measures, not a target-post result.
+- Controlled-ID 24h/72h/7d checkpoints, saves, completion, watch time and per-1,000-view
+  comparisons remain unavailable/unattributable.
+
+**Learning and queue**
+
+- No experiment result, style rule or confidence changed. Repeat nothing based on three account-level
+  views. Modify by restoring API credentials and recovering readable frames; pause publishing,
+  second-slot tests and automatic replies until the holds clear.
+- Approved/viable: none confirmed. Blocked: `cr-03`, `cr-04`. No third item was manufactured.
 
 ### 2026-11-07, 09:00 Europe/London
 

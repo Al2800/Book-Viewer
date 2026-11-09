@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 7 November 2026, 09:00 Europe/London
+Updated: 9 November 2026, 05:43 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,60 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit and Monday review — 9 November 2026, 05:43 Europe/London
+
+**Observation**
+
+- Facebook's 8 November post `122121855219415831` published once at 12:30 Europe/London
+  ([live post](https://www.facebook.com/122107379391415831/posts/122121855219415831)). Content
+  Library shows true zeros for views, viewers, follows, interactions, likes, comments, shares and
+  saves. Reach is unavailable after Meta's 31 October metric change; link clicks and watch time are
+  unavailable. The seven published items for 2-8 November are text-only and show zero for reported
+  Library metrics. Non-follower reach, profile visits and attributable App Store outcomes were not
+  exposed.
+- Graph currently returns Public rows for 9, 10 and 11 November. The 9 November approved photo
+  `122121867855415831` and 11 November photo `122122305279415831` are not visible in Meta Planner or
+  native Scheduled. The 10 November text post `122122166019415831` is visible natively, Public and
+  not boosted. Native scheduled coverage is one day, below the three-day alert. The 9 November
+  Graph item is not proven failed or absent from delivery; no duplicate/retry/replacement was made
+  while status is uncertain. The external Meta policy also has `writes_enabled=false` and a zero
+  Facebook routine write budget. Facebook Inbox showed no comments; Messenger showed no messages.
+- TikTok Studio shows the active `@bookquotes.app` account and 19 public posts, 0 drafts, newest 12
+  September. The seven-day summary is 3 video views, 0 profile views, 0 likes, 0 shares, comments
+  `--` (not reported), and $0 rewards. The connected API returns 20 records but the token expired at
+  `2026-11-09T04:19:28.615Z`; it reports `reconnect_required`. Controlled ID
+  `7667570006032387350` is absent, with no attributable analytics row or sync timestamp. Studio's
+  latest-comments panel says “No comments yet”; inbox message content was not exposed. These
+  account-level data are not controlled-post checkpoints.
+- Official UK Creative Center search results show broad unrelated tags; the direct trends surface
+  is login-gated. UK Studio Inspiration is mostly unrelated, with three fanfiction/reading-adjacent
+  posts; public `#booktok` search returns “Page not available.” The requested 15-20 varied-account
+  sample could not be assembled. No new style/evidence brief is supported; `cr-03`/`cr-04` remain
+  frame-decode blocked and no third viable preparation item exists.
+
+**Seven-day learning review**
+
+- Facebook: seven comparable daily text prompts, each with zero reported views/viewers and zero
+  reported interactions in the Library. Reach is not available; link-click/watch-time and
+  non-follower/profile signals are unavailable. This confirms an operational distribution concern,
+  but does not distinguish content quality from delivery or reporting and does not justify changing
+  hypothesis confidence.
+- TikTok: the only current seven-day figures are aggregate account totals (3 views; reported
+  profile views, likes and shares zero; comments unreported). No post-level 24h/72h/7d checkpoint or
+  per-1,000-view comparison is attributable. Keep every experiment status/confidence unchanged.
+- Provisional 70/20/10 planning portfolio: 70% core reader discovery/recommendation, 20% reader
+  culture and discussion, 10% product-proof or format experiments. For TikTok, retain its separate
+  60/20/15/5 editorial mix once integrity and native validation holds clear. No distribution
+  expansion or twice-daily test is supported.
+
+**Actions**
+
+- Preserve the three Graph schedule rows and request manual native reconciliation of 9 and 11
+  November before adding or retrying anything. Do not bypass the active Meta policy lock.
+- Keep TikTok publishing, second-slot testing and automated replies paused. Restore the authorized
+  API connection and resolve target-ID attribution, integrity checks, frame decoding and the
+  three-viable-item queue before any content mutation.
 
 ### Daily audit — 7 November 2026, 09:00 Europe/London
 

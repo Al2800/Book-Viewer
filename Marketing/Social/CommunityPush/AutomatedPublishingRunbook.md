@@ -1,6 +1,53 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 7 November 2026, 09:00 Europe/London
+Updated: 9 November 2026, 05:43 Europe/London
+
+## Current Operational Note — 9 November 2026, 05:43 Europe/London
+
+The BookQuotes Facebook Page (`1246405755221229`) is confirmed active. The 8 November text post
+`122121855219415831` published once at 12:30 Europe/London:
+https://www.facebook.com/122107379391415831/posts/122121855219415831. Native Content Library
+shows 0 views, viewers, follows, interactions, likes/reactions, comments, shares and saves. Reach
+is unavailable after Meta's 31 October metric change; link clicks and watch time are unavailable.
+Across the seven published posts from 2-8 November, the Library shows zero for those reported
+metrics; non-follower reach and profile visits are not exposed in this post table. No App Store
+signal is attributable to these text prompts.
+
+At 05:43, Graph `scheduled_posts` returns three Page-authored Public rows for 9-11 November.
+Today's `122121867855415831` (`bq14-13`) is scheduled for 12:30 and is Public in Graph, but is
+absent from both Planner and native Scheduled. The 11 November photo `122122305279415831` is also
+Public in Graph and absent from both native surfaces. The 10 November text item
+`122122166019415831` is visible in native Scheduled and Graph, Public and not boosted. Planner's
+8-14 November week shows only 10 November. Thus Graph has three dates including today, but the
+reconciled native queue exposes only 10 November; future coverage is below three days and the
+seven-day queue is incomplete. Do not retry or create a replacement while the native/Graph state is
+uncertain; this is not a verified publishing failure. Graph does not expose native AI-label,
+location, tag or cross-post controls, and missing native rows prevent verification of those states.
+The external Meta policy also currently has `writes_enabled=false` and a zero Facebook routine
+write budget; do not bypass it.
+
+Meta Inbox confirms no Facebook comments and no Messenger messages. TikTok Studio is readable for
+`@bookquotes.app`; the connected API token expired at `2026-11-09T04:19:28.615Z` and now reports
+`reconnect_required`, although Studio itself still loads. The account inventory contains 20 rows,
+but not controlled ID `7667570006032387350`; no attributable analytics row or sync timestamp exists.
+Studio shows 19 posts, 0 drafts, latest 12 September; its last-seven-day account summary is 3
+views, 0 profile views, 0 likes, 0 shares, comments `--` (not reported), and $0 rewards. Latest
+comments says “No comments yet”; these are account totals, not target-post results. No TikTok
+upload, schedule, edit, deletion or reply was made. Preparation remains below three viable items:
+`cr-03` and `cr-04` fail frame decoding and no third validated brief is ready.
+
+The official UK Creative Center search snapshot surfaces broad tags (`#saturween`, `#bonfirenight`,
+`#november`), but its direct trends page is login-gated. UK Studio Inspiration surfaces mostly
+unrelated topics; the closest fanfiction/reading cluster has only three related posts. A public
+`#booktok` search returns “Page not available.” No representative 15-20-post sample across varied
+account sizes was accessible. No style, evidence, brief or confidence change is justified.
+
+Monday seven-day reviews: Facebook's reported Library metrics remain zero on seven text posts,
+with reach/click/watch and other unexposed fields unavailable; no hypothesis confidence changes.
+TikTok has only account-level 3 views with reported likes, profile views and shares at zero and
+comments unreported; no controlled-post checkpoint, per-1,000-post comparison or confidence change
+is valid. The provisional 70/20/10 planning mix remains core reader discovery / reader culture /
+product-proof experiments, while the TikTok publishing mix remains 60/20/15/5 when its holds clear.
 
 ## Current Operational Note — 7 November 2026, 09:00 Europe/London
 
