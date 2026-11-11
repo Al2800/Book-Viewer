@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 9 November 2026, 09:38 Europe/London
+Updated: 11 November 2026, 15:32 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,45 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-11, 15:32 Europe/London
+
+**Account and publishing**
+
+- Studio is readable for `@bookquotes.app` (19 posts, 5 followers, 23 likes; 0 following). The Last
+  7 days dashboard reports 5 video views (+1, 25%), 0 profile views, 0 likes, comments `--` (not
+  reported), 0 shares and $0 estimated rewards. Recent post cards are dated 12 September and do not
+  identify the controlled post. Its direct URL for `7667570006032387350` says “Video currently
+  unavailable.” No attributable checkpoint or current post row exists. The API read failed on DNS;
+  account/credential reconnection was not attempted because policy blocks it. No TikTok mutation or
+  reply was made.
+- Latest Comments says “No comments yet.” Search/query labels and direct-message contents were not
+  available in this dashboard read.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK Creative Center Trends | [Official TikTok Creative Center, UK](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB) | Landing page resolves, but live trend rankings require login; no current niche ranking was readable. | No usable BookQuotes reader signal. | Short | Do not infer a trend; recheck when authenticated data is available. |
+| UK Studio Inspiration: Posts | TikTok Studio Inspiration, United Kingdom, Last 7 days | Top ten surfaced posts were general news, legal/education, lifestyle, technology and other non-book topics. The visible material did not supply a representative BookTok sample or creator follower-size evidence. | Irrelevant to BookQuotes; view counts span large accounts but are not a valid niche sample. | Short | Reject rather than copy generic trend mechanics. |
+| Official UK BookTok list snapshot | [TikTok Newsroom, 21 September 2026](https://newsroom.tiktok.com/tiktok-reveals-august-booktok-bestsellers-uk?lang=en-GB) | August list article is dated 21 September and is not a live November trend feed. | Book discovery context only; too stale to justify a timely recommendation. | Expired for current-trend use | Do not use as a current trend brief. |
+
+**Creator-pattern observations**
+
+- No 15-20-post sample across relevant topics and varied account sizes was accessible. Studio's
+  general posts were off-topic; an earlier AO3/fanfiction outage cluster is not durable BookQuotes
+  evidence. No transferable grammar is promoted. The style catalogue and evidence ledger remain
+  unchanged; no book claim or rights status changed.
+- Exclude unrelated news, outage framing, borrowed wording, creator identity, artwork and
+  distinctive execution. No manufactured controversy or generic trend prompt.
+
+**Performance and learning**
+
+- No controlled-post 24-hour, 72-hour or seven-day checkpoint and no per-1,000 comparison; dashboard
+  totals are account-level and must not be substituted. No experiment label or confidence changed.
+- Preparation queue remains below three viable items: `cr-03` and `cr-04` fail frame decoding; no
+  third evidence-, rights- and quality-cleared item exists. Approved viable: fewer than three. Do
+  not manufacture a replacement.
 
 ### 2026-11-09, 09:38 Europe/London
 

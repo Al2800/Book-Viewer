@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 9 November 2026, 09:38 Europe/London
+Updated: 11 November 2026, 15:32 Europe/London
 
 ## Method
 
@@ -38,6 +38,17 @@ Result labels:
 | TK-009 | A genuine reading-order question will attract more meaningful comments than a broad genre prompt. | Reader culture | BQ-05 | Specific reader decision | Meaningful comments/1,000 views | Shares/1,000 views | Low prior | Pending | Use SF-04, then compare SF-09 after comparable reach becomes available. |
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
+
+### 11 November 2026 daily audit — 15:32 Europe/London
+
+No experiment checkpoint is added. Studio's Last 7 days account summary is 5 views, 0 profile
+views, 0 likes, comments `--` (not reported), 0 shares and $0 rewards. The controlled ID
+`7667570006032387350` is “Video currently unavailable” at its public URL and has no current
+attributable analytics row; API access fails on DNS. These account totals are not target-post
+results. No per-1,000 comparison, result label or confidence change is valid. Retain publishing,
+integrity, duplicate, metadata, evidence and second-slot holds. Preparation remains below three
+viable items (`cr-03`/`cr-04` frame-decode blocked; no third cleared brief). UK Studio Inspiration
+and Creative Center did not yield a representative 15-20-post sample; no style or brief change.
 
 ### 9 November 2026 Monday review follow-up — 09:38 Europe/London
 

@@ -1,6 +1,23 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 9 November 2026, 09:38 Europe/London
+Updated: 11 November 2026, 15:32 Europe/London
+
+### Metadata reconciliation audit: 11 November 2026, 15:32 Europe/London
+
+- TikTok Studio still loads the active `@bookquotes.app` profile (19 posts, 5 followers, 23 likes).
+  Last 7 days account metrics show 5 video views, 0 profile views, 0 likes, comments `--` (not
+  reported), 0 shares and $0 rewards. The recent cards are 12 September posts and are not
+  attributable to the controlled post.
+- The controlled URL for `7667570006032387350` now returns “Video currently unavailable”; no
+  current Studio analytics row attributes results to this ID. TikTok API reads fail on DNS. Do not
+  reconnect because account/credential changes are policy-blocked. No 24-hour, 72-hour or seven-day
+  checkpoint can be recorded, and no upload, schedule, edit, delete or reply was made.
+- Studio Latest Comments says “No comments yet.” UK Inspiration data is general and unrelated; the
+  official Creative Center Trends view requires login. No representative 15-20-post BookTok sample
+  across account sizes was available. Do not add a style pattern or promote a brief from this read.
+- Preparation remains below three viable items: `cr-03` and `cr-04` still fail frame decoding, and
+  no third evidence-, rights- and quality-cleared brief exists. Retain publishing-integrity,
+  duplicate, metadata, evidence and second-slot holds.
 
 ### Metadata reconciliation audit: 9 November 2026, 09:38 Europe/London
 

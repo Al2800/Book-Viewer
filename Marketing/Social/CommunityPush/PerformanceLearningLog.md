@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 9 November 2026, 09:38 Europe/London
+Updated: 11 November 2026, 15:32 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,41 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 11 November 2026, 15:32 Europe/London
+
+**Observation**
+
+- Facebook Published confirms 10 November text post `122122166019415831` and 11 November photo
+  post `122122305279415831` each appeared once at 12:30 Europe/London. Both public permalinks are
+  recorded in the publishing status/runbook. The 11 November Library metrics are reach unavailable,
+  0 views, 0 viewers, 0 follows, 0 interactions, 0 likes/reactions, 0 comments, 0 shares, 0 saves,
+  link clicks unavailable, watch time unavailable, average play time unavailable and 0 3-second
+  views. The previous text item shows zero for reported engagement/view fields and unavailable
+  reach, link-click and watch-time fields. Non-follower reach, profile visits and App Store signals
+  are not exposed. Native Scheduled is empty; no actual Planner items follow 11 November. The
+  external social-write policy is disabled, so no schedule/retry/replacement was attempted.
+- Of the seven daily posts from 5-11 November, one (9 November collections/tags demonstration) is
+  product-led: 1/7 = 14.3%, near the 15% prior. The 11 November book-pairing prompt is editorial,
+  despite being a photo. This corrects no prior record; the 2-8 November 0/7 window was accurate
+  for its own dates.
+- TikTok Studio's Last 7 days aggregate is 5 views (+1), 0 profile views, 0 likes, comments
+  unreported, 0 shares and $0 estimated rewards. The controlled ID `7667570006032387350` is
+  “Video currently unavailable” at its public URL and lacks a current attributable analytics row.
+  These aggregates cannot be assigned to the controlled post. API reads fail on DNS. No valid
+  24-hour/72-hour/seven-day post checkpoint or per-1,000 comparison exists.
+
+**Learning and actions**
+
+- Facebook's reported zeros remain descriptive only; unavailable reach/click/watch measures are
+  not zero. No H1-H5 confidence change is warranted. The 14.3% product-led share is on target; do
+  not add a product-led post solely to correct the mix. The zero future queue remains a material
+  operational gap under the external write lock.
+- TikTok's target post remains unresolved, not a confirmed deletion or publishing failure. No
+  confidence/result label changes. Repeat none, modify by resolving the Facebook write-policy
+  approval/queue state and TikTok account/media evidence, and pause TikTok mutation and second-slot
+  tests. Preparation remains below three viable items: `cr-03`/`cr-04` frame-decode blocked, no
+  third cleared brief. No weak replacement was manufactured.
 
 ### Operational follow-up and Monday review — 9 November 2026, 09:38 Europe/London
 

@@ -1,6 +1,52 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 9 November 2026, 09:38 Europe/London
+Updated: 11 November 2026, 15:32 Europe/London
+
+## Current Operational Note — 11 November 2026, 15:32 Europe/London
+
+Meta Business Suite is bound to the active BookQuotes Facebook Page (`1246405755221229`). The
+10 November text item `122122166019415831` is in Published once at 12:30 Europe/London; its public
+permalink is https://www.facebook.com/122107379391415831/posts/122122166019415831. Today's photo
+item `122122305279415831` also appears once in Published at 12:30, not boosted, with a public
+permalink at https://www.facebook.com/122107379391415831/posts/122122305279415831. The Planner week
+of 8-14 November agrees on the 11 November post and has no real item for 12-14 November (12 November
+is only a schedule placeholder). Scheduled Library explicitly says there are no scheduled posts;
+the rolling native queue is zero.
+
+For the 11 November row the Library reports reach `--` (unavailable), views 0, viewers 0, follows
+0, interactions 0, likes/reactions 0, comments 0, shares 0, saves 0, link clicks `--`, watch time
+`--`, average play time `--`, and 3-second views 0. The 10 November text row also shows zero for
+reported views, viewers, follows, interactions, likes, comments, shares and saves; reach, link
+clicks and watch time are unavailable. The last seven daily Published rows (5-11 November) contain
+one product-led post, 9 November (`122121867855415831`), so the mix is 1/7 (14.3%); the 11 November
+book-pairing prompt is reader-led, not product-led. The visible rows say BookQuotes and not
+boosted; the public permalink confirms visibility. Native AI-label, location, tag and cross-post
+controls, plus the photo's complete phone-sized visual/cover check, were not exposed in this audit.
+The native 30-day duplicate search was not completed retrospectively; do not treat this row audit
+as evidence that the duplicate-preflight gate was cleared.
+
+The external marketing policy still has `writes_enabled=false`, `social_publish` blocked, and a
+zero routine Facebook write budget. Read-only Graph requests fail on DNS and cannot supplement
+the native reconciliation. No post was created, scheduled, retried, edited or duplicated. This is
+a queue/policy blocker, not a verified technical publishing failure. Facebook Inbox views did not
+expose readable comment or Messenger threads; no reply was sent.
+
+TikTok Studio is readable for `@bookquotes.app` (19 posts, 5 followers, 23 likes, 0 following).
+The current Last 7 days account dashboard shows 5 video views (+1, 25%), 0 profile views, 0 likes,
+comments `--` (not reported), 0 shares, and $0 estimated rewards. Recent post cards are from
+12 September and are not the controlled item. The controlled URL for ID `7667570006032387350`
+returns “Video currently unavailable”; it is not present as an attributable current Studio row.
+The TikTok API read fails on DNS. Do not reconnect credentials because account/credential changes
+are separately blocked. No TikTok post-level checkpoint, duplicate clearance or analytics
+attribution is evidenced; keep all TikTok publishing holds active.
+
+The official UK Creative Center landing page is readable but its Trends data requires login. UK
+Studio Inspiration returns general trending material, not a representative book/reading/history/
+annotation sample. No 15-20-post sample across varied account sizes could be assembled. The
+preparation queue remains below three viable items: `cr-03` and `cr-04` still fail frame decoding;
+no third evidence-, rights- and quality-cleared brief exists. No style, ledger, experiment or
+confidence change is justified. Studio Latest Comments says “No comments yet”; no TikTok reply or
+mutation was made.
 
 ## Current Operational Note — 9 November 2026, 09:38 Europe/London
 

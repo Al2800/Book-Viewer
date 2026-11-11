@@ -1,9 +1,30 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 9 November 2026, 09:38 Europe/London
+Updated: 11 November 2026, 15:32 Europe/London
 
 ## Current operating loop
 
+- **11 November, 15:32:** Planner and Published Library confirm the 11 November BookQuotes photo
+  post `122122305279415831` is live once at 12:30 and not boosted; its public URL is
+  [Facebook post](https://www.facebook.com/122107379391415831/posts/122122305279415831). The
+  previous 10 November item `122122166019415831` is also Published once at 12:30 with a working
+  [public URL](https://www.facebook.com/122107379391415831/posts/122122166019415831). Reported
+  metrics are zero for the available interaction/view fields; reach, link clicks and watch time
+  remain unavailable. Native Scheduled says “No scheduled posts”; Planner has no actual items for
+  12-14 November, so the Facebook queue is zero and below the three-day warning. The 5-11 November
+  mix is 1/7 product-led (14.3%): only 9 November is a product demonstration; today's book-pairing
+  prompt is reader-led. External policy still disables writes and sets the routine budget to zero;
+  read-only Graph fails on DNS. No Facebook mutation or retry was made. AI label, location, tags,
+  cross-post, complete phone-size photo review and retrospective 30-day duplicate search were not
+  exposed/verified. Inbox views did not expose readable threads; no reply was sent.
+- TikTok Studio shows `@bookquotes.app`, 19 posts, 5 followers and 23 likes. Last 7 days account
+  metrics are 5 video views (+1), 0 profile views, 0 likes, comments unreported, 0 shares and $0
+  rewards. The controlled post `7667570006032387350` returns “Video currently unavailable” and has
+  no attributable current analytics row; the API read fails on DNS. No post-level checkpoint or
+  result comparison is valid. Do not reconnect credentials or mutate TikTok. UK Inspiration is
+  unrelated and Creative Center Trends is login-gated; no representative 15-20-post sample could
+  be assembled. Preparation remains below three viable items (`cr-03`/`cr-04` frame decoding
+  blocked; no third cleared brief). No learning confidence changed; comments show none in Studio.
 - **9 November follow-up, 09:38:** Native Planner and Scheduled Library still agree that 10 November
   at 12:30 (Public, not boosted) is the only queued Facebook item. Planner has no item today or for
   11-14 November; the queue is shorter than three days. The 8 November post remains Published once;
