@@ -1,6 +1,22 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 11 November 2026, 15:32 Europe/London
+Updated: 12 November 2026, 09:25 Europe/London
+
+### Metadata reconciliation audit: 12 November 2026, 09:25 Europe/London
+
+- Native Studio was not freshly accessible: the Mac surface reported locked, while the available
+  TikTok-related browser tab is an OAuth/login route and was not advanced. The connected API read
+  failed on DNS. Do not reconnect credentials or infer account state from the earlier dashboard.
+- The last native audit on 11 November found no current attributable analytics row for controlled
+  ID `7667570006032387350` and the public URL returned “Video currently unavailable.” No new
+  24-hour, 72-hour or seven-day checkpoint can be recorded. No mutation or reply was made.
+- Official UK Creative Center Trends remains login-gated. TikTok's 8 October newsroom survey is
+  platform-commissioned, cross-market discovery context, not a current format signal; no
+  representative 15-20-post sample across varied account sizes was available. No style, evidence or
+  brief was promoted.
+- The last validated preparation queue remains below three viable items: `cr-03`/`cr-04` fail frame
+  decoding and no third evidence-, rights- and quality-cleared brief exists. Retain publishing
+  integrity, duplicate, metadata, evidence and second-slot holds.
 
 ### Metadata reconciliation audit: 11 November 2026, 15:32 Europe/London
 

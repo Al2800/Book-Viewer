@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 11 November 2026, 15:32 Europe/London
+Updated: 12 November 2026, 09:25 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,34 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 12 November 2026, 09:25 Europe/London
+
+**Observation**
+
+- Facebook Planner, Scheduled Library, current post metrics and Inbox/Messenger could not be
+  inspected in this run: the Mac surface reported locked, no Meta Planner tab was available, and
+  read-only Graph access failed on DNS. The 11 November audit is the latest native evidence: no
+  real items after 11 November and an empty Scheduled Library (last confirmed queue: zero, below
+  three days). Do not claim today's status or a publishing failure. The external policy still
+  blocks social writes with a zero routine budget; no replacement, retry or duplicate was made.
+- TikTok Studio is not freshly accessible; the connected API read failed on DNS. The last 11
+  November evidence says the controlled post lacks attributable analytics and the last validated
+  prep queue is below three viable items (`cr-03`/`cr-04` fail frame decoding; no third cleared
+  brief). No valid post checkpoint or per-1,000 comparison can be added. Comments/messages could
+  not be reviewed; no reply was sent.
+- TikTok's 8 October official newsroom report describes a commissioned, multi-market survey and
+  Media Control bestseller data. It reports genre discovery/reading expansion but is not evidence
+  for a specific creator format, current UK trend or BookQuotes result. Keep it as background only.
+
+**Learning and actions**
+
+- No Facebook or TikTok hypothesis confidence changed. Historical Facebook reported zeroes remain
+  distinct from unavailable measures; today's platform measures are unavailable, not zero.
+- Repeat none; modify only after native queue/account reconciliation and policy clearance; pause
+  social writes, TikTok reconnect, controlled-post conclusions and second-slot tests. TikTok
+  preparation remains below three viable items on the last validated count; do not manufacture a
+  replacement from this market-level source.
 
 ### Daily audit — 11 November 2026, 15:32 Europe/London
 

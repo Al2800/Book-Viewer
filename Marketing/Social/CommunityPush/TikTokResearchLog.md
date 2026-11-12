@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 11 November 2026, 15:32 Europe/London
+Updated: 12 November 2026, 09:25 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,50 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-12, 09:25 Europe/London
+
+**Account and publishing**
+
+- Account access was not freshly available. The Mac surface reported locked; the available
+  TikTok-related browser tab was an OAuth/login route and was not advanced. The connected API read
+  failed on DNS. The last native evidence (11 November) leaves controlled ID
+  `7667570006032387350` without an attributable analytics row and its public URL at “Video currently
+  unavailable.” No upload, schedule, edit, delete, reconnect or reply was made.
+- Current post status, account metrics, comments, searches and messages are unknown in this run;
+  do not substitute the prior account-level dashboard for a post checkpoint.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK Creative Center Trends | [Official TikTok Creative Center, UK](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB); [TikTok Trends help](https://ads-useast2a.tiktok.com/resources/help/article/how-to-use-trends?redirected=2) | UK trends landing page resolves but exposes only navigation and a login gate; TikTok's help says to log in to use Trends. No live UK ranking was readable. | No current trend signal. | Short | Recheck only when authenticated read access is available; do not guess from broad tags. |
+| Reader discovery context | [TikTok Newsroom, 8 October 2026](https://newsroom.tiktok.com/booktok-reveals-first-ever-european-bestseller-of-the-year-as-the-community-helps-drive-reading-discovery-and-book-sales-across-europe?lang=en-150) | TikTok reports a commissioned survey (22-29 Sep; UK n=501 among the listed markets) and Media Control data. It says 53% of BookTokers across five markets discovered new genres with TikTok and nearly three-quarters expanded reading into new genres or diverse authors. | Background signal that discovery beyond usual choices matters; neither a current UK trend nor evidence of a particular format or BookQuotes performance. | Medium; contextual | Keep as a research lead only. Any public statistic needs its market, source and commissioned-survey context; do not build a timely book list from this report. |
+
+**Creator-pattern observations**
+
+- A representative sample of 15-20 BookTok/reading/biography/history/annotation posts across
+  varied account sizes was not accessible; TikTok video search is blocked to this research surface.
+  No transferable creative grammar can be claimed. No style catalogue addition is justified.
+- Do not copy wording, artwork, creator identity or distinctive execution. Do not infer trend
+  relevance from the platform's broad survey findings.
+
+**Audience language**
+
+- Current comments, searches and audience questions are unavailable; none is invented or attributed.
+
+**Evidence and rights**
+
+- No title/author/edition claim or asset was proposed. The evidence and rights ledger remains
+  unchanged; no new rights clearance was inferred.
+
+**Performance and learning**
+
+- No attributable 24-hour, 72-hour or seven-day checkpoint exists for the controlled post in this
+  run; no per-1,000 comparison, result label or confidence change is valid.
+- Repeat none; modify after account and source access recover; pause TikTok mutations and second-slot
+  tests. The last validated preparation count remains below three viable items (`cr-03`/`cr-04`
+  frame decode blocked; no third cleared brief). No weak queue item was created.
 
 ### 2026-11-11, 15:32 Europe/London
 

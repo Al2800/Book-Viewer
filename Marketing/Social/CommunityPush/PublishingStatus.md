@@ -1,8 +1,27 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 11 November 2026, 15:32 Europe/London
+Updated: 12 November 2026, 09:25 Europe/London
 
 ## Current operating loop
+
+- **12 November, 09:25:** Native Planner/Library and TikTok Studio could not be freshly inspected:
+  the Mac surface reported locked, and the available browser inventory has no Meta Planner or
+  TikTok Studio page (the TikTok-related tab is an OAuth/login route; it was not advanced). Read-only
+  Meta and TikTok CLI reads fail on DNS. The last confirmed Facebook state remains the 11 November
+  audit: no real Planner items after 11 November, Scheduled Library empty, queue zero and below the
+  three-day warning. Today's item/status is therefore unknown, not a verified publishing failure.
+  The external policy still has `writes_enabled=false`, blocks `social_publish`, requires explicit
+  approval and sets the Facebook routine write budget to zero; no schedule, retry or replacement
+  was attempted. Current metrics, comments and messages could not be inspected; no reply was sent.
+- TikTok status is likewise not freshly verifiable. At the 11 November audit the controlled post
+  `7667570006032387350` had no attributable analytics row and its public URL returned “Video
+  currently unavailable”; the API read failed on DNS. The last validated preparation queue was
+  below three viable items (`cr-03`/`cr-04` frame decoding blocked; no third cleared brief). No
+  upload, schedule, edit, delete, reconnection or reply was made.
+- Official TikTok Creative Center UK Trends still presents a login gate. A 15-20-post varied
+  BookTok sample could not be assembled. TikTok's 8 October newsroom report supplies only
+  platform-commissioned, market-level discovery context, not creator-format or BookQuotes
+  performance evidence. No style, ledger or confidence change is warranted.
 
 - **11 November, 15:32:** Planner and Published Library confirm the 11 November BookQuotes photo
   post `122122305279415831` is live once at 12:30 and not boosted; its public URL is

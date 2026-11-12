@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 11 November 2026, 15:32 Europe/London
+Updated: 12 November 2026, 09:25 Europe/London
 
 ## Method
 
@@ -38,6 +38,17 @@ Result labels:
 | TK-009 | A genuine reading-order question will attract more meaningful comments than a broad genre prompt. | Reader culture | BQ-05 | Specific reader decision | Meaningful comments/1,000 views | Shares/1,000 views | Low prior | Pending | Use SF-04, then compare SF-09 after comparable reach becomes available. |
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
+
+### 12 November 2026 daily audit — 09:25 Europe/London
+
+No experiment checkpoint is added. Account/Studio access was not freshly available, the connected
+API read failed on DNS, and no current attributable row for controlled ID `7667570006032387350`
+was obtained. Prior account-level totals are not substituted for post-level results. No per-1,000
+comparison, label or confidence change is valid. The official TikTok newsroom report from 8 October
+is multi-market commissioned survey and sales context, not format evidence. UK Creative Center
+rankings remain login-gated, no representative 15-20-post sample was assembled, and the last
+validated preparation queue remains below three viable items (`cr-03`/`cr-04` frame decoding
+blocked; no third cleared brief). Keep publication, integrity, rights/evidence and second-slot holds.
 
 ### 11 November 2026 daily audit — 15:32 Europe/London
 
