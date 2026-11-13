@@ -1,6 +1,23 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 12 November 2026, 09:25 Europe/London
+Updated: 13 November 2026, 10:32 Europe/London
+
+### Metadata reconciliation audit: 13 November 2026, 10:32 Europe/London
+
+- CUA reports the Mac locked and no native apps available. The connected-account TikTok read fails
+  on DNS; no account status, analytics, comments, searches or messages could be refreshed. Do not
+  reconnect credentials or infer current state from the 11 November dashboard.
+- Controlled ID `7667570006032387350` remains unresolved on the last native audit: no attributable
+  analytics row and public URL “Video currently unavailable.” No new post checkpoint, upload,
+  schedule, edit, delete or reply is recorded.
+- The latest official UK BookTok list found is the September chart article published 26 October.
+  It combines retail data and TikTok engagement; it is a reader-interest signal, not format evidence.
+  Creative Center GB rankings require login; no representative 15-20-post sample was accessible.
+- Draft `TK-012` uses verified chart context and Sourcebooks metadata for *Brain Damage* but has no
+  rendered asset, final quality score or 30-day duplicate check. It is not ready and does not change
+  the viable queue count, which remains below three (`cr-03`/`cr-04` frame decoding blocked; no
+  third production-cleared brief). Retain all publishing-integrity, metadata, evidence and
+  second-slot holds.
 
 ### Metadata reconciliation audit: 12 November 2026, 09:25 Europe/London
 

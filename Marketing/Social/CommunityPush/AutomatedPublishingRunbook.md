@@ -1,6 +1,25 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 12 November 2026, 09:25 Europe/London
+Updated: 13 November 2026, 10:32 Europe/London
+
+## Current Operational Note — 13 November 2026, 10:32 Europe/London
+
+CUA reports the Mac locked and no native apps available; the current browser inventory has no Meta
+Planner or TikTok Studio page. Read-only Meta and TikTok CLI requests fail on DNS. The last native
+Facebook reconciliation (11 November) found no real Planner items after 11 November and an empty
+Scheduled Library, leaving the last confirmed queue at zero and below three days. Today's status
+cannot be confirmed and is not recorded as a publishing failure. The external policy still has
+`writes_enabled=false`, blocks `social_publish`, requires explicit approval and sets the Facebook
+routine budget to zero. No Facebook replacement, retry, schedule, publish or duplicate was made.
+Current metrics, preflight controls and Inbox/Messenger contents were unavailable.
+
+The controlled TikTok post `7667570006032387350` remains unresolved on the last native evidence
+(11 November): no attributable analytics row and public URL “Video currently unavailable.” The
+current Studio and API state could not be checked. No upload, schedule, edit, delete, reconnect or
+reply was made. A draft reader-fit concept `TK-012` is documented from official UK chart and
+publisher sources but does not count as a viable item until it passes final quality, duplicate and
+asset gates. Creative Center requires login for its full GB Trends view; no representative 15-20
+post sample was available.
 
 ## Current Operational Note — 12 November 2026, 09:25 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 12 November 2026, 09:25 Europe/London
+Updated: 13 November 2026, 10:32 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,78 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-13, 10:32 Europe/London
+
+**Account and publishing**
+
+- CUA reports the Mac locked and no native apps available. The current browser inventory has no
+  TikTok Studio or Meta Planner page; the read-only Meta and TikTok CLI calls fail on DNS. No
+  account reconnection or write was attempted. Today's post status, analytics, comments, searches
+  and messages are unknown.
+- The last native audit (11 November) left controlled ID `7667570006032387350` without an
+  attributable analytics row; its URL returned “Video currently unavailable.” No current
+  24-hour/72-hour/seven-day checkpoint can be added.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| UK Creative Center broad tags | [TikTok Creative Center, GB](https://ads.tiktok.com/creative/creativeCenter/trends?region=GB); [official Trends help](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en&redirected=2) | Search snapshot surfaced `#livefest2026`, `#bonfirenight` and `#fireworks` as high-ranking broad UK topics. The direct Trends page exposes only navigation and login; live counts and related posts could not be verified in-page. | These are commerce/entertainment/seasonal signals, not a BookTok or reading signal. | Very short | Reject for BookQuotes; do not copy or infer audio/format value. |
+| September UK BookTok chart | [TikTok Newsroom, 26 October 2026](https://newsroom.tiktok.com/tiktok-reveals-septembers-booktok-bestsellers-uk?lang=en-GB) | The article says the September list combines real-world retail data with TikTok engagement; romance remains a favourite and thriller titles have begun appearing. `Brain Damage` by Freida McFadden is #2 on that September snapshot. This is interest/sales context, not a review score or live November trend. | Supports a spoiler-free reader-fit brief around a currently chart-visible thriller; does not support copying a creator format or claiming BookQuotes read it. | Medium; latest monthly chart found | Use the month and data basis if referenced. Treat ranking as context, not a quality claim. |
+| `Brain Damage` metadata and premise | [Sourcebooks publisher page, ISBN 9781464249617](https://www.sourcebooks.com/9781464249617-brain-damage-tp.html) | Sourcebooks lists Freida McFadden, Poisoned Pen Press paperback, ISBN `9781464249617`, publication 18 August 2026; its synopsis describes a doctor recovering after an attempted shooting with memory loss while trying to identify the attacker. The title/author also appear in the TikTok September chart. | Enables an accurately qualified, text-only recommendation concept; no personal reading claim. | Medium | Paraphrase only; disclose that it is publisher-synopsis-based and flag the premise's attempted violence/brain-injury material. Do not use its cover or excerpt. |
+
+**Creator-pattern observations**
+
+- TikTok video pages/search are unavailable to this research surface, and the Creative Center's
+  related-video view requires login. No representative 15-20-post sample across large, medium and
+  smaller BookTok accounts was assembled. No creator-specific grammar, audio or performance
+  pattern is claimed; no style-catalogue change is supported.
+- Explicitly exclude broad `#livefest2026`, `#bonfirenight` and `#fireworks` executions, borrowed
+  scripts, creator identity, artwork and audio.
+
+**Audience language**
+
+- Current BookQuotes comments, searches, questions and messages could not be checked. No audience
+  language is invented or attributed.
+
+**Evidence and rights**
+
+- Added EV-010 for the dated chart context and EV-011 for the publisher-verified book metadata and
+  synopsis. The recommendation stance is `Community signal` plus `Researched`; no firsthand reading
+  is implied. The production basis is original BookQuotes typography only, with no book cover,
+  reproduced passage or audio.
+
+**Draft brief — TK-012**
+
+- Intended reader: a reader drawn to the latest published UK BookTok chart who wants to know whether
+  a psychological thriller's premise fits their mood before choosing it.
+- Reader need/tension: a high chart position can attract attention but does not establish reader fit.
+- Hypothesis: a spoiler-free fit-first opening, supported by one verified premise detail and one
+  honest caveat, will earn more saves per 1,000 views than a ranking-first opening because it helps
+  readers decide rather than simply repeat the chart.
+- Territory/style/hook: Recommendation; BQ-07 Five-Slide Reader Tension; “Want a memory-gap thriller,
+  not just a trending title?”
+- Progression: state the reader-fit question; label the #2 chart result as a September sales-plus-
+  engagement snapshot; paraphrase the publisher premise; state the attempted-violence/brain-injury
+  caveat; end with a genuine fit question, not a verdict.
+- Evidence IDs: EV-010, EV-011. Stance: community signal plus publisher-sourced research; no claim
+  that BookQuotes has read the book.
+- Rights: original typography only; no cover, quote, page image, borrowed artwork or music.
+- Measures: saves/1,000 views primary; meaningful comments/1,000 views secondary. Main variable:
+  reader-fit question opening versus rank-led opening, holding the remaining treatment constant.
+- Review: 24h, 72h and 7d after any later authorised publication; no publication date is set.
+- Anti-slop screen: concept is title- and premise-specific, avoids hype and false firsthand
+  experience, and makes a decision-useful distinction. Final weighted quality score is pending a
+  complete rendered asset and phone-size review. It is a draft, not a viable/ready queue item; do
+  not advance or schedule it. Native 30-day duplicate, identity and metadata checks remain blocked.
+
+**Performance and queue**
+
+- No attributable checkpoint, per-1,000 comparison, result label or confidence update is valid.
+- The last validated preparation queue remains below three viable items (`cr-03`/`cr-04` frame
+  decoding blocked; no previously cleared third brief). TK-012 adds a research-stage candidate only
+  and does not change that count. No weak item was manufactured to fill the queue.
 
 ### 2026-11-12, 09:25 Europe/London
 

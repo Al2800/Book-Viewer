@@ -1,9 +1,28 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 12 November 2026, 09:25 Europe/London
+Updated: 13 November 2026, 10:32 Europe/London
 
 ## Current operating loop
 
+- **13 November, 10:32:** The current native account surfaces could not be read: CUA reports the
+  Mac locked and no native apps available; no Meta Planner or TikTok Studio tab is present.
+  Read-only Meta and TikTok CLI calls both fail on DNS. The last confirmed Facebook queue remains
+  zero at the 11 November native audit, below the three-day warning; today's Planner/Library and
+  post status are unknown, not a verified publishing failure. The external policy remains
+  `writes_enabled=false`, blocks `social_publish`, requires explicit approval and sets the routine
+  Facebook write budget to zero. No replacement, retry, schedule or publish was attempted.
+- Current post metrics, comments and messages could not be checked; no reply was sent. Facebook
+  preflight/duplicate state is not newly verified. Do not treat the old ContentBank period
+  (19 August-1 September) as a current queue or replacement source.
+- TikTok's last native evidence (11 November) still has no attributable analytics for controlled ID
+  `7667570006032387350`; the public URL returned “Video currently unavailable.” Today's account
+  and post status are unknown. The last validated prep queue was below three viable items. A new
+  chart-informed draft `TK-012` is logged, but its final score and production/preflight checks are
+  pending, so it does not raise the viable queue count. No TikTok mutation or reply was made.
+- The official September UK BookTok chart published 26 October is a useful topic signal, not a
+  current creator-format sample. Creative Center's full GB Trends view is login-gated, the public
+  TikTok video search surface is unavailable, and no 15-20-post sample could be collected. No style
+  or confidence change is warranted.
 - **12 November, 09:25:** Native Planner/Library and TikTok Studio could not be freshly inspected:
   the Mac surface reported locked, and the available browser inventory has no Meta Planner or
   TikTok Studio page (the TikTok-related tab is an OAuth/login route; it was not advanced). Read-only

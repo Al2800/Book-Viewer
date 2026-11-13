@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 12 November 2026, 09:25 Europe/London
+Updated: 13 November 2026, 10:32 Europe/London
 
 ## Method
 
@@ -38,6 +38,18 @@ Result labels:
 | TK-009 | A genuine reading-order question will attract more meaningful comments than a broad genre prompt. | Reader culture | BQ-05 | Specific reader decision | Meaningful comments/1,000 views | Shares/1,000 views | Low prior | Pending | Use SF-04, then compare SF-09 after comparable reach becomes available. |
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
+| TK-012 | For a chart-visible thriller, a spoiler-free reader-fit opening with one verified premise detail and one caveat will earn more saves than a rank-led opening. | Recommendation | BQ-07 | Reader-fit question vs rank-led opening; hold title, premise, caveat and treatment constant | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Draft only: EV-010/EV-011 verified. Finish the asset, run the 30-day duplicate check and score at least 75 before it can enter production or scheduling. |
+
+### 13 November 2026 daily audit — 10:32 Europe/London
+
+No post checkpoint is added. Current TikTok Studio access is unavailable (Mac locked); the API
+read failed on DNS. The 11 November native audit still has no attributable result for controlled
+ID `7667570006032387350`; no 24-hour/72-hour/seven-day result or per-1,000 comparison is valid.
+The official September UK chart and Sourcebooks metadata support a research-stage draft `TK-012`,
+not a performance result. Its final visual quality score and 30-day duplicate check are pending.
+Creative Center's full GB Trends view remains login-gated; no representative 15-20-post sample was
+assembled. The last validated prep queue remains below three viable items (`cr-03`/`cr-04` frame
+decode blocked; TK-012 is not production-ready). No confidence or result label changed.
 
 ### 12 November 2026 daily audit — 09:25 Europe/London
 

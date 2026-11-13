@@ -1,6 +1,6 @@
 # BookQuotes TikTok Evidence And Rights Ledger
 
-Updated: 28 July 2026
+Updated: 13 November 2026
 
 ## Recommendation Stance
 
@@ -28,6 +28,8 @@ Updated: 28 July 2026
 | EV-007 | *Tinker Tailor Soldier Spy* category Reel | Title, author, 1974 publication, Penguin UK listing | Researched | [johnlecarre.com book page](https://johnlecarre.com/books/tinker-tailor-soldier-spy/) | 17 Aug 2026 | Text-only or handwritten Remotion; no retailer cover; no film stills | BookQuotes | Verified | Brief `cr-04`. Do not spoil the mole. |
 | EV-008 | *Four Thousand Weeks* category Reel | Title, author, Vintage/Penguin UK listing, finitude premise | Researched | [Penguin UK, *Four Thousand Weeks*](https://www.penguin.co.uk/books/433471/four-thousand-weeks-by-burkeman-oliver/9781784704001) | 17 Aug 2026 | Text-only or handwritten Remotion; no retailer cover | BookQuotes | Verified | Brief `cr-05`. Do not turn it into productivity hacks. |
 | EV-009 | *Stoner* category Reel | Title, author, Vintage Classics UK listing | Researched | [Penguin UK Vintage Classics, *Stoner*](https://www.penguin.co.uk/books/357430/stoner-by-williams-john/9781784879143) | 17 Aug 2026 | Text-only or handwritten Remotion; no retailer cover | BookQuotes | Verified | Brief `cr-06`. Do not call it a forgotten-genius myth. |
+| EV-010 | September 2026 UK BookTok bestseller list | Dated chart context: `Brain Damage` is #2; the article says rankings combine retail data and TikTok engagement and notes thriller titles appearing | Community signal | [TikTok Newsroom, 26 Oct 2026](https://newsroom.tiktok.com/tiktok-reveals-septembers-booktok-bestsellers-uk?lang=en-GB) | 13 Nov 2026 | Factual attribution only; do not reuse chart artwork | BookQuotes | Verified | September snapshot, not a live November trend, review score or proof of book quality. No creator-format inference. |
+| EV-011 | *Brain Damage* by Freida McFadden | Sourcebooks / Poisoned Pen Press paperback metadata, ISBN 9781464249617, publication date and paraphrased publisher synopsis | Researched; paired with Community signal for discovery | [Sourcebooks publisher page](https://www.sourcebooks.com/9781464249617-brain-damage-tp.html); [TikTok September UK chart](https://newsroom.tiktok.com/tiktok-reveals-septembers-booktok-bestsellers-uk?lang=en-GB) | 13 Nov 2026 | Original typography only; no cover, passage, page image or audio | BookQuotes | Verified | Reader-fit draft TK-012 only. The publisher page is for the Sourcebooks/Poisoned Pen Press paperback; do not label this ISBN as a UK edition. Paraphrase the synopsis, note attempted violence/brain-injury themes, and never imply firsthand reading. |
 
 ## Asset Rights Register
 

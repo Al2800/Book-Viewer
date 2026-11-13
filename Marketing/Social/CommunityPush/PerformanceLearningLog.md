@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 12 November 2026, 09:25 Europe/London
+Updated: 13 November 2026, 10:32 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,33 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 13 November 2026, 10:32 Europe/London
+
+**Observation**
+
+- CUA reports the Mac locked and no native apps available. Meta and TikTok read-only CLI requests
+  both fail on DNS. The latest confirmed Facebook native queue remains zero from 11 November,
+  below three days; today's Planner/Library status is unknown. No publishing failure is confirmed.
+  The external policy still disables writes, blocks `social_publish` and gives Facebook a zero
+  routine write budget, so no replacement, retry or schedule was attempted.
+- Current Facebook metrics, comments and messages could not be read. Existing historical zeroes
+  remain distinct from today's unavailable measures; no reply was sent.
+- TikTok account/Studio data and community activity could not be refreshed. The 11 November audit
+  still has no attributable result for `7667570006032387350`; no 24-hour/72-hour/seven-day
+  checkpoint or per-1,000 comparison is valid. The last validated prep queue was below three viable
+  items; new draft TK-012 is not yet production-ready and does not change that count.
+- Official TikTok reporting identifies the September UK BookTok chart as combining retail data and
+  TikTok engagement. Its genre/series observations support a reader-fit research lead, not a
+  causal or creator-format claim.
+
+**Learning and actions**
+
+- No Facebook or TikTok hypothesis confidence changed. The TK-012 idea remains an unscored draft;
+  a completed visual/phone-size review and a score of at least 75 are required before advancement.
+- Repeat no publishing action. Modify only after native account/queue and policy reconciliation;
+  keep TikTok reconnect, controlled-post conclusions and second-slot tests paused. Report the
+  Facebook queue warning and TikTok viable-preparation shortfall.
 
 ### Daily audit — 12 November 2026, 09:25 Europe/London
 
