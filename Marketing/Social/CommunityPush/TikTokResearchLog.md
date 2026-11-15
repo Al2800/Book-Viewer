@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 13 November 2026, 10:32 Europe/London
+Updated: 15 November 2026, 13:22 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,49 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-15, 13:22 Europe/London
+
+**Account and publishing**
+
+- Native-app discovery timed out with no apps. The current TikTok browser tab is an OAuth/login
+  route and was not advanced; no Meta Planner tab is present. Read-only Meta identity/posts and
+  TikTok posts CLI calls fail on DNS. Today's platform status, metrics, comments, searches and
+  messages are unavailable. No reconnection or write was attempted.
+- The 11 November native audit remains the last evidence for controlled ID
+  `7667570006032387350`: no attributable analytics row and its public URL returned “Video currently
+  unavailable.” No new checkpoint can be added.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| GB Creative Center snapshot | [TikTok Creative Center, GB](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB); [official Trends help](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) | Search snapshot on 15 November surfaced `#livefest2026` (22.6K posts/27.9M views), `#fireworks` (79.1K/112.7M) and `#bonfirenight` (31.1K/73.1M). Direct page access exposed navigation/login, so counts and related videos were not independently checked in the page. | Broad entertainment/seasonal signals, not a BookTok or reading signal. | Very short | Reject; do not borrow executions, audio or creator identity. |
+| Latest UK monthly BookTok chart located | [TikTok Newsroom, September UK list, published 26 October](https://newsroom.tiktok.com/tiktok-reveals-septembers-booktok-bestsellers-uk?lang=en-GB) | Search found no newer UK monthly BookTok chart. The September list says it combines retail data and TikTok engagement; it is a dated sales/discovery snapshot, not November creator-format evidence. | Continues to support TK-012 only as a reader-interest lead, not as proof of quality or performance. | Dated; recheck next chart | Preserve existing EV-010/EV-011 qualification; do not claim current November ranking. |
+
+**Creator-pattern observations**
+
+- TikTok video pages are blocked by robots in this research surface. No representative sample of
+  15-20 reading, BookTok, biography, history, annotation or reading-habit posts across varied
+  account sizes could be assembled. No new creator grammar or performance pattern is claimed; no
+  style-catalogue change is justified.
+- Keep `#livefest2026`, `#fireworks` and `#bonfirenight` executions out of BookQuotes content.
+
+**Audience language and evidence**
+
+- Current BookQuotes comments, searches, questions and messages are unavailable. No audience
+  wording is attributed or invented. No new evidence-ledger row is needed; EV-010/EV-011 remain
+  dated and properly qualified.
+- TK-012 stays a researched/community-signal draft using original typography only. No firsthand
+  reading is implied; no cover, excerpt, page image or music is cleared for use.
+
+**Performance and queue**
+
+- No attributable 24-hour/72-hour/seven-day checkpoint, per-1,000 comparison, result label or
+  confidence update is valid. The unresolved controlled post is not treated as zero.
+- The last validated preparation queue remains below three viable items: `cr-03`/`cr-04` frame
+  decoding is blocked, and TK-012 lacks a rendered asset, final score, phone-size review and native
+  duplicate check. Do not promote it or manufacture a weak replacement.
 
 ### 2026-11-13, 10:32 Europe/London
 

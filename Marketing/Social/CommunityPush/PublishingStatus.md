@@ -1,9 +1,27 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 13 November 2026, 10:32 Europe/London
+Updated: 15 November 2026, 13:22 Europe/London
 
 ## Current operating loop
 
+- **15 November, 13:22:** Native-app discovery timed out and returned no apps. The available
+  TikTok browser tab is an OAuth/login route and was not advanced; no Meta Planner tab is present.
+  Read-only Meta identity/posts and TikTok posts CLI calls fail on DNS. Today's account, queue,
+  post, metrics and Inbox states are unknown. The last native Facebook audit (11 November) found
+  an empty Scheduled Library and queue zero, below three days; this is not proof of today's status
+  or a publishing failure. External policy remains `writes_enabled=false`, blocks `social_publish`,
+  requires explicit approval and gives Facebook a zero routine write budget. No replacement, retry,
+  schedule, publish, reconnect or reply was attempted. The August-September ContentBank is stale and
+  is not a current replacement queue.
+- TikTok's last native audit (11 November) still has no analytics attributable to controlled ID
+  `7667570006032387350`; its public URL then returned “Video currently unavailable.” Current Studio
+  status remains unknown. Preparation remains below three viable items: `cr-03`/`cr-04` are blocked
+  on frame decoding, and draft `TK-012` still lacks a rendered asset, final quality/phone-size review
+  and native duplicate check. No TikTok mutation or reply was made.
+- Official GB Creative Center's 15 November search snapshot surfaced broad `#livefest2026`,
+  `#fireworks` and `#bonfirenight` topics, not useful reading signals. Its direct page exposes only
+  navigation/login in this read. TikTok video pages were blocked by robots; no representative
+  15-20-post sample was obtained. No style or confidence change is warranted.
 - **13 November, 10:32:** The current native account surfaces could not be read: CUA reports the
   Mac locked and no native apps available; no Meta Planner or TikTok Studio tab is present.
   Read-only Meta and TikTok CLI calls both fail on DNS. The last confirmed Facebook queue remains

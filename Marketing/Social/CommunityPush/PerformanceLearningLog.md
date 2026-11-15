@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 13 November 2026, 10:32 Europe/London
+Updated: 15 November 2026, 13:22 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,31 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 15 November 2026, 13:22 Europe/London
+
+**Observation**
+
+- Native-app discovery timed out with no apps; the TikTok browser tab is an OAuth/login route and
+  was not advanced. Meta identity/posts and TikTok posts read-only CLI calls fail on DNS. Current
+  Facebook queue, post and metric data are unavailable. The last native queue confirmation remains
+  zero on 11 November, below three days; today's status is unknown, not a verified failure. Policy
+  still blocks social writes and Facebook routine write budget is zero. No replacement, retry or
+  schedule was attempted. Comments/messages and current metrics are unavailable; no reply was sent.
+- TikTok account and post analytics are unavailable. The last native audit still has no attributable
+  result for `7667570006032387350`; no 24-hour/72-hour/seven-day checkpoint or per-1,000 comparison
+  is valid. The preparation queue remains below three viable items; TK-012 is draft-only.
+- The official Creative Center GB search snapshot surfaced broad seasonal/entertainment tags, which
+  were rejected as irrelevant to reading. The latest UK BookTok monthly chart located is the
+  September snapshot published 26 October; it is not current creator-format evidence. TikTok video
+  pages were robot-blocked, preventing a representative sample.
+
+**Learning and actions**
+
+- No hypothesis confidence or result label changed. No new format or style was adopted.
+- Keep Facebook publication paused under current policy and inaccessible native reconciliation.
+  Keep TikTok publishing, reconnect, second-slot tests and automated replies paused. Do not treat
+  stale ContentBank records or the unrendered TK-012 draft as current viable queue items.
 
 ### Daily audit — 13 November 2026, 10:32 Europe/London
 

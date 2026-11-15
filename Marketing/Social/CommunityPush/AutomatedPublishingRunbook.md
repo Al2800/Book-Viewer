@@ -1,6 +1,25 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 13 November 2026, 10:32 Europe/London
+Updated: 15 November 2026, 13:22 Europe/London
+
+## Current Operational Note — 15 November 2026, 13:22 Europe/London
+
+Native-app discovery timed out with no apps. The available TikTok browser tab is an OAuth/login
+route and was not advanced; there is no Meta Planner tab. Read-only Meta identity/posts and TikTok
+posts CLI calls fail on DNS. Current Facebook queue, post status, metrics, preflight and Inbox state
+are unknown. The last native audit on 11 November found queue zero and an empty Scheduled Library,
+below three days, but that does not establish today's status or a publishing failure. The external
+policy remains `writes_enabled=false`, blocks `social_publish`, requires explicit approval and
+sets Facebook's routine write budget to zero. No replacement, retry, schedule, publish, reconnect or
+reply was attempted; the August-September ContentBank is stale.
+
+TikTok's last native evidence (11 November) still has no attributable analytics for controlled ID
+`7667570006032387350`; its public URL then returned “Video currently unavailable.” Current status
+is unknown. Preparation remains below three viable items: `cr-03`/`cr-04` frame decoding is blocked
+and `TK-012` remains an unrendered, unscored draft with phone-size and native duplicate checks
+pending. No TikTok mutation or reply was made. The official GB Creative Center search snapshot
+surfaced only broad seasonal/entertainment tags; direct access exposed navigation/login, and TikTok
+video pages were robot-blocked. No representative 15-20-post sample was obtained.
 
 ## Current Operational Note — 13 November 2026, 10:32 Europe/London
 

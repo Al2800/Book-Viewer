@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 13 November 2026, 10:32 Europe/London
+Updated: 15 November 2026, 13:22 Europe/London
 
 ## Method
 
@@ -39,6 +39,21 @@ Result labels:
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
 | TK-012 | For a chart-visible thriller, a spoiler-free reader-fit opening with one verified premise detail and one caveat will earn more saves than a rank-led opening. | Recommendation | BQ-07 | Reader-fit question vs rank-led opening; hold title, premise, caveat and treatment constant | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Draft only: EV-010/EV-011 verified. Finish the asset, run the 30-day duplicate check and score at least 75 before it can enter production or scheduling. |
+
+### 15 November 2026 daily audit — 13:22 Europe/London
+
+No post checkpoint is added: native apps were unavailable, the TikTok browser tab is an
+OAuth/login route that was not advanced, and the read-only API call failed on DNS. The 11 November
+native audit still has no attributable result for controlled ID `7667570006032387350`; no
+24-hour/72-hour/seven-day result or per-1,000 comparison is valid. Current Studio and audience
+activity are unknown.
+
+The GB Creative Center search snapshot surfaced broad `#livefest2026`, `#fireworks` and
+`#bonfirenight` topics, rejected as irrelevant to reading. The latest UK monthly BookTok chart
+located remains the September snapshot published 26 October, not current creator-format evidence.
+TikTok video pages were robot-blocked, so no 15-20-post creator sample or style change is supported.
+The validated preparation queue remains below three; TK-012 is unrendered/unscored and does not
+count. No result label or confidence changed.
 
 ### 13 November 2026 daily audit — 10:32 Europe/London
 

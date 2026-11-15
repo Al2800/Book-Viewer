@@ -1,6 +1,25 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 13 November 2026, 10:32 Europe/London
+Updated: 15 November 2026, 13:22 Europe/London
+
+### Metadata reconciliation audit: 15 November 2026, 13:22 Europe/London
+
+- Native-app discovery timed out with no apps. The available TikTok browser tab is an OAuth/login
+  route and was not advanced; no Meta Planner page is present. Meta identity/posts and TikTok posts
+  read-only CLI calls fail on DNS. Account, post, analytics and community status are unknown; do
+  not reconnect credentials or infer current status from the 11 November dashboard.
+- Controlled ID `7667570006032387350` remains unresolved on the last native audit (11 November):
+  no attributable analytics row and public URL “Video currently unavailable.” No new checkpoint,
+  upload, schedule, edit, delete or reply is recorded.
+- The official GB Creative Center search snapshot on 15 November surfaced broad
+  `#livefest2026`, `#fireworks` and `#bonfirenight` topics. They are not reading/BookTok signals;
+  direct Creative Center access exposed only navigation/login. TikTok video pages were blocked by
+  robots, so no representative 15-20-post creator sample was accessible.
+- The latest UK monthly BookTok chart located remains the September list published on 26 October;
+  it combines retail data and TikTok engagement and is not a live November or format signal. Draft
+  `TK-012` remains unrendered and unscored, with phone-size, 30-day duplicate and identity checks
+  pending. The viable preparation queue remains below three (`cr-03`/`cr-04` frame decoding
+  blocked; no third production-cleared item). Retain all publication holds.
 
 ### Metadata reconciliation audit: 13 November 2026, 10:32 Europe/London
 
