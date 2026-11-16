@@ -1,6 +1,31 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 15 November 2026, 13:22 Europe/London
+Updated: 16 November 2026, 09:05 Europe/London
+
+## Current Operational Note — 16 November 2026, 09:05 Europe/London
+
+Monday audit: Meta Planner opens only to a login page; no credentials or cookie choice were
+entered. TikTok Studio is unavailable and the current TikTok browser tabs are OAuth/login routes,
+not advanced. Read-only Meta identity/posts and TikTok posts CLI reads fail on DNS. Today's
+Facebook queue, post status, metrics, preflight and Inbox are unknown. The last native queue
+confirmation (11 November) was zero and below three days; no publishing failure is verified. The
+external policy still has `writes_enabled=false`, blocks `social_publish`, requires explicit
+approval and sets the Facebook routine write budget to zero. No replacement, retry, schedule,
+publish, reconnect or reply was attempted.
+
+Separate Monday reviews use only the latest available evidence: Facebook's 5-11 November native
+sample had one product-led post among seven; current-week performance is unavailable. TikTok's 11
+November account-level dashboard is not attributable to controlled ID `7667570006032387350`, which
+still lacks a confirmed publication-plus-analytics pair. The preparation queue is below three
+viable items (`cr-03`/`cr-04` illustrated cuts blocked; TK-012 unrendered/unscored). Keep all TikTok
+holds. Proposed preparation mix remains 70% reader-fit, 20% reader culture/practice, 10%
+reader-first product proof; the live editorial mix remains 60/20/15/5.
+
+Official GB Creative Center search snapshot surfaced broad `#livefest2026`,
+`#lewishamiltonchallenge` and `#mymoonmyman`, none relevant to reading. Direct Trends access shows
+login/navigation only; TikTok video pages are robot-blocked, so no 15-20 creator sample is
+available. The official TikTok Awards BookTok category is currently in a voting period; do not
+create or publish a vote/competition post automatically.
 
 ## Current Operational Note — 15 November 2026, 13:22 Europe/London
 

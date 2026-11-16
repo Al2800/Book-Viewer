@@ -1,9 +1,41 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 15 November 2026, 13:22 Europe/London
+Updated: 16 November 2026, 09:05 Europe/London
 
 ## Current operating loop
 
+- **16 November, 09:05; Monday review:** Meta Planner opens to a Meta Business login page; no
+  credentials or cookie choice were entered. No TikTok Studio surface is available; the TikTok
+  browser tabs are OAuth/login routes and were not advanced. Read-only Meta identity/posts and
+  TikTok posts CLI calls fail on DNS. Current queue, post, analytics and Inbox state are unknown.
+  The last native Facebook queue confirmation remains zero on 11 November, below three days; this
+  is not a verified failure. External policy still has `writes_enabled=false`, blocks
+  `social_publish`, requires explicit approval and gives routine Facebook writes a zero budget. No
+  replacement, retry, schedule, publish, reconnect or reply was attempted.
+- **Facebook seven-day review:** the latest verifiable native sample is 5-11 November, not the
+  current 9-15 November window. It contained seven published daily items, one product-led (14.3%).
+  Reported view/interaction fields were zero in the visible rows; reach, link clicks and watch time
+  were unavailable. Repeat reader-first, specific prompts when queue reconciliation and policy
+  permit; modify only after the current Planner/Library and preflight gates can be checked. Pause
+  all publishing until those checks and write authority clear. The current queue length remains
+  unknown, with last confirmed coverage zero.
+- **TikTok seven-day review:** current 9-15 November Studio data are unavailable. The 11 November
+  dashboard's account-level 5 views, 0 profile views/likes/shares, and unreported comments are not
+  attributable to the controlled post. No post-level checkpoint, per-1,000 comparison or creative
+  conclusion is valid. The preparation queue remains below three viable items; `cr-03`/`cr-04` need
+  illustrated cuts and TK-012 is unrendered/unscored. Repeat research and evidence/quality control;
+  modify briefs only with cleared evidence and completed assets; pause TikTok publishing, account
+  reconnection, the second slot and automated replies.
+- Monday portfolio proposal: 70% reader-fit recommendations, 20% reader identity/culture/practices,
+  10% reader-value-first product proof. This is preparation guidance, not publication permission;
+  retain the live 60/20/15/5 TikTok editorial mix when its holds clear. Facebook's latest sample was
+  mostly low-production reader-led content; TikTok representation cannot be audited without the
+  required varied-size creator sample. No confidence or style change is warranted.
+- Current official GB Creative Center search snapshot shows broad `#livefest2026`,
+  `#lewishamiltonchallenge` and `#mymoonmyman`; none is a reading signal. The direct Trends page
+  exposes login/navigation only. TikTok video pages are robot-blocked. The official TikTok Awards
+  UK BookTok category has voting open through 18 November; do not turn this competition/vote into
+  an automated post. No representative 15-20-post sample or new audience language was collected.
 - **15 November, 13:22:** Native-app discovery timed out and returned no apps. The available
   TikTok browser tab is an OAuth/login route and was not advanced; no Meta Planner tab is present.
   Read-only Meta identity/posts and TikTok posts CLI calls fail on DNS. Today's account, queue,

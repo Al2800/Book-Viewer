@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 15 November 2026, 13:22 Europe/London
+Updated: 16 November 2026, 09:05 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,46 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-16, 09:05 Europe/London
+
+**Account and publishing**
+
+- Meta Planner opens to a login page. No credentials or cookie choice were entered. TikTok Studio
+  is unavailable and available TikTok tabs are OAuth/login routes; none was advanced. Read-only Meta
+  identity/posts and TikTok posts CLI reads fail on DNS. Current queues, post states, metrics,
+  comments, searches and messages are unavailable. No reconnection or write was attempted.
+- The last native evidence (11 November) still does not attribute analytics to controlled ID
+  `7667570006032387350`. No new post checkpoint is possible.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| GB Creative Center search snapshot | [TikTok Creative Center, GB](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB); [official Trends help](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) | Search snapshot on 16 November surfaced `#livefest2026` (25.6K posts/27.7M views), `#lewishamiltonchallenge` (7.7K/6.3M) and `#mymoonmyman` (5.7K/14.3M). Direct page access exposes navigation/login; counts and related videos were not checked in the page itself. | Broad entertainment, sports and pop-culture topics; no relevant reading signal. | Very short | Reject. Do not borrow audio, wording, identity or execution. |
+| TikTok Awards UK BookTok category | [TikTok Newsroom, 5 November 2026](https://newsroom.tiktok.com/tiktok-awards-uk-2026?lang=en-GB) | Official shortlist includes a BookTok Creator of the Year category; the in-app voting period closes 18 November. | Community-calendar context only; nominations/voting do not establish a reading format or audience preference. | Ends 18 November | Do not vote, promote a nominee, or create an automatic competition/voting post. |
+| UK monthly BookTok bestseller chart | [TikTok Newsroom, September list, published 26 October](https://newsroom.tiktok.com/tiktok-reveals-septembers-booktok-bestsellers-uk?lang=en-GB) | No newer UK monthly BookTok list was found. This chart combines retail data and TikTok engagement and remains a dated September snapshot. | Existing EV-010/EV-011 support TK-012 only as a research-stage reader-interest lead, not November creator-format evidence. | Dated; recheck next list | No change to evidence ledger or TK-012 status. |
+
+**Creator-pattern observations and audience language**
+
+- TikTok video pages remain blocked by robots, and direct Creative Center access exposes login.
+  No representative 15-20-post sample across varied account sizes was assembled. No creator
+  grammar or style change is claimed.
+- Current BookQuotes comments, searches, questions and messages are unavailable; no audience
+  wording is invented. The Awards voting prompt is explicitly excluded as competition content.
+
+**Monday review and queue**
+
+- Facebook review uses the latest verifiable 5-11 November seven-post sample only (one product-led,
+  14.3%); the 9-15 November platform week is unknown. Current Facebook identity, queue, preflight,
+  duplicate state and performance could not be checked.
+- TikTok's latest account-level dashboard is from 11 November and is not attributable to the
+  controlled post. No checkpoint or per-1,000 comparison; no confidence update.
+- Preparation queue remains below three viable items: `cr-03`/`cr-04` require illustrated cuts;
+  TK-012 is unrendered and unscored, without phone-size or native 30-day duplicate clearance. Do not
+  advance or manufacture weak content. Next proposed 70/20/10 preparation portfolio: reader-fit
+  recommendations / reader culture and practical rituals / reader-first product proof. Keep live
+  TikTok editorial mix 60/20/15/5 when publishing holds clear.
 
 ### 2026-11-15, 13:22 Europe/London
 

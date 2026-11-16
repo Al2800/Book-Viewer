@@ -1,6 +1,30 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 15 November 2026, 13:22 Europe/London
+Updated: 16 November 2026, 09:05 Europe/London
+
+### Metadata reconciliation and Monday review: 16 November 2026, 09:05 Europe/London
+
+- Meta Planner resolves to a login page. No credentials or cookie choice were entered. TikTok
+  Studio is unavailable; available TikTok tabs are OAuth/login routes and were not advanced.
+  Read-only Meta identity/posts and TikTok posts CLI reads fail on DNS. Current account, post,
+  analytics and community status remain unknown. No credential reconnection or content mutation.
+- Controlled ID `7667570006032387350` is unresolved on the last native evidence (11 November):
+  no attributable analytics row and its public URL then returned “Video currently unavailable.”
+  Do not infer publication or analytics activation; no 24-hour/72-hour/seven-day checkpoint.
+- The TikTok seven-day review cannot use a current-week account sample. The 11 November dashboard
+  had account-level 5 views, zero reported profile views/likes/shares and comments unreported; none
+  are attributable to the controlled post. No per-1,000 comparison, result label, confidence change
+  or creative verdict is valid.
+- The preparation queue remains below three viable items: `cr-03`/`cr-04` need illustrated cuts and
+  TK-012 remains an unrendered/unscored draft with phone-size and native duplicate checks pending.
+  Repeat research and evidence/quality control; modify only cleared briefs; pause publishing,
+  reconnect, second-slot tests and automated replies. Next preparation portfolio: 70% reader-fit
+  recommendations, 20% reader identity/culture/practices, 10% reader-first product proof. The
+  posting-phase mix remains 60/20/15/5.
+- The official GB Creative Center snapshot shows only broad non-reading tags; direct Trends access
+  exposes login/navigation. TikTok video pages are robot-blocked. TikTok Awards UK voting closes
+  18 November; this competition is not an automated content prompt. No varied-size 15-20-post
+  sample, style change or new audience-language evidence was collected.
 
 ### Metadata reconciliation audit: 15 November 2026, 13:22 Europe/London
 

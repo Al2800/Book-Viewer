@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 15 November 2026, 13:22 Europe/London
+Updated: 16 November 2026, 09:05 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,34 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Monday review — 16 November 2026, 09:05 Europe/London
+
+**Facebook: latest available seven-day sample (5-11 November)**
+
+- Native data for 9-15 November are unavailable. On 11 November, the prior seven published days
+  contained seven primary items and one product-led item (14.3%). Visible reported view and
+  interaction fields were zero; reach, link clicks and watch time were unavailable. Do not present
+  this stale sample as the current week or infer a current publishing failure.
+- Repeat reader-first, specific prompts once the BookQuotes identity, Planner/Library queue, assets,
+  preflight and policy are verifiable. Modify only after current reconciliation. Pause publication
+  while `writes_enabled=false` and the routine budget is zero. The last confirmed queue was zero on
+  11 November; today's length is unknown and the queue warning remains active.
+
+**TikTok: latest available seven-day account sample (reported 11 November)**
+
+- The 9-15 November Studio window is unavailable. The previous dashboard reported 5 account-level
+  views, zero profile views/likes/shares and comments unreported; these are not controlled-post
+  results. ID `7667570006032387350` still lacks an attributable result in the last native evidence.
+  No 24-hour/72-hour/seven-day checkpoint, per-1,000 measure or confidence change is valid.
+- Repeat research, evidence and quality control. Modify TK-012 only after asset, phone-size,
+  duplicate and score gates clear. Pause publishing, reconnection, the second slot and automated
+  replies. Preparation remains below three viable items. Representation sample and production
+  burden cannot be fully audited because TikTok creator posts are inaccessible; remaining clips
+  need illustrated cuts, so do not manufacture queue volume.
+- Proposed preparation portfolio remains 70% reader-fit recommendation, 20% reader culture/practice,
+  10% reader-first product proof. The live 60/20/15/5 editorial mix remains unchanged. No style,
+  result label or hypothesis confidence changed.
 
 ### Daily audit — 15 November 2026, 13:22 Europe/London
 

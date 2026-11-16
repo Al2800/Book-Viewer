@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 15 November 2026, 13:22 Europe/London
+Updated: 16 November 2026, 09:05 Europe/London
 
 ## Method
 
@@ -39,6 +39,16 @@ Result labels:
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
 | TK-012 | For a chart-visible thriller, a spoiler-free reader-fit opening with one verified premise detail and one caveat will earn more saves than a rank-led opening. | Recommendation | BQ-07 | Reader-fit question vs rank-led opening; hold title, premise, caveat and treatment constant | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Draft only: EV-010/EV-011 verified. Finish the asset, run the 30-day duplicate check and score at least 75 before it can enter production or scheduling. |
+
+### Monday seven-day review — 16 November 2026, 09:05 Europe/London
+
+Current 9-15 November post-level analytics are unavailable. The latest native evidence (11
+November) still has no attributable result for controlled ID `7667570006032387350`; the account
+dashboard's reported seven-day 5 views are not a content checkpoint. No 24-hour/72-hour/seven-day
+result, per-1,000 comparison, rolling median or confidence update is valid. The last available
+Facebook sample covers 5-11 November only and cannot support current-week learning. The 70/20/10
+preparation proposal remains 70% reader-fit recommendations, 20% reader culture/practices and 10%
+reader-first product proof; publishing-phase mix remains 60/20/15/5. No result label changed.
 
 ### 15 November 2026 daily audit — 13:22 Europe/London
 
