@@ -1,6 +1,6 @@
 # BookQuotes TikTok Experiment Register
 
-Updated: 16 November 2026, 09:05 Europe/London
+Updated: 17 November 2026, 10:10 Europe/London
 
 ## Method
 
@@ -39,6 +39,16 @@ Result labels:
 | TK-010 | A search-led native-photo post with an exact reader question will create more attributable discovery than a caption-led animated Reel. | Discovery | BQ-01 / BQ-07 | Opening phrased as a search question | Search views or profile visits/1,000 | Saves/1,000 views | Low prior | Pending | Run DR-01 and DR-03 after Account check is clear. |
 | TK-011 | Genuine owner participation in relevant BookTok conversations will produce more profile discovery than publishing alone. | Community | BQ-05 | Relevant, substantive participation | Profile visits/1,000 | Follows/1,000 views | Low prior | Pending | Run a five-day owner-led participation period; do not automate engagement. |
 | TK-012 | For a chart-visible thriller, a spoiler-free reader-fit opening with one verified premise detail and one caveat will earn more saves than a rank-led opening. | Recommendation | BQ-07 | Reader-fit question vs rank-led opening; hold title, premise, caveat and treatment constant | Saves/1,000 views | Meaningful comments/1,000 views | Low prior | Pending | Draft only: EV-010/EV-011 verified. Finish the asset, run the 30-day duplicate check and score at least 75 before it can enter production or scheduling. |
+
+### 17 November 2026 daily audit — 10:10 Europe/London
+
+No experiment checkpoint is added. Studio's visible seven-day total is 5 account-level views,
+which cannot be attributed to controlled ID `7667570006032387350`; that ID is absent from the
+visible inventory and its public URL returns “Video currently unavailable”. Comments are
+unreported, not zero. Therefore no post-level views, 24-hour/72-hour/seven-day result or
+per-1,000 comparison is available. Do not change any result label or confidence level. Preparation
+remains below three viable items (`cr-03`/`cr-04` need illustrated cuts; TK-012 remains unrendered,
+unscored and uncleared for phone-size and native duplicate checks).
 
 ### Monday seven-day review — 16 November 2026, 09:05 Europe/London
 

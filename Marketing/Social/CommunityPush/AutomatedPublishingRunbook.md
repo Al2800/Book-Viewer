@@ -1,6 +1,30 @@
 # BookQuotes Automated Social Publishing Runbook
 
-Updated: 16 November 2026, 09:05 Europe/London
+Updated: 17 November 2026, 10:10 Europe/London
+
+## Current Operational Note — 17 November 2026, 10:10 Europe/London
+
+Meta Business Suite is signed in as the active `BookQuotes` Page (`1246405755221229`). Planner
+for 15-21 November is empty, and Content Library Scheduled says “No scheduled posts”. The
+Published view filtered to 18 October-17 November shows seven rows dated 5-11 November; the latest
+photo post `122122305279415831` is Published once at 12:30 on 11 November, with a working [public
+permalink](https://www.facebook.com/122107379391415831/posts/122122305279415831). Available values
+are 1 view, 1 viewer, zero follows/interactions/likes/comments/shares/saves/three-second views;
+reach, link clicks and watch time are not available. The rolling queue is zero and below the
+three-day warning. This is a queue gap, not a verified technical publishing failure.
+
+The local publishing policy remains `writes_enabled=false`, blocks `social_publish`, requires
+explicit approval and assigns routine Facebook publishing a zero write budget. Do not create,
+schedule, retry or publish a replacement until that gate changes, even though the user has
+authorized routine Facebook publishing. No replacement was made in this audit. Inbox Comments and
+Messenger show no comments or messages.
+
+TikTok Studio is accessible as `@bookquotes.app`, but controlled ID `7667570006032387350` is absent
+from the visible 19-post inventory and its public URL says “Video currently unavailable”. The
+account-level seven-day 5 views are not post-attributable. Publication-once and analytics activation
+remain unconfirmed; keep all TikTok mutation holds. The preparation queue is below three viable
+items (`cr-03`/`cr-04` need illustrated cuts; TK-012 is unrendered/unscored and lacks phone-size and
+native duplicate checks). No style or confidence change is warranted.
 
 ## Current Operational Note — 16 November 2026, 09:05 Europe/London
 

@@ -1,6 +1,6 @@
 # BookQuotes Social Performance Learning Log
 
-Updated: 16 November 2026, 09:05 Europe/London
+Updated: 17 November 2026, 10:10 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,36 @@ Each run should append:
 Use `Not available` rather than zero when a platform does not expose a metric.
 
 ## Entries
+
+### Daily audit — 17 November 2026, 10:10 Europe/London
+
+**Facebook observation**
+
+- Meta Business Suite confirms the active BookQuotes Page. Planner and Scheduled Library both show
+  no scheduled posts; the latest of seven Published rows in the 18 October-17 November view is the
+  11 November 12:30 photo post. It has 1 view/1 viewer and zero on available interaction fields;
+  reach, link clicks and watch time are unavailable. No new item has appeared since 11 November,
+  leaving the seven-day queue at zero. No technical failure is established.
+- The local publishing policy still blocks social writes and gives routine Facebook writes a zero
+  budget. No replacement or platform mutation was made. Treat the queue gap as urgent operational
+  coverage, not evidence of audience rejection.
+
+**TikTok observation**
+
+- Studio account totals are 5 views in the last seven days, 0 profile views/likes/shares, comments
+  unreported; none is attributable to controlled ID `7667570006032387350`, which is absent from
+  inventory and unavailable at its public URL. No checkpoint or per-1,000 comparison is valid.
+- Preparation remains below three viable items. `cr-03`/`cr-04` need illustrated cuts; TK-012 lacks
+  rendered output, final quality score, phone-size review and native duplicate clearance. Do not
+  count these as viable or raise format confidence.
+
+**Learning and actions**
+
+- Repeat read-only reconciliation and evidence/quality work. Keep Facebook scheduling paused under
+  the current write gate; keep TikTok publishing and second-slot tests paused until the controlled
+  post gate is resolved. No confidence, result label, style or editorial-mix change is warranted.
+- Facebook Inbox Comments and Messenger, and TikTok Studio Latest Comments and Messages, show no
+  comments or messages. No reply was sent; no sensitive community item is pending.
 
 ### Monday review — 16 November 2026, 09:05 Europe/London
 

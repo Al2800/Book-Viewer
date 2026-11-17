@@ -1,9 +1,34 @@
 # BookQuotes Community Push: Publishing Status
 
-Updated: 16 November 2026, 09:05 Europe/London
+Updated: 17 November 2026, 10:10 Europe/London
 
 ## Current operating loop
 
+- **17 November, 10:10; live account audit:** Meta Business Suite is logged in as the active
+  `BookQuotes` Facebook Page (`1246405755221229`). Planner for 15-21 November has no scheduled
+  items; Content Library Scheduled says “No scheduled posts”. The Published view's 18 October-17
+  November date filter contains seven rows, dated 5-11 November. The latest, photo post
+  `122122305279415831`, is Published once at 12:30 on 11 November; its [public URL](https://www.facebook.com/122107379391415831/posts/122122305279415831)
+  opens. Visible metrics: 1 view, 1 viewer, 0 follows, 0 interactions, 0 likes, 0 comments, 0
+  shares, 0 saves and 0 three-second views; reach, link clicks and watch-time fields are `--`
+  (unavailable). The Facebook queue is zero, below the three-day warning; no technical failure is
+  evidenced. The local publishing policy still has `writes_enabled=false`, blocks `social_publish`,
+  requires explicit approval and sets the routine Facebook write budget to zero. No replacement,
+  retry, schedule or publish was attempted.
+- **Facebook community:** Inbox Comments reports no comments; Messenger reports no messages. No
+  reply was sent. No post is being treated as ready for duplication or retry.
+- **TikTok native audit:** TikTok Studio is signed in as `@bookquotes.app` (19 posts, 5 followers,
+  23 likes). Its last-seven-days account dashboard reports 5 video views (-1, -16.7%), 0 profile
+  views, 0 likes, comments `--` (not reported), 0 shares and $0 estimated rewards. These account
+  totals are not attributable to controlled post `7667570006032387350`; that ID is absent from the
+  visible inventory and its public URL reports “Video currently unavailable”. Therefore neither
+  its once-only publication nor attributable analytics is confirmed. Do not upload, schedule, edit,
+  delete or publish another TikTok post. Studio Latest Comments and Messages show no comments and
+  no messages.
+- TikTok preparation remains below three viable items: `cr-03`/`cr-04` need usable illustrated
+  cuts and `TK-012` is unrendered/unscored, with phone-size and native 30-day duplicate checks
+  pending. The Studio Inspiration trends visible today are unrelated to reading. Keep all holds;
+  no style, evidence-ledger or confidence change is warranted.
 - **16 November, 09:05; Monday review:** Meta Planner opens to a Meta Business login page; no
   credentials or cookie choice were entered. No TikTok Studio surface is available; the TikTok
   browser tabs are OAuth/login routes and were not advanced. Read-only Meta identity/posts and

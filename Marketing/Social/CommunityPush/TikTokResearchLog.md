@@ -1,6 +1,6 @@
 # BookQuotes TikTok Research And Learning Log
 
-Updated: 16 November 2026, 09:05 Europe/London
+Updated: 17 November 2026, 10:10 Europe/London
 
 ## Purpose
 
@@ -63,6 +63,44 @@ with a dated note rather than rewriting history.
 - Requires user approval:
 
 ## Entries
+
+### 2026-11-17, 10:10 Europe/London
+
+**Account and publishing**
+
+- TikTok Studio is accessible for `@bookquotes.app` (19 posts, 5 followers, 23 likes). The visible
+  seven-day account summary is 5 video views (-1, -16.7%), 0 profile views, 0 likes, comments `--`
+  (not reported), 0 shares and $0 estimated rewards. The controlled ID
+  `7667570006032387350` is absent from the visible inventory; its public URL says “Video currently
+  unavailable”. Neither once-only publication nor attributable analytics is established. No
+  TikTok mutation was made.
+- Studio reports no latest comments and no messages. Current BookQuotes audience search-language
+  data were not exposed; no audience wording is inferred.
+
+**External signals**
+
+| Signal | Source/link | Evidence | BookQuotes relevance | Shelf life | Proposed response |
+| --- | --- | --- | --- | --- | --- |
+| GB Creative Center dynamic search snapshot | [TikTok Creative Center, GB](https://ads.tiktok.com/creative/creativeCenter/trends?deviceType=pc&locale=en&region=GB); [official Trends help](https://ads.tiktok.com/resources/help/article/how-to-use-trends?lang=en-GB) | Search results surfaced `#mymoonmyman`, `#marvelrivals11` and `#marvelrivalsdoomsday`; counts varied between search snapshots. Direct Trends access exposed navigation/login, so results and related videos were not verified on-page. TikTok's help explains that login is needed for related videos, audience insights and regional popularity. | No relevant reading signal; do not treat broad entertainment tags as BookTok evidence. | Very short | Reject; do not borrow audio, wording, artwork, identity or execution. |
+| UK monthly BookTok list | [TikTok Newsroom, September UK list, published 26 October](https://newsroom.tiktok.com/tiktok-reveals-septembers-booktok-bestsellers-uk?lang=en-GB) | No newer October/November monthly list surfaced in this check. The September list is dated retail/engagement context, not current creator-format evidence. | Maintains a bounded reader-interest lead only; no basis to promote TK-012 or change its status. | Dated | Retain existing EV-010/EV-011 qualification; no ledger edit. |
+
+**Creator-pattern observations and audience language**
+
+- Studio Inspiration's visible Trending items were unrelated sports, entertainment and gaming.
+  TikTok creator pages were blocked by robots, and no representative sample of 15-20 BookTok,
+  reading, biography, history, annotation or reading-habit posts across varied account sizes could
+  be inspected. No new creative grammar or catalogue update is claimed.
+- Comments/messages were empty in the available TikTok and Facebook inbox surfaces. Search-query
+  and broader audience language were unavailable, so no hooks are attributed to readers.
+
+**Evidence, performance and queue**
+
+- No ledger entry or rights claim was added. No firsthand reading is implied. No 24-hour,
+  72-hour or seven-day checkpoint, per-1,000 measure, result label or confidence change is valid
+  for the controlled post.
+- The validated preparation queue remains below three viable items: `cr-03`/`cr-04` need illustrated
+  cuts; TK-012 has no rendered asset or final score and still needs phone-size and native 30-day
+  duplicate checks. Do not advance or manufacture queue volume.
 
 ### 2026-11-16, 09:05 Europe/London
 

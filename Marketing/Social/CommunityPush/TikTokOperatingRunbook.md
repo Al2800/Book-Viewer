@@ -1,6 +1,24 @@
 # BookQuotes TikTok Operating Runbook
 
-Updated: 16 November 2026, 09:05 Europe/London
+Updated: 17 November 2026, 10:10 Europe/London
+
+### Native account and controlled-post audit: 17 November 2026, 10:10 Europe/London
+
+- TikTok Studio is signed in to `@bookquotes.app` (19 posts, 5 followers, 23 likes). Its last-seven-
+  days account metrics are 5 video views (-1, -16.7%), 0 profile views, 0 likes, comments `--`
+  (not reported), 0 shares and $0 estimated rewards. No metric is attributable to the controlled
+  ID.
+- Controlled ID `7667570006032387350` is absent from the visible inventory, while its public URL
+  returns “Video currently unavailable”. There is no evidence that it published once or that
+  post-level analytics are attributable. Do not activate routine TikTok publishing; until both
+  conditions are evidenced, do not upload, schedule, edit, delete or publish another TikTok post.
+- Studio reports no latest comments and no messages. The TikTok preparation queue remains below
+  three viable items: `cr-03`/`cr-04` require usable illustrated cuts; TK-012 is unrendered and
+  unscored, with phone-size and native 30-day duplicate checks pending. Keep the 60/20/15/5
+  publishing mix and every existing integrity/evidence/rights hold; do not add a second slot.
+- Today's visible Studio Inspiration trends are unrelated to reading. See the research log for the
+  UK Creative Center access limits and dated signals. No creator-style, evidence-ledger or
+  confidence change was supported.
 
 ### Metadata reconciliation and Monday review: 16 November 2026, 09:05 Europe/London
 
